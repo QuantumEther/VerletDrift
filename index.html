@@ -900,6 +900,23 @@
           <span class="slider-value" id="steeringDragRangeValue">150</span>
         </div>
 
+      <!-- ==================== DEBUG OVERLAYS ==================== -->
+      <div class="panel-section">
+        <h3>🔧 Debug Overlays</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <label><input type="checkbox" id="debugShowTireForces"> Tire Forces</label>
+          <label><input type="checkbox" id="debugShowSlipAngles"> Slip Angles</label>
+          <label><input type="checkbox" id="debugShowSAT"> Self-Align Torque</label>
+          <label><input type="checkbox" id="debugShowSmoothingFilter"> Filter Signal</label>
+          <label><input type="checkbox" id="debugShowCrossover"> Sign Flips</label>
+          <label><input type="checkbox" id="debugShowWheelSpeeds"> Wheel Velocities</label>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Overlay Size</span>
+          <input type="range" id="debugFontSize" min="4" max="14" value="8" style="flex: 1; margin: 0 8px;">
+          <span class="slider-value" id="debugFontSizeValue">8</span>
+        </div>
+      </div>
     </div>
 
     <!-- ==================== KEY HINTS ==================== -->

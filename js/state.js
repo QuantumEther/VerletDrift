@@ -356,7 +356,7 @@ const state = {
     // Jakobsen constraint damping (0.0–1.0).
     // Fraction of positional correction also applied to prevX/prevY.
     // 0.0 = pure Jakobsen (can inject phantom energy), 0.5 = default, 1.0 = fully absorbed.
-    constraintDamping:  0.8,  // higher = less phantom velocity from Jakobsen corrections
+    constraintDamping:  0.85,  // higher = less phantom velocity from Jakobsen corrections
 
     motionBlurSamples:    6,
     motionBlurIntensity:  0.6,
@@ -486,6 +486,17 @@ const state = {
     gripRecoveryThreshold: 0.85,   // grip ratio that triggers recovery (0.5–1.0)
     gripEmaStable:         0.15,   // EMA alpha in stable state (0.01–0.5)
     gripEmaSlipping:       0.35,   // EMA alpha in slipping state (0.05–0.8)
+
+    // --- DEBUG OVERLAYS ---
+    debugShowTireForces:    false,  // Draw tire force vectors at wheels
+    debugShowSlipAngles:    false,  // Draw slip angle values/indicators
+    debugShowSAT:           false,  // Draw SAT magnitude and direction
+    debugShowSmoothingFilter: false, // Draw raw vs smoothed lateral velocity
+    debugShowCrossover:     false,  // Highlight where slip angle sign flips
+    debugShowWheelSpeeds:   false,  // Velocity vectors at wheel positions
+    debugFontSize:          8,      // Pixel size for debug text overlays (4-14)
+    debugFontColor:         '#00ff00', // Green for debug text
+    debugForceScale:        0.0015, // Pixels per Newton (force arrow scaling)
   },
 
   // -----------------------------------------------------------

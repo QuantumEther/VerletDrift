@@ -259,6 +259,15 @@ export function initSliders() {
   bindCheckbox('showSparks',          'showSparks');
   bindCheckbox('showSkidMarks',       'showSkidMarks');
 
+  // ---- Debug Overlays ----
+  bindCheckbox('debugShowTireForces',    'debugShowTireForces');
+  bindCheckbox('debugShowSlipAngles',    'debugShowSlipAngles');
+  bindCheckbox('debugShowSAT',           'debugShowSAT');
+  bindCheckbox('debugShowSmoothingFilter', 'debugShowSmoothingFilter');
+  bindCheckbox('debugShowCrossover',     'debugShowCrossover');
+  bindCheckbox('debugShowWheelSpeeds',   'debugShowWheelSpeeds');
+  bind('debugFontSize', 'debugFontSize', parseInt, fmtInt);
+
   // ---- Spark Tuning ----
   bind('sparkIntensity',      'sparkIntensity',      parseFloat1, fmt1);
   bind('sparkSize',           'sparkSize',           parseFloat1, fmt1);

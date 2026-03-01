@@ -897,14 +897,14 @@ export function computeTireForces(dt) {
   // ±30 N·m: alpha_max = 375 rad/s², Δθ_max = 0.027 rad/step → ~19 steps to full lock.
   // This is tight enough to prevent noise-driven oscillation while still allowing
   // genuine road feedback to move the wheel noticeably.
-  const clampedSAT = clamp(rawSAT, -30, 30);
+  const clampedSAT = clamp(rawSAT, -25, 25);
 
   // EMA output filter on SAT — 80ms time constant (up from 50ms).
   // Combined with the upstream smoothedWheelLat filter this gives two-stage
   // noise rejection: pre-Pacejka (kills input noise) + post-relaxation (kills
   // residual output transients). The longer time constant is safe because the
   // upstream filter already ensures the signal trend is clean.
-  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.08);
+  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.10);
   const prevSAT = state.steering.selfAligningTorque;
   state.steering.selfAligningTorque = prevSAT + (clampedSAT - prevSAT) * satFilterAlpha;
 

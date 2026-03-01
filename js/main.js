@@ -95,6 +95,7 @@ import {
   drawKinematicArrows,
   updateSparks,
   drawSparks,
+  drawDebugOverlays,
 } from './renderer.js';
 
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js';
@@ -661,6 +662,13 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   }
   if (state.params.showKinematicArrows) {
     drawKinematicArrows(simCtx);
+  }
+
+  // Debug overlays (tire forces, SAT, slip angles, etc.)
+  if (state.params.debugShowTireForces || state.params.debugShowSlipAngles ||
+      state.params.debugShowSAT || state.params.debugShowSmoothingFilter ||
+      state.params.debugShowCrossover || state.params.debugShowWheelSpeeds) {
+    drawDebugOverlays(simCtx);
   }
 
   // --- Record current pose for motion blur ghost trail ---
