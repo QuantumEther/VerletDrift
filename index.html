@@ -71,6 +71,14 @@
           <div class="label">Trail</div>
           <div class="value" id="trailDisplay">0 arrows</div>
         </div>
+        <div class="info-cell">
+          <div class="label">Render</div>
+          <div class="value" id="renderFpsDisplay">0 fps</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Physics</div>
+          <div class="value" id="physicsTpsDisplay">0 Hz</div>
+        </div>
       </div>
     </div>
 
@@ -81,13 +89,12 @@
       <div class="panel-section">
         <h3>⚡ Simulation</h3>
         <div class="slider-row">
-          <span class="slider-label">Sim FPS</span>
-          <!-- === PHASE 3c: SIMULATION FPS DEFAULT INCREASE ===
-               Snapped to nearest 10Hz in ui.js; range 10–120
-               OLD default: 60 Hz (acceptable, but loose constraint solving)
-               NEW default: 90 Hz (better constraint enforcement, smoother physics) -->
-          <input type="range" id="simulationFps" min="10" max="120" value="90" step="10">
-          <span class="slider-value" id="simulationFpsValue">90</span>
+          <span class="slider-label">Physics Hz</span>
+          <!-- Physics tick rate (wall-clock Hz). timeScale only shrinks dt per tick,
+               not the tick rate. Higher = more accurate tire model, more CPU.
+               100Hz is the sweet spot for vehicle dynamics. Range: 30–200Hz. -->
+          <input type="range" id="simulationFps" min="30" max="200" value="100" step="10">
+          <span class="slider-value" id="simulationFpsValue">100</span>
         </div>
         <div class="slider-row">
           <span class="slider-label">Time Scale</span>
@@ -362,14 +369,14 @@
       <div class="panel-section">
         <h3>📷 Camera</h3>
         <div class="slider-row">
-          <span class="slider-label">Stiffness</span>
-          <input type="range" id="cameraStiffness" min="0.5" max="20.0" value="5.0" step="0.5">
-          <span class="slider-value" id="cameraStiffnessValue">5.0</span>
+          <span class="slider-label">Freq ω₀</span>
+          <input type="range" id="cameraOmega" min="0.5" max="20.0" value="2.2" step="0.1">
+          <span class="slider-value" id="cameraOmegaValue">2.2</span>
         </div>
         <div class="slider-row">
-          <span class="slider-label">Damping</span>
-          <input type="range" id="cameraDamping" min="1.0" max="20.0" value="6.0" step="0.5">
-          <span class="slider-value" id="cameraDampingValue">6.0</span>
+          <span class="slider-label">Zeta ζ</span>
+          <input type="range" id="cameraZeta" min="0.1" max="2.0" value="0.8" step="0.05">
+          <span class="slider-value" id="cameraZetaValue">0.80</span>
         </div>
         <div class="slider-row">
           <span class="slider-label">Zoom Sens</span>
@@ -545,6 +552,12 @@
           <!-- Jakobsen solver passes per step; more = stiffer body, slower -->
           <input type="range" id="constraintIterations" min="1" max="12" value="6" step="1">
           <span class="slider-value" id="constraintIterationsValue">6</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Constraint Damp</span>
+          <!-- Jakobsen velocity damping: 0=pure (can jitter), 0.5=balanced, 1=fully absorbed -->
+          <input type="range" id="constraintDamping" min="0.0" max="1.0" value="0.8" step="0.05">
+          <span class="slider-value" id="constraintDampingValue">0.50</span>
         </div>
         <div class="slider-row">
           <span class="slider-label">Checker Tile (px)</span>
@@ -863,8 +876,8 @@
         </div>
         <div class="slider-row">
           <span class="slider-label">Viscous Damp</span>
-          <input type="range" id="steeringViscousDamping" min="0.0" max="5.0" value="0.4" step="0.05">
-          <span class="slider-value" id="steeringViscousDampingValue">0.40</span>
+          <input type="range" id="steeringViscousDamping" min="0.0" max="10.0" value="5.5" step="0.1">
+          <span class="slider-value" id="steeringViscousDampingValue">5.50</span>
         </div>
         <div class="slider-row">
           <span class="slider-label">Coulomb Friction</span>

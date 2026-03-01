@@ -64,6 +64,7 @@ import {
   updateCamera,
   updateEngineSound,
   applySleepIfNeeded,
+  wrapAngle,
 } from './physics.js';
 
 import {
@@ -320,46 +321,125 @@ registerGauge({
 
 
 // =============================================================
+// RENDER INTERPOLATION SNAPSHOTS
+// =============================================================
+// Unity-style fixed physics rate + display-rate rendering with interpolation.
+//
+// ARCHITECTURE (matches Unity FixedUpdate / Update separation):
+//   - Physics ticks at a fixed WALL-CLOCK rate (physicsHz slider, e.g. 100Hz).
+//     The accumulator counts real elapsed time, NOT simulated time.
+//     This guarantees physics ticks happen ~physicsHz times per real second
+//     regardless of timeScale.
+//   - timeScale only shrinks the dt PASSED TO each physics step.
+//     At timeScale=0.1 + 100Hz physics: ticks still fire 100×/s in real time,
+//     but each tick advances only 0.001s of simulation → silky slow motion.
+//   - The renderer fires every requestAnimationFrame (240Hz on your display).
+//     It interpolates the car/camera position between the last two physics
+//     snapshots using alpha = wallAccumulator / physicsWallDt.
+//     At 100Hz physics + 240Hz display: between every physics tick you get
+//     ~2.4 render frames, each drawing a smoothly interpolated position.
+//
+// What we snapshot: body center, heading, steering angle, camera.
+// Particles, decals, balloons are NOT interpolated (physics-side only).
+
+function makeBodySnapshot() {
+  return {
+    centerX:    state.body.centerX,
+    centerY:    state.body.centerY,
+    heading:    state.body.heading,
+    steerAngle: state.steering.frontWheelAngle,
+    wheelAngle: state.steering.wheelAngle,
+    camX:       state.camera.x,
+    camY:       state.camera.y,
+    camZoom:    state.camera.zoom,
+  };
+}
+
+// Snapshots of the last two completed physics steps.
+// Renderer interpolates between them.
+let snapPrev = null;
+let snapCurr = null;
+
+// FPS tracking — smoothed with EMA for stable display.
+let renderFpsEma  = 0;
+let physicsTpsEma = 0; // ticks per second (actual, measured)
+
+
+// =============================================================
 // GAME LOOP
 // =============================================================
 
-// requestAnimationFrame callback. Receives the DOMHighResTimeStamp
-// in milliseconds.
 function mainLoop(timestampMilliseconds) {
   requestAnimationFrame(mainLoop);
 
-  // Convert timestamp to seconds.
   const timestampSeconds = timestampMilliseconds * 0.001;
 
-  // Calculate raw frame time.
+  // --- Wall-clock frame time (real seconds, not simulated) ---
   if (state.loop.previousTimestamp === 0) {
     state.loop.previousTimestamp = timestampSeconds;
   }
-  let frameTime = timestampSeconds - state.loop.previousTimestamp;
+  const wallFrameTime = Math.min(
+    timestampSeconds - state.loop.previousTimestamp,
+    MAX_FRAME_TIME_SEC   // spiral-of-death guard: cap at 250ms
+  );
   state.loop.previousTimestamp = timestampSeconds;
 
-  // Apply time scale (1.0 = normal, 0.5 = half speed, 2.0 = double speed).
-  frameTime *= state.params.timeScale;
+  // --- Render FPS (EMA smoothed) ---
+  const instantRenderFps = wallFrameTime > 0 ? 1.0 / wallFrameTime : 0;
+  renderFpsEma = renderFpsEma === 0
+    ? instantRenderFps
+    : renderFpsEma + (instantRenderFps - renderFpsEma) * 0.05;
 
-  // Clamp to prevent spiral of death if the tab was hidden or the frame took too long.
-  if (frameTime > MAX_FRAME_TIME_SEC) frameTime = MAX_FRAME_TIME_SEC;
+  // --- Physics tick rate in wall-clock time ---
+  // physicsHz = how many times per real second we want physics to tick.
+  // This is INDEPENDENT of timeScale — ticks happen at the same wallclock
+  // cadence regardless of simulation speed.
+  const physicsHz      = state.params.simulationFps; // slider (30–200)
+  const physicsWallDt  = 1.0 / physicsHz;            // wall seconds per tick
 
-  // Fixed physics timestep.
-  const physicsFixedDt = 1.0 / state.params.simulationFps;
+  // Accumulate real elapsed time (NOT scaled by timeScale).
+  state.loop.accumulator += wallFrameTime;
 
-  state.loop.accumulator += frameTime;
+  // Fire physics ticks to consume accumulated wall time.
+  // Each tick advances (physicsWallDt × timeScale) seconds of SIMULATION time.
+  // → timeScale=1.0: normal speed   → timeScale=0.1: 10× slow motion
+  // The tick RATE in wall-clock is unchanged; only the simulated dt shrinks.
+  let ticksThisFrame = 0;
+  while (state.loop.accumulator >= physicsWallDt) {
+    snapPrev = snapCurr;
 
-  // Physics sub-steps: run as many fixed-dt steps as the accumulated time allows.
-  while (state.loop.accumulator >= physicsFixedDt) {
-    state.loop.simulationTime += physicsFixedDt;
-    runPhysicsStep(physicsFixedDt);
-    state.loop.accumulator -= physicsFixedDt;
+    // Simulated dt: real step size × timeScale.
+    const simDt = physicsWallDt * state.params.timeScale;
+    state.loop.simulationTime += simDt;
+    runPhysicsStep(simDt);
+
+    snapCurr = makeBodySnapshot();
+
+    state.loop.accumulator -= physicsWallDt;
+    ticksThisFrame++;
   }
 
-  // (ANGVEL diagnostic logging removed)
+  // Smooth physics ticks-per-second display.
+  const instantTps = ticksThisFrame / wallFrameTime;
+  if (ticksThisFrame > 0) {
+    physicsTpsEma = physicsTpsEma === 0
+      ? instantTps
+      : physicsTpsEma + (instantTps - physicsTpsEma) * 0.1;
+  }
 
-  // Render once per animation frame (no interpolation).
-  renderFrame();
+  // --- Interpolation alpha ---
+  // How far (0→1) between snapPrev and snapCurr are we right now?
+  // accumulator is the leftover wall time after consuming whole ticks.
+  // alpha = 0 → render snapPrev; alpha = 1 → render snapCurr.
+  // Normal case: 0 < alpha < 1 → smooth sub-tick interpolation.
+  const alpha = physicsWallDt > 0 ? state.loop.accumulator / physicsWallDt : 1.0;
+
+  // Publish FPS measurements so updateInfoBar can display them.
+  state.loop.renderFps  = renderFpsEma;
+  state.loop.physicsTps = physicsTpsEma;
+
+  // Render once per animation frame using interpolated state.
+  renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
 }
 
 
@@ -531,21 +611,37 @@ function getCanvasResolutionScale() {
 
 // Draws one complete frame. Called once per animation frame regardless
 // of how many physics sub-steps ran this frame.
-function renderFrame() {
+function renderFrame(alpha, prev, curr, wallRenderDt) {
   const cssWidth  = simCanvas.clientWidth  || simCanvas.width;
   const cssHeight = simCanvas.clientHeight || simCanvas.height;
   const resolutionScale = getCanvasResolutionScale();
 
-  // Scale canvas buffer by resolution slider (0.5× to 2.0×).
-  // This trades render quality for performance.
   const canvasWidth  = Math.round(cssWidth  * resolutionScale);
   const canvasHeight = Math.round(cssHeight * resolutionScale);
 
-  // Match canvas buffer size to scaled size.
   if (simCanvas.width  !== canvasWidth  ||
       simCanvas.height !== canvasHeight) {
     simCanvas.width  = canvasWidth;
     simCanvas.height = canvasHeight;
+  }
+
+  // --- INTERPOLATE RENDER STATE ---
+  // If we have two snapshots, lerp between them by alpha.
+  // On the very first frame before any physics ticks, just render raw state.
+  if (prev && curr) {
+    // Angle interpolation needs shortest-path wrapping to avoid spinning through 2π.
+    const headingDelta  = wrapAngle(curr.heading    - prev.heading);
+    const steerDelta    = wrapAngle(curr.steerAngle - prev.steerAngle);
+    const wheelDelta    = wrapAngle(curr.wheelAngle - prev.wheelAngle);
+
+    state.body.centerX              = prev.centerX + (curr.centerX - prev.centerX) * alpha;
+    state.body.centerY              = prev.centerY + (curr.centerY - prev.centerY) * alpha;
+    state.body.heading              = prev.heading  + headingDelta * alpha;
+    state.steering.frontWheelAngle  = prev.steerAngle + steerDelta * alpha;
+    state.steering.wheelAngle       = prev.wheelAngle  + wheelDelta * alpha;
+    state.camera.x                  = prev.camX   + (curr.camX   - prev.camX)   * alpha;
+    state.camera.y                  = prev.camY   + (curr.camY   - prev.camY)   * alpha;
+    state.camera.zoom               = prev.camZoom + (curr.camZoom - prev.camZoom) * alpha;
   }
 
   // --- World space (camera transform active) ---
@@ -553,18 +649,18 @@ function renderFrame() {
   applyCameraTransform(simCtx, canvasWidth, canvasHeight);
   drawCheckerboard(simCtx, canvasWidth, canvasHeight);
   drawMapBoundary(simCtx);
-  drawSplatDecals(simCtx);       // persistent paint ground marks — below skid marks
+  drawSplatDecals(simCtx);
   if (state.params.showSkidMarks) {
-    drawSkidMarks(simCtx);         // permanent ground marks — lowest layer
+    drawSkidMarks(simCtx);
   }
-  drawSplatParticles(simCtx);    // paint splatter above skid marks
+  drawSplatParticles(simCtx);
   drawBalloons(simCtx);
   drawTrailArrows(simCtx);
   if (state.params.showSparks) {
-    drawSparks(simCtx);               // HDR sparks above balloons
+    drawSparks(simCtx);
   }
   if (state.params.showKinematicArrows) {
-    drawKinematicArrows(simCtx);    // accel/jerk arrows (toggle via scratch)
+    drawKinematicArrows(simCtx);
   }
 
   // --- Record current pose for motion blur ghost trail ---
@@ -584,9 +680,21 @@ function renderFrame() {
   });
   while (history.length > maxGhosts + 1) history.shift();
 
-  drawCarGhosts(simCtx);  // motion blur ghost trail — behind current car
+  drawCarGhosts(simCtx);
   drawCar(simCtx);
   removeCameraTransform(simCtx);
+
+  // --- Restore physics state after render (so physics reads real values next step) ---
+  if (curr) {
+    state.body.centerX              = curr.centerX;
+    state.body.centerY              = curr.centerY;
+    state.body.heading              = curr.heading;
+    state.steering.frontWheelAngle  = curr.steerAngle;
+    state.steering.wheelAngle       = curr.wheelAngle;
+    state.camera.x                  = curr.camX;
+    state.camera.y                  = curr.camY;
+    state.camera.zoom               = curr.camZoom;
+  }
 
   // --- Screen space (HUD, no camera transform) ---
   drawSteeringWheelHud(simCtx, canvasWidth, canvasHeight);
@@ -601,13 +709,14 @@ function renderFrame() {
   updateInfoBar();
 
   // --- Gauge canvases ---
-  drawGauges();
+  // Pass wall-clock dt so needle springs are framerate-independent.
+  drawGauges(wallRenderDt);
 }
 
 
 // Draws all three analog gauge canvases.
-// Each gauge is drawn independently so a bug in one cannot break the others.
-function drawGauges() {
+// dt: real wall-clock seconds since last render frame (for framerate-independent needle spring).
+function drawGauges(dt) {
   const labelFontScale = state.params.gaugeLabelScale;
 
   // Compute gauge shake intensity from vehicle speed.
@@ -623,7 +732,8 @@ function drawGauges() {
   const rpmNormalized = rpmNeedle.step(
     state.engine.isStalled || !state.engine.isRunning
       ? 0
-      : state.engine.rpm / TACHOMETER_MAX_RPM
+      : state.engine.rpm / TACHOMETER_MAX_RPM,
+    dt
   );
   drawAnalogGauge(rpmCtx, rpmCanvas.width, rpmCanvas.height, {
     value:           state.engine.rpm,
@@ -642,7 +752,7 @@ function drawGauges() {
 
   // Speedometer: 0–200 km/h.
   const speedKph        = state.body.speed / KPH_TO_MPS;
-  const speedNormalized = speedNeedle.step(speedKph / SPEEDOMETER_MAX_KPH);
+  const speedNormalized = speedNeedle.step(speedKph / SPEEDOMETER_MAX_KPH, dt);
   drawAnalogGauge(speedCtx, speedCanvas.width, speedCanvas.height, {
     value:           speedKph,
     min:             0,
@@ -661,7 +771,7 @@ function drawGauges() {
   // Lateral G gauge: 0–1.5 G.
   const lateralG       = Math.min(Math.abs(state.body.lateralAccel) / 9.81, 3.0);
   const lateralGMax    = 1.5;
-  const latGNormalized = latGNeedle.step(lateralG / lateralGMax);
+  const latGNormalized = latGNeedle.step(lateralG / lateralGMax, dt);
   drawAnalogGauge(latGCtx, latGCanvas.width, latGCanvas.height, {
     value:           lateralG,
     min:             0,
@@ -683,7 +793,8 @@ function drawGauges() {
     const value = entry.getValue();
     const range = entry.max - entry.min;
     const normalized = entry.needle.step(
-      range > 0 ? (value - entry.min) / range : 0
+      range > 0 ? (value - entry.min) / range : 0,
+      dt
     );
     drawAnalogGauge(entry.ctx, entry.canvas.width, entry.canvas.height, {
       value:            value,

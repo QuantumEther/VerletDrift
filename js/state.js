@@ -20,8 +20,6 @@ import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
   COG_HEIGHT,
-  CAMERA_SPRING_STIFFNESS,
-  CAMERA_DAMPING_FACTOR,
   DEFAULT_SIM_FPS,
   CAR_MASS_KG,
   WHEEL_RADIUS,
@@ -185,6 +183,20 @@ const state = {
   },
 
   // -----------------------------------------------------------
+  // SMOOTHED WHEEL LATERAL VELOCITY — EMA-filtered lateral speed per wheel.
+  // Applied BEFORE the Pacejka slip-angle computation so constraint-solver
+  // micro-impulses are killed upstream of the nonlinear tire model.
+  // A noisy vLat fed into atan2 produces noisy slip angles; smoothing here
+  // prevents that amplification entirely.
+  // -----------------------------------------------------------
+  smoothedWheelLat: {
+    frontLeft:  0,
+    frontRight: 0,
+    rearLeft:   0,
+    rearRight:  0,
+  },
+
+  // -----------------------------------------------------------
   // TIRE FORCE RELAXATION — previous step's forces for EMA blending
   // Prevents tire forces from reacting instantly to constraint noise.
   // -----------------------------------------------------------
@@ -224,11 +236,12 @@ const state = {
     isDragging:      false,
     dragStartX:      0,
     // --- Steering column physics (SAT-driven) ---
-    angularVelocity:     0,  // rad/s, rate of change of frontWheelAngle
-    angularAcceleration: 0,  // rad/s², 2nd derivative
-    angularJerk:         0,  // rad/s³, 3rd derivative
-    prevAngularVelocity: 0,  // previous step value for derivative chain
-    selfAligningTorque:  0,  // N·m, net SAT from front tires (for display/effects)
+    angularVelocity:        0,  // rad/s, rate of change of frontWheelAngle
+    angularAcceleration:    0,  // rad/s², 2nd derivative
+    angularJerk:            0,  // rad/s³, 3rd derivative (correctly computed)
+    prevAngularVelocity:    0,  // previous step value for derivative chain
+    prevAngularAcceleration:0,  // previous step acceleration for jerk computation
+    selfAligningTorque:     0,  // N·m, net SAT from front tires (for display/effects)
   },
 
   // -----------------------------------------------------------
@@ -307,6 +320,8 @@ const state = {
     previousTimestamp: 0,
     accumulator:       0,
     simulationTime:    0, // total elapsed simulation seconds (for combo timing)
+    renderFps:         0, // smoothed render frames per second (set by main.js)
+    physicsTps:        0, // smoothed physics ticks per second (set by main.js)
   },
 
   // -----------------------------------------------------------
@@ -315,7 +330,7 @@ const state = {
   // Changing these at runtime takes effect on the next physics step.
   // -----------------------------------------------------------
   params: {
-    simulationFps:           DEFAULT_SIM_FPS,
+    simulationFps:           100,  // physics Hz (wall-clock tick rate)
     timeScale:               1.0,
     carMassKg:               CAR_MASS_KG,
     rollingResistanceCoeff:  DEFAULT_ROLLING_RESISTANCE_COEFF,
@@ -330,9 +345,18 @@ const state = {
     trailLifespan:      2.0,    // seconds until an arrow fades
     trailFade:          0.7,    // opacity exponent; higher = faster fade
 
-    cameraStiffness:        CAMERA_SPRING_STIFFNESS,
-    cameraDamping:          CAMERA_DAMPING_FACTOR,
+    // Camera spring: parameterized as natural frequency and damping ratio.
+    // omega0 (rad/s): higher = camera snaps faster to car.
+    // zeta: 1.0 = critically damped (no overshoot), 0.7 = slightly springy.
+    // omega=2.2 → K=ω²≈4.8, matching the old cameraStiffness=5.0 feel.
+    cameraOmega:            2.2,   // natural frequency ω₀ (rad/s)
+    cameraZeta:             0.8,   // damping ratio ζ (0=undamped, 1=critical, >1=overdamped)
     cameraZoomSensitivity:  0.3,
+
+    // Jakobsen constraint damping (0.0–1.0).
+    // Fraction of positional correction also applied to prevX/prevY.
+    // 0.0 = pure Jakobsen (can inject phantom energy), 0.5 = default, 1.0 = fully absorbed.
+    constraintDamping:  0.8,  // higher = less phantom velocity from Jakobsen corrections
 
     motionBlurSamples:    6,
     motionBlurIntensity:  0.6,

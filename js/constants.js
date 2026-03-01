@@ -201,7 +201,7 @@ export const PNEUMATIC_TRAIL         = 0.035;  // m
 // Low value = responsive; high = sluggish and realistic.
 export const STEERING_COLUMN_INERTIA = 0.08;   // kg·m² (effective at wheel angle)
 // Viscous damping in the steering rack (opposes angular velocity).
-export const STEERING_VISCOUS_DAMPING = 0.4;   // N·m·s/rad
+export const STEERING_VISCOUS_DAMPING = 5.5;   // N·m·s/rad — zeta≈0.74, well-damped
 // Coulomb (dry) friction in the steering system — constant opposing torque.
 export const STEERING_COULOMB_FRICTION = 0.05; // N·m
 

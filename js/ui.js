@@ -41,31 +41,48 @@ import {
 //   - Spring stiffness and exponential damping for smooth, non-oscillating motion
 export function createNeedlePhysics() {
   let needlePosition = 0;    // current spring position [0, 1]
-  let needleVelocity = 0;    // spring velocity (not physics velocity; spring-internal)
-  let flutterCounter = 0;    // incrementing tick counter for flutter oscillation
+  let needleVelocity = 0;    // spring velocity
+  let elapsedSeconds = 0;    // real elapsed time for flutter (framerate-independent)
+
+  // Reference framerate the constants were tuned for.
+  const REF_HZ = 60.0;
 
   return {
     // Advances the needle toward targetNormalized and returns the new position.
-    // Call once per animation frame.
-    step(targetNormalized) {
-      flutterCounter++;
+    // dt: real elapsed seconds since last call (from renderFrame wall-clock time).
+    // All spring constants are normalized to dt so behaviour is identical at any framerate.
+    step(targetNormalized, dt) {
+      // Accumulate real time for flutter oscillation.
+      // Using elapsed seconds instead of frame counter means flutter frequency
+      // is identical whether running at 30Hz or 240Hz.
+      elapsedSeconds += dt;
 
-      // Spring force toward target.
-      const springForce = (targetNormalized - needlePosition) * NEEDLE_STIFFNESS;
+      // Normalize dt to 60Hz reference so spring constants behave as designed.
+      // At 60Hz: dtNorm=1.0 (no change). At 240Hz: dtNorm=0.25 (1/4 per frame).
+      const dtNorm = dt * REF_HZ;
 
-      // Asymmetric response: faster when rising, slower when falling.
+      // Spring force toward target — scaled by dtNorm so accumulation per second
+      // is constant regardless of framerate.
+      const springForce = (targetNormalized - needlePosition) * NEEDLE_STIFFNESS * dtNorm;
+
+      // Asymmetric response: tachometers rise fast, fall slowly.
       const movingUp = springForce > 0;
       const boostFactor = movingUp ? NEEDLE_RISE_BOOST : NEEDLE_FALL_BOOST;
 
       needleVelocity += springForce * boostFactor;
-      needleVelocity *= NEEDLE_DAMPING; // exponential decay each step
+
+      // Exponential damping: Math.pow(NEEDLE_DAMPING, dtNorm) gives identical
+      // decay per second at any framerate.
+      // At 60Hz: pow(0.855, 1) = 0.855. At 240Hz: pow(0.855, 0.25) = 0.962.
+      needleVelocity *= Math.pow(NEEDLE_DAMPING, dtNorm);
 
       needlePosition += needleVelocity;
 
       // Flutter near the top of the scale: simulates a vibrating mechanical needle.
+      // Uses elapsedSeconds so frequency is ~1.43Hz regardless of display framerate.
       if (needlePosition > NEEDLE_FLUTTER_THRESHOLD) {
         const flutterAmplitude = (needlePosition - NEEDLE_FLUTTER_THRESHOLD) * 0.012;
-        needlePosition += Math.sin(flutterCounter * 0.15) * flutterAmplitude;
+        needlePosition += Math.sin(elapsedSeconds * 9.0) * flutterAmplitude;
       }
 
       // Clamp to [0, 1].
@@ -177,8 +194,8 @@ export function initSliders() {
   bind('trailFade',     'trailFade',     parseFloat1, fmt2);
 
   // ---- Camera ----
-  bind('cameraStiffness',       'cameraStiffness',       parseFloat1, fmt1);
-  bind('cameraDamping',         'cameraDamping',         parseFloat1, fmt1);
+  bind('cameraOmega',           'cameraOmega',           parseFloat1, fmt1);
+  bind('cameraZeta',            'cameraZeta',            parseFloat1, fmt2);
   bind('cameraZoomSensitivity', 'cameraZoomSensitivity', parseFloat1, fmt2);
 
   // ---- Motion blur ----
@@ -221,6 +238,7 @@ export function initSliders() {
 
   // ---- World & Visual ----
   bind('constraintIterations',  'constraintIterations',  parseInt1,   fmtInt);
+  bind('constraintDamping',     'constraintDamping',     parseFloat1, fmt2);
   bind('checkerboardTileSize',  'checkerboardTileSize',  parseFloat1, fmtInt);
   bind('maxTrailArrows',        'maxTrailArrows',        parseInt1,   fmtInt);
   bind('maxBalloons',           'maxBalloons',           parseInt1,   fmtInt);
@@ -610,8 +628,6 @@ export function updateInfoBar() {
   setInfoCell('gearDisplay', engine.currentGear);
 
   setInfoCell('headingDisplay',
-    // Normalise to [0, 360): convert radians → degrees, mod 360, then add 360
-    // and mod again so negative headings also wrap into [0, 360).
     `${((((body.heading * 180 / Math.PI) % 360) + 360) % 360).toFixed(0)}°`);
 
   setInfoCell('clutchDisplay',
@@ -619,6 +635,14 @@ export function updateInfoBar() {
 
   setInfoCell('trailDisplay',
     `${trail.arrows.length} arrows`);
+
+  // Render FPS and physics ticks-per-second (set by main.js into state.loop).
+  setInfoCell('renderFpsDisplay',
+    `${Math.round(state.loop.renderFps)} fps`);
+  // Physics Hz is the slider value — the dynamic measurement was showing
+  // display framerate (bug: 1 tick / wallFrameTime = displayHz, not physicsHz).
+  setInfoCell('physicsTpsDisplay',
+    `${state.params.simulationFps} Hz`);
 }
 
 // Sets the textContent of an info cell by id, silently skipping if not found.

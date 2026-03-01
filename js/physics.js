@@ -90,7 +90,7 @@ function clamp01(value) {
 
 // Wraps an angle in radians to the range (-π, π].
 // Used to find the shortest angular distance between two headings.
-function wrapAngle(angle) {
+export function wrapAngle(angle) {
   while (angle >  Math.PI) angle -= TAU;
   while (angle < -Math.PI) angle += TAU;
   return angle;
@@ -622,15 +622,22 @@ export function computeTireForces(dt) {
     const wheelLongitudinalSpeed = dot(wheelVelX, wheelVelY, wheelForwardX, wheelForwardY);
     const wheelLateralSpeed      = dot(wheelVelX, wheelVelY, wheelRightX,   wheelRightY);
 
-    // Slip angle: angle between where the wheel is pointed and where it is going.
-    // === PHASE 3b: SLIP SUPPRESSION FIX ===
-    // OLD APPROACH: Suppressed slip angles below 0.1 m/s speed threshold, preventing
-    // low-speed lateral forces that would help car settle from residual spin.
-    // NEW APPROACH: Denominator clamping (production SDK pattern). Always compute slip
-    // angle, but clamp the longitudinal speed denominator to avoid singularities and
-    // ensure meaningful slip model across all speeds.
+    // --- Smooth lateral velocity BEFORE it enters the slip angle calculation ---
+    // Constraint solver micro-impulses create high-frequency noise in wheelLateralSpeed.
+    // That noise is amplified by the nonlinear Pacejka curve (small vLat changes →
+    // large force changes near saturation). Smoothing vLat upstream kills the noise
+    // before it enters the nonlinearity — far more effective than filtering the output.
+    // Time constant 25ms → at 100Hz alpha ≈ 0.22. Fast enough to track real slides,
+    // slow enough to reject constraint impulse spikes.
+    const latSmoothTau   = 0.025; // seconds
+    const latSmoothAlpha = 1.0 - Math.exp(-dt / latSmoothTau);
+    const prevSmoothedLat = state.smoothedWheelLat[name];
+    const smoothedLat = prevSmoothedLat + (wheelLateralSpeed - prevSmoothedLat) * latSmoothAlpha;
+    state.smoothedWheelLat[name] = smoothedLat;
+
+    // Use smoothed lateral speed for slip angle and force computation.
     const vLong = wheelLongitudinalSpeed;
-    const vLat = wheelLateralSpeed;
+    const vLat  = smoothedLat;   // ← smoothed, not raw
     const minSlipDenom = 0.5;  // m/s — ensures slip angle defined even at standstill
     const slipDenom = Math.max(Math.abs(vLong), minSlipDenom);
     const slipAngle = Math.atan2(vLat, slipDenom);
@@ -640,8 +647,19 @@ export function computeTireForces(dt) {
     const lateralForceMag = pacejkaForce(normalLoad, frictionCoeff,
                                           Math.abs(slipAngle), peakSlipAngleRad,
                                           params.pacejkaB, params.pacejkaC);
-    // Sign: opposes lateral drift direction.
-    const lateralForceSign = wheelLateralSpeed > 0 ? -1 : 1;
+    // Sign: opposes lateral drift direction (use smoothed vLat so sign is stable).
+    const lateralForceSign = smoothedLat > 0 ? -1 : 1;
+
+    // --- Low-speed lateral fade ---
+    // At near-zero speed, slip angle math hits the denominator clamp and
+    // constraint micro-impulses produce large slip angles from tiny velocities.
+    // Scale lateral force smoothly to zero below LOW_SPEED_FADE_END m/s.
+    // This prevents the car from "shaking" on the spot due to constraint noise.
+    // The fade is purely cosmetic at real driving speeds — onset at 2 m/s (7 km/h).
+    const LOW_SPEED_FADE_END = 2.0; // m/s — full lateral force above this speed
+    const totalSpeed = Math.hypot(body.velocityX, body.velocityY);
+    const lowSpeedFade = clamp01(totalSpeed / LOW_SPEED_FADE_END);
+    const fadedLateralForceMag = lateralForceMag * lowSpeedFade;
 
     // Longitudinal force (along wheel heading): computed via slip ratio model.
     // The slip ratio measures how much the driven wheel is spinning relative to
@@ -708,14 +726,14 @@ export function computeTireForces(dt) {
     // the tyre's grip circle (normalLoad × frictionCoeff).
     // If we exceed it, scale both forces down proportionally.
     const frictionLimit  = normalLoad * frictionCoeff;
-    const combinedMag    = Math.hypot(lateralForceMag, longitudinalForceMag);
+    const combinedMag    = Math.hypot(fadedLateralForceMag, longitudinalForceMag);
     let frictionScale    = 1.0;
     if (combinedMag > frictionLimit && combinedMag > 0) {
       frictionScale = frictionLimit / combinedMag;
     }
 
-    const scaledLateral      = lateralForceMag      * frictionScale * lateralForceSign;
-    const scaledLongitudinal = longitudinalForceMag * frictionScale;
+    const scaledLateral      = fadedLateralForceMag * frictionScale * lateralForceSign;
+    const scaledLongitudinal = longitudinalForceMag  * frictionScale;
 
     // --- TIRE FORCE RELAXATION ---
     // Correct model: tires build force over a fixed DISTANCE (relaxation length λ),
@@ -848,40 +866,45 @@ export function computeTireForces(dt) {
   // Pneumatic trail tp(α) = t₀ × exp(-|α| / α₀)
   // At small slip angles, trail is full → strong centering feel.
   // At high slip angles (drift), trail collapses → steering no longer fights the skid.
-  // This is the critical fix: constant trail kept SAT strong through deep slides,
-  // making the wheel fight countersteer instead of wanting to self-steer into it.
-  const t0   = state.params.pneumaticTrail;              // base trail (m), slider-controlled
-  const alpha0 = Math.PI / 12;  // ~15° — slip angle at which trail halves
+  //
+  // We compute SAT from the already-relaxed (EMA-filtered) lateral forces stored in
+  // perWheelLateralForce, which used smoothedLat upstream. This means constraint
+  // noise has been killed twice: once in smoothedWheelLat (before Pacejka), and once
+  // by the tire relaxation filter (before SAT). The result is a much cleaner torque
+  // signal entering the steering column integrator.
+  const t0     = state.params.pneumaticTrail;
+  const alpha0 = Math.PI / 12;  // ~15° slip angle at which trail halves
 
-  // Use per-wheel slip angles for trail calculation
-  // We need the front wheel slip angles — compute from stored lateral forces and loads
   const frontLoad = (loads.frontLeft + loads.frontRight) * 0.5 || 1;
   const frontLateralFL = Math.abs(perWheelLateralForce.frontLeft  || 0);
   const frontLateralFR = Math.abs(perWheelLateralForce.frontRight || 0);
-  // Approximate front slip angle from lateral force magnitude and Pacejka peak
   const peakLateralForce = frontLoad * frictionCoeff;
   const slipFractionFL = peakLateralForce > 0 ? frontLateralFL / peakLateralForce : 0;
   const slipFractionFR = peakLateralForce > 0 ? frontLateralFR / peakLateralForce : 0;
-  // Map fraction [0,1] to approximate slip angle using Pacejka peak angle
   const peakSlipAngleRad2 = params.peakSlipAngleDeg * DEG_TO_RAD;
-  const approxSlipFL = slipFractionFL * peakSlipAngleRad2 * 2.5; // extrapolate beyond peak
+  const approxSlipFL = slipFractionFL * peakSlipAngleRad2 * 2.5;
   const approxSlipFR = slipFractionFR * peakSlipAngleRad2 * 2.5;
 
-  // Slip-dependent trail per wheel
   const trailFL = t0 * Math.exp(-approxSlipFL / alpha0);
   const trailFR = t0 * Math.exp(-approxSlipFR / alpha0);
 
-  const satFL = (perWheelLateralForce.frontLeft  || 0) * trailFL;
-  const satFR = (perWheelLateralForce.frontRight || 0) * trailFR;
+  const satFL  = (perWheelLateralForce.frontLeft  || 0) * trailFL;
+  const satFR  = (perWheelLateralForce.frontRight || 0) * trailFR;
   const rawSAT = satFL + satFR;
 
-  // Clamp SAT to prevent extreme values from constraint transients.
-  // ±50 N·m is the realistic range for a road car steering column.
-  const clampedSAT = clamp(rawSAT, -50, 50);
+  // Clamp hard transients. With the correct sign, SAT actively drives the column,
+  // so the clamp must match what the semi-implicit integrator can handle smoothly.
+  // ±30 N·m: alpha_max = 375 rad/s², Δθ_max = 0.027 rad/step → ~19 steps to full lock.
+  // This is tight enough to prevent noise-driven oscillation while still allowing
+  // genuine road feedback to move the wheel noticeably.
+  const clampedSAT = clamp(rawSAT, -30, 30);
 
-  // EMA filter on SAT: smooth out high-frequency noise while preserving
-  // the direction and magnitude of genuine tire feedback.
-  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.05); // 50ms time constant
+  // EMA output filter on SAT — 80ms time constant (up from 50ms).
+  // Combined with the upstream smoothedWheelLat filter this gives two-stage
+  // noise rejection: pre-Pacejka (kills input noise) + post-relaxation (kills
+  // residual output transients). The longer time constant is safe because the
+  // upstream filter already ensures the signal trend is clean.
+  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.08);
   const prevSAT = state.steering.selfAligningTorque;
   state.steering.selfAligningTorque = prevSAT + (clampedSAT - prevSAT) * satFilterAlpha;
 
@@ -1005,13 +1028,10 @@ export function verletIntegrateAllPoints(dt, netAccelX, netAccelY, netAngularAcc
 //
 // Jakobsen's insight: you do not need to compute velocity — moving the position
 // and leaving prevPosition unchanged automatically encodes a velocity impulse.
-// CONSTRAINT_DAMPING_FACTOR: fraction of positional correction also applied
-// to prevX/prevY. This drains the "phantom velocity" that pure Jakobsen
-// constraints inject, preventing the jitter/energy-injection feedback loop.
-// 0.0 = original (no damping, maximum jitter), 1.0 = fully damped (sluggish).
-// 0.5 is a good balance: kills oscillation without making the body feel dead.
-const CONSTRAINT_DAMPING_FACTOR = 0.5;
-
+// enforceDistanceConstraint uses state.params.constraintDamping (0.0–1.0).
+// 0.0 = pure Jakobsen (phantom velocity injects energy, can jitter under high forces)
+// 0.5 = balanced default (kills oscillation without sluggish feel)
+// 1.0 = fully damped (all constraint impulse velocity absorbed — rigid but heavy)
 function enforceDistanceConstraint(particleA, particleB, restDistance) {
   const deltaX = particleB.x - particleA.x;
   const deltaY = particleB.y - particleA.y;
@@ -1033,10 +1053,11 @@ function enforceDistanceConstraint(particleA, particleB, restDistance) {
   // Damping: also shift prevX/prevY by a fraction of the correction.
   // This prevents the constraint from injecting velocity impulses that
   // the Verlet integrator amplifies on the next step.
-  particleA.prevX += corrAX * CONSTRAINT_DAMPING_FACTOR;
-  particleA.prevY += corrAY * CONSTRAINT_DAMPING_FACTOR;
-  particleB.prevX -= corrAX * CONSTRAINT_DAMPING_FACTOR;
-  particleB.prevY -= corrAY * CONSTRAINT_DAMPING_FACTOR;
+  const cd = state.params.constraintDamping;
+  particleA.prevX += corrAX * cd;
+  particleA.prevY += corrAY * cd;
+  particleB.prevX -= corrAX * cd;
+  particleB.prevY -= corrAY * cd;
 }
 
 // Runs CONSTRAINT_ITERATIONS passes of all six rigid distance constraints.
@@ -1202,12 +1223,14 @@ export function updateSteering(dt) {
     const coulomb = params.steeringCoulombFriction;
     const sat     = steering.selfAligningTorque;
 
-    // SAT acts to return steering to centre: it's computed as lateral_force × trail,
-    // where lateral force opposes slip. The sign already works correctly.
-    // We need to map it to the front wheel angle's coordinate:
-    // SAT > 0 means force pushes right, which for a negative (left) steer angle
-    // means returning to centre. We use it directly as a torque on the column.
-    let netTorque = sat;
+    // SAT sign convention fix:
+    // relaxedLat sign = opposes lateral wheel speed. wheelRightX = cos(heading+steer).
+    // If car steers left (negative steerAngle), front wheels generate rightward lateral
+    // force (positive relaxedLat) to resist the turn. That positive lateral force
+    // times positive trail gives positive SAT — but we need NEGATIVE torque on the
+    // column (returning left-steered wheel back toward center means reducing the angle).
+    // Therefore: negate SAT before applying as column torque.
+    let netTorque = -sat;
 
     // Low-speed fallback spring: at very low speed, SAT is negligible
     // (no lateral force), so add a gentle spring to return to centre.
@@ -1230,9 +1253,21 @@ export function updateSteering(dt) {
       }
     }
 
-    // Integrate: α = τ / I, then Euler step for ω and θ.
-    const angularAccel = netTorque / I;
-    steering.angularVelocity += angularAccel * dt;
+    // --- Semi-implicit (symplectic) Euler integration ---
+    // Standard Euler ω += α·dt is unstable when α >> damping/dt.
+    // With SAT ~278 N·m and I=0.08: α_max=3475 rad/s². At 100Hz dt=0.01s,
+    // Δω_max=34.75 rad/s per step → column swings full lock in ~1 step → oscillation.
+    //
+    // Semi-implicit treats viscous damping implicitly (solved at ω_new rather than ω_old):
+    //   I·ω_new = I·ω_old + (explicitForces)·dt - visc·ω_new·dt
+    //   ω_new·(I + visc·dt) = I·ω_old + (explicitForces)·dt
+    //   ω_new = (ω_old + explicitForces/I·dt) / (1 + visc·dt/I)
+    //
+    // netTorque currently already has (-visc·ω_old) baked in.
+    // We need the non-viscous part: add visc·ω_old back to recover explicit terms.
+    const explicitTorque    = netTorque + visc * steering.angularVelocity;
+    const viscImplicitDenom = 1.0 + (visc * dt) / I;
+    steering.angularVelocity = (steering.angularVelocity + (explicitTorque / I) * dt) / viscImplicitDenom;
     steering.frontWheelAngle += steering.angularVelocity * dt;
 
     // Clamp to physical limits.
@@ -1251,9 +1286,14 @@ export function updateSteering(dt) {
 
   // --- Steering derivative chain ---
   steering.angularAcceleration = (steering.angularVelocity - steering.prevAngularVelocity) / dt;
-  // Jerk is noisy at this level; smooth it slightly.
-  const rawJerk = (steering.angularAcceleration) / dt; // simplified — could store prevAccel for proper chain
-  steering.angularJerk = steering.angularJerk * 0.7 + rawJerk * 0.3; // EMA smoothing
+  // Jerk = d(angularAcceleration)/dt — needs previous acceleration value.
+  // The old formula (angularAcceleration / dt) was wrong: it doubled the derivative
+  // order, producing d²ω/dt² * (1/dt) instead of d³θ/dt³. At 100Hz this inflated
+  // the value by 100×, making it useless for any downstream use.
+  if (steering.prevAngularAcceleration !== undefined) {
+    steering.angularJerk = (steering.angularAcceleration - steering.prevAngularAcceleration) / dt;
+  }
+  steering.prevAngularAcceleration = steering.angularAcceleration;
 }
 
 
@@ -1262,36 +1302,37 @@ export function updateSteering(dt) {
 // =============================================================
 
 // Verlet-integrated spring-damper camera that follows the car's centre of mass.
-// The camera has its own position history (camX/prevX), which means its
-// "velocity" (and therefore momentum) is implicit in the position pair.
-// Spring force pulls camera toward the car; exponential damping kills overshoot.
-//
-// Zoom is speed-dependent: the faster the car goes, the further the camera
-// pulls back to give more view of the road ahead.
+// Parameterized as natural frequency ω₀ (rad/s) and damping ratio ζ (zeta):
+//   ζ < 1 → underdamped (oscillates around car, feels alive)
+//   ζ = 1 → critically damped (fastest settle, no overshoot)
+//   ζ > 1 → overdamped (slow, heavy follow)
+// Internally converts: stiffness = ω₀², damping = 2×ζ×ω₀
 export function updateCamera(dt) {
   const cam    = state.camera;
   const body   = state.body;
   const params = state.params;
 
   // Decay the jerk offset exponentially each physics step.
-  // The decay rate of 12/s means the offset halves roughly every 60ms —
-  // fast enough to feel snappy, slow enough for the spring to chase visibly.
   const JERK_DECAY_RATE = 12.0;
   cam.jerkOffsetX *= Math.exp(-JERK_DECAY_RATE * dt);
   cam.jerkOffsetY *= Math.exp(-JERK_DECAY_RATE * dt);
 
   // Spring target is body centre plus the decaying jerk offset.
-  // The camera spring chases this moving target naturally.
   const targetX = body.centerX + cam.jerkOffsetX;
   const targetY = body.centerY + cam.jerkOffsetY;
 
-  // Spring force pulling camera toward the (offset) target.
-  const springForceX = (targetX - cam.x) * params.cameraStiffness;
-  const springForceY = (targetY - cam.y) * params.cameraStiffness;
+  // Derive stiffness and damping from ω₀ and ζ.
+  const omega0 = params.cameraOmega;   // natural frequency (rad/s), e.g. 4.0
+  const zeta   = params.cameraZeta;    // damping ratio, e.g. 0.7
+  const springK  = omega0 * omega0;    // stiffness = ω₀²
+  const damping2 = 2.0 * zeta * omega0; // viscous damping coeff = 2ζω₀
 
-  // Exponential damping: each step the camera's velocity is multiplied by this.
-  // Derived from: dampingFactor = e^(-damping × dt).
-  const dampingFactor = Math.exp(-params.cameraDamping * dt);
+  // Spring force pulling camera toward the (offset) target.
+  const springForceX = (targetX - cam.x) * springK;
+  const springForceY = (targetY - cam.y) * springK;
+
+  // Exponential damping applied to implicit velocity (Verlet history gap).
+  const dampingFactor = Math.exp(-damping2 * dt);
 
   // Verlet integration: new position from current, previous, and spring force.
   const newCamX = cam.x + (cam.x - cam.prevX) * dampingFactor + springForceX * dt * dt;
