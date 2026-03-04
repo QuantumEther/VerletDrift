@@ -1,0 +1,65 @@
+\section{Weight Transfer \& Load Distribution}
+
+This section documents the calculation of normal loads on each wheel as a function of vehicle acceleration and cornering forces. Weight transfer is fundamental to the tire model and affects grip levels.
+
+\cite{milliken1995race} provides the classical treatment of weight transfer in vehicle dynamics. The implementation here is grounded in Newton's second law applied in a rotating reference frame, simplified for real-time computation.
+
+\subsection{Total Vehicle Weight}
+
+\begin{equation}
+  W = m \cdot g
+  \label{eq:total-weight}
+\end{equation}
+
+\textbf{Physical Meaning}: The total weight of the vehicle is the product of mass and gravitational acceleration. This is split equally between the front and rear axles in a 50/50 distribution (assumed balanced CoG).
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $m = \mathrm{carMassKg}$: Vehicle mass in kg (default: 1500 kg)
+  \item $g = \mathrm{GRAVITY}$: Gravitational acceleration (9.8 m/s²)
+\end{itemize}
+
+\subsection{Longitudinal Weight Transfer}
+
+\begin{equation}
+  \Delta W_{\text{long}} = m \cdot a_{\text{long}} \cdot \frac{h_{\text{cog}}}{L_{\text{wb}}}
+  \label{eq:longitudinal-transfer}
+\end{equation}
+
+\textbf{Physical Meaning}: Longitudinal acceleration (braking/acceleration) causes weight to transfer between the front and rear axles. The transfer is proportional to acceleration magnitude, center of gravity height, and inverse wheelbase.
+
+\textbf{Source Code}: \coderef{physics.js}{267--268}
+
+\begin{lstlisting}[caption={Longitudinal weight transfer}]
+const clampedLongAccel = clamp(body.longitudinalAccel, -2 * GRAVITY, 2 * GRAVITY);
+const longitudinalTransfer = massKg * clampedLongAccel * cogHeight / wheelbase;
+\end{lstlisting}
+
+\subsection{Lateral Weight Transfer}
+
+\begin{equation}
+  \Delta W_{\text{lat}} = m \cdot a_{\text{lat}} \cdot \frac{h_{\text{cog}}}{T_{\text{w}}}
+  \label{eq:lateral-transfer}
+\end{equation}
+
+\textbf{Physical Meaning}: Lateral acceleration (cornering) causes weight to transfer from inside to outside wheels, proportional to track width.
+
+\textbf{Source Code}: \coderef{physics.js}{272--273}
+
+\subsection{Per-Wheel Normal Loads}
+
+\begin{align}
+  N_{\text{FL}} &= \max\left(0, \frac{W}{4} - \Delta W_{\text{long}} - \Delta W_{\text{lat}}\right) \\
+  N_{\text{FR}} &= \max\left(0, \frac{W}{4} - \Delta W_{\text{long}} + \Delta W_{\text{lat}}\right) \\
+  N_{\text{RL}} &= \max\left(0, \frac{W}{4} + \Delta W_{\text{long}} - \Delta W_{\text{lat}}\right) \\
+  N_{\text{RR}} &= \max\left(0, \frac{W}{4} + \Delta W_{\text{long}} + \Delta W_{\text{lat}}\right)
+  \label{eq:wheel-loads}
+\end{align}
+
+\textbf{Physical Meaning}: Each wheel load is computed from the baseline quarter-weight, adjusted by transfer amounts. Negative loads are clamped to zero (wheel liftoff).
+
+\textbf{Source Code}: \coderef{physics.js}{285--288}
+
+\textbf{Notes}: These loads directly scale Pacejka tire model output, making weight transfer a critical part of vehicle dynamics.
+
+\newpage

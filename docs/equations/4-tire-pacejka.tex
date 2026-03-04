@@ -1,0 +1,78 @@
+\section{Tire Model: Pacejka Magic Formula}
+
+This section presents the Pacejka magic formula, the industry-standard tire model for vehicle dynamics simulation.
+
+\cite{pacejka2005tire} is the authoritative reference. VerletDrift implements a simplified E=0 variant for real-time computation, neglecting pressure effects and asymmetric properties.
+
+\subsection{Pacejka Magic Formula (E=0 Variant)}
+
+\begin{equation}
+  F = \frac{N \cdot \mu}{sin(C \cdot \arctan(B))} \cdot \sin(C \cdot \arctan(B \cdot s_{\text{norm}}))
+  \label{eq:pacejka-force}
+\end{equation}
+
+\textbf{Physical Meaning}: The magic formula converts slip (angle or ratio) into a tire force that peaks at a characteristic slip value then falls off. This nonlinear behavior enables both grip and sliding dynamics.
+
+\textbf{Source Code}: \coderef{physics.js}{506--517}
+
+\begin{lstlisting}[caption={Pacejka magic formula (E=0)}]
+const normalisedSlip = slipValue / peakSlipValue;
+const peakNorm = Math.sin(C * Math.atan(B));
+return (normalLoad * frictionCoeff / peakNorm) *
+       Math.sin(C * Math.atan(B * normalisedSlip));
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $N$: Normal load (tire load in Newtons)
+  \item $\mu$: Friction coefficient (default: 1.2)
+  \item $s_{\text{norm}} = slip / slip_{\text{peak}}$: Normalized slip
+  \item $B = \mathrm{pacejkaB}$: Stiffness factor (default: 10)
+  \item $C = \mathrm{pacejkaC}$: Shape factor (default: 1.3)
+  \item $peakNorm = \sin(C \cdot \arctan(B))$: Normalization to ensure $F_{\text{peak}} = N \cdot \mu$
+\end{itemize}
+
+\subsection{Slip Angle}
+
+\begin{equation}
+  \alpha = \arctan\left(\frac{v_{\text{lateral}}}{max(|v_{\text{longitudinal}}|, \epsilon)}\right)
+  \label{eq:slip-angle}
+\end{equation}
+
+\textbf{Physical Meaning}: Slip angle is the angle between the tire's heading and its velocity direction. It quantifies how much the tire is "crabbing" sideways, a key input to the lateral force model.
+
+\textbf{Source Code}: \coderef{physics.js}{641--643}
+
+\begin{lstlisting}[caption={Slip angle calculation}]
+const minSlipDenom = 0.5;  // m/s — avoid singularity at zero speed
+const slipDenom = Math.max(Math.abs(vLong), minSlipDenom);
+const slipAngle = Math.atan2(vLat, slipDenom);
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{lateral}}$: Lateral velocity component (m/s)
+  \item $v_{\text{longitudinal}}$: Longitudinal velocity component (m/s)
+  \item $\epsilon = 0.5$ m/s: Minimum denominator to prevent division by zero
+\end{itemize}
+
+\subsection{Low-Speed Lateral Force Fade}
+
+\begin{equation}
+  F_{\text{lat, faded}} = F_{\text{lat}} \cdot \clampz\left(\frac{v_{\text{total}}}{v_{\text{fade}}}\right)
+  \label{eq:low-speed-fade}
+\end{equation}
+
+\textbf{Physical Meaning}: Below 2 m/s, lateral forces are scaled down to zero to prevent artificial "shaking" caused by constraint solver micro-impulses being amplified by the nonlinear Pacejka curve.
+
+\textbf{Source Code}: \coderef{physics.js}{653--662}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{fade}} = 2.0$ m/s: Fade threshold
+  \item $v_{\text{total}}$: Total speed magnitude
+\end{itemize}
+
+\textbf{Notes}: This is purely a cosmetic fix at real driving speeds (onset at 7 km/h).
+
+\newpage

@@ -1,0 +1,97 @@
+\section{Introduction}
+
+\subsection{Overview}
+
+VerletDrift is an interactive driving simulator built with vanilla HTML5 and JavaScript, implementing realistic vehicle dynamics through \textit{Verlet integration} and a sophisticated tire model based on the Pacejka magic formula. This document comprehensively documents the 43+ mathematical equations underlying the simulator, organized by functional category and cross-referenced with source code.
+
+\subsection{Scope}
+
+This reference covers:
+\begin{itemize}
+  \item \textbf{Core Physics}: Verlet particle integration, constraint solving, and rigid-body dynamics
+  \item \textbf{Vehicle Systems}: Engine torque curves, transmission ratios, clutch engagement, and drivetrain
+  \item \textbf{Tire Dynamics}: Pacejka magic formula, slip angles, grip saturation, and force relaxation
+  \item \textbf{Steering}: Self-aligning torque (SAT), pneumatic trail, and steering column dynamics
+  \item \textbf{Resistance Forces}: Rolling resistance, aerodynamic drag, and weight transfer
+  \item \textbf{Camera \& Rendering}: Spring-damper systems, motion blur, and gauge needle animation
+  \item \textbf{Scoring \& Effects}: Drift intensity metrics, particle systems, and game mechanics
+\end{itemize}
+
+\subsection{Unit System}
+
+All equations use the \textbf{International System of Units (SI)}:
+\begin{table}[h]
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Quantity} & \textbf{Unit} \\
+    \midrule
+    Distance & meter ($\unit{m}$) \\
+    Time & second ($\unit{s}$) \\
+    Mass & kilogram ($\unit{kg}$) \\
+    Force & newton ($\unit{N} = \unit{kg \cdot m/s^2}$) \\
+    Torque & newton-meter ($\unit{N \cdot m}$) \\
+    Velocity & meter per second ($\unit{m/s}$) \\
+    Angular velocity & radian per second ($\unit{rad/s}$) \\
+    Acceleration & meter per second squared ($\unit{m/s^2}$) \\
+    Moment of inertia & kilogram meter squared ($\unit{kg \cdot m^2}$) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Speed in kilometers per hour (km/h) is converted internally: $v_{\unit{m/s}} = v_{\unit{km/h}} / 3.6$.
+
+\subsection{Notation Conventions}
+
+\subsubsection{Vectors and Scalars}
+\begin{itemize}
+  \item \textbf{Vectors}: Denoted as boldface, e.g., $\vv{v}$ for velocity vector
+  \item \textbf{Scalars}: Italic for variables, e.g., $v$ for speed magnitude
+  \item \textbf{Components}: Subscript notation, e.g., $v_x$, $v_y$, $v_{\text{long}}$, $v_{\text{lat}}$
+\end{itemize}
+
+\subsubsection{Time Derivatives}
+\begin{itemize}
+  \item $\dot{x} = \frac{\dd x}{\dd t}$ — first derivative (velocity)
+  \item $\ddot{x}{t} = \frac{\dd^2 x}{\dd t^2}$ — second derivative (acceleration)
+  \item $\dddot{x} = \frac{\dd^3 x}{\dd t^3}$ — third derivative (jerk)
+\end{itemize}
+
+\subsubsection{Common Abbreviations}
+\begin{itemize}
+  \item $\Delta$: Change in quantity (e.g., $\Delta v = v_{\text{new}} - v_{\text{old}}$)
+  \item $N$: Normal load (force perpendicular to surface)
+  \item $\alpha$: Slip angle (angle of tire relative to velocity direction)
+  \item $\omega$: Angular velocity
+  \item $I$: Moment of inertia
+  \item $\tau$: Torque or time constant
+  \item $\zeta$: Damping ratio (dimensionless)
+  \item $\omega_0$: Natural frequency (rad/s)
+\end{itemize}
+
+\subsection{Code References}
+
+Throughout this document, equations are cross-referenced to source code using the notation \coderef{file.js}{N}, indicating a specific line in the JavaScript source file. The complete codebase is available in the VerletDrift repository at \url{https://github.com/Quantum-Innovations/VerletDrift}.
+
+\subsection{Structure of This Document}
+
+Each equation section follows this structure:
+
+\begin{enumerate}
+  \item \textbf{Equation}: Mathematical formulation with proper notation
+  \item \textbf{Physical Meaning}: Interpretation of what the equation represents
+  \item \textbf{Source Code}: Code snippet showing the implementation
+  \item \textbf{Parameters}: Definitions of all variables and constants
+  \item \textbf{Notes}: Implementation details, approximations, or special cases
+\end{enumerate}
+
+\subsection{Verification}
+
+All equations have been extracted and verified against:
+\begin{itemize}
+  \item Source code implementations in \texttt{physics.js}, \texttt{renderer.js}, \texttt{ui.js}, and supporting modules
+  \item Mathematical consistency (dimensional analysis, limiting cases)
+  \item Academic literature (where applicable) for standard models
+\end{itemize}
+
+\newpage

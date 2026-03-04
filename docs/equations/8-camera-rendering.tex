@@ -1,0 +1,109 @@
+\section{Camera \& Rendering Dynamics}
+
+This section covers the camera spring-damper system and gauge needle animation physics, which use the same mathematical framework as the physics engine.
+
+\cite{ogata2009modern} provides the control theory foundation for spring-damper systems.
+
+\subsection{Camera Spring-Damper (Frequency-Domain Parameterization)}
+
+\begin{equation}
+  K = \omega_0^2, \quad C = 2 \zeta \omega_0
+  \label{eq:spring-damper-params}
+\end{equation}
+
+\textbf{Physical Meaning}: The camera follows the car using a spring-damper system, parameterized by natural frequency $\omega_0$ and damping ratio $\zeta$. This is more intuitive than raw spring/damping constants.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\omega_0 = 2.2$ rad/s: Natural frequency (default)
+  \item $\zeta = 0.8$: Damping ratio (critically damped at $\zeta = 1$)
+  \item $\zeta < 1$: Underdamped (slight overshoot)
+  \item $\zeta = 1$: Critically damped (no overshoot)
+  \item $\zeta > 1$: Overdamped (slow convergence)
+\end{itemize}
+
+\subsection{Verlet Camera Integration}
+
+\begin{equation}
+  c_{\text{new}} = c + (c - c_{\text{prev}}) \cdot e^{-C \cdot dt} + K \cdot (p_{\text{target}} - c) \cdot dt^2
+  \label{eq:verlet-camera}
+\end{equation}
+
+\textbf{Physical Meaning}: The camera position is updated using Verlet integration (same method as the car body). The spring force pulls toward the target, while exponential damping represents velocity decay.
+
+\textbf{Source Code}: \coderef{physics.js}{1310--1356}
+
+\begin{lstlisting}[caption={Verlet camera with spring-damper}]
+const dampingFactor = Math.exp(-C * dt);
+const springForce = K * (targetX - cameraX);
+cameraX = cameraX + (cameraX - cameraXPrev) * dampingFactor + springForce * dt * dt;
+\end{lstlisting}
+
+\subsection{Camera Zoom}
+
+\begin{equation}
+  z_{\text{target}} = z_{\text{max}} - (v - v_{\text{threshold}}) \cdot s \cdot 0.01
+  \label{eq:camera-zoom}
+\end{equation}
+
+\begin{equation}
+  z = z + (z_{\text{target}} - z) \cdot 2 \cdot dt
+  \label{eq:zoom-smoothing}
+\end{equation}
+
+\textbf{Physical Meaning}: Camera zoom is a linear function of speed: faster speeds zoom out to show more road. The zoom is smoothed via first-order time lag.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{threshold}} = 10$ m/s: Speed at which zoom begins
+  \item $s = 0.005$: Zoom sensitivity
+  \item $z_{\text{min}}, z_{\text{max}}$: Zoom bounds (typically 0.5 to 2.0)
+\end{itemize}
+
+\subsection{Gauge Needle Animation (Spring-Damper)}
+
+\begin{equation}
+  F_{\text{spring}} = (x_{\text{target}} - x) \cdot k_s \cdot dt_{\text{norm}}
+  \label{eq:needle-spring}
+\end{equation}
+
+\begin{equation}
+  v = v \cdot c^{dt_{\text{norm}}}
+  \label{eq:needle-damping}
+\end{equation}
+
+\begin{equation}
+  x = x + v
+  \label{eq:needle-update}
+\end{equation}
+
+\textbf{Physical Meaning}: Gauge needles (tachometer, speedometer, lateral-G meter) animate toward their target values using an asymmetric spring-damper system. Rise and fall have different stiffness values for arcade appeal.
+
+\textbf{Source Code}: \coderef{ui.js}{42--93}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $k_s = 0.070$: Spring stiffness (default)
+  \item $c_{\text{rise}} = 0.92$: Damping coefficient for upward motion
+  \item $c_{\text{fall}} = 0.88$: Damping coefficient for downward motion
+  \item $dt_{\text{norm}} = dt \times 60$: Framerate-independent timestep (normalized to 60 Hz)
+\end{itemize}
+
+\textbf{Notes}: Framerate independence is achieved via $dt_{\text{norm}}$, allowing smooth animation at any display refresh rate.
+
+\subsection{Needle Flutter (Vibration Effect)}
+
+\begin{equation}
+  x_{\text{flutter}} = x + A(x) \cdot \sin(2\pi f_{\text{flutter}} \cdot t)
+  \label{eq:needle-flutter}
+\end{equation}
+
+\textbf{Physical Meaning}: High-speed gauge vibration (~1.43 Hz) simulates engine vibration transmission. Amplitude scales with needle position to be more noticeable at high speeds.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $f_{\text{flutter}} \approx 1.43$ Hz: Oscillation frequency
+  \item $A = (x - x_{\text{threshold}}) \times 0.012$: Amplitude (position-dependent)
+\end{itemize}
+
+\newpage

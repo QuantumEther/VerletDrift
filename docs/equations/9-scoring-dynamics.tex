@@ -1,0 +1,122 @@
+\section{Scoring, Particles \& Visual Effects}
+
+This section documents drift intensity scoring, particle system dynamics, and other game-specific calculations.
+
+\subsection{Drift Intensity Score}
+
+\begin{equation}
+  \text{drift} = 0.55 \cdot \frac{\max_i|v_{\text{lat}, i}|}{v_{\text{ref}}} + 0.25 \cdot \frac{|\omega|}{\\omega_{\text{ref}}} + 0.20 \cdot \frac{|\alpha|}{\\alpha_{\text{ref}}}
+  \label{eq:drift-intensity}
+\end{equation}
+
+\textbf{Physical Meaning}: Drift intensity is a weighted combination of three factors:
+\begin{itemize}
+  \item \textbf{Lateral speed}: How much the car is sliding sideways
+  \item \textbf{Angular velocity}: How much the car is spinning
+  \item \textbf{Slip angle}: How much the car is angled relative to velocity
+\end{itemize}
+
+The weighting (0.55, 0.25, 0.20) prioritizes sideways sliding, with contributions from rotation and slip angle.
+
+\textbf{Source Code}: \coderef{physics.js}{850--912}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{ref}} = 12$ m/s: Reference lateral speed (saturation point)
+  \item $\omega_{\text{ref}} = 3$ rad/s: Reference angular velocity
+  \item $\alpha_{\text{ref}} = \pi/4$ rad (45°): Reference slip angle
+\end{itemize}
+
+\textbf{Notes}: The score is smoothed via EMA with adaptive time constants:
+\begin{equation}
+  \text{drift}_{\text{filtered}} = \text{drift}_{\text{prev}} + (\text{drift}_{\text{raw}} - \text{drift}_{\text{prev}}) \cdot \begin{cases}
+    0.25 & \text{if } \text{drift}_{\text{raw}} > \text{drift}_{\text{prev}} \text{ (attack)} \\
+    0.05 & \text{else (decay)}
+  \end{cases}
+\end{equation}
+
+This makes drift intensity rise quickly when drifting begins, but decay slowly to maintain visual continuity.
+
+\subsection{Balloon Impact Speed}
+
+\begin{equation}
+  v_{\text{impact}} = \frac{\sqrt{\Delta x^2 + \Delta y^2}}{dt}
+  \label{eq:impact-speed}
+\end{equation}
+
+\textbf{Physical Meaning}: The speed at which a wheel collides with a balloon, computed from the wheel's displacement over one physics frame.
+
+\subsection{Splat Factor (Deformation Intensity)}
+
+\begin{equation}
+  \text{splatFactor} = \min\left(1, \frac{v_{\text{impact}}}{v_{\text{max,ref}}}\right)
+  \label{eq:splat-factor}
+\end{equation}
+
+\textbf{Physical Meaning}: Normalized impact speed (0 to 1) used to scale particle count, particle speed, and visual effects intensity.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{max,ref}} = 30$ m/s: Reference maximum speed (saturation)
+\end{itemize}
+
+\subsection{Balloon Score}
+
+\begin{equation}
+  \text{score} = \mathrm{BASE} \times \text{splatFactor} \times \text{sizeBonus} \times \text{comboMultiplier}
+  \label{eq:balloon-score}
+\end{equation}
+
+\begin{equation}
+  \text{sizeBonus} = 1.0 + \frac{r - r_{\text{min}}}{r_{\text{max}} - r_{\text{min}}}
+  \label{eq:size-bonus}
+\end{equation}
+
+\textbf{Physical Meaning}: Score combines:
+\begin{itemize}
+  \item Base score: Fixed per-balloon reward
+  \item Splat factor: Higher impact speed = higher score
+  \item Size bonus: Larger balloons are worth more (1.0×–2.0×)
+  \item Combo multiplier: Consecutive hits multiply rewards
+\end{itemize}
+
+\textbf{Source Code}: \coderef{balloon.js}{249--257}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\mathrm{BASE} = 100$ points
+  \item Combo multipliers: [1.0, 1.2, 1.5, 2.0, ...] for 1st, 2nd, 3rd, 4th+ hits
+\end{itemize}
+
+\subsection{Splat Particle Emission}
+
+\begin{equation}
+  N = \mathrm{MIN} + (\mathrm{MAX} - \mathrm{MIN}) \times \min(1, \text{splatFactor}) \times \text{violence}
+  \label{eq:particle-count}
+\end{equation}
+
+\textbf{Physical Meaning}: Higher impact speed and game violence setting increase the number of particles emitted when a balloon is hit.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\mathrm{MIN} = 8$: Minimum particles
+  \item $\mathrm{MAX} = 24$: Maximum particles
+  \item $\text{violence}$: User setting 0–1
+\end{itemize}
+
+\subsection{Particle Velocity Distribution}
+
+\begin{equation}
+  v = \left[\mathrm{MIN} + u^{0.5 + u \times 0.5} \times (\mathrm{MAX} - \mathrm{MIN})\right] \times (0.5 + \text{splatFactor} \times 0.5) \times \text{violence}
+  \label{eq:particle-velocity}
+\end{equation}
+
+\textbf{Physical Meaning}: Particle velocities follow a power-law distribution (via $u^{0.5 + u \times 0.5}$) weighted by impact speed and violence. This creates a realistic spread: some slow particles, most fast particles, few very fast particles.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $u \sim \mathrm{Uniform}(0, 1)$: Random value
+  \item $\mathrm{MIN} = 5$ m/s, $\mathrm{MAX} = 25$ m/s: Velocity range
+\end{itemize}
+
+\newpage

@@ -1,0 +1,85 @@
+\section{Tire Physics: Relaxation \& Grip}
+
+This section documents tire force relaxation (lag effects) and grip saturation as tires approach their limits.
+
+\subsection{Tire Relaxation Time Constant}
+
+\begin{equation}
+  \tau_{\text{relax}}(v) = \frac{\lambda}{max(|v_{\text{long}}|, \epsilon)}
+  \label{eq:relaxation-tau}
+\end{equation}
+
+\textbf{Physical Meaning}: Tires build force over a fixed distance (relaxation length $\lambda$), not a fixed time. The time constant is thus speed-dependent: $\tau(v) = \lambda / v$.
+
+\textbf{Source Code}: \coderef{physics.js}{744--748}
+
+\begin{lstlisting}[caption={Speed-dependent tire relaxation}]
+const relaxationLength = params.tireRelaxationLength || 0.3; // metres
+const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
+const tireRelaxTau = relaxationLength / vLongAbs;
+const tireRelaxAlpha = 1.0 - Math.exp(-dt / tireRelaxTau);
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\lambda = 0.3$ m: Relaxation length (typical road tire value)
+  \item $\epsilon = 0.5$ m/s: Minimum speed to prevent infinite time constant
+\end{itemize}
+
+\subsection{Force Relaxation (EMA Filtering)}
+
+\begin{equation}
+  F_{\text{relaxed}} = F_{\text{prev}} + (F_{\text{current}} - F_{\text{prev}}) \cdot (1 - e^{-dt/\tau_{\text{relax}}})
+  \label{eq:force-relaxation}
+\end{equation}
+
+\textbf{Physical Meaning}: Tire forces are smoothed over the relaxation time constant via exponential moving average (EMA). This creates realistic lag in the tire's response to slip changes.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\alpha = 1 - e^{-dt/\tau}$: EMA blending factor
+  \item $dt$: Physics timestep (typically 0.01 s)
+\end{itemize}
+
+\subsection{Friction Ellipse (Traction Circle)}
+
+\begin{equation}
+  \sqrt{F_{\text{lateral}}^2 + F_{\text{longitudinal}}^2} \leq N \cdot \mu
+  \label{eq:friction-ellipse}
+\end{equation}
+
+\begin{equation}
+  F_{\text{scaled}} = F \cdot \min\left(1, \frac{N \cdot \mu}{\sqrt{F_{\text{lateral}}^2 + F_{\text{longitudinal}}^2}}\right)
+  \label{eq:friction-scaling}
+\end{equation}
+
+\textbf{Physical Meaning}: Combined lateral and longitudinal forces cannot exceed the tire's total grip circle. If they do, both forces are scaled down proportionally, preventing impossible force combinations.
+
+\textbf{Source Code}: \coderef{physics.js}{725--736}
+
+\begin{lstlisting}[caption={Friction ellipse clipping}]
+const frictionLimit = normalLoad * frictionCoeff;
+const combinedMag = Math.hypot(fadedLateralForceMag, longitudinalForceMag);
+let frictionScale = 1.0;
+if (combinedMag > frictionLimit && combinedMag > 0) {
+  frictionScale = frictionLimit / combinedMag;
+}
+\end{lstlisting}
+
+\subsection{Lateral Saturation \& Grip}
+
+\begin{equation}
+  \text{saturation} = \min\left(1, \frac{|F_{\text{lateral}}|}{N \cdot \mu}\right)
+  \label{eq:lateral-saturation}
+\end{equation}
+
+\begin{equation}
+  \text{grip} = \max(0, 1 - \text{saturation})
+  \label{eq:grip-remaining}
+\end{equation}
+
+\textbf{Physical Meaning}: Saturation measures how much of the tire's lateral grip budget is consumed. When saturation = 1, all lateral grip is used and the tire is sliding. Remaining grip indicates steering authority available.
+
+\textbf{Notes}: Used for visual effects (skid mark intensity) and for detecting drift state.
+
+\newpage

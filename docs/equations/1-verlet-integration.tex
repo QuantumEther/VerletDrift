@@ -1,0 +1,129 @@
+\section{Verlet Integration \& Core Kinematics}
+
+This section documents the foundational Verlet integration method used for particle position updates, along with derived kinematic quantities such as velocity, acceleration, and angular motion.
+
+\cite{jakobsen2001advanced} presents Verlet integration as a simple yet powerful technique for physics simulation, encoding velocity implicitly in position differences rather than explicitly tracking velocity. This section derives all kinematic equations from the core Verlet update.
+
+\subsection{Verlet Position Integration}
+
+\begin{equation}
+  \vv{x}_{\text{new}} = \vv{x}_{\text{current}} + (\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}) + \vv{a} \cdot dt^2
+  \label{eq:verlet-position}
+\end{equation}
+
+\textbf{Physical Meaning}: The new position is computed from the current position, the velocity (implicit in the difference $\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}$), and the acceleration. This formulation is stable and does not require explicit velocity tracking.
+
+\textbf{Source Code}: \coderef{physics.js}{1000--1018}
+
+\begin{lstlisting}[caption={Verlet position update with rotational displacement}]
+function verletIntegrateAllPoints(dt, netAccelX, netAccelY, netAngularAccel) {
+  for (let i = 0; i < 4; i++) {
+    const p = particles[i];
+    const dx = p.x - p.xPrev;
+    const dy = p.y - p.yPrev;
+    const armX = p.x - body.center.x;
+    const armY = p.y - body.center.y;
+
+    p.xPrev = p.x;
+    p.yPrev = p.y;
+
+    p.x += dx + (netAccelX + (-netAngularAccel * armY)) * dt * dt;
+    p.y += dy + (netAccelY + (netAngularAccel * armX)) * dt * dt;
+  }
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\vv{x}_{\text{current}}$: Current particle position $\begin{pmatrix} x \\ y \end{pmatrix}$
+  \item $\vv{x}_{\text{prev}}$: Previous particle position
+  \item $\vv{a}$: Linear acceleration $\begin{pmatrix} a_x \\ a_y \end{pmatrix}$ (includes all forces)
+  \item $dt$: Fixed physics timestep (typically 0.01 s for 100 Hz)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item The formulation is \textit{symplectic} (energy-conserving) for conservative forces
+  \item Velocity is implicit: $\vv{v} = (\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}) / dt$
+  \item Rotation is handled by applying angular acceleration to all particles relative to the center of mass
+  \item The constraint solver (Section \ref{sec:constraints}) post-processes positions to maintain rigid-body shape
+\end{itemize}
+
+\subsection{Velocity Extraction}
+
+\begin{equation}
+  \vv{v} = \frac{\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}}{dt}
+  \label{eq:velocity-extraction}
+\end{equation}
+
+\textbf{Physical Meaning}: Velocity is computed backward-in-time from the position difference. This provides a natural approximation of instantaneous velocity.
+
+\textbf{Source Code}: \coderef{physics.js}{155--165}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Velocity is used for tire slip angle calculation, drag force, and sensor feedback (gauges)
+  \item Per-wheel velocity: $\vv{v}_{\text{wheel}} = \vv{v}_{\text{body}} + \omega \times (\vv{p}_{\text{wheel}} - \vv{c}_{\text{cm}})$
+\end{itemize}
+
+\subsection{Angular Velocity}
+
+\begin{equation}
+  \omega = \frac{\Delta \theta}{dt}
+  \label{eq:angular-velocity}
+\end{equation}
+
+\textbf{Physical Meaning}: Angular velocity is the rate of change of heading angle. It is derived from consecutive heading values wrapped to $(-\pi, \pi]$.
+
+\textbf{Source Code}: \coderef{physics.js}{180--190}
+
+\begin{lstlisting}[caption={Angular velocity computation with angle wrapping}]
+const headingDelta = wrapAngle(heading - prevHeading);
+angularVelocity = headingDelta / dt;
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Heading is computed from wheel positions: $\theta = \text{atan2}(\text{front}_y - \text{rear}_y, \text{front}_x - \text{rear}_x)$
+  \item Angular velocity is used for yaw damping, steering feedback, and motion blur effects
+\end{itemize}
+
+\subsection{Linear Acceleration}
+
+\begin{equation}
+  \vv{a} = \frac{\vv{v}_{\text{current}} - \vv{v}_{\text{prev}}}{dt}
+  \label{eq:linear-acceleration}
+\end{equation}
+
+\textbf{Physical Meaning}: Linear acceleration is the rate of change of velocity, computed from consecutive velocity snapshots.
+
+\textbf{Source Code}: \coderef{physics.js}{200--210}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Acceleration is typically filtered via exponential moving average (EMA) to reduce noise before display
+  \item Longitudinal acceleration: $a_{\text{long}} = \vv{a} \cdot \hat{\vv{u}}_{\text{forward}}$
+  \item Lateral acceleration: $a_{\text{lat}} = \vv{a} \cdot \hat{\vv{u}}_{\text{right}}$
+  \item Used for weight transfer calculations and feedback displays
+\end{itemize}
+
+\subsection{Jerk (Third Derivative)}
+
+\begin{equation}
+  j = \frac{a_{\text{current}} - a_{\text{prev}}}{dt}
+  \label{eq:jerk}
+\end{equation}
+
+\textbf{Physical Meaning}: Jerk is the rate of change of acceleration, representing the smoothness of motion transitions. High jerk indicates sudden changes in acceleration.
+
+\textbf{Source Code}: \coderef{physics.js}{215--225}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item v14 fixed a critical bug in jerk computation: v9 incorrectly divided by $dt$ (100× too large)
+  \item v14 correctly computes: $j = (a - a_{\text{prev}}) / dt$
+  \item Jerk is used for skid mark visual intensity and motion blur effects
+  \item Filtered jerk is displayed in diagnostic HUD
+\end{itemize}
+
+\newpage

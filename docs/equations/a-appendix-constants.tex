@@ -1,0 +1,103 @@
+\section{Tunable Constants \& Parameters}
+
+This appendix lists all physics, rendering, and gameplay parameters extracted from \texttt{constants.js}. These values define the behavior of the simulator and can be adjusted to fine-tune feel and performance.
+
+\subsection{World Geometry \& Scaling}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} & \textbf{Unit} & \textbf{Notes} \\
+    \midrule
+    \texttt{PIXELS\_PER\_METER} & 20 & px/m & Rendering only (physics uses SI) \\
+    \texttt{CAR\_HALF\_WIDTH} & 0.8 & m & Distance from center to side \\
+    \texttt{CAR\_HALF\_LENGTH} & 1.5 & m & Distance from center to axle \\
+    \texttt{CAR\_MASS\_KG} & 1200 & kg & Vehicle mass \\
+    \texttt{COG\_HEIGHT} & 0.5 & m & Center of gravity height \\
+    \texttt{GRAVITY} & 9.81 & m/s$^2$ & Gravitational acceleration \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Engine \& Drivetrain}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} & \textbf{Unit} & \textbf{Notes} \\
+    \midrule
+    \texttt{IDLE\_RPM} & 800 & RPM & Engine minimum speed \\
+    \texttt{REDLINE\_RPM} & 9000 & RPM & Fuel cut threshold \\
+    \texttt{TORQUE\_PEAK\_RPM} & 4500 & RPM & Peak torque location \\
+    \texttt{PEAK\_ENGINE\_TORQUE\_NM} & 350 & N·m & Maximum torque \\
+    \texttt{BRAKE\_FORCE} & 9810 & N & Braking force ≈ 0.83 g \\
+    \texttt{IDLE\_CREEP\_FORCE} & 200 & N & Creep at idle \\
+    \texttt{WHEEL\_RADIUS} & 0.35 & m & Effective tire radius \\
+    \texttt{FINAL\_DRIVE\_RATIO} & 4.1 & — & Final drive reduction \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Gear Ratios}
+
+1st–6th gears: 3.5, 2.1, 1.4, 1.0, 0.75, 0.58 | Reverse: −3.0 | Neutral: 0
+
+\subsection{Tire Model (Pacejka)}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} & \textbf{Unit} & \textbf{Notes} \\
+    \midrule
+    \texttt{PACEJKA\_B} & 10.0 & — & Stiffness \\
+    \texttt{PACEJKA\_C} & 1.9 & — & Shape \\
+    \texttt{TIRE\_PEAK\_SLIP\_ANGLE\_DEG} & 8.0 & deg & Peak grip angle \\
+    \texttt{TIRE\_PEAK\_SLIP\_RATIO} & 0.12 & — & Peak grip ratio \\
+    \texttt{DEFAULT\_TIRE\_FRICTION\_COEFF} & 1.0 & — & Friction (tunable) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Steering}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} & \textbf{Unit} & \textbf{Notes} \\
+    \midrule
+    \texttt{MAX\_FRONT\_WHEEL\_ANGLE\_RAD} & 0.52 & rad & ≈ 30° max \\
+    \texttt{PNEUMATIC\_TRAIL} & 0.035 & m & SAT trail distance \\
+    \texttt{STEERING\_COLUMN\_INERTIA} & 0.08 & kg·m$^2$ & Yaw inertia \\
+    \texttt{STEERING\_VISCOUS\_DAMPING} & 5.5 & N·m·s/rad & Rack damping \\
+    \texttt{STEERING\_COULOMB\_FRICTION} & 0.05 & N·m & Dry friction \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Drag \& Gauges}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} & \textbf{Unit} & \textbf{Notes} \\
+    \midrule
+    \texttt{DEFAULT\_ROLLING\_RESISTANCE\_COEFF} & 0.012 & — & Road friction \\
+    \texttt{DEFAULT\_AERO\_DRAG\_COEFF} & 0.4 & N·s$^2$/m$^2$ & Air resistance \\
+    \texttt{DEFAULT\_YAW\_DAMPING} & 1.0 & 1/s & Spin decay \\
+    \texttt{SPEEDOMETER\_MAX\_KPH} & 400 & km/h & Gauge max \\
+    \texttt{TACHOMETER\_MAX\_RPM} & 10000 & RPM & Gauge max \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\newpage
