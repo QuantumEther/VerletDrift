@@ -3,7 +3,20 @@
     "allow": [
       "mcp__Claude_Preview__preview_start",
       "Bash(git push origin verlet_v14_mod)",
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/2-weight-transfer.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/3-engine-drivetrain.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/4-tire-pacejka.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/5-tire-relaxation-grip.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/6-steering-sat.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/7-drag-resistance.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/8-camera-rendering.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/9-scoring-dynamics.tex\":*)",
+      "Bash(\"/c/Users/Quantum/Documents/GitHub/VerletDrift/docs/equations/a-appendix-constants.tex\":*)",
+      "Bash(pdflatex -interaction=nonstopmode verlet-drift-equations.tex)",
+      "Bash(choco --version)",
+      "Bash(git add docs/equations/)",
+      "Bash(git commit:*)"
     ]
   }
 }
