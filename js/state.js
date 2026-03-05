@@ -183,6 +183,17 @@ const state = {
   },
 
   // -----------------------------------------------------------
+  // PER-WHEEL KINEMATICS CACHE — reused each substep to avoid recomputing
+  // wheel basis vectors and local velocities in follow-up passes.
+  // -----------------------------------------------------------
+  wheelKinematics: {
+    frontLeft:  { wheelForwardX: 0, wheelForwardY: 0, wheelRightX: 0, wheelRightY: 0, wheelVelX: 0, wheelVelY: 0, lateralSpeedAbs: 0 },
+    frontRight: { wheelForwardX: 0, wheelForwardY: 0, wheelRightX: 0, wheelRightY: 0, wheelVelX: 0, wheelVelY: 0, lateralSpeedAbs: 0 },
+    rearLeft:   { wheelForwardX: 0, wheelForwardY: 0, wheelRightX: 0, wheelRightY: 0, wheelVelX: 0, wheelVelY: 0, lateralSpeedAbs: 0 },
+    rearRight:  { wheelForwardX: 0, wheelForwardY: 0, wheelRightX: 0, wheelRightY: 0, wheelVelX: 0, wheelVelY: 0, lateralSpeedAbs: 0 },
+  },
+
+  // -----------------------------------------------------------
   // SMOOTHED WHEEL LATERAL VELOCITY — EMA-filtered lateral speed per wheel.
   // Applied BEFORE the Pacejka slip-angle computation so constraint-solver
   // micro-impulses are killed upstream of the nonlinear tire model.
@@ -323,6 +334,7 @@ const state = {
     renderFps:         0, // smoothed render frames per second (set by main.js)
     physicsTps:        0, // smoothed physics ticks per second (set by main.js)
     droppedSubsteps:   0, // number of sub-steps dropped due to per-frame cap
+    droppedSubstepsLastFrame: 0, // sub-steps dropped in the most recent render frame
   },
 
   // -----------------------------------------------------------
@@ -334,6 +346,8 @@ const state = {
     simulationFps:           100,  // physics Hz (wall-clock tick rate)
     maxSubstepsPerFrame:     6,    // cap on fixed-step ticks consumed per render frame
     timeScale:               1.0,
+    determinismMode:         false, // true = seeded physics-side randomness for reproducible runs
+    determinismSeed:         1337,  // seed for deterministic physics RNG stream
     carMassKg:               CAR_MASS_KG,
     rollingResistanceCoeff:  DEFAULT_ROLLING_RESISTANCE_COEFF,
     aeroDragCoeff:           DEFAULT_AERO_DRAG_COEFF,

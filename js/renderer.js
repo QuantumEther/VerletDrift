@@ -28,6 +28,7 @@
 const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
 import state from './state.js';
+import { physicsRandom } from './random.js';
 import {
   CAR_HALF_WIDTH,
   CAR_HALF_LENGTH,
@@ -1567,7 +1568,7 @@ export function updateSparks(dt) {
 
     // Spawn rate proportional to intensity.
     const spawnCount = Math.floor(intensity * 0.15 * (60 * dt));
-    if (spawnCount < 1 && Math.random() > intensity * 0.1) continue;
+    if (spawnCount < 1 && physicsRandom() > intensity * 0.1) continue;
 
     const wheel = wheels[name];
     const steerAngle = isFront[name] ? state.steering.frontWheelAngle : 0;
@@ -1588,25 +1589,25 @@ export function updateSparks(dt) {
       if (!spark) break; // pool full
 
       // Spawn at wheel position with slight random offset.
-      spark.x = wheel.x + (Math.random() - 0.5) * 0.2;
-      spark.y = wheel.y + (Math.random() - 0.5) * 0.2;
+      spark.x = wheel.x + (physicsRandom() - 0.5) * 0.2;
+      spark.y = wheel.y + (physicsRandom() - 0.5) * 0.2;
 
       // Velocity: tangent to wheel motion + random spread + upward bias (world Y is down)
-      const tangentScale = 2.0 + Math.random() * 4.0;
-      const spread = (Math.random() - 0.5) * 3.0;
+      const tangentScale = 2.0 + physicsRandom() * 4.0;
+      const spread = (physicsRandom() - 0.5) * 3.0;
       if (wheelSpeed > 0.1) {
         spark.vx = (wheelVelX / wheelSpeed) * tangentScale + spread;
-        spark.vy = (wheelVelY / wheelSpeed) * tangentScale + spread - (1.0 + Math.random() * 2.0);
+        spark.vy = (wheelVelY / wheelSpeed) * tangentScale + spread - (1.0 + physicsRandom() * 2.0);
       } else {
-        spark.vx = (Math.random() - 0.5) * 4.0;
-        spark.vy = -(1.0 + Math.random() * 3.0);
+        spark.vx = (physicsRandom() - 0.5) * 4.0;
+        spark.vy = -(1.0 + physicsRandom() * 3.0);
       }
 
       spark.life = 0;
-      spark.maxLife = (0.1 + Math.random() * 0.25) * lifeMult;
-      spark.size = (0.03 + Math.random() * 0.06) * sizeMult;
+      spark.maxLife = (0.1 + physicsRandom() * 0.25) * lifeMult;
+      spark.size = (0.03 + physicsRandom() * 0.06) * sizeMult;
       spark.alive = true;
-      spark.hdrIndex = Math.floor(Math.random() * SPARK_COLORS.length);
+      spark.hdrIndex = Math.floor(physicsRandom() * SPARK_COLORS.length);
     }
   }
 

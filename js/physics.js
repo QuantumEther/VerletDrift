@@ -504,8 +504,8 @@ export function updateEngine(dt) {
 // The peak prevents infinite lateral force, which is what would happen with
 // a linear friction model.
 function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C) {
-  if (peakSlipValue < 0.0001) return 0;
-  const normalisedSlip = slipValue / peakSlipValue;
+  const safePeakSlip = Math.max(Math.abs(peakSlipValue), 1e-4);
+  const normalisedSlip = slipValue / safePeakSlip;
   // Normalise so that at normalisedSlip = 1.0 (peak grip), the output equals
   // exactly normalLoad × frictionCoeff.  Without this, sin(C × atan(B)) < 1
   // means the tyre produces far less grip than the friction coefficient implies.
@@ -582,7 +582,8 @@ export function computeTireForces(dt) {
     rearRight:  state.wheels.rearRight,
   };
 
-  const peakSlipAngleRad = params.peakSlipAngleDeg * DEG_TO_RAD;
+  const peakSlipAngleRad = Math.max(params.peakSlipAngleDeg * DEG_TO_RAD, 1e-4);
+  const safePeakSlipRatio = Math.max(Math.abs(params.peakSlipRatio), 1e-4);
 
   let netForceX = 0;
   let netForceY = 0;
@@ -593,6 +594,10 @@ export function computeTireForces(dt) {
 
   // Process all four wheels.
   const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
+  const wheelKinematics = state.wheelKinematics;
+
+  let maxLateralWheelSpeed = 0;
+  let anyWheelSlipping     = false;
 
   for (const name of wheelNames) {
     const wheelPos    = wheelPositions[name];
@@ -618,9 +623,25 @@ export function computeTireForces(dt) {
     const wheelRightX   =  Math.cos(heading + steeringAngle);
     const wheelRightY   =  Math.sin(heading + steeringAngle);
 
+    const cachedKinematics = wheelKinematics[name];
+    cachedKinematics.wheelForwardX = wheelForwardX;
+    cachedKinematics.wheelForwardY = wheelForwardY;
+    cachedKinematics.wheelRightX = wheelRightX;
+    cachedKinematics.wheelRightY = wheelRightY;
+    cachedKinematics.wheelVelX = wheelVelX;
+    cachedKinematics.wheelVelY = wheelVelY;
+
     // Project wheel velocity onto its own axes.
     const wheelLongitudinalSpeed = dot(wheelVelX, wheelVelY, wheelForwardX, wheelForwardY);
     const wheelLateralSpeed      = dot(wheelVelX, wheelVelY, wheelRightX,   wheelRightY);
+    const lateralSpeedAbs        = Math.abs(wheelLateralSpeed);
+    cachedKinematics.lateralSpeedAbs = lateralSpeedAbs;
+
+    // Store per-wheel lateral speed for per-wheel skid marks and spark generation.
+    state.wheelLateralSpeed[name] = lateralSpeedAbs;
+
+    if (lateralSpeedAbs > maxLateralWheelSpeed) maxLateralWheelSpeed = lateralSpeedAbs;
+    if (lateralSpeedAbs > 1.8) anyWheelSlipping = true;
 
     // --- Smooth lateral velocity BEFORE it enters the slip angle calculation ---
     // Constraint solver micro-impulses create high-frequency noise in wheelLateralSpeed.
@@ -681,9 +702,9 @@ export function computeTireForces(dt) {
       if (tractionLimit > 0.01) {
         const perWheelDrive = driveForce * 0.5;
         const driveRatio = perWheelDrive / tractionLimit;
-        slipRatio = driveRatio * params.peakSlipRatio;
+        slipRatio = driveRatio * safePeakSlipRatio;
         longitudinalForceMag = pacejkaForce(normalLoad, frictionCoeff,
-                                             Math.abs(slipRatio), params.peakSlipRatio,
+                                             Math.abs(slipRatio), safePeakSlipRatio,
                                              params.pacejkaB, params.pacejkaC);
         if (driveForce < 0) longitudinalForceMag = -longitudinalForceMag;
       }
@@ -698,8 +719,8 @@ export function computeTireForces(dt) {
       const frictionBudget  = normalLoad * frictionCoeff;
       const brakeSlipInput  = Math.min(perWheelBrake / Math.max(frictionBudget, 1.0), 2.0);
       const brakeLongForce  = pacejkaForce(normalLoad, frictionCoeff,
-                                            brakeSlipInput * params.peakSlipRatio,
-                                            params.peakSlipRatio,
+                                            brakeSlipInput * safePeakSlipRatio,
+                                            safePeakSlipRatio,
                                             params.pacejkaB, params.pacejkaC);
       const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
       longitudinalForceMag += brakeLongForce * brakeSign;
@@ -715,8 +736,8 @@ export function computeTireForces(dt) {
       const frictionBudget = normalLoad * frictionCoeff;
       const hbSlipInput    = Math.min(perWheelHB / Math.max(frictionBudget, 1.0), 3.0);
       const hbLongForce    = pacejkaForce(normalLoad, frictionCoeff,
-                                           hbSlipInput * params.peakSlipRatio,
-                                           params.peakSlipRatio,
+                                           hbSlipInput * safePeakSlipRatio,
+                                           safePeakSlipRatio,
                                            params.pacejkaB, params.pacejkaC);
       const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
       longitudinalForceMag += hbLongForce * brakeSign;
@@ -741,11 +762,15 @@ export function computeTireForces(dt) {
     // A constant τ = 0.06s at 30 m/s means λ = 1.8m — absurd (should be ~0.3m).
     // Fix: τ(v) = λ / max(|v_long|, ε)
     // This makes force build over the correct physical distance regardless of speed.
+    // Stabilizer #3 — low-speed and singularity guards for relaxation dynamics.
+    // Physical rationale: relaxation is distance-based; at near-zero wheel speed,
+    // τ = λ/v tends to infinity. We clamp both λ and v to keep the filter causal.
+    // Feel impact: removes standstill chatter and "stiction pops" when starting.
     const relaxationLength = params.tireRelaxationLength !== undefined
-      ? params.tireRelaxationLength : 0.3; // metres — typical road tire value
+      ? Math.max(params.tireRelaxationLength, 0.02) : 0.3; // metres
     const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5); // ε = 0.5 m/s
-    const tireRelaxTau = relaxationLength / vLongAbs; // speed-dependent time constant
-    const tireRelaxAlpha = 1.0 - Math.exp(-dt / tireRelaxTau);
+    const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
+    const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
     const prev = state.prevTireForce[name];
     const relaxedLat = prev.lat + (scaledLateral - prev.lat) * tireRelaxAlpha;
     const relaxedLon = prev.lon + (scaledLongitudinal - prev.lon) * tireRelaxAlpha;
@@ -813,35 +838,8 @@ export function computeTireForces(dt) {
 
   // Track traction loss state for sound and skid marks.
   // A wheel is slipping if its lateral speed exceeds the traction threshold.
-  // We store the maximum lateral wheel speed for sound intensity scaling.
-  // Also store per-wheel lateral speed for independent skid marks and sparks.
-  let maxLateralWheelSpeed = 0;
-  let anyWheelSlipping     = false;
-
-  for (const name of wheelNames) {
-    const wheelPos  = wheelPositions[name];
-    const isFront   = name === 'frontLeft' || name === 'frontRight';
-    const steerAngle = isFront ? state.steering.frontWheelAngle : 0;
-
-    const wheelForwardX  = Math.sin(body.heading + steerAngle);
-    const wheelForwardY  = -Math.cos(body.heading + steerAngle);
-    const wheelRightX    =  Math.cos(body.heading + steerAngle);
-    const wheelRightY    =  Math.sin(body.heading + steerAngle);
-
-    const armX = wheelPos.x - body.centerX;
-    const armY = wheelPos.y - body.centerY;
-    const wheelVelX = body.velocityX + (-body.angularVelocity * armY);
-    const wheelVelY = body.velocityY + ( body.angularVelocity * armX);
-    const lateralSpeed = Math.abs(
-      wheelVelX * wheelRightX + wheelVelY * wheelRightY
-    );
-
-    // Store per-wheel lateral speed for per-wheel skid marks and spark generation.
-    state.wheelLateralSpeed[name] = lateralSpeed;
-
-    if (lateralSpeed > maxLateralWheelSpeed) maxLateralWheelSpeed = lateralSpeed;
-    if (lateralSpeed > 1.8) anyWheelSlipping = true;
-  }
+  // Max lateral speed and wheel slip flags were accumulated during the primary loop
+  // from the cached per-wheel kinematics to avoid a second wheel traversal.
 
   state.tractionState.prevSlipping  = state.tractionState.isSlipping;
   state.tractionState.isSlipping    = anyWheelSlipping;
@@ -852,10 +850,9 @@ export function computeTireForces(dt) {
   // Used to drive tire sound, paint transfer, motion blur.
   const lateralComponent = clamp01(maxLateralWheelSpeed / 12.0);   // saturates at 12 m/s
   const angularComponent = clamp01(Math.abs(body.angularVelocity) / 3.0); // saturates at 3 rad/s
-  const slipAngle = Math.abs(Math.atan2(
-    body.velocityX * Math.cos(body.heading) - body.velocityY * Math.sin(body.heading),
-    body.velocityX * Math.sin(body.heading) + body.velocityY * Math.cos(body.heading)
-  ));
+  const bodyLongitudinal = body.velocityX * Math.sin(body.heading) + body.velocityY * -Math.cos(body.heading);
+  const bodyLateral = body.velocityX * Math.cos(body.heading) + body.velocityY * Math.sin(body.heading);
+  const slipAngle = Math.abs(Math.atan2(bodyLateral, Math.max(Math.abs(bodyLongitudinal), 0.25)));
   const slipAngleComponent = clamp01(slipAngle / (Math.PI / 4)); // saturates at 45°
   const rawDrift = lateralComponent * 0.55 + angularComponent * 0.25 + slipAngleComponent * 0.20;
   // EMA smoothing: fast attack, slow release for cinematic feel
@@ -1053,7 +1050,9 @@ function enforceDistanceConstraint(particleA, particleB, restDistance) {
   // Damping: also shift prevX/prevY by a fraction of the correction.
   // This prevents the constraint from injecting velocity impulses that
   // the Verlet integrator amplifies on the next step.
-  const cd = state.params.constraintDamping;
+  // Stabilizer #2 — keep nonzero damping floor so Jakobsen corrections never
+  // fully reinject constraint impulse energy. Feel impact: less idle jitter.
+  const cd = clamp(state.params.constraintDamping, 0.05, 1.0);
   particleA.prevX += corrAX * cd;
   particleA.prevY += corrAY * cd;
   particleB.prevX -= corrAX * cd;
@@ -1069,7 +1068,11 @@ function enforceDistanceConstraint(particleA, particleB, restDistance) {
 // parallelogram, which would happen with only four side constraints.
 export function solveRigidBodyConstraints() {
   const wh     = state.wheels;
-  const iters  = state.params.constraintIterations;
+  // Stabilizer #2 — iteration clamp by mode.
+  // Determinism mode uses a tighter cap to keep CPU cost and correction order
+  // stable across machines; normal mode allows a higher cap for rigidity tuning.
+  const modeCap = state.params.determinismMode ? 8 : 12;
+  const iters = clamp(Math.round(state.params.constraintIterations || 1), 1, modeCap);
 
   for (let iteration = 0; iteration < iters; iteration++) {
     // Four edges: front axle, rear axle, left side, right side.

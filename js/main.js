@@ -102,6 +102,7 @@ import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, regi
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
+import { physicsRandom } from './random.js';
 
 
 // =============================================================
@@ -422,9 +423,18 @@ function mainLoop(timestampMilliseconds) {
   }
 
   if (state.loop.accumulator >= physicsWallDt) {
+    // Stabilizer #1 — hard-cap backlog: once we hit the per-frame substep cap,
+    // drop all remaining whole substeps immediately instead of carrying a long
+    // backlog that can cause temporal "rubber-banding" and force bursts.
+    // Physical rationale: if wall-clock can't keep up, it's safer to skip old
+    // impulses than to replay them late. Feel impact: slightly less temporal
+    // fidelity under load, but far more stable and predictable control feel.
     const droppedSubsteps = Math.floor(state.loop.accumulator / physicsWallDt);
     state.loop.droppedSubsteps += droppedSubsteps;
-    state.loop.accumulator = Math.min(state.loop.accumulator, physicsWallDt * maxSubstepsPerFrame);
+    state.loop.droppedSubstepsLastFrame = droppedSubsteps;
+    state.loop.accumulator %= physicsWallDt;
+  } else {
+    state.loop.droppedSubstepsLastFrame = 0;
   }
 
   // Smooth physics ticks-per-second display.
@@ -866,14 +876,14 @@ function spawnSingleBalloon() {
   let attempts = 0;
   let x, y;
   do {
-    x = margin + Math.random() * (mapWidth  - margin * 2);
-    y = margin + Math.random() * (mapHeight - margin * 2);
+    x = margin + physicsRandom() * (mapWidth  - margin * 2);
+    y = margin + physicsRandom() * (mapHeight - margin * 2);
     attempts++;
     // Avoid spawning within 15m of the car so it doesn't instantly pop.
   } while (Math.hypot(x - carX, y - carY) < 15 && attempts < 20);
 
-  const radius  = 0.6 + Math.random() * 1.2;
-  const hue     = Math.random() * 360;
+  const radius  = 0.6 + physicsRandom() * 1.2;
+  const hue     = physicsRandom() * 360;
 
   state.balloons.push({ x, y, radius, hue, isPopped: false,
     deformTime: 0, deformScale: 1.0, deformDir: { x: 0, y: -1 } });
@@ -1056,7 +1066,7 @@ function decayScreenShake(dt) {
 
   // Generate a new random offset each step — this is what makes it "shake"
   // rather than just move smoothly.
-  const angle     = Math.random() * Math.PI * 2;
+  const angle     = physicsRandom() * Math.PI * 2;
   shake.shakeX    = Math.cos(angle) * shake.magnitude;
   shake.shakeY    = Math.sin(angle) * shake.magnitude;
 }

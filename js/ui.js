@@ -21,6 +21,28 @@ import {
   KPH_TO_MPS,
 } from './constants.js';
 
+const INFO_BAR_CELL_IDS = [
+  'velocityDisplay',
+  'rpmDisplay',
+  'gearDisplay',
+  'headingDisplay',
+  'clutchDisplay',
+  'trailDisplay',
+  'renderFpsDisplay',
+  'physicsTpsDisplay',
+];
+
+const infoBarCellCache = new Map();
+const infoBarTextCache = new Map();
+
+function initInfoBarCellCache() {
+  if (infoBarCellCache.size > 0) return;
+
+  for (const id of INFO_BAR_CELL_IDS) {
+    infoBarCellCache.set(id, document.getElementById(id));
+  }
+}
+
 
 // =============================================================
 // NEEDLE PHYSICS
@@ -105,6 +127,8 @@ export function createNeedlePhysics() {
 // matching the IDs in index.html. If an element is not found, that
 // slider is silently skipped (no exception thrown).
 export function initSliders() {
+  initInfoBarCellCache();
+
   // Generic binder: links a slider element to a params field.
   // getValue:  slider string → typed value for state.params
   // getDisplay: typed value → display string for the label element
@@ -623,6 +647,8 @@ function initPresets() {
 // Called once per animation frame from main.js.
 // Reads from state.body and state.engine.
 export function updateInfoBar() {
+  initInfoBarCellCache();
+
   const body   = state.body;
   const engine = state.engine;
   const trail  = state.trail;
@@ -652,13 +678,17 @@ export function updateInfoBar() {
   // Physics Hz is the slider value — the dynamic measurement was showing
   // display framerate (bug: 1 tick / wallFrameTime = displayHz, not physicsHz).
   setInfoCell('physicsTpsDisplay',
-    `${state.params.simulationFps}Hz · max ${state.params.maxSubstepsPerFrame}/f · drop ${state.loop.droppedSubsteps}`);
+    `${state.params.simulationFps}Hz · max ${state.params.maxSubstepsPerFrame}/f · drop ${state.loop.droppedSubsteps} (last ${state.loop.droppedSubstepsLastFrame})`);
 }
 
 // Sets the textContent of an info cell by id, silently skipping if not found.
 function setInfoCell(elementId, text) {
-  const element = document.getElementById(elementId);
-  if (element) element.textContent = text;
+  const element = infoBarCellCache.get(elementId);
+  if (!element) return;
+
+  if (infoBarTextCache.get(elementId) === text) return;
+  infoBarTextCache.set(elementId, text);
+  element.textContent = text;
 }
 
 

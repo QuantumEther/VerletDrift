@@ -40,6 +40,7 @@ import {
   CAR_HALF_WIDTH,
   CAR_HALF_LENGTH,
 } from './constants.js';
+import { physicsRandom } from './random.js';
 
 
 // =============================================================
@@ -48,12 +49,12 @@ import {
 
 // Returns a uniformly random float between min (inclusive) and max (exclusive).
 function randomBetween(minimum, maximum) {
-  return minimum + Math.random() * (maximum - minimum);
+  return minimum + physicsRandom() * (maximum - minimum);
 }
 
 // Returns a random integer from 0 to count-1 (inclusive).
 function randomInt(count) {
-  return Math.floor(Math.random() * count);
+  return Math.floor(physicsRandom() * count);
 }
 
 
@@ -317,15 +318,15 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
   // MAIN BLAST — large directional spray
   // ═══════════════════════════════════════════════════════════
   for (let i = 0; i < particleCount; i++) {
-    const rawAngle       = Math.random() * Math.PI * 2;
+    const rawAngle       = physicsRandom() * Math.PI * 2;
     const awayAngle      = Math.atan2(-carDirY, -carDirX);
     const blendedAngle   = rawAngle + spreadAngle * (
       Math.atan2(Math.sin(awayAngle - rawAngle), Math.cos(awayAngle - rawAngle))
     );
 
     // Speed: violence makes particles fly MUCH faster. Power distribution.
-    const speedExponent = 0.5 + Math.random() * 0.5; // bias toward faster
-    const rawSpeed = SPLAT_SPEED_MIN + Math.pow(Math.random(), speedExponent) * (SPLAT_SPEED_MAX - SPLAT_SPEED_MIN);
+    const speedExponent = 0.5 + physicsRandom() * 0.5; // bias toward faster
+    const rawSpeed = SPLAT_SPEED_MIN + Math.pow(physicsRandom(), speedExponent) * (SPLAT_SPEED_MAX - SPLAT_SPEED_MIN);
     const particleSpeed = rawSpeed * (0.5 + splatFactor * 0.5) * violence;
 
     // Hue variation: ±25° around balloon colour.
@@ -333,20 +334,20 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
 
     // Power-law size distribution: many small, few large.
     // α = 2.0 (heavier tail than before — more visible large chunks).
-    const u = Math.random();
+    const u = physicsRandom();
     const alpha = 2.0;
     const rawRadius = SPLAT_RADIUS_MIN * Math.pow(1.0 - u + 0.001, -1.0 / alpha);
     const particleRadius = Math.min(rawRadius, SPLAT_RADIUS_MAX * 1.3) * (0.6 + splatFactor * 0.8) * Math.sqrt(violence);
 
     state.splatParticles.push({
-      x:            balloon.x + (Math.random() - 0.5) * balloon.radius * 0.3,
-      y:            balloon.y + (Math.random() - 0.5) * balloon.radius * 0.3,
+      x:            balloon.x + (physicsRandom() - 0.5) * balloon.radius * 0.3,
+      y:            balloon.y + (physicsRandom() - 0.5) * balloon.radius * 0.3,
       velX:         Math.cos(blendedAngle) * particleSpeed,
       velY:         Math.sin(blendedAngle) * particleSpeed,
       radius:       particleRadius,
       hue:          particleHue,
       alpha:        1.0,
-      lifetime:     particleLifetime * (0.7 + Math.random() * 0.6),
+      lifetime:     particleLifetime * (0.7 + physicsRandom() * 0.6),
       maxLifetime:  particleLifetime,
       hasLanded:    false,
     });
@@ -358,18 +359,18 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
   // ═══════════════════════════════════════════════════════════
   const microCount = Math.round(particleCount * 0.6 * violence);
   for (let i = 0; i < microCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = (8 + Math.random() * 15) * violence * splatFactor;
+    const angle = physicsRandom() * Math.PI * 2;
+    const speed = (8 + physicsRandom() * 15) * violence * splatFactor;
 
     state.splatParticles.push({
-      x:            balloon.x + (Math.random() - 0.5) * balloon.radius * 0.5,
-      y:            balloon.y + (Math.random() - 0.5) * balloon.radius * 0.5,
+      x:            balloon.x + (physicsRandom() - 0.5) * balloon.radius * 0.5,
+      y:            balloon.y + (physicsRandom() - 0.5) * balloon.radius * 0.5,
       velX:         Math.cos(angle) * speed,
       velY:         Math.sin(angle) * speed,
-      radius:       0.02 + Math.random() * 0.06, // very small
+      radius:       0.02 + physicsRandom() * 0.06, // very small
       hue:          (baseHue + randomBetween(-15, 15) + 360) % 360,
-      alpha:        0.7 + Math.random() * 0.3,
-      lifetime:     0.15 + Math.random() * 0.3,
+      alpha:        0.7 + physicsRandom() * 0.3,
+      lifetime:     0.15 + physicsRandom() * 0.3,
       maxLifetime:  0.5,
       hasLanded:    false,
     });
@@ -382,18 +383,18 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
   const jetCount = Math.round(6 + splatFactor * 12 * violence);
   const jetAngle = Math.atan2(-carDirY, -carDirX);
   for (let i = 0; i < jetCount; i++) {
-    const spread = (Math.random() - 0.5) * 0.4; // tight cone
-    const speed = (12 + Math.random() * 20) * splatFactor * violence;
+    const spread = (physicsRandom() - 0.5) * 0.4; // tight cone
+    const speed = (12 + physicsRandom() * 20) * splatFactor * violence;
 
     state.splatParticles.push({
       x:            balloon.x,
       y:            balloon.y,
       velX:         Math.cos(jetAngle + spread) * speed,
       velY:         Math.sin(jetAngle + spread) * speed,
-      radius:       0.06 + Math.random() * 0.15,
+      radius:       0.06 + physicsRandom() * 0.15,
       hue:          (baseHue + randomBetween(-10, 10) + 360) % 360,
       alpha:        1.0,
-      lifetime:     0.4 + Math.random() * 0.6,
+      lifetime:     0.4 + physicsRandom() * 0.6,
       maxLifetime:  1.0,
       hasLanded:    false,
     });
@@ -583,7 +584,7 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   for (let i = 0; i < crackData.length; i++) {
     const t = i / sampleRate;
     const env = Math.exp(-t * 40) * (1 + Math.sin(t * 800) * 0.3); // sharp attack with resonance
-    const crack = (Math.random() * 2 - 1);
+    const crack = (physicsRandom() * 2 - 1);
     // Add a tonal "snap" component — the skin breaking.
     const snapFreq = 400 + (1 - sizeNorm) * 300;
     const snap = Math.sin(2 * Math.PI * snapFreq * t) * Math.exp(-t * 60);
@@ -615,7 +616,7 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
     // Envelope: quick attack, slow decay (spray lingers).
     const attack = Math.min(t / 0.005, 1.0); // 5ms attack
     const decay = Math.exp(-t * (6 - splatFactor * 2));
-    sprayData[i] = attack * decay * (Math.random() * 2 - 1);
+    sprayData[i] = attack * decay * (physicsRandom() * 2 - 1);
   }
   const spraySource = audioContext.createBufferSource();
   spraySource.buffer = sprayBuffer;
@@ -641,7 +642,7 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
     const t = i / sampleRate;
     const env = Math.exp(-t * 25);
     // Generate noise then hard-clip it for distortion character.
-    let sample = (Math.random() * 2 - 1) * env;
+    let sample = (physicsRandom() * 2 - 1) * env;
     // Waveshape: tanh gives soft clip, but we stack it for brutality.
     sample = Math.tanh(sample * (3 + splatFactor * 4));
     sample = Math.tanh(sample * 2);
