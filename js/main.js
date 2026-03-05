@@ -47,6 +47,7 @@ import {
 } from './constants.js';
 
 import { initInput } from './input.js';
+import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
 
 import {
   initializeCarBody,
@@ -154,6 +155,7 @@ const simCanvas   = getCanvas('simCanvas');
 const rpmCanvas   = getCanvas('rpmCanvas');
 const speedCanvas = getCanvas('speedCanvas');
 const latGCanvas  = getCanvas('latGCanvas'); // lateral G gauge (third canvas)
+const gpuCanvasEl = document.getElementById('gpuCanvas'); // may be null (optional)
 
 const simCtx   = simCanvas.getContext('2d');
 const rpmCtx   = rpmCanvas.getContext('2d');
@@ -164,6 +166,14 @@ const latGCtx  = latGCanvas.getContext('2d');
 // main canvas uses CSS size; gauge canvases are fixed size in HTML.
 const simCssWidth  = simCanvas.clientWidth  || simCanvas.width;
 const simCssHeight = simCanvas.clientHeight || simCanvas.height;
+
+// Kick off WebGPU initialisation asynchronously.
+// The game loop starts immediately; GPU rendering activates once ready.
+if (gpuCanvasEl) {
+  initGPU(gpuCanvasEl).catch((e) => {
+    console.warn('[GPU] initGPU failed:', e);
+  });
+}
 
 // Attach input listeners before anything else so no events are missed.
 initInput(simCanvas);
@@ -746,6 +756,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     simCanvas.height = canvasHeight;
   }
 
+  // Sync gpuCanvas pixel size to simCanvas whenever it changes.
+  if (gpuCanvasEl) resizeGPU(canvasWidth, canvasHeight);
+
   // --- INTERPOLATE RENDER STATE ---
   // If we have two snapshots, lerp between them by alpha.
   // On the very first frame before any physics ticks, just render raw state.
@@ -768,23 +781,41 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   // --- World space (camera transform active) ---
   simCtx.clearRect(0, 0, canvasWidth, canvasHeight);
   applyCameraTransform(simCtx, canvasWidth, canvasHeight);
-  drawCheckerboard(simCtx, canvasWidth, canvasHeight);
-  drawMapBoundary(simCtx);
-  drawSplatDecals(simCtx);
-  if (state.params.showSkidMarks) {
-    drawSkidMarks(simCtx);
-  }
-  drawSplatParticles(simCtx);
-  drawBalloons(simCtx);
-  drawTrailArrows(simCtx);
-  if (state.params.showSparks) {
-    drawSparks(simCtx);
-  }
-  if (state.params.showKinematicArrows) {
-    drawKinematicArrows(simCtx);
+
+  if (isGPUReady()) {
+    // GPU handles: background, skid marks, trail arrows, sparks, splat particles.
+    // Canvas 2D handles remaining world-space elements (map boundary, decals,
+    // balloons, car) on the transparent simCanvas (z-index:1) that sits above.
+    drawMapBoundary(simCtx);
+    drawSplatDecals(simCtx);
+    // drawSkidMarks: handled by GPU accumulation texture
+    // drawSplatParticles: handled by GPU particle pipeline
+    drawBalloons(simCtx);
+    // drawTrailArrows: handled by GPU instanced arrows
+    // drawSparks: handled by GPU particle pipeline
+    if (state.params.showKinematicArrows) {
+      drawKinematicArrows(simCtx);
+    }
+  } else {
+    // Canvas 2D fallback — full world-space rendering when WebGPU is unavailable.
+    drawCheckerboard(simCtx, canvasWidth, canvasHeight);  // also updates blurAccumulator
+    drawMapBoundary(simCtx);
+    drawSplatDecals(simCtx);
+    if (state.params.showSkidMarks) {
+      drawSkidMarks(simCtx);
+    }
+    drawSplatParticles(simCtx);
+    drawBalloons(simCtx);
+    drawTrailArrows(simCtx);
+    if (state.params.showSparks) {
+      drawSparks(simCtx);
+    }
+    if (state.params.showKinematicArrows) {
+      drawKinematicArrows(simCtx);
+    }
   }
 
-  // Debug overlays (tire forces, SAT, slip angles, etc.)
+  // Debug overlays (tire forces, SAT, slip angles, etc.) — always Canvas 2D.
   if (state.params.debugShowTireForces || state.params.debugShowSlipAngles ||
       state.params.debugShowSAT || state.params.debugShowSmoothingFilter ||
       state.params.debugShowCrossover || state.params.debugShowWheelSpeeds) {
@@ -811,6 +842,12 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   drawCarGhosts(simCtx);
   drawCar(simCtx);
   removeCameraTransform(simCtx);
+
+  // --- GPU world render (background + skid + arrows + particles) ---
+  // Called after interpolated state is set but before restoring physics state.
+  if (isGPUReady()) {
+    renderFrameGPU(canvasWidth, canvasHeight);
+  }
 
   // --- Restore physics state after render (so physics reads real values next step) ---
   if (curr) {
@@ -1163,14 +1200,17 @@ function recordSkidMarks(dt) {
 
         const hue = (tp.saturation > minSat && tp.hue >= 0) ? tp.hue : -1;
 
-        state.skidMarks.push({
+        const seg = {
           x1: prev.x, y1: prev.y,
           x2: wheel.x, y2: wheel.y,
           hue,
           paintSaturation: hue >= 0 ? tp.saturation : 1.0,
           width,
           alpha,
-        });
+        };
+        state.skidMarks.push(seg);
+        // Feed GPU accumulation — gpu-renderer.js drains this each render frame.
+        if (state.skidMarksNewThisFrame) state.skidMarksNewThisFrame.push(seg);
 
         if (state.skidMarks.length > maxSegments) {
           state.skidMarks.splice(0, Math.floor(maxSegments * 0.1));

@@ -45,6 +45,144 @@ import {
 
 
 // =============================================================
+// GAUGE GRADIENT CACHE (QW-1)
+// ctx.createRadialGradient is expensive; gradients are purely
+// geometric and only need to be rebuilt when the canvas resizes.
+// =============================================================
+const _gaugeGradCache = new WeakMap(); // CanvasRenderingContext2D → { w, h, face, vignette, pivot, pivotCx, pivotCy }
+
+function _getGaugeGrads(ctx, canvasWidth, canvasHeight) {
+  const cx = canvasWidth  * 0.5;
+  const cy = canvasHeight * 0.55;
+  const r  = Math.min(canvasWidth, canvasHeight) * 0.40;
+
+  const existing = _gaugeGradCache.get(ctx);
+  if (existing && existing.w === canvasWidth && existing.h === canvasHeight) return existing;
+
+  const face = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  face.addColorStop(0, '#f5f0e8');
+  face.addColorStop(1, '#d9c9a8');
+
+  const vignette = ctx.createRadialGradient(cx, cy, r * 0.6, cx, cy, r);
+  vignette.addColorStop(0, 'rgba(0,0,0,0)');
+  vignette.addColorStop(1, 'rgba(0,0,0,0.15)');
+
+  // Pivot gradient: in pivot local space (after translate+rotate) — coordinates
+  // are always (-2,-2)→(0,0) in local frame, canvas-size independent.
+  const pivot = ctx.createRadialGradient(-2, -2, 1, 0, 0, 10);
+  pivot.addColorStop(0, '#fff');
+  pivot.addColorStop(1, '#888');
+
+  const entry = { w: canvasWidth, h: canvasHeight, face, vignette, pivot };
+  _gaugeGradCache.set(ctx, entry);
+  return entry;
+}
+
+// Yaw gauge uses slightly different geometry; cached separately per-context.
+const _yawGradCache = new WeakMap();
+
+function _getYawGrads(ctx, canvasWidth, canvasHeight) {
+  const cx = canvasWidth  * 0.5;
+  const cy = canvasHeight * 0.5;
+  const r  = Math.min(canvasWidth, canvasHeight) * 0.4;
+
+  const existing = _yawGradCache.get(ctx);
+  if (existing && existing.w === canvasWidth && existing.h === canvasHeight) return existing;
+
+  const face = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r);
+  face.addColorStop(0, '#f5f0e8');
+  face.addColorStop(1, '#d9c9a8');
+
+  const pivot = ctx.createRadialGradient(cx, cy, 0, cx, cy, 8);
+  pivot.addColorStop(0, '#fff');
+  pivot.addColorStop(1, '#999');
+
+  const entry = { w: canvasWidth, h: canvasHeight, face, pivot };
+  _yawGradCache.set(ctx, entry);
+  return entry;
+}
+
+
+// =============================================================
+// PRE-BUILT WHEEL PATH2D CACHE (QW-5)
+// Static rim geometry (spokes, hub, arcs) as cached Path2D objects.
+// Eliminates 5×ctx.save/rotate/restore + 5 arc strokes per wheel per frame.
+// =============================================================
+const _wheelPaths = (() => {
+  const tireW = WHEEL_RADIUS * 1.1;
+  const tireH = WHEEL_RADIUS * 0.85;
+  const rimW  = tireW * 0.68;
+  const rimH  = tireH * 0.82;
+  const spokeCount  = 5;
+  const spokeWidth  = rimW * 0.22;
+  const spokeLength = rimW * 0.82;
+
+  // Rim background ellipse
+  const rimBg = new Path2D();
+  rimBg.ellipse(0, 0, rimW, rimH, 0, 0, Math.PI * 2);
+
+  // Rim face ellipse
+  const rimFace = new Path2D();
+  rimFace.ellipse(0, 0, rimW * 0.88, rimH * 0.88, 0, 0, Math.PI * 2);
+
+  // All 5 spokes pre-rotated into wheel-local frame
+  const spokeMain   = new Path2D();
+  const spokeShadow = new Path2D();
+  for (let s = 0; s < spokeCount; s++) {
+    const a  = (s / spokeCount) * Math.PI * 2;
+    const c  = Math.cos(a), si = Math.sin(a);
+    const rot = (x, y) => [x * c - y * si, x * si + y * c];
+
+    const [m0x, m0y] = rot(-spokeWidth * 0.5,  0);
+    const [m1x, m1y] = rot( spokeWidth * 0.5,  0);
+    const [m2x, m2y] = rot( spokeWidth * 0.3,  spokeLength);
+    const [m3x, m3y] = rot(-spokeWidth * 0.3,  spokeLength);
+    spokeMain.moveTo(m0x, m0y);
+    spokeMain.lineTo(m1x, m1y);
+    spokeMain.lineTo(m2x, m2y);
+    spokeMain.lineTo(m3x, m3y);
+    spokeMain.closePath();
+
+    const [s0x, s0y] = rot( spokeWidth * 0.1,  0);
+    const [s1x, s1y] = rot( spokeWidth * 0.5,  0);
+    const [s2x, s2y] = rot( spokeWidth * 0.3,  spokeLength);
+    const [s3x, s3y] = rot( spokeWidth * 0.1,  spokeLength);
+    spokeShadow.moveTo(s0x, s0y);
+    spokeShadow.lineTo(s1x, s1y);
+    spokeShadow.lineTo(s2x, s2y);
+    spokeShadow.lineTo(s3x, s3y);
+    spokeShadow.closePath();
+  }
+
+  // Between-spoke arcs (stroked) — all 5 as one Path2D
+  const arcBetween = new Path2D();
+  for (let s = 0; s < spokeCount; s++) {
+    const a1 = ((s + 0.5) / spokeCount) * Math.PI * 2;
+    const a2 = ((s + 1.5) / spokeCount) * Math.PI * 2;
+    arcBetween.arc(0, 0, rimW * 0.72, a1, a2);
+  }
+
+  // Hub cap circle
+  const hubCap = new Path2D();
+  hubCap.arc(0, 0, rimW * 0.22, 0, Math.PI * 2);
+
+  // Hub highlight
+  const hubHL = new Path2D();
+  hubHL.arc(-rimW * 0.06, -rimH * 0.06, rimW * 0.12, 0, Math.PI * 2);
+
+  // Hub bolt
+  const hubBolt = new Path2D();
+  hubBolt.arc(0, 0, rimW * 0.06, 0, Math.PI * 2);
+
+  // Tire sidewall ring (stroked)
+  const sidewall = new Path2D();
+  sidewall.ellipse(0, 0, rimW * 1.05, rimH * 1.05, 0, 0, Math.PI * 2);
+
+  return { rimBg, rimFace, spokeMain, spokeShadow, arcBetween, hubCap, hubHL, hubBolt, sidewall, rimW, rimH, tireW, tireH };
+})();
+
+
+// =============================================================
 // CAMERA TRANSFORM
 // =============================================================
 
@@ -340,85 +478,42 @@ export function drawCar(ctx) {
     ctx.fillRect(-tireW, -tireH + tireH * 0.12, tireW * 2, tireH * 0.08);
     ctx.fillRect(-tireW,  tireH - tireH * 0.20, tireW * 2, tireH * 0.08);
 
-    // === ALLOY RIM ===
-    // Draw rim inset within the tire
+    // === ALLOY RIM (uses pre-built Path2D cache — QW-5) ===
+    const wp = _wheelPaths;
+
     // Rim background (brake disc / dark center)
     ctx.fillStyle = '#2a2a2a';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rimW, rimH, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fill(wp.rimBg);
 
     // Alloy face — light metallic silver
     ctx.fillStyle = '#c8c8cc';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rimW * 0.88, rimH * 0.88, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fill(wp.rimFace);
 
-    // 5-spoke pattern — spokes emanate from hub to rim edge
-    const spokeCount = 5;
-    const spokeWidth  = rimW * 0.22;
-    const spokeLength = rimW * 0.82;
+    // 5-spoke pattern — pre-rotated paths, no per-spoke save/restore
     ctx.fillStyle = '#a8a8ac';
-    for (let s = 0; s < spokeCount; s++) {
-      const a = (s / spokeCount) * Math.PI * 2;
-      ctx.save();
-      ctx.rotate(a);
-      // Trapezoidal spoke: wider at hub, narrower at rim
-      ctx.beginPath();
-      ctx.moveTo(-spokeWidth * 0.5,  0);
-      ctx.lineTo( spokeWidth * 0.5,  0);
-      ctx.lineTo( spokeWidth * 0.3,  spokeLength);
-      ctx.lineTo(-spokeWidth * 0.3,  spokeLength);
-      ctx.closePath();
-      ctx.fill();
+    ctx.fill(wp.spokeMain);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fill(wp.spokeShadow);
 
-      // Spoke shadow for depth
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.beginPath();
-      ctx.moveTo( spokeWidth * 0.1,  0);
-      ctx.lineTo( spokeWidth * 0.5,  0);
-      ctx.lineTo( spokeWidth * 0.3,  spokeLength);
-      ctx.lineTo( spokeWidth * 0.1,  spokeLength);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#a8a8ac'; // reset for next spoke
-      ctx.restore();
-    }
-
-    // Between-spoke sections: dark face of rim (depth illusion)
-    // Re-draw overlapping dark arcs between spokes
+    // Between-spoke arcs (single batched stroke)
     ctx.strokeStyle = '#1e1e22';
-    ctx.lineWidth   = rimW * 0.08;
-    for (let s = 0; s < spokeCount; s++) {
-      const a1 = ((s + 0.5) / spokeCount) * Math.PI * 2;
-      const a2 = ((s + 1.5) / spokeCount) * Math.PI * 2; // wider arc
-      ctx.beginPath();
-      ctx.arc(0, 0, rimW * 0.72, a1, a2);
-      ctx.stroke();
-    }
+    ctx.lineWidth   = wp.rimW * 0.08;
+    ctx.stroke(wp.arcBetween);
 
     // Center hub cap
     ctx.fillStyle = '#404045';
-    ctx.beginPath();
-    ctx.arc(0, 0, rimW * 0.22, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fill(wp.hubCap);
     // Hub highlight
     ctx.fillStyle = '#787880';
-    ctx.beginPath();
-    ctx.arc(-rimW * 0.06, -rimH * 0.06, rimW * 0.12, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fill(wp.hubHL);
     // Hub center bolt
     ctx.fillStyle = '#222';
-    ctx.beginPath();
-    ctx.arc(0, 0, rimW * 0.06, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fill(wp.hubBolt);
 
     // Tire sidewall: a thin darker ring between tire and rim
     ctx.strokeStyle = 'rgba(0,0,0,0.4)';
     ctx.lineWidth   = tireW * 0.1;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rimW * 1.05, rimH * 1.05, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.stroke(wp.sidewall);
 
     // Tire outer edge highlight (specular sheen on rubber)
     ctx.strokeStyle = `rgba(${hotR + 20}, ${hotG + 18}, 45, 0.35)`;
@@ -1271,13 +1366,11 @@ export function drawAnalogGauge(ctx, canvasWidth, canvasHeight, config) {
 
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  // --- Face background ---
-  const faceGradient = ctx.createRadialGradient(centreX, centreY, 0, centreX, centreY, radius);
-  faceGradient.addColorStop(0, '#f5f0e8');
-  faceGradient.addColorStop(1, '#d9c9a8');
+  // --- Face background (cached gradient) ---
+  const _gg = _getGaugeGrads(ctx, canvasWidth, canvasHeight);
   ctx.beginPath();
   ctx.arc(centreX, centreY, radius, 0, Math.PI * 2);
-  ctx.fillStyle = faceGradient;
+  ctx.fillStyle = _gg.face;
   ctx.fill();
 
   // Face border.
@@ -1383,13 +1476,10 @@ export function drawAnalogGauge(ctx, canvasWidth, canvasHeight, config) {
 
   ctx.shadowColor = 'transparent';
 
-  // Pivot cap (circle at centre, covers needle base).
-  const pivotGradient = ctx.createRadialGradient(-2, -2, 1, 0, 0, 10);
-  pivotGradient.addColorStop(0, '#fff');
-  pivotGradient.addColorStop(1, '#888');
+  // Pivot cap (circle at centre, covers needle base) — cached gradient.
   ctx.beginPath();
   ctx.arc(0, 0, 8, 0, Math.PI * 2);
-  ctx.fillStyle = pivotGradient;
+  ctx.fillStyle = _gg.pivot;
   ctx.fill();
 
   ctx.restore();
@@ -1408,14 +1498,10 @@ export function drawAnalogGauge(ctx, canvasWidth, canvasHeight, config) {
   ctx.textBaseline = 'top';
   ctx.fillText(subtitle, centreX, centreY + radius * 0.40);
 
-  // --- Vignette: darkened ring around the edge for realism ---
-  const vignetteGradient = ctx.createRadialGradient(centreX, centreY, radius * 0.6,
-                                                     centreX, centreY, radius);
-  vignetteGradient.addColorStop(0, 'rgba(0,0,0,0)');
-  vignetteGradient.addColorStop(1, 'rgba(0,0,0,0.15)');
+  // --- Vignette: darkened ring around the edge (cached gradient) ---
   ctx.beginPath();
   ctx.arc(centreX, centreY, radius, 0, Math.PI * 2);
-  ctx.fillStyle = vignetteGradient;
+  ctx.fillStyle = _gg.vignette;
   ctx.fill();
 }
 
@@ -1439,14 +1525,11 @@ export function drawYawStabilityGauge(ctx, canvasWidth, canvasHeight, config) {
   const centreY = canvasHeight * 0.5;
   const radius = Math.min(canvasWidth, canvasHeight) * 0.4;
 
-  // Background gradient
-  const faceBg = ctx.createRadialGradient(centreX, centreY, radius * 0.1,
-                                          centreX, centreY, radius);
-  faceBg.addColorStop(0, '#f5f0e8');
-  faceBg.addColorStop(1, '#d9c9a8');
+  // Background gradient (cached)
+  const _yg = _getYawGrads(ctx, canvasWidth, canvasHeight);
   ctx.beginPath();
   ctx.arc(centreX, centreY, radius, 0, Math.PI * 2);
-  ctx.fillStyle = faceBg;
+  ctx.fillStyle = _yg.face;
   ctx.fill();
 
   // Tick marks (simplified — just major ticks at ±140°)
@@ -1510,13 +1593,10 @@ export function drawYawStabilityGauge(ctx, canvasWidth, canvasHeight, config) {
   ctx.lineCap = 'round';
   ctx.stroke();
 
-  // Pivot cap
-  const pivotGrad = ctx.createRadialGradient(centreX, centreY, 0, centreX, centreY, 8);
-  pivotGrad.addColorStop(0, '#fff');
-  pivotGrad.addColorStop(1, '#999');
+  // Pivot cap (cached gradient)
   ctx.beginPath();
   ctx.arc(centreX, centreY, 8, 0, Math.PI * 2);
-  ctx.fillStyle = pivotGrad;
+  ctx.fillStyle = _yg.pivot;
   ctx.fill();
 
   // Title and margin text
@@ -1858,6 +1938,11 @@ for (let i = 0; i < MAX_SPARKS; i++) {
   });
 }
 
+// Free-list for O(1) spark allocation (QW-4).
+// Stack of dead particle indices — pop to alloc, push to free.
+const sparkFreeList = [];
+for (let i = MAX_SPARKS - 1; i >= 0; i--) sparkFreeList.push(i);
+
 // HDR-capable spark colors using display-p3 gamut.
 // On SDR displays these clamp to bright white/yellow — still looks good.
 const SPARK_COLORS_HDR = [
@@ -1932,12 +2017,10 @@ export function updateSparks(dt) {
     const wheelSpeed = Math.hypot(wheelVelX, wheelVelY);
 
     for (let s = 0; s < Math.max(1, spawnCount); s++) {
-      // Find a dead particle to reuse.
-      let spark = null;
-      for (let i = 0; i < MAX_SPARKS; i++) {
-        if (!sparkPool[i].alive) { spark = sparkPool[i]; break; }
-      }
-      if (!spark) break; // pool full
+      // O(1) allocation via free-list (QW-4).
+      if (sparkFreeList.length === 0) break; // pool full
+      const _sparkIdx = sparkFreeList.pop();
+      const spark = sparkPool[_sparkIdx];
 
       // Spawn at wheel position with slight random offset.
       spark.x = wheel.x + (physicsRandom() - 0.5) * 0.2;
@@ -1970,6 +2053,7 @@ export function updateSparks(dt) {
     p.life += dt;
     if (p.life >= p.maxLife) {
       p.alive = false;
+      sparkFreeList.push(i); // return slot to free-list (QW-4)
       continue;
     }
 
@@ -1981,6 +2065,9 @@ export function updateSparks(dt) {
     p.y += p.vy * dt;
   }
 }
+
+// Returns the spark pool for GPU rendering (gpu-renderer.js reads this).
+export function getSparkPool() { return sparkPool; }
 
 // Draws all alive sparks. Called in world space.
 export function drawSparks(ctx) {

@@ -557,6 +557,14 @@ const state = {
   skidMarks: [],
 
   // -----------------------------------------------------------
+  // SKID MARKS NEW THIS FRAME — segments added since the last render frame.
+  // gpu-renderer.js drains this array each frame and uploads new segments
+  // to the GPU skid accumulation texture, then clears it.
+  // recordSkidMarks() in main.js appends here in addition to skidMarks.
+  // -----------------------------------------------------------
+  skidMarksNewThisFrame: [],
+
+  // -----------------------------------------------------------
   // TRACTION STATE — tracks whether tires are currently slipping
   // usedForSkidSound: true when lateral slip exceeds threshold this step
   // prevSlipping: previous step state (for edge detection — sound triggers on transition)

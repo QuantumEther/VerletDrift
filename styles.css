@@ -143,12 +143,35 @@ body {
   text-align: right;
 }
 
+/* Canvas stack: gpuCanvas (world space) sits below simCanvas (HUD overlay).
+   Both are absolute within .canvas-container so they overlap exactly. */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+  background: #0c1018;
+  /* height is driven by the canvas elements inside */
+  display: block;
+}
+
+#gpuCanvas {
+  display: block;
+  width: 100%;
+  position: relative; /* first canvas takes up layout space */
+  z-index: 0;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
 #simCanvas {
   display: block;
   width: 100%;
-  border-radius: 12px;
-  background: #0c1018;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  background: transparent; /* HUD overlay — world drawn on gpuCanvas below */
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 }
