@@ -165,6 +165,7 @@ export function initSliders() {
     return Math.max(10, Math.min(120, snapped));
   }, fmtInt);
 
+  bind('maxSubstepsPerFrame', 'maxSubstepsPerFrame', parseInt1, fmtInt);
   bind('timeScale', 'timeScale', parseFloat1, fmt2);
 
   // ---- Car physics ----
@@ -651,7 +652,7 @@ export function updateInfoBar() {
   // Physics Hz is the slider value — the dynamic measurement was showing
   // display framerate (bug: 1 tick / wallFrameTime = displayHz, not physicsHz).
   setInfoCell('physicsTpsDisplay',
-    `${state.params.simulationFps} Hz`);
+    `${state.params.simulationFps}Hz · max ${state.params.maxSubstepsPerFrame}/f · drop ${state.loop.droppedSubsteps}`);
 }
 
 // Sets the textContent of an info cell by id, silently skipping if not found.

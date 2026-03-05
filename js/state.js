@@ -322,6 +322,7 @@ const state = {
     simulationTime:    0, // total elapsed simulation seconds (for combo timing)
     renderFps:         0, // smoothed render frames per second (set by main.js)
     physicsTps:        0, // smoothed physics ticks per second (set by main.js)
+    droppedSubsteps:   0, // number of sub-steps dropped due to per-frame cap
   },
 
   // -----------------------------------------------------------
@@ -331,6 +332,7 @@ const state = {
   // -----------------------------------------------------------
   params: {
     simulationFps:           100,  // physics Hz (wall-clock tick rate)
+    maxSubstepsPerFrame:     6,    // cap on fixed-step ticks consumed per render frame
     timeScale:               1.0,
     carMassKg:               CAR_MASS_KG,
     rollingResistanceCoeff:  DEFAULT_ROLLING_RESISTANCE_COEFF,

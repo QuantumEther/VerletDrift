@@ -405,8 +405,9 @@ function mainLoop(timestampMilliseconds) {
   // Each tick advances (physicsWallDt × timeScale) seconds of SIMULATION time.
   // → timeScale=1.0: normal speed   → timeScale=0.1: 10× slow motion
   // The tick RATE in wall-clock is unchanged; only the simulated dt shrinks.
+  const maxSubstepsPerFrame = Math.max(1, Math.round(state.params.maxSubstepsPerFrame || 6));
   let ticksThisFrame = 0;
-  while (state.loop.accumulator >= physicsWallDt) {
+  while (state.loop.accumulator >= physicsWallDt && ticksThisFrame < maxSubstepsPerFrame) {
     snapPrev = snapCurr;
 
     // Simulated dt: real step size × timeScale.
@@ -418,6 +419,12 @@ function mainLoop(timestampMilliseconds) {
 
     state.loop.accumulator -= physicsWallDt;
     ticksThisFrame++;
+  }
+
+  if (state.loop.accumulator >= physicsWallDt) {
+    const droppedSubsteps = Math.floor(state.loop.accumulator / physicsWallDt);
+    state.loop.droppedSubsteps += droppedSubsteps;
+    state.loop.accumulator = Math.min(state.loop.accumulator, physicsWallDt * maxSubstepsPerFrame);
   }
 
   // Smooth physics ticks-per-second display.
