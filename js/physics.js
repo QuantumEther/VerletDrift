@@ -826,6 +826,10 @@ export function computeTireForces(dt) {
     const wheelForceX = relaxedLon * wheelForwardX + relaxedLat * wheelRightX;
     const wheelForceY = relaxedLon * wheelForwardY + relaxedLat * wheelRightY;
 
+    // Store wheel forces for gauge rendering (friction circles, etc).
+    state.wheelForces[name].fx = wheelForceX;
+    state.wheelForces[name].fy = wheelForceY;
+
     netForceX += wheelForceX;
     netForceY += wheelForceY;
 
@@ -835,6 +839,15 @@ export function computeTireForces(dt) {
 
     // (Diagnostic logging removed — was firing every wheel every step, ~240 logs/sec)
   }
+
+  // Aggregate wheel forces into axle forces for friction circle gauges.
+  state.axleForces.front.fx = state.wheelForces.frontLeft.fx + state.wheelForces.frontRight.fx;
+  state.axleForces.front.fy = state.wheelForces.frontLeft.fy + state.wheelForces.frontRight.fy;
+  state.axleForces.front.N  = state.wheelLoads.frontLeft + state.wheelLoads.frontRight;
+
+  state.axleForces.rear.fx  = state.wheelForces.rearLeft.fx  + state.wheelForces.rearRight.fx;
+  state.axleForces.rear.fy  = state.wheelForces.rearLeft.fy  + state.wheelForces.rearRight.fy;
+  state.axleForces.rear.N   = state.wheelLoads.rearLeft + state.wheelLoads.rearRight;
 
   // Track traction loss state for sound and skid marks.
   // A wheel is slipping if its lateral speed exceeds the traction threshold.

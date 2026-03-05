@@ -753,7 +753,7 @@ const gaugeRegistry = [];
 
 /**
  * Registers a new analog gauge.
- * Creates a canvas element, needle physics instance, and adds to the registry.
+ * Creates a canvas element, needle physics instance (if not provided), and adds to the registry.
  *
  * @param {Object} config
  * @param {string} config.label - Short name for the badge
@@ -766,6 +766,10 @@ const gaugeRegistry = [];
  * @param {number} [config.minorDivisions] - Subdivisions between major ticks
  * @param {number|null} [config.redFrom] - Value above which red zone starts
  * @param {Function} [config.labelFormatter] - Formats tick labels
+ * @param {Object} [config.needle] - Pre-created needle physics instance (skips creation if provided)
+ * @param {string} [config.customRenderer] - Name of custom render function (e.g. 'drawYawStabilityGauge')
+ * @param {string} [config.axle] - For friction gauges: 'front' or 'rear'
+ * @param {Array} [config.radarNeedles] - For drift radar: array of 6 needle physics instances
  * @param {string} [config.containerId] - DOM id of parent container (default: 'gauge-row')
  * @returns {Object} The registry entry (for external reference if needed)
  */
@@ -781,6 +785,10 @@ export function registerGauge(config) {
     minorDivisions = 5,
     redFrom = null,
     labelFormatter = (v) => String(Math.round(v)),
+    needle = null,  // Optional pre-created needle
+    customRenderer = null,  // Optional custom renderer name
+    axle = null,  // Optional axle identifier for friction gauges
+    radarNeedles = null,  // Optional array of needles for radar
     containerId = 'gauge-row',
   } = config;
 
@@ -812,8 +820,8 @@ export function registerGauge(config) {
   frame.appendChild(inner);
   container.appendChild(frame);
 
-  // Create independent needle physics for this gauge.
-  const needle = createNeedlePhysics();
+  // Use provided needle or create a new one (if not a custom renderer without needle).
+  const needleInstance = needle || (customRenderer && !needle ? null : createNeedlePhysics());
 
   const entry = {
     label,
@@ -828,7 +836,10 @@ export function registerGauge(config) {
     labelFormatter,
     canvas,
     ctx,
-    needle,
+    needle: needleInstance,
+    customRenderer,  // Store custom renderer name
+    axle,  // Store axle identifier if applicable
+    radarNeedles,  // Store radar needles if applicable
   };
 
   gaugeRegistry.push(entry);

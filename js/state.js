@@ -219,6 +219,28 @@ const state = {
   },
 
   // -----------------------------------------------------------
+  // WHEEL FORCES — per-wheel longitudinal and lateral tire forces (Newtons)
+  // Computed during computeTireForces() for gauge rendering.
+  // Each wheel: { fx: longitudinal, fy: lateral } (world-space, not car-relative)
+  // -----------------------------------------------------------
+  wheelForces: {
+    frontLeft:  { fx: 0, fy: 0 },
+    frontRight: { fx: 0, fy: 0 },
+    rearLeft:   { fx: 0, fy: 0 },
+    rearRight:  { fx: 0, fy: 0 },
+  },
+
+  // -----------------------------------------------------------
+  // AXLE FORCES — aggregated forces per axle for friction circle gauges
+  // front/rear: { fx: sum of front/rear wheels, fy: sum, N: sum of normal loads }
+  // Computed during computeTireForces() after per-wheel calculations.
+  // -----------------------------------------------------------
+  axleForces: {
+    front: { fx: 0, fy: 0, N: 0 },
+    rear:  { fx: 0, fy: 0, N: 0 },
+  },
+
+  // -----------------------------------------------------------
   // FILTERED BODY DERIVATIVES — EMA-smoothed for rendering
   // Raw accel/jerk from Verlet differentiation is noisy due to
   // constraint impulses. These filtered versions drive the HUD.

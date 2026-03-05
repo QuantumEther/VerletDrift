@@ -16,7 +16,9 @@
       "Bash(pdflatex -interaction=nonstopmode verlet-drift-equations.tex)",
       "Bash(choco --version)",
       "Bash(git add docs/equations/)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(wc -l C:UsersQuantumDocumentsGitHubVerletDriftjs/*.js)",
+      "Bash(ls -lh /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)"
     ]
   }
 }

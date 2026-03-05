@@ -1421,6 +1421,357 @@ export function drawAnalogGauge(ctx, canvasWidth, canvasHeight, config) {
 
 
 // =============================================================
+// CUSTOM GAUGE RENDERERS (v15 new gauges)
+// =============================================================
+
+/**
+ * Yaw Stability Margin Gauge: circular dial where needle rotates ±140° AND grows in length
+ * with margin usage.
+ */
+export function drawYawStabilityGauge(ctx, canvasWidth, canvasHeight, config) {
+  const { value, needleNormalized, labelFontScale, speedJitter } = config;
+  const yawRate = value;  // rad/s
+  const yawLimit = 2.0;   // rad/s (tunable default)
+  const marginUsed = Math.abs(yawRate) / yawLimit;
+  const marginPercent = marginUsed * 100;
+
+  const centreX = canvasWidth * 0.5;
+  const centreY = canvasHeight * 0.5;
+  const radius = Math.min(canvasWidth, canvasHeight) * 0.4;
+
+  // Background gradient
+  const faceBg = ctx.createRadialGradient(centreX, centreY, radius * 0.1,
+                                          centreX, centreY, radius);
+  faceBg.addColorStop(0, '#f5f0e8');
+  faceBg.addColorStop(1, '#d9c9a8');
+  ctx.beginPath();
+  ctx.arc(centreX, centreY, radius, 0, Math.PI * 2);
+  ctx.fillStyle = faceBg;
+  ctx.fill();
+
+  // Tick marks (simplified — just major ticks at ±140°)
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+  const sweepAngle = (140 * Math.PI / 180);
+  const startAngle = Math.PI / 2 - sweepAngle / 2;
+
+  for (let i = 0; i <= 4; i++) {
+    const angle = startAngle + (sweepAngle / 4) * i;
+    const x1 = centreX + radius * 0.85 * Math.cos(angle);
+    const y1 = centreY + radius * 0.85 * Math.sin(angle);
+    const x2 = centreX + radius * 0.95 * Math.cos(angle);
+    const y2 = centreY + radius * 0.95 * Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    // Tick label
+    if (i === 0) {
+      ctx.fillStyle = '#333';
+      ctx.font = `${12 * labelFontScale}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('-140%', x1 - 15, y1);
+    } else if (i === 4) {
+      ctx.fillStyle = '#333';
+      ctx.font = `${12 * labelFontScale}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('+140%', x1 + 15, y1);
+    }
+  }
+
+  // Needle: rotates ±140° and grows in length
+  const needleBaseLength = radius * 0.6;
+  const needleMaxLength = radius * 1.0;
+  const needleLength = needleBaseLength + Math.max(marginUsed - 0.5, 0) * (needleMaxLength - needleBaseLength);
+
+  const needleAngle = startAngle + sweepAngle * needleNormalized + (Math.random() * 2 - 1) * speedJitter * sweepAngle * 0.04;
+  const needleTipX = centreX + needleLength * Math.cos(needleAngle);
+  const needleTipY = centreY + needleLength * Math.sin(needleAngle);
+
+  // Needle shadow
+  ctx.beginPath();
+  ctx.moveTo(centreX + 3, centreY + 3);
+  ctx.lineTo(needleTipX + 3, needleTipY + 3);
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Needle itself (red, tapered)
+  const needleWidthBase = 5;
+  ctx.beginPath();
+  ctx.moveTo(centreX, centreY);
+  ctx.lineTo(needleTipX, needleTipY);
+  ctx.strokeStyle = '#c0392b';
+  ctx.lineWidth = needleWidthBase;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Pivot cap
+  const pivotGrad = ctx.createRadialGradient(centreX, centreY, 0, centreX, centreY, 8);
+  pivotGrad.addColorStop(0, '#fff');
+  pivotGrad.addColorStop(1, '#999');
+  ctx.beginPath();
+  ctx.arc(centreX, centreY, 8, 0, Math.PI * 2);
+  ctx.fillStyle = pivotGrad;
+  ctx.fill();
+
+  // Title and margin text
+  ctx.fillStyle = '#333';
+  ctx.font = `bold ${16 * labelFontScale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('YAW STABILITY', centreX, centreY + radius + 20);
+
+  ctx.font = `${14 * labelFontScale}px sans-serif`;
+  ctx.fillText(`${Math.min(marginPercent, 999).toFixed(0)}% Margin`, centreX, centreY + radius + 45);
+}
+
+/**
+ * Friction Circle Gauge: plots normalized axle forces (FxN, FyN) inside a unit circle.
+ * Saturation = hypot(FxN, FyN).
+ */
+export function drawFrictionCircle(ctx, canvasWidth, canvasHeight, config) {
+  const { axle, labelFontScale } = config;  // axle: 'front' or 'rear'
+
+  const axleForces = axle === 'front' ? state.axleForces.front : state.axleForces.rear;
+  const tireFrictionCoeff = state.params.tireFrictionCoeff;
+
+  // Normalize forces to friction circle coordinates
+  const fxN = axleForces.N > 0 ? axleForces.fx / (tireFrictionCoeff * axleForces.N) : 0;
+  const fyN = axleForces.N > 0 ? axleForces.fy / (tireFrictionCoeff * axleForces.N) : 0;
+  const saturation = Math.hypot(fxN, fyN);
+
+  const centreX = canvasWidth * 0.5;
+  const centreY = canvasHeight * 0.5;
+  const radius = Math.min(canvasWidth, canvasHeight) * 0.35;
+
+  // Background
+  ctx.fillStyle = '#f5f0e8';
+  ctx.beginPath();
+  ctx.arc(centreX, centreY, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Grid lines: 0.5 and 1.0 friction circles
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1;
+  for (const level of [0.5, 1.0]) {
+    ctx.beginPath();
+    ctx.arc(centreX, centreY, radius * level, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Axes (X and Y force directions)
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(centreX - radius, centreY);
+  ctx.lineTo(centreX + radius, centreY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(centreX, centreY - radius);
+  ctx.lineTo(centreX, centreY + radius);
+  ctx.stroke();
+
+  // Operating point (dot at FxN, FyN scaled to canvas)
+  const dotX = centreX + (fxN / 1.25) * radius;
+  const dotY = centreY - (fyN / 1.25) * radius;
+  ctx.fillStyle = '#c0392b';
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Saturation text
+  ctx.fillStyle = '#333';
+  ctx.font = `bold ${14 * labelFontScale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`${(saturation * 100).toFixed(0)}%`, centreX, centreY + radius + 15);
+
+  // Axle label
+  ctx.font = `${12 * labelFontScale}px sans-serif`;
+  ctx.fillText(axle.toUpperCase() + ' AXLE', centreX, centreY + radius + 35);
+}
+
+/**
+ * Slip Angle Meter (β): horizontal bar with moving indicator.
+ */
+export function drawSlipAngleMeter(ctx, canvasWidth, canvasHeight, config) {
+  const { value, needleNormalized, labelFontScale, speedJitter } = config;
+  const betaDeg = value;  // degrees, ±45°
+
+  const barX = canvasWidth * 0.15;
+  const barY = canvasHeight * 0.5;
+  const barWidth = canvasWidth * 0.7;
+  const barHeight = 30;
+
+  // Background bar
+  ctx.fillStyle = '#d9c9a8';
+  ctx.fillRect(barX, barY - barHeight / 2, barWidth, barHeight);
+
+  // Center zero marking
+  const centreX = barX + barWidth * 0.5;
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(centreX, barY - barHeight / 2 - 10);
+  ctx.lineTo(centreX, barY + barHeight / 2 + 10);
+  ctx.stroke();
+
+  // Tick marks at ±15°, ±30°, ±45°
+  ctx.lineWidth = 1;
+  ctx.font = `${10 * labelFontScale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (const deg of [-45, -30, -15, 15, 30, 45]) {
+    const normalizedPos = (deg + 45) / 90;  // [0, 1]
+    const x = barX + barWidth * normalizedPos;
+    ctx.beginPath();
+    ctx.moveTo(x, barY - barHeight / 2);
+    ctx.lineTo(x, barY - barHeight / 2 - 8);
+    ctx.stroke();
+    ctx.fillStyle = '#666';
+    ctx.fillText(deg.toString(), x, barY + barHeight / 2 + 5);
+  }
+
+  // Moving indicator (spring-smoothed)
+  const indicatorPos = barX + barWidth * needleNormalized;
+  const indicatorJitter = (Math.random() * 2 - 1) * speedJitter * 2;
+  const actualPos = indicatorPos + indicatorJitter;
+
+  ctx.fillStyle = '#c0392b';
+  ctx.beginPath();
+  ctx.arc(actualPos, barY, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Value text
+  ctx.fillStyle = '#333';
+  ctx.font = `bold ${16 * labelFontScale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(`β = ${betaDeg.toFixed(1)}°`, canvasWidth * 0.5, barY - barHeight / 2 - 20);
+}
+
+/**
+ * Drift Stability Radar: 6-axis spider chart with spring-smoothed polygon.
+ */
+export function drawDriftRadar(ctx, canvasWidth, canvasHeight, config) {
+  const { radarNeedles, labelFontScale } = config;
+
+  // Compute normalized values for each axis
+  const yawRate = state.body.angularVelocity;
+  const yawLimit = 2.0;
+  const yawMargin = Math.max(Math.abs(yawRate) / yawLimit, 0);
+
+  const frontFxN = state.axleForces.front.N > 0 ? state.axleForces.front.fx / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
+  const frontFyN = state.axleForces.front.N > 0 ? state.axleForces.front.fy / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
+  const rearFxN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fx / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
+  const rearFyN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fy / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
+
+  const rearSaturation = Math.hypot(rearFxN, rearFyN);
+  const frontSaturation = Math.hypot(frontFxN, frontFyN);
+  const frontAuthority = 1.0 - Math.min(frontSaturation, 1.0);
+
+  const heading = state.body.heading;
+  const vLong = state.body.velocityX * Math.sin(heading) + state.body.velocityY * -Math.cos(heading);
+  const vLat = state.body.velocityX * Math.cos(heading) + state.body.velocityY * Math.sin(heading);
+  const beta = Math.atan2(vLat, Math.max(Math.abs(vLong), 0.25));
+  const slipAngle = Math.min(Math.abs(beta) / (35 * Math.PI / 180), 1.0);
+
+  const steerAngle = state.steering.frontWheelAngle;
+  const steerRef = 0.35;
+  const counterSteerAlign = Math.max(1.0 - Math.abs(Math.sign(beta) * steerAngle) / steerRef, 0.0);
+
+  const speedRef = 25;  // m/s
+  const speedRatio = Math.min(state.body.speed / speedRef, 1.0);
+
+  // Raw values (before needle smoothing)
+  const rawValues = [
+    Math.min(yawMargin, 1.25) / 1.25,
+    Math.min(rearSaturation, 1.25) / 1.25,
+    frontAuthority,
+    slipAngle,
+    counterSteerAlign,
+    speedRatio,
+  ];
+
+  // Smooth each value using its needle physics (6 axes)
+  const smoothedValues = rawValues.map((val, idx) =>
+    (radarNeedles && radarNeedles[idx]) ? radarNeedles[idx].step(Math.max(Math.min(val, 1.0), 0.0), 0.016) : val
+  );
+
+  const centreX = canvasWidth * 0.5;
+  const centreY = canvasHeight * 0.5;
+  const radarRadius = Math.min(canvasWidth, canvasHeight) * 0.35;
+
+  // Background
+  ctx.fillStyle = '#f5f0e8';
+  ctx.beginPath();
+  ctx.arc(centreX, centreY, radarRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Grid rings at 0.25, 0.5, 0.75, 1.0
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1;
+  for (const level of [0.25, 0.5, 0.75, 1.0]) {
+    ctx.beginPath();
+    ctx.arc(centreX, centreY, radarRadius * level, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Axes (6 equally spaced)
+  const axisLabels = ['Yaw', 'Rear Sat', 'Front Auth', 'Slip β', 'Steer Align', 'Speed'];
+  const axisAngles = axisLabels.map((_, i) => (Math.PI * 2 / 6) * i - Math.PI / 2);
+
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1;
+  axisAngles.forEach(angle => {
+    const x = centreX + radarRadius * Math.cos(angle);
+    const y = centreY + radarRadius * Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(centreX, centreY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  });
+
+  // Polygon (filled shape connecting the 6 values)
+  ctx.beginPath();
+  smoothedValues.forEach((val, idx) => {
+    const angle = axisAngles[idx];
+    const x = centreX + radarRadius * val * Math.cos(angle);
+    const y = centreY + radarRadius * val * Math.sin(angle);
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(192, 57, 43, 0.2)';  // Red with transparency
+  ctx.fill();
+  ctx.strokeStyle = '#c0392b';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = '#333';
+  ctx.font = `${11 * labelFontScale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  axisLabels.forEach((label, idx) => {
+    const angle = axisAngles[idx];
+    const x = centreX + (radarRadius + 30) * Math.cos(angle);
+    const y = centreY + (radarRadius + 30) * Math.sin(angle);
+    ctx.fillText(label, x, y);
+  });
+
+  // Title
+  ctx.font = `bold ${14 * labelFontScale}px sans-serif`;
+  ctx.fillText('DRIFT RADAR', centreX, centreY - radarRadius - 30);
+}
+
+
+// =============================================================
 // ACCELERATION & JERK ARROWS (world space)
 // =============================================================
 

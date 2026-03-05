@@ -87,6 +87,10 @@ import {
   drawClutchBar,
   drawGearIndicator,
   drawAnalogGauge,
+  drawYawStabilityGauge,
+  drawFrictionCircle,
+  drawSlipAngleMeter,
+  drawDriftRadar,
   drawBalloons,
   drawSplatParticles,
   drawScoreHud,
@@ -216,6 +220,26 @@ const rpmNeedle  = createNeedlePhysics();
 const speedNeedle = createNeedlePhysics();
 const latGNeedle  = createNeedlePhysics();
 
+// New gauge needle instances (v15: 4 new gauges + drift radar).
+const yawMarginNeedle = createNeedlePhysics();
+const betaNeedle = createNeedlePhysics();
+const radarNeedles = [
+  createNeedlePhysics(),  // Yaw Margin
+  createNeedlePhysics(),  // Rear Saturation
+  createNeedlePhysics(),  // Front Authority
+  createNeedlePhysics(),  // Slip Angle
+  createNeedlePhysics(),  // Countersteer Alignment
+  createNeedlePhysics(),  // Speed Ratio
+];
+
+// Custom renderer mapping: name → function
+const customRendererMap = {
+  drawYawStabilityGauge,
+  drawFrictionCircle,
+  drawSlipAngleMeter,
+  drawDriftRadar,
+};
+
 // Place the car in the centre of the default map (coordinates in metres).
 initializeCarBody(DEFAULT_MAP_WIDTH * 0.5, DEFAULT_MAP_HEIGHT * 0.5);
 
@@ -319,6 +343,85 @@ registerGauge({
   minorDivisions: 5,
   redFrom:        0.8,
   labelFormatter: (v) => v.toFixed(2),
+});
+
+// --- NEW GAUGES (v15) ---
+
+// Yaw Stability Margin Gauge: needle rotates ±140° and grows in length.
+registerGauge({
+  label:            'YAW',
+  title:            'YAW STABILITY',
+  subtitle:         'Margin',
+  min:              -2.0,
+  max:               2.0,
+  majorStep:        0.5,
+  minorDivisions:   5,
+  redFrom:          1.5,
+  getValue:         () => state.body.angularVelocity,
+  needle:           yawMarginNeedle,
+  labelFormatter:   (v) => v.toFixed(1),
+  customRenderer:   'drawYawStabilityGauge',  // Custom renderer flag for ui.js
+});
+
+// Friction Circle Gauges (Front & Rear axles).
+registerGauge({
+  label:            'FRICTION F',
+  title:            'FRONT GRIP',
+  subtitle:         'Circle',
+  min:              0,
+  max:              1,
+  getValue:         () => {
+    const fxN = state.axleForces.front.N > 0 ? state.axleForces.front.fx / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
+    const fyN = state.axleForces.front.N > 0 ? state.axleForces.front.fy / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
+    return Math.hypot(fxN, fyN);
+  },
+  customRenderer:   'drawFrictionCircle',
+  axle:             'front',
+});
+
+registerGauge({
+  label:            'FRICTION R',
+  title:            'REAR GRIP',
+  subtitle:         'Circle',
+  min:              0,
+  max:              1,
+  getValue:         () => {
+    const fxN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fx / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
+    const fyN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fy / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
+    return Math.hypot(fxN, fyN);
+  },
+  customRenderer:   'drawFrictionCircle',
+  axle:             'rear',
+});
+
+// Slip Angle Meter (β): horizontal bar.
+registerGauge({
+  label:            'SLIP β',
+  title:            'SLIP ANGLE',
+  subtitle:         'Degrees',
+  min:              -45,
+  max:               45,
+  getValue:         () => {
+    const heading = state.body.heading;
+    const vLong = state.body.velocityX * Math.sin(heading) + state.body.velocityY * -Math.cos(heading);
+    const vLat = state.body.velocityX * Math.cos(heading) + state.body.velocityY * Math.sin(heading);
+    const beta = Math.atan2(vLat, Math.max(Math.abs(vLong), 0.25)) * 180 / Math.PI;
+    return beta;
+  },
+  needle:           betaNeedle,
+  customRenderer:   'drawSlipAngleMeter',
+});
+
+// Drift Stability Radar: 6-axis spider chart with spring-smoothed polygon.
+registerGauge({
+  label:            'DRIFT',
+  title:            'DRIFT RADAR',
+  subtitle:         'Stability',
+  min:              0,
+  max:              1,
+  getValue:         () => state.driftIntensity,
+  customRenderer:   'drawDriftRadar',
+  radarNeedles:     radarNeedles,  // Array of 6 needle physics for each axis
 });
 
 
@@ -816,25 +919,60 @@ function drawGauges(dt) {
   const registry = getGaugeRegistry();
   for (const entry of registry) {
     const value = entry.getValue();
-    const range = entry.max - entry.min;
-    const normalized = entry.needle.step(
-      range > 0 ? (value - entry.min) / range : 0,
-      dt
-    );
-    drawAnalogGauge(entry.ctx, entry.canvas.width, entry.canvas.height, {
-      value:            value,
-      min:              entry.min,
-      max:              entry.max,
-      title:            entry.title,
-      subtitle:         entry.subtitle,
-      majorStep:        entry.majorStep,
-      minorDivisions:   entry.minorDivisions,
-      redFrom:          entry.redFrom,
-      needleNormalized: normalized,
-      labelFormatter:   entry.labelFormatter,
-      labelFontScale,
-      speedJitter,
-    });
+
+    // Check if this gauge has a custom renderer
+    if (entry.customRenderer) {
+      const customRenderer = customRendererMap[entry.customRenderer];
+      if (customRenderer) {
+        // For custom renderers, handle needle smoothing based on gauge type
+        let config = {
+          value,
+          labelFontScale,
+          speedJitter,
+        };
+
+        // Add type-specific config
+        if (entry.needle && entry.customRenderer === 'drawYawStabilityGauge') {
+          const normalized = entry.needle.step(
+            (value - entry.min) / Math.max(entry.max - entry.min, 1),
+            dt
+          );
+          config.needleNormalized = normalized;
+        } else if (entry.needle && entry.customRenderer === 'drawSlipAngleMeter') {
+          const normalized = (value - entry.min) / Math.max(entry.max - entry.min, 1);
+          config.needleNormalized = entry.needle.step(Math.max(0, Math.min(normalized, 1)), dt);
+        } else if (entry.radarNeedles && entry.customRenderer === 'drawDriftRadar') {
+          config.radarNeedles = entry.radarNeedles;
+        } else if (entry.axle && entry.customRenderer === 'drawFrictionCircle') {
+          config.axle = entry.axle;
+        }
+
+        // Call the custom renderer
+        customRenderer(entry.ctx, entry.canvas.width, entry.canvas.height, config);
+      }
+    } else {
+      // Standard analog gauge rendering
+      const range = entry.max - entry.min;
+      const normalized = (entry.needle ? entry.needle.step(
+        range > 0 ? (value - entry.min) / range : 0,
+        dt
+      ) : 0);
+
+      drawAnalogGauge(entry.ctx, entry.canvas.width, entry.canvas.height, {
+        value:            value,
+        min:              entry.min,
+        max:              entry.max,
+        title:            entry.title,
+        subtitle:         entry.subtitle,
+        majorStep:        entry.majorStep,
+        minorDivisions:   entry.minorDivisions,
+        redFrom:          entry.redFrom,
+        needleNormalized: normalized,
+        labelFormatter:   entry.labelFormatter,
+        labelFontScale,
+        speedJitter,
+      });
+    }
   }
 }
 
