@@ -111,6 +111,58 @@ const SMOOTH_TIME        = 0.04;  // ramp time for AudioParam changes
 const MIN_RPM  = 600;
 const IDLE_RPM = 800;
 
+// Pulse scheduling lookahead window
+const PULSE_LOOKAHEAD = 0.050; // seconds
+
+// Cylinder firing orders by cylinder count
+// Each array is the sequence in which cylinders fire
+const FIRING_ORDERS = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  4: [1, 3, 4, 2],  // Inline-4 (most common)
+  5: [1, 2, 4, 5, 3],  // Inline-5 (Volvo, Audi)
+  6: [1, 5, 3, 6, 2, 4],  // Inline-6 (perfectly balanced)
+  7: [1, 3, 5, 7, 2, 4, 6],  // 7-cyl
+  8: [1, 8, 4, 3, 6, 5, 7, 2],  // V8 small-block
+  9: [1, 3, 5, 7, 9, 2, 4, 6, 8],  // 9-cyl (radial pattern)
+  10: [1, 6, 5, 10, 3, 8, 4, 9, 2, 7],  // V10
+  12: [1, 7, 5, 11, 3, 9, 6, 12, 2, 8, 4, 10],  // V12 (Ferrari/Zonda)
+};
+
+// Module-level state for cylinder timing
+let cylinderFireTimes = [];  // Array of delay times per cylinder
+let cylinderFireIndex = 0;   // Which cylinder in sequence fires next
+
+// Compute individual cylinder delay times based on RPM and cylinder count
+function computeCylinderDelayTimes(rpm, cylinderCount) {
+  const firingOrder = FIRING_ORDERS[cylinderCount] || FIRING_ORDERS[4];  // fallback to inline-4
+
+  // Time for one complete 4-stroke cycle (2 crank rotations)
+  const cyclePeriod = 120 / rpm;  // seconds
+
+  // Degrees per second
+  const crankDegreesPerSecond = (rpm / 60) * 360;
+
+  // Cylinder spacing in crank degrees
+  const baseCrankSpacing = 360 / cylinderCount;
+
+  // Compute delay times for each cylinder in firing order
+  const delays = [];
+  for (let i = 0; i < cylinderCount; i++) {
+    const cylinderNumber = firingOrder[i];
+    const cylinderCrankAngle = (cylinderNumber - 1) * baseCrankSpacing;
+    const delaySeconds = cylinderCrankAngle / crankDegreesPerSecond;
+    delays.push(delaySeconds);
+  }
+
+  // Normalize to cycle period
+  const minDelay = Math.min(...delays);
+  const normalizedDelays = delays.map(d => ((d - minDelay + cyclePeriod) % cyclePeriod));
+
+  return normalizedDelays.sort((a, b) => a - b);
+}
+
 // =============================================================
 // HELPERS — Buffer creation
 // =============================================================
@@ -200,34 +252,47 @@ function synthesizeExhaustIR(ctx) {
 // Jitter perturbs individual pulse timing without drifting the underlying metronome.
 const PULSE_LOOKAHEAD = 0.050; // seconds of lookahead
 
-function schedulePulses(firingFreq, throttle) {
+function schedulePulses(firingFreq, throttle, rpm = 800) {
   if (!pulseGain || !audioCtx || firingFreq < 5) return;
 
-  const now      = audioCtx.currentTime;
-  const horizon  = now + PULSE_LOOKAHEAD;
-  const period   = 1.0 / firingFreq;
+  const now = audioCtx.currentTime;
+  const horizon = now + PULSE_LOOKAHEAD;
+  const cylinderCount = state.params.cylinderCount || 12;
+
+  // Recompute cylinder timing based on current RPM
+  const delayTimes = computeCylinderDelayTimes(rpm, cylinderCount);
+  const cyclePeriod = 120 / rpm;  // seconds for 2 crank rotations
 
   // Snap forward if we've fallen behind (e.g. tab was backgrounded)
   if (nextPulseTime < now) nextPulseTime = now;
 
-  const decaySec     = ((state.soundParams.pulseDecayMs ?? 30)) / 1000;
-  const jitterAmount = state.soundParams.jitterAmount  ?? 0.15;
-  const mainGain     = state.soundParams.mainGain      ?? 0.3;
-  const peakAmp      = mainGain * (0.3 + (throttle || 0) * 0.7);
+  const decaySec = ((state.soundParams.pulseDecayMs ?? 30)) / 1000;
+  const jitterAmount = state.soundParams.jitterAmount ?? 0.15;
+  const mainGain = state.soundParams.mainGain ?? 0.3;
+  const peakAmp = mainGain * (0.3 + (throttle || 0) * 0.7);
 
+  // Schedule pulses according to cylinder firing order
   while (nextPulseTime < horizon) {
-    // Jitter: perturb this pulse's scheduled time but do NOT advance nextPulseTime by jitter,
-    // so the underlying firing rate stays regular.
-    const jitterOffset = (Math.random() - 0.5) * jitterAmount * period;
-    const t            = nextPulseTime + jitterOffset;
+    const cylinderIndex = cylinderFireIndex % cylinderCount;
+    const cylinderFireDelay = delayTimes[cylinderIndex];
 
-    // Only schedule pulses in the future; exponentialRamp requires value > 0 (never 0.0)
-    if (t > now) {
-      pulseGain.gain.setValueAtTime(peakAmp, t);
-      pulseGain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
+    // Compute actual fire time for this cylinder in the current cycle
+    const cycleStartTime = Math.floor(nextPulseTime / cyclePeriod) * cyclePeriod;
+    const t = cycleStartTime + cylinderFireDelay;
+
+    // Apply jitter
+    const jitterOffset = (Math.random() - 0.5) * jitterAmount * (cyclePeriod / cylinderCount);
+    const tWithJitter = t + jitterOffset;
+
+    // Only schedule pulses in the future
+    if (tWithJitter > now) {
+      pulseGain.gain.setValueAtTime(peakAmp, tWithJitter);
+      pulseGain.gain.exponentialRampToValueAtTime(0.001, tWithJitter + decaySec);
     }
 
-    nextPulseTime += period;
+    // Move to next cylinder in sequence
+    nextPulseTime += (cyclePeriod / cylinderCount);
+    cylinderFireIndex = (cylinderFireIndex + 1) % cylinderCount;
   }
 }
 
@@ -346,7 +411,7 @@ function applyAllAudioParams(rpm, maxRpm, throttlePosition) {
   }
 
   // ── Schedule next batch of combustion pulses ──────────────
-  schedulePulses(firingFreq, throttlePosition);
+  schedulePulses(firingFreq, throttlePosition, rpm);
 }
 
 // =============================================================
@@ -696,6 +761,10 @@ export function startEngine() {
   intakeOsc.start(0);
   noiseSource.start(0);
   nextPulseTime = audioCtx.currentTime; // initialize pulse scheduler
+
+  // Initialize cylinder firing sequence state
+  cylinderFireIndex = 0;
+  cylinderFireTimes = computeCylinderDelayTimes(IDLE_RPM, cylinders);
 
   // ── Exhaust bass layer — low rumble from 60–120 Hz ────────
   // Sawtooth at very low frequency gives exhaust "body" and chest-feel.

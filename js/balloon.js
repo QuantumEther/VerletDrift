@@ -546,9 +546,22 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   const sizeRange = BALLOON_RADIUS_MAX - BALLOON_RADIUS_MIN;
   const sizeNorm = (balloonRadius - BALLOON_RADIUS_MIN) / sizeRange; // 0=small, 1=large
 
+  // Read balloon pop sound parameters
+  const popMasterGain = state.soundParams.popMasterGain || 0.3;
+  const popBassTone = state.soundParams.popBassTone || 0.5;
+  const popCrackBrightness = state.soundParams.popCrackBrightness || 0.5;
+  const popSprayAmount = state.soundParams.popSprayAmount || 0.5;
+  const popDistortion = state.soundParams.popDistortion || 0.3;
+  const popSpeedSensitivity = state.soundParams.popSpeedSensitivity || 1.0;
+  const popPitchShift = (state.soundParams.popPitchShift || 0) / 12; // Convert semitones to octaves
+
+  // Speed responsiveness: how much impact speed affects amplitude
+  const speedCurve = 0.4 + splatFactor * (0.6 * popSpeedSensitivity);
+  const speedScaledGain = Math.min(speedCurve, 1.0);
+
   // Master gain for the entire pop event.
   const masterGain = audioContext.createGain();
-  masterGain.gain.value = (0.4 + splatFactor * 0.6) * Math.min(violence, 2.0);
+  masterGain.gain.value = speedScaledGain * popMasterGain * Math.min(violence, 2.0);
   masterGain.connect(audioContext.destination);
 
   // ═══════════════════════════════════════════════════════════
@@ -556,7 +569,8 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   // Deep sine burst that you feel in your chest.
   // ═══════════════════════════════════════════════════════════
   const thumpDuration = 0.12 + sizeNorm * 0.08;
-  const thumpFreq = 40 + (1 - sizeNorm) * 60; // 40–100 Hz (larger = deeper)
+  const baseThumpFreq = 40 + (1 - sizeNorm) * 60; // 40–100 Hz (larger = deeper)
+  const thumpFreq = baseThumpFreq * Math.pow(2, popPitchShift); // Apply pitch shift
   const thumpBuffer = audioContext.createBuffer(1, Math.round(sampleRate * thumpDuration), sampleRate);
   const thumpData = thumpBuffer.getChannelData(0);
   for (let i = 0; i < thumpData.length; i++) {
@@ -569,7 +583,8 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   const thumpSource = audioContext.createBufferSource();
   thumpSource.buffer = thumpBuffer;
   const thumpGain = audioContext.createGain();
-  thumpGain.gain.value = 0.6 + splatFactor * 0.4;
+  // Thump gain: 0.3–0.7 based on popBassTone slider, scaled by impact speed
+  thumpGain.gain.value = (0.3 + popBassTone * 0.4) * (0.5 + splatFactor * 0.5);
   thumpSource.connect(thumpGain);
   thumpGain.connect(masterGain);
   thumpSource.start(now);
@@ -586,7 +601,7 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
     const env = Math.exp(-t * 40) * (1 + Math.sin(t * 800) * 0.3); // sharp attack with resonance
     const crack = (physicsRandom() * 2 - 1);
     // Add a tonal "snap" component — the skin breaking.
-    const snapFreq = 400 + (1 - sizeNorm) * 300;
+    const snapFreq = (400 + (1 - sizeNorm) * 300) * Math.pow(2, popPitchShift);
     const snap = Math.sin(2 * Math.PI * snapFreq * t) * Math.exp(-t * 60);
     crackData[i] = env * (crack * 0.7 + snap * 0.3);
   }
@@ -595,10 +610,12 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   // Bandpass to shape the crack character.
   const crackFilter = audioContext.createBiquadFilter();
   crackFilter.type = 'bandpass';
-  crackFilter.frequency.value = 600 + splatFactor * 400;
+  const baseCrackFreq = 600 + splatFactor * 400;
+  crackFilter.frequency.value = baseCrackFreq * Math.pow(2, popPitchShift);
   crackFilter.Q.value = 1.5;
   const crackGain = audioContext.createGain();
-  crackGain.gain.value = 0.5 + splatFactor * 0.5;
+  // Crack gain: 0.2–0.6 based on popCrackBrightness, scaled by impact speed
+  crackGain.gain.value = (0.2 + popCrackBrightness * 0.4) * (0.3 + splatFactor * 0.7);
   crackSource.connect(crackFilter);
   crackFilter.connect(crackGain);
   crackGain.connect(masterGain);
@@ -622,10 +639,12 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
   spraySource.buffer = sprayBuffer;
   const sprayFilter = audioContext.createBiquadFilter();
   sprayFilter.type = 'highpass';
-  sprayFilter.frequency.value = 2000 + splatFactor * 2000;
+  const baseSprayFreq = 2000 + splatFactor * 2000;
+  sprayFilter.frequency.value = baseSprayFreq * Math.pow(2, popPitchShift);
   sprayFilter.Q.value = 0.5;
   const sprayGain = audioContext.createGain();
-  sprayGain.gain.value = 0.3 + splatFactor * 0.3;
+  // Spray gain: 0.1–0.5 based on popSprayAmount, scaled by impact speed
+  sprayGain.gain.value = (0.1 + popSprayAmount * 0.4) * (0.2 + splatFactor * 0.8);
   spraySource.connect(sprayFilter);
   sprayFilter.connect(sprayGain);
   sprayGain.connect(masterGain);
@@ -643,15 +662,17 @@ function playBalloonPopSound(balloonRadius, splatFactor) {
     const env = Math.exp(-t * 25);
     // Generate noise then hard-clip it for distortion character.
     let sample = (physicsRandom() * 2 - 1) * env;
-    // Waveshape: tanh gives soft clip, but we stack it for brutality.
-    sample = Math.tanh(sample * (3 + splatFactor * 4));
+    // Waveshape: tanh gives soft clip, but intensity scales with popDistortion.
+    const distortionAmount = 1 + (3 + splatFactor * 4) * popDistortion;
+    sample = Math.tanh(sample * distortionAmount);
     sample = Math.tanh(sample * 2);
     shredData[i] = sample;
   }
   const shredSource = audioContext.createBufferSource();
   shredSource.buffer = shredBuffer;
   const shredGain = audioContext.createGain();
-  shredGain.gain.value = (0.2 + splatFactor * 0.4) * Math.min(violence, 2.0);
+  // Shred gain: 0.05–0.4 based on popDistortion, scaled by impact speed
+  shredGain.gain.value = (0.05 + popDistortion * 0.35) * (0.1 + splatFactor * 0.9);
   shredSource.connect(shredGain);
   shredGain.connect(masterGain);
   shredSource.start(now);

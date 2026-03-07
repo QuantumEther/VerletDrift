@@ -22,7 +22,20 @@
       "Bash(git add index.html js/main.js js/renderer.js js/state.js styles.css js/gpu-renderer.js js/shaders/)",
       "Bash(git push origin verlet_v14_mod_GPT)",
       "Bash(gh auth status)",
-      "mcp__Desktop_Commander__get_file_info"
+      "mcp__Desktop_Commander__get_file_info",
+      "Bash(npm run build)",
+      "Bash(curl -s http://localhost:8000)",
+      "Bash(node -c \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\js\\\\sound.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\js\\\\balloon.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\js\\\\state.js\")",
+      "Bash(curl -s http://localhost:8000/js/main.js)",
+      "mcp__Desktop_Commander__start_search",
+      "mcp__Desktop_Commander__stop_search",
+      "Bash(node -c \"js/balloon.js\")",
+      "Bash(node -c \"js/state.js\")",
+      "Bash(node -c \"js/ui.js\")",
+      "Bash(index.html)",
+      "Bash(styles.css \")"
     ]
   }
 }

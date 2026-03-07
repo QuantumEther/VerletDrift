@@ -405,6 +405,15 @@ export function initSliders() {
   bindSound('exhaustConvMix',  'exhaustConvMix',  parseFloat1, fmt2);
   bindSound('agcThreshold',    'agcThreshold',    parseInt1,   fmtInt);
 
+  // Balloon collision sound bindings
+  bindSound('popMasterGain',       'popMasterGain',       parseFloat1, fmt2);
+  bindSound('popBassTone',         'popBassTone',         parseFloat1, fmt2);
+  bindSound('popCrackBrightness',  'popCrackBrightness',  parseFloat1, fmt2);
+  bindSound('popSprayAmount',      'popSprayAmount',      parseFloat1, fmt2);
+  bindSound('popDistortion',       'popDistortion',       parseFloat1, fmt2);
+  bindSound('popSpeedSensitivity', 'popSpeedSensitivity', parseFloat1, fmt2);
+  bindSound('popPitchShift',       'popPitchShift',       parseInt1,   fmtInt);
+
   // Helper function to bind sound parameters (stored in state.soundParams)
   function bindSound(elementId, paramName, parseValue, formatDisplay) {
     const element = document.getElementById(elementId);

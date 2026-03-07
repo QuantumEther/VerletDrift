@@ -449,7 +449,7 @@ const state = {
     balloonRespawnRate:    DEFAULT_BALLOON_RESPAWN_RATE,
 
     // --- Sound cylinder count (also affects engine sound character) ---
-    cylinderCount:         5,  // Zonda F V12 default
+    cylinderCount:         12,  // Zonda F V12 default
 
     // --- Visual effect toggles ---
     showKinematicArrows:   true,   // accel + jerk arrows on car
@@ -649,6 +649,14 @@ const state = {
     derivativeMix:   parseFloat(localStorage.getItem('soundParam_derivativeMix'))   || 0.10,
     exhaustConvMix:  parseFloat(localStorage.getItem('soundParam_exhaustConvMix'))  || 0.50,
     agcThreshold:    parseFloat(localStorage.getItem('soundParam_agcThreshold'))    || -18,
+    // Balloon collision sound parameters
+    popMasterGain:        parseFloat(localStorage.getItem('soundParam_popMasterGain'))        || 0.3,
+    popBassTone:          parseFloat(localStorage.getItem('soundParam_popBassTone'))          || 0.5,
+    popCrackBrightness:   parseFloat(localStorage.getItem('soundParam_popCrackBrightness'))   || 0.5,
+    popSprayAmount:       parseFloat(localStorage.getItem('soundParam_popSprayAmount'))       || 0.5,
+    popDistortion:        parseFloat(localStorage.getItem('soundParam_popDistortion'))        || 0.3,
+    popSpeedSensitivity:  parseFloat(localStorage.getItem('soundParam_popSpeedSensitivity'))  || 1.0,
+    popPitchShift:        parseInt(localStorage.getItem('soundParam_popPitchShift'))          || 0,
   },
 
   // Car position history for motion blur ghost rendering.
