@@ -18,7 +18,10 @@
       "Bash(git add docs/equations/)",
       "Bash(git commit:*)",
       "Bash(wc -l C:UsersQuantumDocumentsGitHubVerletDriftjs/*.js)",
-      "Bash(ls -lh /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)"
+      "Bash(ls -lh /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
+      "Bash(git add index.html js/main.js js/renderer.js js/state.js styles.css js/gpu-renderer.js js/shaders/)",
+      "Bash(git push origin verlet_v14_mod_GPT)",
+      "Bash(gh auth status)"
     ]
   }
 }
