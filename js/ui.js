@@ -12,6 +12,7 @@
 // =============================================================
 
 import state from './state.js';
+import { updateSoundParam } from './soundStateManager.js';
 import {
   NEEDLE_STIFFNESS,
   NEEDLE_DAMPING,
@@ -397,6 +398,12 @@ export function initSliders() {
   bindSound('exhaustBassQ',    'exhaustBassQ',    parseFloat1, fmt1);
   // Drift screech
   bindSound('driftScreechGain','driftScreechGain',parseFloat1, fmt2);
+  // Pulse synthesis parameters
+  bindSound('pulseDecayMs',    'pulseDecayMs',    parseInt1,   fmtInt);
+  bindSound('jitterAmount',    'jitterAmount',    parseFloat1, fmt2);
+  bindSound('derivativeMix',   'derivativeMix',   parseFloat1, fmt2);
+  bindSound('exhaustConvMix',  'exhaustConvMix',  parseFloat1, fmt2);
+  bindSound('agcThreshold',    'agcThreshold',    parseInt1,   fmtInt);
 
   // Helper function to bind sound parameters (stored in state.soundParams)
   function bindSound(elementId, paramName, parseValue, formatDisplay) {
@@ -409,13 +416,11 @@ export function initSliders() {
     state.soundParams[paramName] = initialValue;
     if (label) label.textContent = formatDisplay(initialValue);
 
-    // Bind to soundStateManager changes
+    // Bind to soundStateManager — updates state, localStorage, and applies to audio nodes
     element.addEventListener('input', () => {
       const value = element.type === 'checkbox' ? element.checked : parseValue(element.value);
-      state.soundParams[paramName] = value;
       if (label) label.textContent = formatDisplay(value);
-      // Persist to localStorage (will also trigger updates in sound.js via soundStateManager)
-      localStorage.setItem(`soundParam_${paramName}`, String(value));
+      updateSoundParam(paramName, value);
     });
 
     // Listen for storage changes from other windows (cross-window sync)

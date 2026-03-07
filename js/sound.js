@@ -14,13 +14,16 @@
 //   - Tire squeal on traction loss
 //
 // AUDIO NODE GRAPH:
-//   [mainOsc sawtooth]  → mainGain → mainFilter → summingGain
-//   [subOsc sine]       → subGain              → summingGain
-//   [harmonicOsc tri]   → harmonicGain         → summingGain
-//   [intakeOsc sine]    → intakeGain           → summingGain  (intake howl)
-//   [noiseBuffer]       → noiseBandpass → noiseGain → summingGain
-//   summingGain → waveshaper → dryGain → masterGain → output
-//                           → convolver → wetGain → masterGain
+//   [pulseOsc sine] → pulseGain(automated) → mainFilter → rawPulseGain ──────────┐
+//                                                       → exhaustConvolver        │
+//                                                         → convPulseGain ────────┤
+//   [subOsc sine]       → subGain ──────────────────────────────────────────────┤ → summingGain
+//   [harmonicOsc tri]   → harmonicGain ────────────────────────────────────────┤
+//   [intakeOsc sine]    → intakeBandpass → intakeGain ─────────────────────────┤
+//   [noiseBuffer]       → noiseBandpass → noiseGain ──────────────────────────┘
+//   summingGain → compressor → waveshaper → dryGain ────────────────────────────┐
+//             → derivativeHPF → derivativeMixGain ──────────────────────────────┤ → masterGain → output
+//             (waveshaper)   → convolver(reverb) → wetGain ──────────────────────┘
 //
 // One-shot sounds (gear crack, exhaust pop, tire squeal) are created
 // as transient BufferSource nodes connected directly to masterGain.
@@ -89,6 +92,18 @@ let exhaustBassOsc    = null;  // low oscillator (sawtooth/sine)
 let exhaustBassFilter = null;  // bandpass around 60-120 Hz
 let exhaustBassGain   = null;  // gain node
 
+// Pulse-based main source (replaces continuous sawtooth mainOsc)
+let pulseOsc          = null;  // sine OscillatorNode — carrier for pulse synthesis
+let pulseGain         = null;  // GainNode with automated envelopes (pulseOsc → mainFilter)
+let rawPulseGain      = null;  // dry fork of mainFilter output → summingGain
+let exhaustConvolver  = null;  // ConvolverNode — 150ms exhaust-character IR
+let convPulseGain     = null;  // wet fork of mainFilter output (after exhaustConvolver) → summingGain
+let derivativeHPF     = null;  // BiquadFilterNode highpass — transient emphasis
+let derivativeMixGain = null;  // GainNode — scales derivative path blend (0–0.3)
+let compressor        = null;  // DynamicsCompressorNode — adaptive gain control
+
+let nextPulseTime     = 0;     // audioCtx.currentTime of next pulse to schedule
+
 const DEBOUNCE_THRESHOLD = 0.001; // seconds
 const SMOOTH_TIME        = 0.04;  // ramp time for AudioParam changes
 
@@ -145,6 +160,77 @@ function setDistortionCurve(drive) {
   if (waveshaper) waveshaper.curve = buildDistortionCurve(drive);
 }
 
+// Generates a mono 150ms exhaust-character impulse response.
+// Three damped sinusoids model the resonant exhaust pipe modes of a large V12.
+// f=[110, 220, 350] Hz, decay=[25, 40, 60]/s — tuned to give a percussive
+// "bark" character without smearing the pulse rhythm at high RPM.
+function synthesizeExhaustIR(ctx) {
+  const sampleRate  = ctx.sampleRate;
+  const durationSec = 0.15;
+  const length      = Math.floor(sampleRate * durationSec);
+  const buffer      = ctx.createBuffer(1, length, sampleRate);
+  const data        = buffer.getChannelData(0);
+
+  const modes = [
+    { freq: 110, decay: 25, amp: 1.0  },
+    { freq: 220, decay: 40, amp: 0.6  },
+    { freq: 350, decay: 60, amp: 0.35 },
+  ];
+
+  for (let i = 0; i < length; i++) {
+    const t = i / sampleRate;
+    let sample = 0;
+    for (const m of modes) {
+      sample += m.amp * Math.exp(-m.decay * t) * Math.sin(2 * Math.PI * m.freq * t);
+    }
+    data[i] = sample;
+  }
+
+  // Normalize to prevent clipping in convolver
+  let peak = 0;
+  for (let i = 0; i < length; i++) peak = Math.max(peak, Math.abs(data[i]));
+  if (peak > 0) for (let i = 0; i < length; i++) data[i] = data[i] / peak * 0.95;
+
+  return buffer;
+}
+
+// Schedules pulse envelopes on pulseGain.gain ahead by PULSE_LOOKAHEAD seconds.
+// Called every physics substep from applyAllAudioParams.
+// Each pulse = instantaneous attack + exponential decay, mimicking a combustion event.
+// Jitter perturbs individual pulse timing without drifting the underlying metronome.
+const PULSE_LOOKAHEAD = 0.050; // seconds of lookahead
+
+function schedulePulses(firingFreq, throttle) {
+  if (!pulseGain || !audioCtx || firingFreq < 5) return;
+
+  const now      = audioCtx.currentTime;
+  const horizon  = now + PULSE_LOOKAHEAD;
+  const period   = 1.0 / firingFreq;
+
+  // Snap forward if we've fallen behind (e.g. tab was backgrounded)
+  if (nextPulseTime < now) nextPulseTime = now;
+
+  const decaySec     = ((state.soundParams.pulseDecayMs ?? 30)) / 1000;
+  const jitterAmount = state.soundParams.jitterAmount  ?? 0.15;
+  const mainGain     = state.soundParams.mainGain      ?? 0.3;
+  const peakAmp      = mainGain * (0.3 + (throttle || 0) * 0.7);
+
+  while (nextPulseTime < horizon) {
+    // Jitter: perturb this pulse's scheduled time but do NOT advance nextPulseTime by jitter,
+    // so the underlying firing rate stays regular.
+    const jitterOffset = (Math.random() - 0.5) * jitterAmount * period;
+    const t            = nextPulseTime + jitterOffset;
+
+    // Only schedule pulses in the future; exponentialRamp requires value > 0 (never 0.0)
+    if (t > now) {
+      pulseGain.gain.setValueAtTime(peakAmp, t);
+      pulseGain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
+    }
+
+    nextPulseTime += period;
+  }
+}
+
 // =============================================================
 // ZONDA F SOUND CHARACTER — frequency and harmonic calculation
 // =============================================================
@@ -185,16 +271,17 @@ function applyAllAudioParams(rpm, maxRpm, throttlePosition) {
   // ── Master volume ─────────────────────────────────────────
   masterGain.gain.linearRampToValueAtTime(state.soundParams.masterVol, rampTo);
 
-  // ── Main oscillator (sawtooth — engine bark) ──────────────
-  // Filter sweeps from mainFltLow at idle to mainFltHigh at redline.
-  // At high RPM the filter opens up, revealing the harsh top-end character.
+  // ── Pulse oscillator frequency ────────────────────────────
+  // Carrier frequency tracks firing frequency exactly, same as old mainOsc.
+  // Amplitude is controlled by schedulePulses() — no static gain ramp here.
   const mainCutoff = state.soundParams.mainFltLow +
     rpmNorm * (state.soundParams.mainFltHigh - state.soundParams.mainFltLow);
 
-  mainOsc.frequency.linearRampToValueAtTime(firingFreq, rampTo);
-  mainGainNode.gain.linearRampToValueAtTime(state.soundParams.mainGain, rampTo);
-  mainFilter.frequency.linearRampToValueAtTime(mainCutoff, rampTo);
-  mainFilter.Q.linearRampToValueAtTime(state.soundParams.mainFltQ, rampTo);
+  if (pulseOsc) pulseOsc.frequency.linearRampToValueAtTime(firingFreq, rampTo);
+  if (mainFilter) {
+    mainFilter.frequency.linearRampToValueAtTime(mainCutoff, rampTo);
+    mainFilter.Q.linearRampToValueAtTime(state.soundParams.mainFltQ, rampTo);
+  }
 
   // ── Sub oscillator (sine — deep body thump) ───────────────
   // Sub runs at subMult × firing frequency for the low chest-feel.
@@ -226,12 +313,18 @@ function applyAllAudioParams(rpm, maxRpm, throttlePosition) {
 
   // ── Exhaust / intake noise (bandpass white noise) ─────────
   // Center frequency climbs from noiseLow at idle to noiseHigh at redline.
-  // Throttle boost makes the intake hiss louder at full throttle.
+  // Throttle scaling enhanced: 0.05 at idle → 0.3+ at WOT for more organic turbulence.
+  // ±50 Hz per-frame frequency jitter adds organic bandwidth flutter.
   const noiseCenter    = state.soundParams.noiseLow +
     rpmNorm * (state.soundParams.noiseHigh - state.soundParams.noiseLow);
-  const noiseGainBoost = state.soundParams.noiseGain * (1 + throttlePosition * 0.4);
+  const noiseGainBoost = Math.min(
+    state.soundParams.noiseGain * (0.5 + throttlePosition * 2.5),
+    state.soundParams.noiseGain * 3.0
+  );
+  const noiseJitter = (Math.random() - 0.5) * 100;
 
   noiseGainNode.gain.linearRampToValueAtTime(noiseGainBoost, rampTo);
+  noiseBandpass.frequency.setValueAtTime(noiseCenter + noiseJitter, now);
   noiseBandpass.frequency.linearRampToValueAtTime(noiseCenter, rampTo);
   noiseBandpass.Q.linearRampToValueAtTime(state.soundParams.noiseQ, rampTo);
 
@@ -239,6 +332,21 @@ function applyAllAudioParams(rpm, maxRpm, throttlePosition) {
   setDistortionCurve(state.soundParams.distDrive);
   dryGain.gain.linearRampToValueAtTime(1 - state.soundParams.reverbMix, rampTo);
   wetGain.gain.linearRampToValueAtTime(state.soundParams.reverbMix, rampTo);
+
+  // ── Exhaust convolution mix ───────────────────────────────
+  const exhaustConvMix = state.soundParams.exhaustConvMix ?? 0.5;
+  if (rawPulseGain)  rawPulseGain.gain.linearRampToValueAtTime(1 - exhaustConvMix, rampTo);
+  if (convPulseGain) convPulseGain.gain.linearRampToValueAtTime(exhaustConvMix, rampTo);
+
+  // ── Derivative emphasis mix ───────────────────────────────
+  if (derivativeMixGain) {
+    derivativeMixGain.gain.linearRampToValueAtTime(
+      state.soundParams.derivativeMix ?? 0.10, rampTo
+    );
+  }
+
+  // ── Schedule next batch of combustion pulses ──────────────
+  schedulePulses(firingFreq, throttlePosition);
 }
 
 // =============================================================
@@ -447,7 +555,18 @@ export function startEngine() {
   convolver = audioCtx.createConvolver();
   convolver.buffer = createReverbImpulse(audioCtx, 2.0, 3.0);
 
-  summingGain.connect(waveshaper);
+  // ── Dynamics compressor (adaptive gain control) ───────────
+  // Sits between summingGain and waveshaper so the distortion stage
+  // always sees a consistent level regardless of RPM range.
+  compressor = audioCtx.createDynamicsCompressor();
+  compressor.threshold.value = state.soundParams.agcThreshold ?? -18;
+  compressor.knee.value      = 6;
+  compressor.ratio.value     = 4;
+  compressor.attack.value    = 0.08;
+  compressor.release.value   = 0.4;
+
+  summingGain.connect(compressor);
+  compressor.connect(waveshaper);
   waveshaper.connect(dryGain);
   waveshaper.connect(convolver);
   convolver.connect(wetGain);
@@ -455,22 +574,60 @@ export function startEngine() {
   wetGain.connect(masterGain);
   masterGain.connect(audioCtx.destination);
 
-  // ── Main oscillator (sawtooth — engine bark) ──────────────
-  mainOsc = audioCtx.createOscillator();
-  mainOsc.type = 'sawtooth';
-  mainOsc.frequency.value = initFreq;
+  // ── Derivative emphasis (parallel HPF path) ───────────────
+  // Taps summingGain → HPF → derivativeMixGain → masterGain,
+  // bypassing the compressor to preserve transient crispness.
+  derivativeHPF = audioCtx.createBiquadFilter();
+  derivativeHPF.type            = 'highpass';
+  derivativeHPF.frequency.value = 600;
+  derivativeHPF.Q.value         = 0.7;
 
-  mainGainNode = audioCtx.createGain();
-  mainGainNode.gain.value = state.soundParams.mainGain;
+  derivativeMixGain = audioCtx.createGain();
+  derivativeMixGain.gain.value = state.soundParams.derivativeMix ?? 0.10;
+
+  summingGain.connect(derivativeHPF);
+  derivativeHPF.connect(derivativeMixGain);
+  derivativeMixGain.connect(masterGain);
+
+  // ── Pulse oscillator (sine carrier — replaces continuous sawtooth) ──
+  // amplitude is driven by schedulePulses() automation events, not a static gain.
+  pulseOsc = audioCtx.createOscillator();
+  pulseOsc.type            = 'sine';
+  pulseOsc.frequency.value = initFreq;
+
+  // pulseGain starts near-silent; schedulePulses() envelopes take over immediately.
+  pulseGain = audioCtx.createGain();
+  pulseGain.gain.value = 0.001;
 
   mainFilter = audioCtx.createBiquadFilter();
-  mainFilter.type = 'lowpass';
+  mainFilter.type            = 'lowpass';
   mainFilter.frequency.value = state.soundParams.mainFltLow;
-  mainFilter.Q.value = state.soundParams.mainFltQ;
+  mainFilter.Q.value         = state.soundParams.mainFltQ;
 
-  mainOsc.connect(mainGainNode);
-  mainGainNode.connect(mainFilter);
-  mainFilter.connect(summingGain);
+  pulseOsc.connect(pulseGain);
+  pulseGain.connect(mainFilter);
+
+  // ── Exhaust convolver — parallel fork from mainFilter output ──
+  // rawPulseGain: dry path (unprocessed pulse) → summingGain
+  // exhaustConvolver + convPulseGain: wet path → summingGain
+  // exhaustConvMix (0–1) controls wet/dry balance.
+  const exhaustConvMix0 = state.soundParams.exhaustConvMix ?? 0.5;
+
+  rawPulseGain = audioCtx.createGain();
+  rawPulseGain.gain.value = 1 - exhaustConvMix0;
+
+  exhaustConvolver = audioCtx.createConvolver();
+  exhaustConvolver.buffer = synthesizeExhaustIR(audioCtx);
+
+  convPulseGain = audioCtx.createGain();
+  convPulseGain.gain.value = exhaustConvMix0;
+
+  mainFilter.connect(rawPulseGain);
+  rawPulseGain.connect(summingGain);
+
+  mainFilter.connect(exhaustConvolver);
+  exhaustConvolver.connect(convPulseGain);
+  convPulseGain.connect(summingGain);
 
   // ── Sub oscillator (sine — deep body) ────────────────────
   subOsc = audioCtx.createOscillator();
@@ -533,11 +690,12 @@ export function startEngine() {
   noiseGainNode.connect(summingGain);
 
   // ── Start all continuous sources ──────────────────────────
-  mainOsc.start(0);
+  pulseOsc.start(0);
   subOsc.start(0);
   harmonicOsc.start(0);
   intakeOsc.start(0);
   noiseSource.start(0);
+  nextPulseTime = audioCtx.currentTime; // initialize pulse scheduler
 
   // ── Exhaust bass layer — low rumble from 60–120 Hz ────────
   // Sawtooth at very low frequency gives exhaust "body" and chest-feel.
@@ -622,23 +780,28 @@ export function stopEngine() {
   try { exhaustBassGain   && exhaustBassGain.disconnect(); } catch (_) {}
   exhaustBassOsc = exhaustBassFilter = exhaustBassGain = null;
 
-  const nodesToStop = [mainOsc, subOsc, harmonicOsc, intakeOsc, noiseSource];
+  const nodesToStop = [pulseOsc, subOsc, harmonicOsc, intakeOsc, noiseSource];
   nodesToStop.forEach(node => { try { node && node.stop(0); } catch (_) {} });
 
   const nodesToDisconnect = [
-    mainOsc, subOsc, harmonicOsc, intakeOsc, noiseSource,
-    mainGainNode, subGainNode, harmonicGainNode, intakeGainNode, noiseGainNode,
+    pulseOsc, pulseGain, rawPulseGain, exhaustConvolver, convPulseGain,
+    subOsc, harmonicOsc, intakeOsc, noiseSource,
+    subGainNode, harmonicGainNode, intakeGainNode, noiseGainNode,
     mainFilter, intakeBandpass, noiseBandpass,
-    summingGain, waveshaper, dryGain, wetGain, convolver, masterGain,
+    derivativeHPF, derivativeMixGain,
+    summingGain, compressor, waveshaper, dryGain, wetGain, convolver, masterGain,
   ];
   nodesToDisconnect.forEach(node => {
     try { node && node.disconnect(); } catch (_) {}
   });
 
-  mainOsc = subOsc = harmonicOsc = intakeOsc = noiseSource = null;
-  mainGainNode = subGainNode = harmonicGainNode = intakeGainNode = noiseGainNode = null;
+  pulseOsc = pulseGain = rawPulseGain = exhaustConvolver = convPulseGain = null;
+  subOsc = harmonicOsc = intakeOsc = noiseSource = null;
+  subGainNode = harmonicGainNode = intakeGainNode = noiseGainNode = null;
   mainFilter = intakeBandpass = noiseBandpass = null;
+  derivativeHPF = derivativeMixGain = compressor = null;
   summingGain = waveshaper = dryGain = wetGain = convolver = masterGain = null;
+  nextPulseTime = 0;
 
   isRunning = false;
   if (audioCtx && audioCtx.state === 'running') audioCtx.suspend();
@@ -683,7 +846,7 @@ export function updateEngineSound(rpm, maxRpm, throttle, isSlipping, lateralSlip
     const pitchRatio      = 1.0 + dopplerShift;
     const cylinders       = state.params.cylinderCount || 12;
     const dopplerRampTo   = audioCtx.currentTime + SMOOTH_TIME;
-    if (mainOsc) mainOsc.frequency.linearRampToValueAtTime(
+    if (pulseOsc) pulseOsc.frequency.linearRampToValueAtTime(
       computeFiringFrequency(rpm, cylinders) * pitchRatio, dopplerRampTo);
   }
 
@@ -776,7 +939,8 @@ export function setSoundParam(paramName, newValue) {
       if (masterGain) masterGain.gain.linearRampToValueAtTime(newValue, time);
       break;
     case 'mainGain':
-      if (mainGainNode) mainGainNode.gain.linearRampToValueAtTime(newValue, time);
+      // mainGain is read directly by schedulePulses() as peakAmp scaling.
+      // No AudioParam node to ramp — the change takes effect on the next pulse batch.
       break;
     case 'subGain':
       if (subGainNode) subGainNode.gain.linearRampToValueAtTime(newValue, time);
@@ -796,6 +960,23 @@ export function setSoundParam(paramName, newValue) {
         dryGain.gain.linearRampToValueAtTime(Math.max(0, 1 - newValue), time);
         wetGain.gain.linearRampToValueAtTime(Math.min(1, newValue), time);
       }
+      break;
+    case 'exhaustConvMix': {
+      const mix = newValue;
+      if (rawPulseGain)  rawPulseGain.gain.linearRampToValueAtTime(1 - mix, time);
+      if (convPulseGain) convPulseGain.gain.linearRampToValueAtTime(mix, time);
+      break;
+    }
+    case 'derivativeMix':
+      if (derivativeMixGain)
+        derivativeMixGain.gain.linearRampToValueAtTime(newValue, time);
+      break;
+    case 'agcThreshold':
+      if (compressor) compressor.threshold.setValueAtTime(newValue, time);
+      break;
+    case 'pulseDecayMs':
+    case 'jitterAmount':
+      // Read directly in schedulePulses() each call — no AudioParam to ramp.
       break;
     default:
       break;

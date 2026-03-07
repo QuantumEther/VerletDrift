@@ -643,6 +643,12 @@ const state = {
     exhaustBassQ:    parseFloat(localStorage.getItem('soundParam_exhaustBassQ'))    ?? 1.2,
     // Drift screech intensity cap
     driftScreechGain: parseFloat(localStorage.getItem('soundParam_driftScreechGain')) ?? 0.55,
+    // Pulse synthesis parameters (physics-informed discrete combustion events)
+    pulseDecayMs:    parseFloat(localStorage.getItem('soundParam_pulseDecayMs'))    || 30,
+    jitterAmount:    parseFloat(localStorage.getItem('soundParam_jitterAmount'))    || 0.15,
+    derivativeMix:   parseFloat(localStorage.getItem('soundParam_derivativeMix'))   || 0.10,
+    exhaustConvMix:  parseFloat(localStorage.getItem('soundParam_exhaustConvMix'))  || 0.50,
+    agcThreshold:    parseFloat(localStorage.getItem('soundParam_agcThreshold'))    || -18,
   },
 
   // Car position history for motion blur ghost rendering.

@@ -321,6 +321,31 @@
               <input type="range" id="reverbMix" min="0" max="1" step="0.01" value="0" style="flex:2;">
               <span class="slider-value" id="reverbMixValue">0.0</span>
             </div>
+            <div class="slider-row">
+              <label>Pulse Decay (ms)</label>
+              <input type="range" id="pulseDecayMs" min="5" max="80" step="1" value="30" style="flex:2;">
+              <span class="slider-value" id="pulseDecayMsValue">30</span>
+            </div>
+            <div class="slider-row">
+              <label>Jitter Amount</label>
+              <input type="range" id="jitterAmount" min="0" max="0.5" step="0.01" value="0.15" style="flex:2;">
+              <span class="slider-value" id="jitterAmountValue">0.15</span>
+            </div>
+            <div class="slider-row">
+              <label>Derivative Mix</label>
+              <input type="range" id="derivativeMix" min="0" max="0.30" step="0.01" value="0.10" style="flex:2;">
+              <span class="slider-value" id="derivativeMixValue">0.10</span>
+            </div>
+            <div class="slider-row">
+              <label>Exhaust Conv Mix</label>
+              <input type="range" id="exhaustConvMix" min="0" max="1" step="0.01" value="0.5" style="flex:2;">
+              <span class="slider-value" id="exhaustConvMixValue">0.50</span>
+            </div>
+            <div class="slider-row">
+              <label>AGC Threshold (dBFS)</label>
+              <input type="range" id="agcThreshold" min="-40" max="0" step="1" value="-18" style="flex:2;">
+              <span class="slider-value" id="agcThresholdValue">-18</span>
+            </div>
           </div>
         </details>
       </div>

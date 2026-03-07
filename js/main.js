@@ -103,7 +103,7 @@ import {
   drawDebugOverlays,
 } from './renderer.js';
 
-import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js';
+import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=2';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
