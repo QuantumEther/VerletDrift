@@ -28,7 +28,7 @@ import { getSparkPool } from './renderer.js';
 // =============================================================
 
 const SKID_TEX_W    = 4096;
-const SKID_TEX_H    = 3072;
+const SKID_TEX_H    = 3276;  // Corrected from 3072 to match 300×240m map with uniform PPM ~13.65
 const MAP_W         = DEFAULT_MAP_WIDTH;   // 300 m
 const MAP_H         = DEFAULT_MAP_HEIGHT;  // 240 m
 const MAP_CX        = MAP_W / 2;           // 150 m — map-centre X
