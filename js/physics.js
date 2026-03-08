@@ -454,15 +454,42 @@ export function updateEngine(dt) {
     // CASE B: Clutch fully engaged → rigid mechanical coupling.
     // NEW: Use wheel omega (rotational velocity) instead of body speed.
     // This enables independent wheel spin-up during wheelspin/burnout.
+    //
+    // TRANSIENT FIX: During wheel spin-up (omega < threshold), blend free-rev
+    // with wheel RPM to allow smooth launch. Once wheels gain momentum, fully
+    // lock to wheel RPM (no runaway revving).
     const rearAvgOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
-    const wheelRpm = rearAvgOmega * (60 / TAU) / (Math.abs(gearRatio) * finalDrive);
-    const engineRpmFromWheel = Math.abs(wheelRpm);
+    // Convert wheel omega [rad/s] to wheel RPM
+    const wheelRpmValue = rearAvgOmega * (60 / TAU);
+    // In geared drivetrain: wheelRpm = engineRpm / (gearRatio * finalDrive)
+    // So: engineRpm = wheelRpm / (gearRatio * finalDrive)
+    const engineRpmFromWheel = Math.abs(wheelRpmValue) / (Math.abs(gearRatio) * finalDrive);
 
-    const idleHoldRpm = idleRpm * params.stallResistance;
-    engine.rpm = Math.max(engineRpmFromWheel, idleHoldRpm);
+    // Free-rev target based on current throttle
+    const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
+    const riseRate = throttleAmount > 0.01 ? 6.0 : 3.0;
+    const freeRpm = engine.rpm + (freeRevTarget - engine.rpm) * riseRate * dt;
 
-    if (engine.rpm > redlineRpm) {
-      engine.rpm = redlineRpm;
+    // Transient blend: if wheels are slow, blend free-rev with wheel demand.
+    // Smooth transition: as wheels spin up, gradually lock RPM to wheel speed.
+    // NOTE: At typical 0.3m wheel radius:
+    //   10 rad/s  ≈ 3 m/s surface speed ≈ 11 km/h (very early launch)
+    //   20 rad/s  ≈ 6 m/s surface speed ≈ 22 km/h (early acceleration)
+    //   30 rad/s  ≈ 9 m/s surface speed ≈ 32 km/h (mid launch)
+    //   50 rad/s  ≈ 15 m/s surface speed ≈ 54 km/h (full launch speed)
+    // Threshold of 40 rad/s keeps engine free-revving through most of launch,
+    // then locks to wheel speed as car reaches highway merging speed.
+    const wheelSpeedThreshold = 40.0;  // rad/s — allow free-rev until wheels reach ~12 m/s
+    const transientBlend = Math.max(0, 1.0 - rearAvgOmega / wheelSpeedThreshold);
+
+    engine.rpm = freeRpm * transientBlend + engineRpmFromWheel * (1 - transientBlend);
+    engine.rpm = clamp(engine.rpm, idleRpm * 0.8, redlineRpm);
+
+    // DEBUG: Log values when wheels are spinning
+    if (rearAvgOmega > 1 && throttleAmount > 0.1) {
+      if (Math.random() < 0.01) {  // Log 1% of frames to avoid spam
+        console.log(`[CASE B] rearAvgOmega=${rearAvgOmega.toFixed(2)} | freeRpm=${freeRpm.toFixed(0)} | engineRpmFromWheel=${engineRpmFromWheel.toFixed(0)} | blend=${transientBlend.toFixed(2)} | final RPM=${engine.rpm.toFixed(0)}`);
+      }
     }
 
     const effectiveStallRpm = stallRpm * (1.0 - params.stallResistance * 0.8);
