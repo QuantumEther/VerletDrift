@@ -479,6 +479,59 @@ let snapCurr = null;
 let renderFpsEma  = 0;
 let physicsTpsEma = 0; // ticks per second (actual, measured)
 
+// Performance profiler — tracks frame time breakdown by component
+let lastProfilePrintTime = 0;
+let frameCount = 0;
+const frameTimeSamples = {
+  total: [],
+  input: [],
+  physics: [],
+  render: [],
+  audio: [],
+};
+
+function recordProfilerSample(name, ms) {
+  if (frameTimeSamples[name]) {
+    frameTimeSamples[name].push(ms);
+    // Keep last 60 samples
+    if (frameTimeSamples[name].length > 60) {
+      frameTimeSamples[name].shift();
+    }
+  }
+}
+
+function printProfilerStats() {
+  if (!state.params.perfProfilerEnabled) return;
+
+  const now = performance.now();
+  if (now - lastProfilePrintTime < 1000) return; // Print once per second
+  lastProfilePrintTime = now;
+
+  const stats = {};
+  for (const [name, samples] of Object.entries(frameTimeSamples)) {
+    if (samples.length === 0) continue;
+    const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
+    const max = Math.max(...samples);
+    const min = Math.min(...samples);
+    stats[name] = { avg: avg.toFixed(1), max: max.toFixed(1), min: min.toFixed(1) };
+  }
+
+  console.log(
+    '%c⏱️ PERFORMANCE (last 60 frames, avg/max/min in ms)',
+    'color: #ffff00; font-weight: bold; background: #333;'
+  );
+  console.log(`  Total:  ${stats.total.avg}/${stats.total.max}/${stats.total.min}`);
+  console.log(`  Input:  ${stats.input.avg}/${stats.input.max}/${stats.input.min}`);
+  console.log(`  Physics: ${stats.physics.avg}/${stats.physics.max}/${stats.physics.min}`);
+  console.log(`  Render: ${stats.render.avg}/${stats.render.max}/${stats.render.min}`);
+  console.log(`  Audio:  ${stats.audio.avg}/${stats.audio.max}/${stats.audio.min}`);
+
+  const targetMs = 16.67; // 60 FPS
+  const total = parseFloat(stats.total.avg);
+  const status = total > targetMs * 1.5 ? '🔴 SLOW' : total > targetMs ? '🟡 OK' : '🟢 FAST';
+  console.log(`  Status: ${status} (target: ${targetMs.toFixed(1)}ms for 60 FPS)`);
+}
+
 
 // =============================================================
 // GAME LOOP
@@ -515,6 +568,9 @@ function mainLoop(timestampMilliseconds) {
   // Accumulate real elapsed time (NOT scaled by timeScale).
   state.loop.accumulator += wallFrameTime;
 
+  // Profiler: physics time measurement
+  const physicsStart = state.params.perfProfilerEnabled ? performance.now() : 0;
+
   // Fire physics ticks to consume accumulated wall time.
   // Each tick advances (physicsWallDt × timeScale) seconds of SIMULATION time.
   // → timeScale=1.0: normal speed   → timeScale=0.1: 10× slow motion
@@ -533,6 +589,12 @@ function mainLoop(timestampMilliseconds) {
 
     state.loop.accumulator -= physicsWallDt;
     ticksThisFrame++;
+  }
+
+  // Profiler: record physics time
+  if (state.params.perfProfilerEnabled) {
+    const physicsEnd = performance.now();
+    recordProfilerSample('physics', physicsEnd - physicsStart);
   }
 
   if (state.loop.accumulator >= physicsWallDt) {
@@ -569,8 +631,37 @@ function mainLoop(timestampMilliseconds) {
   state.loop.renderFps  = renderFpsEma;
   state.loop.physicsTps = physicsTpsEma;
 
+  // Profiler: measure rendering time
+  const renderStart = state.params.perfProfilerEnabled ? performance.now() : 0;
+
   // Render once per animation frame using interpolated state.
   renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
+
+  // Profiler: record timing data and print stats
+  if (state.params.perfProfilerEnabled) {
+    const renderEnd = performance.now();
+    const frameEnd = renderEnd;
+    const frameStart = timestampMilliseconds;  // approx frame start in ms
+    const totalFrameTime = wallFrameTime * 1000; // convert to ms for display
+
+    recordProfilerSample('render', renderEnd - renderStart);
+    recordProfilerSample('total', totalFrameTime);
+    frameCount++;
+    printProfilerStats();
+  }
+
+  // Throttle simulation to 30 FPS if enabled (for testing)
+  if (state.params.perfThrottleSimulation) {
+    const throttleMs = 33.33; // ~30 FPS
+    const frameTimeMs = wallFrameTime * 1000;
+    if (frameTimeMs < throttleMs) {
+      // Busy-wait to throttle (crude but effective for testing)
+      const targetEnd = performance.now() + (throttleMs - frameTimeMs);
+      while (performance.now() < targetEnd) {
+        // spin
+      }
+    }
+  }
 }
 
 

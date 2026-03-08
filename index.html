@@ -1000,6 +1000,16 @@
           <span class="slider-value" id="debugFontSizeValue">8</span>
         </div>
       </div>
+
+      <!-- ==================== PERFORMANCE PROFILER ==================== -->
+      <div class="panel-section">
+        <h3>⏱️ Performance Profiler</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <label><input type="checkbox" id="perfProfilerEnabled"> Frame Time Breakdown</label>
+          <label><input type="checkbox" id="perfThrottleSimulation"> Throttle @ 30 FPS</label>
+        </div>
+        <p style="font-size: 11px; color: #999; margin-top: 8px;">Enables console logging of frame time by component (Input, Physics, Render, Audio). Check browser console (F12) for output.</p>
+      </div>
     </div>
 
     <!-- ==================== KEY HINTS ==================== -->

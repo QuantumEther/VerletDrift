@@ -294,6 +294,10 @@ export function initSliders() {
   bindCheckbox('debugShowWheelSpeeds',   'debugShowWheelSpeeds');
   bind('debugFontSize', 'debugFontSize', parseInt, fmtInt);
 
+  // ---- Performance Profiler ----
+  bindCheckbox('perfProfilerEnabled',    'perfProfilerEnabled');
+  bindCheckbox('perfThrottleSimulation', 'perfThrottleSimulation');
+
   // ---- Spark Tuning ----
   bind('sparkIntensity',      'sparkIntensity',      parseFloat1, fmt1);
   bind('sparkSize',           'sparkSize',           parseFloat1, fmt1);

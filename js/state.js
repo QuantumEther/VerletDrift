@@ -535,6 +535,10 @@ const state = {
     debugFontSize:          8,      // Pixel size for debug text overlays (4-14)
     debugFontColor:         '#00ff00', // Green for debug text
     debugForceScale:        0.0015, // Pixels per Newton (force arrow scaling)
+
+    // --- PERFORMANCE PROFILER ---
+    perfProfilerEnabled:    false,  // Enable frame time breakdown logging
+    perfThrottleSimulation: false,  // Throttle game to 30 FPS for testing performance
   },
 
   // -----------------------------------------------------------
