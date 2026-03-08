@@ -1011,8 +1011,9 @@ export function computeTireForces(dt) {
     
     // Update using both: rolling velocity baseline + torque response
     // Start with rolling velocity (kinematic constraint), then integrate torques
+    const sumOmega = omegaFromRolling + omegaDelta;
     const finalOmega = clamp(
-      omegaFromRolling + omegaDelta,
+      sumOmega,
       -maxOmega,
       maxOmega
     );
@@ -1020,7 +1021,7 @@ export function computeTireForces(dt) {
     
     // DEBUG: Log first wheel's omega calculation for verification
     if (name === 'rearLeft') {
-      console.log(`[OMEGA-DEBUG] ${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, omegaRoll=${omegaFromRolling.toFixed(2)}, omegaDelta=${omegaDelta.toFixed(4)}, final=${finalOmega.toFixed(2)}`);
+      console.log(`[OMEGA-DEBUG] ${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, omegaRoll=${omegaFromRolling.toFixed(2)}, omegaDelta=${omegaDelta.toFixed(4)}, sum=${sumOmega.toFixed(2)}, final=${finalOmega.toFixed(2)}, stored=${state.wheelOmega[name].toFixed(2)}`);
     }
   }
 
