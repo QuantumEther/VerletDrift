@@ -534,10 +534,14 @@ function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C)
 function computeWheelBrakeTorque(name, wheelLongitudinalSpeed, normalLoad, frictionCoeff, wheelRad, params, state, safePeakSlipRatio) {
   let brakeForceMag = 0;
   let isBraking = false;
+  // Wheel names in state are camelCase (rearLeft/rearRight), so detect axle
+  // using a lowercase prefix check. A previous includes('Rear') check never
+  // matched and silently broke rear/front axle routing.
+  const isRearWheel = name.startsWith('rear');
 
   // Regular brake (S key, front wheels get 80%, so 0.4 per wheel × 2 wheels = 80%)
   if (state.input.brakeKeyHeld && state.body.speed > 0.05) {
-    if (!name.includes('Rear')) {
+    if (!isRearWheel) {
       const perWheelBrake   = params.brakeForce * 0.4;
       const frictionBudget  = normalLoad * frictionCoeff;
       const brakeSlipInput  = Math.min(perWheelBrake / Math.max(frictionBudget, 1.0), 2.0);
@@ -552,7 +556,7 @@ function computeWheelBrakeTorque(name, wheelLongitudinalSpeed, normalLoad, frict
 
   // Handbrake (F key, rear only, progressive with handbrakeValue 0–1)
   if (state.input.handbrakeKeyHeld && state.body.speed > 0.05) {
-    if (name.includes('Rear')) {
+    if (isRearWheel) {
       const hbVal          = state.input.handbrakeValue || 0;
       const perWheelHB     = params.brakeForce * 0.5 * hbVal;
       const frictionBudget = normalLoad * frictionCoeff;
@@ -914,7 +918,9 @@ export function computeTireForces(dt) {
   const maxOmega = 500;  // rad/s ≈ 5000 RPM at R≈0.3m
 
   for (const name of wheelNames) {
-    const isRear = name.includes('Rear');
+    // Wheel keys are rearLeft/rearRight (lowercase r), so startsWith('rear')
+    // is the correct driven-axle check.
+    const isRear = name.startsWith('rear');
     const wheelRad = params.wheelRadius;
 
     // 1. Drive torque: only for rear wheels, split equally
@@ -929,7 +935,16 @@ export function computeTireForces(dt) {
     const torqueBrake = (state.wheelBrakeTorque && state.wheelBrakeTorque[name]) || 0;
 
     // 3. Traction reaction torque: T = Fx · R (opposes wheel spin)
-    const longitudinalForce = state.wheelForces[name].fx;
+    // Reaction torque must use tire force resolved along the wheel's rolling
+    // direction, not world-space X. Using world X made traction feedback
+    // heading-dependent and physically inconsistent.
+    const kinematics = wheelKinematics[name];
+    const longitudinalForce = dot(
+      state.wheelForces[name].fx,
+      state.wheelForces[name].fy,
+      kinematics.wheelForwardX,
+      kinematics.wheelForwardY,
+    );
     const torqueTraction = longitudinalForce * wheelRad;
 
     // 4. Integrate: ω += (ΣT) / I_w · dt
