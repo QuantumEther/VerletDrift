@@ -512,6 +512,11 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   COMP_DATA[2] = canvasWidth  / (2 * eff * MAP_W);      // uvScaleX
   COMP_DATA[3] = canvasHeight / (2 * eff * MAP_H);      // uvScaleY
 
+  // DEBUG: Log Y-axis values to investigate position-dependent drift
+  if (window.DEBUG_SKID_COORDS) {
+    console.log(`[Skid Coords] camera.y=${camera.y.toFixed(2)}m, uvCenterY=${COMP_DATA[1].toFixed(4)}, uvScaleY=${COMP_DATA[3].toFixed(4)}, eff=${eff.toFixed(2)}`);
+  }
+
   // ---- Trail arrow instances ----
   const arrows    = state.trail.arrows;
   const arrowFade = params.trailFade || 0.7;
