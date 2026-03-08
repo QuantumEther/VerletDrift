@@ -266,55 +266,58 @@ computeWeightTransfer();
 
 // Register dynamic gauges via the gauge registry.
 // These are added to the gauge row alongside the hardcoded RPM/Speed/LatG gauges.
+// NOTE: Migrated from wheelGrip to wheelFrictionUtil for semantic clarity.
+// wheelGrip was repurposed to store friction circle utilization (0-1) instead of grip remaining.
+// Using wheelFrictionUtil directly makes the semantics clear: this gauge shows traction utilization.
 registerGauge({
-  label:          'FL Grip',
-  getValue:       () => state.wheelGrip.frontLeft,
+  label:          'FL Util',
+  getValue:       () => state.wheelFrictionUtil.frontLeft,
   min:            0,
   max:            1,
-  title:          'FL GRIP',
-  subtitle:       'traction',
+  title:          'FL UTIL',
+  subtitle:       'friction utilization',
   majorStep:      0.25,
   minorDivisions: 5,
-  redFrom:        null,
+  redFrom:        0.8,  // Red zone above 80% utilization (near traction limit)
   labelFormatter: (v) => v.toFixed(2),
 });
 
 registerGauge({
-  label:          'FR Grip',
-  getValue:       () => state.wheelGrip.frontRight,
+  label:          'FR Util',
+  getValue:       () => state.wheelFrictionUtil.frontRight,
   min:            0,
   max:            1,
-  title:          'FR GRIP',
-  subtitle:       'traction',
+  title:          'FR UTIL',
+  subtitle:       'friction utilization',
   majorStep:      0.25,
   minorDivisions: 5,
-  redFrom:        null,
+  redFrom:        0.8,
   labelFormatter: (v) => v.toFixed(2),
 });
 
 registerGauge({
-  label:          'RL Grip',
-  getValue:       () => state.wheelGrip.rearLeft,
+  label:          'RL Util',
+  getValue:       () => state.wheelFrictionUtil.rearLeft,
   min:            0,
   max:            1,
-  title:          'RL GRIP',
-  subtitle:       'traction',
+  title:          'RL UTIL',
+  subtitle:       'friction utilization',
   majorStep:      0.25,
   minorDivisions: 5,
-  redFrom:        null,
+  redFrom:        0.8,
   labelFormatter: (v) => v.toFixed(2),
 });
 
 registerGauge({
-  label:          'RR Grip',
-  getValue:       () => state.wheelGrip.rearRight,
+  label:          'RR Util',
+  getValue:       () => state.wheelFrictionUtil.rearRight,
   min:            0,
   max:            1,
-  title:          'RR GRIP',
-  subtitle:       'traction',
+  title:          'RR UTIL',
+  subtitle:       'friction utilization',
   majorStep:      0.25,
   minorDivisions: 5,
-  redFrom:        null,
+  redFrom:        0.8,
   labelFormatter: (v) => v.toFixed(2),
 });
 
@@ -1098,14 +1101,17 @@ let skidPrevPositions = {};
 const skidFadeState = { frontLeft: 0, frontRight: 0, rearLeft: 0, rearRight: 0 };
 
 function recordSkidMarks(dt) {
-  const grip   = state.wheelGrip;
+  // NOTE: wheelGrip now stores friction circle utilization [0=safe, 1=at limit]
+  // (migrated from old "grip remaining" semantic for clarity)
+  const utilization = state.wheelFrictionUtil;
   const wheels = state.wheels;
   const body   = state.body;
   const decals = state.splatDecals;
   const p      = state.params;
 
   // Read all tunable params with safe defaults
-  const gripThreshold  = p.skidGripThreshold   !== undefined ? p.skidGripThreshold   : 0.6;
+  // skidGripThreshold is now skidUtilizationThreshold (0.6 = trigger skids when 60%+ utilization)
+  const skidUtilThreshold = p.skidGripThreshold !== undefined ? p.skidGripThreshold : 0.6;
   const fadeRate       = p.skidFadeRate         !== undefined ? p.skidFadeRate         : 8.0;
   const widthMin       = p.skidWidthMin         !== undefined ? p.skidWidthMin         : 0.12;
   const widthMax       = p.skidWidthMax         !== undefined ? p.skidWidthMax         : 0.47;
@@ -1139,8 +1145,9 @@ function recordSkidMarks(dt) {
   const allWheels = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
 
   for (const wheelName of allWheels) {
-    const g = grip[wheelName];
-    const isSliding = g < gripThreshold;
+    const u = utilization[wheelName] || 0;
+    // isSliding when utilization EXCEEDS threshold (we're using lots of traction = slipping/locking)
+    const isSliding = u > skidUtilThreshold;
 
     if (isSliding) {
       skidFadeState[wheelName] = Math.min(1.0, skidFadeState[wheelName] + fadeRate * dt);

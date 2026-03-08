@@ -695,8 +695,10 @@ export function updateInfoBar() {
   setInfoCell('clutchDisplay',
     `${(engine.clutchEngagement * 100).toFixed(0)}%`);
 
-  setInfoCell('trailDisplay',
-    `${trail.arrows.length} arrows`);
+  // Wheel angular velocities (rad/s)
+  setInfoCell('wheelOmegaDisplay',
+    `FL:${(state.wheelOmega.frontLeft || 0).toFixed(2)} FR:${(state.wheelOmega.frontRight || 0).toFixed(2)}<br>` +
+    `RL:${(state.wheelOmega.rearLeft || 0).toFixed(2)} RR:${(state.wheelOmega.rearRight || 0).toFixed(2)}`);
 
   // Render FPS and physics ticks-per-second (set by main.js into state.loop).
   setInfoCell('renderFpsDisplay',

@@ -451,7 +451,10 @@ export function updateEngine(dt) {
   if (gearRatio === 0 || engine.clutchEngagement < 0.01) {
     // CASE A: Neutral OR clutch fully disengaged → free-revving engine.
     const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
-    const riseRate = throttleAmount > 0.01 ? 6.0 : 3.0;
+    // THROTTLE TUNING (User Investigation): Rise rate was 6.0/3.0 which was too aggressive.
+    // Small throttle press caused extreme RPM jump. Reduced to 2.5/1.8 for smoother response.
+    // This gives ~1.5-2s ramp time from idle to redline, matching realistic engine acceleration.
+    const riseRate = throttleAmount > 0.01 ? 2.5 : 1.8;
     engine.rpm += (freeRevTarget - engine.rpm) * riseRate * dt;
     engine.rpm  = clamp(engine.rpm, idleRpm, redlineRpm);
 
@@ -472,7 +475,8 @@ export function updateEngine(dt) {
 
     // Free-rev target based on current throttle
     const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
-    const riseRate = throttleAmount > 0.01 ? 6.0 : 3.0;
+    // Same throttle tuning as CASE A for consistency
+    const riseRate = throttleAmount > 0.01 ? 2.5 : 1.8;
     const freeRpm = engine.rpm + (freeRevTarget - engine.rpm) * riseRate * dt;
 
     // Transient blend: if wheels are slow, blend free-rev with wheel demand.
@@ -985,7 +989,9 @@ export function computeTireForces(dt) {
     const torqueTraction = longitudinalForce * wheelRad;
 
     // 4. Integrate: ω += (ΣT) / I_w · dt
-    const netWheelTorque = torqueDrive - Math.abs(torqueBrake) - torqueTraction;
+    // All torques signed consistently in wheel-rotation convention (Positive = forward rolling)
+    // torqueBrake is already signed to oppose omega direction
+    const netWheelTorque = torqueDrive - torqueBrake - torqueTraction;
     const omegaDelta = (netWheelTorque / wheelInertia) * dt;
     state.wheelOmega[name] = clamp(
       state.wheelOmega[name] + omegaDelta,

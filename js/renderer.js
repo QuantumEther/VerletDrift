@@ -437,7 +437,9 @@ export function drawCar(ctx) {
   for (const { name, isFront } of wheelDefs) {
     const wh   = wheels[name];
     const gws  = state.wheelGripState[name];
-    const grip = gws ? gws.smoothedGrip : (state.wheelGrip[name] || 1);
+    // Prefer wheelGripState.smoothedGrip (0=slipping, 1=stable grip).
+    // Fallback to inverted utilization: 1.0 - utilization (high util = low grip available)
+    const grip = gws ? gws.smoothedGrip : Math.max(0, 1.0 - (state.wheelFrictionUtil[name] || 0));
     const tp   = state.tirePaint[name];
     const angle = body.heading + (isFront ? steerAngle : 0);
 
@@ -1975,17 +1977,17 @@ try {
 }
 const SPARK_COLORS = useHDR ? SPARK_COLORS_HDR : SPARK_COLORS_SDR;
 
-// Spawns sparks at wheels where grip is below threshold.
+// Spawns sparks at wheels where friction utilization is high (slipping/locking).
 // Called each physics step from main.js.
 export function updateSparks(dt) {
   const body = state.body;
-  const grip = state.wheelGrip;
+  const utilization = state.wheelFrictionUtil;  // Changed from wheelGrip (semantic clarity)
   const wheels = state.wheels;
   const heading = body.heading;
   const speed = body.speed;
   const params = state.params;
 
-  const GRIP_THRESHOLD = params.sparkGripThreshold; // tunable via slider
+  const GRIP_THRESHOLD = params.sparkGripThreshold; // tunable via slider; now means utilization threshold
   const intensityMult = params.sparkIntensity;       // spawn rate multiplier
   const sizeMult = params.sparkSize;                 // particle size multiplier
   const lifeMult = params.sparkLifetime;             // lifetime multiplier
@@ -1993,14 +1995,15 @@ export function updateSparks(dt) {
   const isFront = { frontLeft: true, frontRight: true, rearLeft: false, rearRight: false };
 
   for (const name of wheelNames) {
-    const g = grip[name];
-    if (g >= GRIP_THRESHOLD || speed < 2.0) continue;
+    const u = utilization[name] || 0;
+    // Spawn sparks when friction utilization EXCEEDS threshold (high traction use = slip/lock)
+    if (u <= GRIP_THRESHOLD || speed < 2.0) continue;
 
-    // Spark intensity: stronger with lower grip, higher speed, higher jerk.
-    const gripLoss = 1.0 - g / GRIP_THRESHOLD;
+    // Spark intensity: stronger with higher utilization (more aggressive slipping), higher speed, higher jerk.
+    const slipIntensity = (u - GRIP_THRESHOLD) / (1.0 - GRIP_THRESHOLD);  // Normalize to [0, 1] above threshold
     // Use filtered jerk to avoid constraint-noise spikes.
     const jerkFactor = Math.min(state.filteredBody.jerkMagnitude / 200, 1.0);
-    const intensity = speed * gripLoss * (0.3 + 0.7 * jerkFactor) * intensityMult;
+    const intensity = speed * slipIntensity * (0.3 + 0.7 * jerkFactor) * intensityMult;
 
     // Spawn rate proportional to intensity.
     const spawnCount = Math.floor(intensity * 0.15 * (60 * dt));
@@ -2157,10 +2160,11 @@ export function drawDebugOverlays(ctx) {
       const lonY = wheel.y + lonForce * lonScale * right;
       drawArrowAt(ctx, wheel.x, wheel.y, lonX, lonY, '#00ff66', `${Math.round(lonForce)}N`);
 
-      // Grip color indicator
-      const grip = state.wheelGrip[name] || 0;
-      let gripColor = grip > 0.7 ? '#00ff00' : grip > 0.3 ? '#ffff00' : '#ff0000';
-      ctx.fillStyle = gripColor;
+      // Utilization color indicator (using wheelFrictionUtil for semantic clarity)
+      // Green = low utilization (safe grip available), Red = high utilization (near limit)
+      const utilization = state.wheelFrictionUtil[name] || 0;
+      let utilColor = utilization < 0.3 ? '#00ff00' : utilization < 0.7 ? '#ffff00' : '#ff0000';
+      ctx.fillStyle = utilColor;
       const rectSize = 0.08 * sizeScale;  // ~0.08m square
       ctx.fillRect(wheel.x - rectSize, wheel.y - rectSize, rectSize * 2, rectSize * 2);
     }
@@ -2170,10 +2174,9 @@ export function drawDebugOverlays(ctx) {
   if (params.debugShowSlipAngles) {
     for (const name of wheelNames) {
       const wheel = wheels[name];
-      // wheelGrip now contains friction circle utilization [0,1], not grip remaining
-      // isSlipping when utilization > 90% (near traction limit)
-      const utilization = state.wheelGrip[name] || 0;
-      const isSlipping = utilization > 0.9;
+      // Display friction circle utilization: green when safe, red when near limit
+      const utilization = state.wheelFrictionUtil[name] || 0;
+      const isSlipping = utilization > 0.85;  // Slipping when near traction limit
 
       ctx.fillStyle = isSlipping ? '#ff0000' : '#00ff00';
       ctx.globalAlpha = 0.5;
@@ -2314,8 +2317,9 @@ export function drawDebugOverlays(ctx) {
 }
 
 /**
- * Draw a bipolar slip ratio gauge showing kinematic slip ratio and friction utilization.
- * Used for per-wheel monitoring of slip state (pure rolling, wheelspin, lockup, optimal grip).
+ * Draw a centered-needle slip ratio gauge showing kinematic slip ratio with color zones.
+ * Needle centered at κ = 0, extends left (negative, braking) and right (positive, wheelspin).
+ * Matches RPM gauge styling with springy needle animation.
  */
 export function drawWheelSlipGauge(ctx, canvasWidth, canvasHeight, config) {
   const {
@@ -2325,130 +2329,137 @@ export function drawWheelSlipGauge(ctx, canvasWidth, canvasHeight, config) {
     peakSlipRatio,       // ~0.12 for Pacejka peak
   } = config;
 
-  // Defensive clamp for gauge stability: physics should already keep κ in [-1, 1],
-  // but clamping here prevents runaway needles if a transient debug value leaks through.
+  // Clamp slip ratio for stability
   const safeSlipRatio = Math.max(-1, Math.min(1, slipRatio));
 
   const cx = canvasWidth * 0.5;
-  const cy = canvasHeight * 0.5;
-  const radius = Math.min(canvasWidth, canvasHeight) * 0.35;
-  const needleRadius = radius * 0.8;
+  const cy = canvasHeight * 0.45;  // Slightly higher for labels below
+  const barWidth = canvasWidth * 0.65;
+  const barHeight = canvasHeight * 0.12;
+  const barLeft = cx - barWidth * 0.5;
+  const barRight = cx + barWidth * 0.5;
 
-  // --- Background circle ---
+  // --- Background ---
   ctx.fillStyle = '#1a1a1a';
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius * 1.05, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // --- Gauge face gradient ---
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-  grad.addColorStop(0, '#2a2a2a');
-  grad.addColorStop(1, '#1a1a1a');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.fill();
+  // --- Gauge bar background (dark) ---
+  ctx.fillStyle = '#2a2a2a';
+  ctx.fillRect(barLeft - 5, cy - barHeight * 0.5 - 5, barWidth + 10, barHeight + 10);
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(barLeft - 5, cy - barHeight * 0.5 - 5, barWidth + 10, barHeight + 10);
 
-  // --- Zone arcs: bipolar slip ratio zones ---
-  const arcRadius = radius * 0.75;
-  const centerAngle = Math.PI * 0.5;  // κ = 0 points straight up
-
-  // Green zone: |κ| < 0.08 (pure rolling comfort band)
+  // --- Color zones within the bar ---
   const greenZoneKappa = 0.08;
-  const greenAngleSpan = (greenZoneKappa / 1.0) * (Math.PI * 0.5);
-  ctx.fillStyle = '#22aa22';
-  ctx.beginPath();
-  ctx.arc(cx, cy, arcRadius, centerAngle - greenAngleSpan, centerAngle + greenAngleSpan);
-  ctx.lineTo(cx, cy);
-  ctx.fill();
+  const redZoneKappa = peakSlipRatio;
 
-  // Yellow zone: 0.08 < |κ| < peakSlipRatio (optimal traction)
-  const peakAngleSpan = (peakSlipRatio / 1.0) * (Math.PI * 0.5);
-  ctx.fillStyle = '#cc8800';
-  // Left yellow (negative κ)
-  ctx.beginPath();
-  ctx.arc(cx, cy, arcRadius, centerAngle - peakAngleSpan, centerAngle - greenAngleSpan);
-  ctx.lineTo(cx, cy);
-  ctx.fill();
-  // Right yellow (positive κ)
-  ctx.beginPath();
-  ctx.arc(cx, cy, arcRadius, centerAngle + greenAngleSpan, centerAngle + peakAngleSpan);
-  ctx.lineTo(cx, cy);
-  ctx.fill();
+  // Green zone: |κ| < 0.08 (pure rolling)
+  const greenLeft = cx - (greenZoneKappa / 1.0) * (barWidth * 0.5);
+  const greenRight = cx + (greenZoneKappa / 1.0) * (barWidth * 0.5);
+  ctx.fillStyle = '#22aa2244';  // Translucent green
+  ctx.fillRect(greenLeft, cy - barHeight * 0.5, greenRight - greenLeft, barHeight);
 
-  // Red zone: |κ| > peakSlipRatio (traction degrading)
-  ctx.fillStyle = '#cc2222';
-  // Left red (lockup)
-  ctx.beginPath();
-  ctx.arc(cx, cy, arcRadius, Math.PI, centerAngle - peakAngleSpan);
-  ctx.lineTo(cx, cy);
-  ctx.fill();
-  // Right red (wheelspin)
-  ctx.beginPath();
-  ctx.arc(cx, cy, arcRadius, centerAngle + peakAngleSpan, 0);
-  ctx.lineTo(cx, cy);
-  ctx.fill();
+  // Yellow zones: 0.08 < |κ| < peakSlipRatio (optimal traction)
+  const yellowLeftStart = cx - (redZoneKappa / 1.0) * (barWidth * 0.5);
+  const yellowLeftEnd = greenLeft;
+  const yellowRightStart = greenRight;
+  const yellowRightEnd = cx + (redZoneKappa / 1.0) * (barWidth * 0.5);
 
-  // --- Utilization concentric ring (radial fill 0–1) ---
-  const utilRingInner = arcRadius * 0.5;
-  const utilRingOuter = arcRadius * 0.65;
-  const utilColor = utilization < 0.5 ? '#22aa22' : (utilization < 0.8 ? '#cc8800' : '#cc2222');
-  ctx.fillStyle = utilColor;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - utilRingInner);
-  ctx.arc(cx, cy, utilRingInner, -Math.PI * 0.5, -Math.PI * 0.5 + utilization * Math.PI * 2);
-  ctx.arc(cx, cy, utilRingOuter, -Math.PI * 0.5 + utilization * Math.PI * 2, -Math.PI * 0.5, true);
-  ctx.closePath();
-  ctx.fill();
+  ctx.fillStyle = '#cc880044';  // Translucent yellow
+  ctx.fillRect(yellowLeftStart, cy - barHeight * 0.5, yellowLeftEnd - yellowLeftStart, barHeight);
+  ctx.fillRect(yellowRightStart, cy - barHeight * 0.5, yellowRightEnd - yellowRightStart, barHeight);
 
-  // --- Needle (bipolar, κ ∈ [-1, +1]) ---
-  const needleAngle = centerAngle + safeSlipRatio * (Math.PI * 0.5);
-  const needleX = cx + needleRadius * Math.cos(needleAngle);
-  const needleY = cy + needleRadius * Math.sin(needleAngle);
+  // Red zones: |κ| > peakSlipRatio (traction degrading)
+  ctx.fillStyle = '#cc222244';  // Translucent red
+  ctx.fillRect(barLeft, cy - barHeight * 0.5, yellowLeftStart - barLeft, barHeight);
+  ctx.fillRect(yellowRightEnd, cy - barHeight * 0.5, barRight - yellowRightEnd, barHeight);
+
+  // --- Markings and labels ---
+  ctx.strokeStyle = '#666';
+  ctx.fillStyle = '#999';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+
+  // Draw tick marks and labels: -1, -0.5, 0, +0.5, +1
+  const ticks = [-1, -0.5, 0, 0.5, 1];
+  for (const tickValue of ticks) {
+    const tickX = cx + (tickValue / 1.0) * (barWidth * 0.5);
+    const tickY = cy - barHeight * 0.5;
+
+    // Draw tick line
+    ctx.lineWidth = tickValue === 0 ? 2 : 1;
+    ctx.beginPath();
+    ctx.moveTo(tickX, tickY - 8);
+    ctx.lineTo(tickX, tickY);
+    ctx.stroke();
+
+    // Label below the bar
+    ctx.fillStyle = tickValue === 0 ? '#ddd' : '#999';
+    ctx.fillText(tickValue.toFixed(1), tickX, tickY + 20);
+  }
+
+  // --- Center line (κ = 0) ---
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - barHeight * 0.5);
+  ctx.lineTo(cx, cy + barHeight * 0.5);
+  ctx.stroke();
+
+  // --- Needle (centered at κ = 0) ---
+  const needleX = cx + (safeSlipRatio / 1.0) * (barWidth * 0.5);
+  const needleBaseY = cy - barHeight * 0.5 - 10;
+  const needlePointY = cy + barHeight * 0.5 + 10;
 
   // Needle shadow
-  ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(needleX + 1, needleBaseY + 1);
+  ctx.lineTo(needleX + 1, needlePointY + 1);
+  ctx.stroke();
+
+  // Needle body - color based on zone
+  let needleColor = '#22aa22';  // Green: safe zone
+  if (Math.abs(safeSlipRatio) > redZoneKappa) {
+    needleColor = '#cc2222';  // Red: degraded traction
+  } else if (Math.abs(safeSlipRatio) > greenZoneKappa) {
+    needleColor = '#cc8800';  // Yellow: optimal
+  }
+  ctx.strokeStyle = needleColor;
   ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(cx + 2, cy + 2);
-  ctx.lineTo(needleX + 2, needleY + 2);
+  ctx.moveTo(needleX, needleBaseY);
+  ctx.lineTo(needleX, needlePointY);
   ctx.stroke();
 
-  // Needle body
-  ctx.strokeStyle = '#ff4444';
-  ctx.lineWidth = 3;
+  // Needle cap
+  ctx.fillStyle = needleColor;
   ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(needleX, needleY);
-  ctx.stroke();
-
-  // Pivot cap
-  ctx.fillStyle = '#ffcc00';
-  ctx.beginPath();
-  ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+  ctx.arc(needleX, needleBaseY, 6, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   ctx.stroke();
 
-  // --- Labels ---
-  ctx.font = 'bold 12px monospace';
-  ctx.fillStyle = '#ccc';
+  // --- Info display below the gauge ---
+  ctx.font = 'bold 16px sans-serif';
   ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
 
   // Wheel name (short form: FL, FR, RL, RR)
-  ctx.font = 'bold 14px sans-serif';
   const wheelLabel = wheelName
     .replace('frontLeft', 'FL')
     .replace('frontRight', 'FR')
     .replace('rearLeft', 'RL')
     .replace('rearRight', 'RR');
-  ctx.fillText(wheelLabel, cx, cy + radius + 20);
+  ctx.fillStyle = '#eee';
+  ctx.fillText(wheelLabel, cx, cy + barHeight * 0.5 + 40);
 
-  // Slip ratio value
-  ctx.font = '11px monospace';
-  ctx.fillText(`κ = ${safeSlipRatio.toFixed(3)}`, cx, cy - radius - 20);
-
-  // Utilization value
-  ctx.fillText(`u = ${utilization.toFixed(3)}`, cx, cy - radius - 5);
+  // Slip ratio and utilization values
+  ctx.font = '12px monospace';
+  ctx.fillStyle = '#999';
+  ctx.fillText(`κ = ${safeSlipRatio.toFixed(3)}  u = ${utilization.toFixed(2)}`, cx, cy + barHeight * 0.5 + 60);
 }
