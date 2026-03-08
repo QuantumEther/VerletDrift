@@ -126,6 +126,8 @@ The current input mapping is defined in `js/input.js` and uses the following def
 
 Enable debug overlays to visualize internal simulation state, including tyre forces, slip-angle behaviour, and other diagnostics. This is useful when tuning for realism, drift feel, or stability.
 
+**GPU Rendering Issues?** See [GPU_DEBUGGING_GUIDE.md](./GPU_DEBUGGING_GUIDE.md) for comprehensive troubleshooting documentation, including a detailed case study of the skid mark alignment fix and how to resolve similar texture/coordinate-space issues.
+
 ---
 
 ## How It Works
