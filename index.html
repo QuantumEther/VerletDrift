@@ -98,8 +98,9 @@
           <span class="slider-label">Physics Hz</span>
           <!-- Physics tick rate (wall-clock Hz). timeScale only shrinks dt per tick,
                not the tick rate. Higher = more accurate tire model, more CPU.
-               100Hz is the sweet spot for vehicle dynamics. Range: 30–200Hz. -->
-          <input type="range" id="simulationFps" min="30" max="200" value="100" step="10">
+               100Hz is the sweet spot for vehicle dynamics. Can push to 240Hz if profiler shows headroom.
+               Range: 30–240Hz. -->
+          <input type="range" id="simulationFps" min="30" max="240" value="100" step="10">
           <span class="slider-value" id="simulationFpsValue">100</span>
         </div>
         <div class="slider-row">
@@ -1004,11 +1005,13 @@
       <!-- ==================== PERFORMANCE PROFILER ==================== -->
       <div class="panel-section">
         <h3>⏱️ Performance Profiler</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <label><input type="checkbox" id="perfProfilerEnabled"> Frame Time Breakdown</label>
-          <label><input type="checkbox" id="perfThrottleSimulation"> Throttle @ 30 FPS</label>
+        <label><input type="checkbox" id="perfProfilerEnabled"> Frame Time Breakdown</label>
+        <div class="slider-row" style="margin-top: 12px;">
+          <span class="slider-label">Throttle FPS</span>
+          <input type="range" id="perfThrottleTargetFps" min="30" max="240" step="10" value="60" style="flex: 1; margin: 0 8px;">
+          <span class="slider-value" id="perfThrottleTargetFpsValue">60</span>
         </div>
-        <p style="font-size: 11px; color: #999; margin-top: 8px;">Enables console logging of frame time by component (Input, Physics, Render, Audio). Check browser console (F12) for output.</p>
+        <p style="font-size: 11px; color: #999; margin-top: 8px;">Enable Frame Time Breakdown to see console logs. Use Throttle FPS slider to test performance at different render target rates.</p>
       </div>
     </div>
 

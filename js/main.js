@@ -520,15 +520,19 @@ function printProfilerStats() {
     '%c⏱️ PERFORMANCE (last 60 frames, avg/max/min in ms)',
     'color: #ffff00; font-weight: bold; background: #333;'
   );
-  console.log(`  Total:  ${stats.total.avg}/${stats.total.max}/${stats.total.min}`);
-  console.log(`  Input:  ${stats.input.avg}/${stats.input.max}/${stats.input.min}`);
-  console.log(`  Physics: ${stats.physics.avg}/${stats.physics.max}/${stats.physics.min}`);
-  console.log(`  Render: ${stats.render.avg}/${stats.render.max}/${stats.render.min}`);
-  console.log(`  Audio:  ${stats.audio.avg}/${stats.audio.max}/${stats.audio.min}`);
+
+  // Helper to safely get stats or default value
+  const getStat = (key) => stats[key] ? `${stats[key].avg}/${stats[key].max}/${stats[key].min}` : 'N/A/N/A/N/A';
+
+  console.log(`  Total:   ${getStat('total')}`);
+  console.log(`  Input:   ${getStat('input')}`);
+  console.log(`  Physics: ${getStat('physics')}`);
+  console.log(`  Render:  ${getStat('render')}`);
+  console.log(`  Audio:   ${getStat('audio')}`);
 
   const targetMs = 16.67; // 60 FPS
-  const total = parseFloat(stats.total.avg);
-  const status = total > targetMs * 1.5 ? '🔴 SLOW' : total > targetMs ? '🟡 OK' : '🟢 FAST';
+  const total = stats.total ? parseFloat(stats.total.avg) : 0;
+  const status = total > targetMs * 1.5 ? '🔴 SLOW' : total > targetMs ? '🟡 OK' : total > 0 ? '🟢 FAST' : '⚪ PENDING';
   console.log(`  Status: ${status} (target: ${targetMs.toFixed(1)}ms for 60 FPS)`);
 }
 
@@ -650,15 +654,15 @@ function mainLoop(timestampMilliseconds) {
     printProfilerStats();
   }
 
-  // Throttle simulation to 30 FPS if enabled (for testing)
-  if (state.params.perfThrottleSimulation) {
-    const throttleMs = 33.33; // ~30 FPS
+  // Throttle render to target FPS if enabled (for testing performance)
+  if (state.params.perfThrottleTargetFps > 0 && state.params.perfThrottleTargetFps < 240) {
+    const targetMs = 1000 / state.params.perfThrottleTargetFps;  // ms per frame for target FPS
     const frameTimeMs = wallFrameTime * 1000;
-    if (frameTimeMs < throttleMs) {
-      // Busy-wait to throttle (crude but effective for testing)
-      const targetEnd = performance.now() + (throttleMs - frameTimeMs);
+    if (frameTimeMs < targetMs) {
+      // Busy-wait to throttle to target FPS (crude but effective for testing)
+      const targetEnd = performance.now() + (targetMs - frameTimeMs);
       while (performance.now() < targetEnd) {
-        // spin
+        // spin - throttle loop
       }
     }
   }

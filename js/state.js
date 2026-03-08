@@ -538,7 +538,7 @@ const state = {
 
     // --- PERFORMANCE PROFILER ---
     perfProfilerEnabled:    false,  // Enable frame time breakdown logging
-    perfThrottleSimulation: false,  // Throttle game to 30 FPS for testing performance
+    perfThrottleTargetFps:  60,     // Target FPS for throttling (30-240, 0 = disabled)
   },
 
   // -----------------------------------------------------------
