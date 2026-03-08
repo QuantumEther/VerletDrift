@@ -28,6 +28,7 @@ const INFO_BAR_CELL_IDS = [
   'gearDisplay',
   'headingDisplay',
   'clutchDisplay',
+  'wheelOmegaDisplay',
   'trailDisplay',
   'renderFpsDisplay',
   'physicsTpsDisplay',
