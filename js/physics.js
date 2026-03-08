@@ -1000,7 +1000,7 @@ export function computeTireForces(dt) {
     // Then torque integration (omegaDelta) adds/removes based on forces
     
     // Recalculate wheelLongitudinalSpeed from cached kinematics (computed in tire forces section)
-    const kinematics = wheelKinematics[name];
+    // (kinematics already obtained above for traction torque calculation)
     const wheelLongitudinalSpeed = dot(
       kinematics.wheelVelX,
       kinematics.wheelVelY,
