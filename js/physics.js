@@ -993,8 +993,26 @@ export function computeTireForces(dt) {
     // torqueBrake is already signed to oppose omega direction
     const netWheelTorque = torqueDrive - torqueBrake - torqueTraction;
     const omegaDelta = (netWheelTorque / wheelInertia) * dt;
+    
+    // CRITICAL: Set omega from rolling velocity FIRST, then add torque integration
+    // This ensures wheels are never stuck at ω=0 while rolling.
+    // ω = v_rolling / R establishes the baseline from kinematics
+    // Then torque integration (omegaDelta) adds/removes based on forces
+    
+    // Recalculate wheelLongitudinalSpeed from cached kinematics (computed in tire forces section)
+    const kinematics = wheelKinematics[name];
+    const wheelLongitudinalSpeed = dot(
+      kinematics.wheelVelX,
+      kinematics.wheelVelY,
+      kinematics.wheelForwardX,
+      kinematics.wheelForwardY
+    );
+    const omegaFromRolling = wheelLongitudinalSpeed / wheelRad;
+    
+    // Update using both: rolling velocity baseline + torque response
+    // Start with rolling velocity (kinematic constraint), then integrate torques
     state.wheelOmega[name] = clamp(
-      state.wheelOmega[name] + omegaDelta,
+      omegaFromRolling + omegaDelta,
       -maxOmega,
       maxOmega
     );
