@@ -1,6 +1,7 @@
 {
     "livePreviewUseDevServer": true,
     "livePreviewServerProjectPath": "/",
-    "livePreviewHotReloadSupported": false,
-    "livePreviewFramework": "Custom"
+    "livePreviewHotReloadSupported": true,
+    "livePreviewFramework": "Custom",
+    "livePreviewServerURL": "http://localhost:8000"
 }
