@@ -736,8 +736,7 @@ export function computeTireForces(dt) {
 
     // Calculate wheel angular velocity directly from rolling velocity
     // ω = v_rolling / R (pure rolling constraint: wheel surface speed = linear rolling speed)
-    const wheelRad = params.wheelRadius;
-    state.wheelOmega[name] = wheelLongitudinalSpeed / wheelRad;
+    state.wheelOmega[name] = wheelLongitudinalSpeed / params.wheelRadius;
 
     // Store per-wheel lateral speed for per-wheel skid marks and spark generation.
     state.wheelLateralSpeed[name] = lateralSpeedAbs;
