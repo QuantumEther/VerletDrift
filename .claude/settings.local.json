@@ -46,7 +46,10 @@
       "Bash(node -c js/renderer.js)",
       "mcp__Desktop_Commander__get_more_search_results",
       "mcp__Desktop_Commander__edit_block",
-      "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\TEST_RPM_FIX.md\":*)"
+      "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\TEST_RPM_FIX.md\":*)",
+      "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\CRITICAL_FIX_VALIDATION.md\":*)",
+      "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\PHYSICS_EXPLANATION.md\":*)",
+      "Bash(git add -A)"
     ]
   }
 }
