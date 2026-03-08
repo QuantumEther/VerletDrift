@@ -45,7 +45,8 @@
       "Bash(lsof -i :8000)",
       "Bash(node -c js/renderer.js)",
       "mcp__Desktop_Commander__get_more_search_results",
-      "mcp__Desktop_Commander__edit_block"
+      "mcp__Desktop_Commander__edit_block",
+      "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\TEST_RPM_FIX.md\":*)"
     ]
   }
 }

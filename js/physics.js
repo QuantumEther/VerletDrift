@@ -461,9 +461,9 @@ export function updateEngine(dt) {
     const rearAvgOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
     // Convert wheel omega [rad/s] to wheel RPM
     const wheelRpmValue = rearAvgOmega * (60 / TAU);
-    // In geared drivetrain: wheelRpm = engineRpm / (gearRatio * finalDrive)
-    // So: engineRpm = wheelRpm / (gearRatio * finalDrive)
-    const engineRpmFromWheel = Math.abs(wheelRpmValue) / (Math.abs(gearRatio) * finalDrive);
+    // In geared drivetrain: engineRpm = wheelRpm * gearRatio * finalDrive
+    // (gear ratios amplify wheel speed back to engine speed)
+    const engineRpmFromWheel = Math.abs(wheelRpmValue) * Math.abs(gearRatio) * finalDrive;
 
     // Free-rev target based on current throttle
     const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
@@ -483,7 +483,12 @@ export function updateEngine(dt) {
     const transientBlend = Math.max(0, 1.0 - rearAvgOmega / wheelSpeedThreshold);
 
     engine.rpm = freeRpm * transientBlend + engineRpmFromWheel * (1 - transientBlend);
-    engine.rpm = clamp(engine.rpm, idleRpm * 0.8, redlineRpm);
+    
+    // During transient blending, allow RPM to dip lower when wheels are slow.
+    // Blend-aware clamp floor: transitions from idle * 0.8 (free-rev) to idle * 0.2 (wheel-locked)
+    // This lets engineRpmFromWheel dominate during early launch without being overridden by clamping.
+    const clampFloor = idleRpm * (0.8 * transientBlend + 0.2 * (1 - transientBlend));
+    engine.rpm = clamp(engine.rpm, clampFloor, redlineRpm);
 
     // DEBUG: Log values when wheels are spinning
     if (rearAvgOmega > 1 && throttleAmount > 0.1) {
