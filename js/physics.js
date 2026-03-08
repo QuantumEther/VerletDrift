@@ -459,23 +459,11 @@ export function updateEngine(dt) {
     // with wheel RPM to allow smooth launch. Once wheels gain momentum, fully
     // lock to wheel RPM (no runaway revving).
     const rearAvgOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
-<<<<<<< ours
     // Convert wheel omega [rad/s] to wheel RPM
     const wheelRpmValue = rearAvgOmega * (60 / TAU);
     // In geared drivetrain: engineRpm = wheelRpm * gearRatio * finalDrive
     // (gear ratios amplify wheel speed back to engine speed)
     const engineRpmFromWheel = Math.abs(wheelRpmValue) * Math.abs(gearRatio) * finalDrive;
-=======
-    const wheelRpm = rearAvgOmega * (60 / TAU);
-    // Driveline kinematics: ω_engine = ω_wheel × gear × finalDrive.
-    // Dividing here underestimates coupled RPM by ~14× in 1st gear and keeps
-    // the engine near idle while wheels spin, which inflates κ and feels like
-    // a clutch/drivetrain desynchronization.
-    const engineRpmFromWheel = Math.abs(wheelRpm) * Math.abs(gearRatio) * finalDrive;
-
-    const idleHoldRpm = idleRpm * params.stallResistance;
-    engine.rpm = Math.max(engineRpmFromWheel, idleHoldRpm);
->>>>>>> theirs
 
     // Free-rev target based on current throttle
     const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
