@@ -250,8 +250,6 @@ function synthesizeExhaustIR(ctx) {
 // Called every physics substep from applyAllAudioParams.
 // Each pulse = instantaneous attack + exponential decay, mimicking a combustion event.
 // Jitter perturbs individual pulse timing without drifting the underlying metronome.
-const PULSE_LOOKAHEAD = 0.050; // seconds of lookahead
-
 function schedulePulses(firingFreq, throttle, rpm = 800) {
   if (!pulseGain || !audioCtx || firingFreq < 5) return;
 
