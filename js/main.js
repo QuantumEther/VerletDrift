@@ -1284,5 +1284,21 @@ export function triggerScreenShake(magnitude) {
 }
 
 
+// Debug helper: expose parameters to browser console
+window.debugParams = () => {
+  const p = state.params;
+  console.log('=== CRITICAL PARAMETERS ===');
+  console.log(`wheelInertia: ${p.wheelInertia.toFixed(3)} (should be 1.2)`);
+  console.log(`wheelRadius: ${p.wheelRadius.toFixed(3)} (should be 0.35)`);
+  console.log(`finalDriveRatio: ${p.finalDriveRatio.toFixed(2)} (should be 4.1)`);
+  console.log(`gearRatio1: ${p.gearRatio1.toFixed(2)} (should be 3.5)`);
+  console.log(`carMassKg: ${p.carMassKg.toFixed(0)} (should be 1200-1500)`);
+  console.log(`peakEngineTorqueNm: ${p.peakEngineTorqueNm.toFixed(0)} (should be 350-400)`);
+  console.log(`idleRpm: ${p.idleRpm.toFixed(0)} (should be 800)`);
+  console.log(`redlineRpm: ${p.redlineRpm.toFixed(0)} (should be 9000)`);
+  console.log('=== ALL PARAMS ===');
+  console.log(JSON.stringify(p, null, 2));
+};
+
 // Kick off the game loop.
 requestAnimationFrame(mainLoop);
