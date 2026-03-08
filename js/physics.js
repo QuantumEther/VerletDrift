@@ -138,6 +138,13 @@ export function initializeCarBody(worldCenterX, worldCenterY) {
   state.camera.y     = worldCenterY;
   state.camera.prevX = worldCenterX;
   state.camera.prevY = worldCenterY;
+
+  // Initialize wheel omegas to pure rolling state: ω = v / R
+  // (Wheels start at rest, so this is also zero initially.)
+  const wheelRad = state.params.wheelRadius;
+  for (const name of Object.keys(state.wheelOmega)) {
+    state.wheelOmega[name] = 0;  // Car starts at rest
+  }
 }
 
 
@@ -445,9 +452,11 @@ export function updateEngine(dt) {
 
   } else if (engine.clutchEngagement > 0.99) {
     // CASE B: Clutch fully engaged → rigid mechanical coupling.
-    const vehicleSpeed       = body.speed;
-    const wheelRpm           = (vehicleSpeed * 60) / (TAU * wheelRad);
-    const engineRpmFromWheel = wheelRpm * Math.abs(gearRatio) * finalDrive;
+    // NEW: Use wheel omega (rotational velocity) instead of body speed.
+    // This enables independent wheel spin-up during wheelspin/burnout.
+    const rearAvgOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
+    const wheelRpm = rearAvgOmega * (60 / TAU) / (Math.abs(gearRatio) * finalDrive);
+    const engineRpmFromWheel = Math.abs(wheelRpm);
 
     const idleHoldRpm = idleRpm * params.stallResistance;
     engine.rpm = Math.max(engineRpmFromWheel, idleHoldRpm);
@@ -457,31 +466,27 @@ export function updateEngine(dt) {
     }
 
     const effectiveStallRpm = stallRpm * (1.0 - params.stallResistance * 0.8);
-    if (engineRpmFromWheel < effectiveStallRpm && vehicleSpeed < 0.5 && throttleAmount < 0.05) {
+    if (engineRpmFromWheel < effectiveStallRpm && body.speed < 0.5 && throttleAmount < 0.05) {
       engine.isStalled = true;
       engine.rpm = 0;
       return;
     }
 
   } else {
-    // CASE C: Clutch in slip/bite zone → blend free-rev with wheel demand.
-    const vehicleSpeed     = body.speed;
-    const wheelRpm         = (vehicleSpeed * 60) / (TAU * wheelRad);
-    const wheelDemandedRpm = wheelRpm * Math.abs(gearRatio) * finalDrive;
+    // CASE C: Clutch in slip/bite zone → engine free-revs independently.
+    // Torque is applied to wheels through clutch engagement (in computeTireForces).
+    // Wheels accelerate based on wheel torque integration, NOT coupled to engine RPM.
+    // This allows clutch dumps, burnouts, and traction recovery to work correctly.
 
     const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
     const riseRate      = throttleAmount > 0.01 ? 6.0 : 3.0;
     const freeRpm       = engine.rpm + (freeRevTarget - engine.rpm) * riseRate * dt;
 
-    engine.rpm = freeRpm * (1 - engine.clutchEngagement) +
-                 wheelDemandedRpm * engine.clutchEngagement;
+    engine.rpm = clamp(freeRpm, idleRpm * 0.8, redlineRpm);
 
-    engine.rpm = clamp(engine.rpm, 0, redlineRpm);
-
-    const stallThreshold = stallRpm * (1.0 - params.stallResistance * 0.6);
-    if (engine.rpm < stallThreshold &&
-        engine.clutchEngagement > 0.4 &&
-        vehicleSpeed < 0.5) {
+    // Stall only if engine truly loses power (no throttle, wheels not spinning up from drag)
+    const stallThreshold = stallRpm * 0.5;  // Very lenient during slip
+    if (engine.rpm < stallThreshold && throttleAmount < 0.01 && body.speed < 0.2) {
       engine.isStalled = true;
       engine.rpm = 0;
     }
@@ -520,6 +525,53 @@ function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C)
 // Computes per-wheel tire forces and returns the net body force and net torque.
 // The car is rear-wheel-drive: engine torque goes only to rear wheels.
 // All four wheels contribute lateral forces (from slip angles).
+// =============================================================
+// WHEEL BRAKE TORQUE HELPER
+// =============================================================
+// Extracts brake force computation for both regular and handbrake,
+// then converts to torque for wheel dynamics integration.
+// Returns { forceMag, torque, isBraking } for this wheel.
+function computeWheelBrakeTorque(name, wheelLongitudinalSpeed, normalLoad, frictionCoeff, wheelRad, params, state, safePeakSlipRatio) {
+  let brakeForceMag = 0;
+  let isBraking = false;
+
+  // Regular brake (S key, front wheels get 80%, so 0.4 per wheel × 2 wheels = 80%)
+  if (state.input.brakeKeyHeld && state.body.speed > 0.05) {
+    if (!name.includes('Rear')) {
+      const perWheelBrake   = params.brakeForce * 0.4;
+      const frictionBudget  = normalLoad * frictionCoeff;
+      const brakeSlipInput  = Math.min(perWheelBrake / Math.max(frictionBudget, 1.0), 2.0);
+      const brakeForce = pacejkaForce(normalLoad, frictionCoeff,
+                                      brakeSlipInput * safePeakSlipRatio,
+                                      safePeakSlipRatio,
+                                      params.pacejkaB, params.pacejkaC);
+      brakeForceMag = brakeForce;
+      isBraking = true;
+    }
+  }
+
+  // Handbrake (F key, rear only, progressive with handbrakeValue 0–1)
+  if (state.input.handbrakeKeyHeld && state.body.speed > 0.05) {
+    if (name.includes('Rear')) {
+      const hbVal          = state.input.handbrakeValue || 0;
+      const perWheelHB     = params.brakeForce * 0.5 * hbVal;
+      const frictionBudget = normalLoad * frictionCoeff;
+      const hbSlipInput    = Math.min(perWheelHB / Math.max(frictionBudget, 1.0), 3.0);
+      const hbForce = pacejkaForce(normalLoad, frictionCoeff,
+                                   hbSlipInput * safePeakSlipRatio,
+                                   safePeakSlipRatio,
+                                   params.pacejkaB, params.pacejkaC);
+      brakeForceMag = Math.max(brakeForceMag, hbForce);  // take max of brake + handbrake
+      isBraking = true;
+    }
+  }
+
+  // Convert to torque: T_brake = F_brake × R, with sign opposing wheel velocity
+  const brakeTorque = brakeForceMag * wheelRad * (wheelLongitudinalSpeed >= 0 ? -1 : 1);
+
+  return { forceMag: brakeForceMag, torque: brakeTorque, isBraking };
+}
+
 //
 // Returns: { forceX, forceY, torque }
 //   forceX, forceY: net force in world space (px/s² when divided by mass)
@@ -697,51 +749,45 @@ export function computeTireForces(dt) {
     let longitudinalForceMag = 0;
     let slipRatio = 0;
 
-    if (isRear && Math.abs(driveForce) > 0.01) {
-      const tractionLimit = normalLoad * frictionCoeff;
-      if (tractionLimit > 0.01) {
-        const perWheelDrive = driveForce * 0.5;
-        const driveRatio = perWheelDrive / tractionLimit;
-        slipRatio = driveRatio * safePeakSlipRatio;
-        longitudinalForceMag = pacejkaForce(normalLoad, frictionCoeff,
-                                             Math.abs(slipRatio), safePeakSlipRatio,
-                                             params.pacejkaB, params.pacejkaC);
-        if (driveForce < 0) longitudinalForceMag = -longitudinalForceMag;
-      }
-    }
+    // Compute true kinematic slip ratio: κ = (R·ω - v_long) / max(|R·ω|, |v_long|, ε)
+    // This replaces the old force-demand approximation with actual wheel physics.
+    // κ = 0: pure rolling, κ > 0: wheelspin (drive wheels slipping forward),
+    // κ < 0: lockup (wheels slower than ground, towards -1 at full lock).
+    const wheelRad = params.wheelRadius;
+    const omega = state.wheelOmega[name];
+    const wheelSurfaceSpeed = omega * wheelRad;  // m/s
+    const epsilon = 0.5;  // m/s guard to avoid singularity
+    const slipDenomLongitudinal = Math.max(Math.abs(wheelSurfaceSpeed), Math.abs(wheelLongitudinalSpeed), epsilon);
+    slipRatio = (wheelSurfaceSpeed - wheelLongitudinalSpeed) / slipDenomLongitudinal;
 
-    // --- PER-WHEEL BRAKING inside the traction circle ---
-    // S key = FRONT AXLE ONLY (like a real front-biased brake system).
-    // Competing with lateral grip through the friction ellipse: locked front
-    // wheels lose steering authority (understeer under braking).
-    if (!isRear && state.input.brakeKeyHeld && body.speed > 0.05) {
-      const perWheelBrake   = params.brakeForce * 0.4;   // front gets 80% total (0.4 per wheel × 2)
-      const frictionBudget  = normalLoad * frictionCoeff;
-      const brakeSlipInput  = Math.min(perWheelBrake / Math.max(frictionBudget, 1.0), 2.0);
-      const brakeLongForce  = pacejkaForce(normalLoad, frictionCoeff,
-                                            brakeSlipInput * safePeakSlipRatio,
-                                            safePeakSlipRatio,
-                                            params.pacejkaB, params.pacejkaC);
-      const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
-      longitudinalForceMag += brakeLongForce * brakeSign;
-    }
+    // Clamp to physical limits
+    slipRatio = clamp(slipRatio, -1.0, 1.0);
 
-    // F key = HANDBRAKE — rear axle only, progressive.
-    // Ramps up to full lock while held. Rear slip competes with lateral grip
-    // → rears lose traction → oversteer / drift initiation.
-    if (isRear && state.input.handbrakeKeyHeld && body.speed > 0.05) {
-      // Progressive: handbrakeValue ramps 0→1 over ~0.3s while held
-      const hbVal          = state.input.handbrakeValue || 0;
-      const perWheelHB     = params.brakeForce * 0.5 * hbVal;  // full rear lock at hbVal=1
-      const frictionBudget = normalLoad * frictionCoeff;
-      const hbSlipInput    = Math.min(perWheelHB / Math.max(frictionBudget, 1.0), 3.0);
-      const hbLongForce    = pacejkaForce(normalLoad, frictionCoeff,
-                                           hbSlipInput * safePeakSlipRatio,
-                                           safePeakSlipRatio,
+    // Compute longitudinal force only if slip is significant
+    if (Math.abs(slipRatio) > 0.001) {
+      longitudinalForceMag = pacejkaForce(normalLoad, frictionCoeff,
+                                           Math.abs(slipRatio), safePeakSlipRatio,
                                            params.pacejkaB, params.pacejkaC);
-      const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
-      longitudinalForceMag += hbLongForce * brakeSign;
+      if (slipRatio < 0) longitudinalForceMag = -longitudinalForceMag;
     }
+
+    // --- PER-WHEEL BRAKING via helper function ---
+    // Computes brake force for both S key (front) and F key (rear handbrake),
+    // and returns brake torque for wheel dynamics integration.
+    // S key = FRONT AXLE ONLY (like a real front-biased brake system).
+    // F key = HANDBRAKE — rear axle only, progressive.
+    const brakeResult = computeWheelBrakeTorque(name, wheelLongitudinalSpeed,
+                                                 normalLoad, frictionCoeff, wheelRad,
+                                                 params, state, safePeakSlipRatio);
+    if (brakeResult.isBraking) {
+      // Add brake force to longitudinal (sign already correct in helper)
+      const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
+      longitudinalForceMag += Math.abs(brakeResult.forceMag) * brakeSign;
+    }
+
+    // Store brake torque for wheel integration (will use in Phase 2.4)
+    if (!state.wheelBrakeTorque) state.wheelBrakeTorque = {};
+    state.wheelBrakeTorque[name] = brakeResult.torque;
 
     // Friction ellipse: combined lateral and longitudinal force cannot exceed
     // the tyre's grip circle (normalLoad × frictionCoeff).
@@ -755,6 +801,19 @@ export function computeTireForces(dt) {
 
     const scaledLateral      = fadedLateralForceMag * frictionScale * lateralForceSign;
     const scaledLongitudinal = longitudinalForceMag  * frictionScale;
+
+    // --- FRICTION CIRCLE UTILIZATION ---
+    // u = √(Fx² + Fy²) / (μN) ∈ [0, 1]
+    // Measures how much of the available friction budget is being used.
+    // 0 = no demand, 1 = at traction limit. Drives grip state machine.
+    const utilization = frictionLimit > 0.01
+      ? Math.hypot(scaledLateral, scaledLongitudinal) / frictionLimit
+      : 0;
+    state.wheelFrictionUtil[name] = clamp01(utilization);
+
+    // Store slip angle and slip ratio explicitly for debug overlays and VFX
+    state.wheelSlipAngle[name] = slipAngle;
+    state.wheelSlipRatio[name] = slipRatio;
 
     // --- TIRE FORCE RELAXATION ---
     // Correct model: tires build force over a fixed DISTANCE (relaxation length λ),
@@ -788,35 +847,42 @@ export function computeTireForces(dt) {
     state.wheelGrip[name] = simplifiedGrip;
 
     // For the grip state machine, use combined saturation (more accurate slip detection)
-    const gripRatio = frictionLimit > 0
-      ? clamp01(1.0 - combinedMag / frictionLimit)
-      : 0;
-
-    // --- HYSTERETIC GRIP STATE MACHINE ---
+    // --- HYSTERETIC GRIP STATE MACHINE (NEW: operates on utilization, not grip remaining) ---
+    // Previously: gripRatio = 1 - (combined / frictionLimit) = "grip remaining" ∈ [0,1]
+    // NEW: utilization = combined / frictionLimit = "friction circle utilization" ∈ [0,1]
+    // Semantic change: 0=no demand, 1=at limit (more intuitive than "grip remaining")
     // Prevents frame-to-frame oscillation between stable/slipping states.
     const gws = state.wheelGripState[name];
-    const GRIP_LOSS_THRESHOLD     = params.gripLossThreshold     !== undefined ? params.gripLossThreshold     : 0.70;
-    const GRIP_RECOVERY_THRESHOLD = params.gripRecoveryThreshold !== undefined ? params.gripRecoveryThreshold : 0.85;
+
+    // New thresholds: trigger slip near the friction limit (~90%), recover below that
+    const SLIP_TRIGGER     = params.gripLossThreshold     !== undefined ? params.gripLossThreshold     : 0.90;
+    const RECOVERY_TRIGGER = params.gripRecoveryThreshold !== undefined ? params.gripRecoveryThreshold : 0.80;
+    const STABLE_TRIGGER   = 0.65;  // fully recovered when utilization drops to 65%
 
     if (gws.state === 'stable') {
-      if (gripRatio < GRIP_LOSS_THRESHOLD) {
+      if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
         gws.state = 'slipping';
       }
     } else if (gws.state === 'slipping') {
-      if (gripRatio > GRIP_RECOVERY_THRESHOLD) {
+      if (state.wheelFrictionUtil[name] < RECOVERY_TRIGGER) {
         gws.state = 'recovering';
       }
-    } else {
-      if (gripRatio > 0.95) {
+    } else {  // recovering
+      if (state.wheelFrictionUtil[name] < STABLE_TRIGGER) {
         gws.state = 'stable';
-      } else if (gripRatio < GRIP_LOSS_THRESHOLD) {
+      } else if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
         gws.state = 'slipping';
       }
     }
+
+    // EMA smoothing applies to utilization (not grip remaining)
     const emaAlpha = gws.state === 'stable'
       ? (params.gripEmaStable   !== undefined ? params.gripEmaStable   : 0.15)
       : (params.gripEmaSlipping !== undefined ? params.gripEmaSlipping : 0.35);
-    gws.smoothedGrip = gws.smoothedGrip + (gripRatio - gws.smoothedGrip) * emaAlpha;
+    gws.smoothedGrip = gws.smoothedGrip + (state.wheelFrictionUtil[name] - gws.smoothedGrip) * emaAlpha;
+
+    // Store utilization for backward compatibility (wheelGrip now means utilization, not grip remaining)
+    state.wheelGrip[name] = state.wheelFrictionUtil[name];
 
     // Store lateral force magnitude for SAT computation (front wheels only).
     // Use the RELAXED force so SAT doesn't glitch from constraint noise.
@@ -838,6 +904,42 @@ export function computeTireForces(dt) {
     netTorque += armX * wheelForceY - armY * wheelForceX;
 
     // (Diagnostic logging removed — was firing every wheel every step, ~240 logs/sec)
+  }
+
+  // ========== WHEEL TORQUE INTEGRATION ==========
+  // dω/dt = (T_drive - T_brake - T_traction) / I_w
+  // Integrate wheel angular velocity using torque balance.
+  // T_traction = Fx · R (reaction torque from tire longitudinal force)
+  const wheelInertia = params.wheelInertia || 1.2;  // DEFAULT_WHEEL_INERTIA
+  const maxOmega = 500;  // rad/s ≈ 5000 RPM at R≈0.3m
+
+  for (const name of wheelNames) {
+    const isRear = name.includes('Rear');
+    const wheelRad = params.wheelRadius;
+
+    // 1. Drive torque: only for rear wheels, split equally
+    let torqueDrive = 0;
+    if (isRear && Math.abs(driveForce) > 0.01) {
+      // Convert driveForce to torque: T = F · R, split 50/50 rear wheels
+      const wheelTorque = driveForce * wheelRad * 0.5;
+      torqueDrive = wheelTorque;
+    }
+
+    // 2. Brake torque (from helper function)
+    const torqueBrake = (state.wheelBrakeTorque && state.wheelBrakeTorque[name]) || 0;
+
+    // 3. Traction reaction torque: T = Fx · R (opposes wheel spin)
+    const longitudinalForce = state.wheelForces[name].fx;
+    const torqueTraction = longitudinalForce * wheelRad;
+
+    // 4. Integrate: ω += (ΣT) / I_w · dt
+    const netWheelTorque = torqueDrive - Math.abs(torqueBrake) - torqueTraction;
+    const omegaDelta = (netWheelTorque / wheelInertia) * dt;
+    state.wheelOmega[name] = clamp(
+      state.wheelOmega[name] + omegaDelta,
+      -maxOmega,
+      maxOmega
+    );
   }
 
   // Aggregate wheel forces into axle forces for friction circle gauges.

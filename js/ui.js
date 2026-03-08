@@ -128,7 +128,9 @@ export function createNeedlePhysics() {
 // matching the IDs in index.html. If an element is not found, that
 // slider is silently skipped (no exception thrown).
 export function initSliders() {
+  console.log('[initSliders] Starting initialization...');
   initInfoBarCellCache();
+  console.log('[initSliders] initInfoBarCellCache done');
 
   // Generic binder: links a slider element to a params field.
   // getValue:  slider string → typed value for state.params
@@ -155,7 +157,11 @@ export function initSliders() {
   function bind(sliderId, paramsKey, parseValue, formatDisplay) {
     const slider       = document.getElementById(sliderId);
     const displayLabel = document.getElementById(sliderId + 'Value');
-    if (!slider) return;
+
+    if (!slider) {
+      console.warn(`[bind] Slider not found: ${sliderId}`);
+      return;
+    }
 
     // Initialise slider from state.params (in case HTML default differs).
     // We do NOT set slider.value here because the HTML value is the source of
@@ -164,10 +170,13 @@ export function initSliders() {
     state.params[paramsKey] = initialValue;
     if (displayLabel) displayLabel.textContent = formatDisplay(initialValue);
 
+    console.log(`[bind] Initialized ${sliderId} → state.params.${paramsKey} = ${initialValue}`);
+
     slider.addEventListener('input', () => {
       const value = parseValue(slider.value);
       state.params[paramsKey] = value;
       if (displayLabel) displayLabel.textContent = formatDisplay(value);
+      console.log(`[bind:input] ${sliderId} changed: state.params.${paramsKey} = ${value}`);
     });
   }
 
@@ -261,6 +270,7 @@ export function initSliders() {
   bind('peakSlipAngleDeg',      'peakSlipAngleDeg',      parseFloat1, fmt1);
   bind('peakSlipRatio',         'peakSlipRatio',         parseFloat1, fmt2);
   bind('tireRelaxationLength',  'tireRelaxationLength',  parseFloat1, fmt2);
+  bind('wheelInertia',          'wheelInertia',          parseFloat1, fmt2);
 
   // ---- World & Visual ----
   bind('constraintIterations',  'constraintIterations',  parseInt1,   fmtInt);
@@ -466,6 +476,8 @@ export function initSliders() {
 
   // ---- Preset System ----
   initPresets();
+
+  console.log('[initSliders] Completed successfully - all sliders bound');
 }
 
 // =============================================================

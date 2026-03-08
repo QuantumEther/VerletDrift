@@ -132,6 +132,52 @@ const state = {
   },
 
   // -----------------------------------------------------------
+  // PER-WHEEL ANGULAR VELOCITY — wheel spin rate (rad/s)
+  // Integrated from wheel torque balance; enables true kinematic slip ratio
+  // -----------------------------------------------------------
+  wheelOmega: {
+    frontLeft:  0,
+    frontRight: 0,
+    rearLeft:   0,
+    rearRight:  0,
+  },
+
+  // -----------------------------------------------------------
+  // PER-WHEEL KINEMATIC SLIP RATIO — κ ∈ [-1, +1]
+  // κ = (R·ω - v_long) / max(|R·ω|, |v_long|, ε)
+  // Computed each substep in computeTireForces() for gauges and VFX
+  // -----------------------------------------------------------
+  wheelSlipRatio: {
+    frontLeft:  0,
+    frontRight: 0,
+    rearLeft:   0,
+    rearRight:  0,
+  },
+
+  // -----------------------------------------------------------
+  // PER-WHEEL SLIP ANGLE — α (radians)
+  // Already computed in physics, now explicitly stored for debug overlays
+  // -----------------------------------------------------------
+  wheelSlipAngle: {
+    frontLeft:  0,
+    frontRight: 0,
+    rearLeft:   0,
+    rearRight:  0,
+  },
+
+  // -----------------------------------------------------------
+  // PER-WHEEL FRICTION CIRCLE UTILIZATION — u ∈ [0, 1]
+  // u = √(Fx² + Fy²) / (μN)
+  // Drives grip state machine; 0 = no demand, 1 = at traction limit
+  // -----------------------------------------------------------
+  wheelFrictionUtil: {
+    frontLeft:  0,
+    frontRight: 0,
+    rearLeft:   0,
+    rearRight:  0,
+  },
+
+  // -----------------------------------------------------------
   // PER-WHEEL GRIP STATE MACHINE — hysteretic stable/slipping/recovering
   // Prevents frame-to-frame grip oscillation.
   // state: 'stable' | 'slipping' | 'recovering'
@@ -439,6 +485,9 @@ const state = {
     steeringViscousDamping: STEERING_VISCOUS_DAMPING,
     steeringCoulombFriction: STEERING_COULOMB_FRICTION,
 
+    // --- Wheel Dynamics (new sliders) ---
+    wheelInertia:          1.2,    // kg·m² — rotational inertia per wheel (0.5–3.0)
+
     // --- World & Visual (new sliders) ---
     constraintIterations:  CONSTRAINT_ITERATIONS,
     checkerboardTileSize:  CHECKERBOARD_TILE_SIZE_PX,
@@ -519,9 +568,9 @@ const state = {
     blurJerkWeight:        0.30,   // jerk contribution (0.0–2.0)
     blurMaxOffset:         5.0,    // max world-space blur trail length in metres (0.5–20)
 
-    // --- Grip State Machine tuning ---
-    gripLossThreshold:     0.70,   // grip ratio that triggers slip state (0.3–0.95)
-    gripRecoveryThreshold: 0.85,   // grip ratio that triggers recovery (0.5–1.0)
+    // --- Grip State Machine tuning (NEW: now operates on utilization, not grip remaining) ---
+    gripLossThreshold:     0.90,   // trigger slip when utilization > 90% (0.5–1.0)
+    gripRecoveryThreshold: 0.80,   // recovery when utilization < 80% (0.3–0.95)
     gripEmaStable:         0.15,   // EMA alpha in stable state (0.01–0.5)
     gripEmaSlipping:       0.35,   // EMA alpha in slipping state (0.05–0.8)
 

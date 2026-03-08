@@ -101,9 +101,10 @@ import {
   updateSparks,
   drawSparks,
   drawDebugOverlays,
+  drawWheelSlipGauge,
 } from './renderer.js';
 
-import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=2';
+import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
@@ -180,7 +181,9 @@ initInput(simCanvas);
 
 // Bind HTML sliders to state.params. This reads initial HTML slider values
 // into state.params so physics starts with the correct parameters.
+console.log('[main] About to call initSliders()...');
 initSliders();
+console.log('[main] initSliders() returned');
 
 // Initialize sound state manager for cross-window synchronization via localStorage.
 initSoundStateManager();
@@ -1009,6 +1012,28 @@ function drawGauges(dt) {
         labelFontScale,
         speedJitter,
       });
+    }
+  }
+
+  // --- Wheel slip ratio gauges (Phase 5.5) ---
+  const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
+  const canvasIds = ['wheelFLCanvas', 'wheelFRCanvas', 'wheelRLCanvas', 'wheelRRCanvas'];
+
+  for (let i = 0; i < 4; i++) {
+    const name = wheelNames[i];
+    const canvasId = canvasIds[i];
+    const canvas = document.getElementById(canvasId);
+
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        drawWheelSlipGauge(ctx, canvas.width, canvas.height, {
+          slipRatio: state.wheelSlipRatio[name] || 0,
+          utilization: state.wheelFrictionUtil[name] || 0,
+          wheelName: name,
+          peakSlipRatio: state.params.peakSlipRatio || 0.12,
+        });
+      }
     }
   }
 }

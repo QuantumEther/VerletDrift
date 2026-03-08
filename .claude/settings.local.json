@@ -35,7 +35,15 @@
       "Bash(node -c \"js/state.js\")",
       "Bash(node -c \"js/ui.js\")",
       "Bash(index.html)",
-      "Bash(styles.css \")"
+      "Bash(styles.css \")",
+      "Bash(node -c js/physics.js)",
+      "Bash(grep -n \"PULSE_LOOKAHEAD\" js/*.js)",
+      "Bash(grep -n \"PIXELS_PER_METER\\\\|pixelsPerMeter\" js/*.js)",
+      "Bash(grep -n \"initSliders\\(\\)\" js/*.js)",
+      "Bash(node -c js/ui.js)",
+      "Bash(node -c js/main.js)",
+      "Bash(lsof -i :8000)",
+      "Bash(node -c js/renderer.js)"
     ]
   }
 }

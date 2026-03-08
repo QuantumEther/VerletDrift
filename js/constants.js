@@ -163,6 +163,7 @@ export const PACEJKA_C = 1.9;
 export const TIRE_PEAK_SLIP_ANGLE_DEG = 8.0;
 export const TIRE_PEAK_SLIP_RATIO = 0.12;
 export const DEFAULT_TIRE_FRICTION_COEFF = 1.0;
+export const DEFAULT_WHEEL_INERTIA = 1.2;  // kg·m² — rotational inertia per wheel
 
 // -------------------------------------------------------------
 // DRAG
