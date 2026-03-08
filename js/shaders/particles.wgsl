@@ -14,7 +14,7 @@ struct CameraUniforms {
   viewportH: f32,
 }
 
-@group(0) @binding(0) var<uniform> cam: CameraUniforms;
+@group(0) @binding(0) var<uniform> cameraUniforms: CameraUniforms;
 
 struct ParticleInstance {
   @location(1) worldX: f32,
@@ -44,29 +44,29 @@ var<private> QUAD_VERTS: array<vec2<f32>, 6> = array<vec2<f32>, 6>(
 
 @vertex
 fn vs_main(
-  @builtin(vertex_index) vi: u32,
-  inst: ParticleInstance,
+  @builtin(vertex_index) vertexIndex: u32,
+  instance: ParticleInstance,
 ) -> VertOut {
-  let lv = QUAD_VERTS[vi];
+  let localVertex = QUAD_VERTS[vertexIndex];
 
   // Scale by particle size (world-space metres)
-  let wx = inst.worldX + lv.x * inst.size;
-  let wy = inst.worldY + lv.y * inst.size;
+  let worldPositionX = instance.worldX + localVertex.x * instance.size;
+  let worldPositionY = instance.worldY + localVertex.y * instance.size;
 
-  let eff  = cam.zoom * cam.ppm;
-  let ndcX =  wx * eff / (cam.viewportW * 0.5);
-  let ndcY = -wy * eff / (cam.viewportH * 0.5);
+  let effectivePixelsPerMeter = cameraUniforms.zoom * cameraUniforms.ppm;
+  let normalizedDeviceCoordX =  worldPositionX * effectivePixelsPerMeter / (cameraUniforms.viewportW * 0.5);
+  let normalizedDeviceCoordY = -worldPositionY * effectivePixelsPerMeter / (cameraUniforms.viewportH * 0.5);
 
-  var out: VertOut;
-  out.pos   = vec4<f32>(ndcX, ndcY, 0.0, 1.0);
-  out.color = vec4<f32>(inst.r * inst.alpha, inst.g * inst.alpha, inst.b * inst.alpha, inst.alpha);
-  out.uv    = lv * 2.0; // [−1, 1] range
-  return out;
+  var output: VertOut;
+  output.pos   = vec4<f32>(normalizedDeviceCoordX, normalizedDeviceCoordY, 0.0, 1.0);
+  output.color = vec4<f32>(instance.r * instance.alpha, instance.g * instance.alpha, instance.b * instance.alpha, instance.alpha);
+  output.uv    = localVertex * 2.0; // [−1, 1] range
+  return output;
 }
 
 @fragment
-fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
+fn fs_main(input: VertOut) -> @location(0) vec4<f32> {
   // Circular clip: discard outside unit circle
-  if (dot(in.uv, in.uv) > 1.0) { discard; }
-  return in.color;
+  if (dot(input.uv, input.uv) > 1.0) { discard; }
+  return input.color;
 }

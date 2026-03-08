@@ -15,7 +15,7 @@ struct CameraUniforms {
   viewportH: f32,
 }
 
-@group(0) @binding(0) var<uniform> cam: CameraUniforms;
+@group(0) @binding(0) var<uniform> cameraUniforms: CameraUniforms;
 
 // Per-instance data (matches cpu-side Float32Array layout):
 //   [camRelX, camRelY, angle, length, lineWidth, r, g, b, alpha]
@@ -58,37 +58,37 @@ var<private> ARROW_VERTS: array<vec2<f32>, 9> = array<vec2<f32>, 9>(
 
 @vertex
 fn vs_main(
-  @builtin(vertex_index) vi: u32,
-  inst: ArrowInstance,
+  @builtin(vertex_index) vertexIndex: u32,
+  instance: ArrowInstance,
 ) -> VertOut {
-  let lv = ARROW_VERTS[vi];
+  let localVertex = ARROW_VERTS[vertexIndex];
 
   // Scale: X by length, Y by lineWidth
-  let sx = lv.x * inst.length;
-  let sy = lv.y * inst.lineWidth;
+  let scaledX = localVertex.x * instance.length;
+  let scaledY = localVertex.y * instance.lineWidth;
 
   // Rotate by arrow angle
-  let c = cos(inst.angle);
-  let s = sin(inst.angle);
-  let rx = sx * c - sy * s;
-  let ry = sx * s + sy * c;
+  let cosAngle = cos(instance.angle);
+  let sinAngle = sin(instance.angle);
+  let rotatedX = scaledX * cosAngle - scaledY * sinAngle;
+  let rotatedY = scaledX * sinAngle + scaledY * cosAngle;
 
   // Translate to world position (already camera-relative)
-  let wx = inst.worldX + rx;
-  let wy = inst.worldY + ry;
+  let worldPositionX = instance.worldX + rotatedX;
+  let worldPositionY = instance.worldY + rotatedY;
 
   // World → NDC (Y flipped: canvas Y-down, NDC Y-up)
-  let eff = cam.zoom * cam.ppm;
-  let ndcX =  wx * eff / (cam.viewportW * 0.5);
-  let ndcY = -wy * eff / (cam.viewportH * 0.5);
+  let effectivePixelsPerMeter = cameraUniforms.zoom * cameraUniforms.ppm;
+  let normalizedDeviceCoordX =  worldPositionX * effectivePixelsPerMeter / (cameraUniforms.viewportW * 0.5);
+  let normalizedDeviceCoordY = -worldPositionY * effectivePixelsPerMeter / (cameraUniforms.viewportH * 0.5);
 
-  var out: VertOut;
-  out.pos   = vec4<f32>(ndcX, ndcY, 0.0, 1.0);
-  out.color = vec4<f32>(inst.r * inst.alpha, inst.g * inst.alpha, inst.b * inst.alpha, inst.alpha);
-  return out;
+  var output: VertOut;
+  output.pos   = vec4<f32>(normalizedDeviceCoordX, normalizedDeviceCoordY, 0.0, 1.0);
+  output.color = vec4<f32>(instance.r * instance.alpha, instance.g * instance.alpha, instance.b * instance.alpha, instance.alpha);
+  return output;
 }
 
 @fragment
-fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
-  return in.color; // premultiplied alpha
+fn fs_main(input: VertOut) -> @location(0) vec4<f32> {
+  return input.color; // premultiplied alpha
 }

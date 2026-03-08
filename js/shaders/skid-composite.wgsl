@@ -10,7 +10,7 @@ struct CompositeUniforms {
   uvScaleY:  f32,  // half UV extent of canvas height = canvasH / (2 * zoom * ppm * mapH)
 }
 
-@group(0) @binding(0) var<uniform> u:        CompositeUniforms;
+@group(0) @binding(0) var<uniform> uniforms: CompositeUniforms;
 @group(0) @binding(1) var          skidTex:  texture_2d<f32>;
 @group(0) @binding(2) var          skidSamp: sampler;
 
@@ -29,19 +29,19 @@ var<private> QUAD_VERTS: array<vec2<f32>, 6> = array<vec2<f32>, 6>(
 );
 
 @vertex
-fn vs_main(@builtin(vertex_index) vi: u32) -> VertOut {
-  let p = QUAD_VERTS[vi];
-  var out: VertOut;
-  out.pos = vec4<f32>(p, 0.0, 1.0);
+fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> VertOut {
+  let quadNdcPosition = QUAD_VERTS[vertexIndex];
+  var output: VertOut;
+  output.pos = vec4<f32>(quadNdcPosition, 0.0, 1.0);
   // Map NDC [-1,1] to UV via zoom-aware scale.
   // NDC Y is flipped relative to world/texture Y (hence -uvScaleY).
-  // At p=(0,0): UV = (uvCenterX, uvCenterY) = camera world position in UV space.
-  // At p=(1,0): UV = (uvCenterX + uvScaleX, uvCenterY) = right edge of viewport.
-  out.uv = vec2<f32>(u.uvCenterX, u.uvCenterY) + p * vec2<f32>(u.uvScaleX, -u.uvScaleY);
-  return out;
+  // At quadNdcPosition=(0,0): UV = (uvCenterX, uvCenterY) = camera world position in UV space.
+  // At quadNdcPosition=(1,0): UV = (uvCenterX + uvScaleX, uvCenterY) = right edge of viewport.
+  output.uv = vec2<f32>(uniforms.uvCenterX, uniforms.uvCenterY) + quadNdcPosition * vec2<f32>(uniforms.uvScaleX, -uniforms.uvScaleY);
+  return output;
 }
 
 @fragment
-fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
-  return textureSample(skidTex, skidSamp, in.uv);
+fn fs_main(input: VertOut) -> @location(0) vec4<f32> {
+  return textureSample(skidTex, skidSamp, input.uv);
 }
