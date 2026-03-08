@@ -1224,9 +1224,10 @@ function recordSkidMarks(dt) {
       const dist = Math.hypot(wheel.x - prev.x, wheel.y - prev.y);
 
       if (dist > 0.03) {
-        const gripLoss  = 1.0 - g / gripThreshold;
-        const width     = widthMin + gripLoss * (widthMax - widthMin);
-        const baseAlpha = alphaMin + gripLoss * (alphaMax - alphaMin);
+        // Skid intensity scales with utilization above threshold
+        const excessUtilization = Math.max(0, u - skidUtilThreshold);
+        const width     = widthMin + excessUtilization * (widthMax - widthMin);
+        const baseAlpha = alphaMin + excessUtilization * (alphaMax - alphaMin);
         const jerkBoost = Math.min((body.jerkMagnitude || 0) / 300, jerkBoostMax);
         const alpha     = Math.min(baseAlpha * fade + jerkBoost, 0.95);
 
