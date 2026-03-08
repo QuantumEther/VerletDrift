@@ -53,7 +53,8 @@
       "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\PARAMETER_AUDIT.md\":*)",
       "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\SLIDER_CHECKLIST.md\":*)",
       "mcp__Desktop_Commander__start_process",
-      "mcp__Desktop_Commander__write_file"
+      "mcp__Desktop_Commander__write_file",
+      "Bash(grep -v \"//\")"
     ]
   }
 }
