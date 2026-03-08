@@ -2325,6 +2325,10 @@ export function drawWheelSlipGauge(ctx, canvasWidth, canvasHeight, config) {
     peakSlipRatio,       // ~0.12 for Pacejka peak
   } = config;
 
+  // Defensive clamp for gauge stability: physics should already keep κ in [-1, 1],
+  // but clamping here prevents runaway needles if a transient debug value leaks through.
+  const safeSlipRatio = Math.max(-1, Math.min(1, slipRatio));
+
   const cx = canvasWidth * 0.5;
   const cy = canvasHeight * 0.5;
   const radius = Math.min(canvasWidth, canvasHeight) * 0.35;
@@ -2398,7 +2402,7 @@ export function drawWheelSlipGauge(ctx, canvasWidth, canvasHeight, config) {
   ctx.fill();
 
   // --- Needle (bipolar, κ ∈ [-1, +1]) ---
-  const needleAngle = centerAngle + slipRatio * (Math.PI * 0.5);
+  const needleAngle = centerAngle + safeSlipRatio * (Math.PI * 0.5);
   const needleX = cx + needleRadius * Math.cos(needleAngle);
   const needleY = cy + needleRadius * Math.sin(needleAngle);
 
@@ -2443,7 +2447,7 @@ export function drawWheelSlipGauge(ctx, canvasWidth, canvasHeight, config) {
 
   // Slip ratio value
   ctx.font = '11px monospace';
-  ctx.fillText(`κ = ${slipRatio.toFixed(3)}`, cx, cy - radius - 20);
+  ctx.fillText(`κ = ${safeSlipRatio.toFixed(3)}`, cx, cy - radius - 20);
 
   // Utilization value
   ctx.fillText(`u = ${utilization.toFixed(3)}`, cx, cy - radius - 5);
