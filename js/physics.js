@@ -140,15 +140,15 @@ export function initializeCarBody(worldCenterX, worldCenterY) {
   state.camera.prevY = worldCenterY;
 
   // Initialize wheel omegas to pure rolling state: ω = v_long / R
-  // Wheels match the car's forward velocity component for smooth startup.
-  // Uses the same rolling constraint formula as the tire model.
+  // Car starts at rest (v = 0), so all omegas begin at zero.
+  // NOTE: If wheels ever need to init with velocity, use longitudinal speed:
+  //   forwardX = sin(body.heading); forwardY = -cos(body.heading);
+  //   wheelLongitudinalSpeed = dot(body.velocityX, body.velocityY, forwardX, forwardY);
+  //   omega = wheelLongitudinalSpeed / wheelRad;
+  // This ensures ω = v_long / R, not total speed / R (which would be wrong).
   const wheelRad = state.params.wheelRadius;
-  const forwardX = Math.sin(body.heading);
-  const forwardY = -Math.cos(body.heading);
   for (const name of Object.keys(state.wheelOmega)) {
-    // Compute local forward speed (how fast car is rolling forward, not sideways)
-    const wheelLongitudinalSpeed = dot(body.velocityX, body.velocityY, forwardX, forwardY);
-    state.wheelOmega[name] = wheelLongitudinalSpeed / wheelRad;
+    state.wheelOmega[name] = 0;  // Car starts at rest
   }
 }
 
