@@ -109,6 +109,9 @@ import { startEngine as startEngineSound, stopEngine as stopEngineSound } from '
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
 import { physicsRandom } from './random.js';
+import { createLogger, initLoggerFromUrl, setVerboseDiagnostics } from './log.js';
+
+const log = createLogger('main');
 
 
 // =============================================================
@@ -172,18 +175,25 @@ const simCssHeight = simCanvas.clientHeight || simCanvas.height;
 // The game loop starts immediately; GPU rendering activates once ready.
 if (gpuCanvasEl) {
   initGPU(gpuCanvasEl).catch((e) => {
-    console.warn('[GPU] initGPU failed:', e);
+    log.warn('GPU init failed', e);
   });
 }
+
+const verboseDiagnosticsEnabled = initLoggerFromUrl();
+window.setVerboseDiagnostics = setVerboseDiagnostics;
+log.info('startup', {
+  verboseDiagnosticsEnabled,
+  hasGpuCanvas: Boolean(gpuCanvasEl),
+});
 
 // Attach input listeners before anything else so no events are missed.
 initInput(simCanvas);
 
 // Bind HTML sliders to state.params. This reads initial HTML slider values
 // into state.params so physics starts with the correct parameters.
-console.log('[main] About to call initSliders()...');
+log.info('initSliders:start');
 initSliders();
-console.log('[main] initSliders() returned');
+log.info('initSliders:done');
 
 // Initialize sound state manager for cross-window synchronization via localStorage.
 initSoundStateManager();
@@ -1295,17 +1305,17 @@ export function triggerScreenShake(magnitude) {
 // Debug helper: expose parameters to browser console
 window.debugParams = () => {
   const p = state.params;
-  console.log('=== CRITICAL PARAMETERS ===');
-  console.log(`wheelInertia: ${p.wheelInertia.toFixed(3)} (should be 1.2)`);
-  console.log(`wheelRadius: ${p.wheelRadius.toFixed(3)} (should be 0.35)`);
-  console.log(`finalDriveRatio: ${p.finalDriveRatio.toFixed(2)} (should be 4.1)`);
-  console.log(`gearRatio1: ${p.gearRatio1.toFixed(2)} (should be 3.5)`);
-  console.log(`carMassKg: ${p.carMassKg.toFixed(0)} (should be 1200-1500)`);
-  console.log(`peakEngineTorqueNm: ${p.peakEngineTorqueNm.toFixed(0)} (should be 350-400)`);
-  console.log(`idleRpm: ${p.idleRpm.toFixed(0)} (should be 800)`);
-  console.log(`redlineRpm: ${p.redlineRpm.toFixed(0)} (should be 9000)`);
-  console.log('=== ALL PARAMS ===');
-  console.log(JSON.stringify(p, null, 2));
+  log.info('debugParams:critical', {
+    wheelInertia: p.wheelInertia,
+    wheelRadius: p.wheelRadius,
+    finalDriveRatio: p.finalDriveRatio,
+    gearRatio1: p.gearRatio1,
+    carMassKg: p.carMassKg,
+    peakEngineTorqueNm: p.peakEngineTorqueNm,
+    idleRpm: p.idleRpm,
+    redlineRpm: p.redlineRpm,
+  });
+  log.debug('debugParams:all', p);
 };
 
 // Kick off the game loop.
