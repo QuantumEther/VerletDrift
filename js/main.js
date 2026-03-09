@@ -51,22 +51,28 @@ import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.j
 
 import {
   initializeCarBody,
+  computeBodyDerivedState,
+  verletIntegrateAllPoints,
+  wrapAngle,
+} from './physics/kinematics.js';
+import {
   updateSteering,
   updateEngine,
-  computeBodyDerivedState,
+  updateCamera,
+  updateEngineSound,
+  applySleepIfNeeded,
+} from './physics/engine.js';
+import {
   computeWeightTransfer,
   computeTireForces,
   computeDragForces,
   computeBrakeForce,
-  verletIntegrateAllPoints,
+} from './physics/tires.js';
+import {
   solveRigidBodyConstraints,
   clampParticleDisplacements,
-  handleBoundaryCollisions,
-  updateCamera,
-  updateEngineSound,
-  applySleepIfNeeded,
-  wrapAngle,
-} from './physics.js';
+} from './physics/constraints.js';
+import { handleBoundaryCollisions } from './physics/collision.js';
 
 import {
   spawnTrailArrow,
@@ -81,28 +87,31 @@ import {
   drawMapBoundary,
   drawCar,
   drawCarGhosts,
+  drawBalloons,
+  drawSplatParticles,
+  drawSkidMarks,
+  drawSplatDecals,
+  drawKinematicArrows,
+} from './renderer/world.js';
+import {
   drawSteeringWheelHud,
   drawThrottleBar,
   drawBrakeBar,
   drawHandbrakeBar,
   drawClutchBar,
   drawGearIndicator,
+  drawScoreHud,
+} from './renderer/hud.js';
+import {
   drawAnalogGauge,
   drawYawStabilityGauge,
   drawFrictionCircle,
   drawSlipAngleMeter,
   drawDriftRadar,
-  drawBalloons,
-  drawSplatParticles,
-  drawScoreHud,
-  drawSkidMarks,
-  drawSplatDecals,
-  drawKinematicArrows,
-  updateSparks,
-  drawSparks,
-  drawDebugOverlays,
   drawWheelSlipGauge,
-} from './renderer.js';
+} from './renderer/gauges.js';
+import { updateSparks, drawSparks } from './renderer/effects.js';
+import { drawDebugOverlays } from './renderer/debug.js';
 
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
