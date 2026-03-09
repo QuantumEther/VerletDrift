@@ -1,0 +1,14 @@
+{
+  "name": "verlet-drift",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "smoke": "node scripts/smoke-check.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3"
+  }
+}
