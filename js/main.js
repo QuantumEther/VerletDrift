@@ -33,7 +33,24 @@
 //     Tachometer, Speedometer, Lateral-G gauge
 // =============================================================
 
-import state from './state.js';
+import { physicsState, uiState, renderState, gameplayState } from './state.js';
+const state = new Proxy({}, {
+  get(_target, prop) {
+    for (const slice of [physicsState, uiState, renderState, gameplayState]) {
+      if (prop in slice) return slice[prop];
+    }
+    return undefined;
+  },
+  set(_target, prop, value) {
+    for (const slice of [physicsState, uiState, renderState, gameplayState]) {
+      if (prop in slice) {
+        slice[prop] = value;
+        return true;
+      }
+    }
+    return false;
+  },
+});
 import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,

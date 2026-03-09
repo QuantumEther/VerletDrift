@@ -13,7 +13,8 @@
 // which is called from renderer.js in the world-space (camera-transformed) pass.
 // =============================================================
 
-import state from './state.js';
+import { physicsState, renderState, uiState } from './state.js';
+const state = { body: physicsState.body, trail: renderState.trail, params: uiState.params };
 import {
   TRAIL_ARROW_BASE_LENGTH_PX,
   TRAIL_REFERENCE_SPEED,

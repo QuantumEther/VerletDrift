@@ -24,7 +24,7 @@
 //     Q + Numpad 1 → Reverse
 // =============================================================
 
-import state from './state.js';
+import { uiState as state } from './state.js';
 import { handleGearChange } from './physics.js';
 import {
   STEERING_DRAG_RANGE_PX,
