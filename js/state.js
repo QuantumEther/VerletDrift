@@ -51,7 +51,7 @@ import {
 // Every mutable value in the simulation lives as a property here.
 // Physics functions update this; the renderer reads from it.
 // =============================================================
-const state = {
+const stateRoot = {
 
   // -----------------------------------------------------------
   // CAR BODY — four Verlet particles at wheel positions
@@ -714,4 +714,151 @@ const state = {
 
 };
 
-export default state;
+
+
+function linkScalar(source, key) {
+  return {
+    get() { return source[key]; },
+    set(value) { source[key] = value; },
+    enumerable: true,
+    configurable: true,
+  };
+}
+
+const physicsState = {
+  wheels: stateRoot.wheels,
+  body: stateRoot.body,
+  wheelLoads: stateRoot.wheelLoads,
+  wheelGrip: stateRoot.wheelGrip,
+  wheelOmega: stateRoot.wheelOmega,
+  wheelSlipRatio: stateRoot.wheelSlipRatio,
+  wheelSlipAngle: stateRoot.wheelSlipAngle,
+  wheelFrictionUtil: stateRoot.wheelFrictionUtil,
+  wheelGripState: stateRoot.wheelGripState,
+  tirePaint: stateRoot.tirePaint,
+
+  wheelLateralSpeed: stateRoot.wheelLateralSpeed,
+  wheelKinematics: stateRoot.wheelKinematics,
+  smoothedWheelLat: stateRoot.smoothedWheelLat,
+  prevTireForce: stateRoot.prevTireForce,
+  wheelForces: stateRoot.wheelForces,
+  axleForces: stateRoot.axleForces,
+  filteredBody: stateRoot.filteredBody,
+  sparks: stateRoot.sparks,
+  steering: stateRoot.steering,
+  engine: stateRoot.engine,
+  camera: stateRoot.camera,
+  tractionState: stateRoot.tractionState,
+};
+
+const renderState = {
+  camera: stateRoot.camera,
+  filteredBody: stateRoot.filteredBody,
+  screenShake: stateRoot.screenShake,
+  skidMarks: stateRoot.skidMarks,
+  skidMarksNewThisFrame: stateRoot.skidMarksNewThisFrame,
+  splatParticles: stateRoot.splatParticles,
+  splatDecals: stateRoot.splatDecals,
+  trail: stateRoot.trail,
+  carPoseHistory: stateRoot.carPoseHistory,
+};
+
+const audioState = {
+  soundParams: stateRoot.soundParams,
+  engine: stateRoot.engine,
+  input: stateRoot.input,
+  body: stateRoot.body,
+  params: stateRoot.params,
+};
+
+const gameplayState = {
+  balloons: stateRoot.balloons,
+  score: stateRoot.score,
+  tractionState: stateRoot.tractionState,
+  splatParticles: stateRoot.splatParticles,
+  splatDecals: stateRoot.splatDecals,
+  screenShake: stateRoot.screenShake,
+};
+
+const uiState = {
+  input: stateRoot.input,
+  params: stateRoot.params,
+  soundParams: stateRoot.soundParams,
+  engine: stateRoot.engine,
+  score: stateRoot.score,
+};
+
+Object.defineProperties(physicsState, {
+  driftIntensity: linkScalar(stateRoot, 'driftIntensity'),
+  blurAccumulator: linkScalar(stateRoot, 'blurAccumulator'),
+});
+
+Object.defineProperties(renderState, {
+  driftIntensity: linkScalar(stateRoot, 'driftIntensity'),
+  blurAccumulator: linkScalar(stateRoot, 'blurAccumulator'),
+});
+
+Object.defineProperties(audioState, {
+  driftIntensity: linkScalar(stateRoot, 'driftIntensity'),
+});
+
+// Slice ownership contract (writers/readers):
+// - physicsState: physics/legacy.js writes; main/ui/sound/renderer/gameplay read.
+// - uiState: ui.js + input.js write; physics/main/sound read.
+// - renderState: main.js + physics/legacy.js + balloon.js write; renderer/gpu read.
+// - audioState: sound.js + soundStateManager.js write soundParams; physics/ui write engine/input.
+// - gameplayState: balloon.js writes; main/renderer/sound read.
+export const stateOwnership = {
+  physicsState: {
+    writers: ['js/physics/legacy.js'],
+    readers: ['js/main.js', 'js/ui.js', 'js/sound.js', 'js/renderer/*', 'js/gpu-renderer.js', 'js/balloon.js'],
+  },
+  uiState: {
+    writers: ['js/ui.js', 'js/input.js'],
+    readers: ['js/main.js', 'js/physics/legacy.js', 'js/sound.js'],
+  },
+  renderState: {
+    writers: ['js/main.js', 'js/physics/legacy.js', 'js/balloon.js', 'js/gpu-renderer.js'],
+    readers: ['js/renderer/*', 'js/gpu-renderer.js'],
+  },
+  audioState: {
+    writers: ['js/sound.js', 'js/soundStateManager.js'],
+    readers: ['js/ui.js', 'js/main.js', 'js/balloon.js'],
+  },
+  gameplayState: {
+    writers: ['js/balloon.js'],
+    readers: ['js/main.js', 'js/renderer/*', 'js/sound.js'],
+  },
+};
+
+const DEV_WRITE_ASSERTIONS = typeof window !== 'undefined' && (
+  window.location?.hostname === 'localhost' ||
+  window.location?.search?.includes('devAsserts=1')
+);
+
+function assertOwner(moduleId, allowedOwners, target) {
+  if (DEV_WRITE_ASSERTIONS && !allowedOwners.includes(moduleId)) {
+    throw new Error(`[state] Illegal write to ${target} from ${moduleId}. Allowed: ${allowedOwners.join(', ')}`);
+  }
+}
+
+export function getDrivetrainState() {
+  return stateRoot.engine;
+}
+
+export function mutateDrivetrain(moduleId, mutator) {
+  assertOwner(moduleId, ['js/physics/legacy.js', 'js/ui.js'], 'engine/drivetrain');
+  mutator(stateRoot.engine);
+}
+
+Object.assign(stateRoot, {
+  physicsState,
+  uiState,
+  renderState,
+  audioState,
+  gameplayState,
+});
+
+export { stateRoot as state, physicsState, uiState, renderState, audioState, gameplayState };
+export default stateRoot;
+

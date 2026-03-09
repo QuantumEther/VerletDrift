@@ -27,7 +27,15 @@
 // Local utility
 const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
-import state from '../state.js';
+import { physicsState, uiState, gameplayState } from '../state.js';
+const state = new Proxy({}, {
+  get(_target, prop) {
+    for (const slice of [physicsState, { params: uiState.params }, { score: gameplayState.score }]) {
+      if (prop in slice) return slice[prop];
+    }
+    return undefined;
+  },
+});
 import { physicsRandom } from '../random.js';
 import {
   CAR_HALF_WIDTH,

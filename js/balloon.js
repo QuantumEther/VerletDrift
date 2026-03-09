@@ -17,7 +17,24 @@
 //   drawScoreHud(ctx, canvasWidth, canvasHeight)
 // =============================================================
 
-import state from './state.js';
+import { physicsState, uiState, renderState, gameplayState, audioState } from './state.js';
+const state = new Proxy({}, {
+  get(_target, prop) {
+    for (const slice of [physicsState, uiState, renderState, gameplayState, { soundParams: audioState.soundParams }]) {
+      if (prop in slice) return slice[prop];
+    }
+    return undefined;
+  },
+  set(_target, prop, value) {
+    for (const slice of [physicsState, uiState, renderState, gameplayState]) {
+      if (prop in slice) {
+        slice[prop] = value;
+        return true;
+      }
+    }
+    return false;
+  },
+});
 import {
   BALLOON_COUNT,
   BALLOON_RADIUS_MIN,

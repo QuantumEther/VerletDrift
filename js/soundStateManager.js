@@ -1,4 +1,4 @@
-import state from './state.js';
+import { audioState as state } from './state.js';
 import { setSoundParam } from './sound.js';
 
 /**

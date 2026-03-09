@@ -11,7 +11,7 @@
 // it only animates the visual gauge needle, never affects car behaviour.
 // =============================================================
 
-import state from './state.js';
+import { uiState as state, mutateDrivetrain } from './state.js';
 import { updateSoundParam } from './soundStateManager.js';
 import {
   NEEDLE_STIFFNESS,
@@ -465,10 +465,14 @@ export function initSliders() {
   const engineToggleButton = document.getElementById('engineToggle');
   if (engineToggleButton) {
     engineToggleButton.addEventListener('click', () => {
-      state.engine.isRunning = !state.engine.isRunning;
+      mutateDrivetrain('js/ui.js', (engine) => {
+        engine.isRunning = !engine.isRunning;
+        if (engine.isRunning) {
+          engine.isStalled = false;
+          engine.rpm = 800; // restart at idle
+        }
+      });
       if (state.engine.isRunning) {
-        state.engine.isStalled = false;
-        state.engine.rpm = 800; // restart at idle
         engineToggleButton.textContent = 'Engine ON';
         engineToggleButton.style.background = '#2ecc71';
       } else {
@@ -654,10 +658,14 @@ function initPresets() {
   const engineToggleButton = document.getElementById('engineToggle');
   if (engineToggleButton) {
     engineToggleButton.addEventListener('click', () => {
-      state.engine.isRunning = !state.engine.isRunning;
+      mutateDrivetrain('js/ui.js', (engine) => {
+        engine.isRunning = !engine.isRunning;
+        if (engine.isRunning) {
+          engine.isStalled = false;
+          engine.rpm = 800;
+        }
+      });
       if (state.engine.isRunning) {
-        state.engine.isStalled = false;
-        state.engine.rpm = 800;
         engineToggleButton.textContent = 'Engine ON';
         engineToggleButton.style.background = '#2ecc71';
       } else {
