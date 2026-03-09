@@ -56,6 +56,9 @@ import {
   TAU,
   DEG_TO_RAD,
 } from './constants.js';
+import { createLogger } from './log.js';
+
+const log = createLogger('physics');
 
 // Returns the effective gear ratio for the current gear, reading from
 // state.params so slider changes take effect at runtime.
@@ -502,7 +505,7 @@ export function updateEngine(dt) {
     // DEBUG: Log values when wheels are spinning
     if (rearAvgOmega > 1 && throttleAmount > 0.1) {
       if (Math.random() < 0.01) {  // Log 1% of frames to avoid spam
-        console.log(`[CASE B] rearAvgOmega=${rearAvgOmega.toFixed(2)} | freeRpm=${freeRpm.toFixed(0)} | engineRpmFromWheel=${engineRpmFromWheel.toFixed(0)} | blend=${transientBlend.toFixed(2)} | final RPM=${engine.rpm.toFixed(0)}`);
+        log.debug(`CASE B rearAvgOmega=${rearAvgOmega.toFixed(2)} | freeRpm=${freeRpm.toFixed(0)} | engineRpmFromWheel=${engineRpmFromWheel.toFixed(0)} | blend=${transientBlend.toFixed(2)} | final RPM=${engine.rpm.toFixed(0)}`);
       }
     }
 
@@ -1021,7 +1024,7 @@ export function computeTireForces(dt) {
     
     // DEBUG: Log first wheel's omega calculation for verification
     if (name === 'rearLeft') {
-      console.log(`[OMEGA-DEBUG] ${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, omegaRoll=${omegaFromRolling.toFixed(2)}, omegaDelta=${omegaDelta.toFixed(4)}, sum=${sumOmega.toFixed(2)}, final=${finalOmega.toFixed(2)}, stored=${state.wheelOmega[name].toFixed(2)}`);
+      log.debug(`${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, omegaRoll=${omegaFromRolling.toFixed(2)}, omegaDelta=${omegaDelta.toFixed(4)}, sum=${sumOmega.toFixed(2)}, final=${finalOmega.toFixed(2)}, stored=${state.wheelOmega[name].toFixed(2)}`);
     }
   }
 

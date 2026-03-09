@@ -21,6 +21,9 @@ import {
   NEEDLE_FLUTTER_THRESHOLD,
   KPH_TO_MPS,
 } from './constants.js';
+import { createLogger } from './log.js';
+
+const log = createLogger('ui');
 
 const INFO_BAR_CELL_IDS = [
   'velocityDisplay',
@@ -129,9 +132,9 @@ export function createNeedlePhysics() {
 // matching the IDs in index.html. If an element is not found, that
 // slider is silently skipped (no exception thrown).
 export function initSliders() {
-  console.log('[initSliders] Starting initialization...');
+  log.info('initSliders:start');
   initInfoBarCellCache();
-  console.log('[initSliders] initInfoBarCellCache done');
+  log.debug('initSliders:cache-ready');
 
   // Generic binder: links a slider element to a params field.
   // getValue:  slider string → typed value for state.params
@@ -160,7 +163,7 @@ export function initSliders() {
     const displayLabel = document.getElementById(sliderId + 'Value');
 
     if (!slider) {
-      console.warn(`[bind] Slider not found: ${sliderId}`);
+      log.warn(`Slider not found: ${sliderId}`);
       return;
     }
 
@@ -171,13 +174,13 @@ export function initSliders() {
     state.params[paramsKey] = initialValue;
     if (displayLabel) displayLabel.textContent = formatDisplay(initialValue);
 
-    console.log(`[bind] Initialized ${sliderId} → state.params.${paramsKey} = ${initialValue}`);
+    log.debug(`Initialized ${sliderId} → state.params.${paramsKey} = ${initialValue}`);
 
     slider.addEventListener('input', () => {
       const value = parseValue(slider.value);
       state.params[paramsKey] = value;
       if (displayLabel) displayLabel.textContent = formatDisplay(value);
-      console.log(`[bind:input] ${sliderId} changed: state.params.${paramsKey} = ${value}`);
+      log.debug(`${sliderId} changed: state.params.${paramsKey} = ${value}`);
     });
   }
 
@@ -478,7 +481,7 @@ export function initSliders() {
   // ---- Preset System ----
   initPresets();
 
-  console.log('[initSliders] Completed successfully - all sliders bound');
+  log.info('initSliders:done');
 }
 
 // =============================================================
@@ -639,7 +642,7 @@ function initPresets() {
           if (data.soundParams) Object.assign(state.soundParams, data.soundParams);
           refreshAllSliders();
         } catch (err) {
-          console.warn('[Preset] Import failed:', err);
+          log.warn('Preset import failed', err);
         }
         importInput.value = ''; // allow re-importing same file
       };
@@ -701,7 +704,7 @@ export function updateInfoBar() {
   const frOmega = state.wheelOmega.frontRight || 0;
   const rlOmega = state.wheelOmega.rearLeft || 0;
   const rrOmega = state.wheelOmega.rearRight || 0;
-  console.log(`[UI-UPDATE] Wheel omegas: FL=${flOmega.toFixed(2)}, FR=${frOmega.toFixed(2)}, RL=${rlOmega.toFixed(2)}, RR=${rrOmega.toFixed(2)}`);
+  log.debug(`Wheel omegas: FL=${flOmega.toFixed(2)}, FR=${frOmega.toFixed(2)}, RL=${rlOmega.toFixed(2)}, RR=${rrOmega.toFixed(2)}`);
   setInfoCell('wheelOmegaDisplay',
     `FL:${flOmega.toFixed(2)} FR:${frOmega.toFixed(2)}<br>` +
     `RL:${rlOmega.toFixed(2)} RR:${rrOmega.toFixed(2)}`);
@@ -742,20 +745,20 @@ export function initChangeLogger() {
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (el.type === 'range' || el.type === 'text' || el.type === 'number') {
-      console.log(`[UI] ${el.id} = ${el.value}`);
+      log.debug(`UI ${el.id} = ${el.value}`);
     }
   });
   document.addEventListener('change', (e) => {
     const el = e.target;
     // Log select elements and checkboxes on change.
     if (el.tagName === 'SELECT' || el.type === 'checkbox') {
-      console.log(`[UI] ${el.id} = ${el.value}`);
+      log.debug(`UI ${el.id} = ${el.value}`);
     }
   });
   document.addEventListener('click', (e) => {
     const el = e.target;
     if (el.tagName === 'BUTTON' && el.id) {
-      console.log(`[UI] ${el.id} clicked`);
+      log.debug(`UI ${el.id} clicked`);
     }
   });
 }
@@ -829,7 +832,7 @@ export function registerGauge(config) {
   // Create DOM structure: gauge-frame > gauge-inner > canvas + badge
   const container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`[GaugeRegistry] Container #${containerId} not found`);
+    log.warn(`GaugeRegistry container #${containerId} not found`);
     return null;
   }
 

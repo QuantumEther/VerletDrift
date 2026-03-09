@@ -21,6 +21,9 @@ import {
   DEFAULT_MAP_HEIGHT,
 } from './constants.js';
 import { getSparkPool } from './renderer.js';
+import { createLogger } from './log.js';
+
+const log = createLogger('gpu');
 
 
 // =============================================================
@@ -384,13 +387,13 @@ function createBuffersAndBindGroups() {
 // Returns true if WebGPU is available and init succeeded; false otherwise.
 export async function initGPU(canvas) {
   if (!navigator.gpu) {
-    console.warn('[GPU] WebGPU not available — falling back to Canvas 2D.');
+    log.warn('WebGPU not available — falling back to Canvas 2D.');
     return false;
   }
 
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    console.warn('[GPU] No WebGPU adapter — falling back to Canvas 2D.');
+    log.warn('No WebGPU adapter — falling back to Canvas 2D.');
     return false;
   }
 
@@ -410,7 +413,7 @@ export async function initGPU(canvas) {
   createBuffersAndBindGroups();
 
   ready = true;
-  console.log('[GPU] WebGPU initialised. Format:', gpuFmt);
+  log.info('WebGPU initialised', { format: gpuFmt });
   return true;
 }
 
