@@ -54,7 +54,8 @@
       "Bash(\"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\SLIDER_CHECKLIST.md\":*)",
       "mcp__Desktop_Commander__start_process",
       "mcp__Desktop_Commander__write_file",
-      "Bash(grep -v \"//\")"
+      "Bash(grep -v \"//\")",
+      "Bash(curl -s http://localhost:8000/gauge-guide.html)"
     ]
   }
 }

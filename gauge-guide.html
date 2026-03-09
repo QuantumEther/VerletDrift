@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerletDrift Gauge Editing Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 100%;
+        }
+
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .code-inline {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        /* Code diff viewer */
+        .code-diff {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .code-diff-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-diff-label {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+
+        .code-diff-old {
+            background: #fef5f5;
+        }
+
+        .code-diff-new {
+            background: #f5fef5;
+        }
+
+        .code-diff pre {
+            margin: 0;
+            border-radius: 0;
+        }
+
+        /* Responsive code diff */
+        @media (max-width: 900px) {
+            .code-diff {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Canvas previews */
+        .canvas-preview {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .canvas-preview canvas {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .canvas-preview-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* Two-column layout for before/after */
+        .preview-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 900px) {
+            .preview-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Collapsible sections */
+        .collapsible {
+            cursor: pointer;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible:hover {
+            background: #e8e8e8;
+        }
+
+        .collapsible.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .collapsible-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 15px;
+        }
+
+        .collapsible-content.active {
+            max-height: 5000px;
+            padding: 15px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Copy button */
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        /* Diagram */
+        .diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        /* Console sandbox */
+        .sandbox {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .sandbox-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .sandbox-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            background: #2d2d2d;
+            color: #d4d4d4;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .sandbox-input button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .sandbox-input button:hover {
+            background: #764ba2;
+        }
+
+        .sandbox-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .sandbox-output .output-line {
+            margin: 5px 0;
+        }
+
+        .sandbox-output .output-line.input {
+            color: #ce9178;
+        }
+
+        .sandbox-output .output-line.output {
+            color: #b8d4a8;
+        }
+
+        .sandbox-output .output-line.error {
+            color: #f48771;
+        }
+
+        /* Navigation */
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .edit-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .comment { color: #6a9955; }
+        .function { color: #dcdcaa; }
+        .builtin { color: #4ec9b0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎛️ VerletDrift Gauge Editing Guide</h1>
+            <p>Master Canvas Rendering, Gauge Configuration, and Browser Console Debugging</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#part1">Canvas 101</a></li>
+                <li><a href="#part2">Gauge System</a></li>
+                <li><a href="#edit1">Edit 1: RPM</a></li>
+                <li><a href="#edit2">Edit 2: Speed</a></li>
+                <li><a href="#edit3">Edit 3: Colors</a></li>
+                <li><a href="#console">Console</a></li>
+                <li><a href="#tips">Tips</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Part 1: Canvas 101 -->
+            <section id="part1">
+                <h2>Part 1: Canvas Fundamentals for Beginners</h2>
+
+                <h3>🤔 Why Can't F12 DevTools Edit Canvas Gauges?</h3>
+                <p><strong>The simple answer:</strong> Canvas is immediate-mode pixel drawing, not retained DOM elements.</p>
+
+                <div class="info-box">
+                    <strong>🔹 Immediate-Mode vs Retained-Mode</strong><br><br>
+                    <strong>DOM Elements (retained-mode):</strong>
+                    <ul>
+                        <li>Browser <strong>stores</strong> each element as a persistent object</li>
+                        <li>You can query and modify them anytime: <code class="code-inline">element.style.color = 'red'</code></li>
+                        <li>Browser automatically re-renders when you change properties</li>
+                        <li>DevTools can inspect these objects in real-time</li>
+                    </ul>
+
+                    <strong>Canvas Drawings (immediate-mode):</strong>
+                    <ul>
+                        <li>Canvas just has a 2D context with drawing methods: <code class="code-inline">ctx.fillRect()</code>, <code class="code-inline">ctx.arc()</code>, etc.</li>
+                        <li>When you call a drawing method, it immediately paints pixels to the canvas</li>
+                        <li>Once drawn, canvas has <strong>no memory</strong> of what was drawn—it's just colored pixels</li>
+                        <li>To update a gauge, the entire canvas must be erased and redrawn from scratch next frame</li>
+                        <li>DevTools cannot select or inspect drawn shapes because they don't exist as DOM objects</li>
+                    </ul>
+                </div>
+
+                <h3>What CAN DevTools Inspect?</h3>
+
+                <div class="highlight">
+                    <strong>✅ The canvas element itself:</strong>
+                    <ul>
+                        <li>Right-click → Inspect to see <code class="code-inline">&lt;canvas id="rpmCanvas" width="900" height="780"&gt;</code> in the DOM</li>
+                        <li>Read/edit CSS properties: width, height, display, position</li>
+                        <li>Inspect the 2D context: <code class="code-inline">document.getElementById('rpmCanvas').getContext('2d')</code></li>
+                    </ul>
+
+                    <strong>✅ JavaScript values controlling the gauge:</strong>
+                    <ul>
+                        <li>Console → type <code class="code-inline">state.engine.rpm</code> to read current RPM</li>
+                        <li>Read needle positions, speed, acceleration, etc.</li>
+                        <li>Watch state values update in real-time as you drive</li>
+                    </ul>
+
+                    <strong>❌ CANNOT do:</strong>
+                    <ul>
+                        <li>Click element picker to select and highlight a drawn gauge</li>
+                        <li>Right-click on the red zone to change its color</li>
+                        <li>Edit canvas pixel content directly from DevTools</li>
+                    </ul>
+                </div>
+
+                <h3>How Canvas Drawing Actually Works</h3>
+
+                <pre><code>// Frame 1: Draw the gauge
+const ctx = rpmCanvas.getContext('2d');
+ctx.fillStyle = '#f5f0e8';        // Set fill color
+ctx.beginPath();
+ctx.arc(450, 390, 200, 0, Math.PI * 2);  // Draw a circle
+ctx.fill();                       // Paint it to canvas
+
+// Frame 2: ERASE and REDRAW
+ctx.clearRect(0, 0, 900, 780);    // Clear entire canvas
+// ... redraw the entire gauge again with new needle position ...
+
+// Key insight: The circle from Frame 1 is GONE
+// Canvas doesn't remember it existed—it's just pixels</code></pre>
+
+                <h3>The Implication</h3>
+                <p>To change how a gauge looks, you <strong>MUST edit the source code</strong> (or use the browser console to override values). There's no "click and edit" shortcut like you'd use for DOM elements.</p>
+
+                <div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│ What Happens When You Edit Code & Hard-Refresh             │
+├─────────────────────────────────────────────────────────────┤
+│ 1. Browser loads new JavaScript from constants.js            │
+│ 2. main.js calls drawGauges() each render frame              │
+│ 3. drawGauges() reads TACHOMETER_REDLINE_RPM from constants  │
+│ 4. New redline value is passed to drawAnalogGauge()         │
+│ 5. Next frame, the gauge is redrawn with the new redline    │
+│                                                              │
+│ What does NOT happen:                                        │
+│ - DevTools can't tell canvas to change colors mid-frame     │
+│ - Canvas doesn't have a "redline object" you can select     │
+│ - Right-clicking on the gauge shows the canvas element,     │
+│   not the internal shapes drawn by JavaScript                │
+└─────────────────────────────────────────────────────────────┘
+                </div>
+            </section>
+
+            <!-- Part 2: Three-File System -->
+            <section id="part2">
+                <h2>Part 2: The Three-File Gauge System</h2>
+
+                <p>All gauge changes flow through exactly three files. Understanding which file to edit is the key to becoming efficient.</p>
+
+                <div class="diagram">
+js/constants.js         ───┐
+                           ├──→ js/main.js (drawGauges)
+js/ui.js                ───┤    ↓
+                           ├──→ js/renderer.js (drawAnalogGauge)
+                           │    ↓
+                           └──→ Canvas (pixels)
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>What It Stores</th>
+                            <th>When to Edit</th>
+                            <th>Example Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="code-inline">constants.js</code></td>
+                            <td>Tunable parameters (max RPM, max speed, physics constants)</td>
+                            <td>Display ranges, thresholds, speeds</td>
+                            <td><code class="code-inline">TACHOMETER_REDLINE_RPM = 5500</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="code-inline">main.js</code></td>
+                            <td>Gauge configuration created each frame in <code class="code-inline">drawGauges()</code></td>
+                            <td>Per-gauge visual settings (labels, tick spacing)</td>
+                            <td><code class="code-inline">majorStep: 30</code> in speed config</td>
+                        </tr>
+                        <tr>
+                            <td><code class="code-inline">renderer.js</code></td>
+                            <td>Low-level canvas drawing functions</td>
+                            <td>Colors, gradients, needle shape, text styling</td>
+                            <td>Gradient colors in <code class="code-inline">_getGaugeGrads()</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Edit Strategy: Priority Order</h3>
+
+                <div class="highlight">
+                    <strong>1️⃣ Edit constants.js FIRST</strong> if possible
+                    <ul>
+                        <li>✅ Easiest: one-line changes</li>
+                        <li>✅ No side effects or complex logic</li>
+                        <li>✅ Changes flow automatically to all gauges that use the constant</li>
+                    </ul>
+
+                    <strong>2️⃣ Edit main.js SECOND</strong>
+                    <ul>
+                        <li>✅ Isolated to one gauge at a time</li>
+                        <li>✅ Clear cause-and-effect: change <code class="code-inline">majorStep</code>, ticks change</li>
+                        <li>⚠️ Slightly more complex (config objects, functions)</li>
+                    </ul>
+
+                    <strong>3️⃣ Edit renderer.js LAST</strong>
+                    <ul>
+                        <li>⚠️ Changes affect ALL gauges unless you add conditional logic</li>
+                        <li>⚠️ Low-level drawing code requires understanding canvas APIs</li>
+                        <li>✅ Direct control over visual appearance</li>
+                    </ul>
+                </div>
+
+                <h3>The Edit Workflow</h3>
+
+                <ol>
+                    <li><strong>Identify what to change:</strong> Is it a range? A color? A label format?</li>
+                    <li><strong>Determine the file:</strong> Use the priority order above</li>
+                    <li><strong>Make the change:</strong> Edit the file in VS Code (or your editor)</li>
+                    <li><strong>Save:</strong> Ctrl+S</li>
+                    <li><strong>Hard-refresh browser:</strong> Ctrl+Shift+R (not just F5)</li>
+                    <li><strong>Verify visual result:</strong> Does the gauge look as expected?</li>
+                    <li><strong>Iterate:</strong> If not right, re-edit and hard-refresh</li>
+                </ol>
+
+                <div class="warning-box">
+                    <strong>⚠️ Hard-Refresh is Critical</strong><br>
+                    Regular refresh (F5) may load JavaScript from the browser's module cache, showing old code. Hard-refresh (Ctrl+Shift+R) clears the cache and forces a fresh download of all modules.
+                </div>
+            </section>
+
+            <!-- Edit 1: RPM Redline -->
+            <section id="edit1">
+                <h2>Edit 1: Change RPM Redline from 6500 to 5500 RPM <span class="edit-badge">constants.js</span></h2>
+
+                <h3>What You're Doing</h3>
+                <p>Move the red "danger zone" on the RPM gauge to start at 5500 RPM instead of 6500 RPM. This is a one-line change in <code class="code-inline">constants.js</code>.</p>
+
+                <h3>Step-by-Step</h3>
+                <ol>
+                    <li>Open <code class="code-inline">js/constants.js</code> in your editor</li>
+                    <li>Find line ~42: <code class="code-inline">export const TACHOMETER_REDLINE_RPM = 6500;</code></li>
+                    <li>Change <code class="code-inline">6500</code> to <code class="code-inline">5500</code></li>
+                    <li>Save the file (Ctrl+S)</li>
+                    <li>Switch to browser and hard-refresh (Ctrl+Shift+R)</li>
+                    <li>Open simulator and accelerate to watch the red zone appear earlier</li>
+                </ol>
+
+                <h3>Code Diff</h3>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code><span class="keyword">export const</span> <span class="function">TACHOMETER_REDLINE_RPM</span> = <span class="number">6500</span>;</code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code><span class="keyword">export const</span> <span class="function">TACHOMETER_REDLINE_RPM</span> = <span class="number">5500</span>;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Visual Result</h3>
+                <p><strong>Expected behavior:</strong></p>
+                <ul>
+                    <li>At idle (~500 RPM): No red zone visible</li>
+                    <li>At 5400 RPM: Red arc just starts appearing</li>
+                    <li>At 8000 RPM: Needle deep in the red zone</li>
+                    <li>The red zone is now narrower (5500–10000 RPM instead of 6500–10000 RPM)</li>
+                </ul>
+
+                <div class="canvas-preview">
+                    <h4>Live Preview</h4>
+                    <div class="preview-row">
+                        <div>
+                            <canvas id="rpmPreviewBefore" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">BEFORE: Redline at 6500</div>
+                        </div>
+                        <div>
+                            <canvas id="rpmPreviewAfter" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">AFTER: Redline at 5500</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                        Both gauges showing 7000 RPM. Notice the red zone starts earlier in the "After" version.
+                    </p>
+                </div>
+
+                <h3>Why It Works</h3>
+                <p>Here's the code path:</p>
+                <ul>
+                    <li><strong>main.js line 922:</strong> <code class="code-inline">drawAnalogGauge(..., redFrom: TACHOMETER_REDLINE_RPM)</code> — passes the constant to the drawing function</li>
+                    <li><strong>renderer.js line 1459:</strong> <code class="code-inline">if (config.redFrom !== null) { /* draw red arc */ }</code> — checks if redline is set</li>
+                    <li>The red arc is drawn from <code class="code-inline">redFrom</code> to <code class="code-inline">max</code> of the gauge</li>
+                    <li>Needle position scales linearly: <code class="code-inline">angle = startAngle + sweepAngle * (rpm / TACHOMETER_MAX_RPM)</code></li>
+                </ul>
+
+                <h3>Test Verification</h3>
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    ✓ Verification Checklist
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <ul>
+                        <li>☐ Idle test: Start sim, don't accelerate. No red zone at ~500 RPM.</li>
+                        <li>☐ Threshold test: Accelerate to 5500 RPM. Red zone just starts appearing.</li>
+                        <li>☐ High RPM test: Accelerate to 8000 RPM. Needle deep in red.</li>
+                        <li>☐ Comparison: Red zone is now narrower than before (visual confirmation)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Edit 2: Speedometer Max -->
+            <section id="edit2">
+                <h2>Edit 2: Change Speedometer Max from 400 to 300 km/h <span class="edit-badge">constants.js + main.js</span></h2>
+
+                <h3>What You're Doing</h3>
+                <p>Reduce the speedometer's maximum range and adjust tick mark spacing to fit. This requires edits to both <code class="code-inline">constants.js</code> (the max value) and <code class="code-inline">main.js</code> (tick spacing).</p>
+
+                <h3>Step 1: Edit constants.js</h3>
+                <ol>
+                    <li>Open <code class="code-inline">js/constants.js</code></li>
+                    <li>Find line ~40: <code class="code-inline">export const SPEEDOMETER_MAX_KPH = 400;</code></li>
+                    <li>Change to: <code class="code-inline">export const SPEEDOMETER_MAX_KPH = 300;</code></li>
+                </ol>
+
+                <h3>Step 2: Edit main.js (Adjust Major Tick Spacing)</h3>
+                <ol>
+                    <li>Open <code class="code-inline">js/main.js</code></li>
+                    <li>Find the speed gauge config (around line 930). It looks like:</li>
+                </ol>
+
+                <pre><code>drawAnalogGauge(speedCtx, speedCanvas.width, speedCanvas.height, {
+  value: speedKph,
+  min: 0,
+  max: SPEEDOMETER_MAX_KPH,
+  title: 'SPEED',
+  subtitle: 'km/h',
+  majorStep: 20,       // ← Change this
+  minorDivisions: 4,   // ← And this
+  ...</code></pre>
+
+                <ol start="3">
+                    <li>Change <code class="code-inline">majorStep: 20</code> to <code class="code-inline">majorStep: 30</code></li>
+                    <li>Change <code class="code-inline">minorDivisions: 4</code> to <code class="code-inline">minorDivisions: 5</code></li>
+                    <li>Save (Ctrl+S)</li>
+                    <li>Hard-refresh browser (Ctrl+Shift+R)</li>
+                </ol>
+
+                <h3>Code Diffs</h3>
+
+                <h4>Change 1: constants.js</h4>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code><span class="keyword">export const</span> <span class="function">SPEEDOMETER_MAX_KPH</span> = <span class="number">400</span>;</code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code><span class="keyword">export const</span> <span class="function">SPEEDOMETER_MAX_KPH</span> = <span class="number">300</span>;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 2: main.js (speed gauge config)</h4>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code>  majorStep: <span class="number">20</span>,
+  minorDivisions: <span class="number">4</span>,</code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code>  majorStep: <span class="number">30</span>,
+  minorDivisions: <span class="number">5</span>,</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Visual Result</h3>
+                <p><strong>Expected behavior:</strong></p>
+                <ul>
+                    <li>Gauge range is now 0–300 km/h (vs. 0–400)</li>
+                    <li>Major tick labels: 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300 (11 labels, less crowded)</li>
+                    <li>Minor ticks: 5 equal subdivisions between each major tick (6 km/h intervals)</li>
+                    <li>At 150 km/h: needle exactly halfway across</li>
+                    <li>At 300 km/h: needle at far right edge</li>
+                </ul>
+
+                <div class="canvas-preview">
+                    <h4>Live Preview</h4>
+                    <div class="preview-row">
+                        <div>
+                            <canvas id="speedPreviewBefore" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">BEFORE: 0–400 km/h, step=20</div>
+                        </div>
+                        <div>
+                            <canvas id="speedPreviewAfter" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">AFTER: 0–300 km/h, step=30</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                        Both showing 150 km/h. Notice the "After" version uses the full gauge width, making the needle more readable.
+                    </p>
+                </div>
+
+                <h3>Why It Works</h3>
+                <p>Tick mark generation logic in <code class="code-inline">renderer.js</code> (line 1395):</p>
+                <pre><code><span class="keyword">for</span> (<span class="keyword">let</span> val = config.min; val <= config.max; val += config.majorStep) {
+  <span class="comment">// Draw label at val</span>
+}</code></pre>
+                <p>With <code class="code-inline">min=0, max=300, majorStep=30</code>, this generates labels at: 0, 30, 60, ..., 300.</p>
+                <p>Minor ticks are spaced as <code class="code-inline">majorStep / minorDivisions = 30 / 5 = 6 km/h</code>.</p>
+
+                <h3>Test Verification</h3>
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    ✓ Verification Checklist
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <ul>
+                        <li>☐ Idle test: Speed = 0. Needle at far left.</li>
+                        <li>☐ Mid-range: Accelerate to 150 km/h. Needle exactly halfway across.</li>
+                        <li>☐ Max test: Accelerate to 300 km/h. Needle at far right edge.</li>
+                        <li>☐ Tick count: Count major labels: should see 11 labels (0, 30, 60, ..., 300).</li>
+                        <li>☐ Readability: Gauge is less crowded than before (visual confirmation).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Edit 3: Dark Theme -->
+            <section id="edit3">
+                <h2>Edit 3: Dark Cockpit Theme <span class="edit-badge">renderer.js</span></h2>
+
+                <h3>What You're Doing</h3>
+                <p>Transform the gauge face color from warm beige (#f5f0e8 → #d9c9a8) to a dark cockpit theme (near-black to dark grey), and update text colors for readability on dark backgrounds.</p>
+
+                <h3>Step-by-Step</h3>
+                <ol>
+                    <li>Open <code class="code-inline">js/renderer.js</code></li>
+                    <li>Find the <code class="code-inline">_getGaugeGrads()</code> function (line ~54)</li>
+                    <li>Edit the gradient colors (see diffs below)</li>
+                    <li>Edit text/stroke colors in <code class="code-inline">drawAnalogGauge()</code> function (around line 1370–1410)</li>
+                    <li>Save (Ctrl+S)</li>
+                    <li>Hard-refresh browser (Ctrl+Shift+R)</li>
+                </ol>
+
+                <h3>Code Diffs</h3>
+
+                <h4>Change 1: Gauge Face Gradient</h4>
+                <p>In <code class="code-inline">_getGaugeGrads()</code>, change the color stops:</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code><span class="keyword">const</span> gradFace = ctx.createRadialGradient(cx, cy, <span class="number">0</span>, cx, cy, radius);
+gradFace.addColorStop(<span class="number">0</span>, <span class="string">'#f5f0e8'</span>);  <span class="comment">// cream</span>
+gradFace.addColorStop(<span class="number">1</span>, <span class="string">'#d9c9a8'</span>);  <span class="comment">// tan</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code><span class="keyword">const</span> gradFace = ctx.createRadialGradient(cx, cy, <span class="number">0</span>, cx, cy, radius);
+gradFace.addColorStop(<span class="number">0</span>, <span class="string">'#1a1a1a'</span>);  <span class="comment">// near-black</span>
+gradFace.addColorStop(<span class="number">1</span>, <span class="string">'#3a3a3a'</span>);  <span class="comment">// dark grey</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 2: Vignette (Darkening Ring) — Optional</h4>
+                <p>Makes the edge darker for more visual depth:</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code>gradVignette.addColorStop(<span class="number">1</span>, <span class="string">'rgba(0,0,0,0.15)'</span>);</code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code>gradVignette.addColorStop(<span class="number">1</span>, <span class="string">'rgba(0,0,0,0.35)'</span>);  <span class="comment">// darker edge</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 3: Label Text Color</h4>
+                <p>Around line 1370 in <code class="code-inline">drawAnalogGauge()</code>:</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code>ctx.fillStyle = <span class="string">'#2a1a00'</span>;  <span class="comment">// dark brown</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code>ctx.fillStyle = <span class="string">'#e0e0e0'</span>;  <span class="comment">// light grey</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 4: Tick Mark Stroke Color</h4>
+                <p>Around line 1405 (tick marks):</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code>ctx.strokeStyle = <span class="string">'#3a2a0a'</span>;  <span class="comment">// brown</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code>ctx.strokeStyle = <span class="string">'#c0c0c0'</span>;  <span class="comment">// light grey</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 5: Minor Tick Stroke Color</h4>
+                <p>Also around line 1405 (or nearby for minor ticks):</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before</div>
+                        <div class="code-diff-old">
+                            <pre><code>ctx.strokeStyle = <span class="string">'#5a4a2a'</span>;  <span class="comment">// tan</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After</div>
+                        <div class="code-diff-new">
+                            <pre><code>ctx.strokeStyle = <span class="string">'#a0a0a0'</span>;  <span class="comment">// light grey</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Change 6: Needle Color (Optional)</h4>
+                <p>Around line 1469 (needle fill):</p>
+                <div class="code-diff">
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">Before (Red)</div>
+                        <div class="code-diff-old">
+                            <pre><code>ctx.fillStyle = <span class="string">'#c0392b'</span>;  <span class="comment">// red</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="code-diff-section">
+                        <div class="code-diff-label">After (Orange)</div>
+                        <div class="code-diff-new">
+                            <pre><code>ctx.fillStyle = <span class="string">'#ff6600'</span>;  <span class="comment">// bright orange</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Visual Result</h3>
+                <p><strong>Expected behavior:</strong></p>
+                <ul>
+                    <li>All three gauges (RPM, Speed, Lat-G) now have dark faces (near-black center to dark grey edge)</li>
+                    <li>Labels and tick numbers are now light grey (excellent contrast on dark background)</li>
+                    <li>The red zone remains visible but pops more against the dark face</li>
+                    <li>If you changed needle color: bright orange needle stands out clearly</li>
+                    <li>Overall appearance: professional, modern instrument cluster</li>
+                </ul>
+
+                <div class="canvas-preview">
+                    <h4>Live Preview</h4>
+                    <div class="preview-row">
+                        <div>
+                            <canvas id="colorPreviewBefore" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">BEFORE: Warm Beige</div>
+                        </div>
+                        <div>
+                            <canvas id="colorPreviewAfter" width="300" height="260" style="border: 1px solid #ccc;"></canvas>
+                            <div class="canvas-preview-label">AFTER: Dark Cockpit</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                        Same needle position, different themes. Notice the professional, modern appearance of the dark theme.
+                    </p>
+                </div>
+
+                <h3>Why It Works</h3>
+                <p><code class="code-inline">_getGaugeGrads()</code> creates cached gradient objects that are reused for all three gauges. One change affects all gauges simultaneously.</p>
+                <p>Text and stroke colors are set within <code class="code-inline">drawAnalogGauge()</code>, so they apply to all gauges drawn with that function.</p>
+
+                <h3>Test Verification</h3>
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    ✓ Verification Checklist
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <ul>
+                        <li>☐ All three gauges have dark faces (check RPM, Speed, Lat-G).</li>
+                        <li>☐ Text is light grey and readable (good contrast).</li>
+                        <li>☐ Red zones (RPM and Lat-G) still visible and stand out against dark background.</li>
+                        <li>☐ Needle color: red or orange, depending on your choice.</li>
+                        <li>☐ No visual glitches or color bleeding.</li>
+                        <li>☐ Adjust gauge label scale slider (#gaugeLabelScale) to verify text remains readable at different sizes.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Console Debugging -->
+            <section id="console">
+                <h2>Part 3: Browser Console Debugging & Runtime Inspection</h2>
+
+                <h3>Why Use the Console?</h3>
+                <p>DevTools' Element Inspector can't edit canvas, but the <strong>Console</strong> is a JavaScript REPL where you can:</p>
+                <ul>
+                    <li>Read live state values in real-time</li>
+                    <li>Test changes without editing files</li>
+                    <li>Debug gauge physics and rendering</li>
+                    <li>Monitor values over time</li>
+                </ul>
+
+                <h3>How to Access the Console</h3>
+                <ol>
+                    <li>Open the simulator in your browser</li>
+                    <li>Press <code class="code-inline">F12</code> to open DevTools</li>
+                    <li>Click the <strong>Console</strong> tab (not Elements/Inspector)</li>
+                    <li>Type JavaScript commands directly</li>
+                </ol>
+
+                <h3>Common Inspections</h3>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    1️⃣ Read Current Engine State
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>All vehicle state is stored in <code class="code-inline">state</code> object (exported from <code class="code-inline">state.js</code>).</p>
+
+                    <h4>Commands:</h4>
+                    <pre><code><span class="comment">// Current RPM</span>
+state.engine.rpm
+
+<span class="comment">// Current speed (m/s)</span>
+state.body.speed
+
+<span class="comment">// Speed in km/h (convert from m/s)</span>
+state.body.speed / 0.27778
+
+<span class="comment">// Lateral acceleration (m/s²)</span>
+state.body.lateralAccel
+
+<span class="comment">// Engine running / stalled?</span>
+state.engine.isRunning
+state.engine.isStalled
+
+<span class="comment">// Engine throttle (0–1)</span>
+state.engine.throttleInput</code></pre>
+
+                    <h4>Example Output:</h4>
+                    <pre><code>> state.engine.rpm
+6200
+
+> state.body.speed / 0.27778
+95.2
+
+> state.engine.isRunning
+true</code></pre>
+
+                    <button class="copy-btn" onclick="copyToClipboard('state.engine.rpm')">Copy</button>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    2️⃣ Inspect Needle Physics Objects
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>To inspect needle spring physics, you first need to expose the needle objects globally. Add this to <code class="code-inline">main.js</code> after line 234:</p>
+
+                    <pre><code><span class="comment">// For console debugging</span>
+window.rpmNeedle = rpmNeedle;
+window.speedNeedle = speedNeedle;
+window.latGNeedle = latGNeedle;</code></pre>
+
+                    <p>Then in the console:</p>
+
+                    <pre><code><span class="comment">// Read current needle position (0–1 normalized)</span>
+window.rpmNeedle
+
+<span class="comment">// Output: Object with internal state</span>
+Object {
+  currentNeedlePosition: 0.62,
+  currentNeedleVelocity: 0.015,
+  elapsedSeconds: 12.4
+}
+
+<span class="comment">// Just the position</span>
+window.rpmNeedle.currentNeedlePosition
+<span class="comment">// Output: 0.62</span>
+
+<span class="comment">// Check if needle is fluttering (moving above threshold)</span>
+window.rpmNeedle.currentNeedlePosition > 0.80
+<span class="comment">// Output: true (if RPM > 80% of max)</span></code></pre>
+
+                    <button class="copy-btn" onclick="copyToClipboard('window.rpmNeedle')">Copy</button>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    3️⃣ Inspect Canvas Context State
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>Read and inspect the canvas drawing context:</p>
+
+                    <pre><code><span class="comment">// Get the RPM canvas element</span>
+<span class="keyword">const</span> rpmCanvas = document.getElementById(<span class="string">'rpmCanvas'</span>);
+
+<span class="comment">// Get its 2D context</span>
+<span class="keyword">const</span> rpmCtx = rpmCanvas.getContext(<span class="string">'2d'</span>);
+
+<span class="comment">// Check canvas dimensions</span>
+rpmCanvas.width    <span class="comment">// 900</span>
+rpmCanvas.height   <span class="comment">// 780</span>
+
+<span class="comment">// Read current canvas state</span>
+rpmCtx.fillStyle        <span class="comment">// current fill color</span>
+rpmCtx.strokeStyle      <span class="comment">// current stroke color</span>
+rpmCtx.lineWidth        <span class="comment">// current line width</span>
+rpmCtx.font             <span class="comment">// current font</span>
+
+<span class="comment">// Check if canvas is in a specific state</span>
+rpmCtx.fillStyle === <span class="string">'#e0e0e0'</span>  <span class="comment">// is it light grey?</span></code></pre>
+
+                    <button class="copy-btn" onclick="copyToClipboard('document.getElementById(\"rpmCanvas\").getContext(\"2d\")')">Copy</button>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    4️⃣ Temporarily Override Constants for Testing
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p><strong>Use case:</strong> Test a change without editing source code.</p>
+
+                    <p><strong>Limitation:</strong> This only works if the constants are imported and stored as module-level variables. Many times, the constants are "baked in" at module load time, so runtime changes won't affect them.</p>
+
+                    <p><strong>If the constant is imported globally:</strong></p>
+
+                    <pre><code><span class="comment">// In main.js, constants are imported like:</span>
+<span class="comment">// import { TACHOMETER_REDLINE_RPM } from './constants.js'</span>
+
+<span class="comment">// You can try to override it (may not work):</span>
+TACHOMETER_REDLINE_RPM = 5000;
+
+<span class="comment">// Then force a redraw (requires drawGauges to be exposed)</span>
+window.drawGauges(0.016);</code></pre>
+
+                    <p><strong>Better approach:</strong> Edit the source file and hard-refresh. Runtime overrides are experimental and often don't work as expected due to how ES6 modules cache imports.</p>
+
+                    <button class="copy-btn" onclick="copyToClipboard('TACHOMETER_REDLINE_RPM = 5000; window.drawGauges(0.016);')">Copy</button>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    5️⃣ Monitor State Values Over Time
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>Create a logging loop that prints values every 0.5 seconds:</p>
+
+                    <pre><code><span class="comment">// Log RPM and speed every 500ms for 10 seconds</span>
+<span class="keyword">const</span> interval = setInterval(() => {
+  <span class="keyword">const</span> speedKph = (state.body.speed / 0.27778).toFixed(1);
+  console.log(`RPM: ${state.engine.rpm}, Speed: ${speedKph} km/h`);
+}, 500);
+
+<span class="comment">// Stop after 10 seconds</span>
+setTimeout(() => clearInterval(interval), 10000);</code></pre>
+
+                    <h4>Expected Output:</h4>
+                    <pre><code>RPM: 1200, Speed: 0.0 km/h
+RPM: 1500, Speed: 2.3 km/h
+RPM: 2100, Speed: 5.8 km/h
+RPM: 3400, Speed: 12.1 km/h
+(... more lines ...)</code></pre>
+
+                    <button class="copy-btn" onclick="copyToClipboard('const interval = setInterval(() => { const speedKph = (state.body.speed / 0.27778).toFixed(1); console.log(`RPM: ${state.engine.rpm}, Speed: ${speedKph} km/h`); }, 500); setTimeout(() => clearInterval(interval), 10000);')">Copy</button>
+                </div>
+
+                <h3>Interactive Console Sandbox</h3>
+                <p>Try out commands below using mock state objects:</p>
+
+                <div class="sandbox">
+                    <h4 style="color: #d4d4d4; margin-bottom: 15px;">🖥️ Mock Console</h4>
+
+                    <div class="sandbox-input">
+                        <input type="text" id="consoleInput" placeholder="Try: state.engine.rpm" autocomplete="off">
+                        <button onclick="executeSandboxCommand()">Execute</button>
+                    </div>
+
+                    <div class="sandbox-output" id="consoleOutput">
+                        <div class="output-line" style="color: #6a9955;"># Type a command and press Execute</div>
+                        <div class="output-line" style="color: #6a9955;"># Example: state.engine.rpm</div>
+                        <div class="output-line" style="color: #6a9955;"># Example: state.body.speed / 0.27778</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Available Mock Objects:</strong>
+                    <ul>
+                        <li><code class="code-inline">state.engine.rpm</code> — current RPM (1200–8000)</li>
+                        <li><code class="code-inline">state.engine.isRunning</code> — boolean</li>
+                        <li><code class="code-inline">state.body.speed</code> — speed in m/s</li>
+                        <li><code class="code-inline">state.body.lateralAccel</code> — lateral G force</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Advanced Tips -->
+            <section id="tips">
+                <h2>Advanced Tips & Best Practices</h2>
+
+                <h3>🎯 Canvas Debugging Patterns</h3>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    Pattern 1: Verify Gradient Load
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>If gauge colors don't look right, verify the gradient was created:</p>
+
+                    <pre><code><span class="comment">// In browser console:</span>
+<span class="keyword">const</span> ctx = document.getElementById(<span class="string">'rpmCanvas'</span>).getContext(<span class="string">'2d'</span>);
+
+<span class="comment">// Create a test gradient</span>
+<span class="keyword">const</span> grad = ctx.createRadialGradient(<span class="number">150</span>, <span class="number">150</span>, <span class="number">0</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">200</span>);
+grad.addColorStop(<span class="number">0</span>, <span class="string">'#1a1a1a'</span>);
+grad.addColorStop(<span class="number">1</span>, <span class="string">'#3a3a3a'</span>);
+ctx.fillStyle = grad;
+
+<span class="comment">// Check if fillStyle is the gradient object</span>
+ctx.fillStyle === grad  <span class="comment">// true if gradient set</span></code></pre>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    Pattern 2: Check for Console Errors
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>If your changes don't appear, there may be a JavaScript error preventing the page from loading new code:</p>
+
+                    <ol>
+                        <li>Press F12 → Console tab</li>
+                        <li>Look for red error messages</li>
+                        <li>Read the error message and line number</li>
+                        <li>Common errors:
+                            <ul>
+                                <li><code class="code-inline">SyntaxError: unexpected token</code> — typo in your edit</li>
+                                <li><code class="code-inline">ReferenceError: undefined variable</code> — misspelled variable name</li>
+                                <li><code class="code-inline">TypeError: cannot read property of undefined</code> — trying to use something that wasn't initialized</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <button class="collapsible" onclick="toggleCollapsible(event)">
+                    Pattern 3: Test Code Changes in Isolation
+                    <span class="collapsible-icon">▼</span>
+                </button>
+                <div class="collapsible-content">
+                    <p>Before making a big change, test it on a dummy canvas first:</p>
+
+                    <pre><code><span class="comment">// Create a test canvas</span>
+<span class="keyword">const</span> testCanvas = document.createElement(<span class="string">'canvas'</span>);
+testCanvas.width = 300;
+testCanvas.height = 300;
+document.body.appendChild(testCanvas);
+
+<span class="keyword">const</span> ctx = testCanvas.getContext(<span class="string">'2d'</span>);
+
+<span class="comment">// Try your drawing code</span>
+ctx.fillStyle = <span class="string">'#1a1a1a'</span>;
+ctx.fillRect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">300</span>, <span class="number">300</span>);
+ctx.fillStyle = <span class="string">'#e0e0e0'</span>;
+ctx.font = <span class="string">'20px Arial'</span>;
+ctx.fillText(<span class="string">'Test'</span>, <span class="number">150</span>, <span class="number">150</span>);
+
+<span class="comment">// Check if it looks right before applying to actual gauges</span></code></pre>
+                </div>
+
+                <h3>⚡ Performance Tips</h3>
+
+                <ul>
+                    <li><strong>Cache gradients:</strong> Creating gradients is expensive. The code already caches them in a WeakMap. Don't recreate them every frame.</li>
+                    <li><strong>Limit redraws:</strong> Only redraw canvases that have changed values.</li>
+                    <li><strong>Use requestAnimationFrame:</strong> The main loop is already set up correctly; don't add extra redraws.</li>
+                </ul>
+
+                <h3>🔧 Troubleshooting Checklist</h3>
+
+                <div class="warning-box">
+                    <strong>Changes not appearing?</strong>
+
+                    <ol>
+                        <li>☐ Did you save the file? (Ctrl+S)</li>
+                        <li>☐ Did you hard-refresh? (Ctrl+Shift+R, not just F5)</li>
+                        <li>☐ Are there console errors? (F12 → Console)</li>
+                        <li>☐ Did you edit the correct file?</li>
+                        <li>☐ Did you edit the correct line?</li>
+                        <li>☐ Did you use the exact constant/variable names?</li>
+                        <li>☐ If still stuck, try:
+                            <ul>
+                                <li>Restart dev server: <code class="code-inline">Ctrl+C</code>, then <code class="code-inline">python3 serve.py</code></li>
+                                <li>Close and reopen browser</li>
+                                <li>Clear browser cache (Ctrl+Shift+Delete)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <h3>📚 Learning Resources</h3>
+
+                <ul>
+                    <li><strong>MDN Canvas API:</strong> https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API</li>
+                    <li><strong>Canvas Gradients:</strong> https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient</li>
+                    <li><strong>Canvas Text:</strong> https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_text</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>VerletDrift Gauge Editing Guide © 2026</p>
+            <p>For issues or questions, check the <a href="https://github.com/anthropics/claude-code" style="color: #667eea;">Claude Code repository</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Mock state object for sandbox
+        const mockState = {
+            engine: {
+                rpm: 3500,
+                isRunning: true,
+                isStalled: false,
+                throttleInput: 0.5
+            },
+            body: {
+                speed: 15, // m/s
+                lateralAccel: 2.5
+            }
+        };
+
+        window.state = mockState;
+
+        function toggleCollapsible(event) {
+            const btn = event.currentTarget;
+            const content = btn.nextElementSibling;
+            btn.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            const btn = event.currentTarget;
+            btn.textContent = '✓ Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        function executeSandboxCommand() {
+            const input = document.getElementById('consoleInput').value.trim();
+            const output = document.getElementById('consoleOutput');
+
+            if (!input) return;
+
+            const line = document.createElement('div');
+            line.className = 'output-line input';
+            line.textContent = '> ' + input;
+            output.appendChild(line);
+
+            try {
+                // Evaluate the command
+                const result = eval(input);
+                const resultLine = document.createElement('div');
+                resultLine.className = 'output-line output';
+                resultLine.textContent = String(result);
+                output.appendChild(resultLine);
+            } catch (e) {
+                const errorLine = document.createElement('div');
+                errorLine.className = 'output-line error';
+                errorLine.textContent = 'Error: ' + e.message;
+                output.appendChild(errorLine);
+            }
+
+            output.scrollTop = output.scrollHeight;
+            document.getElementById('consoleInput').value = '';
+        }
+
+        // Allow Enter key to execute
+        document.getElementById('consoleInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') executeSandboxCommand();
+        });
+
+        // Canvas preview functions
+        function drawGaugePreview(canvas, config, beforeTheme = false) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h * 0.55;
+            const radius = Math.min(w, h) * 0.40;
+
+            // Clear
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw face gradient
+            const gradFace = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+            if (beforeTheme) {
+                gradFace.addColorStop(0, '#f5f0e8');
+                gradFace.addColorStop(1, '#d9c9a8');
+            } else {
+                gradFace.addColorStop(0, '#1a1a1a');
+                gradFace.addColorStop(1, '#3a3a3a');
+            }
+            ctx.fillStyle = gradFace;
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw border
+            ctx.strokeStyle = beforeTheme ? '#5a4a2a' : '#a0a0a0';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Draw vignette
+            const gradVignette = ctx.createRadialGradient(cx, cy, radius * 0.6, cx, cy, radius * 0.9);
+            gradVignette.addColorStop(0, 'rgba(0,0,0,0)');
+            gradVignette.addColorStop(1, beforeTheme ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.35)');
+            ctx.fillStyle = gradVignette;
+            ctx.fill();
+
+            // Draw gauge ticks and labels
+            const startAngle = Math.PI + Math.PI / 4; // 225°
+            const sweepAngle = Math.PI * 1.5; // 270°
+
+            ctx.fillStyle = beforeTheme ? '#2a1a00' : '#e0e0e0';
+            ctx.font = `${radius * 0.12}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Draw major ticks
+            for (let i = 0; i <= 10; i++) {
+                const angle = startAngle + (i / 10) * sweepAngle;
+                const x1 = cx + Math.cos(angle) * (radius * 0.75);
+                const y1 = cy + Math.sin(angle) * (radius * 0.75);
+                const x2 = cx + Math.cos(angle) * (radius * 0.90);
+                const y2 = cy + Math.sin(angle) * (radius * 0.90);
+
+                ctx.strokeStyle = beforeTheme ? '#3a2a0a' : '#c0c0c0';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+
+                // Draw label
+                const labelX = cx + Math.cos(angle) * (radius * 0.60);
+                const labelY = cy + Math.sin(angle) * (radius * 0.60);
+                ctx.fillStyle = beforeTheme ? '#2a1a00' : '#e0e0e0';
+                ctx.fillText(String(i * 1000), labelX, labelY);
+            }
+
+            // Draw title
+            ctx.font = `bold ${radius * 0.18}px Arial`;
+            ctx.fillText(config.title, cx, cy + radius * 0.15);
+
+            // Draw red zone if applicable
+            if (config.redFrom !== null) {
+                const redStartAngle = startAngle + (config.redFrom / config.max) * sweepAngle;
+                const redEndAngle = startAngle + sweepAngle;
+
+                ctx.fillStyle = 'rgba(200, 40, 40, 0.35)';
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius * 0.85, redStartAngle, redEndAngle);
+                ctx.arc(cx, cy, radius * 0.70, redEndAngle, redStartAngle, true);
+                ctx.fill();
+            }
+
+            // Draw needle
+            const needleAngle = startAngle + config.needleNormalized * sweepAngle;
+            const needleLength = radius * 0.65;
+            const needleX = cx + Math.cos(needleAngle) * needleLength;
+            const needleY = cy + Math.sin(needleAngle) * needleLength;
+
+            ctx.strokeStyle = config.needleColor || '#ff6600';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(needleX, needleY);
+            ctx.stroke();
+
+            // Draw pivot cap
+            const gradPivot = ctx.createRadialGradient(cx, cy, 0, cx, cy, 8);
+            gradPivot.addColorStop(0, '#fff');
+            gradPivot.addColorStop(1, '#888');
+            ctx.fillStyle = gradPivot;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Initialize preview canvases
+        window.addEventListener('DOMContentLoaded', () => {
+            // RPM edit previews
+            drawGaugePreview(document.getElementById('rpmPreviewBefore'), {
+                title: 'RPM',
+                max: 10000,
+                redFrom: 6500,
+                needleNormalized: 0.7,
+                needleColor: '#c0392b'
+            }, true);
+
+            drawGaugePreview(document.getElementById('rpmPreviewAfter'), {
+                title: 'RPM',
+                max: 10000,
+                redFrom: 5500,
+                needleNormalized: 0.7,
+                needleColor: '#ff6600'
+            }, false);
+
+            // Speed edit previews
+            drawGaugePreview(document.getElementById('speedPreviewBefore'), {
+                title: 'SPEED',
+                max: 400,
+                redFrom: null,
+                needleNormalized: 0.375, // 150/400
+                needleColor: '#c0392b'
+            }, true);
+
+            drawGaugePreview(document.getElementById('speedPreviewAfter'), {
+                title: 'SPEED',
+                max: 300,
+                redFrom: null,
+                needleNormalized: 0.5, // 150/300
+                needleColor: '#ff6600'
+            }, false);
+
+            // Color edit previews
+            drawGaugePreview(document.getElementById('colorPreviewBefore'), {
+                title: 'GAUGE',
+                max: 10,
+                redFrom: 6.5,
+                needleNormalized: 0.65,
+                needleColor: '#c0392b'
+            }, true);
+
+            drawGaugePreview(document.getElementById('colorPreviewAfter'), {
+                title: 'GAUGE',
+                max: 10,
+                redFrom: 6.5,
+                needleNormalized: 0.65,
+                needleColor: '#ff6600'
+            }, false);
+        });
+    </script>
+</body>
+</html>
