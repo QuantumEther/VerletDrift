@@ -102,7 +102,7 @@ import {
   drawSparks,
   drawDebugOverlays,
   drawWheelSlipGauge,
-} from './renderer.js';
+} from './renderer/index.js';
 
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';

@@ -20,7 +20,7 @@ import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
 } from './constants.js';
-import { getSparkPool } from './renderer.js';
+import { getSparkPool } from './renderer/index.js';
 
 
 // =============================================================
