@@ -27,7 +27,7 @@
 // Local utility
 const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
-import state from './state.js';
+import { renderState as state } from './state.js';
 import { physicsRandom } from './random.js';
 import {
   CAR_HALF_WIDTH,

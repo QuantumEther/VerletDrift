@@ -715,3 +715,21 @@ const state = {
 };
 
 export default state;
+
+// Named slice exports — all are the same flat object reference.
+// Modules import the slice they "own" to document ownership;
+// the local `as state` alias means zero internal changes needed.
+//
+// Ownership convention:
+//   physicsState  — wheels, body, steering, engine, camera, wheelOmega/Slip/Force, traction, etc.
+//   renderState   — filteredBody, carPoseHistory, skidMarks, sparks, trail, screenShake, etc.
+//   uiState       — input, params, loop, soundParams
+//   gameplayState — balloons, splatParticles, score, tirePaint, tractionState, splatDecals
+//   audioState    — soundParams, engine (rpm), input (throttle), body (speed) [read-only refs]
+//
+// main.js keeps `import state from './state.js'` — orchestrator legitimately touches all slices.
+export const physicsState  = state;
+export const renderState   = state;
+export const uiState       = state;
+export const gameplayState = state;
+export const audioState    = state;

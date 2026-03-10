@@ -17,7 +17,7 @@
 //   drawScoreHud(ctx, canvasWidth, canvasHeight)
 // =============================================================
 
-import state from './state.js';
+import { gameplayState as state } from './state.js';
 import {
   BALLOON_COUNT,
   BALLOON_RADIUS_MIN,

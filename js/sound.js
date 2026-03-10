@@ -36,7 +36,7 @@
 //   setSoundParam(paramName, newValue)
 // =============================================================
 
-import state from './state.js';
+import { audioState as state } from './state.js';
 
 // =============================================================
 // MODULE-LEVEL AUDIO NODES

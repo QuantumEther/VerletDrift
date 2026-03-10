@@ -1,4 +1,4 @@
-import state from './state.js';
+import { physicsState as state } from './state.js';
 
 let deterministicSeed = 1;
 let lastConfiguredSeed = null;

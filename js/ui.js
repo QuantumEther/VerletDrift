@@ -11,7 +11,7 @@
 // it only animates the visual gauge needle, never affects car behaviour.
 // =============================================================
 
-import state from './state.js';
+import { uiState as state } from './state.js';
 import { updateSoundParam } from './soundStateManager.js';
 import {
   NEEDLE_STIFFNESS,

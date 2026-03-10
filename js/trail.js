@@ -13,7 +13,7 @@
 // which is called from renderer.js in the world-space (camera-transformed) pass.
 // =============================================================
 
-import state from './state.js';
+import { renderState as state } from './state.js';
 import {
   TRAIL_ARROW_BASE_LENGTH_PX,
   TRAIL_REFERENCE_SPEED,

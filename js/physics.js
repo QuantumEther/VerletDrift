@@ -28,7 +28,7 @@
 //  14. updateCamera(dt)
 // =============================================================
 
-import state from './state.js';
+import { physicsState as state } from './state.js';
 import { updateEngineSound as soundUpdate, triggerGearChange as soundGearChange } from './sound.js';
 import {
   CAR_HALF_WIDTH,

@@ -12,7 +12,7 @@
 // Balloons, map boundary, car, decals stay in Canvas 2D (simCanvas z:1).
 // =============================================================
 
-import state from './state.js';
+import { renderState as state } from './state.js';
 import {
   PIXELS_PER_METER,
   TRAIL_ARROW_BASE_LENGTH_PX,
