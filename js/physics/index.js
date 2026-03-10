@@ -4,7 +4,8 @@
 // Submodules with real code:
 //   kinematics.js   — wrapAngle, initializeCarBody, computeBodyDerivedState
 //   integrator.js   — verletIntegrateAllPoints
-//   constraints.js  — (pending P2-b)
+//   constraints.js  — solveRigidBodyConstraints, clampParticleDisplacements,
+//                      handleBoundaryCollisions
 //   tires.js        — (pending P2-c)
 //   weight.js       — (pending P2-c)
 //   engine.js       — (pending P2-d)
@@ -17,6 +18,8 @@
 
 export { wrapAngle, initializeCarBody, computeBodyDerivedState } from './kinematics.js';
 export { verletIntegrateAllPoints }                               from './integrator.js';
+export { solveRigidBodyConstraints, clampParticleDisplacements,
+         handleBoundaryCollisions }                               from './constraints.js';
 
 // --- Not yet migrated: re-exported from legacy monolith ---
 export {
@@ -24,9 +27,6 @@ export {
   computeTireForces,
   computeDragForces,
   computeBrakeForce,
-  solveRigidBodyConstraints,
-  clampParticleDisplacements,
-  handleBoundaryCollisions,
   updateSteering,
   updateEngine,
   updateCamera,
