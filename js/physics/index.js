@@ -6,8 +6,8 @@
 //   integrator.js   — verletIntegrateAllPoints
 //   constraints.js  — solveRigidBodyConstraints, clampParticleDisplacements,
 //                      handleBoundaryCollisions
-//   tires.js        — (pending P2-c)
-//   weight.js       — (pending P2-c)
+//   weight.js       — computeWeightTransfer
+//   tires.js        — computeTireForces, computeDragForces, computeBrakeForce
 //   engine.js       — (pending P2-d)
 //   steering.js     — (pending P2-d)
 //   camera.js       — (pending P2-d)
@@ -20,13 +20,11 @@ export { wrapAngle, initializeCarBody, computeBodyDerivedState } from './kinemat
 export { verletIntegrateAllPoints }                               from './integrator.js';
 export { solveRigidBodyConstraints, clampParticleDisplacements,
          handleBoundaryCollisions }                               from './constraints.js';
+export { computeWeightTransfer }                                   from './weight.js';
+export { computeTireForces, computeDragForces, computeBrakeForce } from './tires.js';
 
 // --- Not yet migrated: re-exported from legacy monolith ---
 export {
-  computeWeightTransfer,
-  computeTireForces,
-  computeDragForces,
-  computeBrakeForce,
   updateSteering,
   updateEngine,
   updateCamera,
