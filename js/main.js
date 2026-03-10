@@ -66,7 +66,7 @@ import {
   updateEngineSound,
   applySleepIfNeeded,
   wrapAngle,
-} from './physics.js';
+} from './physics/index.js';
 
 import {
   spawnTrailArrow,

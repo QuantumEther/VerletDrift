@@ -25,7 +25,7 @@
 // =============================================================
 
 import { uiState as state } from './state.js';
-import { handleGearChange } from './physics.js';
+import { handleGearChange } from './physics/index.js';
 import {
   STEERING_DRAG_RANGE_PX,
   MAX_FRONT_WHEEL_ANGLE_RAD,
