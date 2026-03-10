@@ -16,21 +16,10 @@ export { applyCameraTransform, removeCameraTransform, drawCheckerboard,
          drawSkidMarks, drawBalloons, drawSplatParticles,
          drawKinematicArrows }                                   from './world.js';
 export { updateSparks, getSparkPool, drawSparks }               from './sparks.js';
-
-// --- Not yet migrated: re-exported from legacy monolith ---
-export {
-  drawSteeringWheelHud,
-  drawThrottleBar,
-  drawBrakeBar,
-  drawHandbrakeBar,
-  drawClutchBar,
-  drawGearIndicator,
-  drawScoreHud,
-  drawAnalogGauge,
-  drawYawStabilityGauge,
-  drawFrictionCircle,
-  drawSlipAngleMeter,
-  drawDriftRadar,
-  drawWheelSlipGauge,
-  drawDebugOverlays,
-} from '../renderer.js';
+export { drawSteeringWheelHud, drawThrottleBar, drawBrakeBar,
+         drawHandbrakeBar, drawClutchBar, drawGearIndicator,
+         drawScoreHud }                                          from './hud.js';
+export { drawAnalogGauge, drawYawStabilityGauge, drawFrictionCircle,
+         drawSlipAngleMeter, drawDriftRadar,
+         drawWheelSlipGauge }                                    from './gauges.js';
+export { drawDebugOverlays }                                     from './debug.js';
