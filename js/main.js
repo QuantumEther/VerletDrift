@@ -460,9 +460,26 @@ registerGauge({
 //     At 100Hz physics + 240Hz display: between every physics tick you get
 //     ~2.4 render frames, each drawing a smoothly interpolated position.
 //
-// What we snapshot: body center, heading, steering angle, camera.
-// Particles, decals, balloons are NOT interpolated (physics-side only).
-
+/**
+ * Snapshot of interpolatable state between two physics ticks.
+ *
+ * Captured fields: body.centerX/Y, body.heading, steering.frontWheelAngle,
+ * steering.wheelAngle, camera.x/y/zoom.
+ *
+ * The renderer lerps between snapPrev and snapCurr using
+ *   alpha = wallAccumulator / physicsWallDt
+ * and writes the blended values back into state before calling renderFrame(),
+ * then restores them afterward so physics reads the real values next tick.
+ *
+ * Known limitation — wheel positions are NOT interpolated:
+ *   drawCar() reads state.wheels.frontLeft.x etc. directly. At 100 Hz physics
+ *   this is visually undetectable, but the individual wheel corner positions
+ *   will snap rather than glide between render frames. Fixing this would
+ *   require snapshotting all four (x, y) pairs and applying the same lerp
+ *   restore pattern — deferred to a future pass.
+ *
+ * Particles, decals, and balloons are physics-side only and not interpolated.
+ */
 function makeBodySnapshot() {
   return {
     centerX:    state.body.centerX,
