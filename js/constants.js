@@ -240,9 +240,10 @@ export const TRAIL_REFERENCE_SPEED = 25; // m/s
 // -------------------------------------------------------------
 // WORLD / MAP
 // -------------------------------------------------------------
-// Map dimensions in metres.  300 m × 10 px/m = 3000 px on screen.
-export const DEFAULT_MAP_WIDTH  = 300; // m
-export const DEFAULT_MAP_HEIGHT = 240; // m
+// Map dimensions in metres.  384 m × 20 px/m = 7680 px on screen.
+// Aspect ratio: 4:3 (matches GPU texture 6144×4608).
+export const DEFAULT_MAP_WIDTH  = 384; // m
+export const DEFAULT_MAP_HEIGHT = 288; // m
 export const CHECKERBOARD_TILE_SIZE_PX = 80; // pixels (visual only)
 
 // -------------------------------------------------------------

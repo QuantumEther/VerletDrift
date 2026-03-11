@@ -27,12 +27,12 @@ import { getSparkPool } from './renderer/index.js';
 // CONSTANTS
 // =============================================================
 
-const SKID_TEX_W    = 4096;
-const SKID_TEX_H    = 3072;
-const MAP_W         = DEFAULT_MAP_WIDTH;   // 300 m
-const MAP_H         = DEFAULT_MAP_HEIGHT;  // 240 m
-const MAP_CX        = MAP_W / 2;           // 150 m — map-centre X
-const MAP_CY        = MAP_H / 2;           // 120 m — map-centre Y
+const MAP_W         = DEFAULT_MAP_WIDTH;    // 384 m
+const MAP_H         = DEFAULT_MAP_HEIGHT;   // 288 m
+const SKID_TEX_W    = MAP_W * 16;           // 6144 texels (16 tx/m for uniform scaling)
+const SKID_TEX_H    = MAP_H * 16;           // 4608 texels (16 tx/m for uniform scaling)
+const MAP_CX        = MAP_W / 2;            // 192 m — map-centre X
+const MAP_CY        = MAP_H / 2;            // 144 m — map-centre Y
 const MAX_ARROWS    = 600;
 const MAX_SPARKS_GPU = 300;   // must match renderer.js MAX_SPARKS
 const MAX_SPLATS    = 600;
