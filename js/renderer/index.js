@@ -20,6 +20,5 @@ export { drawSteeringWheelHud, drawThrottleBar, drawBrakeBar,
          drawHandbrakeBar, drawClutchBar, drawGearIndicator,
          drawScoreHud }                                          from './hud.js';
 export { drawAnalogGauge, drawYawStabilityGauge, drawFrictionCircle,
-         drawSlipAngleMeter, drawDriftRadar,
-         drawWheelSlipGauge }                                    from './gauges.js';
+         drawSlipAngleMeter, drawDriftRadar, drawWheelSlipGauge } from './gauges.js';
 export { drawDebugOverlays }                                     from './debug.js';

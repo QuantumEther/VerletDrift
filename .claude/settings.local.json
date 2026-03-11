@@ -58,7 +58,9 @@
       "Bash(curl -s http://localhost:8000/gauge-guide.html)",
       "Bash(wc -l /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
       "Bash(grep -n \"import state\" /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
-      "Bash(start \"\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\docs\\\\assessment.html\")"
+      "Bash(start \"\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\docs\\\\assessment.html\")",
+      "Bash(python3:*)",
+      "Bash(wc -l js/renderer/*.js)"
     ]
   }
 }
