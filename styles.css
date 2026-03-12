@@ -50,7 +50,7 @@ body {
   background: linear-gradient(180deg, var(--bezel1), var(--bezel2));
   border-radius: 22px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 2px 1px rgba(255,255,255,0.12), inset 0 -8px 18px rgba(0,0,0,0.55);
-  padding: 16px;
+  padding: 2px;
 }
 
 .gauge-inner {
@@ -76,7 +76,7 @@ body {
   width: 100%;
   height: auto;
   display: block;
-  aspect-ratio: 1.15 / 1;
+  /*aspect-ratio: 1.15 / 1;*/
 }
 
 .badge {
