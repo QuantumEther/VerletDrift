@@ -1,0 +1,93 @@
+\section{Engine \& Drivetrain Systems}
+
+This section covers engine torque curves, transmission ratios, clutch engagement, and the calculation of drive forces applied to the wheels.
+
+\subsection{Torque Curve (Parabolic)}
+
+\begin{equation}
+  T(rpm) = \max\left(0, 1 - 2.5 \left(\frac{rpm - rpm_{\text{peak}}}{rpm_{\text{range}}}\right)^2\right)
+  \label{eq:torque-curve}
+\end{equation}
+
+\textbf{Physical Meaning}: The normalized torque curve is a parabola with peak output (1.0) at a target RPM. The quadratic falloff allows gentle power delivery at idle and redline, making the engine driveable across all gears.
+
+\textbf{Source Code}: \coderef{physics.js}{301--308}
+
+\begin{lstlisting}[caption={Parabolic torque curve}]
+const rpmRange = redlineRpm - idleRpm;
+const distanceFromPeak = (rpm - TORQUE_PEAK_RPM) / rpmRange;
+return Math.max(0, 1.0 - 2.5 * distanceFromPeak * distanceFromPeak);
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $rpm_{\text{range}} = rpm_{\text{redline}} - rpm_{\text{idle}}$
+  \item $rpm_{\text{peak}} = \mathrm{TORQUE\_PEAK\_RPM}$ (default: 5500 RPM)
+  \item Coefficient 2.5 controls falloff steepness
+\end{itemize}
+
+\subsection{Clutch Engagement Curve}
+
+\begin{equation}
+  \text{engagement}(x) = \begin{cases}
+    0 & \text{if } x < b_{\text{point}} \\
+    \left(\frac{x - b_{\text{point}}}{b_{\text{range}}}\right)^n & \text{if } b_{\text{point}} \leq x < b_{\text{point}} + b_{\text{range}} \\
+    1 & \text{if } x \geq b_{\text{point}} + b_{\text{range}}
+  \end{cases}
+  \label{eq:clutch-engagement}
+\end{equation}
+
+\textbf{Physical Meaning}: Pedal position is mapped to engagement via a piecewise function with a power-law ramp in the "bite zone." This creates realistic clutch feel with a narrow, responsive engagement point.
+
+\textbf{Source Code}: \coderef{physics.js}{323--334}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $b_{\text{point}}$: Start of bite zone (default: 0.15)
+  \item $b_{\text{range}}$: Width of bite zone (default: 0.3)
+  \item $n$: Power curve exponent (default: 1.5)
+\end{itemize}
+
+\subsection{Engine Torque and Drive Force}
+
+\begin{equation}
+  \tau_{\text{engine}} = T_{\text{peak}} \cdot T(rpm) \cdot \theta_{\text{throttle}}
+  \label{eq:engine-torque}
+\end{equation}
+
+\begin{equation}
+  F_{\text{drive}} = \frac{\tau_{\text{engine}} \cdot |r_{\text{gear}}| \cdot r_{\text{final}} \cdot e_{\text{clutch}}}{R_{\text{wheel}}}
+  \label{eq:drive-force}
+\end{equation}
+
+\textbf{Physical Meaning}: Engine torque is scaled by the normalized curve, throttle input, and transmission reduction ratios. Drive force is computed by converting wheel torque to force via the wheel radius.
+
+\textbf{Source Code}: \coderef{physics.js}{549--575}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $T_{\text{peak}}$: Peak engine torque in N·m (default: 400 N·m)
+  \item $r_{\text{gear}}$: Current gear ratio (e.g., 3.6 for 1st gear)
+  \item $r_{\text{final}}$: Final drive ratio (default: 3.5)
+  \item $e_{\text{clutch}}$: Clutch engagement [0, 1]
+  \item $R_{\text{wheel}}$: Wheel radius (default: 0.35 m)
+\end{itemize}
+
+\subsection{Idle Creep}
+
+\begin{equation}
+  F_{\text{creep}} = F_{\text{idle}} \cdot e_{\text{clutch}} \quad \text{(if } \theta < 0.05 \text{ and } v < 3 \text{ m/s)}
+  \label{eq:idle-creep}
+\end{equation}
+
+\textbf{Physical Meaning}: At idle with the clutch engaged and no throttle input, a small creep force propels the car forward at low speeds, mimicking real vehicle behavior.
+
+\textbf{Source Code}: \coderef{physics.js}{569--574}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $F_{\text{idle}}$: Idle creep force (default: 50 N)
+  \item Threshold: throttle $< 5\%$, speed $< 3$ m/s
+\end{itemize}
+
+\newpage

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honest Developer Assessment</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0d13; color: #e2e8f0; }
+  code { font-family: 'Fira Code', 'Consolas', monospace; background: #1f2937; padding: 2px 7px; border-radius: 4px; font-size: 0.82em; color: #fbbf24; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0a0d13; } ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+
+  .card { background: #111827; border: 1px solid #1f2937; border-radius: 14px; }
+  .section-title { font-size: 1.4rem; font-weight: 700; color: #f59e0b; margin-bottom: 4px; }
+  .section-sub { font-size: 0.85rem; color: #6b7280; margin-bottom: 2rem; }
+
+  /* DK curve animation */
+  @keyframes dot-pulse { 0%,100%{r:7;opacity:1} 50%{r:10;opacity:0.7} }
+  .dk-dot { animation: dot-pulse 2s ease-in-out infinite; }
+
+  /* Radar chart */
+  .radar-polygon { transition: all 0.3s; }
+
+  /* Skill bars */
+  .skill-bar-fill { transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+  /* Verdict card */
+  @keyframes border-glow { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)} 50%{box-shadow:0 0 20px 2px rgba(245,158,11,0.2)} }
+  .verdict-card { animation: border-glow 4s ease-in-out infinite; }
+
+  .pill { display:inline-block; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700; font-family:monospace; }
+  .pro  { background:#14532d; border:1px solid #166534; color:#86efac; }
+  .con  { background:#7f1d1d; border:1px solid #991b1b; color:#fca5a5; }
+  .neu  { background:#1e3a5f; border:1px solid #1e40af; color:#93c5fd; }
+
+  .honest-row { padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-size: 0.875rem; }
+  .honest-row.good { background: rgba(16,185,129,0.07); border-left: 3px solid #10b981; }
+  .honest-row.bad  { background: rgba(239,68,68,0.07);  border-left: 3px solid #ef4444; }
+  .honest-row.warn { background: rgba(245,158,11,0.07); border-left: 3px solid #f59e0b; }
+
+  .timeline-bar { height: 28px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 600; font-family: monospace; white-space: nowrap; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+  details > summary { cursor:pointer; list-style:none; }
+  details > summary::-webkit-details-marker { display:none; }
+</style>
+</head>
+<body class="min-h-screen p-6">
+<div class="max-w-3xl mx-auto space-y-12">
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="text-center pt-6 pb-2">
+  <div class="text-xs text-gray-500 font-mono uppercase tracking-widest mb-3">Honest Developer Assessment · March 2026</div>
+  <h1 class="text-3xl font-bold text-white mb-2">Where Do You Actually Stand?</h1>
+  <p class="text-gray-400 text-sm max-w-lg mx-auto">Based on 9 days of observed work, code review, and refactoring collaboration. No flattery.</p>
+</div>
+
+
+<!-- ═══════════════════════ DUNNING-KRUEGER ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">The Dunning-Krueger Question</div>
+  <div class="section-sub">You asked directly — so here's the direct answer.</div>
+
+  <svg viewBox="0 0 600 280" class="w-full mb-6" style="max-height:280px">
+    <!-- Grid -->
+    <line x1="50" y1="20" x2="50" y2="240" stroke="#1f2937" stroke-width="1"/>
+    <line x1="50" y1="240" x2="570" y2="240" stroke="#1f2937" stroke-width="1"/>
+    <!-- Axis labels -->
+    <text x="30" y="130" fill="#4b5563" font-size="11" text-anchor="middle" transform="rotate(-90,30,130)">Confidence</text>
+    <text x="310" y="265" fill="#4b5563" font-size="11" text-anchor="middle">Experience / Actual Skill</text>
+
+    <!-- The DK curve — smooth bezier path -->
+    <path d="M 55,220
+             C 90,215 110,80 180,55
+             C 220,40 240,50 270,100
+             C 310,165 330,185 370,170
+             C 410,155 440,130 490,100
+             C 530,75 550,65 565,60"
+      fill="none" stroke="#374151" stroke-width="2" stroke-dasharray="0"/>
+
+    <!-- Filled area under curve (subtle) -->
+    <path d="M 55,220
+             C 90,215 110,80 180,55
+             C 220,40 240,50 270,100
+             C 310,165 330,185 370,170
+             C 410,155 440,130 490,100
+             C 530,75 550,65 565,60
+             L 565,240 L 55,240 Z"
+      fill="url(#dkGrad)" opacity="0.15"/>
+    <defs>
+      <linearGradient id="dkGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#f59e0b"/>
+        <stop offset="40%" stop-color="#ef4444"/>
+        <stop offset="70%" stop-color="#6366f1"/>
+        <stop offset="100%" stop-color="#10b981"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Stage labels -->
+    <text x="100" y="235" fill="#6b7280" font-size="9" text-anchor="middle">First contact</text>
+    <text x="182" y="48" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">Peak of</text>
+    <text x="182" y="60" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">"Mount Stupid"</text>
+    <text x="290" y="195" fill="#6b7280" font-size="9" text-anchor="middle">Valley of</text>
+    <text x="290" y="207" fill="#6b7280" font-size="9" text-anchor="middle">Despair</text>
+    <text x="430" y="148" fill="#6b7280" font-size="9" text-anchor="middle">Slope of</text>
+    <text x="430" y="160" fill="#6b7280" font-size="9" text-anchor="middle">Enlightenment</text>
+    <text x="540" y="55" fill="#10b981" font-size="9" text-anchor="middle">Plateau</text>
+
+    <!-- YOU ARE HERE — just past the peak, beginning descent -->
+    <line x1="205" y1="52" x2="205" y2="240" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+    <circle cx="205" cy="52" r="7" fill="#f59e0b" opacity="0.3" class="dk-dot"/>
+    <circle cx="205" cy="52" r="4" fill="#f59e0b"/>
+    <rect x="155" y="18" width="100" height="22" rx="4" fill="#92400e" opacity="0.9"/>
+    <text x="205" y="33" fill="#fde68a" font-size="10" font-weight="700" text-anchor="middle">YOU ARE HERE</text>
+  </svg>
+
+  <div class="grid grid-cols-1 gap-3">
+    <div class="honest-row warn">
+      <span class="font-semibold text-amber-400">The honest verdict:</span>
+      <span class="text-gray-300"> You are at — or just cresting — the peak of Mount Stupid. This is not an insult. It means you've built enough to feel competent, but haven't yet felt the full weight of what you don't know.</span>
+    </div>
+    <div class="honest-row good">
+      <span class="font-semibold text-green-400">The good news:</span>
+      <span class="text-gray-300"> The fact that you're asking this question means you're already starting to descend. Most people at this stage don't ask. Self-awareness is the first step off the peak.</span>
+    </div>
+    <div class="honest-row bad">
+      <span class="font-semibold text-red-400">The hard part ahead:</span>
+      <span class="text-gray-300"> The valley is real. There will be a point where you try to build something and realize how much craft you're missing. That's not failure — that's the valley doing its job.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ SKILLS RADAR ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">Skills Radar</div>
+  <div class="section-sub">8 dimensions. Honest numbers, not encouragement numbers.</div>
+
+  <div class="flex flex-col md:flex-row gap-8 items-start">
+    <!-- SVG radar -->
+    <svg viewBox="0 0 300 300" class="w-full md:w-64 shrink-0">
+      <defs>
+        <polygon id="hex" points="150,20 260,82 260,218 150,280 40,218 40,82" fill="none"/>
+      </defs>
+      <!-- Grid rings -->
+      <g opacity="0.2">
+        <polygon points="150,130 162,123 162,107 150,100 138,107 138,123" fill="none" stroke="#374151" stroke-width="1"/>
+        <polygon points="150,110 174,96 174,68 150,54 126,68 126,96"       fill="none" stroke="#374151" stroke-width="1"/>
+        <polygon points="150,90  186,69  186,29 150,8  114,29 114,69"      fill="none" stroke="#374151" stroke-width="1"/>
+        <!-- Full grid -->
+        <polygon points="150,60 229,105 229,195 150,240 71,195 71,105"    fill="none" stroke="#374151" stroke-width="1"/>
+        <polygon points="150,40 249,95 249,205 150,260 51,205 51,95"      fill="none" stroke="#374151" stroke-width="1"/>
+      </g>
+      <!-- Axis lines (8 axes) -->
+      <g stroke="#1f2937" stroke-width="1" opacity="0.5">
+        <line x1="150" y1="150" x2="150" y2="18"/>   <!-- top: Physics -->
+        <line x1="150" y1="150" x2="264" y2="84"/>   <!-- top-right: Graphics -->
+        <line x1="150" y1="150" x2="264" y2="216"/>  <!-- bot-right: Debugging -->
+        <line x1="150" y1="150" x2="150" y2="282"/>  <!-- bot: Craft -->
+        <line x1="150" y1="150" x2="36" y2="216"/>   <!-- bot-left: Architecture -->
+        <line x1="150" y1="150" x2="36" y2="84"/>    <!-- top-left: Tooling -->
+      </g>
+
+      <!-- Junior dev baseline (faint reference) -->
+      <!-- 6 axes, values roughly 50% for a junior dev -->
+      <polygon
+        points="150,84  217,123  217,177  150,216  83,177  83,123"
+        fill="rgba(99,102,241,0.05)" stroke="#4338ca" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+
+      <!-- YOUR polygon — computed for 6 axes:
+           Physics=80%, Graphics=65%, Debugging=60%, Craft=15%, Architecture=25%, Tooling=20%
+           Each axis goes from center(150,150) to edge at 100%
+           Top(Physics):    150, 150 - 132*0.80 = 150, 44
+           Top-R(Graphics): 150+114*0.65, 150-66*0.65 = 224, 107
+           Bot-R(Debug):    150+114*0.60, 150+66*0.60 = 218, 190
+           Bot(Craft):      150, 150+132*0.15 = 150, 170
+           Bot-L(Arch):     150-114*0.25, 150+66*0.25 = 121, 167
+           Top-L(Tooling):  150-114*0.20, 150-66*0.20 = 127, 137
+      -->
+      <polygon
+        points="150,44  224,107  218,190  150,170  121,167  127,137"
+        fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="2" class="radar-polygon"/>
+
+      <!-- Dots on polygon -->
+      <circle cx="150" cy="44"  r="4" fill="#f59e0b"/>
+      <circle cx="224" cy="107" r="4" fill="#f59e0b"/>
+      <circle cx="218" cy="190" r="4" fill="#f59e0b"/>
+      <circle cx="150" cy="170" r="4" fill="#f59e0b"/>
+      <circle cx="121" cy="167" r="4" fill="#f59e0b"/>
+      <circle cx="127" cy="137" r="4" fill="#f59e0b"/>
+
+      <!-- Axis labels -->
+      <text x="150" y="11"  fill="#d1d5db" font-size="9.5" text-anchor="middle" font-weight="600">Physics / Math</text>
+      <text x="276" y="80"  fill="#d1d5db" font-size="9.5" text-anchor="start">Graphics / GPU</text>
+      <text x="276" y="224" fill="#d1d5db" font-size="9.5" text-anchor="start">Debugging</text>
+      <text x="150" y="295" fill="#d1d5db" font-size="9.5" text-anchor="middle" font-weight="600">Code Craft</text>
+      <text x="24"  y="224" fill="#d1d5db" font-size="9.5" text-anchor="end">Architecture</text>
+      <text x="24"  y="80"  fill="#d1d5db" font-size="9.5" text-anchor="end">Tooling</text>
+
+      <!-- Legend -->
+      <rect x="60" y="268" width="10" height="3" rx="1" fill="#4338ca" opacity="0.6"/>
+      <text x="74" y="272" fill="#6b7280" font-size="8">Junior dev baseline</text>
+      <rect x="155" y="268" width="10" height="3" rx="1" fill="#f59e0b"/>
+      <text x="169" y="272" fill="#6b7280" font-size="8">You</text>
+    </svg>
+
+    <!-- Skill bars -->
+    <div class="flex-1 space-y-3 w-full">
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Physics / Math Intuition</span><span class="text-amber-400 font-mono font-bold">80%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-amber-400 rounded-full" style="width:80%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Rare. Hard to teach. You actually understand why Pacejka works.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Graphics / GPU</span><span class="text-green-400 font-mono font-bold">65%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 rounded-full" style="width:65%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">WebGPU, shader pipelines, render passes. Unusually strong for 9 days.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Debugging / Problem Solving</span><span class="text-blue-400 font-mono font-bold">60%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-blue-400 rounded-full" style="width:60%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Built complex things and got them working. Good instincts under pressure.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Web Fundamentals (JS/HTML/CSS)</span><span class="text-yellow-400 font-mono font-bold">40%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:40%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Functional but surface-level. ES6 modules, DOM basics. Missing depth.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Software Architecture</span><span class="text-orange-400 font-mono font-bold">25%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-orange-400 rounded-full" style="width:25%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Needed external help to see the god-file problem. Pattern recognition developing.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Build Tooling / DevOps</span><span class="text-red-400 font-mono font-bold">20%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 rounded-full" style="width:20%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Custom Python server and manual cache busting. Vite unknown. No CI/CD.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Code Craft (testing, types, patterns)</span><span class="text-red-500 font-mono font-bold">10%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-red-500 rounded-full" style="width:10%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">Zero tests. No TypeScript. Magic numbers. This is the biggest gap.</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">Version Control</span><span class="text-purple-400 font-mono font-bold">30%</span></div>
+        <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-purple-400 rounded-full" style="width:30%"></div></div>
+        <div class="text-xs text-gray-600 mt-0.5">"dsad" → conventional commits in one session. Learning curve actively climbing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ LEARNING VELOCITY ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">What You Learned in 9 Days</div>
+  <div class="section-sub">The velocity is genuinely unusual. The gaps it created are real.</div>
+
+  <div class="space-y-2 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 1</div>
+      <div class="timeline-bar bg-indigo-900/60 border border-indigo-800 text-indigo-300" style="width:35%">Particle sim → Verlet physics</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 1–2</div>
+      <div class="timeline-bar bg-amber-900/60 border border-amber-800 text-amber-300" style="width:55%">Manual transmission + engine model + clutch</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 2–3</div>
+      <div class="timeline-bar bg-green-900/60 border border-green-800 text-green-300" style="width:70%">Pacejka tire model + weight transfer + SAT steering</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 3</div>
+      <div class="timeline-bar bg-blue-900/60 border border-blue-800 text-blue-300" style="width:50%">WebGPU pipeline + WGSL shaders</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 4–5</div>
+      <div class="timeline-bar bg-purple-900/60 border border-purple-800 text-purple-300" style="width:65%">Persistent skid marks + instanced particles + GPU sparks</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 5–7</div>
+      <div class="timeline-bar bg-pink-900/60 border border-pink-800 text-pink-300" style="width:60%">Web Audio API + pulse synthesis + exhaust convolver</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-gray-500 font-mono w-20 text-right shrink-0">Day 8–9</div>
+      <div class="timeline-bar bg-teal-900/60 border border-teal-800 text-teal-300" style="width:75%">Full codebase refactor → 13 modules + documentation</div>
+    </div>
+  </div>
+
+  <div class="bg-amber-950/20 border border-amber-900/40 rounded-xl p-4">
+    <p class="text-amber-200 text-sm font-semibold mb-1">What this velocity actually means</p>
+    <p class="text-gray-400 text-sm">This pace is only possible because you let curiosity lead. When you didn't understand how tires work, you read until you did. That's a <strong class="text-amber-400">learner's superpower</strong> — and it's not common. The flip side: you accumulated technical debt faster than a more methodical developer would. Both things are true simultaneously.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ HONEST BREAKDOWN ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">The Unfiltered Breakdown</div>
+  <div class="section-sub">What you're actually good at vs what's missing. Both matter.</div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-3">Genuine Strengths</div>
+      <div class="space-y-2">
+        <div class="honest-row good"><strong>Physical intuition.</strong> You didn't copy-paste a Pacejka curve — you read about it, understood it, and then implemented it. That's rare at any experience level.</div>
+        <div class="honest-row good"><strong>Deep focus.</strong> 9 days, no framework, no shortcuts. You stayed in the problem until it worked.</div>
+        <div class="honest-row good"><strong>Domain-driven learning.</strong> You learned WebGPU, the Web Audio API, tire physics, and Git — all as byproducts of wanting the simulator to be good. This is exactly how experts learn.</div>
+        <div class="honest-row good"><strong>Calibration instinct.</strong> When the drift "felt wrong," you investigated the physics. Not everyone has that feedback loop. It's what makes simulation developers good at their craft.</div>
+        <div class="honest-row good"><strong>Self-awareness.</strong> You asked for brutal honesty unprompted. Most people at this stage don't want to hear it.</div>
+      </div>
+    </div>
+    <div>
+      <div class="text-red-400 text-xs font-bold uppercase tracking-wider mb-3">Real Gaps</div>
+      <div class="space-y-2">
+        <div class="honest-row bad"><strong>Zero tests.</strong> You have no automated safety net. A one-line change can break the physics feel and you'll only know by driving it.</div>
+        <div class="honest-row bad"><strong>Organic architecture.</strong> You needed external input to see the god-file problem. A more experienced developer feels that pain earlier and acts before it's 2465 lines.</div>
+        <div class="honest-row bad"><strong>No type safety.</strong> In a system with dozens of numeric units (meters, m/s, radians, Newtons), you're relying entirely on memory to not mix them up.</div>
+        <div class="honest-row bad"><strong>AI-assisted architecture.</strong> The refactoring structure came largely from collaboration with AI tools. That's fine for learning — but know the difference between understanding something and having it done for you.</div>
+        <div class="honest-row bad"><strong>No CS fundamentals.</strong> Data structures, algorithms, time complexity — these haven't come up yet because a physics sim doesn't demand them. They will.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ CAREER FIT ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">Where Do You Fit in the Field?</div>
+  <div class="section-sub">Honest positioning across different roles.</div>
+
+  <div class="space-y-3 mb-6">
+    <!-- Each row: role | fit | what's missing -->
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-800 bg-gray-900/50">
+      <div class="w-40 shrink-0">
+        <div class="text-sm font-semibold text-gray-200">Simulation / Games Dev</div>
+        <span class="pill pro mt-1">High Potential</span>
+      </div>
+      <div class="text-gray-400 text-xs leading-relaxed">This is the closest match to what you're already doing. Physics intuition + rendering interest + audio integration. The missing pieces (testing, build tools) are mechanical to learn. <strong class="text-green-400">This path makes sense.</strong></div>
+    </div>
+
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-800 bg-gray-900/50">
+      <div class="w-40 shrink-0">
+        <div class="text-sm font-semibold text-gray-200">Graphics Programmer</div>
+        <span class="pill neu mt-1">Interesting Path</span>
+      </div>
+      <div class="text-gray-400 text-xs leading-relaxed">You hit WebGPU in week one. That's either bold or lucky — either way you have instincts here. Would require deeper math (linear algebra, matrix transforms, lighting models) and more rigorous C++/WGSL knowledge.</div>
+    </div>
+
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-800 bg-gray-900/50">
+      <div class="w-40 shrink-0">
+        <div class="text-sm font-semibold text-gray-200">Frontend Web Dev</div>
+        <span class="pill neu mt-1">Possible</span>
+      </div>
+      <div class="text-gray-400 text-xs leading-relaxed">You know JS and CSS, but "vanilla simulator" is far from "React component library" or "accessible form handling." The patterns, frameworks, and professional context are largely separate. Reachable, but it's a different world.</div>
+    </div>
+
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-800 bg-gray-900/50">
+      <div class="w-40 shrink-0">
+        <div class="text-sm font-semibold text-gray-200">Software Engineer (professional)</div>
+        <span class="pill con mt-1">Not Yet</span>
+      </div>
+      <div class="text-gray-400 text-xs leading-relaxed">Missing: testing culture, code review experience, collaborative git workflow, CS fundamentals, typed languages, build pipelines, system design. None of these are impossible — they just require deliberate study, not just building things.</div>
+    </div>
+
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-800 bg-gray-900/50">
+      <div class="w-40 shrink-0">
+        <div class="text-sm font-semibold text-gray-200">Indie Dev / Hobbyist</div>
+        <span class="pill pro mt-1">Already There</span>
+      </div>
+      <div class="text-gray-400 text-xs leading-relaxed">VerletDrift is a real project that genuinely works and genuinely feels good to drive. As an indie developer who builds interesting things and learns constantly — you're already doing it. This isn't a consolation prize. Some of the most respected technical work happens outside of professional contexts.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ THE DREYFUS MODEL ═══════════════════════ -->
+<div class="card p-6">
+  <div class="section-title">Where on the Expertise Scale?</div>
+  <div class="section-sub">The Dreyfus model: 5 stages of skill acquisition.</div>
+
+  <div class="relative mb-6">
+    <!-- Progress bar -->
+    <div class="h-3 bg-gray-800 rounded-full overflow-hidden mb-4">
+      <div class="h-full rounded-full bg-gradient-to-r from-gray-600 via-amber-500 to-transparent" style="width:28%"></div>
+    </div>
+    <!-- Stage markers -->
+    <div class="grid grid-cols-5 gap-1 text-center">
+      <div class="p-3 rounded-lg border border-gray-700 bg-gray-800/50">
+        <div class="text-xs font-bold text-gray-500 mb-1">Novice</div>
+        <div class="text-xs text-gray-600">Follows rules, no context</div>
+      </div>
+      <div class="p-3 rounded-lg border border-amber-700/60 bg-amber-950/30 relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-amber-400 text-xs font-bold">▼ You</div>
+        <div class="text-xs font-bold text-amber-400 mb-1">Adv. Beginner</div>
+        <div class="text-xs text-gray-400">Recognizes patterns, needs context</div>
+      </div>
+      <div class="p-3 rounded-lg border border-gray-700 bg-gray-800/30">
+        <div class="text-xs font-bold text-gray-500 mb-1">Competent</div>
+        <div class="text-xs text-gray-600">Plans, chooses approaches</div>
+      </div>
+      <div class="p-3 rounded-lg border border-gray-700 bg-gray-800/30">
+        <div class="text-xs font-bold text-gray-500 mb-1">Proficient</div>
+        <div class="text-xs text-gray-600">Sees the whole picture</div>
+      </div>
+      <div class="p-3 rounded-lg border border-gray-700 bg-gray-800/30">
+        <div class="text-xs font-bold text-gray-500 mb-1">Expert</div>
+        <div class="text-xs text-gray-600">Intuitive, transcends rules</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="honest-row warn">
+    <strong class="text-amber-400">Advanced Beginner</strong> is not a put-down — it's accurate. You're past "following tutorials" and into "building real things." But you still need external scaffolding (AI assistance, guides, refactoring help) to handle complexity. The next stage — Competent — arrives when you start seeing architectural problems yourself, before they become god-files.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ THE VERDICT ═══════════════════════ -->
+<div class="card p-7 verdict-card border-amber-800/40">
+  <div class="section-title">The Verdict</div>
+
+  <div class="space-y-4 text-sm text-gray-300 leading-relaxed">
+    <p>
+      <strong class="text-white">You are not a programmer.</strong> Not in the professional sense. A professional programmer brings testing, architecture discipline, type safety, tooling, and a collaborative workflow — and you have none of those yet.
+    </p>
+    <p>
+      <strong class="text-white">You are also not a beginner.</strong> A beginner doesn't implement Pacejka tire physics, port a rendering pipeline to WebGPU, and build physics-informed pulse synthesis in 9 days. You have domain instincts that most beginners never develop.
+    </p>
+    <p>
+      <strong class="text-amber-400">What you are is a domain-driven learner with strong intuition and weak craft.</strong> The intuition is the part that's hard to teach. The craft is mechanical — it's learnable with intention and practice.
+    </p>
+    <p>
+      The Dunning-Krueger peak is real for you. You built something impressive and it works and it feels good — and that's exactly when it's hardest to notice the gaps. The gaps are real and they matter. But the velocity you've shown means that once you decide to close each gap, you probably close it fast.
+    </p>
+    <p>
+      <strong class="text-white">The most honest summary:</strong> You have the hardest ingredient already — genuine curiosity and the ability to stay in a problem until you understand it. The rest is just time and deliberate practice.
+    </p>
+  </div>
+
+  <div class="mt-6 pt-5 border-t border-gray-800 grid grid-cols-3 gap-4 text-center">
+    <div>
+      <div class="text-2xl font-bold text-amber-400">9</div>
+      <div class="text-xs text-gray-500">Days of active work</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-green-400">~350KB</div>
+      <div class="text-xs text-gray-500">Real, working code</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-blue-400">0</div>
+      <div class="text-xs text-gray-500">Regressions after refactor</div>
+    </div>
+  </div>
+  <div class="mt-4 text-center text-xs text-gray-600 font-mono">VerletDrift · Honest assessment compiled March 2026</div>
+</div>
+
+<!-- spacer -->
+<div class="h-8"></div>
+</div>
+</body>
+</html>

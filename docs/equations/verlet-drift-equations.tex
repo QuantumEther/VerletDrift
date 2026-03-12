@@ -1,0 +1,170 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+
+\usepackage[utf-8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage[numbers]{natbib}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% ============================================================================
+% CONFIGURATION
+% ============================================================================
+
+% Color scheme
+\definecolor{codeblue}{rgb}{0.1, 0.2, 0.6}
+\definecolor{codecomment}{rgb}{0.4, 0.4, 0.4}
+\definecolor{codestring}{rgb}{0.6, 0.1, 0.1}
+
+% Code listing style
+\lstset{
+  language=JavaScript,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  frameround=tttt,
+  rulecolor=\color{gray},
+  captionpos=b,
+  belowcaptionskip=8pt
+}
+
+% Hyperref configuration
+\hypersetup{
+  colorlinks=true,
+  linkcolor=codeblue,
+  urlcolor=codeblue,
+  citecolor=codeblue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhead[L]{VerletDrift: Mathematical Equations}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{Generated from VerletDrift Physics Simulator}
+
+% ============================================================================
+% CUSTOM COMMANDS & MACROS
+% ============================================================================
+
+% Math operators
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\clamp}{clamp}
+\DeclareMathOperator{\clampz}{clamp_{01}}
+
+% Vector notation
+\newcommand{\vv}[1]{\mathbf{#1}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+
+% Time derivatives
+\newcommand{\dd}[1]{\mathrm{d}#1}
+\newcommand{\ddot}[2]{\frac{\dd^2 #1}{\dd #2^2}}
+\newcommand{\dot}[2]{\frac{\dd #1}{\dd #2}}
+
+% Physics notation
+\newcommand{\unit}[1]{\,\mathrm{#1}}
+
+% Code reference
+\newcommand{\coderef}[2]{\texttt{#1:line~#2}}
+
+% ============================================================================
+% TITLE & METADATA
+% ============================================================================
+
+\title{%
+  VerletDrift: Mathematical Equations Reference \\
+  \large Comprehensive Documentation of Physics, Rendering, and Dynamics
+}
+
+\author{%
+  VerletDrift Physics Simulator \\
+  Mathematical Foundations Extracted from Source Code
+}
+
+\date{Generated: \today}
+
+% ============================================================================
+% DOCUMENT BEGINS
+% ============================================================================
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% INTRODUCTION
+% ============================================================================
+
+\input{0-introduction.tex}
+
+% ============================================================================
+% MAIN SECTIONS
+% ============================================================================
+
+\input{1-verlet-integration.tex}
+\input{2-weight-transfer.tex}
+\input{3-engine-drivetrain.tex}
+\input{4-tire-pacejka.tex}
+\input{5-tire-relaxation-grip.tex}
+\input{6-steering-sat.tex}
+\input{7-drag-resistance.tex}
+\input{8-camera-rendering.tex}
+\input{9-scoring-dynamics.tex}
+
+% ============================================================================
+% APPENDICES
+% ============================================================================
+
+\appendix
+\input{a-appendix-constants.tex}
+
+% ============================================================================
+% DIAGRAMS
+% ============================================================================
+
+\newpage
+\section{Technical Diagrams}
+
+This section contains comprehensive TikZ diagrams illustrating key physics concepts.
+
+\input{diagrams.tex}
+
+% ============================================================================
+% BIBLIOGRAPHY
+% ============================================================================
+
+\newpage
+\section*{References}
+\bibliographystyle{plainnat}
+\bibliography{bibliography}
+
+% ============================================================================
+% DOCUMENT ENDS
+% ============================================================================
+
+\end{document}

@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift — Engineering Field Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: { 'vd-bg': '#0c1018', 'vd-card': '#111827', 'vd-border': '#1f2937' } } }
+}
+</script>
+<style>
+  body { font-family: 'Segoe UI', system-ui, sans-serif; }
+  code { font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0c1018; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+  .nav-item { border-left: 3px solid transparent; transition: all 0.15s; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); border-left-color: #374151; }
+  .nav-item.active { background: rgba(245,158,11,0.12); border-left-color: #f59e0b; color: #fbbf24; }
+
+  .timeline-node { cursor: pointer; }
+  .timeline-node .node-header:hover { background: rgba(245,158,11,0.06); }
+
+  .hljs { background: #0d1117 !important; border-radius: 8px; font-size: 13px; }
+  pre { margin: 0 !important; }
+  code.inline { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; color: #fbbf24; }
+
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; font-family: monospace; }
+
+  .module-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .module-box { padding: 10px 16px; border-radius: 8px; border: 1px solid; font-family: monospace; font-size: 13px; font-weight: 600; }
+  .arrow { color: #4b5563; font-size: 20px; padding: 0 8px; }
+
+  .bad-good { position: relative; }
+  .bad-good .label-bad { position: absolute; top: 8px; right: 12px; background: #7f1d1d; color: #fca5a5; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .bad-good .label-good { position: absolute; top: 8px; right: 12px; background: #14532d; color: #86efac; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+  .toggle-btn { cursor: pointer; transition: all 0.2s; user-select: none; }
+  .toggle-btn:hover { opacity: 0.85; }
+
+  .warning-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); margin-bottom: 8px; }
+
+  .step-card { border-left: 3px solid #f59e0b; padding: 14px 18px; background: #111827; border-radius: 0 8px 8px 0; margin-bottom: 12px; }
+
+  @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); } 50% { box-shadow: 0 0 12px 2px rgba(245,158,11,0.3); } }
+  .glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+  details > summary { cursor: pointer; list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] > summary .chevron { transform: rotate(90deg); }
+  .chevron { display: inline-block; transition: transform 0.2s; }
+</style>
+</head>
+<body class="bg-[#0c1018] text-gray-200 min-h-screen flex">
+
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════════ -->
+<aside class="w-60 min-h-screen bg-[#0d1117] border-r border-gray-800 fixed left-0 top-0 flex flex-col z-10 overflow-y-auto">
+  <div class="p-5 border-b border-gray-800">
+    <div class="text-amber-400 font-bold text-base tracking-wide">VerletDrift</div>
+    <div class="text-gray-500 text-xs mt-0.5">Engineering Field Guide</div>
+  </div>
+  <nav class="p-3 flex flex-col gap-0.5 flex-1">
+    <button class="nav-item active w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5" data-target="timeline">
+      <span class="text-base">📋</span><span>Session Timeline</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="git">
+      <span class="text-base">🔧</span><span>Git Hygiene</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="architecture">
+      <span class="text-base">🏗️</span><span>Architecture</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="testing">
+      <span class="text-base">🧪</span><span>Testing</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="vite">
+      <span class="text-base">⚡</span><span>Build Tools</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="typescript">
+      <span class="text-base">📘</span><span>TypeScript</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="state">
+      <span class="text-base">🗃️</span><span>State Management</span>
+    </button>
+    <button class="nav-item w-full text-left px-3 py-2.5 rounded-r text-sm flex items-center gap-2.5 text-gray-400" data-target="roadmap">
+      <span class="text-base">🎯</span><span>Learning Order</span>
+    </button>
+  </nav>
+  <!-- Stats -->
+  <div class="p-4 m-3 rounded-xl bg-gray-900 border border-gray-800">
+    <div class="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wider">This Refactor</div>
+    <div class="space-y-1.5">
+      <div class="flex justify-between text-xs"><span class="text-gray-400">Lines deleted</span><span class="text-red-400 font-mono font-bold">−4,115</span></div>
+      <div class="flex justify-between text-xs"><span class="text-gray-400">Modules created</span><span class="text-green-400 font-mono font-bold">+13</span></div>
+      <div class="flex justify-between text-xs"><span class="text-gray-400">Commits</span><span class="text-amber-400 font-mono font-bold">10</span></div>
+      <div class="flex justify-between text-xs"><span class="text-gray-400">Errors introduced</span><span class="text-blue-400 font-mono font-bold">0</span></div>
+      <div class="flex justify-between text-xs"><span class="text-gray-400">Project age at refactor</span><span class="text-purple-400 font-mono font-bold">9 days</span></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════════ -->
+<main class="ml-60 flex-1 min-h-screen">
+<div class="max-w-3xl mx-auto p-8">
+
+
+<!-- ══════════════ TIMELINE ══════════════ -->
+<section id="timeline" class="section">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Session Timeline</h1>
+  <p class="text-gray-500 text-sm mb-6">10 commits · <span class="text-red-400 font-mono">physics.js 1650L</span> + <span class="text-red-400 font-mono">renderer.js 2465L</span> → <span class="text-green-400 font-mono">13 focused modules</span></p>
+
+  <!-- Summary bar -->
+  <div class="bg-[#111827] border border-gray-800 rounded-xl p-5 mb-8">
+    <div class="grid grid-cols-2 gap-8">
+      <div>
+        <div class="text-xs text-red-400 font-mono font-bold mb-2">BEFORE — 2 god-files</div>
+        <div class="space-y-1.5">
+          <div class="h-8 bg-red-950/60 border border-red-900 rounded-lg flex items-center justify-between px-3 font-mono text-xs text-red-300">
+            <span>physics.js</span><span class="text-red-500">1,650 lines</span>
+          </div>
+          <div class="h-8 bg-red-950/60 border border-red-900 rounded-lg flex items-center justify-between px-3 font-mono text-xs text-red-300">
+            <span>renderer.js</span><span class="text-red-500">2,465 lines</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-green-400 font-mono font-bold mb-2">AFTER — 13 submodules</div>
+        <div class="grid grid-cols-4 gap-1 mb-1">
+          <div class="h-8 bg-amber-950/40 border border-amber-900/50 rounded flex items-center justify-center font-mono text-xs text-amber-400">tires</div>
+          <div class="h-8 bg-amber-950/40 border border-amber-900/50 rounded flex items-center justify-center font-mono text-xs text-amber-400">engine</div>
+          <div class="h-8 bg-amber-950/40 border border-amber-900/50 rounded flex items-center justify-center font-mono text-xs text-amber-400">camera</div>
+          <div class="h-8 bg-amber-950/40 border border-amber-900/50 rounded flex items-center justify-center font-mono text-xs text-amber-400">+5</div>
+        </div>
+        <div class="grid grid-cols-4 gap-1">
+          <div class="h-8 bg-blue-950/40 border border-blue-900/50 rounded flex items-center justify-center font-mono text-xs text-blue-400">world</div>
+          <div class="h-8 bg-blue-950/40 border border-blue-900/50 rounded flex items-center justify-center font-mono text-xs text-blue-400">hud</div>
+          <div class="h-8 bg-blue-950/40 border border-blue-900/50 rounded flex items-center justify-center font-mono text-xs text-blue-400">gauges</div>
+          <div class="h-8 bg-blue-950/40 border border-blue-900/50 rounded flex items-center justify-center font-mono text-xs text-blue-400">+2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="relative pl-10">
+    <div class="absolute left-[15px] top-2 bottom-2 w-px bg-gray-800"></div>
+
+    <!-- macro: timeline entry -->
+    <!-- P1 -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-amber-900 border-2 border-amber-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-amber-900/50 border border-amber-700/50 text-amber-400">P1</span>
+            <span class="text-gray-300 text-sm font-medium">Named slice exports</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">state.js  +5 lines · zero runtime change</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-red-300 text-xs font-semibold mb-1">PROBLEM</p>
+        <p class="text-gray-400 mb-3">Every module imported the same <code class="inline">state</code> object with no declared ownership. <code class="inline">renderer.js</code> could silently mutate physics data and nothing would warn you.</p>
+        <p class="text-green-300 text-xs font-semibold mb-1">FIX</p>
+        <p class="text-gray-400">Added <code class="inline">physicsState</code>, <code class="inline">renderState</code>, <code class="inline">audioState</code> — all aliases to the same flat object, but each module now imports its own named slice. Intent is documented in code.</p>
+      </div>
+    </div>
+
+    <!-- P2-a -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-green-900 border-2 border-green-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-green-900/50 border border-green-700/50 text-green-400">P2-a</span>
+            <span class="text-gray-300 text-sm font-medium">kinematics.js + integrator.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">physics.js −120L · first module cuts</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">Extracted <code class="inline">wrapAngle</code>, <code class="inline">initializeCarBody</code>, <code class="inline">computeBodyDerivedState</code> into <code class="inline">kinematics.js</code>; Verlet step into <code class="inline">integrator.js</code>. Also switched <code class="inline">main.js</code> to import from the new barrel index — the first sign physics.js would die.</p>
+      </div>
+    </div>
+
+    <!-- P2-b -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-green-900 border-2 border-green-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-green-900/50 border border-green-700/50 text-green-400">P2-b</span>
+            <span class="text-gray-300 text-sm font-medium">constraints.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">physics.js −230L · the riskiest cut</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400 mb-2">Jakobsen constraint solver, anti-tunneling displacement clamp, boundary collision. The most invariant-sensitive move — one wrong coefficient and the car shakes itself apart. Three specific values had to survive verbatim:</p>
+        <pre><code class="language-js">correctionScale = (currentDist - restDist) / currentDist * 0.5  // exact
+cd = clamp(params.constraintDamping, 0.05, 1.0)                 // 0.05 floor
+particleA.prevX += corrAX * cd                                  // velocity damp</code></pre>
+      </div>
+    </div>
+
+    <!-- P2-c -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-green-900 border-2 border-green-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-green-900/50 border border-green-700/50 text-green-400">P2-c</span>
+            <span class="text-gray-300 text-sm font-medium">tires.js + weight.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">physics.js −600L · the heart of the sim</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">The 500-line Pacejka tire model — the reason the drifting feels real — now lives in its own file. This is the code that computes lateral and longitudinal grip from slip angle and load. Weight transfer and drag alongside it. These are the files most worth reading when you want to understand the physics.</p>
+      </div>
+    </div>
+
+    <!-- P2-d -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-green-900 border-2 border-green-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-green-900/50 border border-green-700/50 text-green-400">P2-d</span>
+            <span class="text-gray-300 text-sm font-medium">engine.js + steering.js + camera.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">physics.js −460L · drivetrain trilogy</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">Three mechanical systems extracted: clutch engagement model with rev-match blipping (<code class="inline">engine.js</code>), SAT-driven steering column with semi-implicit Euler integration (<code class="inline">steering.js</code>), Verlet spring-damper camera with ω₀/ζ parameterization (<code class="inline">camera.js</code>).</p>
+      </div>
+    </div>
+
+    <!-- P2-e -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-red-900/30 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-red-900 border-2 border-red-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-red-900/50 border border-red-700/50 text-red-400">P2-e</span>
+            <span class="text-gray-300 text-sm font-medium">Delete physics.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">−1,650 lines · god-file #1 gone</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">Verified no remaining imports, deleted the file, reloaded browser — zero errors. The pattern: incremental extraction until the original file contains nothing real, then delete it. 8 focused modules in <code class="inline">js/physics/</code> remain.</p>
+      </div>
+    </div>
+
+    <!-- P2b-a -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-blue-900 border-2 border-blue-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-blue-900/50 border border-blue-700/50 text-blue-400">P2b-a</span>
+            <span class="text-gray-300 text-sm font-medium">world.js + sparks.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">renderer.js −730L · world drawing extracted</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">All world-space drawing (car, skids, balloons, map boundary) into <code class="inline">world.js</code>. HDR spark particle system with display-p3 color gamut and O(1) free-list pool into <code class="inline">sparks.js</code>. Pre-built Path2D wheel geometry cache moved inline.</p>
+      </div>
+    </div>
+
+    <!-- P2b-b -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-blue-900 border-2 border-blue-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-blue-900/50 border border-blue-700/50 text-blue-400">P2b-b</span>
+            <span class="text-gray-300 text-sm font-medium">hud.js + gauges.js + debug.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">renderer.js −1,490L · HUD layer complete</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">Screen-space HUD (bars, gear indicator, steering wheel) into <code class="inline">hud.js</code>. Gauge canvases (analog tach/speedo, friction circle, drift radar, slip meter, wheel slip) with WeakMap gradient cache into <code class="inline">gauges.js</code>. Debug overlays with SAT visualization into <code class="inline">debug.js</code>.</p>
+      </div>
+    </div>
+
+    <!-- P2b-c -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-red-900/30 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-red-900 border-2 border-red-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-red-900/50 border border-red-700/50 text-red-400">P2b-c</span>
+            <span class="text-gray-300 text-sm font-medium">Delete renderer.js</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">−2,465 lines · god-file #2 gone</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400">Same pattern as P2-e. Verify no remaining imports, delete, reload, confirm zero errors. 5 focused modules in <code class="inline">js/renderer/</code> remain.</p>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="timeline-node mb-3" onclick="toggleNode(this)">
+      <div class="node-header flex items-start gap-4 p-3 rounded-xl border border-gray-800 bg-[#111827] transition-colors relative">
+        <div class="absolute -left-[29px] w-5 h-5 rounded-full bg-purple-900 border-2 border-purple-600 top-4"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill bg-purple-900/50 border border-purple-700/50 text-purple-400">P3</span>
+            <span class="text-gray-300 text-sm font-medium">Document snapshot interpolation</span>
+          </div>
+          <div class="font-mono text-xs text-gray-500">main.js +17 lines · architecture documented</div>
+        </div>
+        <span class="chevron text-gray-600 text-xs mt-1">▶</span>
+      </div>
+      <div class="node-details hidden mt-1 mb-2 p-4 bg-[#0d1117] rounded-xl border border-gray-800 text-sm">
+        <p class="text-gray-400 mb-2">Added a JSDoc block above <code class="inline">makeBodySnapshot()</code> explaining how 100Hz physics + 240Hz rendering work together via lerped snapshots, and documenting a known limitation: individual wheel corner positions aren't interpolated (undetectable at 100Hz, but worth noting for the future).</p>
+        <p class="text-gray-500 text-xs italic">Good code documents the "why" and "what is intentionally not done" — not just the "what".</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════ GIT ══════════════ -->
+<section id="git" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Git Hygiene</h1>
+  <p class="text-gray-500 text-sm mb-8">Version control is communication — to your future self, teammates, and the history of every decision you made.</p>
+
+  <!-- Constructive criticism callout -->
+  <div class="bg-red-950/30 border border-red-900/50 rounded-xl p-4 mb-8 flex gap-3">
+    <span class="text-2xl mt-0.5">⚠️</span>
+    <div>
+      <div class="text-red-400 font-semibold text-sm mb-1">From your actual git log — Day 1 commits</div>
+      <div class="font-mono text-xs text-gray-400 space-y-0.5">
+        <div>2026-03-01 15:28  <span class="text-gray-200">Add Verlet Driving Simulator UI &amp; assets</span></div>
+        <div>2026-03-01 15:38  <span class="text-red-500 font-bold">dsad</span></div>
+        <div>2026-03-01 21:29  <span class="text-gray-200">v15 Stabilization: Debug Diagnostics, Baseline Tuning, &amp; Unit Fixes</span></div>
+        <div>2026-03-01 21:42  <span class="text-red-500 font-bold">asd</span></div>
+      </div>
+      <p class="text-gray-400 text-xs mt-2">"dsad" and "asd" mean you were so deep in the zone you had to save immediately — that's actually a great sign. But six months from now you won't know what those commits fixed.</p>
+    </div>
+  </div>
+
+  <!-- Conventional Commits -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">The Format: Conventional Commits</h2>
+  <pre class="mb-6"><code class="language-bash">type(optional-scope): short description under 72 chars
+
+Optional longer explanation of WHY — not what the code does
+(the diff shows what; the message explains why).</code></pre>
+
+  <div class="grid grid-cols-2 gap-3 mb-8">
+    <div class="bg-[#111827] border border-gray-800 rounded-xl p-4">
+      <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Types</div>
+      <div class="space-y-2">
+        <div class="flex gap-3 items-start"><span class="pill bg-green-900/50 border border-green-800 text-green-400 shrink-0">feat</span><span class="text-gray-400 text-xs">new capability added</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-red-900/50 border border-red-800 text-red-400 shrink-0">fix</span><span class="text-gray-400 text-xs">bug repaired</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-blue-900/50 border border-blue-800 text-blue-400 shrink-0">refactor</span><span class="text-gray-400 text-xs">restructure, no behavior change</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-yellow-900/50 border border-yellow-800 text-yellow-400 shrink-0">perf</span><span class="text-gray-400 text-xs">faster or lighter</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-purple-900/50 border border-purple-800 text-purple-400 shrink-0">docs</span><span class="text-gray-400 text-xs">comments, README, JSDoc</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-gray-800 border border-gray-700 text-gray-400 shrink-0">chore</span><span class="text-gray-400 text-xs">tooling, config, dependencies</span></div>
+        <div class="flex gap-3 items-start"><span class="pill bg-cyan-900/50 border border-cyan-800 text-cyan-400 shrink-0">test</span><span class="text-gray-400 text-xs">adding or fixing tests</span></div>
+      </div>
+    </div>
+    <div class="bg-[#111827] border border-gray-800 rounded-xl p-4">
+      <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Real examples from VerletDrift</div>
+      <div class="space-y-1.5 font-mono text-xs">
+        <div class="text-green-400">feat: add Pacejka lateral tire model</div>
+        <div class="text-green-400">feat: port checkerboard to WebGPU</div>
+        <div class="text-blue-400">refactor: split physics.js into submodules</div>
+        <div class="text-blue-400">refactor: extract HUD into renderer/hud.js</div>
+        <div class="text-yellow-400">perf: replace Canvas 2D with WebGPU pipeline</div>
+        <div class="text-red-400">fix: prevent NaN at zero velocity</div>
+        <div class="text-purple-400">docs: document snapshot interpolation limit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After toggle -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Bad vs Good — Toggle Comparison</h2>
+  <div class="before-after mb-8">
+    <div class="before bad-good relative">
+      <span class="label-bad">❌ BAD</span>
+      <pre><code class="language-bash">dsad
+asd
+v15 Stabilization: Debug Diagnostics, Baseline Tuning, & Unit Fixes
+Add things
+WIP</code></pre>
+    </div>
+    <div class="after bad-good relative hidden">
+      <span class="label-good">✅ GOOD</span>
+      <pre><code class="language-bash">feat: add Verlet rigid body with 4-point distance constraints
+fix: prevent accumulator runaway when tab loses focus
+refactor: stabilize constraint solver — fix 0.05 damping floor
+perf: replace drawCheckerboard with WebGPU background pipeline
+docs: document known wheel-position interpolation limitation</code></pre>
+    </div>
+    <button class="toggle-btn mt-3 px-4 py-2 bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg text-amber-400 text-sm font-semibold">Show good example →</button>
+  </div>
+
+  <!-- Branching -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Branching Strategy</h2>
+  <pre class="mb-4"><code class="language-bash">main              # always works — never break this
+  │
+  ├── feat/multiplayer        # experimental feature
+  ├── feat/weather-system     # another feature, in parallel
+  └── fix/audio-glitch        # isolated bug fix
+
+# When feature is done:
+git checkout main
+git merge feat/multiplayer
+git branch -d feat/multiplayer   # clean up</code></pre>
+  <div class="bg-red-950/20 border border-red-900/40 rounded-xl p-4 mb-8">
+    <div class="text-red-400 text-sm font-semibold mb-1">❌ Anti-pattern you used: <code class="font-mono">verlet_v16_wheels_anchor_v2</code></div>
+    <p class="text-gray-400 text-sm">Version numbers in branch names are a smell. Branches are for parallel work, not snapshots. Use <strong>git tags</strong> for version snapshots:</p>
+    <pre class="mt-2"><code class="language-bash">git tag v16           # lightweight snapshot
+git tag -a v16 -m "Stable WebGPU renderer, 200fps"   # annotated
+git push origin v16   # share it</code></pre>
+  </div>
+
+  <!-- When to commit -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">When to Commit</h2>
+  <div class="space-y-2 mb-4">
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">Smallest independently reversible unit of work</span></div>
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">"This works but is messy" — commit it, clean up in the next commit</span></div>
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">Before you start a risky change — so you have a rollback point</span></div>
+    <div class="step-card"><span class="text-red-400">✗</span> <span class="text-gray-300">"Added tire model AND rewrote renderer AND fixed audio" — that's 3 commits</span></div>
+    <div class="step-card"><span class="text-red-400">✗</span> <span class="text-gray-300">Broken code committed to main — main should always run</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ ARCHITECTURE ══════════════ -->
+<section id="architecture" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Architecture</h1>
+  <p class="text-gray-500 text-sm mb-8">Design the structure before you write the code. Every module has one job.</p>
+
+  <!-- The One-Job Rule -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">The One-Job Rule</h2>
+  <p class="text-gray-400 text-sm mb-4">Every module should be describable in one sentence — without the word <em>"and"</em> or <em>"also"</em>.</p>
+  <div class="grid grid-cols-1 gap-2 mb-8">
+    <div class="bg-red-950/20 border border-red-900/40 rounded-lg p-3 font-mono text-xs"><span class="text-red-400">❌ physics.js</span> — <span class="text-gray-500">"handles physics, tire forces, engine, steering, camera, sleep, and sound triggers"</span></div>
+    <div class="bg-green-950/20 border border-green-900/40 rounded-lg p-3 font-mono text-xs"><span class="text-green-400">✅ tires.js</span> — <span class="text-gray-300">"computes Pacejka tire forces from wheel slip angle and normal load"</span></div>
+    <div class="bg-green-950/20 border border-green-900/40 rounded-lg p-3 font-mono text-xs"><span class="text-green-400">✅ camera.js</span> — <span class="text-gray-300">"tracks car position with a spring-damper and adjusts zoom by speed"</span></div>
+    <div class="bg-green-950/20 border border-green-900/40 rounded-lg p-3 font-mono text-xs"><span class="text-green-400">✅ hud.js</span> — <span class="text-gray-300">"draws screen-space HUD elements: bars, gear indicator, steering wheel"</span></div>
+  </div>
+
+  <!-- Module boundary diagram -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Module Boundaries — Data Flow</h2>
+  <div class="bg-[#111827] border border-gray-800 rounded-xl p-6 mb-4">
+    <!-- Row 1: main flow -->
+    <div class="flex items-center gap-2 flex-wrap mb-4">
+      <div class="module-box border-pink-600 bg-pink-950/30 text-pink-300">input.js</div>
+      <div class="arrow">→</div>
+      <div class="module-box border-amber-600 bg-amber-950/30 text-amber-300">physics/</div>
+      <div class="arrow">→</div>
+      <div class="module-box border-blue-600 bg-blue-950/30 text-blue-300">renderer/</div>
+      <div class="arrow"> </div>
+      <div class="module-box border-emerald-600 bg-emerald-950/30 text-emerald-300">audio</div>
+    </div>
+    <!-- Row 2: all read from state -->
+    <div class="flex items-center gap-2 mb-3">
+      <div class="flex-1 border-t border-dashed border-indigo-800"></div>
+    </div>
+    <div class="flex justify-center">
+      <div class="module-box border-indigo-600 bg-indigo-950/30 text-indigo-300 px-8">state.js — shared data bus</div>
+    </div>
+    <!-- Rules -->
+    <div class="grid grid-cols-2 gap-3 mt-5 text-xs">
+      <div class="bg-[#0d1117] rounded-lg p-3">
+        <div class="text-pink-400 font-semibold mb-1">input.js</div>
+        <div class="text-gray-400">WRITES <code class="inline text-xs">state.input.*</code><br>Reads hardware events only</div>
+      </div>
+      <div class="bg-[#0d1117] rounded-lg p-3">
+        <div class="text-amber-400 font-semibold mb-1">physics/</div>
+        <div class="text-gray-400">WRITES <code class="inline text-xs">state.body</code>, <code class="inline text-xs">state.wheels</code>, <code class="inline text-xs">state.engine</code><br>READS <code class="inline text-xs">state.input</code></div>
+      </div>
+      <div class="bg-[#0d1117] rounded-lg p-3">
+        <div class="text-blue-400 font-semibold mb-1">renderer/</div>
+        <div class="text-gray-400">READS state — <strong class="text-red-400">never writes physics</strong><br>Writes only <code class="inline text-xs">state.camera</code></div>
+      </div>
+      <div class="bg-[#0d1117] rounded-lg p-3">
+        <div class="text-emerald-400 font-semibold mb-1">audio</div>
+        <div class="text-gray-400">READS <code class="inline text-xs">state.engine</code>, <code class="inline text-xs">state.body</code><br>Writes nothing — pure output</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After toggle: god-file vs submodules -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3 mt-8">Before vs After — File Structure</h2>
+  <div class="before-after mb-8">
+    <div class="before bad-good relative">
+      <span class="label-bad">❌ BEFORE</span>
+      <pre><code class="language-bash">js/renderer.js   # 2,465 lines — everything in one file
+├── applyCameraTransform()    # world-space
+├── drawCheckerboard()        # background
+├── drawCar()                 # vehicle
+├── updateSparks()            # ← update logic in render file??
+├── drawAnalogGauge()         # ← gauge mixed with world drawing
+├── drawDriftRadar()
+├── drawDebugOverlays()
+└── ... 15 more functions</code></pre>
+    </div>
+    <div class="after bad-good relative hidden">
+      <span class="label-good">✅ AFTER</span>
+      <pre><code class="language-bash">js/renderer/
+├── index.js      25L  — barrel re-export only
+├── world.js     570L  — world-space drawing
+├── sparks.js    155L  — particle system (update + draw)
+├── hud.js       230L  — screen-space UI
+├── gauges.js    370L  — gauge canvases
+└── debug.js     195L  — debug overlays</code></pre>
+    </div>
+    <button class="toggle-btn mt-3 px-4 py-2 bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg text-amber-400 text-sm font-semibold">Show refactored structure →</button>
+  </div>
+
+  <!-- Warning signs -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Warning Signs — You Need to Split</h2>
+  <div class="space-y-2 mb-4">
+    <div class="warning-item"><span class="text-red-400 text-lg mt-0.5">⚠</span><div><span class="text-gray-200 text-sm font-semibold">File exceeds ~300 lines</span><p class="text-gray-400 text-xs mt-0.5">It's doing too many things. Find the natural seam and split.</p></div></div>
+    <div class="warning-item"><span class="text-red-400 text-lg mt-0.5">⚠</span><div><span class="text-gray-200 text-sm font-semibold">Function exceeds ~40 lines</span><p class="text-gray-400 text-xs mt-0.5">Extract named helpers. Each helper should be describable in its name alone.</p></div></div>
+    <div class="warning-item"><span class="text-red-400 text-lg mt-0.5">⚠</span><div><span class="text-gray-200 text-sm font-semibold">Comment says "and also..."</span><p class="text-gray-400 text-xs mt-0.5">Two responsibilities. One of them belongs somewhere else.</p></div></div>
+    <div class="warning-item"><span class="text-red-400 text-lg mt-0.5">⚠</span><div><span class="text-gray-200 text-sm font-semibold">You scroll to find where a variable is set</span><p class="text-gray-400 text-xs mt-0.5">State is too implicit. Move it closer to where it's used or document it explicitly.</p></div></div>
+    <div class="warning-item"><span class="text-red-400 text-lg mt-0.5">⚠</span><div><span class="text-gray-200 text-sm font-semibold">Changing A requires changing B and C</span><p class="text-gray-400 text-xs mt-0.5">Modules are too coupled. Introduce a clean interface between them.</p></div></div>
+  </div>
+
+  <!-- Plan before coding -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3 mt-8">Plan First — 5 Questions Before Writing Code</h2>
+  <div class="space-y-2">
+    <div class="step-card"><span class="text-amber-400 font-bold">1.</span> <span class="text-gray-300">What is this module's <em>one job</em>?</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">2.</span> <span class="text-gray-300">What does it need to <em>read</em>?</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">3.</span> <span class="text-gray-300">What does it need to <em>write</em>?</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">4.</span> <span class="text-gray-300">What calls it, and what does it call?</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">5.</span> <span class="text-gray-300">If you can't answer those clearly — you need to read/research more before writing.</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ TESTING ══════════════ -->
+<section id="testing" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Testing</h1>
+  <p class="text-gray-500 text-sm mb-8">In a physics sim, silent bugs are the most dangerous. A wrong coefficient just makes the car feel slightly off — no crash, no error.</p>
+
+  <!-- Pyramid -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-4">The Testing Pyramid</h2>
+  <div class="bg-[#111827] border border-gray-800 rounded-xl p-6 mb-8">
+    <div class="flex flex-col items-center gap-1">
+      <div class="bg-red-900/40 border border-red-800 rounded-lg px-8 py-3 text-center w-48">
+        <div class="text-red-300 font-semibold text-sm">E2E</div>
+        <div class="text-gray-500 text-xs">Full user scenarios<br><em>slow, few</em></div>
+      </div>
+      <div class="text-gray-700 text-xl">▲</div>
+      <div class="bg-yellow-900/30 border border-yellow-800 rounded-lg px-8 py-3 text-center w-64">
+        <div class="text-yellow-300 font-semibold text-sm">Integration</div>
+        <div class="text-gray-500 text-xs">Two modules working together<br><em>moderate</em></div>
+      </div>
+      <div class="text-gray-700 text-xl">▲</div>
+      <div class="bg-green-900/30 border border-green-800 rounded-lg px-8 py-3 text-center w-80">
+        <div class="text-green-300 font-semibold text-sm">Unit Tests</div>
+        <div class="text-gray-500 text-xs">Single pure functions, known inputs/outputs<br><em>fast, many — start here</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code examples -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Unit Tests for VerletDrift Functions</h2>
+  <pre class="mb-6"><code class="language-js">// vitest — tests for your actual physics functions
+import { describe, test, expect } from 'vitest';
+import { pacejkaLateral } from '../js/physics/tires.js';
+
+describe('Pacejka lateral force curve', () => {
+  test('peaks near 8° slip angle', () => {
+    const at8deg  = pacejkaLateral(0.14);   // ~8° in radians
+    const at2deg  = pacejkaLateral(0.035);  // low slip — building grip
+    const at30deg = pacejkaLateral(0.52);   // over-saturated — grip falls off
+    expect(at8deg).toBeGreaterThan(at2deg);
+    expect(at8deg).toBeGreaterThan(at30deg);
+  });
+
+  test('is symmetric — left/right produce same force magnitude', () => {
+    expect(pacejkaLateral(0.1)).toBeCloseTo(-pacejkaLateral(-0.1), 3);
+  });
+
+  test('returns zero at zero slip', () => {
+    expect(pacejkaLateral(0)).toBeCloseTo(0, 5);
+  });
+});
+
+describe('Physics sleep', () => {
+  test('car at rest with no input stays at rest', () => {
+    const state = makeTestState({ vx: 0, vy: 0, throttle: 0 });
+    for (let i = 0; i < 100; i++) runPhysicsStep(state, 0.01);
+    expect(state.body.velocityX).toBeCloseTo(0, 3);
+    expect(state.body.velocityY).toBeCloseTo(0, 3);
+  });
+});</code></pre>
+
+  <!-- Setup -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Vitest Setup — 3 Commands</h2>
+  <pre class="mb-8"><code class="language-bash">npm init -y                      # if no package.json yet
+npm install -D vitest            # install test runner
+# Add to package.json scripts:
+#   "test": "vitest",
+#   "test:run": "vitest run"
+npm test                         # watch mode — re-runs on save</code></pre>
+
+  <!-- What to test first -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">What to Test First in a Physics Sim</h2>
+  <div class="space-y-2">
+    <div class="step-card"><span class="text-amber-400 font-bold">1.</span> <span class="text-gray-300">Pure math functions — Pacejka curves, torque curves, weight transfer formulas (no state needed, easiest to test)</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">2.</span> <span class="text-gray-300">Edge cases — zero velocity, max throttle, boundary exactly at edge</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">3.</span> <span class="text-gray-300">Regression tests — "car should not slide when parked on flat ground"</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">4.</span> <span class="text-gray-300">Energy conservation — kinetic energy shouldn't increase without throttle input</span></div>
+    <div class="step-card"><span class="text-gray-500 font-bold">→</span> <span class="text-gray-400 text-sm italic">Don't try to test rendering or audio — focus on pure physics functions first</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ VITE ══════════════ -->
+<section id="vite" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Build Tools — Vite</h1>
+  <p class="text-gray-500 text-sm mb-8">Replace your custom serve.py and manual cache busting with a professional dev workflow in 30 minutes.</p>
+
+  <!-- Side by side -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Before vs After</h2>
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    <div class="bg-red-950/20 border border-red-900/40 rounded-xl p-4">
+      <div class="text-red-400 text-xs font-bold mb-3">❌ CURRENT SETUP</div>
+      <div class="space-y-2 text-xs font-mono">
+        <div class="text-gray-400"><span class="text-red-400">python3 serve.py</span><br><span class="text-gray-600"># custom server just for no-cache headers</span></div>
+        <div class="text-gray-400"><span class="text-red-400">import './ui.js?v=2'</span><br><span class="text-gray-600"># manually versioned in source code</span></div>
+        <div class="text-gray-400"><span class="text-red-400">Ctrl+Shift+R</span><br><span class="text-gray-600"># hard refresh required after every change</span></div>
+        <div class="text-gray-400"><span class="text-red-400">no bundle</span><br><span class="text-gray-600"># browser loads every file separately</span></div>
+      </div>
+    </div>
+    <div class="bg-green-950/20 border border-green-900/40 rounded-xl p-4">
+      <div class="text-green-400 text-xs font-bold mb-3">✅ WITH VITE</div>
+      <div class="space-y-2 text-xs font-mono">
+        <div class="text-gray-400"><span class="text-green-400">npm run dev</span><br><span class="text-gray-600"># instant hot module reload</span></div>
+        <div class="text-gray-400"><span class="text-green-400">import './ui.js'</span><br><span class="text-gray-600"># Vite handles cache busting automatically</span></div>
+        <div class="text-gray-400"><span class="text-green-400">save file → browser updates</span><br><span class="text-gray-600"># no manual refresh ever</span></div>
+        <div class="text-gray-400"><span class="text-green-400">npm run build</span><br><span class="text-gray-600"># optimized, tree-shaken bundle</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What you get -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">What You Get For Free</h2>
+  <div class="overflow-x-auto mb-8">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="border-b border-gray-800">
+          <th class="text-left py-2 pr-4 text-gray-400 font-semibold">Feature</th>
+          <th class="text-left py-2 pr-4 text-red-400 font-mono text-xs">Without Vite</th>
+          <th class="text-left py-2 text-green-400 font-mono text-xs">With Vite</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-400 text-xs">
+        <tr class="border-b border-gray-900"><td class="py-2 pr-4">Cache busting</td><td class="pr-4 text-red-400">Manual ?v=2 in source</td><td class="text-green-400">Automatic on every build</td></tr>
+        <tr class="border-b border-gray-900"><td class="py-2 pr-4">Hot reload</td><td class="pr-4 text-red-400">Hard refresh required</td><td class="text-green-400">Instant (&lt;50ms)</td></tr>
+        <tr class="border-b border-gray-900"><td class="py-2 pr-4">Dead code</td><td class="pr-4 text-red-400">All files ship</td><td class="text-green-400">Tree-shaken out</td></tr>
+        <tr class="border-b border-gray-900"><td class="py-2 pr-4">Production build</td><td class="pr-4 text-red-400">None</td><td class="text-green-400">npm run build → optimized</td></tr>
+        <tr class="border-b border-gray-900"><td class="py-2 pr-4">TypeScript</td><td class="pr-4 text-red-400">Not possible</td><td class="text-green-400">One config line to enable</td></tr>
+        <tr><td class="py-2 pr-4">Source maps</td><td class="pr-4 text-red-400">None</td><td class="text-green-400">Built-in, great devtools</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Migration steps -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Migration — 4 Steps</h2>
+  <pre class="mb-4"><code class="language-bash"># Step 1: Initialize
+npm init -y                              # creates package.json
+npm install -D vite                      # install Vite
+
+# Step 2: Add scripts to package.json
+# "scripts": { "dev": "vite", "build": "vite build" }
+
+# Step 3: Your index.html stays exactly the same
+# (Vite uses it as the entry point automatically)
+
+# Step 4: Start developing
+npm run dev                              # visit http://localhost:5173</code></pre>
+  <div class="bg-blue-950/20 border border-blue-900/40 rounded-xl p-4">
+    <div class="text-blue-400 text-xs font-bold mb-1">💡 Your existing code needs zero changes</div>
+    <p class="text-gray-400 text-sm">All your ES6 module imports stay identical. Remove the <code class="inline text-xs">?v=2</code> cache busting. Delete <code class="inline text-xs">serve.py</code>. Done.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════ TYPESCRIPT ══════════════ -->
+<section id="typescript" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">TypeScript</h1>
+  <p class="text-gray-500 text-sm mb-8">JavaScript with types. Catches entire categories of bugs at write time — before you run anything.</p>
+
+  <!-- What it is -->
+  <div class="bg-[#111827] border border-gray-800 rounded-xl p-4 mb-8 flex gap-3">
+    <span class="text-2xl">💡</span>
+    <div>
+      <p class="text-gray-300 text-sm">TypeScript compiles to plain JavaScript. Your browser never sees TypeScript — only the compiled JS. You add types gradually and it never stops being valid JS underneath.</p>
+    </div>
+  </div>
+
+  <!-- Units bug example -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Real Bug TypeScript Would Have Caught</h2>
+  <p class="text-gray-400 text-sm mb-3">In a physics sim, many values are all <code class="inline">number</code> but mean completely different things — meters, m/s, radians, Newtons. Without types, passing the wrong unit is invisible:</p>
+  <div class="before-after mb-8">
+    <div class="before bad-good relative">
+      <span class="label-bad">❌ JavaScript — silent bug</span>
+      <pre><code class="language-js">// applyDrag expects speed in m/s
+function applyDrag(car, speed) {
+  car.forceX -= speed * speed * 0.5 * DRAG_COEFF;
+}
+
+// Called with km/h — car drags 7.7x too hard
+// No error. No warning. Just wrong behavior.
+applyDrag(car, state.body.speedKPH);  // bug: should be speedMPS</code></pre>
+    </div>
+    <div class="after bad-good relative hidden">
+      <span class="label-good">✅ TypeScript — caught immediately</span>
+      <pre><code class="language-typescript">type Meters = number;
+type MetersPerSecond = number;
+type KilometersPerHour = number;
+type Newtons = number;
+type Radians = number;
+
+function applyDrag(car: CarBody, speedMPS: MetersPerSecond): void {
+  car.forceX -= speedMPS * speedMPS * 0.5 * DRAG_COEFF;
+}
+
+// TypeScript error at write time — before you even run it:
+// Argument of type 'KilometersPerHour' is not assignable
+// to parameter of type 'MetersPerSecond'
+applyDrag(car, state.body.speedKPH);</code></pre>
+    </div>
+    <button class="toggle-btn mt-3 px-4 py-2 bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg text-amber-400 text-sm font-semibold">Show TypeScript version →</button>
+  </div>
+
+  <!-- State object typed -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Your State Object — Typed</h2>
+  <pre class="mb-8"><code class="language-typescript">// Type aliases for physics units (same as number, but documented)
+type Meters = number;
+type MetersPerSecond = number;
+type RadiansPerSecond = number;
+type Radians = number;
+type Newtons = number;
+
+interface CarBody {
+  centerX: Meters;
+  centerY: Meters;
+  heading: Radians;
+  velocityX: MetersPerSecond;
+  velocityY: MetersPerSecond;
+  angularVelocity: RadiansPerSecond;
+}
+
+interface WheelState {
+  x: Meters;
+  y: Meters;
+  slipRatio: number;           // dimensionless, [-1, 1]
+  lateralForce: Newtons;
+  frictionUtilization: number; // dimensionless, [0, 1]
+}
+
+// Now if you rename `heading` to `angle`:
+// TypeScript instantly shows every file that breaks.
+// No more searching with Ctrl+F.</code></pre>
+
+  <!-- Gradual adoption -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Gradual Adoption — No Big Rewrite</h2>
+  <div class="space-y-2">
+    <div class="step-card"><span class="text-amber-400 font-bold">1.</span> <code class="inline text-xs">npm install -D typescript</code> + add <code class="inline text-xs">tsconfig.json</code></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">2.</span> <span class="text-gray-300">Rename one file: <code class="inline text-xs">tires.js</code> → <code class="inline text-xs">tires.ts</code></span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">3.</span> <span class="text-gray-300">Add types only to function signatures first — ignore internals</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">4.</span> <span class="text-gray-300">Fix errors one at a time — each one is a real bug or ambiguity</span></div>
+    <div class="step-card"><span class="text-amber-400 font-bold">5.</span> <span class="text-gray-300">Repeat for other files at your own pace — JS and TS can coexist</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ STATE ══════════════ -->
+<section id="state" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">State Management</h1>
+  <p class="text-gray-500 text-sm mb-8">A global mutable object that everything touches is a bug that's impossible to trace.</p>
+
+  <!-- The problem -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">The Problem — Everyone Mutates Everything</h2>
+  <pre class="mb-3"><code class="language-js">// state is one flat object — any module can change anything
+import state from './state.js';
+
+// input.js writes this — fine
+state.input.throttle = 1.0;
+
+// physics.js writes this — fine
+state.body.centerX += vx * dt;
+
+// renderer.js writing this — wait, the renderer changes physics??
+state.camera.zoom = 1.5;  // ok this is camera, but...
+state.body.velocityX = 0; // ...could accidentally do this too</code></pre>
+  <p class="text-gray-400 text-sm mb-8">When <code class="inline">camera.x</code> is wrong, you don't know if physics set it, the renderer set it, or a UI handler set it. Debugging becomes archaeology.</p>
+
+  <!-- What was done -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Step 1 — Named Slice Exports (What We Did)</h2>
+  <pre class="mb-4"><code class="language-js">// state.js — same flat object, but named exports declare intent
+const state = { /* ... all the fields ... */ };
+
+export default state;
+export const physicsState  = state;  // "physics owns this"
+export const renderState   = state;  // "renderer reads this"
+export const audioState    = state;  // "audio reads this"
+export const uiState       = state;  // "ui controls these params"</code></pre>
+  <pre class="mb-8"><code class="language-js">// physics/tires.js — imports its own slice
+import { physicsState as state } from '../state.js';
+// Now it's obvious at a glance what this module "should" touch.
+// (It's still the same object — but the name documents the intent.)</code></pre>
+
+  <!-- Next step -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">Step 2 — Encapsulation (Next Level)</h2>
+  <div class="before-after mb-8">
+    <div class="before bad-good relative">
+      <span class="label-bad">Current — direct mutation</span>
+      <pre><code class="language-js">// Any file anywhere can do this
+import state from './state.js';
+state.body.velocityX += impulseX;
+state.body.velocityY += impulseY;</code></pre>
+    </div>
+    <div class="after bad-good relative hidden">
+      <span class="label-good">Next level — controlled interface</span>
+      <pre><code class="language-js">// physics/body.js — only this module mutates body
+let _body = { centerX: 0, centerY: 0, velocityX: 0, ... };
+
+// Only physics can change velocity
+export function applyImpulse(fx, fy, dt) {
+  _body.velocityX += fx * dt;
+  _body.velocityY += fy * dt;
+}
+
+// Everyone else gets a read-only copy
+export function getBody() {
+  return { ..._body };  // spread = copy, not reference
+}</code></pre>
+    </div>
+    <button class="toggle-btn mt-3 px-4 py-2 bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg text-amber-400 text-sm font-semibold">Show encapsulated version →</button>
+  </div>
+
+  <!-- Golden rules -->
+  <h2 class="text-lg font-semibold text-gray-100 mb-3">The Golden Rules</h2>
+  <div class="space-y-2">
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">Physics owns <code class="inline text-xs">body</code>, <code class="inline text-xs">wheels</code>, <code class="inline text-xs">engine</code> — only physics writes them</span></div>
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">Renderer reads state — it <strong>never modifies physics data</strong></span></div>
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">Audio reads state — it writes nothing at all</span></div>
+    <div class="step-card"><span class="text-green-400">✓</span> <span class="text-gray-300">If you need to track something in the renderer, it gets its own renderer state — not physics state</span></div>
+    <div class="step-card"><span class="text-red-400">✗</span> <span class="text-gray-300">Never pass the whole <code class="inline text-xs">state</code> object to a function — pass only what it needs</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ ROADMAP ══════════════ -->
+<section id="roadmap" class="section hidden">
+  <h1 class="text-2xl font-bold text-amber-400 mb-1">Learning Order</h1>
+  <p class="text-gray-500 text-sm mb-8">Start today with habits that cost nothing. Add tooling incrementally. Don't try to adopt everything at once.</p>
+
+  <div class="space-y-4 mb-10">
+    <div class="bg-[#111827] border-l-4 border-amber-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-amber-900/60 border border-amber-600 flex items-center justify-center text-amber-400 font-bold text-sm">1</span>
+          <span class="text-gray-100 font-semibold">Git commit messages</span>
+        </div>
+        <span class="pill bg-green-900/40 border border-green-800 text-green-400">Start today</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">Zero setup. Write <code class="inline text-xs">feat: add X</code> instead of "stuff". Takes 10 extra seconds per commit and pays off forever.</p>
+    </div>
+
+    <div class="bg-[#111827] border-l-4 border-amber-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-amber-900/60 border border-amber-600 flex items-center justify-center text-amber-400 font-bold text-sm">2</span>
+          <span class="text-gray-100 font-semibold">Vite</span>
+        </div>
+        <span class="pill bg-amber-900/40 border border-amber-800 text-amber-400">~30 minutes</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">Immediate quality-of-life improvement. Delete <code class="inline text-xs">serve.py</code>, remove <code class="inline text-xs">?v=2</code> from imports. Never hard-refresh again.</p>
+    </div>
+
+    <div class="bg-[#111827] border-l-4 border-orange-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-orange-900/60 border border-orange-600 flex items-center justify-center text-orange-400 font-bold text-sm">3</span>
+          <span class="text-gray-100 font-semibold">Architecture planning</span>
+        </div>
+        <span class="pill bg-amber-900/40 border border-amber-800 text-amber-400">Before next feature</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">Before writing any new feature, spend 5 minutes writing its one-sentence job, what it reads, what it writes. If you can't answer those — research first.</p>
+    </div>
+
+    <div class="bg-[#111827] border-l-4 border-orange-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-orange-900/60 border border-orange-600 flex items-center justify-center text-orange-400 font-bold text-sm">4</span>
+          <span class="text-gray-100 font-semibold">Testing (Vitest)</span>
+        </div>
+        <span class="pill bg-orange-900/40 border border-orange-800 text-orange-400">Next week</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">Install Vitest, write 3-5 tests for pure physics math functions (<code class="inline text-xs">pacejkaLateral</code>, torque curve, weight transfer). Add more as you build new features.</p>
+    </div>
+
+    <div class="bg-[#111827] border-l-4 border-red-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-red-900/60 border border-red-600 flex items-center justify-center text-red-400 font-bold text-sm">5</span>
+          <span class="text-gray-100 font-semibold">TypeScript</span>
+        </div>
+        <span class="pill bg-red-900/40 border border-red-800 text-red-400">Once testing is a habit</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">Start by typing your state interfaces (<code class="inline text-xs">CarBody</code>, <code class="inline text-xs">WheelState</code>). Rename one file at a time. Never a big rewrite.</p>
+    </div>
+
+    <div class="bg-[#111827] border-l-4 border-purple-500 rounded-r-xl p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-purple-900/60 border border-purple-600 flex items-center justify-center text-purple-400 font-bold text-sm">6</span>
+          <span class="text-gray-100 font-semibold">State encapsulation</span>
+        </div>
+        <span class="pill bg-purple-900/40 border border-purple-800 text-purple-400">Ongoing / gradual</span>
+      </div>
+      <p class="text-gray-400 text-sm ml-11">As you add features, introduce controlled interfaces for each module's data. Don't refactor everything at once — apply the pattern to new code and gradually to old code.</p>
+    </div>
+  </div>
+
+  <!-- The honest summary -->
+  <div class="bg-[#111827] border border-amber-800/50 rounded-xl p-6 glow">
+    <div class="text-amber-400 font-bold text-base mb-3">Honest Assessment</div>
+    <p class="text-gray-300 text-sm mb-3">You're not a programmer yet in the professional sense. What you <em>are</em> is someone with strong physical intuition, genuine curiosity, and the ability to sustain deep focus — which are actually the <strong class="text-amber-400">harder</strong> things to teach.</p>
+    <p class="text-gray-300 text-sm mb-3">The software engineering craft — testing, tooling, architecture, version control discipline — is learnable and largely mechanical once you decide to learn it.</p>
+    <p class="text-gray-400 text-sm">The gap isn't talent. It's deliberate practice on the parts that aren't as immediately rewarding as watching a car drift correctly.</p>
+    <div class="border-t border-gray-800 mt-4 pt-4 text-xs text-gray-500 font-mono">VerletDrift v1 · 9 days · 4,115 lines refactored · 0 physics regressions</div>
+  </div>
+</section>
+
+
+</div>
+</main>
+
+<script>
+// ── Navigation ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.target === id);
+    n.classList.toggle('text-gray-400', n.dataset.target !== id);
+  });
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => showSection(btn.dataset.target));
+});
+
+// ── Timeline expand/collapse ──
+function toggleNode(node) {
+  const details = node.querySelector('.node-details');
+  const chevron = node.querySelector('.chevron');
+  const isHidden = details.classList.contains('hidden');
+  details.classList.toggle('hidden', !isHidden);
+  chevron.style.transform = isHidden ? 'rotate(90deg)' : '';
+}
+
+// ── Before/After toggles ──
+document.querySelectorAll('.before-after').forEach(container => {
+  const before = container.querySelector('.before');
+  const after = container.querySelector('.after');
+  const btn = container.querySelector('.toggle-btn');
+  if (!btn) return;
+  let showingBefore = true;
+  btn.addEventListener('click', () => {
+    showingBefore = !showingBefore;
+    before.classList.toggle('hidden', !showingBefore);
+    after.classList.toggle('hidden', showingBefore);
+    btn.textContent = showingBefore ? btn.textContent.replace('← Back', '').trim() : '← Back to before';
+    if (showingBefore) {
+      // restore original text
+      const orig = btn.dataset.orig;
+      if (orig) btn.textContent = orig;
+    } else {
+      if (!btn.dataset.orig) btn.dataset.orig = btn.textContent;
+      btn.textContent = '← Show before';
+    }
+    // Re-highlight new code blocks
+    container.querySelectorAll('pre code').forEach(el => {
+      delete el.dataset.highlighted;
+      hljs.highlightElement(el);
+    });
+  });
+});
+
+// ── Syntax highlighting ──
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.highlightAll();
+});
+</script>
+</body>
+</html>

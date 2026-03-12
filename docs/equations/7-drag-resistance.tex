@@ -1,0 +1,59 @@
+\section{Drag Forces \& Resistance}
+
+This section documents rolling resistance and aerodynamic drag, the primary dissipative forces acting on the vehicle.
+
+\subsection{Rolling Resistance}
+
+\begin{equation}
+  F_{\text{roll}} = \mu_{\text{roll}} \cdot N = \mu_{\text{roll}} \cdot m \cdot g
+  \label{eq:rolling-resistance}
+\end{equation}
+
+\textbf{Physical Meaning}: Rolling resistance is proportional to the normal force (weight). It represents energy loss from tire deformation and friction with the road surface.
+
+\textbf{Source Code}: \coderef{physics.js}{931--949}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\mu_{\text{roll}} = 0.015$: Rolling resistance coefficient (typical asphalt)
+  \item $N = m \cdot g$: Normal force (vehicle weight)
+\end{itemize}
+
+\subsection{Aerodynamic Drag}
+
+\begin{equation}
+  F_{\text{aero}} = C_d \cdot v^2
+  \label{eq:aerodynamic-drag}
+\end{equation}
+
+\textbf{Physical Meaning}: Aerodynamic drag grows quadratically with speed. This simplified model omits air density, frontal area, and the dimensionless drag coefficient, instead using a single empirical constant.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $C_d = 0.3$ (m/s)$^{-1}$: Drag coefficient (empirically tuned for arcade feel)
+  \item Full formula: $F_d = \frac{1}{2} \rho A C_{d,\text{dim}} v^2$ where $\rho$ is air density, $A$ is frontal area
+\end{itemize}
+
+\textbf{Notes}: The simplified form $C_d \cdot v^2$ combines $\frac{1}{2}\rho A C_{d,\text{dim}}$ into a single constant for computational efficiency.
+
+\subsection{Total Drag Force}
+
+\begin{equation}
+  F_{\text{drag}} = -(F_{\text{roll}} + F_{\text{aero}}) \cdot \frac{\vv{v}}{|\vv{v}|}
+  \label{eq:total-drag}
+\end{equation}
+
+\textbf{Physical Meaning}: The combined rolling resistance and aerodynamic drag oppose the velocity direction. The force is applied proportional to velocity normalized to unit magnitude.
+
+\textbf{Source Code}: \coderef{physics.js}{931--949}
+
+\begin{lstlisting}[caption={Drag force calculation}]
+const totalSpeed = Math.hypot(velocityX, velocityY);
+if (totalSpeed > 0.001) {  // avoid zero division
+  const dragMagnitude = rollingResistance + aerodynamicDrag;
+  dragForceX = -dragMagnitude * (velocityX / totalSpeed);
+  dragForceY = -dragMagnitude * (velocityY / totalSpeed);
+}
+\end{lstlisting}
+
+\newpage

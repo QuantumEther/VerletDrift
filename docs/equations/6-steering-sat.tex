@@ -1,0 +1,84 @@
+\section{Steering Column \& Self-Aligning Torque}
+
+This section covers steering column dynamics driven by self-aligning torque (SAT) from the tires, and the semi-implicit integration technique used for numerical stability.
+
+\subsection{Pneumatic Trail}
+
+\begin{equation}
+  t(\alpha) = t_0 \cdot e^{-|\alpha| / \alpha_0}
+  \label{eq:pneumatic-trail}
+\end{equation}
+
+\textbf{Physical Meaning}: The pneumatic trail (distance from the tire's contact patch to the center of pressure) decreases as slip angle increases. This exponential model matches empirical tire data.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $t_0 = 0.035$ m: Trail at zero slip angle
+  \item $\alpha_0 = \pi/12 \approx 0.262$ rad (15°): Decay rate
+\end{itemize}
+
+\subsection{Self-Aligning Torque (SAT)}
+
+\begin{equation}
+  \text{SAT} = F_{\text{lat,FL}} \cdot t(\alpha_{\text{FL}}) + F_{\text{lat,FR}} \cdot t(\alpha_{\text{FR}})
+  \label{eq:sat-raw}
+\end{equation}
+
+\begin{equation}
+  \text{SAT}_{\text{filtered}} = \text{SAT}_{\text{prev}} + (\text{SAT}_{\text{clamped}} - \text{SAT}_{\text{prev}}) \cdot (1 - e^{-dt/0.1})
+  \label{eq:sat-filtered}
+\end{equation}
+
+\textbf{Physical Meaning}: Self-aligning torque is the product of front wheel lateral forces and their respective pneumatic trails. It represents the tire's tendency to align itself with the velocity direction, creating natural steering feedback.
+
+\textbf{Source Code}: \coderef{physics.js}{800--850}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item SAT is clamped to $[-25, 25]$ N·m to prevent transients
+  \item Filtered via EMA with $\tau = 0.1$ s to smooth high-frequency oscillations
+  \item Front wheels only (rear wheels produce negligible SAT at low slip)
+\end{itemize}
+
+\subsection{Steering Column Dynamics (Semi-Implicit Euler)}
+
+\begin{equation}
+  \tau_{\text{net}} = -\text{SAT}_{\text{filtered}} + \tau_{\text{spring}} + \tau_{\text{damping}}
+  \label{eq:steering-torque}
+\end{equation}
+
+\begin{equation}
+  \omega_{\text{new}} = \frac{\omega_{\text{old}} + (\tau_{\text{net}} / I) \cdot dt}{1 + (c_{\text{visc}} / I) \cdot dt}
+  \label{eq:semi-implicit-steering}
+\end{equation}
+
+\begin{equation}
+  \theta_{\text{new}} = \theta_{\text{old}} + \omega_{\text{new}} \cdot dt
+  \label{eq:steering-angle-update}
+\end{equation}
+
+\textbf{Physical Meaning}: The steering column is modeled as a rotational rigid body with inertia $I$. The semi-implicit (symplectic) Euler scheme is used for stability: viscous damping is applied implicitly to prevent overshooting when SAT is large.
+
+\textbf{Source Code}: \coderef{physics.js}{1187--1297}
+
+\begin{lstlisting}[caption={Semi-implicit steering integration}]
+// Explicit forces + damping applied implicitly
+const omeganew = (omegaOld + (netForce / I) * dt) / (1 + (visc * dt / I));
+thetaNew = thetaOld + omegaNew * dt;
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $I$: Steering column moment of inertia (tunable)
+  \item $c_{\text{visc}}$: Viscous damping coefficient (tunable)
+  \item $\tau_{\text{spring}}$: Spring return torque (speed-dependent, low-speed fallback)
+\end{itemize}
+
+\textbf{Notes}: v14 fixed critical steering bugs from v9:
+\begin{itemize}
+  \item Jerk computation was incorrect (100× too large)
+  \item SAT sign convention was reversed
+  \item Semi-implicit integration prevents oscillation under large transients
+\end{itemize}
+
+\newpage
