@@ -21,6 +21,7 @@ import {
   DEFAULT_MAP_HEIGHT,
 } from './constants.js';
 import { getSparkPool, getSmokePool, MAX_SMOKE } from './renderer/index.js';
+import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
 
 
 // =============================================================
@@ -69,12 +70,14 @@ let accumPipeline  = null;   // skid mark accumulation → skidTex
 let compPipeline   = null;   // skid texture composite → swap chain
 let smokeComputePipeline = null;  // smoke particle advection (GPU compute)
 let smokeRenderPipeline = null;   // smoke billboard rendering
+let gaugePipeline  = null;        // gauge needle rendering (speedometer, RPM, lateral G)
 
 // Uniform buffers (UNIFORM | COPY_DST)
 let bgUniBuf    = null;   // BgUniforms  (64 bytes)
 let camUniBuf   = null;   // CameraUniforms (16 bytes) — shared by arrows + particles
 let accumUniBuf = null;   // AccumUniforms (16 bytes)
 let compUniBuf  = null;   // CompositeUniforms (16 bytes)
+let gaugeUniBuf = null;   // GaugeUniforms (16 bytes) — motion blur decay rate
 
 // Instance buffers (VERTEX | COPY_DST)
 let arrowInstBuf = null;
@@ -82,6 +85,7 @@ let sparkInstBuf = null;
 let splatInstBuf = null;
 let skidInstBuf  = null;
 let smokeInstBuf = null;
+let gaugeInstBuf = null;   // Gauge instance data (12 × f32 per gauge)
 
 // Skid accumulation texture (rgba8unorm, full-map coverage)
 let skidTex     = null;
@@ -96,18 +100,21 @@ let accumBindGroup = null;
 let compBindGroup  = null;
 let smokeComputeBindGroup = null;
 let smokeRenderBindGroup = null;
+let gaugeBindGroup = null;   // Gauge bind group (uniforms + instance data)
 
 // CPU-side staging arrays (reused every frame, no GC pressure)
 const BG_DATA    = new Float32Array(16);
 const CAM_DATA   = new Float32Array(4);
 const ACCUM_DATA = new Float32Array(4);
 const COMP_DATA  = new Float32Array(4);
+const GAUGE_UNI_DATA = new Float32Array(4);  // decayRate + 3 padding floats
 const arrowData  = new Float32Array(MAX_ARROWS * 9);
 const sparkData  = new Float32Array(MAX_SPARKS_GPU * 7);
 const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
 const smokeData  = new Float32Array(MAX_SMOKE_GPU * 11);  // pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha (11 floats)
 const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1
+const gaugeData  = new Float32Array(16 * 12); // 16 gauges × 12 floats per gauge
 
 // Smoke GPU buffers
 let smokeBuf = null;        // storage buffer (compute reads/writes)
@@ -206,7 +213,7 @@ function makeInstLayout7() {
 // =============================================================
 
 async function createAllPipelines() {
-  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL, smokeComputeWGSL, smokeRenderWGSL] = await Promise.all([
+  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL, smokeComputeWGSL, smokeRenderWGSL, gaugeWGSL] = await Promise.all([
     loadWGSL('background.wgsl'),
     loadWGSL('arrows.wgsl'),
     loadWGSL('particles.wgsl'),
@@ -214,6 +221,7 @@ async function createAllPipelines() {
     loadWGSL('skid-composite.wgsl'),
     loadWGSL('smoke-compute.wgsl'),
     loadWGSL('smoke.wgsl'),
+    loadWGSL('gauge-render.wgsl'),
   ]);
 
   const bgMod    = device.createShaderModule({ code: bgWGSL,    label: 'background' });
@@ -223,6 +231,7 @@ async function createAllPipelines() {
   const compMod  = device.createShaderModule({ code: compWGSL,  label: 'skid-comp' });
   const smokeComputeMod = device.createShaderModule({ code: smokeComputeWGSL, label: 'smoke-compute' });
   const smokeRenderMod = device.createShaderModule({ code: smokeRenderWGSL, label: 'smoke' });
+  const gaugeMod = device.createShaderModule({ code: gaugeWGSL, label: 'gauge' });
 
   // 1. Background — full-screen triangle-strip quad, no vertex buffer.
   bgPipeline = await device.createRenderPipelineAsync({
@@ -323,6 +332,41 @@ async function createAllPipelines() {
     },
     primitive: { topology: 'triangle-list' },
   });
+
+  // 8. Gauge render shader — analog gauge needles with motion blur.
+  // Vertex attributes: screenX, screenY, needleAngle, gaugeType, size, r, g, b, histAngle0-3 (12 floats per instance)
+  gaugePipeline = await device.createRenderPipelineAsync({
+    label:  'gauge-render',
+    layout: 'auto',
+    vertex: {
+      module:     gaugeMod,
+      entryPoint: 'vs_main',
+      buffers:    [{
+        arrayStride: 48,  // 12 floats × 4 bytes
+        stepMode: 'instance',
+        attributes: [
+          { shaderLocation: 1,  offset: 0,  format: 'float32' },   // screenX
+          { shaderLocation: 2,  offset: 4,  format: 'float32' },   // screenY
+          { shaderLocation: 3,  offset: 8,  format: 'float32' },   // needleAngle
+          { shaderLocation: 4,  offset: 12, format: 'uint32' },    // gaugeType
+          { shaderLocation: 5,  offset: 16, format: 'float32' },   // size
+          { shaderLocation: 6,  offset: 20, format: 'float32' },   // r
+          { shaderLocation: 7,  offset: 24, format: 'float32' },   // g
+          { shaderLocation: 8,  offset: 28, format: 'float32' },   // b
+          { shaderLocation: 9,  offset: 32, format: 'float32' },   // histAngle0
+          { shaderLocation: 10, offset: 36, format: 'float32' },   // histAngle1
+          { shaderLocation: 11, offset: 40, format: 'float32' },   // histAngle2
+          { shaderLocation: 12, offset: 44, format: 'float32' },   // histAngle3
+        ],
+      }],
+    },
+    fragment: {
+      module:     gaugeMod,
+      entryPoint: 'fs_main',
+      targets:    [{ format: gpuFmt, blend: PREMUL_BLEND }],
+    },
+    primitive: { topology: 'triangle-list' },
+  });
 }
 
 
@@ -353,6 +397,10 @@ function createBuffersAndBindGroups() {
 
   // Smoke compute uniforms: dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1 = 8 × f32 = 32 bytes
   smokeUniBuf = makeUniBuf(32);
+
+  // Gauge buffers
+  gaugeUniBuf = makeUniBuf(16);        // GaugeUniforms: decayRate + 3 padding floats
+  gaugeInstBuf = makeInstBuf(16 * 48);  // 16 gauges × 12 floats × 4 bytes = 768 bytes
 
   // Skid accumulation texture — full-map-coverage at 4096×3072.
   // rgba8unorm: same format as 'load' render attachment.
@@ -434,6 +482,23 @@ function createBuffersAndBindGroups() {
   // Store as tuple for easy access in render pass
   smokeRenderBindGroup = { bg0: smokeRenderBG0, bg1: smokeRenderBG1 };
 
+  // Gauge render bind groups: camera uniforms (group 0) + gauge uniforms (group 1)
+  const gaugeBG0 = device.createBindGroup({
+    label:   'gaugeBG0',
+    layout:  gaugePipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: camUniBuf } },
+    ],
+  });
+  const gaugeBG1 = device.createBindGroup({
+    label:   'gaugeBG1',
+    layout:  gaugePipeline.getBindGroupLayout(1),
+    entries: [
+      { binding: 0, resource: { buffer: gaugeUniBuf } },
+    ],
+  });
+  gaugeBindGroup = { bg0: gaugeBG0, bg1: gaugeBG1 };
+
   // Upload constant AccumUniforms (never changes at runtime).
   // zoom=1.0 so texture maps 1:1 to world space; ppm = texels per metre.
   ACCUM_DATA[0] = 1.0;                  // zoom (fixed)
@@ -488,6 +553,9 @@ export async function initGPU(canvas) {
   // Compile all shaders before marking ready (avoids first-frame stutter).
   await createAllPipelines();
   createBuffersAndBindGroups();
+
+  // Initialize gauge system (registers speedometer, RPM, lateral-G gauges)
+  initGaugeSystem();
 
   ready = true;
   console.log('[GPU] WebGPU initialised. Format:', gpuFmt);
@@ -750,6 +818,23 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   SMOKE_UNI_DATA[7] = 0.0;                  // _pad1
   if (smokeCount > 0) device.queue.writeBuffer(smokeUniBuf, 0, SMOKE_UNI_DATA);
 
+  // ---- Gauge instance data packing ----
+  // Update needle physics and pack all gauge instances
+  const gaugeCount = getGaugeCount();
+  if (gaugeCount > 0) {
+    const now = performance.now() * 0.001;  // current time in seconds
+    // Note: main.js should call updateGaugeNeedle() for each gauge before this function
+    // but we pack instance data here each frame
+    const gaugeInstData = getGaugeInstanceData();
+    const gaugeMotionBlurDecay = params.gaugeMotionBlurDecay || 3.0;
+    GAUGE_UNI_DATA[0] = gaugeMotionBlurDecay;  // exponential decay rate
+    GAUGE_UNI_DATA[1] = 0.0;  // padding
+    GAUGE_UNI_DATA[2] = 0.0;  // padding
+    GAUGE_UNI_DATA[3] = 0.0;  // padding
+    device.queue.writeBuffer(gaugeUniBuf, 0, GAUGE_UNI_DATA);
+    device.queue.writeBuffer(gaugeInstBuf, 0, gaugeInstData, 0, gaugeCount * 12);
+  }
+
   // ---- Encode + submit ----
   const enc = device.createCommandEncoder({ label: 'gpuFrame' });
 
@@ -821,7 +906,16 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.draw(6, smokeCount);  // 6 verts (unit quad) × smokeCount instances
   }
 
-  // 2e. Sparks.
+  // 2e. Analog gauges — speedometer, RPM, lateral-G with motion blur trails.
+  if (gaugeCount > 0) {
+    mainPass.setPipeline(gaugePipeline);
+    mainPass.setBindGroup(0, gaugeBindGroup.bg0);  // camera uniforms
+    mainPass.setBindGroup(1, gaugeBindGroup.bg1);  // gauge uniforms (decay rate)
+    mainPass.setVertexBuffer(0, gaugeInstBuf);
+    mainPass.draw(6, gaugeCount);  // 6 verts (unit quad) × gaugeCount instances
+  }
+
+  // 2g. Sparks.
   if (sparkCount > 0) {
     mainPass.setPipeline(partPipeline);
     mainPass.setBindGroup(0, partBindGroup);
@@ -829,7 +923,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.draw(6, sparkCount);
   }
 
-  // 2f. Splat particles.
+  // 2h. Splat particles.
   if (splatCount > 0) {
     mainPass.setPipeline(partPipeline);
     mainPass.setBindGroup(0, partBindGroup);

@@ -48,6 +48,7 @@ import {
 
 import { initInput } from './input.js';
 import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
+import { updateGaugeNeedle } from './renderer/gpu-gauges.js';
 
 import {
   initializeCarBody,
@@ -948,6 +949,11 @@ function drawGauges(dt) {
       : state.engine.rpm / TACHOMETER_MAX_RPM,
     dt
   );
+  // Update GPU gauge (if available)
+  if (isGPUReady()) {
+    const now = performance.now() * 0.001;
+    updateGaugeNeedle('rpm', rpmNormalized, now);
+  }
   drawAnalogGauge(rpmCtx, rpmCanvas.width, rpmCanvas.height, {
     value:           state.engine.rpm,
     min:             0,
@@ -966,6 +972,11 @@ function drawGauges(dt) {
   // Speedometer: 0–200 km/h.
   const speedKph        = state.body.speed / KPH_TO_MPS;
   const speedNormalized = speedNeedle.step(speedKph / SPEEDOMETER_MAX_KPH, dt);
+  // Update GPU gauge (if available)
+  if (isGPUReady()) {
+    const now = performance.now() * 0.001;
+    updateGaugeNeedle('speedometer', speedNormalized, now);
+  }
   drawAnalogGauge(speedCtx, speedCanvas.width, speedCanvas.height, {
     value:           speedKph,
     min:             0,
@@ -985,6 +996,11 @@ function drawGauges(dt) {
   const lateralG       = Math.min(Math.abs(state.body.lateralAccel) / 9.81, 3.0);
   const lateralGMax    = 1.5;
   const latGNormalized = latGNeedle.step(lateralG / lateralGMax, dt);
+  // Update GPU gauge (if available)
+  if (isGPUReady()) {
+    const now = performance.now() * 0.001;
+    updateGaugeNeedle('lateral-g', latGNormalized, now);
+  }
   drawAnalogGauge(latGCtx, latGCanvas.width, latGCanvas.height, {
     value:           lateralG,
     min:             0,
