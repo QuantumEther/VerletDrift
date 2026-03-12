@@ -1,7 +1,7 @@
 // =============================================================
 // HUD RENDERING — Screen-space UI elements
 // =============================================================
-// Steering wheel, throttle/brake/clutch/handbrake bars, gear indicator, score display.
+// Steering wheel, throttle/brake/clutch/handbrake bars, gear indicator, score display, logs toggle.
 // All functions use screen-space coordinates (pixels), no camera transform.
 // =============================================================
 
@@ -13,6 +13,9 @@ import {
 
 // Local utility
 const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+
+// Track logs toggle button region for click detection
+export const logsToggleButtonBounds = { x: 0, y: 0, width: 0, height: 0 };
 
 
 // =============================================================
@@ -332,6 +335,74 @@ export function drawScoreHud(ctx, canvasWidth, canvasHeight) {
 
     ctx.restore();
   }
+
+  ctx.restore();
+}
+
+
+// =============================================================
+// HUD — LOGS TOGGLE CHECKBOX
+// =============================================================
+
+// Draws a checkbox in the top-right corner to toggle logging on/off.
+// Updates logsToggleButtonBounds for click detection.
+export function drawLogsToggleCheckbox(ctx, canvasWidth, canvasHeight) {
+  const boxSize = 20;           // checkbox size in pixels
+  const marginRight = 20;       // from right edge
+  const marginTop = 20;         // from top edge
+  const labelMarginLeft = 8;    // space between checkbox and label
+  const labelPadding = 12;      // extra horizontal padding around the label
+
+  const checkboxX = canvasWidth - marginRight - boxSize;
+  const checkboxY = marginTop;
+
+  // Update button bounds for click detection
+  logsToggleButtonBounds.x = checkboxX - labelPadding;
+  logsToggleButtonBounds.y = checkboxY - 2;
+  logsToggleButtonBounds.width = boxSize + labelMarginLeft + 40 + labelPadding * 2;
+  logsToggleButtonBounds.height = boxSize + 4;
+
+  ctx.save();
+
+  // Draw background highlight on hover/enabled state
+  if (state.params.logsEnabled) {
+    ctx.fillStyle = 'rgba(46, 204, 113, 0.1)'; // subtle green tint when enabled
+  } else {
+    ctx.fillStyle = 'rgba(231, 76, 60, 0.1)';  // subtle red tint when disabled
+  }
+  ctx.fillRect(
+    logsToggleButtonBounds.x,
+    logsToggleButtonBounds.y,
+    logsToggleButtonBounds.width,
+    logsToggleButtonBounds.height
+  );
+
+  // Draw checkbox border
+  ctx.strokeStyle = state.params.logsEnabled ? '#2ecc71' : '#e74c3c';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(checkboxX, checkboxY, boxSize, boxSize);
+
+  // Draw checkmark if enabled
+  if (state.params.logsEnabled) {
+    ctx.strokeStyle = '#2ecc71';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Checkmark path
+    ctx.beginPath();
+    ctx.moveTo(checkboxX + 5, checkboxY + 10);
+    ctx.lineTo(checkboxX + 9, checkboxY + 14);
+    ctx.lineTo(checkboxX + 16, checkboxY + 7);
+    ctx.stroke();
+  }
+
+  // Draw label text
+  ctx.fillStyle = state.params.logsEnabled ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.5)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('LOGS', checkboxX + boxSize + labelMarginLeft, checkboxY + boxSize * 0.5);
 
   ctx.restore();
 }

@@ -296,6 +296,9 @@ export function initSliders() {
   bindCheckbox('showSparks',          'showSparks');
   bindCheckbox('showSkidMarks',       'showSkidMarks');
 
+  // ---- Logging Toggle ----
+  bindCheckbox('logsEnabled',         'logsEnabled');
+
   // ---- Debug Overlays ----
   bindCheckbox('debugShowTireForces',    'debugShowTireForces');
   bindCheckbox('debugShowSlipAngles',    'debugShowSlipAngles');
@@ -674,6 +677,9 @@ function initPresets() {
 // Called once per animation frame from main.js.
 // Reads from state.body and state.engine.
 export function updateInfoBar() {
+  // GATING: Early return if logs are disabled (zero overhead when disabled)
+  if (!state.params.logsEnabled) return;
+
   initInfoBarCellCache();
 
   const body   = state.body;
@@ -740,12 +746,18 @@ function setInfoCell(elementId, text) {
 //   [UI] buttonId clicked
 export function initChangeLogger() {
   document.addEventListener('input', (e) => {
+    // GATING: Skip log generation if logging is disabled
+    if (!state.params.logsEnabled) return;
+
     const el = e.target;
     if (el.type === 'range' || el.type === 'text' || el.type === 'number') {
       console.log(`[UI] ${el.id} = ${el.value}`);
     }
   });
   document.addEventListener('change', (e) => {
+    // GATING: Skip log generation if logging is disabled
+    if (!state.params.logsEnabled) return;
+
     const el = e.target;
     // Log select elements and checkboxes on change.
     if (el.tagName === 'SELECT' || el.type === 'checkbox') {
@@ -753,6 +765,9 @@ export function initChangeLogger() {
     }
   });
   document.addEventListener('click', (e) => {
+    // GATING: Skip log generation if logging is disabled
+    if (!state.params.logsEnabled) return;
+
     const el = e.target;
     if (el.tagName === 'BUTTON' && el.id) {
       console.log(`[UI] ${el.id} clicked`);

@@ -102,6 +102,8 @@ import {
   drawSparks,
   drawDebugOverlays,
   drawWheelSlipGauge,
+  drawLogsToggleCheckbox,
+  logsToggleButtonBounds,
 } from './renderer/index.js';
 
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
@@ -213,6 +215,22 @@ if (soundToggleButton) {
     }
   });
 }
+
+// Wire logs toggle checkbox — drawn on canvas, detect clicks within button bounds.
+simCanvas.addEventListener('click', (e) => {
+  const rect = simCanvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  // Check if click is within logs toggle button bounds
+  if (x >= logsToggleButtonBounds.x &&
+      x <= logsToggleButtonBounds.x + logsToggleButtonBounds.width &&
+      y >= logsToggleButtonBounds.y &&
+      y <= logsToggleButtonBounds.y + logsToggleButtonBounds.height) {
+    // Toggle logging state
+    state.params.logsEnabled = !state.params.logsEnabled;
+  }
+});
 
 // Bind canvas resolution slider (not part of state.params, manual handler).
 const canvasResolutionSlider = document.getElementById('canvasResolutionSlider');
@@ -892,6 +910,7 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   drawClutchBar(simCtx, canvasWidth, canvasHeight);
   drawGearIndicator(simCtx, canvasWidth, canvasHeight);
   drawScoreHud(simCtx, canvasWidth, canvasHeight);
+  drawLogsToggleCheckbox(simCtx, canvasWidth, canvasHeight);
 
   // Info bar text.
   updateInfoBar();

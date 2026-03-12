@@ -18,7 +18,7 @@ export { applyCameraTransform, removeCameraTransform, drawCheckerboard,
 export { updateSparks, getSparkPool, drawSparks }               from './sparks.js';
 export { drawSteeringWheelHud, drawThrottleBar, drawBrakeBar,
          drawHandbrakeBar, drawClutchBar, drawGearIndicator,
-         drawScoreHud }                                          from './hud.js';
+         drawScoreHud, drawLogsToggleCheckbox, logsToggleButtonBounds }  from './hud.js';
 export { drawAnalogGauge, drawYawStabilityGauge, drawFrictionCircle,
          drawSlipAngleMeter, drawDriftRadar, drawWheelSlipGauge } from './gauges.js';
 export { drawDebugOverlays }                                     from './debug.js';

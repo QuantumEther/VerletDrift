@@ -505,6 +505,9 @@ const state = {
     showSparks:            true,   // HDR sparks at low-grip wheels
     showSkidMarks:         true,   // grip-based tire marks
 
+    // --- Logging toggle ---
+    logsEnabled:           true,   // enable/disable all log generation
+
     // --- Spark tuning ---
     sparkIntensity:        1.0,    // multiplier on spark spawn rate (0.1–3.0)
     sparkSize:             1.0,    // multiplier on spark particle size (0.3–3.0)

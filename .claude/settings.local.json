@@ -60,7 +60,8 @@
       "Bash(grep -n \"import state\" /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
       "Bash(start \"\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\docs\\\\assessment.html\")",
       "Bash(python3:*)",
-      "Bash(wc -l js/renderer/*.js)"
+      "Bash(wc -l js/renderer/*.js)",
+      "Bash(curl -s http://localhost:8000/)"
     ]
   }
 }
