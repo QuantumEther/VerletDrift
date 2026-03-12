@@ -20,7 +20,7 @@ import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
 } from './constants.js';
-import { getSparkPool } from './renderer/index.js';
+import { getSparkPool, getSmokePool, MAX_SMOKE } from './renderer/index.js';
 
 
 // =============================================================
@@ -33,10 +33,11 @@ const SKID_TEX_W    = MAP_W * 16;           // 6144 texels (16 tx/m for uniform 
 const SKID_TEX_H    = MAP_H * 16;           // 4608 texels (16 tx/m for uniform scaling)
 const MAP_CX        = MAP_W / 2;            // 192 m — map-centre X
 const MAP_CY        = MAP_H / 2;            // 144 m — map-centre Y
-const MAX_ARROWS    = 600;
+const MAX_ARROWS     = 600;
 const MAX_SPARKS_GPU = 300;   // must match renderer.js MAX_SPARKS
-const MAX_SPLATS    = 600;
-const MAX_SKID_NEW  = 2048;   // max new skid segments uploaded per render frame
+const MAX_SPLATS     = 600;
+const MAX_SKID_NEW   = 2048;  // max new skid segments uploaded per render frame
+const MAX_SMOKE_GPU  = MAX_SMOKE; // 2000 — from smoke-system.js
 
 // Float RGB for spark palette (matches SPARK_COLORS_SDR in renderer.js).
 // Index matches spark.hdrIndex.
@@ -77,6 +78,7 @@ let arrowInstBuf = null;
 let sparkInstBuf = null;
 let splatInstBuf = null;
 let skidInstBuf  = null;
+let smokeInstBuf = null;
 
 // Skid accumulation texture (rgba8unorm, full-map coverage)
 let skidTex     = null;
@@ -99,6 +101,7 @@ const arrowData  = new Float32Array(MAX_ARROWS * 9);
 const sparkData  = new Float32Array(MAX_SPARKS_GPU * 7);
 const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
+const smokeData  = new Float32Array(MAX_SMOKE_GPU * 7);
 
 
 // =============================================================
@@ -301,6 +304,7 @@ function createBuffersAndBindGroups() {
   sparkInstBuf = makeInstBuf(MAX_SPARKS_GPU * 28);  // 7 × f32 per spark
   splatInstBuf = makeInstBuf(MAX_SPLATS    * 28);  // 7 × f32 per splat
   skidInstBuf  = makeInstBuf(MAX_SKID_NEW  * 36);  // 9 × f32 per segment
+  smokeInstBuf = makeInstBuf(MAX_SMOKE_GPU * 28);  // 7 × f32 per smoke particle
 
   // Skid accumulation texture — full-map-coverage at 4096×3072.
   // rgba8unorm: same format as 'load' render attachment.
@@ -586,6 +590,38 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     splatCount++;
   }
 
+  // ---- Smoke particle instances ----
+  // Smoke renders before sparks (underneath) so it appears as a behind-wheel cloud.
+  const smokePool2 = getSmokePool();
+  let smokeCount   = 0;
+  for (let i = 0; i < smokePool2.length; i++) {
+    const p = smokePool2[i];
+    if (!p.alive) continue;
+    if (smokeCount >= MAX_SMOKE_GPU) break;
+
+    const lifeFrac = p.life / p.maxLife;
+
+    // Fade out in the last 30% of life; fade in during first 10%.
+    let fade = 1.0;
+    if (lifeFrac < 0.10) fade = lifeFrac / 0.10;
+    else if (lifeFrac > 0.70) fade = (1.0 - lifeFrac) / 0.30;
+    const alpha = p.alpha * fade;
+    if (alpha < 0.005) continue;
+
+    // Smoke particles grow as they rise: 1× at birth, ~3× at end of life.
+    const size = p.size * (1.0 + lifeFrac * 2.0);
+
+    const base = smokeCount * 7;
+    smokeData[base + 0] = p.x - camera.x;
+    smokeData[base + 1] = p.y - camera.y;
+    smokeData[base + 2] = size;
+    smokeData[base + 3] = p.r;   // shader premultiplies alpha
+    smokeData[base + 4] = p.g;
+    smokeData[base + 5] = p.b;
+    smokeData[base + 6] = alpha;
+    smokeCount++;
+  }
+
   // ---- New skid segment instances ----
   // state.skidMarksNewThisFrame is populated by recordSkidMarks() in main.js.
   // We drain it here each render frame.
@@ -626,6 +662,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   device.queue.writeBuffer(camUniBuf,  0, CAM_DATA);
   device.queue.writeBuffer(compUniBuf, 0, COMP_DATA);
   if (arrowCount > 0) device.queue.writeBuffer(arrowInstBuf, 0, arrowData, 0, arrowCount * 9);
+  if (smokeCount > 0) device.queue.writeBuffer(smokeInstBuf, 0, smokeData, 0, smokeCount * 7);
   if (sparkCount > 0) device.queue.writeBuffer(sparkInstBuf, 0, sparkData, 0, sparkCount * 7);
   if (splatCount > 0) device.queue.writeBuffer(splatInstBuf, 0, splatData, 0, splatCount * 7);
   if (skidCount  > 0) device.queue.writeBuffer(skidInstBuf,  0, skidData,  0, skidCount  * 9);
@@ -681,7 +718,15 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.draw(9, arrowCount);  // 9 verts × arrowCount instances
   }
 
-  // 2d. Sparks.
+  // 2d. Tire smoke (rendered before sparks — smoke sits behind sharp sparks).
+  if (smokeCount > 0) {
+    mainPass.setPipeline(partPipeline);
+    mainPass.setBindGroup(0, partBindGroup);
+    mainPass.setVertexBuffer(0, smokeInstBuf);
+    mainPass.draw(6, smokeCount);
+  }
+
+  // 2e. Sparks.
   if (sparkCount > 0) {
     mainPass.setPipeline(partPipeline);
     mainPass.setBindGroup(0, partBindGroup);
@@ -689,7 +734,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.draw(6, sparkCount);
   }
 
-  // 2e. Splat particles.
+  // 2f. Splat particles.
   if (splatCount > 0) {
     mainPass.setPipeline(partPipeline);
     mainPass.setBindGroup(0, partBindGroup);

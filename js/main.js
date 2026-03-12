@@ -99,6 +99,7 @@ import {
   drawSplatDecals,
   drawKinematicArrows,
   updateSparks,
+  updateSmoke,
   drawSparks,
   drawDebugOverlays,
   drawWheelSlipGauge,
@@ -760,6 +761,11 @@ function runPhysicsStep(dt) {
   // 23. Update spark particles (spawn at low-grip wheels, age, cull).
   if (state.params.showSparks) {
     updateSparks(dt);
+  }
+
+  // 24. Update tire smoke (spawn at locked/overspinning wheels, advect, cull).
+  if (state.params.smokeEnabled) {
+    updateSmoke(dt);
   }
 }
 

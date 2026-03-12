@@ -514,6 +514,13 @@ const state = {
     sparkLifetime:         1.0,    // multiplier on spark duration (0.3–3.0)
     sparkGripThreshold:    0.3,    // grip level below which sparks appear (0.05–0.8)
 
+    // --- Smoke tuning ---
+    smokeEnabled:           true,   // enable/disable tire smoke effect
+    smokeSpawnRate:         50,     // particles/sec per active wheel (5–200)
+    smokeLockedThreshold:  -0.10,   // κ below which locked-wheel smoke triggers
+    smokeOverspinThreshold: 0.15,   // κ above which burnout smoke triggers
+    smokeMinSpeed:          3.0,    // m/s — suppress smoke at low speed
+
     // --- Splatter tuning ---
     splatViolence:         1.5,    // multiplier on splat particle count and speed (0.5–3.0)
     splatDecalPersistence: 0.7,    // how opaque ground decals are (0.1–1.0)
