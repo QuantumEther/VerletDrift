@@ -348,8 +348,7 @@ function createBuffersAndBindGroups() {
   smokeBuf = device.createBuffer({
     label:  'smokeBuf',
     size:   MAX_SMOKE_GPU * 44,
-    usage:  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-    mappedAtCreation: false,
+    usage:  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
 
   // Smoke compute uniforms: dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1 = 8 × f32 = 32 bytes
