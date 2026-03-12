@@ -371,6 +371,17 @@ export function initSliders() {
   bind('blurDecayRate',     'blurDecayRate',     parseFloat1, fmt3);
   bind('blurMaxOffset',     'blurMaxOffset',     parseFloat1, fmt1);
 
+  // ---- Tire Smoke Controls ----
+  bindCheckbox('smokeEnabled',         'smokeEnabled');
+  bind('smokeSpawnRate',     'smokeSpawnRate',     parseInt1,   fmtInt);
+  bind('smokeLifetimeMin',   'smokeLifetimeMin',   parseFloat1, fmt2);
+  bind('smokeLifetimeMax',   'smokeLifetimeMax',   parseFloat1, fmt2);
+  bind('smokeSizeMin',       'smokeSizeMin',       parseFloat1, fmt2);
+  bind('smokeSizeMax',       'smokeSizeMax',       parseFloat1, fmt2);
+  bind('smokeOpacityLocked', 'smokeOpacityLocked', parseFloat1, fmt2);
+  bind('smokeOpacityOverspun','smokeOpacityOverspun',parseFloat1, fmt2);
+  bind('smokeCurlNoiseScale','smokeCurlNoiseScale',parseFloat1, fmt1);
+
   // ---- Grip State Machine ----
   bind('gripLossThreshold',     'gripLossThreshold',     parseFloat1, fmt2);
   bind('gripRecoveryThreshold', 'gripRecoveryThreshold', parseFloat1, fmt2);

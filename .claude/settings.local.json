@@ -63,7 +63,8 @@
       "Bash(wc -l js/renderer/*.js)",
       "Bash(curl -s http://localhost:8000/)",
       "Bash(node -c js/renderer/hud.js)",
-      "Bash(pkill -f \"python3 serve.py\")"
+      "Bash(pkill -f \"python3 serve.py\")",
+      "Bash(xargs ls -la)"
     ]
   }
 }

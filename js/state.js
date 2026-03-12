@@ -520,6 +520,13 @@ const state = {
     smokeLockedThreshold:  -0.10,   // κ below which locked-wheel smoke triggers
     smokeOverspinThreshold: 0.15,   // κ above which burnout smoke triggers
     smokeMinSpeed:          3.0,    // m/s — suppress smoke at low speed
+    smokeLifetimeMin:       1.0,    // min particle lifetime (seconds)
+    smokeLifetimeMax:       2.0,    // max particle lifetime (seconds)
+    smokeSizeMin:           0.35,   // min billboard size (metres)
+    smokeSizeMax:           0.70,   // max billboard size (metres)
+    smokeOpacityLocked:     0.65,   // opacity for locked-wheel smoke (0-1)
+    smokeOpacityOverspun:   0.40,   // opacity for overspun smoke (0-1)
+    smokeCurlNoiseScale:    2.5,    // GPU turbulence intensity (0.5-5.0)
 
     // --- Splatter tuning ---
     splatViolence:         1.5,    // multiplier on splat particle count and speed (0.5–3.0)

@@ -52,23 +52,36 @@ class GaugeState {
 
   /**
    * Get packed instance data for GPU: [screenX, screenY, needleAngle, gaugeType, size, r, g, b, h0, h1, h2, h3]
-   * Returns Float32Array of 12 floats
+   * Returns Float32Array of 12 floats (with gaugeType as uint32 at offset 12)
+   *
+   * FIX: Use mixed TypedArray views to properly handle the uint32 gaugeType field
+   * The GPU shader expects: uint32 at offset 12, but Float32Array writes float
    */
   getInstanceData(gaugeType) {
-    const data = new Float32Array(12);
-    data[0] = this.screenX;
-    data[1] = this.screenY;
-    data[2] = this.needleAngle;
-    data[3] = gaugeType;  // 0=speedometer, 1=rpm, 2=lateral-g
-    data[4] = this.size;
-    data[5] = this.color[0];
-    data[6] = this.color[1];
-    data[7] = this.color[2];
-    data[8] = this.historyAngles[0];
-    data[9] = this.historyAngles[1];
-    data[10] = this.historyAngles[2];
-    data[11] = this.historyAngles[3];
-    return data;
+    // Create a buffer and use dual views for mixed types
+    const buffer = new ArrayBuffer(48);  // 12 × 4 bytes
+    const f32view = new Float32Array(buffer);
+    const u32view = new Uint32Array(buffer);
+
+    // Write float32 values (indices 0-2, 4-11)
+    f32view[0] = this.screenX;
+    f32view[1] = this.screenY;
+    f32view[2] = this.needleAngle;
+
+    // Write uint32 value at index 3 (offset 12 bytes)
+    u32view[3] = gaugeType;  // 0=speedometer, 1=rpm, 2=lateral-g
+
+    // Write remaining float32 values
+    f32view[4] = this.size;
+    f32view[5] = this.color[0];
+    f32view[6] = this.color[1];
+    f32view[7] = this.color[2];
+    f32view[8] = this.historyAngles[0];
+    f32view[9] = this.historyAngles[1];
+    f32view[10] = this.historyAngles[2];
+    f32view[11] = this.historyAngles[3];
+
+    return new Float32Array(buffer);
   }
 }
 
