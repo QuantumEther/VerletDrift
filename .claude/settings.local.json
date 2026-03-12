@@ -61,7 +61,9 @@
       "Bash(start \"\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\docs\\\\assessment.html\")",
       "Bash(python3:*)",
       "Bash(wc -l js/renderer/*.js)",
-      "Bash(curl -s http://localhost:8000/)"
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(node -c js/renderer/hud.js)",
+      "Bash(pkill -f \"python3 serve.py\")"
     ]
   }
 }

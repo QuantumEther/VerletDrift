@@ -37,7 +37,8 @@ const MAX_ARROWS     = 600;
 const MAX_SPARKS_GPU = 300;   // must match renderer.js MAX_SPARKS
 const MAX_SPLATS     = 600;
 const MAX_SKID_NEW   = 2048;  // max new skid segments uploaded per render frame
-const MAX_SMOKE_GPU  = MAX_SMOKE; // 2000 — from smoke-system.js
+const MAX_SMOKE_GPU  = MAX_SMOKE; // 8000 — from smoke-system.js
+const SMOKE_COMPUTE_WORKGROUP_SIZE = 256;
 
 // Float RGB for spark palette (matches SPARK_COLORS_SDR in renderer.js).
 // Index matches spark.hdrIndex.
@@ -66,6 +67,8 @@ let arrowPipeline  = null;   // instanced trail arrows
 let partPipeline   = null;   // instanced particles (sparks + splats, shared)
 let accumPipeline  = null;   // skid mark accumulation → skidTex
 let compPipeline   = null;   // skid texture composite → swap chain
+let smokeComputePipeline = null;  // smoke particle advection (GPU compute)
+let smokeRenderPipeline = null;   // smoke billboard rendering
 
 // Uniform buffers (UNIFORM | COPY_DST)
 let bgUniBuf    = null;   // BgUniforms  (64 bytes)
@@ -91,6 +94,8 @@ let arrowBindGroup = null;
 let partBindGroup  = null;   // shared by sparks + splats (same pipeline, same uniform)
 let accumBindGroup = null;
 let compBindGroup  = null;
+let smokeComputeBindGroup = null;
+let smokeRenderBindGroup = null;
 
 // CPU-side staging arrays (reused every frame, no GC pressure)
 const BG_DATA    = new Float32Array(16);
@@ -101,7 +106,13 @@ const arrowData  = new Float32Array(MAX_ARROWS * 9);
 const sparkData  = new Float32Array(MAX_SPARKS_GPU * 7);
 const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
-const smokeData  = new Float32Array(MAX_SMOKE_GPU * 7);
+const smokeData  = new Float32Array(MAX_SMOKE_GPU * 11);  // pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha (11 floats)
+const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1
+
+// Smoke GPU buffers
+let smokeBuf = null;        // storage buffer (compute reads/writes)
+let smokeUniBuf = null;     // compute uniforms (dt, particleCount, curlNoiseScale, etc.)
+let smokePool = null;       // CPU pool from smoke-system.js (updated each frame)
 
 
 // =============================================================
@@ -195,12 +206,14 @@ function makeInstLayout7() {
 // =============================================================
 
 async function createAllPipelines() {
-  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL] = await Promise.all([
+  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL, smokeComputeWGSL, smokeRenderWGSL] = await Promise.all([
     loadWGSL('background.wgsl'),
     loadWGSL('arrows.wgsl'),
     loadWGSL('particles.wgsl'),
     loadWGSL('skid-accumulate.wgsl'),
     loadWGSL('skid-composite.wgsl'),
+    loadWGSL('smoke-compute.wgsl'),
+    loadWGSL('smoke.wgsl'),
   ]);
 
   const bgMod    = device.createShaderModule({ code: bgWGSL,    label: 'background' });
@@ -208,6 +221,8 @@ async function createAllPipelines() {
   const partMod  = device.createShaderModule({ code: partWGSL,  label: 'particles' });
   const accumMod = device.createShaderModule({ code: accumWGSL, label: 'skid-accum' });
   const compMod  = device.createShaderModule({ code: compWGSL,  label: 'skid-comp' });
+  const smokeComputeMod = device.createShaderModule({ code: smokeComputeWGSL, label: 'smoke-compute' });
+  const smokeRenderMod = device.createShaderModule({ code: smokeRenderWGSL, label: 'smoke' });
 
   // 1. Background — full-screen triangle-strip quad, no vertex buffer.
   bgPipeline = await device.createRenderPipelineAsync({
@@ -285,6 +300,29 @@ async function createAllPipelines() {
     },
     primitive: { topology: 'triangle-list' },
   });
+
+  // 6. Smoke compute shader — advect particles via curl noise turbulence.
+  smokeComputePipeline = await device.createComputePipelineAsync({
+    label:  'smoke-compute',
+    layout: 'auto',
+    compute: { module: smokeComputeMod, entryPoint: 'computeSmoke' },
+  });
+
+  // 7. Smoke render shader — instanced soft billboards (no vertex buffer; reads from storage buffer).
+  smokeRenderPipeline = await device.createRenderPipelineAsync({
+    label:  'smoke-render',
+    layout: 'auto',
+    vertex: {
+      module:     smokeRenderMod,
+      entryPoint: 'vs_main',
+    },
+    fragment: {
+      module:     smokeRenderMod,
+      entryPoint: 'fs_main',
+      targets:    [{ format: gpuFmt, blend: PREMUL_BLEND }],
+    },
+    primitive: { topology: 'triangle-list' },
+  });
 }
 
 
@@ -304,7 +342,18 @@ function createBuffersAndBindGroups() {
   sparkInstBuf = makeInstBuf(MAX_SPARKS_GPU * 28);  // 7 × f32 per spark
   splatInstBuf = makeInstBuf(MAX_SPLATS    * 28);  // 7 × f32 per splat
   skidInstBuf  = makeInstBuf(MAX_SKID_NEW  * 36);  // 9 × f32 per segment
-  smokeInstBuf = makeInstBuf(MAX_SMOKE_GPU * 28);  // 7 × f32 per smoke particle
+
+  // Smoke storage buffer — GPU compute reads/writes particles, render reads for billboards.
+  // Particle struct: pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha = 11 × f32 = 44 bytes
+  smokeBuf = device.createBuffer({
+    label:  'smokeBuf',
+    size:   MAX_SMOKE_GPU * 44,
+    usage:  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+    mappedAtCreation: false,
+  });
+
+  // Smoke compute uniforms: dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1 = 8 × f32 = 32 bytes
+  smokeUniBuf = makeUniBuf(32);
 
   // Skid accumulation texture — full-map-coverage at 4096×3072.
   // rgba8unorm: same format as 'load' render attachment.
@@ -357,6 +406,34 @@ function createBuffersAndBindGroups() {
       { binding: 2, resource: skidSampler },
     ],
   });
+
+  // Smoke compute bind group: uniforms + particle storage buffer
+  smokeComputeBindGroup = device.createBindGroup({
+    label:   'smokeComputeBG',
+    layout:  smokeComputePipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: smokeUniBuf } },
+      { binding: 1, resource: { buffer: smokeBuf } },
+    ],
+  });
+
+  // Smoke render bind groups: separate group(0) and group(1) per smoke.wgsl
+  const smokeRenderBG0 = device.createBindGroup({
+    label:   'smokeRenderBG0',
+    layout:  smokeRenderPipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: camUniBuf } },
+    ],
+  });
+  const smokeRenderBG1 = device.createBindGroup({
+    label:   'smokeRenderBG1',
+    layout:  smokeRenderPipeline.getBindGroupLayout(1),
+    entries: [
+      { binding: 0, resource: { buffer: smokeBuf } },
+    ],
+  });
+  // Store as tuple for easy access in render pass
+  smokeRenderBindGroup = { bg0: smokeRenderBG0, bg1: smokeRenderBG1 };
 
   // Upload constant AccumUniforms (never changes at runtime).
   // zoom=1.0 so texture maps 1:1 to world space; ppm = texels per metre.
@@ -591,34 +668,28 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   }
 
   // ---- Smoke particle instances ----
-  // Smoke renders before sparks (underneath) so it appears as a behind-wheel cloud.
+  // GPU compute shader will advect all particles; CPU just packs them into the storage buffer.
+  // Particle struct: pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha = 11 × f32
   const smokePool2 = getSmokePool();
   let smokeCount   = 0;
+  const SMOKE_STRIDE = 11;  // floats per particle
   for (let i = 0; i < smokePool2.length; i++) {
     const p = smokePool2[i];
     if (!p.alive) continue;
     if (smokeCount >= MAX_SMOKE_GPU) break;
 
-    const lifeFrac = p.life / p.maxLife;
-
-    // Fade out in the last 30% of life; fade in during first 10%.
-    let fade = 1.0;
-    if (lifeFrac < 0.10) fade = lifeFrac / 0.10;
-    else if (lifeFrac > 0.70) fade = (1.0 - lifeFrac) / 0.30;
-    const alpha = p.alpha * fade;
-    if (alpha < 0.005) continue;
-
-    // Smoke particles grow as they rise: 1× at birth, ~3× at end of life.
-    const size = p.size * (1.0 + lifeFrac * 2.0);
-
-    const base = smokeCount * 7;
-    smokeData[base + 0] = p.x - camera.x;
-    smokeData[base + 1] = p.y - camera.y;
-    smokeData[base + 2] = size;
-    smokeData[base + 3] = p.r;   // shader premultiplies alpha
-    smokeData[base + 4] = p.g;
-    smokeData[base + 5] = p.b;
-    smokeData[base + 6] = alpha;
+    const base = smokeCount * SMOKE_STRIDE;
+    smokeData[base + 0] = p.pos.x;         // world position X
+    smokeData[base + 1] = p.pos.y;         // world position Y
+    smokeData[base + 2] = p.vel.x;         // velocity X
+    smokeData[base + 3] = p.vel.y;         // velocity Y
+    smokeData[base + 4] = p.life;          // remaining lifetime
+    smokeData[base + 5] = p.maxLife;       // original lifetime
+    smokeData[base + 6] = p.size;          // base size
+    smokeData[base + 7] = p.r;             // color R
+    smokeData[base + 8] = p.g;             // color G
+    smokeData[base + 9] = p.b;             // color B
+    smokeData[base + 10] = p.alpha;        // opacity
     smokeCount++;
   }
 
@@ -662,10 +733,23 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   device.queue.writeBuffer(camUniBuf,  0, CAM_DATA);
   device.queue.writeBuffer(compUniBuf, 0, COMP_DATA);
   if (arrowCount > 0) device.queue.writeBuffer(arrowInstBuf, 0, arrowData, 0, arrowCount * 9);
-  if (smokeCount > 0) device.queue.writeBuffer(smokeInstBuf, 0, smokeData, 0, smokeCount * 7);
+  if (smokeCount > 0) device.queue.writeBuffer(smokeBuf, 0, smokeData, 0, smokeCount * 11);
   if (sparkCount > 0) device.queue.writeBuffer(sparkInstBuf, 0, sparkData, 0, sparkCount * 7);
   if (splatCount > 0) device.queue.writeBuffer(splatInstBuf, 0, splatData, 0, splatCount * 7);
   if (skidCount  > 0) device.queue.writeBuffer(skidInstBuf,  0, skidData,  0, skidCount  * 9);
+
+  // ---- Smoke compute uniforms ----
+  // Animation time for curl noise (increments to create turbulence animation)
+  const now = performance.now() * 0.001;  // seconds
+  SMOKE_UNI_DATA[0] = dt || (1.0 / 60.0);  // delta time
+  SMOKE_UNI_DATA[1] = smokeCount;           // particle count
+  SMOKE_UNI_DATA[2] = params.smokeCurlNoiseScale || 2.5;  // turbulence intensity [0.5–5.0]
+  SMOKE_UNI_DATA[3] = now;                  // time-based noise animation
+  SMOKE_UNI_DATA[4] = camera.x;             // camera X for visibility culling
+  SMOKE_UNI_DATA[5] = camera.y;             // camera Y for visibility culling
+  SMOKE_UNI_DATA[6] = 0.0;                  // _pad0
+  SMOKE_UNI_DATA[7] = 0.0;                  // _pad1
+  if (smokeCount > 0) device.queue.writeBuffer(smokeUniBuf, 0, SMOKE_UNI_DATA);
 
   // ---- Encode + submit ----
   const enc = device.createCommandEncoder({ label: 'gpuFrame' });
@@ -686,6 +770,17 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     accumPass.setVertexBuffer(0, skidInstBuf);
     accumPass.draw(6, skidCount);  // 6 verts × skidCount instances
     accumPass.end();
+  }
+
+  // Pass 1.5: Smoke compute — advect particles via curl noise turbulence (GPU-parallel).
+  // This must happen BEFORE render (compute writes, render reads).
+  if (smokeCount > 0) {
+    const computePass = enc.beginComputePass({ label: 'smokeCompute' });
+    computePass.setPipeline(smokeComputePipeline);
+    computePass.setBindGroup(0, smokeComputeBindGroup);
+    const workgroupsX = Math.ceil(smokeCount / SMOKE_COMPUTE_WORKGROUP_SIZE);
+    computePass.dispatchWorkgroups(workgroupsX, 1, 1);
+    computePass.end();
   }
 
   // Pass 2: Main render — clear swap chain, draw world elements in order.
@@ -719,11 +814,12 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   }
 
   // 2d. Tire smoke (rendered before sparks — smoke sits behind sharp sparks).
+  // Uses dedicated soft-billboard shader with storage buffer read via bind groups.
   if (smokeCount > 0) {
-    mainPass.setPipeline(partPipeline);
-    mainPass.setBindGroup(0, partBindGroup);
-    mainPass.setVertexBuffer(0, smokeInstBuf);
-    mainPass.draw(6, smokeCount);
+    mainPass.setPipeline(smokeRenderPipeline);
+    mainPass.setBindGroup(0, smokeRenderBindGroup.bg0);  // camera uniforms
+    mainPass.setBindGroup(1, smokeRenderBindGroup.bg1);  // particle storage buffer
+    mainPass.draw(6, smokeCount);  // 6 verts (unit quad) × smokeCount instances
   }
 
   // 2e. Sparks.
