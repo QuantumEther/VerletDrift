@@ -123,7 +123,7 @@ const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScal
 const SMOKE_UPLOAD_STRIDE = 11;
 const SMOKE_UPLOAD_DATA = new Float32Array(SMOKE_UPLOAD_STRIDE);
 const SMOKE_ALIVE_VALUE = new Uint32Array([1]);
-const gaugeData  = new Float32Array(16 * 12); // 16 gauges × 12 floats per gauge
+const gaugeData  = new Float32Array(16 * 13); // 16 gauges × 13 floats per gauge (includes angularVelocity)
 
 // Smoke GPU buffers
 let smokeBuf = null;        // storage buffer (compute reads/writes)
@@ -866,7 +866,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     GAUGE_UNI_DATA[2] = 0.0;  // padding
     GAUGE_UNI_DATA[3] = 0.0;  // padding
     device.queue.writeBuffer(gaugeUniBuf, 0, GAUGE_UNI_DATA);
-    device.queue.writeBuffer(gaugeInstBuf, 0, gaugeInstData, 0, gaugeCount * 12);
+    device.queue.writeBuffer(gaugeInstBuf, 0, gaugeInstData, 0, gaugeCount * 13);
   }
 
   // ---- Encode + submit ----

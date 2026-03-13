@@ -22,21 +22,21 @@ struct GaugeUniforms {
 @group(0) @binding(0) var<uniform> cam: CameraUniforms;
 @group(1) @binding(0) var<uniform> gaugeUni: GaugeUniforms;
 
-// Per-instance data: [screenX, screenY, needleAngle, gaugeType, size, r, g, b, h0, h1, h2, h3]
-// Locations 1-12: 12 floats per instance
+// Per-instance data: [screenX, screenY, needleAngle, gaugeType, size, r, g, b, angularVelocity, pad×3]
+// Locations 1-13: 13 floats per instance
 struct GaugeInstance {
-  @location(1) screenX:      f32,      // Screen-space X (pixels)
-  @location(2) screenY:      f32,      // Screen-space Y (pixels)
-  @location(3) needleAngle:  f32,      // Current needle angle (radians, 0-1.5π)
-  @location(4) gaugeType:    u32,      // 0=speedometer, 1=rpm, 2=lateral-g
-  @location(5) size:         f32,      // Gauge radius in pixels
-  @location(6) r:            f32,      // Needle color (r)
-  @location(7) g:            f32,      // Needle color (g)
-  @location(8) b:            f32,      // Needle color (b)
-  @location(9) histAngle0:   f32,      // History angle 0 (oldest)
-  @location(10) histAngle1:  f32,      // History angle 1
-  @location(11) histAngle2:  f32,      // History angle 2
-  @location(12) histAngle3:  f32,      // History angle 3 (newest, before current)
+  @location(1) screenX:         f32,      // Screen-space X (pixels)
+  @location(2) screenY:         f32,      // Screen-space Y (pixels)
+  @location(3) needleAngle:     f32,      // Current needle angle (radians, 0-1.5π)
+  @location(4) gaugeType:       u32,      // 0=speedometer, 1=rpm, 2=lateral-g
+  @location(5) size:            f32,      // Gauge radius in pixels
+  @location(6) r:               f32,      // Needle color (r)
+  @location(7) g:               f32,      // Needle color (g)
+  @location(8) b:               f32,      // Needle color (b)
+  @location(9) angularVelocity: f32,      // Needle angular velocity (rad/s) for smooth blur
+  @location(10) pad0:           f32,      // padding
+  @location(11) pad1:           f32,      // padding
+  @location(12) pad2:           f32,      // padding
 }
 
 struct VertOut {
@@ -181,21 +181,21 @@ fn fs_main(vert: VertOut) -> vec4<f32> {
   // Draw gauge background
   var color = drawGaugeFace(uv);
 
-  // Draw motion blur trail (history needles, oldest to newest)
-  let historyAngles = array<f32, 4>(
-    vert.inst.histAngle0,
-    vert.inst.histAngle1,
-    vert.inst.histAngle2,
-    vert.inst.histAngle3,
-  );
+  // Draw smooth motion blur trail along angular velocity direction
+  // This creates a continuous blur effect that follows the needle's rotation
+  let blurRadius = abs(vert.inst.angularVelocity) * 0.1;  // How far back the blur extends
+  let blurSamples = 16u;  // 16 samples for smooth appearance
 
-  for (var i: u32 = 0u; i < 4u; i = i + 1u) {
-    let age = f32(i) * 0.25;  // Age [0, 0.25, 0.5, 0.75]
-    let alpha = exp(-gaugeUni.decayRate * age);
+  for (var i: u32 = 0u; i < blurSamples; i = i + 1u) {
+    let sampleFraction = f32(i) / f32(blurSamples);
+    let sampleAge = sampleFraction;  // Age normalized [0, 1]
+    let sampleAlpha = exp(-gaugeUni.decayRate * sampleAge * 3.0);  // Decay over blur window
 
-    if (alpha > 0.01) {
-      let histColor = drawNeedle(uv, historyAngles[i], alpha);
-      color = mix(color, histColor, histColor.a);
+    if (sampleAlpha > 0.01) {
+      // Sample angle along rotation direction
+      let sampleAngle = vert.inst.needleAngle - vert.inst.angularVelocity * sampleAge * 0.3;
+      let blurColor = drawNeedle(uv, sampleAngle, sampleAlpha);
+      color = mix(color, blurColor, blurColor.a);
     }
   }
 

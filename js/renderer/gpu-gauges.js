@@ -23,15 +23,15 @@ class GaugeState {
     // Current needle state
     this.needleAngle = 0;     // Current angle (radians, 0-1.5π)
     this.needleTimestamp = 0; // Timestamp of last update
+    this.angularVelocity = 0; // Angular velocity for smooth motion blur (radians/second)
 
-    // Motion blur history: 4 samples (oldest to newest, before current)
-    this.historyAngles = [0, 0, 0, 0];  // [angle0, angle1, angle2, angle3]
-    this.historyTimes = [0, 0, 0, 0];   // Timestamps for decay calculation
-    this.historyIndex = 0;               // Circular buffer write head
+    // For angular velocity computation
+    this.previousAngle = 0;
+    this.previousTimestamp = 0;
   }
 
   /**
-   * Update gauge needle state and track history
+   * Update gauge needle state and compute angular velocity
    * @param {number} normalizedAngle - Normalized needle position [0, 1]
    * @param {number} currentTime - Current timestamp (seconds)
    */
@@ -39,31 +39,33 @@ class GaugeState {
     // Convert normalized [0, 1] to angle [0, 1.5π]
     const newAngle = normalizedAngle * Math.PI * 1.5;
 
-    // Shift history: store previous angle if it changed
-    if (Math.abs(newAngle - this.needleAngle) > 0.001) {
-      this.historyAngles[this.historyIndex] = this.needleAngle;
-      this.historyTimes[this.historyIndex] = this.needleTimestamp;
-      this.historyIndex = (this.historyIndex + 1) % 4;
-    }
+    // Compute angular velocity for smooth motion blur
+    // velocity = (current angle - previous angle) / delta time
+    const dt = Math.max(currentTime - this.previousTimestamp, 0.001);  // Avoid division by zero
+    this.angularVelocity = (newAngle - this.previousAngle) / dt;
+
+    this.previousAngle = this.needleAngle;
+    this.previousTimestamp = this.needleTimestamp;
 
     this.needleAngle = newAngle;
     this.needleTimestamp = currentTime;
   }
 
   /**
-   * Get packed instance data for GPU: [screenX, screenY, needleAngle, gaugeType, size, r, g, b, h0, h1, h2, h3]
-   * Returns Float32Array of 12 floats (with gaugeType as uint32 at offset 12)
+   * Get packed instance data for GPU: [screenX, screenY, needleAngle, gaugeType, size, r, g, b, angularVelocity, pad×3]
+   * Returns Float32Array of 13 floats (with gaugeType as uint32 at offset 12)
    *
-   * FIX: Use mixed TypedArray views to properly handle the uint32 gaugeType field
-   * The GPU shader expects: uint32 at offset 12, but Float32Array writes float
+   * Structure:
+   * - Floats: screenX, screenY, needleAngle, size, r, g, b, angularVelocity
+   * - Uint32: gaugeType (at offset 12 bytes)
    */
   getInstanceData(gaugeType) {
     // Create a buffer and use dual views for mixed types
-    const buffer = new ArrayBuffer(48);  // 12 × 4 bytes
+    const buffer = new ArrayBuffer(52);  // 13 × 4 bytes
     const f32view = new Float32Array(buffer);
     const u32view = new Uint32Array(buffer);
 
-    // Write float32 values (indices 0-2, 4-11)
+    // Write float32 values
     f32view[0] = this.screenX;
     f32view[1] = this.screenY;
     f32view[2] = this.needleAngle;
@@ -76,10 +78,10 @@ class GaugeState {
     f32view[5] = this.color[0];
     f32view[6] = this.color[1];
     f32view[7] = this.color[2];
-    f32view[8] = this.historyAngles[0];
-    f32view[9] = this.historyAngles[1];
-    f32view[10] = this.historyAngles[2];
-    f32view[11] = this.historyAngles[3];
+    f32view[8] = this.angularVelocity;  // For smooth motion blur
+    f32view[9] = 0.0;  // padding
+    f32view[10] = 0.0; // padding
+    f32view[11] = 0.0; // padding
 
     return new Float32Array(buffer);
   }
