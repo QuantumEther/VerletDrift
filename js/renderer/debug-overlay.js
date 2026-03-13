@@ -65,12 +65,12 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
   y += lineH;
 
   // Constraint metrics
-  if (state.debug.metrics.constraintMaxCorr > 0) {
-    ctx.fillText(`Constraints: max=${state.debug.metrics.constraintMaxCorr.toFixed(4)}m`, x, y);
-    y += lineH;
-    ctx.fillText(`  avg=${state.debug.metrics.constraintAvgCorr.toFixed(4)}m iters=${state.debug.metrics.constraintIters}`, x, y);
-    y += lineH;
-  }
+  ctx.fillText(`Constraints:`, x, y);
+  y += lineH;
+  ctx.fillText(`  max=${state.debug.metrics.constraintMaxCorr.toFixed(4)}m avg=${state.debug.metrics.constraintAvgCorr.toFixed(4)}m`, x, y);
+  y += lineH;
+  ctx.fillText(`  iters=${state.debug.metrics.constraintIters}`, x, y);
+  y += lineH;
 
   // Per-wheel summary (simple one-liner)
   const wheels = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
@@ -183,15 +183,35 @@ export function drawDebugPanels(ctx, canvasWidth, canvasHeight) {
   drawTelemetryPanel(ctx, canvasWidth, canvasHeight);
   drawEventPanel(ctx, canvasWidth, canvasHeight);
 
-  // Optional: Draw mode indicator in top-left
+  // Optional: Draw mode indicator and fault status in top-left
   ctx.save();
   ctx.font = `${FONT_SIZE + 2}px monospace`;
+
+  // Mode indicator
   ctx.fillStyle = '#aaa';
   ctx.fillText(`DEBUG MODE: ${state.debug.mode.toUpperCase()}`, PANEL_MARGIN, PANEL_MARGIN + 20);
+
+  // Fault status
+  let faultStatus = 'NOMINAL';
+  let faultColor = '#0f0';
   if (state.debug.faults.isFrozen) {
-    ctx.fillStyle = ERROR_COLOR;
-    ctx.fillText('FROZEN', PANEL_MARGIN + 180, PANEL_MARGIN + 20);
+    faultStatus = 'FROZEN';
+    faultColor = ERROR_COLOR;
+  } else if (eventBuffer && eventBuffer.getEventCount() > 0) {
+    // Check if there are recent fault events
+    const recentFaults = eventBuffer.findEventsByChannel('fault', 1);
+    if (recentFaults.length > 0) {
+      const lastFaultAge = performance.now() - recentFaults[0].tWallMs;
+      if (lastFaultAge < 5000) { // Last fault within 5 seconds
+        faultStatus = 'FAULTS DETECTED';
+        faultColor = WARN_COLOR;
+      }
+    }
   }
+
+  ctx.fillStyle = faultColor;
+  ctx.fillText(faultStatus, PANEL_MARGIN + 180, PANEL_MARGIN + 20);
+
   ctx.restore();
 }
 

@@ -18,6 +18,8 @@ import {
   MAX_DISPLACEMENT_PER_STEP,
 } from '../constants.js';
 
+import { logger } from '../debug/logger.js';
+
 // --------------- private helpers ---------------
 
 function clamp(value, minimum, maximum) {
@@ -50,6 +52,10 @@ function enforceDistanceConstraint(particleA, particleB, restDistance) {
   const corrAX = deltaX * correctionScale;
   const corrAY = deltaY * correctionScale;
 
+  // Record correction magnitude for metrics
+  const correctionMagnitude = Math.sqrt(corrAX * corrAX + corrAY * corrAY);
+  recordConstraintCorrection(correctionMagnitude);
+
   particleA.x += corrAX;
   particleA.y += corrAY;
   particleB.x -= corrAX;
@@ -75,6 +81,14 @@ function enforceDistanceConstraint(particleA, particleB, restDistance) {
 // The six constraints are the edges of the quadrilateral: four sides and
 // two diagonals. The diagonals prevent the rectangle from shearing into a
 // parallelogram, which would happen with only four side constraints.
+// Track constraint metrics for telemetry
+let constraintMetrics = {
+  maxCorrectionMagnitude: 0,
+  sumCorrectionMagnitude: 0,
+  correctionCount: 0,
+  prevMaxCorrection: 0,
+};
+
 export function solveRigidBodyConstraints() {
   const wh     = state.wheels;
   // Stabilizer #2 — iteration clamp by mode.
@@ -82,6 +96,12 @@ export function solveRigidBodyConstraints() {
   // stable across machines; normal mode allows a higher cap for rigidity tuning.
   const modeCap = state.params.determinismMode ? 8 : 12;
   const iters = clamp(Math.round(state.params.constraintIterations || 1), 1, modeCap);
+
+  // Reset metrics for this frame
+  constraintMetrics.maxCorrectionMagnitude = 0;
+  constraintMetrics.sumCorrectionMagnitude = 0;
+  constraintMetrics.correctionCount = 0;
+  constraintMetrics.prevMaxCorrection = state.debug.metrics.constraintMaxCorr || 0;
 
   for (let iteration = 0; iteration < iters; iteration++) {
     // Four edges: front axle, rear axle, left side, right side.
@@ -93,6 +113,30 @@ export function solveRigidBodyConstraints() {
     enforceDistanceConstraint(wh.frontLeft,  wh.rearRight,  CONSTRAINT_DIAGONAL);
     enforceDistanceConstraint(wh.frontRight, wh.rearLeft,   CONSTRAINT_DIAGONAL);
   }
+
+  // Update telemetry metrics
+  if (constraintMetrics.correctionCount > 0) {
+    state.debug.metrics.constraintMaxCorr = constraintMetrics.maxCorrectionMagnitude;
+    state.debug.metrics.constraintAvgCorr = constraintMetrics.sumCorrectionMagnitude / constraintMetrics.correctionCount;
+    state.debug.metrics.constraintIters = iters;
+
+    // Detect constraint spike (correction 5× larger than previous frame)
+    const spike = constraintMetrics.maxCorrectionMagnitude > constraintMetrics.prevMaxCorrection * 5;
+    if (spike && constraintMetrics.maxCorrectionMagnitude > 0.01) {
+      logger.sampleEvery('warn', 'constraints', 30, () => ({
+        msg: `Constraint spike: ${constraintMetrics.maxCorrectionMagnitude.toFixed(4)}m (5× prev ${constraintMetrics.prevMaxCorrection.toFixed(4)}m)`,
+      }));
+    }
+  }
+}
+
+/**
+ * Track correction magnitude for metrics (called from enforceDistanceConstraint)
+ */
+export function recordConstraintCorrection(magnitude) {
+  constraintMetrics.maxCorrectionMagnitude = Math.max(constraintMetrics.maxCorrectionMagnitude, magnitude);
+  constraintMetrics.sumCorrectionMagnitude += magnitude;
+  constraintMetrics.correctionCount++;
 }
 
 

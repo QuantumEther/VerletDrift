@@ -119,6 +119,7 @@ import { physicsRandom } from './random.js';
 import { logger, initLogger } from './debug/logger.js';
 import { eventBuffer, initEvents } from './debug/events.js';
 import { resolveConfig } from './debug/config.js';
+import { checkFaults } from './debug/faults.js';
 
 
 // =============================================================
@@ -873,6 +874,9 @@ function runPhysicsStep(dt) {
   if (state.params.smokeEnabled) {
     updateSmoke(dt);
   }
+
+  // 25. Check for physics-phase faults (wheel omega, constraints, slip anomalies)
+  checkFaults('physics');
 }
 
 
@@ -1026,6 +1030,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
 
   // Debug panels (telemetry overlay)
   drawDebugPanels(simCtx, canvasWidth, canvasHeight);
+
+  // Check for render-phase faults (non-finites, timing anomalies)
+  checkFaults('render', wallRenderDt * 1000); // convert seconds to ms
 
   // Info bar text.
   updateInfoBar();
@@ -1443,20 +1450,20 @@ export function triggerScreenShake(magnitude) {
 }
 
 
-// Debug helper: expose parameters to browser console
+// Debug helper: expose parameters to browser console via logger
 window.debugParams = () => {
   const p = state.params;
-  console.log('=== CRITICAL PARAMETERS ===');
-  console.log(`wheelInertia: ${p.wheelInertia.toFixed(3)} (should be 1.2)`);
-  console.log(`wheelRadius: ${p.wheelRadius.toFixed(3)} (should be 0.35)`);
-  console.log(`finalDriveRatio: ${p.finalDriveRatio.toFixed(2)} (should be 4.1)`);
-  console.log(`gearRatio1: ${p.gearRatio1.toFixed(2)} (should be 3.5)`);
-  console.log(`carMassKg: ${p.carMassKg.toFixed(0)} (should be 1200-1500)`);
-  console.log(`peakEngineTorqueNm: ${p.peakEngineTorqueNm.toFixed(0)} (should be 350-400)`);
-  console.log(`idleRpm: ${p.idleRpm.toFixed(0)} (should be 800)`);
-  console.log(`redlineRpm: ${p.redlineRpm.toFixed(0)} (should be 9000)`);
-  console.log('=== ALL PARAMS ===');
-  console.log(JSON.stringify(p, null, 2));
+  logger.info('debug', '=== CRITICAL PARAMETERS ===');
+  logger.info('debug', `wheelInertia: ${p.wheelInertia.toFixed(3)} (should be 1.2)`);
+  logger.info('debug', `wheelRadius: ${p.wheelRadius.toFixed(3)} (should be 0.35)`);
+  logger.info('debug', `finalDriveRatio: ${p.finalDriveRatio.toFixed(2)} (should be 4.1)`);
+  logger.info('debug', `gearRatio1: ${p.gearRatio1.toFixed(2)} (should be 3.5)`);
+  logger.info('debug', `carMassKg: ${p.carMassKg.toFixed(0)} (should be 1200-1500)`);
+  logger.info('debug', `peakEngineTorqueNm: ${p.peakEngineTorqueNm.toFixed(0)} (should be 350-400)`);
+  logger.info('debug', `idleRpm: ${p.idleRpm.toFixed(0)} (should be 800)`);
+  logger.info('debug', `redlineRpm: ${p.redlineRpm.toFixed(0)} (should be 9000)`);
+  logger.info('debug', '=== ALL PARAMS ===');
+  logger.info('debug', JSON.stringify(p, null, 2));
 };
 
 // Kick off the game loop.

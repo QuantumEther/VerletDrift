@@ -110,7 +110,8 @@ export function saveToStorage(config) {
   try {
     localStorage.setItem('vd17_debug_config', JSON.stringify(toStore));
   } catch (e) {
-    console.warn('[DEBUG CONFIG] localStorage save failed:', e.message);
+    // Silently fail if localStorage unavailable (user may have disabled it)
+    // No logger available here since config is loaded before logger init
   }
 }
 
@@ -123,7 +124,7 @@ function loadFromStorage() {
     const stored = localStorage.getItem('vd17_debug_config');
     return stored ? JSON.parse(stored) : null;
   } catch (e) {
-    console.warn('[DEBUG CONFIG] localStorage load failed:', e.message);
+    // Silently fail if localStorage unavailable
     return null;
   }
 }
@@ -135,7 +136,7 @@ export function clearStoredConfig() {
   try {
     localStorage.removeItem('vd17_debug_config');
   } catch (e) {
-    console.warn('[DEBUG CONFIG] localStorage clear failed:', e.message);
+    // Silently fail if localStorage unavailable
   }
 }
 
