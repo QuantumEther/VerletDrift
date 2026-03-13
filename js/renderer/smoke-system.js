@@ -15,6 +15,8 @@
 import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
 
+import { logger } from '../debug/logger.js';
+
 
 // =============================================================
 // SMOKE PARTICLE POOL (CPU-side)
@@ -66,10 +68,8 @@ export function updateSmoke(dt) {
   const minSpeed       = params.smokeMinSpeed          ?? 1.0;  // Lowered from 3.0 for visibility
   const spawnRate      = params.smokeSpawnRate         ?? 75;
 
-  // Debug: Log smoke spawn conditions
-  if (speed > 0.5) {
-    console.log(`[Smoke] Speed: ${speed.toFixed(2)} m/s (min: ${minSpeed.toFixed(2)}), Slip: FL=${kappa.frontLeft?.toFixed(3)} FR=${kappa.frontRight?.toFixed(3)} RL=${kappa.rearLeft?.toFixed(3)} RR=${kappa.rearRight?.toFixed(3)}`);
-  }
+  // Trace-gated smoke spawn debug logging (only in trace mode for smoke channel)
+  logger.trace('smoke', () => `Speed: ${speed.toFixed(2)} m/s, Slip: FL=${kappa.frontLeft?.toFixed(3)} FR=${kappa.frontRight?.toFixed(3)} RL=${kappa.rearLeft?.toFixed(3)} RR=${kappa.rearRight?.toFixed(3)}`);
 
   // ---- Spawn new particles ----
   if (speed >= minSpeed) {

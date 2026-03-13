@@ -22,6 +22,8 @@ import {
   KPH_TO_MPS,
 } from './constants.js';
 
+import { logger } from './debug/logger.js';
+
 const INFO_BAR_CELL_IDS = [
   'velocityDisplay',
   'rpmDisplay',
@@ -129,9 +131,9 @@ export function createNeedlePhysics() {
 // matching the IDs in index.html. If an element is not found, that
 // slider is silently skipped (no exception thrown).
 export function initSliders() {
-  console.log('[initSliders] Starting initialization...');
+  logger.info('ui', 'initSliders: Starting initialization');
   initInfoBarCellCache();
-  console.log('[initSliders] initInfoBarCellCache done');
+  logger.info('ui', 'initSliders: initInfoBarCellCache done');
 
   // Generic binder: links a slider element to a params field.
   // getValue:  slider string → typed value for state.params
@@ -160,7 +162,7 @@ export function initSliders() {
     const displayLabel = document.getElementById(sliderId + 'Value');
 
     if (!slider) {
-      console.warn(`[bind] Slider not found: ${sliderId}`);
+      logger.warn('ui', `Slider not found: ${sliderId}`);
       return;
     }
 
@@ -171,13 +173,13 @@ export function initSliders() {
     state.params[paramsKey] = initialValue;
     if (displayLabel) displayLabel.textContent = formatDisplay(initialValue);
 
-    console.log(`[bind] Initialized ${sliderId} → state.params.${paramsKey} = ${initialValue}`);
+    logger.debug('ui', `Initialized ${sliderId} → state.params.${paramsKey} = ${initialValue}`);
 
     slider.addEventListener('input', () => {
       const value = parseValue(slider.value);
       state.params[paramsKey] = value;
       if (displayLabel) displayLabel.textContent = formatDisplay(value);
-      console.log(`[bind:input] ${sliderId} changed: state.params.${paramsKey} = ${value}`);
+      logger.debug('ui', `${sliderId} changed: state.params.${paramsKey} = ${value}`);
     });
   }
 
@@ -492,7 +494,7 @@ export function initSliders() {
   // ---- Preset System ----
   initPresets();
 
-  console.log('[initSliders] Completed successfully - all sliders bound');
+  logger.info('ui', 'initSliders: Completed successfully - all sliders bound');
 }
 
 // =============================================================
@@ -653,7 +655,7 @@ function initPresets() {
           if (data.soundParams) Object.assign(state.soundParams, data.soundParams);
           refreshAllSliders();
         } catch (err) {
-          console.warn('[Preset] Import failed:', err);
+          logger.warn('ui', `Preset import failed: ${err.message}`);
         }
         importInput.value = ''; // allow re-importing same file
       };
@@ -718,7 +720,7 @@ export function updateInfoBar() {
   const frOmega = state.wheelOmega.frontRight || 0;
   const rlOmega = state.wheelOmega.rearLeft || 0;
   const rrOmega = state.wheelOmega.rearRight || 0;
-  console.log(`[UI-UPDATE] Wheel omegas: FL=${flOmega.toFixed(2)}, FR=${frOmega.toFixed(2)}, RL=${rlOmega.toFixed(2)}, RR=${rrOmega.toFixed(2)}`);
+  // Per-frame wheel omega logging moved to debug overlay and logger (trace mode only)
   setInfoCell('wheelOmegaDisplay',
     `FL:${flOmega.toFixed(2)} FR:${frOmega.toFixed(2)}<br>` +
     `RL:${rlOmega.toFixed(2)} RR:${rrOmega.toFixed(2)}`);
@@ -757,31 +759,31 @@ function setInfoCell(elementId, text) {
 //   [UI] buttonId clicked
 export function initChangeLogger() {
   document.addEventListener('input', (e) => {
-    // GATING: Skip log generation if logging is disabled
-    if (!state.params.logsEnabled) return;
+    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
+    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     if (el.type === 'range' || el.type === 'text' || el.type === 'number') {
-      console.log(`[UI] ${el.id} = ${el.value}`);
+      logger.debug('ui', `${el.id} = ${el.value}`);
     }
   });
   document.addEventListener('change', (e) => {
-    // GATING: Skip log generation if logging is disabled
-    if (!state.params.logsEnabled) return;
+    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
+    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     // Log select elements and checkboxes on change.
     if (el.tagName === 'SELECT' || el.type === 'checkbox') {
-      console.log(`[UI] ${el.id} = ${el.value}`);
+      logger.debug('ui', `${el.id} = ${el.value}`);
     }
   });
   document.addEventListener('click', (e) => {
-    // GATING: Skip log generation if logging is disabled
-    if (!state.params.logsEnabled) return;
+    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
+    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     if (el.tagName === 'BUTTON' && el.id) {
-      console.log(`[UI] ${el.id} clicked`);
+      logger.debug('ui', `${el.id} clicked`);
     }
   });
 }
@@ -855,7 +857,7 @@ export function registerGauge(config) {
   // Create DOM structure: gauge-frame > gauge-inner > canvas + badge
   const container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`[GaugeRegistry] Container #${containerId} not found`);
+    logger.warn('ui', `Gauge container #${containerId} not found`);
     return null;
   }
 

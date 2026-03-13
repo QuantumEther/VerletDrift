@@ -729,6 +729,40 @@ const state = {
   // Each frame the current pose is pushed; old entries beyond maxGhosts are dropped.
   carPoseHistory: [],   // [{ cx, cy, heading, wheelPoses: {fl,fr,rl,rr} }, ...]
 
+  // -----------------------------------------------------------
+  // DEBUG & OBSERVABILITY — diagnostics and telemetry state
+  // Managed by debug/logger.js, debug/events.js, main.js
+  // -----------------------------------------------------------
+  debug: {
+    // Configuration
+    mode: 'quiet',  // quiet | tuning | trace
+    frame: 0,       // incremented each render frame
+    overlaysEnabled: false,
+
+    // Telemetry metrics (updated per physics step or frame)
+    metrics: {
+      // Timing
+      dtMs: 0,                    // Time step duration (ms)
+      substepsThisFrame: 0,       // Substeps executed this frame
+      // Constraint health
+      constraintMaxCorr: 0,       // Max correction magnitude (m)
+      constraintAvgCorr: 0,       // Average correction magnitude (m)
+      constraintIters: 0,         // Iterations used
+      // Slip metrics
+      maxSlipRatio: 0,            // Peak slip ratio this frame
+      avgSlipAngle: 0,            // Average slip angle (rad)
+    },
+
+    // Event ring buffer (reference set by main.js)
+    events: null,
+
+    // Fault & escalation state
+    faults: {
+      freezeOnError: false,       // Auto-freeze sim on fault
+      isFrozen: false,            // Current freeze state
+    },
+  },
+
 };
 
 export default state;

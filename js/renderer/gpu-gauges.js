@@ -9,6 +9,8 @@
  * - Instance data packing for GPU upload
  */
 
+import { logger } from '../debug/logger.js';
+
 const MAX_GAUGES = 16;  // Maximum number of concurrent gauges
 
 // Gauge state class
@@ -123,7 +125,7 @@ export function initGaugeSystem() {
     color: [0.3, 0.9, 0.3],  // Green
   });
 
-  console.log('[GPU Gauges] Initialized with', gaugeRegistry.size, 'gauges');
+  logger.info('gpu', `GPU gauges initialized with ${gaugeRegistry.size} gauges`);
 }
 
 /**

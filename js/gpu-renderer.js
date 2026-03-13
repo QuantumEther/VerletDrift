@@ -28,6 +28,7 @@ import {
   MAX_SMOKE,
 } from './renderer/index.js';
 import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
+import { logger } from './debug/logger.js';
 
 
 // =============================================================
@@ -567,13 +568,13 @@ function createBuffersAndBindGroups() {
 // Returns true if WebGPU is available and init succeeded; false otherwise.
 export async function initGPU(canvas) {
   if (!navigator.gpu) {
-    console.warn('[GPU] WebGPU not available — falling back to Canvas 2D.');
+    logger.warn('gpu', 'WebGPU not available — falling back to Canvas 2D.');
     return false;
   }
 
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    console.warn('[GPU] No WebGPU adapter — falling back to Canvas 2D.');
+    logger.warn('gpu', 'No WebGPU adapter — falling back to Canvas 2D.');
     return false;
   }
 
@@ -596,7 +597,7 @@ export async function initGPU(canvas) {
   initGaugeSystem();
 
   ready = true;
-  console.log('[GPU] WebGPU initialised. Format:', gpuFmt);
+  logger.info('gpu', `WebGPU initialised. Format: ${gpuFmt}`);
   return true;
 }
 

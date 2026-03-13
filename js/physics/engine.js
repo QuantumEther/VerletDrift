@@ -12,6 +12,8 @@ import {
   TAU,
 } from '../constants.js';
 
+import { logger } from '../debug/logger.js';
+
 
 // =============================================================
 // HELPERS
@@ -226,11 +228,15 @@ export function updateEngine(dt) {
     const clampFloor = idleRpm * (0.8 * transientBlend + 0.2 * (1 - transientBlend));
     engine.rpm = clamp(engine.rpm, clampFloor, redlineRpm);
 
-    // DEBUG: Log values when wheels are spinning
+    // Debug: Log engine state when wheels are spinning (sampled, only in tuning/trace modes)
     if (rearAvgOmega > 1 && throttleAmount > 0.1) {
-      if (Math.random() < 0.01) {  // Log 1% of frames to avoid spam
-        console.log(`[CASE B] rearAvgOmega=${rearAvgOmega.toFixed(2)} | freeRpm=${freeRpm.toFixed(0)} | engineRpmFromWheel=${engineRpmFromWheel.toFixed(0)} | blend=${transientBlend.toFixed(2)} | final RPM=${engine.rpm.toFixed(0)}`);
-      }
+      logger.sampleEvery('debug', 'engine', 100, () => ({
+        rearAvgOmega: rearAvgOmega.toFixed(2),
+        freeRpm: freeRpm.toFixed(0),
+        engineRpmFromWheel: engineRpmFromWheel.toFixed(0),
+        blend: transientBlend.toFixed(2),
+        finalRpm: engine.rpm.toFixed(0),
+      }));
     }
 
     const effectiveStallRpm = stallRpm * (1.0 - params.stallResistance * 0.8);

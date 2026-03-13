@@ -18,6 +18,8 @@ import {
   TAU,
 } from '../constants.js';
 
+import { logger } from '../debug/logger.js';
+
 // --------------- private helpers ---------------
 
 function clamp(value, minimum, maximum) {
@@ -438,10 +440,8 @@ export function computeTireForces(dt) {
     const finalOmega = clamp(sumOmega, -maxOmega, maxOmega);
     state.wheelOmega[name] = finalOmega;
 
-    // DEBUG: Log first wheel's omega calculation for verification
-    if (name === 'rearLeft') {
-      console.log(`[OMEGA-DEBUG] ${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, omegaRoll=${omegaFromRolling.toFixed(2)}, omegaDelta=${omegaDelta.toFixed(4)}, sum=${sumOmega.toFixed(2)}, final=${finalOmega.toFixed(2)}, stored=${state.wheelOmega[name].toFixed(2)}`);
-    }
+    // Trace-gated wheel omega debug logging (only emitted in trace mode for tires channel)
+    logger.trace('tires', () => `${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, ωRoll=${omegaFromRolling.toFixed(2)}, Δω=${omegaDelta.toFixed(4)}, final=${finalOmega.toFixed(2)}`);
   }
 
   // Aggregate wheel forces into axle forces for friction circle gauges.

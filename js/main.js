@@ -107,11 +107,18 @@ import {
   logsToggleButtonBounds,
 } from './renderer/index.js';
 
+import { drawDebugPanels } from './renderer/debug-overlay.js';
+
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
 import { physicsRandom } from './random.js';
+
+// Debug & observability
+import { logger, initLogger } from './debug/logger.js';
+import { eventBuffer, initEvents } from './debug/events.js';
+import { resolveConfig } from './debug/config.js';
 
 
 // =============================================================
@@ -182,11 +189,67 @@ if (gpuCanvasEl) {
 // Attach input listeners before anything else so no events are missed.
 initInput(simCanvas);
 
+// ===== Initialize diagnostics & observability =====
+// Set up logger, event ring buffer, and debug modes before other modules run.
+initEvents(200); // Ring buffer capacity: 200 events
+state.debug.events = eventBuffer;
+initLogger(eventBuffer);
+
+// Resolve config from URL params → localStorage → defaults
+const debugConfig = resolveConfig();
+state.debug.mode = debugConfig.mode;
+state.debug.overlaysEnabled = debugConfig.overlaysEnabled;
+logger.setMode(debugConfig.mode);
+if (debugConfig.overlaysEnabled) logger.setOverlaysEnabled(true);
+if (debugConfig.logChannels) logger.setChannelsAllowlist(debugConfig.logChannels);
+if (debugConfig.traceChannel) {
+  logger.setTraceWindow(debugConfig.traceChannel, debugConfig.traceMs);
+}
+if (debugConfig.freezeOnError) {
+  state.debug.faults.freezeOnError = true;
+}
+
+// Add global error handlers
+window.addEventListener('error', (e) => {
+  logger.error('main', `Uncaught error: ${e.message}`, {
+    filename: e.filename,
+    lineno: e.lineno,
+    stack: e.error?.stack
+  });
+  if (eventBuffer) {
+    eventBuffer.pushEvent({
+      level: 'error',
+      channel: 'global',
+      type: 'uncaught_error',
+      msg: e.message,
+      data: { filename: e.filename, lineno: e.lineno },
+      dedupeKey: 'uncaught:' + e.lineno,
+    });
+  }
+  if (state.debug.faults.freezeOnError) {
+    state.debug.faults.isFrozen = true;
+  }
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  logger.error('main', `Unhandled promise rejection: ${e.reason}`, {});
+  if (eventBuffer) {
+    eventBuffer.pushEvent({
+      level: 'error',
+      channel: 'global',
+      type: 'unhandled_rejection',
+      msg: String(e.reason),
+      dedupeKey: 'rejection:' + Date.now(),
+    });
+  }
+  if (state.debug.faults.freezeOnError) {
+    state.debug.faults.isFrozen = true;
+  }
+});
+
 // Bind HTML sliders to state.params. This reads initial HTML slider values
 // into state.params so physics starts with the correct parameters.
-console.log('[main] About to call initSliders()...');
 initSliders();
-console.log('[main] initSliders() returned');
 
 // Initialize sound state manager for cross-window synchronization via localStorage.
 initSoundStateManager();
@@ -245,6 +308,39 @@ if (canvasResolutionSlider) {
   canvasResolutionSlider.addEventListener('input', updateCanvasResolution);
   updateCanvasResolution();
 }
+
+// Keyboard bindings for debug modes
+document.addEventListener('keydown', (e) => {
+  // F2: Cycle through debug modes (quiet → tuning → trace → quiet)
+  if (e.code === 'F2') {
+    e.preventDefault();
+    const modes = ['quiet', 'tuning', 'trace'];
+    const currentIdx = modes.indexOf(state.debug.mode);
+    const nextMode = modes[(currentIdx + 1) % modes.length];
+    logger.setMode(nextMode);
+    state.debug.mode = nextMode;
+    console.log(`[DEBUG] Mode changed to: ${nextMode}`);
+  }
+
+  // F3: Toggle overlay visibility
+  if (e.code === 'F3') {
+    e.preventDefault();
+    const newState = !state.debug.overlaysEnabled;
+    logger.setOverlaysEnabled(newState);
+    state.debug.overlaysEnabled = newState;
+    console.log(`[DEBUG] Overlays ${newState ? 'enabled' : 'disabled'}`);
+  }
+
+  // Shift+Ctrl+T: Open trace window for a channel (prompt user)
+  if (e.shiftKey && e.ctrlKey && e.code === 'KeyT') {
+    e.preventDefault();
+    const channel = prompt('Enter channel name to trace (tires, engine, smoke, etc):');
+    if (channel && channel.trim()) {
+      logger.setTraceWindow(channel.trim(), 2000);
+      console.log(`[DEBUG] Trace window opened for channel: ${channel}`);
+    }
+  }
+});
 
 // Create needle physics instances for each gauge.
 // These are independent spring-damper systems — one per gauge.
@@ -611,6 +707,16 @@ function mainLoop(timestampMilliseconds) {
   state.loop.renderFps  = renderFpsEma;
   state.loop.physicsTps = physicsTpsEma;
 
+  // Increment debug frame counter (for sampling and telemetry)
+  logger.incrementFrameCount();
+  state.debug.frame = logger.getFrameCount();
+
+  // Check if simulation is frozen due to fault (if enabled)
+  if (state.debug.faults.isFrozen) {
+    console.warn('[FAULT] Simulation frozen. Check console and overlays for details.');
+    return; // Skip rendering and physics this frame
+  }
+
   // Render once per animation frame using interpolated state.
   renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
 }
@@ -917,6 +1023,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   drawGearIndicator(simCtx, canvasWidth, canvasHeight);
   drawScoreHud(simCtx, canvasWidth, canvasHeight);
   drawLogsToggleCheckbox(simCtx, canvasWidth, canvasHeight);
+
+  // Debug panels (telemetry overlay)
+  drawDebugPanels(simCtx, canvasWidth, canvasHeight);
 
   // Info bar text.
   updateInfoBar();
