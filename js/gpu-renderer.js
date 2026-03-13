@@ -173,6 +173,8 @@ function speedToRgb(speed) {
 // Load a WGSL shader from js/shaders/.
 async function loadWGSL(name) {
   const url = new URL(`./shaders/${name}`, import.meta.url);
+  // Add cache-buster to force fresh fetch (critical for shader development)
+  url.searchParams.append('t', Date.now());
   const r   = await fetch(url);
   if (!r.ok) throw new Error(`[GPU] Failed to load shader ${name}: ${r.status}`);
   return r.text();
