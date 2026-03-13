@@ -519,22 +519,23 @@ function createBuffersAndBindGroups() {
   // Store as tuple for easy access in render pass
   smokeRenderBindGroup = { bg0: smokeRenderBG0, bg1: smokeRenderBG1 };
 
+  // TODO: Gauge bind groups disabled (gauge pipeline disabled)
   // Gauge render bind groups: camera uniforms (group 0) + gauge uniforms (group 1)
-  const gaugeBG0 = device.createBindGroup({
-    label:   'gaugeBG0',
-    layout:  gaugePipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: camUniBuf } },
-    ],
-  });
-  const gaugeBG1 = device.createBindGroup({
-    label:   'gaugeBG1',
-    layout:  gaugePipeline.getBindGroupLayout(1),
-    entries: [
-      { binding: 0, resource: { buffer: gaugeUniBuf } },
-    ],
-  });
-  gaugeBindGroup = { bg0: gaugeBG0, bg1: gaugeBG1 };
+  // const gaugeBG0 = device.createBindGroup({
+  //   label:   'gaugeBG0',
+  //   layout:  gaugePipeline.getBindGroupLayout(0),
+  //   entries: [
+  //     { binding: 0, resource: { buffer: camUniBuf } },
+  //   ],
+  // });
+  // const gaugeBG1 = device.createBindGroup({
+  //   label:   'gaugeBG1',
+  //   layout:  gaugePipeline.getBindGroupLayout(1),
+  //   entries: [
+  //     { binding: 0, resource: { buffer: gaugeUniBuf } },
+  //   ],
+  // });
+  // gaugeBindGroup = { bg0: gaugeBG0, bg1: gaugeBG1 };
 
   // Upload constant AccumUniforms (never changes at runtime).
   // zoom=1.0 so texture maps 1:1 to world space; ppm = texels per metre.
@@ -860,22 +861,23 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   SMOKE_UNI_DATA[7] = 0.0;                  // _pad1
   if (smokeCount > 0) device.queue.writeBuffer(smokeUniBuf, 0, SMOKE_UNI_DATA);
 
+  // TODO: Gauge instance data packing disabled (gauge pipeline disabled)
   // ---- Gauge instance data packing ----
-  // Update needle physics and pack all gauge instances
-  const gaugeCount = getGaugeCount();
-  if (gaugeCount > 0) {
-    const now = performance.now() * 0.001;  // current time in seconds
-    // Note: main.js should call updateGaugeNeedle() for each gauge before this function
-    // but we pack instance data here each frame
-    const gaugeInstData = getGaugeInstanceData();
-    const gaugeMotionBlurDecay = params.gaugeMotionBlurDecay || 3.0;
-    GAUGE_UNI_DATA[0] = gaugeMotionBlurDecay;  // exponential decay rate
-    GAUGE_UNI_DATA[1] = 0.0;  // padding
-    GAUGE_UNI_DATA[2] = 0.0;  // padding
-    GAUGE_UNI_DATA[3] = 0.0;  // padding
-    device.queue.writeBuffer(gaugeUniBuf, 0, GAUGE_UNI_DATA);
-    device.queue.writeBuffer(gaugeInstBuf, 0, gaugeInstData, 0, gaugeCount * 13);
-  }
+  // // Update needle physics and pack all gauge instances
+  // const gaugeCount = getGaugeCount();
+  // if (gaugeCount > 0) {
+  //   const now = performance.now() * 0.001;  // current time in seconds
+  //   // Note: main.js should call updateGaugeNeedle() for each gauge before this function
+  //   // but we pack instance data here each frame
+  //   const gaugeInstData = getGaugeInstanceData();
+  //   const gaugeMotionBlurDecay = params.gaugeMotionBlurDecay || 3.0;
+  //   GAUGE_UNI_DATA[0] = gaugeMotionBlurDecay;  // exponential decay rate
+  //   GAUGE_UNI_DATA[1] = 0.0;  // padding
+  //   GAUGE_UNI_DATA[2] = 0.0;  // padding
+  //   GAUGE_UNI_DATA[3] = 0.0;  // padding
+  //   device.queue.writeBuffer(gaugeUniBuf, 0, GAUGE_UNI_DATA);
+  //   device.queue.writeBuffer(gaugeInstBuf, 0, gaugeInstData, 0, gaugeCount * 13);
+  // }
 
   // ---- Encode + submit ----
   const enc = device.createCommandEncoder({ label: 'gpuFrame' });
