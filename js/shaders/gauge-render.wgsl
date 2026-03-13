@@ -42,9 +42,9 @@ struct GaugeInstance {
 struct VertOut {
   @builtin(position) pos:     vec4<f32>,
   @location(0)        color:   vec4<f32>,
-  @location(1)        uv:      vec2<f32>,    // Local UV [-1, 1]
-  @location(2)        screenPos: vec2<f32>, // Screen position for UI rendering
-  @location(3)        inst:    GaugeInstance, // Pass instance data to fragment
+  @location(1)        uv:      vec2<f32>,           // Local UV [-1, 1]
+  @location(2)        needleAngle: f32,            // Needle angle for motion blur sampling
+  @location(3)        angularVelocity: f32,        // Angular velocity for smooth blur
 }
 
 // Unit quad: 2 triangles, 6 vertices, local coords [-1, 1]
@@ -80,10 +80,10 @@ fn vs_main(
 
   var out: VertOut;
   out.pos = vec4<f32>(ndcX, ndcY, 0.0, 1.0);
-  out.uv = lv;
-  out.screenPos = vec2<f32>(screenX, screenY);
-  out.inst = inst;
   out.color = vec4<f32>(1.0);
+  out.uv = lv;
+  out.needleAngle = inst.needleAngle;
+  out.angularVelocity = inst.angularVelocity;
 
   return out;
 }
@@ -183,7 +183,7 @@ fn fs_main(vert: VertOut) -> vec4<f32> {
 
   // Draw smooth motion blur trail along angular velocity direction
   // This creates a continuous blur effect that follows the needle's rotation
-  let blurRadius = abs(vert.inst.angularVelocity) * 0.1;  // How far back the blur extends
+  let blurRadius = abs(vert.angularVelocity) * 0.1;  // How far back the blur extends
   let blurSamples = 16u;  // 16 samples for smooth appearance
 
   for (var i: u32 = 0u; i < blurSamples; i = i + 1u) {
@@ -193,14 +193,14 @@ fn fs_main(vert: VertOut) -> vec4<f32> {
 
     if (sampleAlpha > 0.01) {
       // Sample angle along rotation direction
-      let sampleAngle = vert.inst.needleAngle - vert.inst.angularVelocity * sampleAge * 0.3;
+      let sampleAngle = vert.needleAngle - vert.angularVelocity * sampleAge * 0.3;
       let blurColor = drawNeedle(uv, sampleAngle, sampleAlpha);
       color = mix(color, blurColor, blurColor.a);
     }
   }
 
   // Draw current needle (brightest)
-  let needleColor = drawNeedle(uv, vert.inst.needleAngle, 1.0);
+  let needleColor = drawNeedle(uv, vert.needleAngle, 1.0);
   color = mix(color, needleColor, needleColor.a);
 
   // Draw pivot cap on top

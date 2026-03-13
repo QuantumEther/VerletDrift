@@ -92,7 +92,7 @@ let sparkInstBuf = null;
 let splatInstBuf = null;
 let skidInstBuf  = null;
 let smokeInstBuf = null;
-let gaugeInstBuf = null;   // Gauge instance data (12 × f32 per gauge)
+let gaugeInstBuf = null;   // Gauge instance data (13 × f32 per gauge)
 
 // Skid accumulation texture (rgba8unorm, full-map coverage)
 let skidTex     = null;
@@ -346,8 +346,8 @@ async function createAllPipelines() {
     primitive: { topology: 'triangle-list' },
   });
 
-  // 8. Gauge render shader — analog gauge needles with motion blur.
-  // Vertex attributes: screenX, screenY, needleAngle, gaugeType, size, r, g, b, histAngle0-3 (12 floats per instance)
+  // 8. Gauge render shader — analog gauge needles with smooth angular velocity-based motion blur.
+  // Vertex attributes: screenX, screenY, needleAngle, gaugeType, size, r, g, b, angularVelocity, padding (13 floats per instance)
   gaugePipeline = await device.createRenderPipelineAsync({
     label:  'gauge-render',
     layout: 'auto',
@@ -355,7 +355,7 @@ async function createAllPipelines() {
       module:     gaugeMod,
       entryPoint: 'vs_main',
       buffers:    [{
-        arrayStride: 48,  // 12 floats × 4 bytes
+        arrayStride: 52,  // 13 floats × 4 bytes
         stepMode: 'instance',
         attributes: [
           { shaderLocation: 1,  offset: 0,  format: 'float32' },   // screenX
@@ -366,10 +366,10 @@ async function createAllPipelines() {
           { shaderLocation: 6,  offset: 20, format: 'float32' },   // r
           { shaderLocation: 7,  offset: 24, format: 'float32' },   // g
           { shaderLocation: 8,  offset: 28, format: 'float32' },   // b
-          { shaderLocation: 9,  offset: 32, format: 'float32' },   // histAngle0
-          { shaderLocation: 10, offset: 36, format: 'float32' },   // histAngle1
-          { shaderLocation: 11, offset: 40, format: 'float32' },   // histAngle2
-          { shaderLocation: 12, offset: 44, format: 'float32' },   // histAngle3
+          { shaderLocation: 9,  offset: 32, format: 'float32' },   // angularVelocity
+          { shaderLocation: 10, offset: 36, format: 'float32' },   // padding0
+          { shaderLocation: 11, offset: 40, format: 'float32' },   // padding1
+          { shaderLocation: 12, offset: 44, format: 'float32' },   // padding2
         ],
       }],
     },
@@ -427,7 +427,7 @@ function createBuffersAndBindGroups() {
 
   // Gauge buffers
   gaugeUniBuf = makeUniBuf(16);        // GaugeUniforms: decayRate + 3 padding floats
-  gaugeInstBuf = makeInstBuf(16 * 48);  // 16 gauges × 12 floats × 4 bytes = 768 bytes
+  gaugeInstBuf = makeInstBuf(16 * 52);  // 16 gauges × 13 floats × 4 bytes = 832 bytes
 
   // Skid accumulation texture — full-map-coverage at 4096×3072.
   // rgba8unorm: same format as 'load' render attachment.

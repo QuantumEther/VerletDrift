@@ -64,7 +64,10 @@
       "Bash(curl -s http://localhost:8000/)",
       "Bash(node -c js/renderer/hud.js)",
       "Bash(pkill -f \"python3 serve.py\")",
-      "Bash(xargs ls -la)"
+      "Bash(xargs ls -la)",
+      "Bash(grep -n \"ndc_x\\\\|ndc_y\\\\|viewportW\\\\|camera.x\" js/shaders/*.wgsl)",
+      "Bash(ls /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
+      "Bash(xargs grep -l \"drawCheckerboard\")"
     ]
   }
 }

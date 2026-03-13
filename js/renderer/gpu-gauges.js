@@ -89,7 +89,7 @@ class GaugeState {
 
 // Global gauge registry
 let gaugeRegistry = new Map();  // name → GaugeState
-let instanceDataBuffer = new Float32Array(MAX_GAUGES * 12);  // Staging buffer for GPU
+let instanceDataBuffer = new Float32Array(MAX_GAUGES * 13);  // Staging buffer for GPU (13 floats per gauge)
 let activeGaugeCount = 0;
 
 /**
@@ -167,7 +167,7 @@ export function getGaugeInstanceData() {
     const gaugeType = gaugeTypes[name] ?? 0;
     const data = gauge.getInstanceData(gaugeType);
     instanceDataBuffer.set(data, writeOffset);
-    writeOffset += 12;
+    writeOffset += 13;  // 13 floats per gauge instance
   }
 
   activeGaugeCount = gaugeRegistry.size;
