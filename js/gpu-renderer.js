@@ -228,7 +228,7 @@ function makeInstLayout7() {
 // =============================================================
 
 async function createAllPipelines() {
-  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL, smokeComputeWGSL, smokeRenderWGSL, gaugeWGSL] = await Promise.all([
+  const [bgWGSL, arrowWGSL, partWGSL, accumWGSL, compWGSL, smokeComputeWGSL, smokeRenderWGSL] = await Promise.all([
     loadWGSL('background.wgsl'),
     loadWGSL('arrows.wgsl'),
     loadWGSL('particles.wgsl'),
@@ -236,7 +236,8 @@ async function createAllPipelines() {
     loadWGSL('skid-composite.wgsl'),
     loadWGSL('smoke-compute.wgsl'),
     loadWGSL('smoke.wgsl'),
-    loadWGSL('gauge-render.wgsl'),
+    // TODO: gauge-render.wgsl shader has validation issues - disabled for now
+    // loadWGSL('gauge-render.wgsl'),
   ]);
 
   const bgMod    = device.createShaderModule({ code: bgWGSL,    label: 'background' });
@@ -246,7 +247,8 @@ async function createAllPipelines() {
   const compMod  = device.createShaderModule({ code: compWGSL,  label: 'skid-comp' });
   const smokeComputeMod = device.createShaderModule({ code: smokeComputeWGSL, label: 'smoke-compute' });
   const smokeRenderMod = device.createShaderModule({ code: smokeRenderWGSL, label: 'smoke' });
-  const gaugeMod = device.createShaderModule({ code: gaugeWGSL, label: 'gauge' });
+  // TODO: gauge shader disabled - validation issues to debug
+  // const gaugeMod = device.createShaderModule({ code: gaugeWGSL, label: 'gauge' });
 
   // 1. Background — full-screen triangle-strip quad, no vertex buffer.
   bgPipeline = await device.createRenderPipelineAsync({
@@ -348,6 +350,9 @@ async function createAllPipelines() {
     primitive: { topology: 'triangle-list' },
   });
 
+  // TODO: 8. Gauge render shader disabled due to validation errors
+  // Will re-enable once shader issues are resolved
+  /*
   // 8. Gauge render shader — analog gauge needles with smooth angular velocity-based motion blur.
   // Vertex attributes: screenX, screenY, needleAngle, gaugeType, size, r, g, b, angularVelocity, padding (13 floats per instance)
   gaugePipeline = await device.createRenderPipelineAsync({
@@ -382,6 +387,7 @@ async function createAllPipelines() {
     },
     primitive: { topology: 'triangle-list' },
   });
+  */
 }
 
 
@@ -942,14 +948,14 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.draw(6, MAX_SMOKE_GPU);  // dead slots are culled in shader
   }
 
-  // 2e. Analog gauges — speedometer, RPM, lateral-G with motion blur trails.
-  if (gaugeCount > 0) {
-    mainPass.setPipeline(gaugePipeline);
-    mainPass.setBindGroup(0, gaugeBindGroup.bg0);  // camera uniforms
-    mainPass.setBindGroup(1, gaugeBindGroup.bg1);  // gauge uniforms (decay rate)
-    mainPass.setVertexBuffer(0, gaugeInstBuf);
-    mainPass.draw(6, gaugeCount);  // 6 verts (unit quad) × gaugeCount instances
-  }
+  // TODO: 2e. Analog gauges — disabled due to shader validation issues
+  // if (gaugeCount > 0) {
+  //   mainPass.setPipeline(gaugePipeline);
+  //   mainPass.setBindGroup(0, gaugeBindGroup.bg0);  // camera uniforms
+  //   mainPass.setBindGroup(1, gaugeBindGroup.bg1);  // gauge uniforms (decay rate)
+  //   mainPass.setVertexBuffer(0, gaugeInstBuf);
+  //   mainPass.draw(6, gaugeCount);  // 6 verts (unit quad) × gaugeCount instances
+  // }
 
   // 2g. Sparks.
   if (sparkCount > 0) {
