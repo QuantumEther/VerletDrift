@@ -16,7 +16,7 @@ export { applyCameraTransform, removeCameraTransform, drawCheckerboard,
          drawSkidMarks, drawBalloons, drawSplatParticles,
          drawKinematicArrows }                                   from './world.js';
 export { updateSparks, getSparkPool, drawSparks }               from './sparks.js';
-export { updateSmoke, getSmokePool, MAX_SMOKE }                  from './smoke-system.js';
+export { updateSmoke, getSmokePool, consumeSpawnedSmokeIndices, reclaimSmokeParticles, MAX_SMOKE } from './smoke-system.js';
 export { drawSteeringWheelHud, drawThrottleBar, drawBrakeBar,
          drawHandbrakeBar, drawClutchBar, drawGearIndicator,
          drawScoreHud, drawLogsToggleCheckbox, logsToggleButtonBounds }  from './hud.js';

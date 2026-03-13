@@ -9,6 +9,8 @@ struct CameraUniforms {
   ppm: f32,           // pixels per metre
   viewportW: f32,
   viewportH: f32,
+  camX: f32,          // world-space camera position X (metres)
+  camY: f32,          // world-space camera position Y (metres)
 }
 
 struct SmokeParticle {
@@ -31,6 +33,7 @@ struct VertexOutput {
 
 @group(0) @binding(0) var<uniform> cam: CameraUniforms;
 @group(1) @binding(0) var<storage, read> particles: array<SmokeParticle>;
+@group(1) @binding(1) var<storage, read> aliveFlags: array<u32>;
 
 // =============================================================
 // VERTEX SHADER
@@ -54,17 +57,27 @@ fn vs_main(
   let local_pos = quad_verts[vert_id];
   let uv = local_pos * 2.0;  // [-1, 1] for circle clip
 
+  if (aliveFlags[inst_id] == 0u) {
+    return VertexOutput(
+      vec4<f32>(2.0, 2.0, 0.0, 1.0),
+      uv,
+      vec4<f32>(0.0, 0.0, 0.0, 0.0),
+    );
+  }
+
   // Read particle data
   let p = particles[inst_id];
 
-  // World-space billboard position + local quad position
+  // Camera-relative billboard position + local quad position
   let world_x = p.pos.x + local_pos.x * p.size;
   let world_y = p.pos.y + local_pos.y * p.size;
 
-  // Transform to NDC
+  // Transform to NDC — subtract camera position first (particles stored in world-space)
   let eff = cam.zoom * cam.ppm;
-  let ndc_x =  world_x * eff / (cam.viewportW * 0.5);
-  let ndc_y = -world_y * eff / (cam.viewportH * 0.5);
+  let camRelX = world_x - cam.camX;
+  let camRelY = world_y - cam.camY;
+  let ndc_x =  camRelX * eff / (cam.viewportW * 0.5);
+  let ndc_y = -camRelY * eff / (cam.viewportH * 0.5);
 
   // Premultiply alpha for correct blending
   let color = vec4<f32>(

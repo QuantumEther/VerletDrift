@@ -13,6 +13,21 @@ import { physicsRandom } from '../random.js';
 const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
 
+const _needleTrailCache = new WeakMap(); // CanvasRenderingContext2D → [{ t, value }]
+
+function _updateNeedleTrail(ctx, needleNormalized, nowSeconds, maxSamples) {
+  let history = _needleTrailCache.get(ctx);
+  if (!history) {
+    history = [];
+    _needleTrailCache.set(ctx, history);
+  }
+
+  history.push({ t: nowSeconds, value: clamp01(needleNormalized) });
+  while (history.length > maxSamples) history.shift();
+
+  return history;
+}
+
 // =============================================================
 // GAUGE GRADIENT CACHE (QW-1)
 // ctx.createRadialGradient is expensive; gradients are purely
@@ -185,36 +200,58 @@ export function drawAnalogGauge(ctx, canvasWidth, canvasHeight, config) {
   const jitterOffset  = speedJitter
     ? (Math.random() * 2 - 1) * speedJitter * sweepAngle * 0.04
     : 0;
-  const needleAngle = startAngle + sweepAngle * needleNormalized + jitterOffset;
+  const clampedNeedle = clamp01(needleNormalized);
+  const needleAngle = startAngle + sweepAngle * clampedNeedle + jitterOffset;
 
-  ctx.save();
-  ctx.translate(centreX, centreY);
-  ctx.rotate(needleAngle);
+  // Motion-blur trail for visible Canvas2D gauge needles.
+  // Source of truth is the same needleNormalized produced by createNeedlePhysics().
+  const nowSeconds = performance.now() * 0.001;
+  const trailSamples = Math.max(2, Math.min(state.params.motionBlurSamples || 6, 16));
+  const trail = _updateNeedleTrail(ctx, clampedNeedle, nowSeconds, trailSamples);
+  const trailDuration = 0.11 + (state.params.motionBlurIntensity || 0.6) * 0.12;
 
-  // Needle shadow.
-  ctx.shadowColor   = 'rgba(0,0,0,0.35)';
-  ctx.shadowBlur    = 4;
-  ctx.shadowOffsetX = 2;
-  ctx.shadowOffsetY = 2;
+  const drawNeedleShape = (angle, color, alpha = 1.0, widthScale = 1.0) => {
+    ctx.save();
+    ctx.translate(centreX, centreY);
+    ctx.rotate(angle);
 
-  // Needle body: red, tapers to a point.
-  ctx.beginPath();
-  ctx.moveTo(-3, 0);
-  ctx.lineTo(0, -(radius * 0.80)); // tip
-  ctx.lineTo(3, 0);
-  ctx.lineTo(0, radius * 0.15);    // tail counterweight
-  ctx.closePath();
-  ctx.fillStyle = '#c0392b';
-  ctx.fill();
+    ctx.shadowColor = alpha >= 0.99 ? 'rgba(0,0,0,0.35)' : 'transparent';
+    ctx.shadowBlur = alpha >= 0.99 ? 4 : 0;
+    ctx.shadowOffsetX = alpha >= 0.99 ? 2 : 0;
+    ctx.shadowOffsetY = alpha >= 0.99 ? 2 : 0;
 
-  ctx.shadowColor = 'transparent';
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(-3 * widthScale, 0);
+    ctx.lineTo(0, -(radius * 0.80));
+    ctx.lineTo(3 * widthScale, 0);
+    ctx.lineTo(0, radius * 0.15);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+  };
+
+  for (let i = 0; i < trail.length - 1; i++) {
+    const sample = trail[i];
+    const ageNorm = (nowSeconds - sample.t) / trailDuration;
+    if (ageNorm <= 0 || ageNorm >= 1) continue;
+
+    const blurAlpha = (1 - ageNorm) * 0.22;
+    const sampleAngle = startAngle + sweepAngle * sample.value + jitterOffset;
+    drawNeedleShape(sampleAngle, '#9b2e23', blurAlpha, 0.85);
+  }
+
+  // Current needle on top.
+  drawNeedleShape(needleAngle, '#c0392b', 1.0, 1.0);
 
   // Pivot cap (circle at centre, covers needle base) — cached gradient.
+  ctx.save();
+  ctx.translate(centreX, centreY);
   ctx.beginPath();
   ctx.arc(0, 0, 8, 0, Math.PI * 2);
   ctx.fillStyle = _gg.pivot;
   ctx.fill();
-
   ctx.restore();
 
   // --- Title and subtitle ---

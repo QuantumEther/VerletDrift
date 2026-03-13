@@ -6,7 +6,7 @@
 // Writes updated positions/velocities back to storage buffer.
 
 struct SmokeParticle {
-  pos: vec2<f32>,       // world position (metres)
+  pos: vec2<f32>,       // camera-relative position (metres)
   vel: vec2<f32>,       // velocity (m/s)
   life: f32,            // remaining lifetime (seconds)
   maxLife: f32,         // original lifetime
@@ -17,16 +17,17 @@ struct SmokeParticle {
 
 struct SmokeUniforms {
   dt: f32,                    // delta time (seconds)
-  particleCount: u32,         // number of live particles
+  particleCount: u32,         // total particle slots
   curlNoiseScale: f32,        // turbulence intensity multiplier
   noiseOffsetTime: f32,       // time-based noise animation offset
-  cameraX: f32,               // camera position X (for culling)
-  cameraY: f32,               // camera position Y
+  cameraX: f32,               // culling origin X (camera-relative convention)
+  cameraY: f32,               // culling origin Y
   _pad0: f32, _pad1: f32,
 }
 
 @group(0) @binding(0) var<uniform> uniforms: SmokeUniforms;
 @group(0) @binding(1) var<storage, read_write> particles: array<SmokeParticle>;
+@group(0) @binding(2) var<storage, read_write> aliveFlags: array<u32>;
 
 // =============================================================
 // PERLIN NOISE (2D hash-based gradient noise)
@@ -98,14 +99,20 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
     return;
   }
 
+  if (aliveFlags[idx] == 0u) {
+    return;
+  }
+
   var p = particles[idx];
 
   // ---- 1. AGE PARTICLE ----
   p.life -= uniforms.dt;
   if (p.life <= 0.0) {
-    // Dead particle: mark for culling (alpha = 0)
+    // Dead particle: free GPU slot.
     p.alpha = 0.0;
+    p.life = 0.0;
     particles[idx] = p;
+    aliveFlags[idx] = 0u;
     return;
   }
 
@@ -145,14 +152,17 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
   // ---- 7. SIZE GROWTH ----
   // Particles grow over their lifetime: 1.0x at spawn, 3.0x at end
-  p.size = p.size * (1.0 + lifeFrac * 2.0);
+  // lifeFrac goes 1→0 as particle ages, so (1 - lifeFrac) goes 0→1
+  p.size = p.size * (1.0 + (1.0 - lifeFrac) * 2.0);
 
   // ---- 8. VISIBILITY CULLING ----
-  // Cull particles far from camera (>300m away)
+  // Cull particles far from camera-relative origin (>300m away)
   let cameraPos = vec2<f32>(uniforms.cameraX, uniforms.cameraY);
   let distToCamera = distance(p.pos, cameraPos);
   if (distToCamera > 300.0) {
     p.alpha = 0.0;
+    p.life = 0.0;
+    aliveFlags[idx] = 0u;
   }
 
   // ---- 9. WRITE BACK TO BUFFER ----

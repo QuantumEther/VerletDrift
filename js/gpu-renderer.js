@@ -20,7 +20,13 @@ import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
 } from './constants.js';
-import { getSparkPool, getSmokePool, MAX_SMOKE } from './renderer/index.js';
+import {
+  getSparkPool,
+  getSmokePool,
+  consumeSpawnedSmokeIndices,
+  reclaimSmokeParticles,
+  MAX_SMOKE,
+} from './renderer/index.js';
 import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
 
 
@@ -40,6 +46,7 @@ const MAX_SPLATS     = 600;
 const MAX_SKID_NEW   = 2048;  // max new skid segments uploaded per render frame
 const MAX_SMOKE_GPU  = MAX_SMOKE; // 8000 — from smoke-system.js
 const SMOKE_COMPUTE_WORKGROUP_SIZE = 256;
+const SMOKE_READBACK_INTERVAL_FRAMES = 12;
 
 // Float RGB for spark palette (matches SPARK_COLORS_SDR in renderer.js).
 // Index matches spark.hdrIndex.
@@ -104,7 +111,7 @@ let gaugeBindGroup = null;   // Gauge bind group (uniforms + instance data)
 
 // CPU-side staging arrays (reused every frame, no GC pressure)
 const BG_DATA    = new Float32Array(16);
-const CAM_DATA   = new Float32Array(4);
+const CAM_DATA   = new Float32Array(6);  // zoom, ppm, viewportW, viewportH, camX, camY
 const ACCUM_DATA = new Float32Array(4);
 const COMP_DATA  = new Float32Array(4);
 const GAUGE_UNI_DATA = new Float32Array(4);  // decayRate + 3 padding floats
@@ -112,14 +119,20 @@ const arrowData  = new Float32Array(MAX_ARROWS * 9);
 const sparkData  = new Float32Array(MAX_SPARKS_GPU * 7);
 const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
-const smokeData  = new Float32Array(MAX_SMOKE_GPU * 11);  // pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha (11 floats)
 const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1
+const SMOKE_UPLOAD_STRIDE = 11;
+const SMOKE_UPLOAD_DATA = new Float32Array(SMOKE_UPLOAD_STRIDE);
+const SMOKE_ALIVE_VALUE = new Uint32Array([1]);
 const gaugeData  = new Float32Array(16 * 12); // 16 gauges × 12 floats per gauge
 
 // Smoke GPU buffers
 let smokeBuf = null;        // storage buffer (compute reads/writes)
+let smokeAliveBuf = null;    // per-slot alive flags written by compute
+let smokeAliveReadbackBuf = null;  // MAP_READ staging for periodic free-list reclaim
 let smokeUniBuf = null;     // compute uniforms (dt, particleCount, curlNoiseScale, etc.)
-let smokePool = null;       // CPU pool from smoke-system.js (updated each frame)
+let smokePool = null;       // CPU pool from smoke-system.js
+let smokeReadbackInFlight = false;
+let smokeFramesSinceReadback = 0;
 
 
 // =============================================================
@@ -377,7 +390,7 @@ async function createAllPipelines() {
 function createBuffersAndBindGroups() {
   // Uniform buffers
   bgUniBuf    = makeUniBuf(64);   // 16 × f32
-  camUniBuf   = makeUniBuf(16);   // 4  × f32
+  camUniBuf   = makeUniBuf(24);   // 6  × f32 (zoom, ppm, viewportW, viewportH, camX, camY)
   accumUniBuf = makeUniBuf(16);   // 4  × f32
   compUniBuf  = makeUniBuf(16);   // 4  × f32
 
@@ -394,6 +407,20 @@ function createBuffersAndBindGroups() {
     size:   MAX_SMOKE_GPU * 44,
     usage:  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
+
+  smokeAliveBuf = device.createBuffer({
+    label: 'smokeAliveBuf',
+    size: MAX_SMOKE_GPU * 4,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+  });
+
+  smokeAliveReadbackBuf = device.createBuffer({
+    label: 'smokeAliveReadbackBuf',
+    size: MAX_SMOKE_GPU * 4,
+    usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+  });
+
+  device.queue.writeBuffer(smokeAliveBuf, 0, new Uint32Array(MAX_SMOKE_GPU));
 
   // Smoke compute uniforms: dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1 = 8 × f32 = 32 bytes
   smokeUniBuf = makeUniBuf(32);
@@ -461,6 +488,7 @@ function createBuffersAndBindGroups() {
     entries: [
       { binding: 0, resource: { buffer: smokeUniBuf } },
       { binding: 1, resource: { buffer: smokeBuf } },
+      { binding: 2, resource: { buffer: smokeAliveBuf } },
     ],
   });
 
@@ -477,6 +505,7 @@ function createBuffersAndBindGroups() {
     layout:  smokeRenderPipeline.getBindGroupLayout(1),
     entries: [
       { binding: 0, resource: { buffer: smokeBuf } },
+      { binding: 1, resource: { buffer: smokeAliveBuf } },
     ],
   });
   // Store as tuple for easy access in render pass
@@ -589,6 +618,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   resizeGPU(canvasWidth, canvasHeight);
 
   const camera = state.camera;
+  smokePool = getSmokePool();
   const body   = state.body;
   const params = state.params;
   const ppm    = params.pixelsPerMeter || PIXELS_PER_METER;
@@ -646,11 +676,13 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   BG_DATA[14] = body.angularVelocity || 0;
   BG_DATA[15] = 0;  // _pad
 
-  // ---- Camera uniforms (arrows + particles) ----
+  // ---- Camera uniforms (arrows + particles + smoke render) ----
   CAM_DATA[0] = zoom;
   CAM_DATA[1] = ppm;
   CAM_DATA[2] = canvasWidth;
   CAM_DATA[3] = canvasHeight;
+  CAM_DATA[4] = camera.x;   // World-space camera X — used by smoke.wgsl for particle offset
+  CAM_DATA[5] = camera.y;   // World-space camera Y
 
   // ---- Composite uniforms (UV scale + centre for skid texture sampling) ----
   // uvCenter = world position of camera in UV [0,1] space (UV = worldPos / mapSize).
@@ -734,31 +766,34 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     splatCount++;
   }
 
-  // ---- Smoke particle instances ----
-  // GPU compute shader will advect all particles; CPU just packs them into the storage buffer.
-  // Particle struct: pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha = 11 × f32
-  const smokePool2 = getSmokePool();
-  let smokeCount   = 0;
-  const SMOKE_STRIDE = 11;  // floats per particle
-  for (let i = 0; i < smokePool2.length; i++) {
-    const p = smokePool2[i];
-    if (!p.alive) continue;
-    if (smokeCount >= MAX_SMOKE_GPU) break;
+  // ---- Smoke particle spawns ----
+  // GPU simulation is authoritative. CPU uploads only newly spawned slots.
+  // Particles are stored in world-space; smoke.wgsl subtracts cam.camX/camY in the shader.
+  const spawnedSmokeIndices = consumeSpawnedSmokeIndices();
+  if (spawnedSmokeIndices.length > 0) {
+    for (let i = 0; i < spawnedSmokeIndices.length; i++) {
+      const idx = spawnedSmokeIndices[i];
+      const p = smokePool[idx];
+      if (!p || !p.alive) continue;
 
-    const base = smokeCount * SMOKE_STRIDE;
-    smokeData[base + 0] = p.pos.x;         // world position X
-    smokeData[base + 1] = p.pos.y;         // world position Y
-    smokeData[base + 2] = p.vel.x;         // velocity X
-    smokeData[base + 3] = p.vel.y;         // velocity Y
-    smokeData[base + 4] = p.life;          // remaining lifetime
-    smokeData[base + 5] = p.maxLife;       // original lifetime
-    smokeData[base + 6] = p.size;          // base size
-    smokeData[base + 7] = p.r;             // color R
-    smokeData[base + 8] = p.g;             // color G
-    smokeData[base + 9] = p.b;             // color B
-    smokeData[base + 10] = p.alpha;        // opacity
-    smokeCount++;
+      SMOKE_UPLOAD_DATA[0] = p.pos.x;   // world-space X (shader applies camera offset)
+      SMOKE_UPLOAD_DATA[1] = p.pos.y;   // world-space Y
+      SMOKE_UPLOAD_DATA[2] = p.vel.x;
+      SMOKE_UPLOAD_DATA[3] = p.vel.y;
+      SMOKE_UPLOAD_DATA[4] = p.life;
+      SMOKE_UPLOAD_DATA[5] = p.maxLife;
+      SMOKE_UPLOAD_DATA[6] = p.size;
+      SMOKE_UPLOAD_DATA[7] = p.r;
+      SMOKE_UPLOAD_DATA[8] = p.g;
+      SMOKE_UPLOAD_DATA[9] = p.b;
+      SMOKE_UPLOAD_DATA[10] = p.alpha;
+
+      device.queue.writeBuffer(smokeBuf, idx * SMOKE_UPLOAD_STRIDE * 4, SMOKE_UPLOAD_DATA);
+      device.queue.writeBuffer(smokeAliveBuf, idx * 4, SMOKE_ALIVE_VALUE);
+    }
   }
+
+  const smokeCount = MAX_SMOKE_GPU;
 
   // ---- New skid segment instances ----
   // state.skidMarksNewThisFrame is populated by recordSkidMarks() in main.js.
@@ -800,7 +835,6 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   device.queue.writeBuffer(camUniBuf,  0, CAM_DATA);
   device.queue.writeBuffer(compUniBuf, 0, COMP_DATA);
   if (arrowCount > 0) device.queue.writeBuffer(arrowInstBuf, 0, arrowData, 0, arrowCount * 9);
-  if (smokeCount > 0) device.queue.writeBuffer(smokeBuf, 0, smokeData, 0, smokeCount * 11);
   if (sparkCount > 0) device.queue.writeBuffer(sparkInstBuf, 0, sparkData, 0, sparkCount * 7);
   if (splatCount > 0) device.queue.writeBuffer(splatInstBuf, 0, splatData, 0, splatCount * 7);
   if (skidCount  > 0) device.queue.writeBuffer(skidInstBuf,  0, skidData,  0, skidCount  * 9);
@@ -808,12 +842,12 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   // ---- Smoke compute uniforms ----
   // Animation time for curl noise (increments to create turbulence animation)
   const now = performance.now() * 0.001;  // seconds
-  SMOKE_UNI_DATA[0] = dt || (1.0 / 60.0);  // delta time
+  SMOKE_UNI_DATA[0] = 1.0 / 60.0;  // delta time (render cadence fallback)
   SMOKE_UNI_DATA[1] = smokeCount;           // particle count
   SMOKE_UNI_DATA[2] = params.smokeCurlNoiseScale || 2.5;  // turbulence intensity [0.5–5.0]
   SMOKE_UNI_DATA[3] = now;                  // time-based noise animation
-  SMOKE_UNI_DATA[4] = camera.x;             // camera X for visibility culling
-  SMOKE_UNI_DATA[5] = camera.y;             // camera Y for visibility culling
+  SMOKE_UNI_DATA[4] = camera.x;             // world-space camera X for culling
+  SMOKE_UNI_DATA[5] = camera.y;             // world-space camera Y for culling
   SMOKE_UNI_DATA[6] = 0.0;                  // _pad0
   SMOKE_UNI_DATA[7] = 0.0;                  // _pad1
   if (smokeCount > 0) device.queue.writeBuffer(smokeUniBuf, 0, SMOKE_UNI_DATA);
@@ -903,7 +937,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.setPipeline(smokeRenderPipeline);
     mainPass.setBindGroup(0, smokeRenderBindGroup.bg0);  // camera uniforms
     mainPass.setBindGroup(1, smokeRenderBindGroup.bg1);  // particle storage buffer
-    mainPass.draw(6, smokeCount);  // 6 verts (unit quad) × smokeCount instances
+    mainPass.draw(6, MAX_SMOKE_GPU);  // dead slots are culled in shader
   }
 
   // 2e. Analog gauges — speedometer, RPM, lateral-G with motion blur trails.
@@ -936,4 +970,37 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
 
   // Drain new skid segments — they have been uploaded to the accumulation texture.
   if (newSegs.length > 0) newSegs.length = 0;
+
+  smokeFramesSinceReadback++;
+  if (!smokeReadbackInFlight && smokeFramesSinceReadback >= SMOKE_READBACK_INTERVAL_FRAMES) {
+    smokeFramesSinceReadback = 0;
+    smokeReadbackInFlight = true;
+
+    const readbackEnc = device.createCommandEncoder({ label: 'smokeAliveReadback' });
+    readbackEnc.copyBufferToBuffer(
+      smokeAliveBuf,
+      0,
+      smokeAliveReadbackBuf,
+      0,
+      MAX_SMOKE_GPU * 4
+    );
+    device.queue.submit([readbackEnc.finish()]);
+
+    device.queue.onSubmittedWorkDone().then(async () => {
+      try {
+        await smokeAliveReadbackBuf.mapAsync(GPUMapMode.READ);
+        const mapped = new Uint32Array(smokeAliveReadbackBuf.getMappedRange());
+        const dead = [];
+        for (let i = 0; i < mapped.length; i++) {
+          if (mapped[i] === 0 && smokePool[i] && smokePool[i].alive) dead.push(i);
+        }
+        smokeAliveReadbackBuf.unmap();
+        if (dead.length > 0) reclaimSmokeParticles(dead);
+      } catch (_err) {
+        // Ignore transient map races; next interval will retry.
+      } finally {
+        smokeReadbackInFlight = false;
+      }
+    });
+  }
 }

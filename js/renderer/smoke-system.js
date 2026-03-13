@@ -8,6 +8,8 @@
 //
 // GPU-side responsibility: Advect particles via compute shader with
 // Perlin curl noise turbulence, gravity, drag, and lifetime aging.
+// CPU only seeds newly spawned particles and recycles freed indices
+// reported back from GPU readback.
 // =============================================================
 
 import { renderState as state } from '../state.js';
@@ -38,6 +40,9 @@ for (let i = 0; i < MAX_SMOKE; i++) {
 // Free-list for O(1) spawn
 const smokeFreeList = [];
 for (let i = MAX_SMOKE - 1; i >= 0; i--) smokeFreeList.push(i);
+
+// Spawn queue consumed by gpu-renderer. Contains particle indices written this frame.
+const spawnedSmokeIndices = [];
 
 
 // =============================================================
@@ -127,6 +132,7 @@ export function updateSmoke(dt) {
         }
 
         p.alive = true;
+        spawnedSmokeIndices.push(idx);
       }
     }
   }
@@ -138,3 +144,23 @@ export function updateSmoke(dt) {
 
 // ---- Return pool to gpu-renderer for upload to GPU buffer ----
 export function getSmokePool() { return smokePool; }
+
+export function consumeSpawnedSmokeIndices() {
+  const out = spawnedSmokeIndices.slice();
+  spawnedSmokeIndices.length = 0;
+  return out;
+}
+
+// GPU-side simulation is authoritative after spawn. Dead particles are returned
+// via periodic readback so the CPU free-list can continue allocating.
+export function reclaimSmokeParticles(deadIndices) {
+  for (let i = 0; i < deadIndices.length; i++) {
+    const idx = deadIndices[i];
+    const p = smokePool[idx];
+    if (!p || !p.alive) continue;
+    p.alive = false;
+    p.life = 0;
+    p.alpha = 0;
+    smokeFreeList.push(idx);
+  }
+}
