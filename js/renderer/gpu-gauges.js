@@ -44,8 +44,8 @@ class GaugeState {
     const dt = Math.max(currentTime - this.previousTimestamp, 0.001);  // Avoid division by zero
     this.angularVelocity = (newAngle - this.previousAngle) / dt;
 
-    this.previousAngle = this.needleAngle;
-    this.previousTimestamp = this.needleTimestamp;
+    this.previousAngle = newAngle;           // Save NEW angle for next frame's velocity
+    this.previousTimestamp = currentTime;    // Save CURRENT time for next frame's velocity
 
     this.needleAngle = newAngle;
     this.needleTimestamp = currentTime;
