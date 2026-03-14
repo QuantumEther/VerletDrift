@@ -60,11 +60,11 @@ export function drawDebugOverlays(ctx) {
   const sizeScale = params.debugFontSize / 8;
 
   // === TIRE FORCES ===
-  if (params.debugShowTireForces && state.perWheelLateralForce) {
+  if (params.debugShowTireForces && state.wheelForces) {
     for (const name of wheelNames) {
       const wheel = wheels[name];
-      const latForce = state.perWheelLateralForce[name] || 0;
-      const lonForce = state.perWheelLongitudinalForce[name] || 0;
+      const latForce = state.wheelForces[name]?.fy || 0;
+      const lonForce = state.wheelForces[name]?.fx || 0;
 
       // Wheel frame: forward = car heading, right = heading + 90°
       const fwd = Math.cos(body.heading);

@@ -30,7 +30,8 @@ const INFO_COLOR = '#0f0';
  * @param {number} canvasHeight - Canvas height in CSS pixels
  */
 export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
-  if (!state.debug.overlaysEnabled || state.debug.mode === 'quiet') {
+  // Phase B: Use unified controller for overlay visibility check
+  if (!state.debug.controller.isOverlayVisible()) {
     return;
   }
 
@@ -59,7 +60,10 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
   // FPS and timing
   ctx.fillText(`FPS: ${state.loop.renderFps.toFixed(1)} / ${state.loop.physicsTps.toFixed(1)} TPS`, x, y);
   y += lineH;
-  ctx.fillText(`Frame: ${state.debug.frame} | dt: ${state.debug.metrics.dtMs.toFixed(1)}ms`, x, y);
+
+  // dt with safety check (avoid showing "0.0ms" if uninitialized)
+  const dtDisplay = state.debug.metrics.dtMs > 0 ? state.debug.metrics.dtMs.toFixed(1) : '—';
+  ctx.fillText(`Frame: ${state.debug.frame} | dt: ${dtDisplay}ms`, x, y);
   y += lineH;
   ctx.fillText(`Time: ${state.loop.simulationTime.toFixed(2)}s`, x, y);
   y += lineH;
@@ -67,7 +71,9 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
   // Constraint metrics
   ctx.fillText(`Constraints:`, x, y);
   y += lineH;
-  ctx.fillText(`  max=${state.debug.metrics.constraintMaxCorr.toFixed(4)}m avg=${state.debug.metrics.constraintAvgCorr.toFixed(4)}m`, x, y);
+  const maxCorrDisplay = state.debug.metrics.constraintMaxCorr > 0 ? state.debug.metrics.constraintMaxCorr.toFixed(4) : '—';
+  const avgCorrDisplay = state.debug.metrics.constraintAvgCorr > 0 ? state.debug.metrics.constraintAvgCorr.toFixed(4) : '—';
+  ctx.fillText(`  max=${maxCorrDisplay}m avg=${avgCorrDisplay}m`, x, y);
   y += lineH;
   ctx.fillText(`  iters=${state.debug.metrics.constraintIters}`, x, y);
   y += lineH;
@@ -105,7 +111,8 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
  * @param {number} canvasHeight - Canvas height in CSS pixels
  */
 export function drawEventPanel(ctx, canvasWidth, canvasHeight) {
-  if (!state.debug.overlaysEnabled || state.debug.mode === 'quiet') {
+  // Phase B: Use unified controller for overlay visibility check
+  if (!state.debug.controller.isOverlayVisible()) {
     return;
   }
 
@@ -175,7 +182,8 @@ export function drawEventPanel(ctx, canvasWidth, canvasHeight) {
  * @param {number} canvasHeight - Canvas height in CSS pixels
  */
 export function drawDebugPanels(ctx, canvasWidth, canvasHeight) {
-  if (!state.debug.overlaysEnabled || state.debug.mode === 'quiet') {
+  // Phase B: Use unified controller for overlay visibility check
+  if (!state.debug.controller.isOverlayVisible()) {
     return;
   }
 

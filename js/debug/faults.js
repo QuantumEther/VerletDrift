@@ -108,8 +108,8 @@ export function checkConstraintHealth() {
   const now = performance.now();
   const metrics = state.debug.metrics;
 
-  // Correction spike detection: current max > 5× previous
-  if (metrics.constraintMaxCorr > metrics.constraintMaxCorr * 5) {
+  // Correction spike detection: current max > 5× previous frame
+  if (metrics.constraintMaxCorr > metrics.prevConstraintMaxCorr * 5) {
     if (now - faultState.lastConstraintSpikeFault > DEDUPE_INTERVAL_MS) {
       faultState.lastConstraintSpikeFault = now;
       const msg = `Constraint spike: ${metrics.constraintMaxCorr.toFixed(4)}m`;

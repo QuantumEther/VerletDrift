@@ -67,7 +67,15 @@
       "Bash(xargs ls -la)",
       "Bash(grep -n \"ndc_x\\\\|ndc_y\\\\|viewportW\\\\|camera.x\" js/shaders/*.wgsl)",
       "Bash(ls /c/Users/Quantum/Documents/GitHub/VerletDrift/js/*.js)",
-      "Bash(xargs grep -l \"drawCheckerboard\")"
+      "Bash(xargs grep -l \"drawCheckerboard\")",
+      "Bash(npm test)",
+      "Bash(npm install)",
+      "Bash(npm run test:e2e)",
+      "Bash(npx playwright install)",
+      "mcp__Desktop_Commander__list_directory",
+      "Bash(grep -n \"case ''F2''\\\\|case ''F3''\\\\|debug.mode\\\\|overlaysEnabled\\\\|cycleMode\\\\|toggleOverlay\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\js\\\\main.js\")",
+      "Bash(node -c js/debug/controller.js)",
+      "Bash(node -c js/state.js)"
     ]
   }
 }

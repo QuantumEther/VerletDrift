@@ -46,6 +46,8 @@ import {
   DEFAULT_BALLOON_RESPAWN_RATE,
 } from './constants.js';
 
+import { DebugController } from './debug/controller.js';
+
 // =============================================================
 // The single exported state object.
 // Every mutable value in the simulation lives as a property here.
@@ -734,10 +736,16 @@ const state = {
   // Managed by debug/logger.js, debug/events.js, main.js
   // -----------------------------------------------------------
   debug: {
-    // Configuration
-    mode: 'quiet',  // quiet | tuning | trace
+    // Unified debug controller (Phase B: Architectural Unification)
+    // Consolidates: state.params.logsEnabled, state.debug.mode, state.debug.overlaysEnabled
+    // NOTE: Initialized with defaults; main.js will update from URL params/localStorage
+    controller: new DebugController({ level: 'quiet', overlaysEnabled: true }),
+
+    // Legacy fields (deprecated but kept for backward compatibility during migration)
+    // WARNING: Use controller instead of these fields
+    mode: 'quiet',  // DEPRECATED: use controller.level instead
     frame: 0,       // incremented each render frame
-    overlaysEnabled: false,
+    overlaysEnabled: false,  // DEPRECATED: use controller.overlaysEnabled instead
 
     // Telemetry metrics (updated per physics step or frame)
     metrics: {
@@ -746,6 +754,7 @@ const state = {
       substepsThisFrame: 0,       // Substeps executed this frame
       // Constraint health
       constraintMaxCorr: 0,       // Max correction magnitude (m)
+      prevConstraintMaxCorr: 0,   // Previous frame's max correction (for spike detection)
       constraintAvgCorr: 0,       // Average correction magnitude (m)
       constraintIters: 0,         // Iterations used
       // Slip metrics

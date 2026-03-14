@@ -690,8 +690,9 @@ function initPresets() {
 // Called once per animation frame from main.js.
 // Reads from state.body and state.engine.
 export function updateInfoBar() {
-  // GATING: Early return if logs are disabled (zero overhead when disabled)
-  if (!state.params.logsEnabled) return;
+  // Phase B: Use unified controller for HUD visibility check
+  // GATING: Early return if HUD is not visible (zero overhead when disabled)
+  if (!state.debug.controller.isHUDVisible()) return;
 
   initInfoBarCellCache();
 
@@ -759,8 +760,8 @@ function setInfoCell(elementId, text) {
 //   [UI] buttonId clicked
 export function initChangeLogger() {
   document.addEventListener('input', (e) => {
-    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
-    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
+    // Phase B: logger.shouldLog() now checks controller level (replaces logsEnabled)
+    if (!logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     if (el.type === 'range' || el.type === 'text' || el.type === 'number') {
@@ -768,8 +769,8 @@ export function initChangeLogger() {
     }
   });
   document.addEventListener('change', (e) => {
-    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
-    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
+    // Phase B: logger.shouldLog() now checks controller level (replaces logsEnabled)
+    if (!logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     // Log select elements and checkboxes on change.
@@ -778,8 +779,8 @@ export function initChangeLogger() {
     }
   });
   document.addEventListener('click', (e) => {
-    // GATING: Skip log generation if logging is disabled (legacy) or mode is quiet
-    if (!state.params.logsEnabled || !logger.shouldLog('debug', 'ui')) return;
+    // Phase B: logger.shouldLog() now checks controller level (replaces logsEnabled)
+    if (!logger.shouldLog('debug', 'ui')) return;
 
     const el = e.target;
     if (el.tagName === 'BUTTON' && el.id) {

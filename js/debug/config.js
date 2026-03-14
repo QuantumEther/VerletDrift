@@ -6,30 +6,32 @@
 
 // Default configuration
 const DEFAULTS = {
-  mode: 'quiet', // quiet | tuning | trace
-  level: 'warn', // error | warn | info | debug | trace
-  channels: null, // null = all channels allowed, or array of allowed channel names
+  mode: 'quiet', // quiet | tuning | trace (DEPRECATED: maps to controller.level)
+  level: 'warn', // error | warn | info | debug | trace (DEPRECATED: use controller level mapping)
+  channels: null, // null = all channels allowed, or array of allowed channel names (independent of controller)
   traceChannel: null, // if set, channel to trace
   traceMs: 1500, // trace window duration in milliseconds
-  overlaysEnabled: true,
-  freezeOnError: false,
+  overlaysEnabled: true, // DEPRECATED: maps to controller.overlaysEnabled
+  freezeOnError: false, // maps to controller.freezeOnError
 };
 
 // Mode presets: set recommended defaults when mode is selected
+// NOTE: Keep old level values for backward compatibility with existing code/tests
+// Controller will map these to new levels during initialization
 const MODE_PRESETS = {
   quiet: {
-    level: 'warn',
+    level: 'warn',       // Kept for backward compatibility
     channels: null,
     overlaysEnabled: false,
   },
   tuning: {
-    level: 'debug',
+    level: 'debug',      // Kept for backward compatibility
     channels: null,
     overlaysEnabled: true,
   },
   trace: {
-    level: 'trace',
-    channels: null, // will be overridden by traceChannel if set
+    level: 'trace',      // Kept for backward compatibility
+    channels: null,
     overlaysEnabled: true,
   },
 };
@@ -39,7 +41,9 @@ const MODE_PRESETS = {
  * @returns {Object} Resolved configuration object
  */
 export function resolveConfig() {
-  const urlParams = new URLSearchParams(window.location.search);
+  // Handle both browser (window.location) and Node.js (no window) environments
+  const searchString = typeof window !== 'undefined' ? window.location.search : '';
+  const urlParams = new URLSearchParams(searchString);
   const config = { ...DEFAULTS };
 
   // Priority 1: URL parameters (highest)

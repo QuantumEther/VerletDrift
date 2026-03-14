@@ -25,6 +25,7 @@ const LEVEL_METHODS = {
 
 // Global logger state
 let config = resolveConfig();
+let controller = null; // Phase B: Unified DebugController (when initialized)
 let eventRingBuffer = null;
 let frameCount = 0;
 
@@ -82,6 +83,15 @@ export function setLevel(level) {
 export function setChannelsAllowlist(channels) {
   config.channels = channels;
   saveToStorage(config);
+}
+
+/**
+ * Phase B: Set the unified DebugController
+ * Allows logger to read level from controller instead of local config
+ * @param {DebugController} debugController - Unified controller instance
+ */
+export function setController(debugController) {
+  controller = debugController;
 }
 
 /**
@@ -146,9 +156,23 @@ export function shouldLog(level, channel) {
     return true;
   }
 
+  // Phase B: Read level from controller if available, otherwise use config
+  let effectiveLevel = config.level;
+  if (controller) {
+    // Map controller level back to logger LEVEL_MAP for compatibility
+    const controllerLevelMap = {
+      silent: 'error',    // Silent: errors only
+      quiet: 'warn',      // Quiet: warn + error (matches old 'quiet' mode)
+      info: 'info',       // Info: info + warn + error (sampled)
+      debug: 'debug',     // Debug: debug + info + warn + error (matches old 'tuning' mode)
+      verbose: 'trace',   // Verbose: trace + all (matches old 'trace' mode)
+    };
+    effectiveLevel = controllerLevelMap[controller.level] || 'warn';
+  }
+
   // Check configured minimum level
   const levelValue = LEVEL_MAP[level];
-  const configLevelValue = LEVEL_MAP[config.level];
+  const configLevelValue = LEVEL_MAP[effectiveLevel];
   if (levelValue > configLevelValue) {
     return false;
   }
@@ -296,6 +320,7 @@ export const logger = {
   setMode,
   setLevel,
   setChannelsAllowlist,
+  setController,
   setTraceWindow,
   closeTraceWindow,
   setOverlaysEnabled,

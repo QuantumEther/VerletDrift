@@ -120,6 +120,7 @@ import { logger, initLogger } from './debug/logger.js';
 import { eventBuffer, initEvents } from './debug/events.js';
 import { resolveConfig } from './debug/config.js';
 import { checkFaults } from './debug/faults.js';
+import { DebugController } from './debug/controller.js';
 
 
 // =============================================================
@@ -183,7 +184,7 @@ const simCssHeight = simCanvas.clientHeight || simCanvas.height;
 // The game loop starts immediately; GPU rendering activates once ready.
 if (gpuCanvasEl) {
   initGPU(gpuCanvasEl).catch((e) => {
-    console.warn('[GPU] initGPU failed:', e);
+    logger.warn('gpu', 'GPU initialization failed', { error: e.message });
   });
 }
 
@@ -198,17 +199,39 @@ initLogger(eventBuffer);
 
 // Resolve config from URL params → localStorage → defaults
 const debugConfig = resolveConfig();
+
+// Phase B: Initialize unified DebugController from config
+// Maps legacy mode + logger levels → new controller levels
+// Old levels (warn, debug, trace) → New levels (quiet, info, verbose)
+const levelMap = {
+  quiet: 'quiet',
+  tuning: 'debug',   // tuning uses 'debug' logger level
+  trace: 'verbose',
+};
+const loggerLevelToControllerLevel = {
+  warn: 'quiet',     // warn level → quiet controller level
+  debug: 'debug',    // debug level → debug controller level
+  trace: 'verbose',  // trace level → verbose controller level
+};
+state.debug.controller = new DebugController({
+  level: loggerLevelToControllerLevel[debugConfig.level] || levelMap[debugConfig.mode] || 'quiet',
+  overlaysEnabled: debugConfig.overlaysEnabled,
+  traceChannel: debugConfig.traceChannel,
+  traceMs: debugConfig.traceMs,
+  freezeOnError: debugConfig.freezeOnError,
+});
+
+// Keep legacy fields in sync for backward compatibility
 state.debug.mode = debugConfig.mode;
-state.debug.overlaysEnabled = debugConfig.overlaysEnabled;
-logger.setMode(debugConfig.mode);
-if (debugConfig.overlaysEnabled) logger.setOverlaysEnabled(true);
-if (debugConfig.logChannels) logger.setChannelsAllowlist(debugConfig.logChannels);
+state.debug.overlaysEnabled = state.debug.controller.overlaysEnabled;
+
+// Initialize logger with controller and channel settings
+logger.setController(state.debug.controller);
+if (debugConfig.channels) logger.setChannelsAllowlist(debugConfig.channels);
 if (debugConfig.traceChannel) {
   logger.setTraceWindow(debugConfig.traceChannel, debugConfig.traceMs);
 }
-if (debugConfig.freezeOnError) {
-  state.debug.faults.freezeOnError = true;
-}
+state.debug.faults.freezeOnError = state.debug.controller.freezeOnError;
 
 // Add global error handlers
 window.addEventListener('error', (e) => {
@@ -312,33 +335,40 @@ if (canvasResolutionSlider) {
 
 // Keyboard bindings for debug modes
 document.addEventListener('keydown', (e) => {
-  // F2: Cycle through debug modes (quiet → tuning → trace → quiet)
+  // F2: Cycle through debug levels (silent → quiet → info → debug → verbose → silent)
+  // Phase B: Use unified DebugController instead of direct state mutation
   if (e.code === 'F2') {
     e.preventDefault();
-    const modes = ['quiet', 'tuning', 'trace'];
-    const currentIdx = modes.indexOf(state.debug.mode);
-    const nextMode = modes[(currentIdx + 1) % modes.length];
-    logger.setMode(nextMode);
-    state.debug.mode = nextMode;
-    console.log(`[DEBUG] Mode changed to: ${nextMode}`);
+    state.debug.controller.cycleLevel();
+    // Keep legacy state in sync for backward compatibility
+    const modeMap = {
+      silent: 'quiet',
+      quiet: 'quiet',
+      info: 'tuning',
+      debug: 'tuning',
+      verbose: 'trace',
+    };
+    state.debug.mode = modeMap[state.debug.controller.level] || 'quiet';
+    logger.info('main', `Debug level changed to: ${state.debug.controller.level}`);
   }
 
   // F3: Toggle overlay visibility
+  // Phase B: Use unified DebugController instead of direct state mutation
   if (e.code === 'F3') {
     e.preventDefault();
-    const newState = !state.debug.overlaysEnabled;
-    logger.setOverlaysEnabled(newState);
-    state.debug.overlaysEnabled = newState;
-    console.log(`[DEBUG] Overlays ${newState ? 'enabled' : 'disabled'}`);
+    state.debug.controller.toggleOverlayVisibility();
+    state.debug.overlaysEnabled = state.debug.controller.overlaysEnabled;
+    logger.info('main', `Overlays ${state.debug.controller.overlaysEnabled ? 'enabled' : 'disabled'}`);
   }
 
   // Shift+Ctrl+T: Open trace window for a channel (prompt user)
+  // Phase B: Use unified DebugController instead of direct logger method
   if (e.shiftKey && e.ctrlKey && e.code === 'KeyT') {
     e.preventDefault();
     const channel = prompt('Enter channel name to trace (tires, engine, smoke, etc):');
     if (channel && channel.trim()) {
-      logger.setTraceWindow(channel.trim(), 2000);
-      console.log(`[DEBUG] Trace window opened for channel: ${channel}`);
+      state.debug.controller.openTraceWindow(channel.trim(), 2000);
+      logger.info('main', `Trace window opened for channel: ${channel}`);
     }
   }
 });
@@ -712,14 +742,21 @@ function mainLoop(timestampMilliseconds) {
   logger.incrementFrameCount();
   state.debug.frame = logger.getFrameCount();
 
+  // Update telemetry metrics for this frame
+  state.debug.metrics.dtMs = wallFrameTime * 1000;  // Convert to milliseconds
+  state.debug.metrics.substepsThisFrame = ticksThisFrame;
+
   // Check if simulation is frozen due to fault (if enabled)
   if (state.debug.faults.isFrozen) {
-    console.warn('[FAULT] Simulation frozen. Check console and overlays for details.');
+    logger.warn('main', 'Simulation frozen due to fault - check console and overlays for details');
     return; // Skip rendering and physics this frame
   }
 
   // Render once per animation frame using interpolated state.
   renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
+
+  // Save constraint metrics for next frame's spike detection
+  state.debug.metrics.prevConstraintMaxCorr = state.debug.metrics.constraintMaxCorr;
 }
 
 
