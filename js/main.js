@@ -1513,5 +1513,11 @@ window.debugParams = () => {
   logger.info('debug', JSON.stringify(p, null, 2));
 };
 
+// Expose globals for E2E testing
+window.state = state;
+window.eventBuffer = eventBuffer;
+window.drawDebugPanels = drawDebugPanels;
+window.getState = () => state;
+
 // Kick off the game loop.
 requestAnimationFrame(mainLoop);

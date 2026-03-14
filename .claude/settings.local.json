@@ -75,7 +75,12 @@
       "mcp__Desktop_Commander__list_directory",
       "Bash(grep -n \"case ''F2''\\\\|case ''F3''\\\\|debug.mode\\\\|overlaysEnabled\\\\|cycleMode\\\\|toggleOverlay\" \"C:\\\\Users\\\\Quantum\\\\Documents\\\\GitHub\\\\VerletDrift\\\\js\\\\main.js\")",
       "Bash(node -c js/debug/controller.js)",
-      "Bash(node -c js/state.js)"
+      "Bash(node -c js/state.js)",
+      "Bash(grep -n \"keyboard.release\\\\|keyboard.up\" tests/e2e/*.spec.js)",
+      "Bash(grep -n \"centerY\" tests/e2e/*.spec.js)",
+      "Bash(grep -n \"^window\\\\.\" js/*.js js/physics/*.js)",
+      "Bash(grep -n \"window\\\\.state\\\\|window\\\\.eventBuffer\\\\|window\\\\.drawDebugPanels\\\\|window\\\\.debugController\" tests/e2e/*.spec.js)",
+      "Bash(grep -n \"keyboard\\\\.press\\\\|keyboard\\\\.release\\\\|keyboard\\\\.up\\\\|keyboard\\\\.down\" tests/e2e/*.spec.js)"
     ]
   }
 }
