@@ -1,13 +1,15 @@
 /**
  * DebugController — Unified debug state management
- * 
+ *
  * Consolidates three previously independent control paths:
  * - state.params.logsEnabled (HUD info bar checkbox)
  * - state.debug.mode (F2 keyboard cycling)
  * - state.debug.overlaysEnabled (F3 keyboard toggle)
- * 
+ *
  * Provides single source of truth for all debug configuration.
  */
+
+import { logger } from './logger.js';
 
 // Level hierarchy (mirror of logger.js LEVEL_MAP)
 const LEVEL_MAP = {
@@ -101,10 +103,10 @@ export class DebugController {
    */
   setLevel(level) {
     if (!LEVEL_MAP.hasOwnProperty(level)) {
-      console.warn(`[DebugController] Invalid level: ${level}`);
+      logger.warn('controller', `Invalid level: ${level}`);
       return;
     }
-    
+
     this.level = level;
     this._persistToStorage();
   }
@@ -138,6 +140,7 @@ export class DebugController {
     this.traceChannel = channel;
     this.traceMs = ms;
     this.level = 'verbose'; // Activate verbose to allow trace
+    logger.setTraceWindow(channel, ms); // Activate logger's trace window mechanism
     this._persistToStorage();
   }
 

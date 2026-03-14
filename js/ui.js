@@ -298,9 +298,6 @@ export function initSliders() {
   bindCheckbox('showSparks',          'showSparks');
   bindCheckbox('showSkidMarks',       'showSkidMarks');
 
-  // ---- Logging Toggle ----
-  bindCheckbox('logsEnabled',         'logsEnabled');
-
   // ---- Debug Overlays ----
   bindCheckbox('debugShowTireForces',    'debugShowTireForces');
   bindCheckbox('debugShowSlipAngles',    'debugShowSlipAngles');

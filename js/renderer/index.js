@@ -19,7 +19,7 @@ export { updateSparks, getSparkPool, drawSparks }               from './sparks.j
 export { updateSmoke, getSmokePool, consumeSpawnedSmokeIndices, reclaimSmokeParticles, MAX_SMOKE } from './smoke-system.js';
 export { drawSteeringWheelHud, drawThrottleBar, drawBrakeBar,
          drawHandbrakeBar, drawClutchBar, drawGearIndicator,
-         drawScoreHud, drawLogsToggleCheckbox, logsToggleButtonBounds }  from './hud.js';
+         drawScoreHud }  from './hud.js';
 export { drawAnalogGauge, drawYawStabilityGauge, drawFrictionCircle,
          drawSlipAngleMeter, drawDriftRadar, drawWheelSlipGauge } from './gauges.js';
 export { drawDebugOverlays }                                     from './debug.js';
