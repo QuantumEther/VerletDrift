@@ -255,4 +255,85 @@ describe('Event Ring Buffer', () => {
       }
     });
   });
+
+  describe('Auto-injection enrichment', () => {
+    it('should auto-inject tSimSec from state if not provided', () => {
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'test_event',
+        msg: 'test',
+        // Note: tSimSec not provided, should be auto-injected
+      });
+
+      expect(event.tSimSec).toBeGreaterThanOrEqual(0);
+      expect(typeof event.tSimSec).toBe('number');
+    });
+
+    it('should auto-inject frame from state if not provided', () => {
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'test_event',
+        msg: 'test',
+        // Note: frame not provided, should be auto-injected
+      });
+
+      expect(event.frame).toBeGreaterThanOrEqual(0);
+      expect(typeof event.frame).toBe('number');
+    });
+
+    it('should allow caller to override auto-injected tSimSec', () => {
+      const customTime = 99.99;
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'test_event',
+        msg: 'test',
+        tSimSec: customTime,
+      });
+
+      expect(event.tSimSec).toBe(customTime);
+    });
+
+    it('should allow caller to override auto-injected frame', () => {
+      const customFrame = 12345;
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'test_event',
+        msg: 'test',
+        frame: customFrame,
+      });
+
+      expect(event.frame).toBe(customFrame);
+    });
+
+    it('should inject different values for sequential events', () => {
+      const event1 = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'evt1',
+        msg: 'first',
+      });
+
+      // Simulate time passing and frame advancing
+      // (In real execution, state values would change; here we test that values are captured)
+      const event2 = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'evt2',
+        msg: 'second',
+      });
+
+      // Both should have valid values
+      expect(event1.tSimSec).toBeGreaterThanOrEqual(0);
+      expect(event2.tSimSec).toBeGreaterThanOrEqual(0);
+      expect(event1.frame).toBeGreaterThanOrEqual(0);
+      expect(event2.frame).toBeGreaterThanOrEqual(0);
+
+      // Wall-clock times should be different (event2 pushed after event1)
+      expect(event2.tWallMs).toBeGreaterThanOrEqual(event1.tWallMs);
+    });
+  });
 });

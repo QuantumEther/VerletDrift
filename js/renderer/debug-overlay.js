@@ -195,9 +195,13 @@ export function drawDebugPanels(ctx, canvasWidth, canvasHeight) {
   ctx.save();
   ctx.font = `${FONT_SIZE + 2}px monospace`;
 
-  // Mode indicator
+  // Controller state indicator - display real logging level and trace status
   ctx.fillStyle = '#aaa';
-  ctx.fillText(`DEBUG MODE: ${state.debug.mode.toUpperCase()}`, PANEL_MARGIN, PANEL_MARGIN + 20);
+  const { controller } = state.debug;
+  const levelName = controller.level.charAt(0).toUpperCase() + controller.level.slice(1);
+  const traceInfo = controller.traceChannel ? ` | TRACE: ${controller.traceChannel}` : '';
+  const overlayInfo = controller.isOverlayVisible() ? '' : ' | OVERLAYS: off';
+  ctx.fillText(`LEVEL: ${levelName}${traceInfo}${overlayInfo}`, PANEL_MARGIN, PANEL_MARGIN + 20);
 
   // Fault status
   let faultStatus = 'NOMINAL';

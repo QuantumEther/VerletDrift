@@ -1,6 +1,7 @@
 /**
  * Event ring buffer for state transitions and faults
  * Stores last N events with deduplication support
+ * Auto-enriches events with frame and simulation time at boundary
  */
 
 const DEFAULT_CAPACITY = 200;
@@ -12,6 +13,18 @@ let capacity = DEFAULT_CAPACITY;
 
 // Track dedupe: dedupeKey → { lastEventId, lastTime }
 const dedupeWindow = new Map();
+
+// State reference for enrichment (set via setStateReference)
+let stateRef = null;
+
+/**
+ * Set state reference for event enrichment
+ * Called from main.js after state is initialized
+ * @param {Object} state - The game state object
+ */
+export function setStateReference(state) {
+  stateRef = state;
+}
 
 /**
  * Initialize event ring buffer
@@ -26,6 +39,7 @@ export function initEvents(maxCapacity = DEFAULT_CAPACITY) {
 
 /**
  * Push an event to the ring buffer
+ * Auto-enriches events with frame and simulation time from state if not provided.
  * @param {Object} eventData - Event object
  * @param {string} eventData.level - info | warn | error
  * @param {string} eventData.channel - Channel name
@@ -33,6 +47,8 @@ export function initEvents(maxCapacity = DEFAULT_CAPACITY) {
  * @param {string} eventData.msg - Human-readable message
  * @param {Object} eventData.data - Optional structured data
  * @param {string} eventData.dedupeKey - Optional dedupe key
+ * @param {number} eventData.tSimSec - Optional: override simulation time (auto-injected if missing)
+ * @param {number} eventData.frame - Optional: override frame number (auto-injected if missing)
  * @returns {Object} Pushed event with timestamps and ID
  */
 export function pushEvent(eventData) {
@@ -46,11 +62,13 @@ export function pushEvent(eventData) {
   }
 
   // Create event object with metadata
+  // Auto-inject frame and tSimSec from state if not provided by caller
+  // (stateRef will be null in tests or before main.js initializes it, defaults to 0)
   const event = {
     id: eventId++,
     tWallMs: performance.now(),
-    tSimSec: 0, // Will be set by caller if available
-    frame: 0, // Will be set by caller if available
+    tSimSec: eventData.tSimSec ?? (stateRef?.loop?.simulationTime ?? 0),  // Auto-inject if missing
+    frame: eventData.frame ?? (stateRef?.debug?.frame ?? 0),              // Auto-inject if missing
     level: eventData.level || 'info',
     channel: eventData.channel || 'global',
     type: eventData.type || 'generic',

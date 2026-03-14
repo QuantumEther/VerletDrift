@@ -235,8 +235,10 @@ function logMessage(level, channel, message, data) {
     console[method](formatted);
   }
 
-  // Push warn/error to event ring buffer
-  if (eventRingBuffer && (level === 'warn' || level === 'error')) {
+  // Push warn/error to event ring buffer (but skip for semantic channels that create their own events)
+  const semanticChannels = new Set(['fault', 'wheels', 'drivetrain', 'smoke', 'steering']);
+  const isSemanticChannel = semanticChannels.has(channel);
+  if (eventRingBuffer && (level === 'warn' || level === 'error') && !isSemanticChannel) {
     eventRingBuffer.pushEvent({
       level,
       channel,

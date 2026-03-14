@@ -80,7 +80,9 @@
       "Bash(grep -n \"centerY\" tests/e2e/*.spec.js)",
       "Bash(grep -n \"^window\\\\.\" js/*.js js/physics/*.js)",
       "Bash(grep -n \"window\\\\.state\\\\|window\\\\.eventBuffer\\\\|window\\\\.drawDebugPanels\\\\|window\\\\.debugController\" tests/e2e/*.spec.js)",
-      "Bash(grep -n \"keyboard\\\\.press\\\\|keyboard\\\\.release\\\\|keyboard\\\\.up\\\\|keyboard\\\\.down\" tests/e2e/*.spec.js)"
+      "Bash(grep -n \"keyboard\\\\.press\\\\|keyboard\\\\.release\\\\|keyboard\\\\.up\\\\|keyboard\\\\.down\" tests/e2e/*.spec.js)",
+      "Bash(grep -n \"import.*eventBuffer\\\\|from.*events\" js/*.js js/debug/*.js js/physics/*.js)",
+      "Bash(git checkout js/debug/faults.js js/main.js)"
     ]
   }
 }

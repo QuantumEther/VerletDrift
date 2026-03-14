@@ -754,9 +754,6 @@ const state = {
       prevConstraintMaxCorr: 0,   // Previous frame's max correction (for spike detection)
       constraintAvgCorr: 0,       // Average correction magnitude (m)
       constraintIters: 0,         // Iterations used
-      // Slip metrics
-      maxSlipRatio: 0,            // Peak slip ratio this frame
-      avgSlipAngle: 0,            // Average slip angle (rad)
     },
 
     // Phase C: Event Enrichment - State transition tracking
