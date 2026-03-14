@@ -757,6 +757,16 @@ function mainLoop(timestampMilliseconds) {
 
   // Save constraint metrics for next frame's spike detection
   state.debug.metrics.prevConstraintMaxCorr = state.debug.metrics.constraintMaxCorr;
+
+  // Phase C: Event Enrichment - Sync transition states for next frame
+  // This ensures grip state changes are detected on the next frame's physics step
+  for (const wheelName of ['frontLeft', 'frontRight', 'rearLeft', 'rearRight']) {
+    state.debug.transitionState.wheelGripStatePrev[wheelName] =
+      state.wheelGripState[wheelName].state;
+  }
+
+  // Reset frame flags
+  state.debug.transitionState.gearChangedThisFrame = false;
 }
 
 

@@ -16,6 +16,7 @@ import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
 
 import { logger } from '../debug/logger.js';
+import { eventBuffer } from '../debug/events.js';
 
 
 // =============================================================
@@ -80,6 +81,61 @@ export function updateSmoke(dt) {
       const isLocked = k < lockedThresh;
       const isOverspinning = k > overspinThresh;
       if (!isLocked && !isOverspinning) continue;
+
+      // Phase C: Event Enrichment - Emit smoke enter/exit events
+      const wasLockedLastFrame = state.debug.transitionState.wheelSmokeLocked[name];
+      const wasOverspinLastFrame = state.debug.transitionState.wheelSmokeOverspin[name];
+
+      if (isLocked && !wasLockedLastFrame && eventBuffer) {
+        eventBuffer.pushEvent({
+          level: 'info',
+          channel: 'smoke',
+          type: 'smoke_locked_enter',
+          msg: `${name} locked smoke starts`,
+          data: {
+            wheel: name,
+            slipRatio: k,
+            speed: speed,
+          },
+          dedupeKey: `smoke:${name}:locked:enter`,
+        });
+      } else if (!isLocked && wasLockedLastFrame && eventBuffer) {
+        eventBuffer.pushEvent({
+          level: 'info',
+          channel: 'smoke',
+          type: 'smoke_locked_exit',
+          msg: `${name} locked smoke stops`,
+          data: { wheel: name, slipRatio: k },
+          dedupeKey: `smoke:${name}:locked:exit`,
+        });
+      }
+
+      if (isOverspinning && !wasOverspinLastFrame && eventBuffer) {
+        eventBuffer.pushEvent({
+          level: 'info',
+          channel: 'smoke',
+          type: 'smoke_overspin_enter',
+          msg: `${name} overspin smoke starts`,
+          data: {
+            wheel: name,
+            slipRatio: k,
+            speed: speed,
+          },
+          dedupeKey: `smoke:${name}:overspin:enter`,
+        });
+      } else if (!isOverspinning && wasOverspinLastFrame && eventBuffer) {
+        eventBuffer.pushEvent({
+          level: 'info',
+          channel: 'smoke',
+          type: 'smoke_overspin_exit',
+          msg: `${name} overspin smoke stops`,
+          data: { wheel: name, slipRatio: k },
+          dedupeKey: `smoke:${name}:overspin:exit`,
+        });
+      }
+
+      state.debug.transitionState.wheelSmokeLocked[name] = isLocked;
+      state.debug.transitionState.wheelSmokeOverspin[name] = isOverspinning;
 
       // Emission intensity based on slip
       const emission = 0.6 * Math.abs(k) + 0.2 * 0; // simplified: just slip ratio

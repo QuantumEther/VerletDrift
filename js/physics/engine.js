@@ -13,6 +13,7 @@ import {
 } from '../constants.js';
 
 import { logger } from '../debug/logger.js';
+import { eventBuffer } from '../debug/events.js';
 
 
 // =============================================================
@@ -299,6 +300,32 @@ export function handleGearChange(newGear) {
 
   engine.previousGear = engine.currentGear;
   engine.currentGear  = newGear;
+
+  // Phase C: Event Enrichment - Emit gear change events
+  if (newGear !== engine.previousGear && eventBuffer) {
+    const isUpshift = newRatio !== 0 && previousRatio !== 0 && newRatio < previousRatio;
+    const isDownshift = !isUpshift && newRatio !== 0 && previousRatio !== 0;
+    const eventType = isUpshift ? 'upshift' : isDownshift ? 'downshift' : 'gear_change';
+
+    eventBuffer.pushEvent({
+      level: 'info',
+      channel: 'drivetrain',
+      type: eventType,
+      msg: `Gear: ${engine.previousGear} → ${newGear} (${eventType})`,
+      data: {
+        fromGear: engine.previousGear,
+        toGear: newGear,
+        rpm: engine.rpm,
+        isUpshift: isUpshift,
+        isDownshift: isDownshift,
+        previousRatio: previousRatio,
+        newRatio: newRatio,
+      },
+      dedupeKey: `gear:${engine.previousGear}_to_${newGear}`,
+    });
+
+    state.debug.transitionState.lastGear = newGear;
+  }
 
   // Play gear change crack sound.
   const isUpshift = newRatio !== 0 && previousRatio !== 0 && newRatio < previousRatio;

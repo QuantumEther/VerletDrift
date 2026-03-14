@@ -19,6 +19,7 @@ import {
 } from '../constants.js';
 
 import { logger } from '../debug/logger.js';
+import { eventBuffer } from '../debug/events.js';
 
 // --------------- private helpers ---------------
 
@@ -378,6 +379,28 @@ export function computeTireForces(dt) {
     // Store utilization for backward compatibility
     state.wheelGrip[name] = state.wheelFrictionUtil[name];
 
+    // Phase C: Event Enrichment - Emit wheel grip state change events
+    const newState = gws.state;
+    const prevState = state.debug.transitionState.wheelGripStatePrev[name];
+    if (prevState !== newState && eventBuffer) {
+      eventBuffer.pushEvent({
+        level: 'info',
+        channel: 'wheels',
+        type: `wheel_grip_${prevState}_to_${newState}`,
+        msg: `${name} grip: ${prevState} → ${newState}`,
+        data: {
+          wheel: name,
+          fromState: prevState,
+          toState: newState,
+          frictionUtil: state.wheelFrictionUtil[name],
+          slipRatio: state.wheelSlipRatio[name],
+          slipAngle: state.wheelSlipAngle[name],
+        },
+        dedupeKey: `grip:${name}:${newState}`,
+      });
+    }
+    state.debug.transitionState.wheelGripStatePrev[name] = newState;
+
     // Store lateral force magnitude for SAT computation (front wheels only).
     perWheelLateralForce[name] = relaxedLat;
 
@@ -442,6 +465,42 @@ export function computeTireForces(dt) {
 
     // Trace-gated wheel omega debug logging (only emitted in trace mode for tires channel)
     logger.trace('tires', () => `${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, ωRoll=${omegaFromRolling.toFixed(2)}, Δω=${omegaDelta.toFixed(4)}, final=${finalOmega.toFixed(2)}`);
+
+    // Phase C: Event Enrichment - Emit wheel overspin enter/exit events
+    const OVERSPIN_THRESHOLD = 200; // rad/s
+    const isOverspinning = Math.abs(finalOmega) > OVERSPIN_THRESHOLD;
+    const wasOverspinning = state.debug.transitionState.wheelOverspin[name];
+
+    if (isOverspinning && !wasOverspinning && eventBuffer) {
+      eventBuffer.pushEvent({
+        level: 'warn',
+        channel: 'drivetrain',
+        type: 'wheel_overspin_enter',
+        msg: `${name} overspin: ${Math.abs(finalOmega).toFixed(1)} rad/s`,
+        data: {
+          wheel: name,
+          omega: finalOmega,
+          threshold: OVERSPIN_THRESHOLD,
+          rpm: state.engine.rpm,
+          currentGear: state.engine.currentGear,
+        },
+        dedupeKey: `overspin:${name}:enter`,
+      });
+    } else if (!isOverspinning && wasOverspinning && eventBuffer) {
+      eventBuffer.pushEvent({
+        level: 'info',
+        channel: 'drivetrain',
+        type: 'wheel_overspin_exit',
+        msg: `${name} overspin recovered`,
+        data: {
+          wheel: name,
+          finalOmega: finalOmega,
+        },
+        dedupeKey: `overspin:${name}:exit`,
+      });
+    }
+
+    state.debug.transitionState.wheelOverspin[name] = isOverspinning;
   }
 
   // Aggregate wheel forces into axle forces for friction circle gauges.
@@ -492,6 +551,41 @@ export function computeTireForces(dt) {
   const rawSAT = satFL + satFR;
 
   const clampedSAT = clamp(rawSAT, -25, 25);
+
+  // Phase C: Event Enrichment - Emit SAT clamp events
+  const SAT_LIMIT = 25;
+  const SAT_CLAMP_THRESHOLD = 0.95 * SAT_LIMIT; // 23.75
+  const isClamped = Math.abs(clampedSAT) >= SAT_LIMIT - 0.1; // Account for floating point
+  const wasClampedLastFrame = state.debug.transitionState.satClamped;
+
+  if (isClamped && !wasClampedLastFrame && eventBuffer) {
+    eventBuffer.pushEvent({
+      level: 'warn',
+      channel: 'steering',
+      type: 'sat_clamp_enter',
+      msg: `Steering saturation: ${Math.abs(clampedSAT).toFixed(2)} N⋅m (clamped)`,
+      data: {
+        rawSAT: rawSAT,
+        clampedSAT: clampedSAT,
+        limit: SAT_LIMIT,
+        excessAmount: Math.abs(clampedSAT) - SAT_LIMIT,
+        frontLeftLoad: state.wheelLoads.frontLeft,
+        frontRightLoad: state.wheelLoads.frontRight,
+      },
+      dedupeKey: 'sat_clamp:enter',
+    });
+  } else if (!isClamped && wasClampedLastFrame && eventBuffer) {
+    eventBuffer.pushEvent({
+      level: 'info',
+      channel: 'steering',
+      type: 'sat_clamp_exit',
+      msg: `Steering saturation released`,
+      data: { finalSAT: clampedSAT },
+      dedupeKey: 'sat_clamp:exit',
+    });
+  }
+
+  state.debug.transitionState.satClamped = isClamped;
 
   // EMA output filter on SAT — 80ms time constant (up from 50ms).
   const satFilterAlpha = 1.0 - Math.exp(-dt / 0.10);

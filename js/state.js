@@ -762,6 +762,48 @@ const state = {
       avgSlipAngle: 0,            // Average slip angle (rad)
     },
 
+    // Phase C: Event Enrichment - State transition tracking
+    // Tracks previous state for each system to detect transitions and emit events
+    transitionState: {
+      // Per-wheel grip state tracking for transitions (wheel_lock_enter/exit events)
+      wheelGripStatePrev: {
+        frontLeft:  'stable',
+        frontRight: 'stable',
+        rearLeft:   'stable',
+        rearRight:  'stable',
+      },
+
+      // Per-wheel overspin state (was overspin last frame? for overspin_enter/exit events)
+      wheelOverspin: {
+        frontLeft:  false,
+        frontRight: false,
+        rearLeft:   false,
+        rearRight:  false,
+      },
+
+      // Per-wheel smoke state (was smoke spawning last frame? for smoke enter/exit events)
+      wheelSmokeLocked: {
+        frontLeft:  false,
+        frontRight: false,
+        rearLeft:   false,
+        rearRight:  false,
+      },
+      wheelSmokeOverspin: {
+        frontLeft:  false,
+        frontRight: false,
+        rearLeft:   false,
+        rearRight:  false,
+      },
+
+      // Gear change state tracking
+      lastGear: 'N',
+      gearChangedThisFrame: false,
+
+      // SAT (Self-Aligning Torque) clamp state tracking
+      satClamped: false,
+      satClampCount: 0,
+    },
+
     // Event ring buffer (reference set by main.js)
     events: null,
 

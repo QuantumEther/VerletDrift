@@ -57,10 +57,10 @@
         - generic [ref=e107]: FL:0.00 FR:0.00<br>RL:0.00 RR:0.00
       - generic [ref=e108]:
         - generic [ref=e109]: Render
-        - generic [ref=e110]: 28 fps
+        - generic [ref=e110]: 32 fps
       - generic [ref=e111]:
         - generic [ref=e112]: Physics
-        - generic [ref=e113]: 100Hz · max 6/f · drop 11 (last 0)
+        - generic [ref=e113]: 100Hz · max 6/f · drop 5 (last 0)
   - generic [ref=e114]:
     - generic [ref=e115]:
       - heading "⚡ Simulation" [level=3] [ref=e116]
