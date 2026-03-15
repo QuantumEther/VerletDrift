@@ -13,8 +13,8 @@ import { logger } from './logger.js';
 
 // Level hierarchy (mirror of logger.js LEVEL_MAP)
 const LEVEL_MAP = {
-  silent: 0,    // No logs, no overlays (like logsEnabled: false)
-  quiet: 1,     // Warn/error only
+  silent: 0,    // Suppresses info/debug/trace; warn and error still emit (use for near-production)
+  quiet: 1,     // Warn/error only (default)
   info: 2,      // Sampled info/debug
   debug: 3,     // Full debug logs
   verbose: 4,   // Full verbose + trace
@@ -148,8 +148,12 @@ export class DebugController {
    * Close trace window and return to previous level
    */
   closeTraceWindow() {
+    const channel = this.traceChannel;
     this.traceChannel = null;
-    // Optionally revert to 'quiet' here, or keep current level
+    if (channel) {
+      logger.closeTraceWindow(channel); // Keep logger trace window in sync
+    }
+    this._persistToStorage();
   }
 
   /**
@@ -196,12 +200,32 @@ export class DebugController {
 
   /**
    * Save current state to localStorage
-   * Uses vd17_debug_controller key for namespacing
+   * Writes to vd17_debug_controller (authoritative) AND back-fills vd17_debug_config
+   * (legacy key) so that resolveConfig() in config.js picks up the new level on next boot.
    */
   _persistToStorage() {
     try {
       if (typeof localStorage !== 'undefined') {
+        // Primary: controller's own key (all fields)
         localStorage.setItem('vd17_debug_controller', JSON.stringify(this.toJSON()));
+
+        // Back-fill legacy key so resolveConfig() reads the correct level on next boot.
+        // Maps controller levels back to the legacy logger level format.
+        const controllerToLegacyLevel = {
+          silent: 'error',
+          quiet: 'warn',
+          info: 'info',
+          debug: 'debug',
+          verbose: 'trace',
+        };
+        const legacyLevel = controllerToLegacyLevel[this.level] || 'warn';
+        let legacy = {};
+        try {
+          legacy = JSON.parse(localStorage.getItem('vd17_debug_config') || '{}');
+        } catch (_) { /* ignore parse errors */ }
+        legacy.level = legacyLevel;
+        legacy.overlaysEnabled = this.overlaysEnabled;
+        localStorage.setItem('vd17_debug_config', JSON.stringify(legacy));
       }
     } catch (e) {
       // Silently fail if localStorage unavailable

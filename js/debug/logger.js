@@ -272,6 +272,8 @@ export const logger = {
       const result = msgFn();
       if (typeof result === 'string') {
         logMessage(level, channel, result);
+      } else if (result !== null && typeof result === 'object' && typeof result.msg === 'string') {
+        logMessage(level, channel, result.msg, result.data);
       } else {
         logMessage(level, channel, () => JSON.stringify(result), result);
       }
@@ -294,6 +296,8 @@ export const logger = {
       const result = msgFn();
       if (typeof result === 'string') {
         logMessage(level, channel, result);
+      } else if (result !== null && typeof result === 'object' && typeof result.msg === 'string') {
+        logMessage(level, channel, result.msg, result.data);
       } else {
         logMessage(level, channel, () => JSON.stringify(result), result);
       }

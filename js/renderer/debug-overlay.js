@@ -175,56 +175,15 @@ export function drawEventPanel(ctx, canvasWidth, canvasHeight) {
 }
 
 /**
- * Main debug overlay draw call
- * Should be called once per render frame from renderFrame()
- * @param {CanvasRenderingContext2D} ctx - 2D rendering context
- * @param {number} canvasWidth - Canvas width in CSS pixels
- * @param {number} canvasHeight - Canvas height in CSS pixels
+ * Canvas debug overlay draw call — screen-space text panels migrated to DOM.
+ * syncDOMOverlay() in debug-overlay-dom.js now handles telemetry, events,
+ * fault status, and the FROZEN banner as HTML elements above the canvas.
+ * World-space physics vectors (tire forces, slip arcs) remain in debug.js on canvas.
+ *
+ * This stub is kept so existing callers (main.js, window.drawDebugPanels) don't break.
  */
 export function drawDebugPanels(ctx, canvasWidth, canvasHeight) {
-  // Phase B: Use unified controller for overlay visibility check
-  if (!state.debug.controller.isOverlayVisible()) {
-    return;
-  }
-
-  // Draw both panels
-  drawTelemetryPanel(ctx, canvasWidth, canvasHeight);
-  drawEventPanel(ctx, canvasWidth, canvasHeight);
-
-  // Optional: Draw mode indicator and fault status in top-left
-  ctx.save();
-  ctx.font = `${FONT_SIZE + 2}px monospace`;
-
-  // Controller state indicator - display real logging level and trace status
-  ctx.fillStyle = '#aaa';
-  const { controller } = state.debug;
-  const levelName = controller.level.charAt(0).toUpperCase() + controller.level.slice(1);
-  const traceInfo = controller.traceChannel ? ` | TRACE: ${controller.traceChannel}` : '';
-  const overlayInfo = controller.isOverlayVisible() ? '' : ' | OVERLAYS: off';
-  ctx.fillText(`LEVEL: ${levelName}${traceInfo}${overlayInfo}`, PANEL_MARGIN, PANEL_MARGIN + 20);
-
-  // Fault status
-  let faultStatus = 'NOMINAL';
-  let faultColor = '#0f0';
-  if (state.debug.faults.isFrozen) {
-    faultStatus = 'FROZEN';
-    faultColor = ERROR_COLOR;
-  } else if (eventBuffer && eventBuffer.getEventCount() > 0) {
-    // Check if there are recent fault events
-    const recentFaults = eventBuffer.findEventsByChannel('fault', 1);
-    if (recentFaults.length > 0) {
-      const lastFaultAge = performance.now() - recentFaults[0].tWallMs;
-      if (lastFaultAge < 5000) { // Last fault within 5 seconds
-        faultStatus = 'FAULTS DETECTED';
-        faultColor = WARN_COLOR;
-      }
-    }
-  }
-
-  ctx.fillStyle = faultColor;
-  ctx.fillText(faultStatus, PANEL_MARGIN + 180, PANEL_MARGIN + 20);
-
-  ctx.restore();
+  // Screen-space text panels now rendered as DOM in debug-overlay-dom.js.
 }
 
 export default {

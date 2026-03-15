@@ -106,6 +106,7 @@ import {
 } from './renderer/index.js';
 
 import { drawDebugPanels } from './renderer/debug-overlay.js';
+import { initDOMOverlay, syncDOMOverlay } from './renderer/debug-overlay-dom.js';
 
 import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
@@ -115,9 +116,9 @@ import { physicsRandom } from './random.js';
 
 // Debug & observability
 import { logger, initLogger } from './debug/logger.js';
-import { eventBuffer, initEvents } from './debug/events.js';
+import { eventBuffer, initEvents, setStateReference } from './debug/events.js';
 import { resolveConfig } from './debug/config.js';
-import { checkFaults } from './debug/faults.js';
+import { checkFaults, markFreezeEntered } from './debug/faults.js';
 import { DebugController } from './debug/controller.js';
 
 
@@ -191,8 +192,9 @@ initInput(simCanvas);
 
 // ===== Initialize diagnostics & observability =====
 // Set up logger, event ring buffer, and debug modes before other modules run.
+initDOMOverlay(); // Wire DOM overlay element references (must run after DOM is ready)
 initEvents(200); // Ring buffer capacity: 200 events
-state.debug.events = eventBuffer;
+setStateReference(state); // Wire state for auto-enrichment of tSimSec + frame fields
 initLogger(eventBuffer);
 
 // Resolve config from URL params → localStorage → defaults
@@ -218,10 +220,6 @@ state.debug.controller = new DebugController({
   traceMs: debugConfig.traceMs,
   freezeOnError: debugConfig.freezeOnError,
 });
-
-// Keep legacy fields in sync for backward compatibility
-state.debug.mode = debugConfig.mode;
-state.debug.overlaysEnabled = state.debug.controller.overlaysEnabled;
 
 // Initialize logger with controller and channel settings
 logger.setController(state.debug.controller);
@@ -657,38 +655,49 @@ function mainLoop(timestampMilliseconds) {
   state.loop.accumulator += wallFrameTime;
 
   // Fire physics ticks to consume accumulated wall time.
-  // Each tick advances (physicsWallDt × timeScale) seconds of SIMULATION time.
-  // → timeScale=1.0: normal speed   → timeScale=0.1: 10× slow motion
-  // The tick RATE in wall-clock is unchanged; only the simulated dt shrinks.
+  // Skipped entirely when the simulation is frozen due to a fault — physics stops
+  // advancing but rendering continues so the debug overlay stays visible.
   const maxSubstepsPerFrame = Math.max(1, Math.round(state.params.maxSubstepsPerFrame || 6));
   let ticksThisFrame = 0;
-  while (state.loop.accumulator >= physicsWallDt && ticksThisFrame < maxSubstepsPerFrame) {
-    snapPrev = snapCurr;
 
-    // Simulated dt: real step size × timeScale.
-    const simDt = physicsWallDt * state.params.timeScale;
-    state.loop.simulationTime += simDt;
-    runPhysicsStep(simDt);
+  if (!state.debug.faults.isFrozen) {
+    // Each tick advances (physicsWallDt × timeScale) seconds of SIMULATION time.
+    // → timeScale=1.0: normal speed   → timeScale=0.1: 10× slow motion
+    // The tick RATE in wall-clock is unchanged; only the simulated dt shrinks.
+    while (state.loop.accumulator >= physicsWallDt && ticksThisFrame < maxSubstepsPerFrame) {
+      snapPrev = snapCurr;
 
-    snapCurr = makeBodySnapshot();
+      // Simulated dt: real step size × timeScale.
+      const simDt = physicsWallDt * state.params.timeScale;
+      state.loop.simulationTime += simDt;
+      runPhysicsStep(simDt);
 
-    state.loop.accumulator -= physicsWallDt;
-    ticksThisFrame++;
-  }
+      snapCurr = makeBodySnapshot();
 
-  if (state.loop.accumulator >= physicsWallDt) {
-    // Stabilizer #1 — hard-cap backlog: once we hit the per-frame substep cap,
-    // drop all remaining whole substeps immediately instead of carrying a long
-    // backlog that can cause temporal "rubber-banding" and force bursts.
-    // Physical rationale: if wall-clock can't keep up, it's safer to skip old
-    // impulses than to replay them late. Feel impact: slightly less temporal
-    // fidelity under load, but far more stable and predictable control feel.
-    const droppedSubsteps = Math.floor(state.loop.accumulator / physicsWallDt);
-    state.loop.droppedSubsteps += droppedSubsteps;
-    state.loop.droppedSubstepsLastFrame = droppedSubsteps;
-    state.loop.accumulator %= physicsWallDt;
+      state.loop.accumulator -= physicsWallDt;
+      ticksThisFrame++;
+    }
+
+    if (state.loop.accumulator >= physicsWallDt) {
+      // Stabilizer #1 — hard-cap backlog: once we hit the per-frame substep cap,
+      // drop all remaining whole substeps immediately instead of carrying a long
+      // backlog that can cause temporal "rubber-banding" and force bursts.
+      // Physical rationale: if wall-clock can't keep up, it's safer to skip old
+      // impulses than to replay them late. Feel impact: slightly less temporal
+      // fidelity under load, but far more stable and predictable control feel.
+      const droppedSubsteps = Math.floor(state.loop.accumulator / physicsWallDt);
+      state.loop.droppedSubsteps += droppedSubsteps;
+      state.loop.droppedSubstepsLastFrame = droppedSubsteps;
+      state.loop.accumulator %= physicsWallDt;
+    } else {
+      state.loop.droppedSubstepsLastFrame = 0;
+    }
   } else {
+    // Frozen: drain accumulator so interpolation alpha stays at 0 (render last known state).
+    state.loop.accumulator = 0;
     state.loop.droppedSubstepsLastFrame = 0;
+    // Fire one-shot freeze event (no-ops after first call until resetFaultState())
+    markFreezeEntered();
   }
 
   // Smooth physics ticks-per-second display.
@@ -718,36 +727,28 @@ function mainLoop(timestampMilliseconds) {
   state.debug.metrics.dtMs = wallFrameTime * 1000;  // Convert to milliseconds
   state.debug.metrics.substepsThisFrame = ticksThisFrame;
 
-  // Check if simulation is frozen due to fault (if enabled)
-  if (state.debug.faults.isFrozen) {
-    // Push latching event (dedupeKey prevents repeat warnings every frame)
-    if (eventBuffer) {
-      eventBuffer.pushEvent({
-        level: 'warn',
-        channel: 'main',
-        type: 'sim_frozen',
-        msg: 'Simulation frozen due to fault - check console and overlays for details',
-        dedupeKey: 'sim_frozen', // 500ms dedup window prevents repeat logs
-      });
-    }
-    return; // Skip rendering and physics this frame
-  }
-
   // Render once per animation frame using interpolated state.
+  // Always runs — even when frozen — so the debug overlay can display fault information.
   renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
 
-  // Save constraint metrics for next frame's spike detection
-  state.debug.metrics.prevConstraintMaxCorr = state.debug.metrics.constraintMaxCorr;
+  // Sync DOM debug overlay — always runs (even when frozen) so FROZEN banner stays current.
+  syncDOMOverlay(state, eventBuffer);
 
-  // Phase C: Event Enrichment - Sync transition states for next frame
-  // This ensures grip state changes are detected on the next frame's physics step
-  for (const wheelName of ['frontLeft', 'frontRight', 'rearLeft', 'rearRight']) {
-    state.debug.transitionState.wheelGripStatePrev[wheelName] =
-      state.wheelGripState[wheelName].state;
+  // Post-render state sync: only needed when physics actually ran this frame.
+  if (!state.debug.faults.isFrozen) {
+    // Save constraint metrics for next frame's spike detection
+    state.debug.metrics.prevConstraintMaxCorr = state.debug.metrics.constraintMaxCorr;
+
+    // Phase C: Event Enrichment - Sync transition states for next frame
+    // This ensures grip state changes are detected on the next frame's physics step
+    for (const wheelName of ['frontLeft', 'frontRight', 'rearLeft', 'rearRight']) {
+      state.debug.transitionState.wheelGripStatePrev[wheelName] =
+        state.wheelGripState[wheelName].state;
+    }
+
+    // Reset frame flags
+    state.debug.transitionState.gearChangedThisFrame = false;
   }
-
-  // Reset frame flags
-  state.debug.transitionState.gearChangedThisFrame = false;
 }
 
 

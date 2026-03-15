@@ -3,7 +3,7 @@
  * Tests push/get/dedupe behavior, ring wrapping, and query methods
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   initEvents,
   pushEvent,
@@ -13,6 +13,7 @@ import {
   findEventsByType,
   findEventsByChannel,
   clearEvents,
+  setStateReference,
 } from '../js/debug/events.js';
 
 describe('Event Ring Buffer', () => {
@@ -257,6 +258,63 @@ describe('Event Ring Buffer', () => {
   });
 
   describe('Auto-injection enrichment', () => {
+    afterEach(() => {
+      // Clear state reference after each test to avoid cross-test contamination
+      setStateReference(null);
+    });
+
+    it('should inject real tSimSec and frame values from wired state', () => {
+      // Wire a mock state object
+      setStateReference({
+        loop: { simulationTime: 42.5 },
+        debug: { frame: 1000 },
+      });
+
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'wiring_check',
+        msg: 'verifying state wiring',
+      });
+
+      expect(event.tSimSec).toBe(42.5);
+      expect(event.frame).toBe(1000);
+    });
+
+    it('should reflect updated state values in sequential events', () => {
+      const mockState = {
+        loop: { simulationTime: 1.0 },
+        debug: { frame: 10 },
+      };
+      setStateReference(mockState);
+
+      const event1 = pushEvent({ level: 'info', channel: 'test', type: 'e1', msg: 'first' });
+      expect(event1.tSimSec).toBe(1.0);
+      expect(event1.frame).toBe(10);
+
+      // Simulate time advancing
+      mockState.loop.simulationTime = 2.5;
+      mockState.debug.frame = 25;
+
+      const event2 = pushEvent({ level: 'info', channel: 'test', type: 'e2', msg: 'second' });
+      expect(event2.tSimSec).toBe(2.5);
+      expect(event2.frame).toBe(25);
+    });
+
+    it('should fall back to 0 when state is not wired', () => {
+      setStateReference(null); // explicitly unwired
+
+      const event = pushEvent({
+        level: 'info',
+        channel: 'test',
+        type: 'unwired',
+        msg: 'no state ref',
+      });
+
+      expect(event.tSimSec).toBe(0);
+      expect(event.frame).toBe(0);
+    });
+
     it('should auto-inject tSimSec from state if not provided', () => {
       const event = pushEvent({
         level: 'info',

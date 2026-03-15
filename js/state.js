@@ -733,9 +733,8 @@ const state = {
   // Managed by debug/logger.js, debug/events.js, main.js
   // -----------------------------------------------------------
   debug: {
-    // Unified debug controller (Phase B: Architectural Unification)
-    // Consolidates: state.params.logsEnabled, state.debug.mode, state.debug.overlaysEnabled
-    // NOTE: Initialized with defaults; main.js will update from URL params/localStorage
+    // Unified debug controller — single source of truth for level, overlays, and persistence.
+    // main.js replaces this default with a DebugController.fromConfig() instance at boot.
     controller: new DebugController({ level: 'quiet', overlaysEnabled: true }),
 
     frame: 0,       // incremented each render frame
@@ -793,9 +792,6 @@ const state = {
       satClamped: false,
       satClampCount: 0,
     },
-
-    // Event ring buffer (reference set by main.js)
-    events: null,
 
     // Fault & escalation state
     faults: {

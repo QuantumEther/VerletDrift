@@ -8,17 +8,38 @@ import { logger } from './logger.js';
 import { eventBuffer } from './events.js';
 import { physicsState as state } from '../state.js';
 
-// Fault state tracking
+// Fault state tracking — each fault class has its own timer to prevent cross-suppression.
+// Initialized to -Infinity so the first call always fires regardless of performance.now() value.
 const faultState = {
-  lastNonFiniteFault: 0,
-  lastConstraintSpikeFault: 0,
-  lastSlipAnomaly: 0,
-  lastTimingAnomaly: 0,
-  warnCount: 0,
-  errorCount: 0,
+  lastNonFiniteFault: -Infinity,
+  lastConstraintSpikeFault: -Infinity,
+  lastOmegaRunawayFault: -Infinity,
+  lastSlipAnomaly: -Infinity,
+  lastTimingAnomaly: -Infinity,
 };
 
 const DEDUPE_INTERVAL_MS = 1000; // Don't spam same fault more than once per second
+
+// One-shot latch: fires exactly once per freeze entry, reset by resetFaultState()
+let frozenEventFired = false;
+
+/**
+ * Record freeze entry — fires a single sim_frozen event to the ring buffer.
+ * Called by main.js immediately when isFrozen transitions false→true.
+ * Subsequent calls within the same freeze have no effect.
+ */
+export function markFreezeEntered() {
+  if (frozenEventFired) return;
+  frozenEventFired = true;
+  if (eventBuffer) {
+    eventBuffer.pushEvent({
+      level: 'warn',
+      channel: 'main',
+      type: 'sim_frozen',
+      msg: 'Simulation frozen due to fault — check console and overlays for details',
+    });
+  }
+}
 
 /**
  * Check for non-finite values in physics state (NaN, Infinity)
@@ -81,8 +102,8 @@ export function checkWheelOmegaRunaway() {
 
   for (const [name, omega] of Object.entries(state.wheelOmega || {})) {
     if (Math.abs(omega) > MAX_OMEGA) {
-      if (now - faultState.lastConstraintSpikeFault > DEDUPE_INTERVAL_MS) {
-        faultState.lastConstraintSpikeFault = now;
+      if (now - faultState.lastOmegaRunawayFault > DEDUPE_INTERVAL_MS) {
+        faultState.lastOmegaRunawayFault = now;
         const msg = `Wheel ${name} omega runaway: ${omega.toFixed(1)} rad/s`;
         logger.warn('fault', msg);
         if (eventBuffer) {
@@ -109,7 +130,13 @@ export function checkConstraintHealth() {
   const metrics = state.debug.metrics;
 
   // Correction spike detection: current max > 5× previous frame
-  if (metrics.constraintMaxCorr > metrics.prevConstraintMaxCorr * 5) {
+  // Guard: skip ratio check when previous frame is near-zero (startup / resting state)
+  // to prevent false-positive spikes on the first frames with active constraints.
+  const MIN_CORRECTION_THRESHOLD = 0.001; // 1mm — below this the ratio is meaningless
+  if (
+    metrics.prevConstraintMaxCorr > MIN_CORRECTION_THRESHOLD &&
+    metrics.constraintMaxCorr > metrics.prevConstraintMaxCorr * 5
+  ) {
     if (now - faultState.lastConstraintSpikeFault > DEDUPE_INTERVAL_MS) {
       faultState.lastConstraintSpikeFault = now;
       const msg = `Constraint spike: ${metrics.constraintMaxCorr.toFixed(4)}m`;
@@ -129,9 +156,9 @@ export function checkConstraintHealth() {
 
   // Large correction magnitude indicates instability
   if (metrics.constraintMaxCorr > 1.0) {
-    logger.sampleEvery('warn', 'fault', 50, () => ({
-      msg: `Large constraint correction: ${metrics.constraintMaxCorr.toFixed(4)}m (instability warning)`,
-    }));
+    logger.sampleEvery('warn', 'fault', 50, () =>
+      `Large constraint correction: ${metrics.constraintMaxCorr.toFixed(4)}m (instability warning)`
+    );
   }
 }
 
@@ -145,22 +172,25 @@ export function checkSlipAnomalies() {
   const slipAngle = state.wheelSlipAngle || {};
 
   for (const [name, kappa] of Object.entries(slipRatio)) {
-    // Slip ratio should be in [-2, 2] (clamped)
-    if (Math.abs(kappa) > 2.5) {
+    // tires.js clamps κ to [-1.0, 1.0] before storing. Threshold > 1.01 catches
+    // any code path that bypasses the clamp (physics bug or NaN propagation).
+    if (Math.abs(kappa) > 1.01) {
       if (now - faultState.lastSlipAnomaly > DEDUPE_INTERVAL_MS) {
         faultState.lastSlipAnomaly = now;
-        const msg = `Slip ratio out of bounds: ${name}=${kappa.toFixed(2)} (should be ±2.0)`;
+        const msg = `Slip ratio out of bounds: ${name}=${kappa.toFixed(2)} (tires.js clamps to ±1.0)`;
         logger.warn('fault', msg);
       }
     }
   }
 
   for (const [name, alpha] of Object.entries(slipAngle)) {
-    // Slip angle > π/2 indicates invalid state
-    if (Math.abs(alpha) > Math.PI / 2) {
+    // tires.js computes slipAngle = atan2(vLat, slipDenom) with slipDenom >= 0.5 > 0,
+    // so the result is always in (-π/2, π/2). Threshold π/2 - 0.1 (~84°) catches
+    // extreme-but-not-yet-mathematically-impossible values for future proofing.
+    if (Math.abs(alpha) > Math.PI / 2 - 0.1) {
       if (now - faultState.lastSlipAnomaly > DEDUPE_INTERVAL_MS) {
         faultState.lastSlipAnomaly = now;
-        const msg = `Slip angle excessive: ${name}=${(alpha * 180 / Math.PI).toFixed(1)}° (max ±90°)`;
+        const msg = `Slip angle extreme: ${name}=${(alpha * 180 / Math.PI).toFixed(1)}° (near ±90° limit)`;
         logger.warn('fault', msg);
       }
     }
@@ -233,12 +263,12 @@ export function checkFaults(phase = 'render', wallFrameTimeMs = 0) {
  * Reset fault state (call at simulation reset)
  */
 export function resetFaultState() {
-  faultState.lastNonFiniteFault = 0;
-  faultState.lastConstraintSpikeFault = 0;
-  faultState.lastSlipAnomaly = 0;
-  faultState.lastTimingAnomaly = 0;
-  faultState.warnCount = 0;
-  faultState.errorCount = 0;
+  faultState.lastNonFiniteFault = -Infinity;
+  faultState.lastConstraintSpikeFault = -Infinity;
+  faultState.lastOmegaRunawayFault = -Infinity;
+  faultState.lastSlipAnomaly = -Infinity;
+  faultState.lastTimingAnomaly = -Infinity;
+  frozenEventFired = false;
 }
 
 export default {

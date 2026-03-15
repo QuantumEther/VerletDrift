@@ -120,13 +120,8 @@ export function solveRigidBodyConstraints() {
     state.debug.metrics.constraintAvgCorr = constraintMetrics.sumCorrectionMagnitude / constraintMetrics.correctionCount;
     state.debug.metrics.constraintIters = iters;
 
-    // Detect constraint spike (correction 5× larger than previous frame)
-    const spike = constraintMetrics.maxCorrectionMagnitude > constraintMetrics.prevMaxCorrection * 5;
-    if (spike && constraintMetrics.maxCorrectionMagnitude > 0.01) {
-      logger.sampleEvery('warn', 'constraints', 30, () => ({
-        msg: `Constraint spike: ${constraintMetrics.maxCorrectionMagnitude.toFixed(4)}m (5× prev ${constraintMetrics.prevMaxCorrection.toFixed(4)}m)`,
-      }));
-    }
+    // Spike detection and escalation handled by faults.js:checkConstraintHealth(),
+    // which reads state.debug.metrics.constraintMaxCorr and pushes structured events.
   }
 }
 
