@@ -738,11 +738,7 @@ const state = {
     // NOTE: Initialized with defaults; main.js will update from URL params/localStorage
     controller: new DebugController({ level: 'quiet', overlaysEnabled: true }),
 
-    // Legacy fields (deprecated but kept for backward compatibility during migration)
-    // WARNING: Use controller instead of these fields
-    mode: 'quiet',  // DEPRECATED: use controller.level instead
     frame: 0,       // incremented each render frame
-    overlaysEnabled: false,  // DEPRECATED: use controller.overlaysEnabled instead
 
     // Telemetry metrics (updated per physics step or frame)
     metrics: {

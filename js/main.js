@@ -322,15 +322,6 @@ document.addEventListener('keydown', (e) => {
   if (e.code === 'F2') {
     e.preventDefault();
     state.debug.controller.cycleLevel();
-    // Keep legacy state in sync for backward compatibility
-    const modeMap = {
-      silent: 'quiet',
-      quiet: 'quiet',
-      info: 'tuning',
-      debug: 'tuning',
-      verbose: 'trace',
-    };
-    state.debug.mode = modeMap[state.debug.controller.level] || 'quiet';
     logger.info('main', `Debug level changed to: ${state.debug.controller.level}`);
   }
 
@@ -339,8 +330,7 @@ document.addEventListener('keydown', (e) => {
   if (e.code === 'F3') {
     e.preventDefault();
     state.debug.controller.toggleOverlayVisibility();
-    state.debug.overlaysEnabled = state.debug.controller.overlaysEnabled;
-    logger.info('main', `Overlays ${state.debug.controller.overlaysEnabled ? 'enabled' : 'disabled'}`);
+    logger.info('main', `Overlays ${state.debug.controller.isOverlayVisible() ? 'enabled' : 'disabled'}`);
   }
 
   // Shift+Ctrl+T: Open trace window for a channel (prompt user)
