@@ -84,7 +84,9 @@
       "Bash(grep -n \"import.*eventBuffer\\\\|from.*events\" js/*.js js/debug/*.js js/physics/*.js)",
       "Bash(git checkout js/debug/faults.js js/main.js)",
       "mcp__Desktop_Commander__write_pdf",
-      "Bash(ls -lh C:UsersQuantumDocumentsGitHubVerletDriftPhase* C:UsersQuantumDocumentsGitHubVerletDriftVerlet*)"
+      "Bash(ls -lh C:UsersQuantumDocumentsGitHubVerletDriftPhase* C:UsersQuantumDocumentsGitHubVerletDriftVerlet*)",
+      "mcp__Desktop_Commander__create_directory",
+      "mcp__Desktop_Commander__read_multiple_files"
     ]
   }
 }

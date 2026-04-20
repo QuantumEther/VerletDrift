@@ -1,0 +1,106 @@
+\section{Steering Dynamics \& Self-Aligning Torque}
+
+\label{sec:steering-sat}
+
+This section documents the steering column dynamics and self-aligning torque (SAT), which make the steering wheel feel responsive and natural.
+
+\cite{pacejka2005tire} provides the theoretical foundation for self-aligning torque. The implementation uses a simplified column model with spring return and viscous damping.
+
+\subsection{Self-Aligning Torque (SAT)}
+
+Self-aligning torque is the tendency of tires to straighten when cornering, caused by asymmetric pressure distribution:
+
+\begin{equation}
+  \text{SAT} = -k_r \cdot d \cdot F_{\text{lat}}
+  \label{eq:sat-magnitude}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $k_r$ = pneumatic trail (moment arm, typically 0.03–0.05 m)
+  \item $d$ = lateral force direction (sign of sideways slip)
+  \item $F_{\text{lat}}$ = lateral tire force (magnitude)
+\end{itemize}
+
+A simplified version sums SAT from front wheels only (dominant contribution):
+
+\begin{equation}
+  \text{SAT}_{\text{total}} = -k_r \cdot (F_{\text{lat,FL}} + F_{\text{lat,FR}}) \cdot \frac{1}{w}
+  \label{eq:sat-total}
+\end{equation}
+
+where $w$ is the front track width.
+
+\textbf{Source Code}: \coderef{steering.js}{All}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item SAT increases with cornering force (stronger feedback at higher speeds)
+  \item SAT decreases at high slip angles (sliding tires have less effect)
+  \item Only front wheels contribute significantly
+  \item The pneumatic trail $k_r$ is a tire property, tuned for responsiveness
+\end{itemize}
+
+\subsection{Steering Column Equation of Motion}
+
+The steering column dynamics are modeled as:
+
+\begin{equation}
+  I_c \cdot \ddot{\delta} = \text{SAT} - c_v \cdot \dot{\delta} - c_c \cdot \text{sign}(\dot{\delta}) + F_s \cdot (\delta_{\text{target}} - \delta)
+  \label{eq:steering-column}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $I_c$ = steering column inertia (kg·m²)
+  \item $\delta$ = steering angle (radians)
+  \item $c_v$ = viscous damping coefficient
+  \item $c_c$ = Coulomb (friction) damping
+  \item $F_s$ = centering spring stiffness
+  \item $\delta_{\text{target}}$ = driver's requested steering angle
+\end{itemize}
+
+\subsection{Semi-Implicit Euler Integration}
+
+For numerical stability, the steering column is integrated using semi-implicit Euler:
+
+\begin{equation}
+  \omega_{\text{new}} = \frac{\omega_{\text{old}} + (\text{SAT} - c_v \omega_{\text{old}}) / I_c \cdot \Delta t}{1 + c_v \Delta t / I_c}
+  \label{eq:steering-semi-implicit}
+\end{equation}
+
+\begin{equation}
+  \delta_{\text{new}} = \delta_{\text{old}} + \omega_{\text{new}} \cdot \Delta t
+  \label{eq:steering-angle-update}
+\end{equation}
+
+\textbf{Physical Meaning}: The semi-implicit formulation provides better stability at high SAT values without requiring a smaller timestep.
+
+\textbf{Source Code}: \coderef{steering.js}{Implementation details}
+
+\subsection{Low-Speed Spring Return}
+
+At low speeds (below 3 m/s), SAT is reduced and a spring return force assists steering:
+
+\begin{equation}
+  F_{\text{return}} = -k_s \cdot (1 - \text{speedFactor}) \cdot \delta
+  \label{eq:spring-return}
+\end{equation}
+
+where:
+
+\begin{equation}
+  \text{speedFactor} = \max(0, \min(1, v / 3.0))
+  \label{eq:speed-factor}
+\end{equation}
+
+\textbf{Physical Meaning}: At standstill, the spring provides full return force. As speed increases, the spring force decreases and SAT takes over. This ensures the wheel self-centers when parked.
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Spring stiffness $k_s$ is tuned for feel; typical value 100–200 N/m
+  \item Transition range: 0–3 m/s
+  \item SAT feedback strengthens above 3 m/s
+\end{itemize}
+
+\newpage

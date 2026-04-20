@@ -1,0 +1,106 @@
+\section{Engine \& Drivetrain Systems}
+
+\label{sec:engine-drivetrain}
+
+This section covers engine torque curves, transmission ratios, clutch engagement, and the calculation of drive forces applied to the wheels. All equations have been verified against the source code implementation in engine.js.
+
+\cite{ogata2009modern} provides control theory foundations for modeling response curves. The implementation here uses simplified parabolic and polynomial fits suitable for real-time game simulation.
+
+\subsection{Torque Curve (Parabolic)}
+
+\begin{equation}
+  T(rpm) = \max\left(0, 1 - 2.5 \left(\frac{rpm - rpm_{\text{peak}}}{rpm_{\text{range}}}\right)^2\right)
+  \label{eq:torque-curve}
+\end{equation}
+
+\textbf{Physical Meaning}: The normalized torque curve is a parabola with peak output (1.0) at the target RPM. The quadratic falloff allows smooth power delivery at idle and redline, making the engine driveable across all gear ranges.
+
+\textbf{Source Code}: \coderef{tires.js}{54--61}
+
+\begin{lstlisting}[caption={Parabolic torque curve implementation}]
+function torqueCurveNormalized(rpm, idleRpm, redlineRpm) {
+  const TORQUE_PEAK_RPM = 4000;
+  const rpmRange         = redlineRpm - idleRpm;
+  const distanceFromPeak = (rpm - TORQUE_PEAK_RPM) / rpmRange;
+  return Math.max(0, 1.0 - 2.5 * distanceFromPeak * distanceFromPeak);
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $rpm_{\text{peak}}$ = peak torque RPM (default: 4000 RPM)
+  \item $rpm_{\text{idle}}$ = idle RPM (default: 700 RPM)
+  \item $rpm_{\text{redline}}$ = maximum RPM (default: 7000 RPM)
+  \item $rpm_{\text{range}} = rpm_{\text{redline}} - rpm_{\text{idle}}$
+  \item Coefficient 2.5 controls falloff steepness
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Output is normalized to [0, 1]; multiply by $T_{\text{peak}}$ for absolute torque
+  \item Parabola ensures zero torque at idle and redline
+  \item Peak torque accessible from gear ratios and final drive
+\end{itemize}
+
+\subsection{Engine Torque}
+
+\begin{equation}
+  \tau_{\text{engine}} = T_{\text{peak}} \cdot T(rpm) \cdot \theta_{\text{throttle}}
+  \label{eq:engine-torque}
+\end{equation}
+
+\textbf{Physical Meaning}: Engine torque is the normalized curve scaled by maximum torque and throttle input (0 to 1).
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $T_{\text{peak}}$ = peak engine torque (default: 400 N·m)
+  \item $T(rpm)$ = normalized torque curve [0, 1]
+  \item $\theta_{\text{throttle}}$ = throttle input [0, 1]
+\end{itemize}
+
+\subsection{Drive Force Calculation}
+
+\begin{equation}
+  F_{\text{drive}} = \frac{\tau_{\text{engine}} \cdot |r_{\text{gear}}| \cdot r_{\text{final}} \cdot c_{\text{engagement}}}{R_{\text{wheel}}}
+  \label{eq:drive-force}
+\end{equation}
+
+\textbf{Physical Meaning}: Engine torque is transmitted through the transmission and final drive, scaled by clutch engagement, then converted to a linear force at the wheel rim.
+
+\textbf{Source Code}: \coderef{tires.js}{148--173}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $r_{\text{gear}}$ = current gear ratio (e.g., 3.6 for 1st, 2.0 for 2nd, etc.)
+  \item $r_{\text{final}}$ = final drive ratio (default: 3.5)
+  \item $c_{\text{engagement}}$ = clutch engagement [0, 1]
+  \item $R_{\text{wheel}}$ = wheel radius (default: 0.3 m)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Gear ratio sign indicates direction: positive for forward, negative for reverse
+  \item For neutral or stalled engine, $r_{\text{gear}} = 0$ and drive force = 0
+  \item Rear wheels only (rear-wheel-drive configuration)
+  \item Force is applied equally to both rear wheels
+\end{itemize}
+
+\subsection{Idle Creep}
+
+\begin{equation}
+  F_{\text{creep}} = F_{\text{idle}} \cdot c_{\text{engagement}}, \quad \text{(when } \theta < 0.05 \text{ and } |v| < 3 \text{ m/s)}
+  \label{eq:idle-creep-engine}
+\end{equation}
+
+\textbf{Physical Meaning}: At idle with clutch engaged but no throttle, a small creep force propels the car forward at low speeds, mimicking real vehicle behavior.
+
+\textbf{Source Code}: \coderef{tires.js}{168--172}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Active only when throttle $< 5\%$ and speed $< 3$ m/s
+  \item Clutch engagement ramps force smoothly (no jerks during gear changes)
+  \item Typical idle creep force: 0.5 N
+\end{itemize}
+
+\newpage

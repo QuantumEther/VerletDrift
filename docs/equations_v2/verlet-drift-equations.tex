@@ -1,0 +1,168 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+
+\usepackage[utf-8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage[numbers]{natbib}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% ============================================================================
+% CONFIGURATION
+% ============================================================================
+
+% Color scheme
+\definecolor{codeblue}{rgb}{0.1, 0.2, 0.6}
+\definecolor{codecomment}{rgb}{0.4, 0.4, 0.4}
+\definecolor{codestring}{rgb}{0.6, 0.1, 0.1}
+
+% Code listing style
+\lstset{
+  language=JavaScript,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  frameround=tttt,
+  rulecolor=\color{gray},
+  captionpos=b,
+  belowcaptionskip=8pt
+}
+
+% Hyperref configuration
+\hypersetup{
+  colorlinks=true,
+  linkcolor=codeblue,
+  urlcolor=codeblue,
+  citecolor=codeblue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhead[L]{VerletDrift: Mathematical Equations}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{Generated from VerletDrift Physics Simulator (v2 - Reanalyzed \& Extended)}
+
+% ============================================================================
+% CUSTOM COMMANDS & MACROS
+% ============================================================================
+
+% Math operators
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\clamp}{clamp}
+\DeclareMathOperator{\clampz}{clamp_{01}}
+
+% Vector notation
+\newcommand{\vv}[1]{\mathbf{#1}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+
+% Time derivatives
+\newcommand{\dd}[1]{\mathrm{d}#1}
+\newcommand{\ddot}[2]{\frac{\dd^2 #1}{\dd #2^2}}
+\newcommand{\dot}[2]{\frac{\dd #1}{\dd #2}}
+
+% Physics notation
+\newcommand{\unit}[1]{\,\mathrm{#1}}
+
+% Code reference
+\newcommand{\coderef}[2]{\texttt{#1:line~#2}}
+
+% ============================================================================
+% TITLE & METADATA
+% ============================================================================
+
+\title{%
+  VerletDrift: Mathematical Equations Reference (v2) \\
+  \large Comprehensive Reanalyzed Documentation of Physics, Rendering, and Dynamics \\
+  \normalsize With Extended Coverage of Undocumented Implementations
+}
+
+\author{%
+  VerletDrift Physics Simulator \\
+  Mathematical Documentation (Reanalyzed and Extended)
+}
+
+\date{\today}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+\maketitle
+
+% ============================================================================
+% TABLE OF CONTENTS
+% ============================================================================
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% INTRODUCTION
+% ============================================================================
+
+\input{0-introduction}
+
+% ============================================================================
+% PHYSICS SECTIONS
+% ============================================================================
+
+\input{1-verlet-integration}
+\input{2-weight-transfer}
+\input{3-engine-drivetrain}
+\input{4-tire-pacejka}
+\input{5-tire-relaxation-grip}
+\input{6-steering-sat}
+\input{7-drag-resistance}
+\input{8-camera-rendering}
+\input{9-scoring-dynamics}
+\input{10-undocumented-functions}
+
+% ============================================================================
+% APPENDICES
+% ============================================================================
+
+\appendix
+\input{a-appendix-constants}
+
+% ============================================================================
+% DIAGRAMS
+% ============================================================================
+
+\newpage
+\section*{Vector Diagrams and Illustrations}
+\input{diagrams}
+
+% ============================================================================
+% BIBLIOGRAPHY
+% ============================================================================
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
+
+\end{document}

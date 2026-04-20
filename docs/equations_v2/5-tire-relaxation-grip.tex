@@ -1,0 +1,132 @@
+\section{Tire Relaxation, Grip States \& Advanced Dynamics}
+
+\label{sec:tire-relaxation}
+
+This section covers tire force relaxation (the lag between instantaneous slip and realized force), grip state transitions, and per-wheel grip smoothing. Proper handling of tire relaxation is essential for realistic drifting and sliding behavior.
+
+\subsection{Tire Relaxation Length}
+
+The relaxation distance $\lambda$ represents how far the tire must roll before reaching steady-state force after a sudden slip change:
+
+\begin{equation}
+  \lambda = \text{relaxationLength} \approx 0.3 \text{ m}
+  \label{eq:relaxation-length}
+\end{equation}
+
+This converts to a time constant based on longitudinal speed:
+
+\begin{equation}
+  \tau(v) = \frac{\lambda}{\max(|v_{\text{long}}|, 0.5 \text{ m/s})}
+  \label{eq:relaxation-tau}
+\end{equation}
+
+\textbf{Physical Meaning}: Tire relaxation models the transient response of tire slip. The relaxation length is a material property; at higher speeds, the relaxation time (distance/speed) is shorter, causing faster force response.
+
+\textbf{Source Code}: \coderef{tires.js}{332--343}
+
+\begin{lstlisting}[caption={Tire force relaxation via EMA}]
+const relaxationLength = params.tireRelaxationLength || 0.3;
+const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
+const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
+const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
+
+const prev = state.prevTireForce[name];
+const relaxedLat = prev.lat + (scaledLateral - prev.lat) * tireRelaxAlpha;
+const relaxedLon = prev.lon + (scaledLongitudinal - prev.lon) * tireRelaxAlpha;
+prev.lat = relaxedLat;
+prev.lon = relaxedLon;
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Relaxation is implemented via exponential moving average (EMA) filtering
+  \item The EMA blending factor is computed from the time constant
+  \item Relaxation is applied AFTER the Pacejka formula but BEFORE output
+  \item This models the real phenomenon where tires lag when slip suddenly changes
+  \item At very low speeds ($< 0.5$ m/s), relaxation is still applied with a minimum tau to prevent stalling
+\end{itemize}
+
+\subsection{Grip State Machine}
+
+\label{sec:grip-state-machine}
+
+The tire system maintains a three-state automaton tracking grip state based on friction utilization. See Section \ref{sec:hysteretic-grip-state} for detailed state equations and transitions.
+
+\textbf{States}:
+\begin{itemize}
+  \item \textbf{stable}: Wheel has grip available, $u < 0.65$
+  \item \textbf{slipping}: Wheel is losing/has lost grip, $u \ge 0.90$
+  \item \textbf{recovering}: Wheel is regaining grip, $0.80 \le u < 0.90$ (from slipping state)
+\end{itemize}
+
+\textbf{Thresholds} (hysteresis prevents oscillation):
+\begin{itemize}
+  \item Enter slipping: $u > 0.90$
+  \item Exit slipping (enter recovering): $u < 0.80$
+  \item Exit recovering (enter stable): $u < 0.65$
+\end{itemize}
+
+\subsection{Per-Wheel Grip Smoothing}
+
+The friction circle utilization is smoothed with a state-dependent EMA coefficient:
+
+\begin{equation}
+  u_{\text{smooth}}(t) = u_{\text{smooth}}(t-\Delta t) + (u(t) - u_{\text{smooth}}(t-\Delta t)) \cdot \alpha_{\text{grip}}(s)
+  \label{eq:grip-smoothing}
+\end{equation}
+
+\textbf{EMA Coefficients}:
+\begin{equation}
+  \alpha_{\text{grip}}(s) = \begin{cases}
+    0.15 & \text{if } s = \text{stable} \\
+    0.35 & \text{if } s = \text{slipping or recovering}
+  \end{cases}
+  \label{eq:grip-ema-rate}
+\end{equation}
+
+\textbf{Physical Meaning}: During stable grip, smooth slowly (preserve detail). During slipping, smooth faster (reduce noise from Pacejka nonlinearity). This adaptive filtering significantly improves driving feel.
+
+\textbf{Source Code}: \coderef{tires.js}{374--377}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item The slow stable rate (0.15) allows fine control and feeling of grip transitions
+  \item The fast slipping rate (0.35) smooths constraint solver noise without lag
+  \item These rates are independent parameters, tunable via UI
+  \item The smoothing affects visual feedback (HUD indicators) but not physics calculations
+\end{itemize}
+
+\subsection{Low-Speed Lateral Force Fade}
+
+\label{sec:lateral-fade}
+
+At very low speeds ($< 2$ m/s), lateral forces are attenuated to prevent twitching from constraint solver noise:
+
+\begin{equation}
+  \text{fade}(v) = \max\left(0, \min\left(1, \frac{v}{2.0}\right)\right)
+  \label{eq:lateral-fade-function}
+\end{equation}
+
+\begin{equation}
+  F_{\text{lat,final}} = F_{\text{lat}} \cdot \text{fade}(|v|)
+  \label{eq:lateral-fade-applied}
+\end{equation}
+
+\textbf{Source Code}: \coderef{tires.js}{269--276}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item Fade threshold = 2.0 m/s
+  \item Below 2 m/s: lateral force smoothly decreases to zero
+  \item Above 2 m/s: full lateral force applied
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item This is a practical solution to the slip angle denominator clamp (Section \ref{eq:slip-angle})
+  \item At standstill, the constraint solver produces large micro-motions
+  \item These micro-motions create large slip angles from the denominator clamp
+  \item Fading lateral force prevents the car from twitching when parked
+\end{itemize}
+
+\newpage

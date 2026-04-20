@@ -1,0 +1,30 @@
+\section{Drag \& Air Resistance}
+
+This section documents drag force computation, which opposes motion and provides realistic resistance.
+
+\subsection{Drag Force}
+
+\begin{equation}
+  F_{\text{drag}} = \frac{1}{2} \rho \cdot A_d \cdot C_d \cdot v^2
+  \label{eq:drag-force}
+\end{equation}
+
+\textbf{Physical Meaning}: Drag force is proportional to the square of velocity, opposing the direction of motion. It models air resistance and rolling resistance combined.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\rho$ = air density ($\approx 1.225$ kg/m³ at sea level)
+  \item $A_d$ = frontal area (m²)
+  \item $C_d$ = drag coefficient (0.3–0.4 for vehicles)
+  \item $v$ = vehicle speed (m/s)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Drag acts in the negative forward direction (opposes motion)
+  \item Quadratic dependence makes drag significant at high speeds
+  \item Simplified model; rolling resistance not separately computed
+  \item Applied as acceleration: $a_{\text{drag}} = -F_{\text{drag}} / m$
+\end{itemize}
+
+\newpage

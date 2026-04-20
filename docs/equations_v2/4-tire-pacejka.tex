@@ -1,0 +1,180 @@
+\section{Tire Model - Pacejka Magic Formula}
+
+\label{sec:tire-model}
+
+This section documents the tire force model used to compute lateral and longitudinal forces based on wheel slip. The implementation uses the simplified Pacejka magic formula, which provides realistic tire behavior with minimal computational cost.
+
+\cite{pacejka2005tire} provides the authoritative treatment of the Pacejka magic formula and tire dynamics. The E=0 variant used here is a simplified but effective approximation suitable for real-time applications.
+
+\subsection{Pacejka Magic Formula (Simplified)}
+
+\begin{equation}
+  F = \frac{N \cdot \mu}{\sin(C \cdot \arctan(B))} \cdot \sin(C \cdot \arctan(B \cdot s_{\text{norm}}))
+  \label{eq:pacejka-formula}
+\end{equation}
+
+\textbf{Physical Meaning}: The Pacejka formula models tire force as a function of normalized slip (ratio or angle) with nonlinear saturation. At zero slip, force is zero. As slip increases, force increases nonlinearly and saturates at maximum grip.
+
+\textbf{Source Code}: \coderef{tires.js}{63--72}
+
+\begin{lstlisting}[caption={Pacejka force computation}]
+function pacejkaForce(normalLoad, frictionCoeff, slipValue,
+                      peakSlipValue, B, C) {
+  const safePeakSlip = Math.max(Math.abs(peakSlipValue), 1e-4);
+  const normalisedSlip = slipValue / safePeakSlip;
+  const peakNorm = Math.sin(C * Math.atan(B));
+  if (peakNorm < 0.0001) return 0;
+  return (normalLoad * frictionCoeff / peakNorm) *
+         Math.sin(C * Math.atan(B * normalisedSlip));
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $N$ = normal load (Newtons)
+  \item $\mu$ = friction coefficient (typically 1.0–1.5)
+  \item $B$ = Pacejka stiffness factor (default: 13.0, controls curve shape)
+  \item $C$ = Pacejka shape factor (default: 1.3, controls curvature)
+  \item $s_{\text{norm}}$ = normalized slip (slip / peak slip)
+  \item $\text{peak\_norm} = \sin(C \cdot \arctan(B))$ = normalization factor
+\end{itemize}
+
+\subsection{Slip Angle (Lateral)}
+
+\begin{equation}
+  \alpha = \arctan\left(\frac{v_{\text{lat}}}{\max(|v_{\text{long}}|, v_{\text{min}})}\right)
+  \label{eq:slip-angle}
+\end{equation}
+
+\textbf{Physical Meaning}: Slip angle is the angle between the wheel's heading and its actual velocity direction. It characterizes how much the wheel is drifting sideways.
+
+\textbf{Source Code}: \coderef{tires.js}{255--260}
+
+\begin{lstlisting}[caption={Slip angle computation}]
+const vLong = wheelLongitudinalSpeed;
+const vLat  = smoothedLat;   // smoothed to reduce noise
+const minSlipDenom = 0.5;  // m/s clamp
+const slipDenom = Math.max(Math.abs(vLong), minSlipDenom);
+const slipAngle = Math.atan2(vLat, slipDenom);
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $v_{\text{lat}}$ = wheel's lateral velocity (m/s), smoothed via EMA
+  \item $v_{\text{long}}$ = wheel's longitudinal velocity (m/s)
+  \item $v_{\text{min}}$ = denominator clamp = 0.5 m/s (prevents division by near-zero)
+  \item Output range: $[-\pi/2, \pi/2]$ radians
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Lateral velocity is smoothed with 25 ms time constant to reject constraint solver noise before entering the nonlinear Pacejka curve
+  \item Denominator clamp prevents extreme slip angles from tiny longitudinal velocities at standstill
+  \item At very low speeds, lateral force is faded to zero (Section \ref{sec:lateral-fade}) to prevent twitching
+\end{itemize}
+
+\subsection{Slip Ratio (Longitudinal)}
+
+\begin{equation}
+  \kappa = \frac{\omega \cdot R - v_{\text{long}}}{\max(|\omega \cdot R|, |v_{\text{long}}|, \epsilon)}
+  \label{eq:slip-ratio}
+\end{equation}
+
+\textbf{Physical Meaning}: Slip ratio characterizes the mismatch between wheel rolling speed and ground speed. Positive slip ratio indicates the wheel is spinning faster than it rolls (acceleration/burnout). Negative slip ratio indicates braking (wheel rolling slower than ground speed).
+
+\textbf{Source Code}: \coderef{tires.js}{282--296}
+
+\begin{lstlisting}[caption={Slip ratio computation}]
+const wheelRad = params.wheelRadius;
+const omega = state.wheelOmega[name];
+const wheelSurfaceSpeed = omega * wheelRad;
+const epsilon = 0.5;
+const slipDenomLongitudinal = Math.max(Math.abs(wheelSurfaceSpeed),
+                                       Math.abs(wheelLongitudinalSpeed), epsilon);
+slipRatio = (wheelSurfaceSpeed - wheelLongitudinalSpeed) / slipDenomLongitudinal;
+slipRatio = clamp(slipRatio, -1.0, 1.0);
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\omega$ = wheel angular velocity (rad/s)
+  \item $R$ = wheel radius (m)
+  \item $v_{\text{long}}$ = wheel's longitudinal velocity (m/s)
+  \item $\epsilon$ = denominator clamp = 0.5 m/s
+  \item Output clamped to $[-1, 1]$ (maximum slip is 100%)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Slip ratio = 0: wheel rolling perfectly (no slip)
+  \item Slip ratio = +1: wheel spinning at 2× ground speed (burnout)
+  \item Slip ratio = -1: wheel locked (braking)
+  \item Denominator clamp prevents division by near-zero at standstill
+\end{itemize}
+
+\subsection{Lateral Force}
+
+\begin{equation}
+  F_{\text{lat}} = \text{pacejkaForce}(N, \mu, |\alpha|, \alpha_{\text{peak}}, B, C) \cdot \text{sign}(v_{\text{lat}})
+  \label{eq:lateral-force}
+\end{equation}
+
+\textbf{Physical Meaning}: Lateral force is computed via the Pacejka formula, applied perpendicular to the wheel's rolling direction. Force direction opposes the drift direction.
+
+\textbf{Source Code}: \coderef{tires.js}{262--268}
+
+\subsection{Longitudinal Force}
+
+\begin{equation}
+  F_{\text{lon}} = \begin{cases}
+    \text{pacejkaForce}(N, \mu, |\kappa|, \kappa_{\text{peak}}, B, C) \cdot \text{sign}(\kappa) & \text{if } |\kappa| > 0.001 \\
+    0 & \text{otherwise}
+  \end{cases}
+  \label{eq:longitudinal-force}
+\end{equation}
+
+\textbf{Physical Meaning}: Longitudinal force is computed from slip ratio. Zero force at zero slip (no rolling resistance in this model). Force magnitude increases with slip until saturation.
+
+\textbf{Source Code}: \coderef{tires.js}{291--296}
+
+\subsection{Friction Ellipse (Combined Slip Limiting)}
+
+\begin{equation}
+  F_{\text{combined}} = \sqrt{F_{\text{lat}}^2 + F_{\text{lon}}^2}
+  \label{eq:friction-combined}
+\end{equation}
+
+\begin{equation}
+  F_{\text{max}} = \mu \cdot N
+  \label{eq:friction-max}
+\end{equation}
+
+\begin{equation}
+  \text{If } F_{\text{combined}} > F_{\text{max}}, \text{ then scale both forces: } F \leftarrow F \cdot \frac{F_{\text{max}}}{F_{\text{combined}}}
+  \label{eq:friction-ellipse}
+\end{equation}
+
+\textbf{Physical Meaning}: The tire has a maximum grip circle. If combined lateral and longitudinal forces exceed available friction, both are scaled equally to stay within the circle.
+
+\textbf{Source Code}: \coderef{tires.js}{311--318}
+
+\begin{lstlisting}[caption={Friction ellipse limiting}]
+const frictionLimit  = normalLoad * frictionCoeff;
+const combinedMag    = Math.hypot(fadedLateralForceMag, longitudinalForceMag);
+let frictionScale    = 1.0;
+if (combinedMag > frictionLimit && combinedMag > 0) {
+  frictionScale = frictionLimit / combinedMag;
+}
+
+const scaledLateral      = fadedLateralForceMag * frictionScale * lateralForceSign;
+const scaledLongitudinal = longitudinalForceMag  * frictionScale;
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Implementing the friction ellipse prevents unrealistic scenarios where a tire exceeds available grip
+  \item Equal scaling of both components preserves the combined slip direction
+  \item This is a crucial element of realistic vehicle dynamics
+\end{itemize}
+
+\newpage

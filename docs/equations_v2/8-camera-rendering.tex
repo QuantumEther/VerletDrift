@@ -1,0 +1,38 @@
+\section{Camera Rendering \& Spring-Damper System}
+
+This section documents the camera following system, which uses a spring-damper model for smooth, responsive tracking.
+
+\subsection{Spring-Damper Camera}
+
+\begin{equation}
+  m \cdot \ddot{\vv{r}} = -k \cdot (\vv{r} - \vv{r}_{\text{target}}) - c \cdot \dot{\vv{r}}
+  \label{eq:spring-damper}
+\end{equation}
+
+\textbf{Physical Meaning}: The camera position is governed by a spring (pulling toward target) and damper (resisting motion), creating smooth motion with controllable lag.
+
+\textbf{Parameters} (converted from natural frequency $\omega_0$ and damping ratio $\zeta$):
+\begin{itemize}
+  \item Spring stiffness: $k = \omega_0^2 \cdot m$
+  \item Damping coefficient: $c = 2 \zeta \omega_0 \cdot m$
+  \item Typical: $\omega_0 = 2$ rad/s, $\zeta = 0.8$ (slightly underdamped)
+\end{itemize}
+
+\subsection{Verlet Integration for Camera}
+
+The camera position is updated using Verlet integration:
+
+\begin{equation}
+  \vv{r}_{\text{new}} = \vv{r} + (\vv{r} - \vv{r}_{\text{prev}}) \cdot e^{-c \cdot \Delta t / m} + \vv{F}_{\text{spring}} \cdot (\Delta t)^2
+  \label{eq:camera-verlet}
+\end{equation}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Camera uses the same Verlet integrator as physics particles
+  \item Exponential damping provides smooth decay
+  \item Configurable natural frequency and damping ratio allow tuning
+  \item Zoom fades out at high speeds (vehicle-dependent feature)
+\end{itemize}
+
+\newpage

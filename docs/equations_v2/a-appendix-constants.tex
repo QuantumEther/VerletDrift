@@ -1,0 +1,203 @@
+\appendix
+
+\section{Constants \& Configurable Parameters}
+
+\label{sec:constants}
+
+This appendix provides a comprehensive reference of all constants, default parameters, and tunable values used throughout the VerletDrift simulation.
+
+\subsection{Physics Constants}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Name} & \textbf{Symbol} & \textbf{Default} & \textbf{Unit} \\
+\hline
+Gravity & $g$ & 9.8 & m/s² \\
+Physics Timestep & $\Delta t$ & 0.01 & s (100 Hz) \\
+Constraint Iterations & $n_c$ & 6 & count \\
+Constraint Damping & $c_d$ & 0.5 & [0, 1] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Vehicle Properties}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Default} & \textbf{Unit} \\
+\hline
+Mass & $m$ & 1500 & kg \\
+Wheelbase & $L_{wb}$ & 2.7 & m \\
+Track Width (Front) & $T_w$ & 1.5 & m \\
+Track Width (Rear) & $T_w$ & 1.5 & m \\
+CoG Height & $h_c$ & 0.4 & m \\
+Wheel Radius & $R$ & 0.3 & m \\
+Wheel Inertia & $\mathcal{I}_w$ & 1.2 & kg·m² \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Tire Model Parameters}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Default} & \textbf{Unit} \\
+\hline
+Friction Coefficient & $\mu$ & 1.0 & dimensionless \\
+Pacejka B (Stiffness) & $B$ & 13.0 & dimensionless \\
+Pacejka C (Shape) & $C$ & 1.3 & dimensionless \\
+Peak Slip Angle & $\alpha_p$ & 8 & degrees \\
+Peak Slip Ratio & $\kappa_p$ & 0.2 & dimensionless \\
+Tire Relaxation Length & $\lambda$ & 0.3 & m \\
+Lateral Smooth Tau & $\tau_{lat}$ & 0.025 & s \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Engine \& Drivetrain}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Default} & \textbf{Unit} \\
+\hline
+Peak Engine Torque & $T_p$ & 400 & N·m \\
+Idle RPM & $rpm_i$ & 700 & RPM \\
+Peak Torque RPM & $rpm_{pk}$ & 4000 & RPM \\
+Redline RPM & $rpm_r$ & 7000 & RPM \\
+\multicolumn{4}{|c|}{\textbf{Gear Ratios}} \\
+Gear 1 & $r_1$ & 3.6 & ratio \\
+Gear 2 & $r_2$ & 2.4 & ratio \\
+Gear 3 & $r_3$ & 1.7 & ratio \\
+Gear 4 & $r_4$ & 1.2 & ratio \\
+Gear 5 & $r_5$ & 0.9 & ratio \\
+Gear 6 & $r_6$ & 0.7 & ratio \\
+Reverse & $r_R$ & -3.5 & ratio \\
+Final Drive & $r_f$ & 3.5 & ratio \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Brake System}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & & \textbf{Default} & \textbf{Unit} \\
+\hline
+Regular Brake Force & $F_b$ & 5000 & N \\
+Regular Brake Front Split & & 80\% & of total \\
+Handbrake Force & & 4000 & N (rear only) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Grip State Machine}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{Threshold} & \textbf{Symbol} & \textbf{Default} \\
+\hline
+Enter Slipping & $u_{slip}$ & 0.90 \\
+Exit Slipping (Recovering) & $u_{rec}$ & 0.80 \\
+Exit Recovering (Stable) & $u_{stab}$ & 0.65 \\
+EMA Alpha (Stable) & $\alpha_s$ & 0.15 \\
+EMA Alpha (Slipping) & $\alpha_{slip}$ & 0.35 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Steering System}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & & \textbf{Default} & \textbf{Unit} \\
+\hline
+Max Steering Angle & & 30 & degrees \\
+Steering Return Speed & & 60 & deg/s \\
+SAT Pneumatic Trail & $k_r$ & 0.04 & m \\
+Spring Return Stiffness & & 150 & N·m/rad \\
+Low Speed Threshold & & 3.0 & m/s \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Camera System}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|l|}
+\hline
+\textbf{Parameter} & & \textbf{Default} & \textbf{Unit} \\
+\hline
+Natural Frequency & $\omega_0$ & 2.0 & rad/s \\
+Damping Ratio & $\zeta$ & 0.8 & dimensionless \\
+Follow Distance & & 15 & m (behind car) \\
+Height Above Track & & 8 & m \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Display \& Rendering}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{Parameter} & & \textbf{Default} \\
+\hline
+Pixels Per Meter & & 32 \\
+Max Lateral Wheel Speed (Skid) & & 1.8 m/s \\
+Skid Mark Alpha & & 0.3 \\
+Motion Blur Intensity & & 0.2 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Numerical Stability Parameters}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Parameter} & \textbf{Default} & \textbf{Note} \\
+\hline
+Max Displacement / Step & 0.4 m & Anti-tunnelling \\
+Constraint Damping Floor & 0.05 & Prevents energy loss \\
+Denominator Clamp (Slip) & 0.5 m/s & Prevents division by zero \\
+Max Angular Velocity (Wheel) & 500 rad/s & Prevents runaway spin \\
+Low Speed Fade Threshold & 2.0 m/s & Prevents twitching \\
+EMA Time Constants & 25–120 ms & Filter noise \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Score Multipliers}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Multiplier} & \textbf{Default} \\
+\hline
+Drift Score Rate & 10 points/frame \\
+Drift Multiplier Cap & 10x \\
+Airtime Bonus & 5 points/frame \\
+Near-Miss Bonus & 50 points \\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage

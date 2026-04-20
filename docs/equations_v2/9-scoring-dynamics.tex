@@ -1,0 +1,41 @@
+\section{Scoring Dynamics \& Game Mechanics}
+
+This section documents scoring calculations based on vehicle dynamics, providing gameplay feedback.
+
+\subsection{Drift Score}
+
+Drift score increases based on lateral acceleration and slip angle:
+
+\begin{equation}
+  \dot{\text{score}} = k_{\text{drift}} \cdot (|a_{\text{lat}}| + k_{\text{slip}} \cdot |\alpha|) \cdot v
+  \label{eq:drift-score-rate}
+\end{equation}
+
+\textbf{Physical Meaning}: Higher lateral acceleration and larger slip angles contribute to drift score. Speed multiplier ensures high-speed drifts are rewarded more.
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $k_{\text{drift}}$ = drift score multiplier (tunable for difficulty)
+  \item $k_{\text{slip}}$ = slip angle weight
+  \item $v$ = current speed factor (normalized)
+\end{itemize}
+
+\subsection{Drift Multiplier}
+
+Consecutive drifts without braking increase a multiplier:
+
+\begin{equation}
+  m(t) = 1 + k_m \cdot \min(t, t_{\text{max}})
+  \label{eq:drift-multiplier}
+\end{equation}
+
+\textbf{Physical Meaning}: Maintaining drifts without correction increases the score multiplier, encouraging skillful, sustained drifting.
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Multiplier caps at a maximum (typically 10x)
+  \item Multiplier resets on brake or collision
+  \item Provides dynamic difficulty scaling
+\end{itemize}
+
+\newpage

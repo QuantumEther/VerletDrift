@@ -1,0 +1,131 @@
+\section*{Introduction}
+
+\subsection*{Purpose and Scope}
+
+This document provides a comprehensive mathematical reference for the VerletDrift physics simulation engine. It documents all mathematical equations, formulas, and algorithms that form the foundation of the simulation, with particular emphasis on:
+
+\begin{itemize}
+  \item \textbf{Core Physics}: Verlet integration, constraint solving, and rigid-body dynamics
+  \item \textbf{Vehicle Dynamics}: Tire models, steering, weight transfer, and drivetrain mechanics
+  \item \textbf{Advanced Features}: Hysteretic grip state machines, tire relaxation, brake dynamics
+  \item \textbf{Rendering \& Camera}: Spring-damper camera systems and visual effects
+  \item \textbf{Game Mechanics}: Scoring dynamics and interactive feedback systems
+\end{itemize}
+
+\subsection*{Version History: v2 - Reanalyzed and Extended}
+
+This v2 documentation represents a comprehensive re-examination and extension of the original VerletDrift equations documentation. Key improvements include:
+
+\begin{enumerate}
+  \item \textbf{Verified Mathematical Correctness}: All 43 existing equations have been re-verified against source code implementations to ensure notational accuracy and physical validity.
+
+  \item \textbf{Extended Coverage}: Added 9+ previously undocumented mathematical implementations, including:
+    \begin{itemize}
+      \item Hysteretic grip state machine (3-state automaton with friction-based transitions)
+      \item Per-wheel grip smoothing with state-dependent EMA filtering
+      \item Brake torque integration and force directions
+      \item Idle creep logic for low-speed vehicle movement
+      \item Anti-tunnelling displacement clamping
+      \item Enhanced low-speed lateral fade effects
+      \item Detailed wheel torque integration
+    \end{itemize}
+
+  \item \textbf{Improved Documentation}: Each equation now includes:
+    \begin{itemize}
+      \item Precise notation matching the actual code implementation
+      \item Physical interpretation and real-world significance
+      \item Numerical stability techniques and constraints
+      \item Complete parameter definitions with units
+      \item Academic citations where available
+    \end{itemize}
+
+  \item \textbf{Visual Clarification}: New TikZ diagrams for complex concepts such as grip state transitions, friction ellipses, and constraint geometry.
+\end{enumerate}
+
+\subsection*{Unit System}
+
+All equations in this document use SI (International System of Units) unless otherwise specified:
+
+\begin{itemize}
+  \item \textbf{Length}: meters (m)
+  \item \textbf{Time}: seconds (s)
+  \item \textbf{Mass}: kilograms (kg)
+  \item \textbf{Force}: Newtons (N) = kg·m/s²
+  \item \textbf{Torque}: Newton-meters (N·m)
+  \item \textbf{Velocity}: meters per second (m/s)
+  \item \textbf{Angular velocity}: radians per second (rad/s)
+  \item \textbf{Acceleration}: meters per second squared (m/s²)
+\end{itemize}
+
+Unit conversions for display occur only in the renderer, where 1 pixel = $1/\text{PIXELS\_PER\_METER}$ meters.
+
+\subsection*{Notation Conventions}
+
+\begin{itemize}
+  \item \textbf{Vectors}: Boldface $\vv{v}$, with component notation $v_x, v_y$ where needed
+  \item \textbf{Scalars}: Plain text $m, a, v$
+  \item \textbf{Angles}: Greek letters $\theta, \alpha, \omega$ (radians unless noted)
+  \item \textbf{Time derivatives}: $\dot{x}$ for first derivative ($dx/dt$), $\ddot{x}$ for second derivative ($d^2x/dt^2$)
+  \item \textbf{Subscripts}: Indicate component or reference frame (e.g., $v_{\text{long}}$ for longitudinal velocity, $x_{\text{prev}}$ for previous position)
+\end{itemize}
+
+\subsection*{Key Definitions}
+
+\subsubsection*{Car Coordinate System}
+
+The car uses a 2D coordinate system with three unit vectors:
+
+\begin{itemize}
+  \item \textbf{Forward direction}: Aligned with the car's heading angle $\theta$
+    \begin{equation}
+      \hat{\vv{u}}_{\text{forward}} = \begin{pmatrix} \sin(\theta) \\ -\cos(\theta) \end{pmatrix}
+    \end{equation}
+    (Note: Canvas coordinates have $+Y$ pointing downward, $+X$ pointing right)
+
+  \item \textbf{Right direction}: Perpendicular to forward, 90° clockwise
+    \begin{equation}
+      \hat{\vv{u}}_{\text{right}} = \begin{pmatrix} \cos(\theta) \\ \sin(\theta) \end{pmatrix}
+    \end{equation}
+
+  \item \textbf{Center of mass}: Fixed at the geometric center of the four wheel particles
+\end{itemize}
+
+\subsubsection*{Wheel Labeling}
+
+Four wheels are labeled by position:
+\begin{itemize}
+  \item \textbf{Front-left} (FL): Forward direction, left side
+  \item \textbf{Front-right} (FR): Forward direction, right side
+  \item \textbf{Rear-left} (RL): Rear direction, left side
+  \item \textbf{Rear-right} (RR): Rear direction, right side
+\end{itemize}
+
+\subsubsection*{Verlet Implicit Velocity}
+
+Unlike classical Newtonian mechanics which tracks velocity explicitly, the Verlet integrator encodes velocity implicitly in position differences:
+
+\begin{equation}
+  \vv{v} = \frac{\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}}{dt}
+\end{equation}
+
+This implicit representation provides excellent numerical stability and energy conservation for conservative forces.
+
+\subsection*{How to Use This Document}
+
+\begin{enumerate}
+  \item \textbf{Sections 1-9}: Each major subsystem is documented separately with equations, physical interpretations, source code references, and parameter lists.
+
+  \item \textbf{Section 10}: Previously undocumented functions with complete mathematical treatment, suitable for implementation or further research.
+
+  \item \textbf{Appendix A}: Reference table of all constants and parameters used throughout the simulation, including default values.
+
+  \item \textbf{Diagrams}: Vector diagrams, state transition diagrams, and TikZ illustrations clarifying complex geometric or logical relationships.
+
+  \item \textbf{Bibliography}: IEEE-formatted citations for academic references where applicable.
+\end{enumerate}
+
+\subsection*{Verification Note}
+
+This v2 documentation has been systematically verified against the VerletDrift source code (JavaScript implementation). Where discrepancies or approximations are noted, they are explicitly documented in the \textbf{Notes} section of each equation. All code references include line numbers for easy cross-referencing.
+
+\newpage

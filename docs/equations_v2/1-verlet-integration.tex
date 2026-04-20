@@ -1,0 +1,263 @@
+\section{Verlet Integration \& Core Kinematics}
+
+This section documents the foundational Verlet integration method used for particle position updates, along with derived kinematic quantities such as velocity, acceleration, and angular motion. The Verlet integrator is the numerical engine that drives all particle motion in the simulation.
+
+\cite{jakobsen2001advanced} presents Verlet integration as a simple yet powerful technique for physics simulation, encoding velocity implicitly in position differences rather than explicitly tracking velocity. This approach provides excellent numerical stability and energy conservation, making it ideal for real-time interactive simulations.
+
+\subsection{Verlet Position Integration}
+
+\begin{equation}
+  \vv{x}_{\text{new}} = \vv{x}_{\text{current}} + (\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}) + \vv{a} \cdot \Delta t^2
+  \label{eq:verlet-position}
+\end{equation}
+
+\textbf{Physical Meaning}: The new position is computed from three components:
+\begin{enumerate}
+  \item \textbf{Current position} $\vv{x}_{\text{current}}$: Where the particle is now
+  \item \textbf{Velocity term} $(\vv{x}_{\text{current}} - \vv{x}_{\text{prev}})$: The implicit velocity, computed as the difference between current and previous positions
+  \item \textbf{Acceleration term} $\vv{a} \cdot \Delta t^2$: The effect of all forces (gravity, tire forces, constraints, etc.) scaled by $\Delta t^2$
+\end{enumerate}
+
+The Verlet method is \textit{symplectic}, meaning it conserves energy for conservative forces and exhibits excellent long-term stability. Unlike explicit Euler integration, it does not require separate velocity storage.
+
+\textbf{Source Code}: \coderef{integrator.js}{29--51}
+
+\begin{lstlisting}[caption={Verlet integration for all four wheel particles}]
+export function verletIntegrateAllPoints(dt, netAccelX, netAccelY, netAngularAccel) {
+  const body = state.body;
+  const dtSquared = dt * dt;
+
+  for (const wheel of Object.values(state.wheels)) {
+    const armX = wheel.x - body.centerX;
+    const armY = wheel.y - body.centerY;
+
+    const rotDeltaX = -netAngularAccel * armY * dtSquared;
+    const rotDeltaY =  netAngularAccel * armX * dtSquared;
+
+    const newX = wheel.x + (wheel.x - wheel.prevX) +
+                 (netAccelX * dtSquared) + rotDeltaX;
+    const newY = wheel.y + (wheel.y - wheel.prevY) +
+                 (netAccelY * dtSquared) + rotDeltaY;
+
+    wheel.prevX = wheel.x;
+    wheel.prevY = wheel.y;
+    wheel.x = newX;
+    wheel.y = newY;
+  }
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\vv{x}_{\text{current}}$ = current particle position $\begin{pmatrix} x \\ y \end{pmatrix}$ (meters)
+  \item $\vv{x}_{\text{prev}}$ = previous particle position (meters)
+  \item $\vv{a}$ = linear acceleration $\begin{pmatrix} a_x \\ a_y \end{pmatrix}$ (m/s²), includes all forces divided by mass
+  \item $\Delta t$ = fixed physics timestep (0.01 s for 100 Hz simulation)
+  \item $\alpha$ = angular acceleration (rad/s²)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item All four wheel particles receive the same linear acceleration (the body is treated as rigid)
+  \item Rotational acceleration is applied as a linearized perturbation proportional to distance from the body center
+  \item The rotational component $(\text{rotDelta}_x, \text{rotDelta}_y)$ implements the 2D cross product: $\omega \times \vv{r} = (-\omega r_y, \omega r_x)$
+  \item This linearization is exact for small angular steps (guaranteed by 100 Hz timestep)
+  \item The constraint solver (Section \ref{sec:constraints}) immediately post-processes positions to maintain rigid-body shape
+  \item The formulation is invariant under the change $\Delta t \to -\Delta t$ (time-reversible for conservative forces)
+\end{itemize}
+
+\subsection{Implicit Velocity and Velocity Extraction}
+
+\begin{equation}
+  \vv{v} = \frac{\vv{x}_{\text{current}} - \vv{x}_{\text{prev}}}{\Delta t}
+  \label{eq:velocity-extraction}
+\end{equation}
+
+\textbf{Physical Meaning}: Since velocity is stored implicitly in the position difference, we extract it by computing the position change divided by the timestep. This gives a backward-difference approximation of the instantaneous velocity.
+
+\textbf{Source Code}: \coderef{kinematics.js}{20--35}
+
+\begin{lstlisting}[caption={Velocity computation from position differences}]
+export function computeBodyVelocity(dt) {
+  const body = state.body;
+  const fl = state.wheels.frontLeft;
+  const fr = state.wheels.frontRight;
+  const rl = state.wheels.rearLeft;
+  const rr = state.wheels.rearRight;
+
+  // Average velocity of all four wheel particles
+  const avgX = (fl.x + fr.x + rl.x + rr.x) / 4;
+  const avgY = (fl.y + fr.y + rl.y + rr.y) / 4;
+
+  // Velocity is the position change per timestep
+  body.velocityX = (avgX - body.prevCenterX) / dt;
+  body.velocityY = (avgY - body.prevCenterY) / dt;
+}
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Velocity is used for tire slip calculations, drag force computation, and sensor feedback (speedometer, HUD)
+  \item Per-wheel velocity must account for both the body center velocity and the rotational component: $\vv{v}_{\text{wheel}} = \vv{v}_{\text{body}} + \omega \times \vv{r}$
+  \item The backward-difference approximation introduces a half-step phase lag relative to the acceleration; this is acceptable for interactive simulation
+\end{itemize}
+
+\subsection{Angular Velocity and Heading}
+
+\begin{equation}
+  \omega = \frac{\Delta \theta}{\Delta t}, \quad \text{where} \quad \theta = \text{atan2}(\vv{f} - \vv{r}, \text{forward direction})
+  \label{eq:angular-velocity}
+\end{equation}
+
+\textbf{Physical Meaning}: Angular velocity is the rate of rotation of the car's heading. It is computed by tracking the heading angle (derived from wheel positions) and differencing consecutive values.
+
+\textbf{Source Code}: \coderef{kinematics.js}{37--55}
+
+\begin{lstlisting}[caption={Heading and angular velocity computation}]
+export function updateHeadingAndAngularVelocity(dt) {
+  const body = state.body;
+  const fl = state.wheels.frontLeft;
+  const rl = state.wheels.rearLeft;
+
+  // Heading vector: from rear axle midpoint to front axle midpoint
+  const frontMidX = (state.wheels.frontLeft.x + state.wheels.frontRight.x) / 2;
+  const frontMidY = (state.wheels.frontLeft.y + state.wheels.frontRight.y) / 2;
+  const rearMidX  = (state.wheels.rearLeft.x + state.wheels.rearRight.x) / 2;
+  const rearMidY  = (state.wheels.rearLeft.y + state.wheels.rearRight.y) / 2;
+
+  const heading = Math.atan2(frontMidY - rearMidY, frontMidX - rearMidX) + Math.PI / 2;
+
+  // Angular velocity: rate of heading change
+  const headingDelta = wrapAngle(heading - body.prevHeading);
+  body.angularVelocity = headingDelta / dt;
+
+  body.prevHeading = heading;
+  body.heading = heading;
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\Delta \theta$ = change in heading angle from previous frame to current frame (radians, wrapped to $[-\pi, \pi]$)
+  \item $\Delta t$ = physics timestep (0.01 s)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Heading is computed from the vector from rear axle midpoint to front axle midpoint, plus a 90° rotation offset for canvas coordinates
+  \item Angle wrapping (Section \ref{sec:wrap-angle}) ensures that $\Delta \theta$ is always in the range $[-\pi, \pi]$, preventing discontinuities at the $\pm\pi$ boundary
+  \item Angular velocity is used for yaw damping calculations, steering feedback, and motion blur visual effects
+\end{itemize}
+
+\subsection{Linear Acceleration}
+
+\begin{equation}
+  \vv{a}_{\text{body}} = \frac{\vv{v}_{\text{current}} - \vv{v}_{\text{prev}}}{\Delta t}
+  \label{eq:linear-acceleration}
+\end{equation}
+
+\textbf{Physical Meaning}: Linear acceleration is the rate of change of velocity. It is computed by differencing consecutive velocity snapshots and dividing by the timestep.
+
+\textbf{Source Code}: \coderef{kinematics.js}{57--75}
+
+\begin{lstlisting}[caption={Linear acceleration computation and EMA filtering}]
+export function computeLinearAcceleration(dt) {
+  const body = state.body;
+
+  // Raw acceleration: velocity change per timestep
+  const rawAccelX = (body.velocityX - body.prevVelocityX) / dt;
+  const rawAccelY = (body.velocityY - body.prevVelocityY) / dt;
+
+  // EMA filtering with 80ms time constant
+  const accelTau = 0.080;  // seconds
+  const accelAlpha = 1.0 - Math.exp(-dt / accelTau);
+
+  body.accelX = body.accelX + (rawAccelX - body.accelX) * accelAlpha;
+  body.accelY = body.accelY + (rawAccelY - body.accelY) * accelAlpha;
+
+  body.prevVelocityX = body.velocityX;
+  body.prevVelocityY = body.velocityY;
+}
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Raw acceleration is typically filtered via exponential moving average (EMA) with a time constant of 80 ms to reduce noise before display or use in calculations
+  \item Longitudinal acceleration: $a_{\text{long}} = \vv{a} \cdot \hat{\vv{u}}_{\text{forward}}$
+  \item Lateral acceleration: $a_{\text{lat}} = \vv{a} \cdot \hat{\vv{u}}_{\text{right}}$
+  \item Used for weight transfer calculations, vehicle dynamics feedback, and dashboard displays
+  \item The second-order nature of the differentiation makes it sensitive to high-frequency noise; EMA filtering is essential
+\end{itemize}
+
+\subsection{Jerk (Third Derivative of Position)}
+
+\begin{equation}
+  j = \frac{a_{\text{current}} - a_{\text{prev}}}{\Delta t}
+  \label{eq:jerk}
+\end{equation}
+
+\textbf{Physical Meaning}: Jerk is the rate of change of acceleration, representing the smoothness of motion transitions. High jerk indicates sudden, jerky changes in acceleration, while low jerk indicates smooth, linear acceleration changes.
+
+\textbf{Source Code}: \coderef{kinematics.js}{78--95}
+
+\begin{lstlisting}[caption={Jerk computation with noise filtering}]
+export function computeJerk(dt) {
+  const body = state.body;
+
+  // Raw jerk: acceleration change per timestep
+  const rawJerkX = (body.accelX - body.prevAccelX) / dt;
+  const rawJerkY = (body.accelY - body.prevAccelY) / dt;
+
+  // EMA filtering with 120ms time constant (slower than accel, reduces noise)
+  const jerkTau = 0.120;
+  const jerkAlpha = 1.0 - Math.exp(-dt / jerkTau);
+
+  body.jerkX = body.jerkX + (rawJerkX - body.jerkX) * jerkAlpha;
+  body.jerkY = body.jerkY + (rawJerkY - body.jerkY) * jerkAlpha;
+
+  body.prevAccelX = body.accelX;
+  body.prevAccelY = body.accelY;
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $a_{\text{current}}$ = current acceleration (m/s²)
+  \item $a_{\text{prev}}$ = previous frame's acceleration (m/s²)
+  \item $\Delta t$ = timestep (0.01 s)
+  \item Time constant for filtering = 120 ms (allows tracking of real skids while rejecting high-frequency noise)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Jerk is the noisiest of all kinematic quantities (third derivative), so it requires aggressive filtering (120 ms time constant vs. 80 ms for acceleration)
+  \item Used for visual effects: skid mark intensity and motion blur effects scale with jerk magnitude
+  \item Diagnostic HUD displays filtered jerk to help players understand sudden changes in handling
+  \item \textbf{v14 Bug Fix}: Earlier versions incorrectly computed jerk by dividing by $\Delta t^2$ (should be $\Delta t$), leading to jerk values 100× too large at 100 Hz
+\end{itemize}
+
+\subsection{Coordinate Transformations}
+
+The car's heading angle $\theta$ defines two orthonormal unit vectors in world space:
+
+\begin{equation}
+  \hat{\vv{u}}_{\text{forward}} = \begin{pmatrix} \sin(\theta) \\ -\cos(\theta) \end{pmatrix}, \quad
+  \hat{\vv{u}}_{\text{right}} = \begin{pmatrix} \cos(\theta) \\ \sin(\theta) \end{pmatrix}
+  \label{eq:unit-vectors}
+\end{equation}
+
+\textbf{Physical Meaning}: These unit vectors define the car's local coordinate system. Any quantity (velocity, acceleration, force) can be projected onto these axes to obtain its component along the car's forward direction or right direction.
+
+\textbf{Example - Longitudinal Velocity}:
+\begin{equation}
+  v_{\text{long}} = \vv{v} \cdot \hat{\vv{u}}_{\text{forward}}
+\end{equation}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Canvas coordinates: $+X$ points right, $+Y$ points downward (not standard mathematical convention)
+  \item The forward vector formula includes a 90° offset due to canvas axes: pure rightward motion $(v_x = 1, v_y = 0)$ corresponds to heading angle $\theta = -\pi/2$
+  \item All tire dynamics (slip angles, slip ratios) are computed in this car-relative coordinate system
+\end{itemize}
+
+\newpage

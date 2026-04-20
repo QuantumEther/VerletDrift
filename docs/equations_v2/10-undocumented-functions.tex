@@ -1,0 +1,384 @@
+\section{Previously Undocumented Functions \& Extended Implementations}
+
+This section documents mathematical implementations that were not covered in the original VerletDrift equations documentation. These represent important aspects of the physics simulation discovered through detailed code analysis. Each implementation has been extracted, formalized, and verified against the source code.
+
+\subsection{Hysteretic Grip State Machine}
+
+\subsubsection*{Overview}
+
+The tire system maintains a three-state automaton that tracks whether each wheel is in a \textit{stable}, \textit{slipping}, or \textit{recovering} grip state. This is based on the wheel's friction circle utilization (how much of available grip is being used). The state transitions are hysteretic, meaning they depend not only on the current utilization but also on the previous state, preventing rapid oscillation at state boundaries.
+
+\subsubsection*{State Definition}
+
+Let $u$ denote the friction circle utilization (0 to 1):
+
+\begin{equation}
+  u = \frac{\sqrt{F_{\text{lat}}^2 + F_{\text{lon}}^2}}{F_{\text{friction,max}}}
+  \label{eq:friction-utilization}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $F_{\text{lat}}$ = lateral force (N)
+  \item $F_{\text{lon}}$ = longitudinal force (N)
+  \item $F_{\text{friction,max}} = \mu \cdot N$ = maximum friction force available (N)
+  \item $\mu$ = coefficient of friction (dimensionless, typically 1.0–1.5)
+  \item $N$ = normal load (N)
+\end{itemize}
+
+\subsubsection*{State Transitions}
+
+The three-state machine is defined by two key thresholds (hysteresis thresholds):
+
+\begin{equation}
+  \text{State} = \begin{cases}
+    \text{stable}    & \text{if } u < 0.65 \\
+    \text{recovering} & \text{if } (0.65 \le u < 0.80) \text{ and previous state} = \text{slipping} \\
+    \text{slipping}  & \text{if } u \ge 0.90
+  \end{cases}
+  \label{eq:grip-state-transitions}
+\end{equation}
+
+The configurable thresholds are:
+\begin{itemize}
+  \item $T_{\text{slip}} = 0.90$ (friction utilization threshold to enter slipping state)
+  \item $T_{\text{recovery}} = 0.80$ (threshold to exit slipping state and enter recovering)
+  \item $T_{\text{stable}} = 0.65$ (threshold to return to stable from recovering)
+\end{itemize}
+
+\subsubsection*{State Diagram}
+
+Figure \ref{fig:grip-state-machine} shows the complete state transition diagram. Note the hysteresis: to re-enter the stable state from recovering, utilization must drop below $T_{\text{stable}}$ (not $T_{\text{recovery}}$).
+
+\textbf{Source Code}: \coderef{tires.js}{352--372}
+
+\begin{lstlisting}[caption={Grip state machine implementation}]
+const gws = state.wheelGripState[name];
+const SLIP_TRIGGER     = params.gripLossThreshold     || 0.90;
+const RECOVERY_TRIGGER = params.gripRecoveryThreshold || 0.80;
+const STABLE_TRIGGER   = 0.65;
+
+if (gws.state === 'stable') {
+  if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
+    gws.state = 'slipping';
+  }
+} else if (gws.state === 'slipping') {
+  if (state.wheelFrictionUtil[name] < RECOVERY_TRIGGER) {
+    gws.state = 'recovering';
+  }
+} else {  // recovering
+  if (state.wheelFrictionUtil[name] < STABLE_TRIGGER) {
+    gws.state = 'stable';
+  } else if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
+    gws.state = 'slipping';
+  }
+}
+\end{lstlisting}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item The hysteresis prevents chattering (rapid state changes) when utilization hovers near a threshold
+  \item The gap between $T_{\text{recovery}} = 0.80$ and $T_{\text{slip}} = 0.90$ creates a dead zone where the state remains unchanged
+  \item This models real tire behavior: tires exhibit lag when transitioning between grip regimes
+  \item The configuration parameters can be tuned via the UI for different handling characteristics
+\end{itemize}
+
+\subsection{Per-Wheel Grip Smoothing with State-Dependent EMA}
+
+Once the grip state is determined, the friction utilization is smoothed using exponential moving average (EMA) filtering with a rate that depends on the current grip state.
+
+\begin{equation}
+  u_{\text{smooth}}(t) = u_{\text{smooth}}(t-\Delta t) + (u(t) - u_{\text{smooth}}(t-\Delta t)) \cdot \alpha(s)
+  \label{eq:grip-ema}
+\end{equation}
+
+where the EMA coefficient $\alpha$ depends on the grip state:
+
+\begin{equation}
+  \alpha(s) = \begin{cases}
+    \alpha_{\text{stable}} = 0.15 & \text{if } s = \text{stable} \\
+    \alpha_{\text{slipping}} = 0.35 & \text{if } s = \text{slipping or recovering}
+  \end{cases}
+  \label{eq:grip-ema-alpha}
+\end{equation}
+
+\textbf{Physical Meaning}: During stable grip, the smoothing is slow (low $\alpha$), preserving fine detail in grip changes. During slipping, smoothing is faster (higher $\alpha$), reducing noise and visual jitter from the nonlinear Pacejka curve. This dual-rate approach provides both responsiveness and stability.
+
+\textbf{Source Code}: \coderef{tires.js}{374--377}
+
+\begin{lstlisting}[caption={State-dependent grip smoothing}]
+const emaAlpha = gws.state === 'stable'
+  ? (params.gripEmaStable   || 0.15)
+  : (params.gripEmaSlipping || 0.35);
+
+gws.smoothedGrip = gws.smoothedGrip +
+  (state.wheelFrictionUtil[name] - gws.smoothedGrip) * emaAlpha;
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\alpha_{\text{stable}}$ = EMA coefficient when stable (default 0.15, range 0–1)
+  \item $\alpha_{\text{slipping}}$ = EMA coefficient when slipping (default 0.35, range 0–1)
+  \item Higher $\alpha$ = faster response, more noise
+  \item Lower $\alpha$ = slower response, smoother output
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item These values can be independently configured via the UI for fine-tuning handling feel
+  \item The per-wheel smoothing reduces constraint solver noise before it affects visual feedback and tire force calculations
+  \item The state-dependent rate provides an adaptive filtering strategy that improves both stability and responsiveness
+\end{itemize}
+
+\subsection{Brake Torque Integration}
+
+Brake forces are computed via the Pacejka model (Section \ref{sec:pacejka-forces}) and converted to torques applied to the wheels:
+
+\begin{equation}
+  \tau_{\text{brake}} = F_{\text{brake}} \cdot R \cdot \text{sign}(-v_{\text{wheel}})
+  \label{eq:brake-torque}
+\end{equation}
+
+\textbf{Physical Meaning}: The brake force $F_{\text{brake}}$ is multiplied by the wheel radius $R$ to get torque. The sign is set to oppose the wheel's current motion: if the wheel is rolling forward ($v_{\text{wheel}} > 0$), the torque is negative (slowing the wheel).
+
+\textbf{Source Code}: \coderef{tires.js}{76--116}
+
+\begin{lstlisting}[caption={Brake torque computation}]
+function computeWheelBrakeTorque(name, wheelLongitudinalSpeed,
+                                 normalLoad, frictionCoeff,
+                                 wheelRad, params, safePeakSlipRatio) {
+  let brakeForceMag = 0;
+
+  // Regular brake (front wheels, 80% distribution: 40% per wheel)
+  if (state.input.brakeKeyHeld && state.body.speed > 0.05) {
+    if (!isRearWheel) {
+      const perWheelBrake = params.brakeForce * 0.4;
+      const brakeFactor = perWheelBrake / Math.max(normalLoad * frictionCoeff, 1.0);
+      const brakeForce = pacejkaForce(normalLoad, frictionCoeff,
+                                      brakeFactor * safePeakSlipRatio,
+                                      safePeakSlipRatio,
+                                      params.pacejkaB, params.pacejkaC);
+      brakeForceMag = brakeForce;
+    }
+  }
+
+  // Convert to torque: opposes current wheel rotation
+  const brakeTorque = brakeForceMag * wheelRad * (wheelLongitudinalSpeed >= 0 ? -1 : 1);
+  return { forceMag: brakeForceMag, torque: brakeTorque };
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $F_{\text{brake}}$ = brake force magnitude (N)
+  \item $R$ = wheel radius (typically 0.3 m)
+  \item $v_{\text{wheel}}$ = wheel's longitudinal velocity (m/s)
+\end{itemize}
+
+\textbf{Brake Distribution}:
+\begin{itemize}
+  \item Regular brake (S key): 80% front, 20% rear (0.4 per front wheel, 0.1 per rear wheel)
+  \item Handbrake (F key): 100% rear wheels, progressive with handbrake input (0–1)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Brake forces are subject to the friction ellipse (Section \ref{sec:friction-ellipse}), so extreme braking can exceed available friction
+  \item The brake torque is integrated into the wheel rotational dynamics (Section \ref{sec:wheel-torque-integration})
+  \item Front/rear distribution prevents wheel lockup and improves stability
+\end{itemize}
+
+\subsection{Idle Creep Logic}
+
+When a vehicle is in a low gear with the clutch engaged but no throttle, a small creeping force is applied:
+
+\begin{equation}
+  F_{\text{idle}} = F_{\text{idle,max}} \cdot c(t)
+  \label{eq:idle-creep}
+\end{equation}
+
+where the clutch engagement factor $c(t) \in [0, 1]$ modulates the force. The idle creep is active only when:
+\begin{itemize}
+  \item Throttle input is near zero ($\theta < 5\%$)
+  \item Current gear is low ratio ($|g| \ge 1.0$)
+  \item Clutch engagement is high ($c > 0.9$)
+  \item Longitudinal speed is low ($|v| < 3 \text{ m/s}$)
+\end{itemize}
+
+\textbf{Source Code}: \coderef{tires.js}{168--172}
+
+\begin{lstlisting}[caption={Idle creep force application}]
+if (throttleAmount < 0.05 && Math.abs(gearRatio) >= 1.0 &&
+    engine.clutchEngagement > 0.9 && Math.abs(longitudinalSpeed) < 3) {
+  driveForce += params.idleCreepForce * engine.clutchEngagement;
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $F_{\text{idle,max}}$ = maximum idle creep force (default 0.5 N, tunable)
+  \item $c$ = clutch engagement (0–1)
+\end{itemize}
+
+\textbf{Physical Meaning}: This simulates real vehicles where the engine torque at idle can overcome rolling resistance and move the car forward even without throttle input. It creates the characteristic "creeping" behavior when the driver releases the brake without touching the accelerator.
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Idle creep only occurs in forward gears, not reverse or neutral
+  \item The creep force ramps with clutch engagement, preventing sudden jerks during gear changes
+  \item Typical idle creep force is around 0.5 N; can be adjusted for different vehicle feel
+\end{itemize}
+
+\subsection{Anti-Tunnelling Displacement Clamping}
+
+At high speeds, particles can move more than the car's width in a single physics sub-step, risking collision tunnelling (passing through walls without collision detection). The clamping mechanism limits displacement:
+
+\begin{equation}
+  \text{If } |\vv{x} - \vv{x}_{\text{prev}}| > D_{\text{max}}, \text{ then } \vv{x}_{\text{prev}} \leftarrow \vv{x} - \frac{D_{\text{max}}}{|\vv{x} - \vv{x}_{\text{prev}}|} \cdot (\vv{x} - \vv{x}_{\text{prev}})
+  \label{eq:displacement-clamp}
+\end{equation}
+
+where $D_{\text{max}} = 0.9 \times \text{CAR\_HALF\_WIDTH}$ (typically $\approx 0.4$ m).
+
+\textbf{Physical Meaning}: If a particle moves more than $D_{\text{max}}$ in one step, its previous position is adjusted so that the Verlet integrator's implicit velocity is clamped. This prevents tunnelling without losing acceleration for the next step.
+
+\textbf{Source Code}: \coderef{constraints.js}{187--205}
+
+\begin{lstlisting}[caption={Anti-tunnelling displacement clamping}]
+export function clampParticleDisplacements() {
+  for (const wheel of Object.values(state.wheels)) {
+    const displacementX = wheel.x - wheel.prevX;
+    const displacementY = wheel.y - wheel.prevY;
+    const displacementMagnitude = Math.hypot(displacementX, displacementY);
+
+    if (displacementMagnitude > MAX_DISPLACEMENT_PER_STEP) {
+      const scale = MAX_DISPLACEMENT_PER_STEP / displacementMagnitude;
+      wheel.prevX = wheel.x - displacementX * scale;
+      wheel.prevY = wheel.y - displacementY * scale;
+    }
+  }
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $D_{\text{max}}$ = maximum displacement per step = $0.9 \times w/2$ where $w$ is car width
+  \item At 100 Hz with typical max speed ($\approx 30$ m/s), this allows displacements up to $\approx 0.3$ m
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Clamping is applied after the Verlet integrator and before constraint solving
+  \item The clamping effectively reduces velocity for the next step, but acceleration is still applied
+  \item This is a practical solution for real-time simulation; a more physical approach (continuous collision detection) would be slower
+\end{itemize}
+
+\subsection{Low-Speed Lateral Fade}
+
+At very low speeds, the slip angle denominator clamp (Section \ref{sec:slip-angle}) causes large slip angles from tiny lateral velocities. The lateral force is faded to zero below a threshold:
+
+\begin{equation}
+  F_{\text{lat,faded}} = F_{\text{lat}} \cdot \text{fade}(v)
+  \label{eq:lateral-fade}
+\end{equation}
+
+where the fade function is:
+
+\begin{equation}
+  \text{fade}(v) = \max(0, \min(1, v / V_{\text{fade}})), \quad V_{\text{fade}} = 2.0 \text{ m/s}
+  \label{eq:fade-function}
+\end{equation}
+
+\textbf{Physical Meaning}: Below 2 m/s, lateral forces smoothly fade to zero. This prevents the car from twitching when nearly stationary due to constraint solver noise being interpreted as large slip angles.
+
+\textbf{Source Code}: \coderef{tires.js}{269--276}
+
+\begin{lstlisting}[caption={Low-speed lateral force fade}]
+const LOW_SPEED_FADE_END = 2.0;  // m/s
+const totalSpeed = Math.hypot(body.velocityX, body.velocityY);
+const lowSpeedFade = clamp01(totalSpeed / LOW_SPEED_FADE_END);
+const fadedLateralForceMag = lateralForceMag * lowSpeedFade;
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $V_{\text{fade}} = 2.0$ m/s (fade threshold)
+  \item Below this speed: lateral forces are attenuated
+  \item Above this speed: full lateral force is applied
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item This is a practical hack to handle the denominator clamp in slip angle calculation (Eq. \ref{eq:slip-angle})
+  \item Real tires do lose grip at low speeds due to other effects (e.g., viscous forces become important)
+  \item The smooth fade-out prevents discontinuities in handling
+\end{itemize}
+
+\subsection{Wheel Torque Integration}
+
+Each wheel has rotational inertia and is driven by drive torque, opposed by brake torque and tire traction reaction:
+
+\begin{equation}
+  \omega_{\text{new}} = \omega_{\text{old}} + \frac{\sum \tau}{\mathcal{I}_w} \Delta t
+  \label{eq:wheel-torque-integration}
+\end{equation}
+
+The total torque on a wheel is:
+
+\begin{equation}
+  \sum \tau = \tau_{\text{drive}} - \tau_{\text{brake}} - \tau_{\text{traction}}
+  \label{eq:wheel-torque-sum}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $\tau_{\text{drive}} = F_{\text{drive}} \cdot R / 2$ (split equally between rear wheels)
+  \item $\tau_{\text{brake}} = F_{\text{brake}} \cdot R \cdot \text{sign}(-v_w)$ (opposes rotation)
+  \item $\tau_{\text{traction}} = F_{\text{lon}} \cdot R$ (tire's reaction to longitudinal slip)
+  \item $\mathcal{I}_w \approx 1.2$ kg·m² (wheel rotational inertia)
+  \item $R$ = wheel radius (m)
+\end{itemize}
+
+\textbf{Source Code}: \coderef{tires.js}{421--453}
+
+\begin{lstlisting}[caption={Wheel torque integration}]
+const wheelInertia = params.wheelInertia || 1.2;
+
+for (const name of wheelNames) {
+  const isRear = name.startsWith('rear');
+  const wheelRad = params.wheelRadius;
+
+  let torqueDrive = 0;
+  if (isRear && Math.abs(driveForce) > 0.01) {
+    torqueDrive = driveForce * wheelRad * 0.5;  // split equally
+  }
+
+  const torqueBrake = (state.wheelBrakeTorque && state.wheelBrakeTorque[name]) || 0;
+
+  const longitudinalForce = /* project wheel force onto forward direction */;
+  const torqueTraction = longitudinalForce * wheelRad;
+
+  const netTorque = torqueDrive - torqueBrake - torqueTraction;
+  const omegaDelta = netTorque / wheelInertia * dt;
+
+  state.wheelOmega[name] += omegaDelta;
+  state.wheelOmega[name] = clamp(state.wheelOmega[name], -maxOmega, maxOmega);
+}
+\end{lstlisting}
+
+\textbf{Parameters}:
+\begin{itemize}
+  \item $\mathcal{I}_w$ = wheel moment of inertia (kg·m², default 1.2)
+  \item $R$ = wheel radius (m, typically 0.3)
+  \item $\omega_{\text{max}} \approx 500$ rad/s (limits unrealistic wheel spin)
+\end{itemize}
+
+\textbf{Notes}:
+\begin{itemize}
+  \item Angular velocity is clamped to prevent unrealistic wheel spin at very high slip
+  \item The traction reaction torque opposes slip, implementing tire-ground interaction
+  \item Rear wheels receive drive torque split equally; front wheels do not
+  \item The wheel slip ratio (Section \ref{sec:slip-ratio}) is derived from $\omega$ and longitudinal velocity
+\end{itemize}
+
+\newpage
