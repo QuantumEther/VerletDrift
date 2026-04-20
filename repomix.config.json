@@ -1,0 +1,28 @@
+{
+  "input": {
+    "include": [
+      "src/**/*", 
+      "index.html"
+    ], 
+    "ignore": [
+      "**/*.css",
+      "**/*.json",
+      "**/*.config.js",
+      "**/*.txt",
+      "**/*.py",
+      "**/*.md",
+      "dist/**",
+      "build/**",
+      "node_modules/**",
+      ".git/**",
+      "tests/**",
+      "test-results/**",
+      "playwright-report/**",
+      "**/*.zip",
+      "docs/**",
+      ".github/**",
+      ".claude/**",
+      "**/*.pdf"
+    ]
+  }
+}

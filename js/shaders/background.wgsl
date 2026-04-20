@@ -18,8 +18,11 @@ struct BgUniforms {
   sampleCount: f32,  // number of blur samples (cast to i32 in shader)
   shakeX:      f32,  // screen-shake world offset X (metres)
   shakeY:      f32,  // screen-shake world offset Y (metres)
-  angularVel:  f32,  // angular velocity (rad/s) for rotational blur
-  _pad:        f32,  // padding to 16-byte boundary
+  angularVel:      f32,  // angular velocity (rad/s) for rotational blur
+  blurOpacityMin:  f32,  // minimum opacity for historical samples
+  blurOpacityMax:  f32,  // maximum opacity for historical samples
+  blurOpacityCurve: f32, // power curve exponent for opacity falloff
+  _pad:            f32,  // padding to 16-byte boundary
 }
 
 @group(0) @binding(0) var<uniform> u: BgUniforms;
@@ -74,9 +77,12 @@ fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
       numSamples == 1
     );
 
-    // Sample weight: current frame (s==0) is fully opaque; older samples fade.
+    // Sample weight: current frame (s==0) is fully opaque; older samples use configurable opacity.
+    // Opacity curve: pow((1-frac), curve) gives steeper falloff for curve > 1.0
+    let opacityFalloff = pow(1.0 - frac, u.blurOpacityCurve);
+    let historicalOpacity = mix(u.blurOpacityMin, u.blurOpacityMax, opacityFalloff);
     let sampleAlpha = select(
-      u.blurAmount * (1.0 - frac) * 0.7,
+      u.blurAmount * historicalOpacity,
       1.0,
       s == 0
     );

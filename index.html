@@ -73,6 +73,11 @@
         <input type="range" id="canvasResolutionSlider" min="0.5" max="2.0" value="1.0" step="0.1">
         <span class="canvas-resolution-value" id="canvasResolutionValue">1.0</span>
       </div>
+      <div class="canvas-resolution-control">
+        <span>GPU Res</span>
+        <input type="range" id="gpuResolutionScale" min="0.25" max="2.0" value="1.0" step="0.05">
+        <span class="canvas-resolution-value" id="gpuResolutionScaleValue">1.0</span>
+      </div>
       <!-- Stacked canvas container: gpuCanvas (world) + simCanvas (HUD overlay) + debugOverlay (DOM) -->
       <div class="canvas-container">
         <!-- WebGPU world-space canvas (below HUD) -->
@@ -722,7 +727,7 @@
           <span class="slider-value" id="skidGripThresholdValue">0.60</span>
         </div>
         <div class="slider-row">
-          <span class="slider-label">Fade Rate (/s)</span>
+          <span class="slider-label">Grip Fade (/s)</span>
           <input type="range" id="skidFadeRate" min="0.5" max="30" value="8" step="0.5">
           <span class="slider-value" id="skidFadeRateValue">8.0</span>
         </div>
@@ -755,6 +760,26 @@
           <span class="slider-label">Max Segments</span>
           <input type="range" id="skidMaxSegments" min="500" max="20000" value="4000" step="500">
           <span class="slider-value" id="skidMaxSegmentsValue">4000</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Max Age (s)</span>
+          <input type="range" id="skidMaxAge" min="1" max="30" value="5" step="0.5">
+          <span class="slider-value" id="skidMaxAgeValue">5.0</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Alpha Decay (/s)</span>
+          <input type="range" id="skidAlphaDecayRate" min="0.05" max="5" value="1" step="0.05">
+          <span class="slider-value" id="skidAlphaDecayRateValue">1.00</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Redraw Interval</span>
+          <input type="range" id="gpuSkidRedrawInterval" min="30" max="600" value="120" step="10">
+          <span class="slider-value" id="gpuSkidRedrawIntervalValue">120</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">GPU Line Width</span>
+          <input type="range" id="gpuSkidResolution" min="0.5" max="3" value="1" step="0.05">
+          <span class="slider-value" id="gpuSkidResolutionValue">1.00</span>
         </div>
       </div>
 
@@ -825,6 +850,21 @@
           <span class="slider-label">Max Offset (m)</span>
           <input type="range" id="blurMaxOffset" min="0.5" max="20" value="5" step="0.5">
           <span class="slider-value" id="blurMaxOffsetValue">5.0</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Opacity Min</span>
+          <input type="range" id="blurOpacityMin" min="0" max="0.5" value="0.1" step="0.01">
+          <span class="slider-value" id="blurOpacityMinValue">0.10</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Opacity Max</span>
+          <input type="range" id="blurOpacityMax" min="0.3" max="1" value="0.8" step="0.01">
+          <span class="slider-value" id="blurOpacityMaxValue">0.80</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Opacity Curve</span>
+          <input type="range" id="blurOpacityCurve" min="0.5" max="5" value="2" step="0.1">
+          <span class="slider-value" id="blurOpacityCurveValue">2.0</span>
         </div>
       </div>
 

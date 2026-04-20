@@ -44,7 +44,7 @@ const MAP_CY        = MAP_H / 2;            // 144 m — map-centre Y
 const MAX_ARROWS     = 600;
 const MAX_SPARKS_GPU = 300;   // must match renderer.js MAX_SPARKS
 const MAX_SPLATS     = 600;
-const MAX_SKID_NEW   = 2048;  // max new skid segments uploaded per render frame
+const MAX_SKID_NEW   = 4096;  // max skid segments per render frame (covers full redraw of 4000-cap array)
 const MAX_SMOKE_GPU  = MAX_SMOKE; // 8000 — from smoke-system.js
 const SMOKE_COMPUTE_WORKGROUP_SIZE = 256;
 const SMOKE_READBACK_INTERVAL_FRAMES = 12;
@@ -81,7 +81,7 @@ let smokeRenderPipeline = null;   // smoke billboard rendering
 let gaugePipeline  = null;        // gauge needle rendering (speedometer, RPM, lateral G)
 
 // Uniform buffers (UNIFORM | COPY_DST)
-let bgUniBuf    = null;   // BgUniforms  (64 bytes)
+let bgUniBuf    = null;   // BgUniforms  (80 bytes: 16 original + 3 blur opacity + 1 pad)
 let camUniBuf   = null;   // CameraUniforms (16 bytes) — shared by arrows + particles
 let accumUniBuf = null;   // AccumUniforms (16 bytes)
 let compUniBuf  = null;   // CompositeUniforms (16 bytes)
@@ -111,7 +111,7 @@ let smokeRenderBindGroup = null;
 let gaugeBindGroup = null;   // Gauge bind group (uniforms + instance data)
 
 // CPU-side staging arrays (reused every frame, no GC pressure)
-const BG_DATA    = new Float32Array(16);
+const BG_DATA    = new Float32Array(20);  // BgUniforms: 16 original + 3 blur opacity + 1 pad
 const CAM_DATA   = new Float32Array(6);  // zoom, ppm, viewportW, viewportH, camX, camY
 const ACCUM_DATA = new Float32Array(4);
 const COMP_DATA  = new Float32Array(4);
@@ -120,6 +120,7 @@ const arrowData  = new Float32Array(MAX_ARROWS * 9);
 const sparkData  = new Float32Array(MAX_SPARKS_GPU * 7);
 const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
+let skidRedrawCounter = 0;  // counts frames; triggers a full texture redraw periodically
 const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1
 const SMOKE_UPLOAD_STRIDE = 11;
 const SMOKE_UPLOAD_DATA = new Float32Array(SMOKE_UPLOAD_STRIDE);
@@ -398,7 +399,7 @@ async function createAllPipelines() {
 
 function createBuffersAndBindGroups() {
   // Uniform buffers
-  bgUniBuf    = makeUniBuf(64);   // 16 × f32
+  bgUniBuf    = makeUniBuf(80);   // 20 × f32 (16 original + 3 blur opacity + 1 pad)
   camUniBuf   = makeUniBuf(24);   // 6  × f32 (zoom, ppm, viewportW, viewportH, camX, camY)
   accumUniBuf = makeUniBuf(16);   // 4  × f32
   compUniBuf  = makeUniBuf(16);   // 4  × f32
@@ -684,7 +685,11 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   BG_DATA[12] = shake.shakeX || 0;
   BG_DATA[13] = shake.shakeY || 0;
   BG_DATA[14] = body.angularVelocity || 0;
-  BG_DATA[15] = 0;  // _pad
+  BG_DATA[15] = 0;  // _pad (original)
+  BG_DATA[16] = params.blurOpacityMin || 0.1;
+  BG_DATA[17] = params.blurOpacityMax || 0.8;
+  BG_DATA[18] = params.blurOpacityCurve || 2.0;
+  BG_DATA[19] = 0;  // _pad (new)
 
   // ---- Camera uniforms (arrows + particles + smoke render) ----
   CAM_DATA[0] = zoom;
@@ -805,38 +810,54 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
 
   const smokeCount = MAX_SMOKE_GPU;
 
-  // ---- New skid segment instances ----
-  // state.skidMarksNewThisFrame is populated by recordSkidMarks() in main.js.
-  // We drain it here each render frame.
-  const newSegs  = state.skidMarksNewThisFrame || [];
-  let skidCount  = 0;
-  for (const seg of newSegs) {
-    if (skidCount >= MAX_SKID_NEW) break;
+  // ---- Skid segment instances ----
+  // Normally: add only new segments (incremental accumulation).
+  // Periodically: full redraw — clear texture and re-render ALL segments with current
+  // (CPU-decayed) alpha values so faded/removed marks actually disappear from GPU texture.
+  const redrawInterval = Math.max(1, Math.round(params.gpuSkidRedrawInterval ?? 120));
+  skidRedrawCounter++;
+  const doFullRedraw = (skidRedrawCounter >= redrawInterval);
+  if (doFullRedraw) skidRedrawCounter = 0;
 
+  const gpuSkidResolution = params.gpuSkidResolution ?? 1.0;
+
+  function packSeg(seg, idx) {
     let r, g, b;
     if (seg.hue >= 0) {
-      // Balloon paint: saturation encodes paint richness (matches drawSkidMarks).
       const ps  = seg.paintSaturation !== undefined ? seg.paintSaturation : 1.0;
-      const sat = 30 + ps * 65;   // 30–95%
-      const lum = 20 + ps * 30;   // 20–50%
+      const sat = 30 + ps * 65;
+      const lum = 20 + ps * 30;
       [r, g, b] = hslToRgb(seg.hue, sat, lum);
     } else {
-      // Standard rubber-black: rgba(20, 15, 10, alpha)
       r = 20 / 255; g = 15 / 255; b = 10 / 255;
     }
-
-    // Segments are stored in world coords. Subtract map centre for shader NDC calc.
-    const base = skidCount * 9;
+    const base = idx * 9;
     skidData[base + 0] = seg.x1 - MAP_CX;
     skidData[base + 1] = seg.y1 - MAP_CY;
     skidData[base + 2] = seg.x2 - MAP_CX;
     skidData[base + 3] = seg.y2 - MAP_CY;
-    skidData[base + 4] = seg.width;
+    skidData[base + 4] = seg.width * gpuSkidResolution;
     skidData[base + 5] = r;
     skidData[base + 6] = g;
     skidData[base + 7] = b;
     skidData[base + 8] = seg.alpha;
-    skidCount++;
+  }
+
+  let skidCount = 0;
+  if (doFullRedraw) {
+    // Full redraw: pack entire state.skidMarks array with current (decayed) alpha values.
+    const allSegs = state.skidMarks || [];
+    for (const seg of allSegs) {
+      if (skidCount >= MAX_SKID_NEW) break;
+      packSeg(seg, skidCount++);
+    }
+  } else {
+    // Incremental: only pack new segments spawned this render frame.
+    const newSegs = state.skidMarksNewThisFrame || [];
+    for (const seg of newSegs) {
+      if (skidCount >= MAX_SKID_NEW) break;
+      packSeg(seg, skidCount++);
+    }
   }
 
   // ---- Upload to GPU ----
@@ -883,21 +904,26 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   // ---- Encode + submit ----
   const enc = device.createCommandEncoder({ label: 'gpuFrame' });
 
-  // Pass 1: Skid accumulation — render new segments into persistent texture.
-  // loadOp:'load' preserves all previously accumulated marks.
-  if (skidCount > 0) {
+  // Pass 1: Skid accumulation.
+  // Normal frames: loadOp:'load' adds new segments to persistent texture.
+  // Full-redraw frames: loadOp:'clear' wipes the texture and redraws all segments
+  // with their current (CPU-decayed) alpha values, so faded/removed marks disappear.
+  if (skidCount > 0 || doFullRedraw) {
     const accumPass = enc.beginRenderPass({
       label: 'skidAccum',
       colorAttachments: [{
-        view:     skidTexView,
-        loadOp:   'load',
-        storeOp:  'store',
+        view:       skidTexView,
+        loadOp:     doFullRedraw ? 'clear' : 'load',
+        clearValue: { r: 0, g: 0, b: 0, a: 0 },
+        storeOp:    'store',
       }],
     });
-    accumPass.setPipeline(accumPipeline);
-    accumPass.setBindGroup(0, accumBindGroup);
-    accumPass.setVertexBuffer(0, skidInstBuf);
-    accumPass.draw(6, skidCount);  // 6 verts × skidCount instances
+    if (skidCount > 0) {
+      accumPass.setPipeline(accumPipeline);
+      accumPass.setBindGroup(0, accumBindGroup);
+      accumPass.setVertexBuffer(0, skidInstBuf);
+      accumPass.draw(6, skidCount);  // 6 verts × skidCount instances
+    }
     accumPass.end();
   }
 
@@ -980,7 +1006,9 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   device.queue.submit([enc.finish()]);
 
   // Drain new skid segments — they have been uploaded to the accumulation texture.
-  if (newSegs.length > 0) newSegs.length = 0;
+  if (state.skidMarksNewThisFrame && state.skidMarksNewThisFrame.length > 0) {
+    state.skidMarksNewThisFrame.length = 0;
+  }
 
   smokeFramesSinceReadback++;
   if (!smokeReadbackInFlight && smokeFramesSinceReadback >= SMOKE_READBACK_INTERVAL_FRAMES) {

@@ -531,6 +531,11 @@ const state = {
     splatViolence:         1.5,    // multiplier on splat particle count and speed (0.5–3.0)
     splatDecalPersistence: 0.7,    // how opaque ground decals are (0.1–1.0)
 
+    // --- GPU Effect Quality ---
+    gpuResolutionScale:    1.0,    // GPU canvas pixel density (0.25–2.0); lower = faster, higher = sharper
+    gpuSkidResolution:     1.0,    // scale factor for GPU skid mark line width (0.5–3.0)
+    gpuSkidRedrawInterval: 120,    // frames between full skid texture redraws (30–600); lower = faster fade
+
     // --- Pixels per Metre (visual scale) ---
     pixelsPerMeter:        20,     // world-to-screen scale factor; higher = more zoomed in
 
@@ -566,6 +571,8 @@ const state = {
     skidAlphaMax:          0.7,    // maximum segment opacity (0.0–1.0)
     skidMaxSegments:       4000,   // max live segments before culling (500–20000)
     skidJerkBoostMax:      0.3,    // max opacity boost from jerk impulse (0.0–1.0)
+    skidMaxAge:            5.0,    // max lifetime of a mark segment in seconds (1–30)
+    skidAlphaDecayRate:    1.0,    // exponential decay rate for alpha per second (0.1–5.0)
 
     // --- Paint Mixing tuning ---
     paintPickupRate:       2.5,    // hue shift speed when over a decal (0.1–10)
@@ -583,6 +590,9 @@ const state = {
     blurSpeedWeight:       0.50,   // forward speed contribution (0.0–2.0)
     blurJerkWeight:        0.30,   // jerk contribution (0.0–2.0)
     blurMaxOffset:         5.0,    // max world-space blur trail length in metres (0.5–20)
+    blurOpacityMin:        0.1,    // minimum opacity for historical blur samples [0.0–0.5]
+    blurOpacityMax:        0.8,    // maximum opacity for historical blur samples [0.3–1.0]
+    blurOpacityCurve:      2.0,    // power curve for opacity ramp (1.0=linear, 2.0=quadratic, 3.0+=steeper)
 
     // --- Grip State Machine tuning (NEW: now operates on utilization, not grip remaining) ---
     gripLossThreshold:     0.90,   // trigger slip when utilization > 90% (0.5–1.0)

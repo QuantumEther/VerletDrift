@@ -351,8 +351,13 @@ export function initSliders() {
   bind('skidWidthMax',      'skidWidthMax',      parseFloat1, fmt2);
   bind('skidAlphaMin',      'skidAlphaMin',      parseFloat1, fmt2);
   bind('skidAlphaMax',      'skidAlphaMax',      parseFloat1, fmt2);
-  bind('skidJerkBoostMax',  'skidJerkBoostMax',  parseFloat1, fmt2);
-  bind('skidMaxSegments',   'skidMaxSegments',   parseInt1,   fmtInt);
+  bind('skidJerkBoostMax',      'skidJerkBoostMax',      parseFloat1, fmt2);
+  bind('skidMaxSegments',       'skidMaxSegments',       parseInt1,   fmtInt);
+  bind('skidMaxAge',            'skidMaxAge',            parseFloat1, fmt1);
+  bind('skidAlphaDecayRate',    'skidAlphaDecayRate',    parseFloat1, fmt2);
+  bind('gpuSkidRedrawInterval', 'gpuSkidRedrawInterval', parseInt1,   fmtInt);
+  bind('gpuSkidResolution',     'gpuSkidResolution',     parseFloat1, fmt2);
+  bind('gpuResolutionScale',    'gpuResolutionScale',    parseFloat1, fmt2);
 
   // ---- Paint Mixing ----
   bind('paintPickupRate',     'paintPickupRate',     parseFloat1, fmt1);
@@ -369,6 +374,9 @@ export function initSliders() {
   bind('blurAttackRate',    'blurAttackRate',    parseFloat1, fmt2);
   bind('blurDecayRate',     'blurDecayRate',     parseFloat1, fmt3);
   bind('blurMaxOffset',     'blurMaxOffset',     parseFloat1, fmt1);
+  bind('blurOpacityMin',    'blurOpacityMin',    parseFloat1, fmt2);
+  bind('blurOpacityMax',    'blurOpacityMax',    parseFloat1, fmt2);
+  bind('blurOpacityCurve',  'blurOpacityCurve',  parseFloat1, fmt1);
 
   // ---- Tire Smoke Controls ----
   bindCheckbox('smokeEnabled',         'smokeEnabled');

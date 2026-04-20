@@ -891,6 +891,36 @@ function runPhysicsStep(dt) {
   // 21. Record skid marks at wheel positions when grip is low.
   recordSkidMarks(dt);
 
+  // 21b. Age and decay skid marks, culling fully transparent ones.
+  // Simple exponential decay: alpha *= exp(-decay_rate * age_time)
+  // Removes marks that exceed max age or become too transparent.
+  {
+    const skidMaxAge = state.params.skidMaxAge || 5.0;
+    const skidAlphaDecayRate = state.params.skidAlphaDecayRate || 1.0;
+    const now = Date.now();
+
+    for (let i = state.skidMarks.length - 1; i >= 0; i--) {
+      const seg = state.skidMarks[i];
+      if (!seg) continue;
+
+      // Apply exponential alpha decay to all segments (regardless of createdTime)
+      seg.alpha *= Math.exp(-skidAlphaDecayRate * dt);
+
+      // Check age-based culling (segments with createdTime)
+      let shouldCull = seg.alpha < 0.001;  // always cull if fully transparent
+      if (seg.createdTime !== undefined) {
+        const ageSeconds = (now - seg.createdTime) * 0.001;  // convert ms to seconds
+        if (ageSeconds > skidMaxAge) {
+          shouldCull = true;  // cull if exceeds max age
+        }
+      }
+
+      if (shouldCull) {
+        state.skidMarks.splice(i, 1);
+      }
+    }
+  }
+
   // 22. Decay screen shake magnitude each physics step.
   decayScreenShake(dt);
 
@@ -942,8 +972,12 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     simCanvas.height = canvasHeight;
   }
 
-  // Sync gpuCanvas pixel size to simCanvas whenever it changes.
-  if (gpuCanvasEl) resizeGPU(canvasWidth, canvasHeight);
+  // Sync gpuCanvas pixel size to simCanvas, scaled by gpuResolutionScale.
+  // Lower scale = fewer GPU pixels = better performance; higher = sharper effects.
+  if (gpuCanvasEl) {
+    const gpuScale = state.params.gpuResolutionScale ?? 1.0;
+    resizeGPU(Math.round(canvasWidth * gpuScale), Math.round(canvasHeight * gpuScale));
+  }
 
   // --- INTERPOLATE RENDER STATE ---
   // If we have two snapshots, lerp between them by alpha.
@@ -1426,6 +1460,7 @@ function recordSkidMarks(dt) {
           paintSaturation: hue >= 0 ? tp.saturation : 1.0,
           width,
           alpha,
+          createdTime: Date.now(),  // timestamp for decay calculation
         };
         state.skidMarks.push(seg);
         // Feed GPU accumulation — gpu-renderer.js drains this each render frame.
