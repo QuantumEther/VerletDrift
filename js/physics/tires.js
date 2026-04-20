@@ -349,25 +349,20 @@ export function computeTireForces(dt) {
     const simplifiedGrip = clamp01(1.0 - lateralSaturation);
     state.wheelGrip[name] = simplifiedGrip;
 
-    // --- HYSTERETIC GRIP STATE MACHINE ---
+    // --- HYSTERETIC GRIP STATE MACHINE (simplified: binary stable/slipping) ---
     const gws = state.wheelGripState[name];
     const SLIP_TRIGGER     = params.gripLossThreshold     !== undefined ? params.gripLossThreshold     : 0.90;
     const RECOVERY_TRIGGER = params.gripRecoveryThreshold !== undefined ? params.gripRecoveryThreshold : 0.80;
-    const STABLE_TRIGGER   = 0.65;
 
     if (gws.state === 'stable') {
+      // Transition to slipping when utilization exceeds threshold
       if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
         gws.state = 'slipping';
       }
-    } else if (gws.state === 'slipping') {
+    } else {  // slipping
+      // Transition back to stable when utilization drops below recovery threshold
       if (state.wheelFrictionUtil[name] < RECOVERY_TRIGGER) {
-        gws.state = 'recovering';
-      }
-    } else {  // recovering
-      if (state.wheelFrictionUtil[name] < STABLE_TRIGGER) {
         gws.state = 'stable';
-      } else if (state.wheelFrictionUtil[name] > SLIP_TRIGGER) {
-        gws.state = 'slipping';
       }
     }
 
@@ -543,54 +538,19 @@ export function computeTireForces(dt) {
   const approxSlipFL = slipFractionFL * peakSlipAngleRad2 * 2.5;
   const approxSlipFR = slipFractionFR * peakSlipAngleRad2 * 2.5;
 
-  const trailFL = t0 * Math.exp(-approxSlipFL / alpha0);
-  const trailFR = t0 * Math.exp(-approxSlipFR / alpha0);
+  // Use actual wheel slip angles (computed earlier in the loop) instead of approximation
+  const trailFL = t0 * Math.exp(-Math.abs(state.wheelSlipAngle.frontLeft) / alpha0);
+  const trailFR = t0 * Math.exp(-Math.abs(state.wheelSlipAngle.frontRight) / alpha0);
 
   const satFL  = (perWheelLateralForce.frontLeft  || 0) * trailFL;
   const satFR  = (perWheelLateralForce.frontRight || 0) * trailFR;
   const rawSAT = satFL + satFR;
 
-  const clampedSAT = clamp(rawSAT, -25, 25);
-
-  // Phase C: Event Enrichment - Emit SAT clamp events
-  const SAT_LIMIT = 25;
-  const SAT_CLAMP_THRESHOLD = 0.95 * SAT_LIMIT; // 23.75
-  const isClamped = Math.abs(clampedSAT) >= SAT_LIMIT - 0.1; // Account for floating point
-  const wasClampedLastFrame = state.debug.transitionState.satClamped;
-
-  if (isClamped && !wasClampedLastFrame && eventBuffer) {
-    eventBuffer.pushEvent({
-      level: 'warn',
-      channel: 'steering',
-      type: 'sat_clamp_enter',
-      msg: `Steering saturation: ${Math.abs(clampedSAT).toFixed(2)} N⋅m (clamped)`,
-      data: {
-        rawSAT: rawSAT,
-        clampedSAT: clampedSAT,
-        limit: SAT_LIMIT,
-        excessAmount: Math.abs(clampedSAT) - SAT_LIMIT,
-        frontLeftLoad: state.wheelLoads.frontLeft,
-        frontRightLoad: state.wheelLoads.frontRight,
-      },
-      dedupeKey: 'sat_clamp:enter',
-    });
-  } else if (!isClamped && wasClampedLastFrame && eventBuffer) {
-    eventBuffer.pushEvent({
-      level: 'info',
-      channel: 'steering',
-      type: 'sat_clamp_exit',
-      msg: `Steering saturation released`,
-      data: { finalSAT: clampedSAT },
-      dedupeKey: 'sat_clamp:exit',
-    });
-  }
-
-  state.debug.transitionState.satClamped = isClamped;
-
-  // EMA output filter on SAT — 80ms time constant (up from 50ms).
-  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.10);
+  // EMA output filter on SAT — smooth out high-frequency noise.
+  // The exponential trail (above) naturally limits peak SAT; no hard clamp needed.
+  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.08);  // 80ms time constant
   const prevSAT = state.steering.selfAligningTorque;
-  state.steering.selfAligningTorque = prevSAT + (clampedSAT - prevSAT) * satFilterAlpha;
+  state.steering.selfAligningTorque = prevSAT + (rawSAT - prevSAT) * satFilterAlpha;
 
   return { forceX: netForceX, forceY: netForceY, torque: netTorque };
 }
