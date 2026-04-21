@@ -6,7 +6,7 @@
 // Writes updated positions/velocities back to storage buffer.
 
 struct SmokeParticle {
-  pos: vec2<f32>,       // camera-relative position (metres)
+  pos: vec2<f32>,       // world-space position (metres)
   vel: vec2<f32>,       // velocity (m/s)
   life: f32,            // remaining lifetime (seconds)
   maxLife: f32,         // original lifetime
@@ -94,7 +94,7 @@ fn sampleCurlNoise(pos: vec2<f32>, time: f32) -> vec2<f32> {
 fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let idx = global_id.x;
 
-  // Bounds check
+  // Bounds check — clamp to actual live particle count to prevent stale buffer reads
   if (idx >= uniforms.particleCount) {
     return;
   }

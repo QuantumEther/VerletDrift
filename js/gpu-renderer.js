@@ -25,6 +25,7 @@ import {
   getSmokePool,
   consumeSpawnedSmokeIndices,
   reclaimSmokeParticles,
+  getSmokeAliveCount,
   MAX_SMOKE,
 } from './renderer/index.js';
 import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
@@ -142,6 +143,16 @@ let smokeFramesSinceReadback = 0;
 // =============================================================
 
 function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+// Zero out a dead smoke particle slot in GPU buffer to prevent stale color flashes.
+// Writes all 11 floats (pos, vel, life, maxLife, size, r, g, b, alpha) as zeros.
+function zeroSmokeGpuSlot(idx) {
+  if (!smokeBuf || !device) return;
+  for (let i = 0; i < SMOKE_UPLOAD_STRIDE; i++) {
+    SMOKE_UPLOAD_DATA[i] = 0.0;
+  }
+  device.queue.writeBuffer(smokeBuf, idx * SMOKE_UPLOAD_STRIDE * 4, SMOKE_UPLOAD_DATA);
+}
 
 // HSL (h: 0-360, s/l: 0-100) → linear RGB [0,1].
 function hslToRgb(h, s, l) {
@@ -808,7 +819,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     }
   }
 
-  const smokeCount = MAX_SMOKE_GPU;
+  const smokeCount = Math.min(getSmokeAliveCount(), MAX_SMOKE_GPU);
 
   // ---- Skid segment instances ----
   // Normally: add only new segments (incremental accumulation).
@@ -974,7 +985,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     mainPass.setPipeline(smokeRenderPipeline);
     mainPass.setBindGroup(0, smokeRenderBindGroup.bg0);  // camera uniforms
     mainPass.setBindGroup(1, smokeRenderBindGroup.bg1);  // particle storage buffer
-    mainPass.draw(6, MAX_SMOKE_GPU);  // dead slots are culled in shader
+    mainPass.draw(6, smokeCount);  // draw only alive particles (≤300), prevents stale data flashes
   }
 
   // TODO: 2e. Analog gauges — disabled due to shader validation issues
@@ -1005,6 +1016,13 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   mainPass.end();
   device.queue.submit([enc.finish()]);
 
+  // ---- Clear stale smoke particle data to prevent GPU buffer reuse flashes ----
+  // Zero all 8000 slots to ensure no stale colour persists from previous frames.
+  // The shader's if (idx >= particleCount) discard guard prevents rendering beyond live range.
+  for (let i = 0; i < MAX_SMOKE_GPU; i++) {
+    zeroSmokeGpuSlot(i);
+  }
+
   // Drain new skid segments — they have been uploaded to the accumulation texture.
   if (state.skidMarksNewThisFrame && state.skidMarksNewThisFrame.length > 0) {
     state.skidMarksNewThisFrame.length = 0;
@@ -1034,7 +1052,13 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
           if (mapped[i] === 0 && smokePool[i] && smokePool[i].alive) dead.push(i);
         }
         smokeAliveReadbackBuf.unmap();
-        if (dead.length > 0) reclaimSmokeParticles(dead);
+        if (dead.length > 0) {
+          // Zero out GPU buffer slots for dead particles to prevent stale color flashes
+          for (let i = 0; i < dead.length; i++) {
+            zeroSmokeGpuSlot(dead[i]);
+          }
+          reclaimSmokeParticles(dead);
+        }
       } catch (_err) {
         // Ignore transient map races; next interval will retry.
       } finally {
