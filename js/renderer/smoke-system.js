@@ -188,16 +188,16 @@ export function updateSmoke(dt) {
         p.size = sizeMin + physicsRandom() * (sizeMax - sizeMin);
         p.sizeBase = p.size;  // Store original size for GPU growth calculation
 
-        // ---- Colour: locked = dark, overspinning = light ----
+        // ---- Colour: locked = dark gray, overspinning = light gray ----
         if (isLocked) {
-          p.r = 0.26 + physicsRandom() * 0.06;
-          p.g = 0.26 + physicsRandom() * 0.06;
-          p.b = 0.28 + physicsRandom() * 0.06;
+          p.r = 0.5 + physicsRandom() * 0.08;
+          p.g = 0.5 + physicsRandom() * 0.08;
+          p.b = 0.52 + physicsRandom() * 0.08;
           p.alpha = (params.smokeOpacityLocked ?? 0.85) + physicsRandom() * 0.15;
         } else {
-          p.r = 0.58 + physicsRandom() * 0.12;
-          p.g = 0.58 + physicsRandom() * 0.12;
-          p.b = 0.60 + physicsRandom() * 0.12;
+          p.r = 0.75 + physicsRandom() * 0.15;
+          p.g = 0.75 + physicsRandom() * 0.15;
+          p.b = 0.77 + physicsRandom() * 0.15;
           p.alpha = (params.smokeOpacityOverspun ?? 0.70) + physicsRandom() * 0.10;
         }
 
