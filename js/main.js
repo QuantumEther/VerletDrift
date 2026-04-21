@@ -632,21 +632,17 @@ function mainLoop(timestampMilliseconds) {
   if (state.loop.previousTimestamp === 0) {
     state.loop.previousTimestamp = timestampSeconds;
   }
-  // Calculate real frame delta before clamping (used for accurate FPS display)
-  const realFrameTime = timestampSeconds - state.loop.previousTimestamp;
-
   const wallFrameTime = Math.min(
-    realFrameTime,
+    timestampSeconds - state.loop.previousTimestamp,
     MAX_FRAME_TIME_SEC   // spiral-of-death guard: cap at 250ms
   );
   state.loop.previousTimestamp = timestampSeconds;
 
   // --- Render FPS (EMA smoothed) ---
-  // Use real unclamped frame time so backgrounded tabs show accurate low FPS
-  const realInstantFps = realFrameTime > 0 ? 1.0 / realFrameTime : 0;
+  const instantRenderFps = wallFrameTime > 0 ? 1.0 / wallFrameTime : 0;
   renderFpsEma = renderFpsEma === 0
-    ? realInstantFps
-    : renderFpsEma + (realInstantFps - renderFpsEma) * 0.20;
+    ? instantRenderFps
+    : renderFpsEma + (instantRenderFps - renderFpsEma) * 0.05;
 
   // --- Physics tick rate in wall-clock time ---
   // physicsHz = how many times per real second we want physics to tick.
