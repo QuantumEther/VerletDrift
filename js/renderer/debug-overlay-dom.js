@@ -99,10 +99,13 @@ export function syncDOMOverlay(state, eventBuffer) {
     const names  = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
     const labels = ['FL', 'FR', 'RL', 'RR'];
     const formatValue = (val) => {
+      const sign = val >= 0 ? '+' : '';
       const absVal = Math.abs(val);
-      if (absVal < 10) return val.toFixed(2);
-      if (absVal < 100) return val.toFixed(1);
-      return val.toFixed(0);
+      let decimals;
+      if (absVal < 10) decimals = 2;
+      else if (absVal < 100) decimals = 1;
+      else decimals = 0;
+      return sign + val.toFixed(decimals);
     };
     elWheels.textContent = names.map((w, i) => {
       const omega = formatValue(state.wheelOmega?.[w]    ?? 0);
