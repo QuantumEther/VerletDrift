@@ -79,11 +79,11 @@ fn vs_main(
   let ndc_x =  camRelX * eff / (cam.viewportW * 0.5);
   let ndc_y = -camRelY * eff / (cam.viewportH * 0.5);
 
-  // Premultiply alpha for correct blending
+  // Use unpremultiplied alpha (blend handles the multiplication)
   let color = vec4<f32>(
-    p.r * p.alpha,
-    p.g * p.alpha,
-    p.b * p.alpha,
+    p.r,
+    p.g,
+    p.b,
     p.alpha
   );
 

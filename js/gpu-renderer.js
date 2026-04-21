@@ -215,6 +215,11 @@ const PREMUL_BLEND = {
   alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' },
 };
 
+const UNPREMUL_BLEND = {
+  color: { srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+  alpha: { srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+};
+
 // Instance buffer attribute layout: stride 36 bytes (9 × f32), step 'instance'.
 // locations 1–9 follow the @location annotations in WGSL.
 function makeInstLayout9(/* locations 1-9 */) {
@@ -358,7 +363,7 @@ async function createAllPipelines() {
     fragment: {
       module:     smokeRenderMod,
       entryPoint: 'fs_main',
-      targets:    [{ format: gpuFmt, blend: PREMUL_BLEND }],
+      targets:    [{ format: gpuFmt, blend: UNPREMUL_BLEND }],
     },
     primitive: { topology: 'triangle-list' },
   });
