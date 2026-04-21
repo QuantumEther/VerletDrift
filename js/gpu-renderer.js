@@ -431,7 +431,7 @@ function createBuffersAndBindGroups() {
   // Particle struct: pos(2) + vel(2) + life + maxLife + size + r + g + b + alpha = 11 × f32 = 44 bytes
   smokeBuf = device.createBuffer({
     label:  'smokeBuf',
-    size:   MAX_SMOKE_GPU * 44,
+    size:   MAX_SMOKE_GPU * 48,  // 12 × f32 per particle
     usage:  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
 

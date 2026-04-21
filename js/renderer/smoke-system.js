@@ -55,6 +55,10 @@ let smokeAliveCount = 0;
 // Track maximum particle index spawned (for GPU render range)
 let maxSpawnedIndex = -1;
 
+// Per-wheel fractional spawn accumulators — carry sub-integer remainders between frames
+// so spawning is smooth and continuous rather than bursty
+const spawnAccum = { frontLeft: 0, frontRight: 0, rearLeft: 0, rearRight: 0 };
+
 
 // =============================================================
 // SMOKE SPAWN
@@ -145,13 +149,19 @@ export function updateSmoke(dt) {
       state.debug.transitionState.wheelSmokeLocked[name] = isLocked;
       state.debug.transitionState.wheelSmokeOverspin[name] = isOverspinning;
 
-      // Emission intensity based on slip — strong multiplier for visible smoke
-      const emission = Math.min(1.0, 2.5 * Math.abs(k));
+      // Clear accumulator when re-entering slip to avoid burst on first frame
+      if ((isLocked && !wasLockedLastFrame) || (isOverspinning && !wasOverspinLastFrame)) {
+        spawnAccum[name] = 0;
+      }
 
-      // Fractional spawn count
-      const spawnCount = Math.floor(emission * spawnRate * dt);
-      if (spawnCount < 1 && physicsRandom() > emission * spawnRate * dt) continue;
-      const count = Math.max(1, spawnCount);
+      // Emission: linear with slip, clamped to [0,1]
+      const emission = Math.min(1.0, Math.abs(k) / 0.4);
+
+      // Fractional accumulator — carry remainder across frames for smooth continuous spawn
+      spawnAccum[name] += emission * spawnRate * dt;
+      const count = Math.floor(spawnAccum[name]);
+      if (count < 1) continue;
+      spawnAccum[name] -= count;
 
       const wheel = wheels[name];
       const wk = kin[name];
@@ -177,28 +187,29 @@ export function updateSmoke(dt) {
                   - (0.3 + physicsRandom() * 0.5);  // upward bias
 
         // ---- Lifetime ----
-        const lifetime = params.smokeLifetimeMin ?? 2.5;
-        const lifetimeMax = params.smokeLifetimeMax ?? 4.0;
+        const lifetime = params.smokeLifetimeMin ?? 3.0;
+        const lifetimeMax = params.smokeLifetimeMax ?? 5.0;
         p.maxLife = lifetime + physicsRandom() * (lifetimeMax - lifetime);
         p.life = p.maxLife;
 
-        // ---- Size: base size (GPU grows it) ----
-        const sizeMin = params.smokeSizeMin ?? 0.35;
-        const sizeMax = params.smokeSizeMax ?? 0.70;
+        // ---- Size: starts small, GPU grows to 4x ----
+        const sizeMin = params.smokeSizeMin ?? 0.4;
+        const sizeMax = params.smokeSizeMax ?? 0.9;
         p.size = sizeMin + physicsRandom() * (sizeMax - sizeMin);
-        p.sizeBase = p.size;  // Store original size for GPU growth calculation
+        p.sizeBase = p.size;
 
-        // ---- Colour: locked = dark gray, overspinning = light gray ----
+        // ---- Colour: locked = medium gray, overspinning = light gray ----
+        // Lower alpha so particles stack naturally without saturating
         if (isLocked) {
-          p.r = 0.5 + physicsRandom() * 0.08;
-          p.g = 0.5 + physicsRandom() * 0.08;
-          p.b = 0.52 + physicsRandom() * 0.08;
-          p.alpha = (params.smokeOpacityLocked ?? 0.85) + physicsRandom() * 0.15;
+          p.r = 0.55 + physicsRandom() * 0.10;
+          p.g = 0.55 + physicsRandom() * 0.10;
+          p.b = 0.58 + physicsRandom() * 0.10;
+          p.alpha = (params.smokeOpacityLocked ?? 0.55) + physicsRandom() * 0.15;
         } else {
-          p.r = 0.75 + physicsRandom() * 0.15;
-          p.g = 0.75 + physicsRandom() * 0.15;
-          p.b = 0.77 + physicsRandom() * 0.15;
-          p.alpha = (params.smokeOpacityOverspun ?? 0.70) + physicsRandom() * 0.10;
+          p.r = 0.80 + physicsRandom() * 0.12;
+          p.g = 0.80 + physicsRandom() * 0.12;
+          p.b = 0.82 + physicsRandom() * 0.10;
+          p.alpha = (params.smokeOpacityOverspun ?? 0.45) + physicsRandom() * 0.15;
         }
 
         p.alive = true;
