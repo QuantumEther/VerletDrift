@@ -23,7 +23,7 @@ import { eventBuffer } from '../debug/events.js';
 // SMOKE PARTICLE POOL (CPU-side)
 // =============================================================
 
-export const MAX_SMOKE = 8000;
+export const MAX_SMOKE = 16000;
 
 // Pre-allocated pool — particles spawned here, then GPU compute updates them
 const smokePool = [];
@@ -75,7 +75,7 @@ export function updateSmoke(dt) {
   const lockedThresh   = params.smokeLockedThreshold   ?? -0.10;
   const overspinThresh = params.smokeOverspinThreshold ?? 0.15;
   const minSpeed       = params.smokeMinSpeed          ?? 1.0;  // Lowered from 3.0 for visibility
-  const spawnRate      = params.smokeSpawnRate         ?? 75;
+  const spawnRate      = params.smokeSpawnRate         ?? 200;
 
   // Trace-gated smoke spawn debug logging (only in trace mode for smoke channel)
   logger.trace('smoke', () => `Speed: ${speed.toFixed(2)} m/s, Slip: FL=${kappa.frontLeft?.toFixed(3)} FR=${kappa.frontRight?.toFixed(3)} RL=${kappa.rearLeft?.toFixed(3)} RR=${kappa.rearRight?.toFixed(3)}`);
