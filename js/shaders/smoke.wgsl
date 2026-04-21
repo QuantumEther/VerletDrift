@@ -112,13 +112,17 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     discard;
   }
 
-  // Soft Gaussian-style falloff — wide soft puff, not a harsh dot
-  let dist = sqrt(dist_sq);
-  let falloff = 1.0 - dist;  // 1.0 at center, 0.0 at edge
-  // Smooth cubic: wide soft shape, still zero at edge
-  let soft_alpha = falloff * falloff * (3.0 - 2.0 * falloff);
+  // Soft gradient falloff: center opaque, edges fade
+  // Uses radial falloff for smooth billboards (not harsh circles)
+  let falloff = 1.0 - sqrt(dist_sq);  // 1.0 at center, 0.0 at edge
+  let soft_alpha = falloff * falloff;  // quadratic fade for softer look
 
-  // Premultiplied alpha: scale both RGB and A by soft_alpha so blend is correct
+  // Debug: visualize color values
+  // Uncomment to see what colors are being read
+  // return vec4<f32>(in.col.r, in.col.g, in.col.b, 1.0);  // Full brightness to see colors
+
+  // RGB must be scaled by soft_alpha too — without this, full-intensity color
+  // bleeds at the particle edges even as alpha fades, creating hard discs.
   let final_color = vec4<f32>(
     in.col.r * soft_alpha,
     in.col.g * soft_alpha,

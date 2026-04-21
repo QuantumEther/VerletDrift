@@ -118,12 +118,15 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
 
   // ---- 2. FADE IN/OUT ----
-  let lifeFrac = p.life / p.maxLife;  // 1.0 at spawn → 0.0 at death
+  // Fade in during first 10% of life, fade out during last 20%
+  let lifeFrac = p.life / p.maxLife;
   var fadeMul = 1.0;
-  if (lifeFrac > 0.85) {
-    fadeMul = (1.0 - lifeFrac) / 0.15;  // fade in over first 15%
-  } else if (lifeFrac < 0.25) {
-    fadeMul = lifeFrac / 0.25;          // fade out over last 25%
+  if (lifeFrac > 0.90) {
+    // Fade out: linear from 90% to 100%
+    fadeMul = (1.0 - lifeFrac) / 0.10;
+  } else if (lifeFrac < 0.10) {
+    // Fade in: linear from 0% to 10%
+    fadeMul = lifeFrac / 0.10;
   }
   p.alpha *= fadeMul;
 
@@ -143,16 +146,16 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   p.vel = p.vel + (gravity + advectForce) * uniforms.dt;
 
   // ---- 5. DRAG (Air resistance) ----
-  p.vel *= (1.0 - 1.8 * uniforms.dt);  // frame-rate independent drag (~e^-1.8/s)
+  p.vel *= 0.96;  // per-frame drag
 
   // ---- 6. INTEGRATE POSITION ----
   p.pos += p.vel * uniforms.dt;
 
   // ---- 7. SIZE GROWTH ----
-  // Grows from 1× at spawn to 4× at death, with smooth ease-in curve
-  let growFrac = 1.0 - lifeFrac;  // 0→1 over lifetime
-  let growEased = growFrac * growFrac * (3.0 - 2.0 * growFrac);  // smoothstep
-  p.size = p.sizeBase * (1.0 + growEased * 3.0);
+  // Particles grow over their lifetime: 1.0x at spawn, 3.0x at end
+  // lifeFrac goes 1→0 as particle ages, so (1 - lifeFrac) goes 0→1
+  // Use sizeBase (original size) not current size to avoid exponential explosion
+  p.size = p.sizeBase * (1.0 + (1.0 - lifeFrac) * 2.0);
 
   // ---- 8. VISIBILITY CULLING ----
   // Cull particles far from camera-relative origin (>300m away)
