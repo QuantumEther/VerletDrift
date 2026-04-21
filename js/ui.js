@@ -727,9 +727,9 @@ export function updateInfoBar() {
   const rlOmega = state.wheelOmega.rearLeft || 0;
   const rrOmega = state.wheelOmega.rearRight || 0;
   // Per-frame wheel omega logging moved to debug overlay and logger (trace mode only)
+  const formatOmega = (val) => (val >= 0 ? '+' : '') + val.toFixed(2);
   setInfoCell('wheelOmegaDisplay',
-    `FL:${flOmega.toFixed(2)} FR:${frOmega.toFixed(2)}<br>` +
-    `RL:${rlOmega.toFixed(2)} RR:${rrOmega.toFixed(2)}`);
+    `FL:${formatOmega(flOmega)} FR:${formatOmega(frOmega)}\nRL:${formatOmega(rlOmega)} RR:${formatOmega(rrOmega)}`);
 
   // Render FPS and physics ticks-per-second (set by main.js into state.loop).
   setInfoCell('renderFpsDisplay',

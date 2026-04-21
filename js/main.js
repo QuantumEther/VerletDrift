@@ -642,7 +642,7 @@ function mainLoop(timestampMilliseconds) {
   const instantRenderFps = wallFrameTime > 0 ? 1.0 / wallFrameTime : 0;
   renderFpsEma = renderFpsEma === 0
     ? instantRenderFps
-    : renderFpsEma + (instantRenderFps - renderFpsEma) * 0.05;
+    : renderFpsEma + (instantRenderFps - renderFpsEma) * 0.15;  // faster response to FPS changes
 
   // --- Physics tick rate in wall-clock time ---
   // physicsHz = how many times per real second we want physics to tick.
