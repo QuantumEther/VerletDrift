@@ -19,6 +19,7 @@ struct SmokeParticle {
   life: f32,
   maxLife: f32,
   size: f32,
+  sizeBase: f32,
   r: f32,
   g: f32,
   b: f32,

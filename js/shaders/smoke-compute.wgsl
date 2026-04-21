@@ -10,7 +10,8 @@ struct SmokeParticle {
   vel: vec2<f32>,       // velocity (m/s)
   life: f32,            // remaining lifetime (seconds)
   maxLife: f32,         // original lifetime
-  size: f32,            // base radius (metres)
+  size: f32,            // current radius (metres) — grows during lifetime
+  sizeBase: f32,        // original base radius (metres) — used for growth calculation
   r: f32, g: f32, b: f32,  // RGB color [0,1]
   alpha: f32,           // opacity [0,1]
 }
@@ -153,7 +154,8 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   // ---- 7. SIZE GROWTH ----
   // Particles grow over their lifetime: 1.0x at spawn, 3.0x at end
   // lifeFrac goes 1→0 as particle ages, so (1 - lifeFrac) goes 0→1
-  p.size = p.size * (1.0 + (1.0 - lifeFrac) * 2.0);
+  // Use sizeBase (original size) not current size to avoid exponential explosion
+  p.size = p.sizeBase * (1.0 + (1.0 - lifeFrac) * 2.0);
 
   // ---- 8. VISIBILITY CULLING ----
   // Cull particles far from camera-relative origin (>300m away)

@@ -124,7 +124,7 @@ const splatData  = new Float32Array(MAX_SPLATS * 7);
 const skidData   = new Float32Array(MAX_SKID_NEW * 9);
 let skidRedrawCounter = 0;  // counts frames; triggers a full texture redraw periodically
 const SMOKE_UNI_DATA = new Float32Array(8);  // dt, particleCount, curlNoiseScale, noiseOffsetTime, cameraX, cameraY, _pad0, _pad1
-const SMOKE_UPLOAD_STRIDE = 11;
+const SMOKE_UPLOAD_STRIDE = 12;  // pos(2) + vel(2) + life + maxLife + size + sizeBase + rgb(3) + alpha
 const SMOKE_UPLOAD_DATA = new Float32Array(SMOKE_UPLOAD_STRIDE);
 const SMOKE_ALIVE_VALUE = new Uint32Array([1]);
 const gaugeData  = new Float32Array(16 * 13); // 16 gauges × 13 floats per gauge (includes angularVelocity)
@@ -815,10 +815,11 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
       SMOKE_UPLOAD_DATA[4] = p.life;
       SMOKE_UPLOAD_DATA[5] = p.maxLife;
       SMOKE_UPLOAD_DATA[6] = p.size;
-      SMOKE_UPLOAD_DATA[7] = p.r;
-      SMOKE_UPLOAD_DATA[8] = p.g;
-      SMOKE_UPLOAD_DATA[9] = p.b;
-      SMOKE_UPLOAD_DATA[10] = p.alpha;
+      SMOKE_UPLOAD_DATA[7] = p.sizeBase;  // Original size for growth calculation
+      SMOKE_UPLOAD_DATA[8] = p.r;
+      SMOKE_UPLOAD_DATA[9] = p.g;
+      SMOKE_UPLOAD_DATA[10] = p.b;
+      SMOKE_UPLOAD_DATA[11] = p.alpha;
 
       device.queue.writeBuffer(smokeBuf, idx * SMOKE_UPLOAD_STRIDE * 4, SMOKE_UPLOAD_DATA);
       device.queue.writeBuffer(smokeAliveBuf, idx * 4, SMOKE_ALIVE_VALUE);

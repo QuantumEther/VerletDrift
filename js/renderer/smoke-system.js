@@ -33,7 +33,8 @@ for (let i = 0; i < MAX_SMOKE; i++) {
     vel: { x: 0, y: 0 },      // initial velocity (m/s)
     life: 0,                  // remaining lifetime (seconds)
     maxLife: 0,               // original lifetime
-    size: 0,                  // base radius (metres) — GPU grows this
+    size: 0,                  // current radius (metres) — grows during lifetime
+    sizeBase: 0,              // original base radius (metres) — used for growth calc
     r: 0, g: 0, b: 0,        // colour [0, 1]
     alpha: 0,                 // opacity [0, 1]
     alive: false,
@@ -185,6 +186,7 @@ export function updateSmoke(dt) {
         const sizeMin = params.smokeSizeMin ?? 0.35;
         const sizeMax = params.smokeSizeMax ?? 0.70;
         p.size = sizeMin + physicsRandom() * (sizeMax - sizeMin);
+        p.sizeBase = p.size;  // Store original size for GPU growth calculation
 
         // ---- Colour: locked = dark, overspinning = light ----
         if (isLocked) {
