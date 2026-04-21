@@ -51,6 +51,9 @@ const spawnedSmokeIndices = [];
 // Updated when particles are spawned and when dead particles are reclaimed from GPU
 let smokeAliveCount = 0;
 
+// Track maximum particle index spawned (for GPU render range)
+let maxSpawnedIndex = -1;
+
 
 // =============================================================
 // SMOKE SPAWN
@@ -199,6 +202,7 @@ export function updateSmoke(dt) {
         p.alive = true;
         spawnedSmokeIndices.push(idx);
         smokeAliveCount++;
+        if (idx > maxSpawnedIndex) maxSpawnedIndex = idx;
       }
     }
   }
@@ -215,6 +219,10 @@ export function consumeSpawnedSmokeIndices() {
   const out = spawnedSmokeIndices.slice();
   spawnedSmokeIndices.length = 0;
   return out;
+}
+
+export function getMaxSpawnedSmokeIndex() {
+  return maxSpawnedIndex;
 }
 
 // GPU-side simulation is authoritative after spawn. Dead particles are returned

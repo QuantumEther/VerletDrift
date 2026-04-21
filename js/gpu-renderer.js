@@ -26,6 +26,7 @@ import {
   consumeSpawnedSmokeIndices,
   reclaimSmokeParticles,
   getSmokeAliveCount,
+  getMaxSpawnedSmokeIndex,
   MAX_SMOKE,
 } from './renderer/index.js';
 import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
@@ -826,6 +827,12 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
 
   const smokeCount = Math.min(getSmokeAliveCount(), MAX_SMOKE_GPU);
 
+  // Debug: Log smoke particle counts every 60 frames to diagnose bright flashes
+  if (!window._smokeDebugCounter) window._smokeDebugCounter = 0;
+  if (++window._smokeDebugCounter % 60 === 0) {
+    console.log(`🔥 Smoke: CPU alive=${getSmokeAliveCount()}, GPU render=${smokeCount}`);
+  }
+
   // ---- Skid segment instances ----
   // Normally: add only new segments (incremental accumulation).
   // Periodically: full redraw — clear texture and re-render ALL segments with current
@@ -986,11 +993,13 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
 
   // 2d. Tire smoke (rendered before sparks — smoke sits behind sharp sparks).
   // Uses dedicated soft-billboard shader with storage buffer read via bind groups.
-  if (smokeCount > 0) {
+  // Render up to maxSpawnedIndex to cover all possible alive particles (scattered throughout buffer)
+  const maxSmokeIdx = getMaxSpawnedSmokeIndex();
+  if (maxSmokeIdx >= 0) {
     mainPass.setPipeline(smokeRenderPipeline);
     mainPass.setBindGroup(0, smokeRenderBindGroup.bg0);  // camera uniforms
     mainPass.setBindGroup(1, smokeRenderBindGroup.bg1);  // particle storage buffer
-    mainPass.draw(6, smokeCount);  // draw only alive particles (≤300), prevents stale data flashes
+    mainPass.draw(6, maxSmokeIdx + 1);  // render 0..maxSmokeIdx; aliveFlags culls dead ones
   }
 
   // TODO: 2e. Analog gauges — disabled due to shader validation issues
