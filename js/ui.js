@@ -727,7 +727,15 @@ export function updateInfoBar() {
   const rlOmega = state.wheelOmega.rearLeft || 0;
   const rrOmega = state.wheelOmega.rearRight || 0;
   // Per-frame wheel omega logging moved to debug overlay and logger (trace mode only)
-  const formatOmega = (val) => (val >= 0 ? '+' : '') + val.toFixed(2);
+  const formatOmega = (val) => {
+    const sign = val >= 0 ? '+' : '';
+    const absVal = Math.abs(val);
+    let decimals;
+    if (absVal < 10) decimals = 2;
+    else if (absVal < 100) decimals = 1;
+    else decimals = 0;
+    return sign + val.toFixed(decimals);
+  };
   setInfoCell('wheelOmegaDisplay',
     `FL:${formatOmega(flOmega)} FR:${formatOmega(frOmega)}\nRL:${formatOmega(rlOmega)} RR:${formatOmega(rrOmega)}`);
 
