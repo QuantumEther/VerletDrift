@@ -145,8 +145,8 @@ export function updateSmoke(dt) {
       state.debug.transitionState.wheelSmokeLocked[name] = isLocked;
       state.debug.transitionState.wheelSmokeOverspin[name] = isOverspinning;
 
-      // Emission intensity based on slip
-      const emission = 0.6 * Math.abs(k) + 0.2 * 0; // simplified: just slip ratio
+      // Emission intensity based on slip — strong multiplier for visible smoke
+      const emission = Math.min(1.0, 2.5 * Math.abs(k));
 
       // Fractional spawn count
       const spawnCount = Math.floor(emission * spawnRate * dt);
@@ -177,8 +177,8 @@ export function updateSmoke(dt) {
                   - (0.3 + physicsRandom() * 0.5);  // upward bias
 
         // ---- Lifetime ----
-        const lifetime = params.smokeLifetimeMin ?? 1.0;
-        const lifetimeMax = params.smokeLifetimeMax ?? 2.0;
+        const lifetime = params.smokeLifetimeMin ?? 2.5;
+        const lifetimeMax = params.smokeLifetimeMax ?? 4.0;
         p.maxLife = lifetime + physicsRandom() * (lifetimeMax - lifetime);
         p.life = p.maxLife;
 
