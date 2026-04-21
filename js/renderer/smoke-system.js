@@ -193,12 +193,12 @@ export function updateSmoke(dt) {
           p.r = 0.26 + physicsRandom() * 0.06;
           p.g = 0.26 + physicsRandom() * 0.06;
           p.b = 0.28 + physicsRandom() * 0.06;
-          p.alpha = (params.smokeOpacityLocked ?? 0.65) + physicsRandom() * 0.15;
+          p.alpha = (params.smokeOpacityLocked ?? 0.85) + physicsRandom() * 0.15;
         } else {
           p.r = 0.58 + physicsRandom() * 0.12;
           p.g = 0.58 + physicsRandom() * 0.12;
           p.b = 0.60 + physicsRandom() * 0.12;
-          p.alpha = (params.smokeOpacityOverspun ?? 0.40) + physicsRandom() * 0.10;
+          p.alpha = (params.smokeOpacityOverspun ?? 0.70) + physicsRandom() * 0.10;
         }
 
         p.alive = true;

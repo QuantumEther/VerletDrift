@@ -80,16 +80,13 @@ fn vs_main(
   let ndc_x =  camRelX * eff / (cam.viewportW * 0.5);
   let ndc_y = -camRelY * eff / (cam.viewportH * 0.5);
 
-  // DEBUG: Use bright magenta for visibility test (uncomment to debug)
-  let color = vec4<f32>(1.0, 0.0, 1.0, 0.8);  // Bright magenta - SHOULD BE VISIBLE
-
-  // Normal smoke color (disabled for debug):
-  // let color = vec4<f32>(
-  //   p.r * p.alpha,
-  //   p.g * p.alpha,
-  //   p.b * p.alpha,
-  //   p.alpha
-  // );
+  // Smoke color: CPU passes premultiplied RGBA
+  let color = vec4<f32>(
+    p.r * p.alpha,
+    p.g * p.alpha,
+    p.b * p.alpha,
+    p.alpha
+  );
 
   // Debug: Log particle position and size (first 5 particles only)
   // if (inst_id < 5u) {
