@@ -1016,13 +1016,6 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   mainPass.end();
   device.queue.submit([enc.finish()]);
 
-  // ---- Clear stale smoke particle data to prevent GPU buffer reuse flashes ----
-  // Zero all 8000 slots to ensure no stale colour persists from previous frames.
-  // The shader's if (idx >= particleCount) discard guard prevents rendering beyond live range.
-  for (let i = 0; i < MAX_SMOKE_GPU; i++) {
-    zeroSmokeGpuSlot(i);
-  }
-
   // Drain new skid segments — they have been uploaded to the accumulation texture.
   if (state.skidMarksNewThisFrame && state.skidMarksNewThisFrame.length > 0) {
     state.skidMarksNewThisFrame.length = 0;
