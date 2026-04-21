@@ -363,7 +363,7 @@ async function createAllPipelines() {
     fragment: {
       module:     smokeRenderMod,
       entryPoint: 'fs_main',
-      targets:    [{ format: gpuFmt, blend: UNPREMUL_BLEND }],
+      targets:    [{ format: gpuFmt, blend: PREMUL_BLEND }],
     },
     primitive: { topology: 'triangle-list' },
   });

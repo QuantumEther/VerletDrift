@@ -79,11 +79,11 @@ fn vs_main(
   let ndc_x =  camRelX * eff / (cam.viewportW * 0.5);
   let ndc_y = -camRelY * eff / (cam.viewportH * 0.5);
 
-  // Use unpremultiplied alpha (blend handles the multiplication)
+  // Premultiply alpha for correct blending
   let color = vec4<f32>(
-    p.r,
-    p.g,
-    p.b,
+    p.r * p.alpha,
+    p.g * p.alpha,
+    p.b * p.alpha,
     p.alpha
   );
 
@@ -110,6 +110,10 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
   // Uses radial falloff for smooth billboards (not harsh circles)
   let falloff = 1.0 - sqrt(dist_sq);  // 1.0 at center, 0.0 at edge
   let soft_alpha = falloff * falloff;  // quadratic fade for softer look
+
+  // Debug: visualize color values
+  // Uncomment to see what colors are being read
+  // return vec4<f32>(in.col.r, in.col.g, in.col.b, 1.0);  // Full brightness to see colors
 
   // Modulate color alpha by falloff
   let final_color = vec4<f32>(
