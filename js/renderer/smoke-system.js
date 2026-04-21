@@ -64,11 +64,17 @@ const spawnAccum = { frontLeft: 0, frontRight: 0, rearLeft: 0, rearRight: 0 };
 // SMOKE SPAWN
 // =============================================================
 
-// Called each physics step. Only spawns particles.
+// Called ONCE per render frame with wall-clock dt.
+// Decoupled from physics substeps — spawning is steady at ~60Hz regardless of
+// whether physics dropped frames or caught up with a burst of substeps.
 // GPU compute shader handles all advection (motion, turbulence, aging).
 export function updateSmoke(dt) {
   const params = state.params;
   if (!params.smokeEnabled) return;
+
+  // Clamp dt to a sensible range — protects against tab-switch stalls
+  if (dt > 0.1) dt = 0.1;
+  if (dt <= 0) return;
 
   const body = state.body;
   const wheels = state.wheels;
@@ -76,10 +82,10 @@ export function updateSmoke(dt) {
   const kin = state.wheelKinematics;
   const speed = body.speed;
 
-  const lockedThresh   = params.smokeLockedThreshold   ?? -0.10;
-  const overspinThresh = params.smokeOverspinThreshold ?? 0.15;
-  const minSpeed       = params.smokeMinSpeed          ?? 1.0;  // Lowered from 3.0 for visibility
-  const spawnRate      = params.smokeSpawnRate         ?? 200;
+  const lockedThresh   = params.smokeLockedThreshold   ?? -0.05;
+  const overspinThresh = params.smokeOverspinThreshold ?? 0.08;
+  const minSpeed       = params.smokeMinSpeed          ?? 1.0;
+  const spawnRate      = params.smokeSpawnRate         ?? 400;  // particles/sec/wheel at full emission
 
   // Trace-gated smoke spawn debug logging (only in trace mode for smoke channel)
   logger.trace('smoke', () => `Speed: ${speed.toFixed(2)} m/s, Slip: FL=${kappa.frontLeft?.toFixed(3)} FR=${kappa.frontRight?.toFixed(3)} RL=${kappa.rearLeft?.toFixed(3)} RR=${kappa.rearRight?.toFixed(3)}`);
@@ -154,12 +160,14 @@ export function updateSmoke(dt) {
         spawnAccum[name] = 0;
       }
 
-      // Emission: linear with slip, clamped to [0,1]
-      const emission = Math.min(1.0, Math.abs(k) / 0.4);
+      // Emission: reaches max at ~0.15 slip (above threshold) — aggressive curve for visibility
+      const slipExcess = Math.abs(k) - (isLocked ? Math.abs(lockedThresh) : overspinThresh);
+      const emission = Math.max(0.3, Math.min(1.0, 0.3 + slipExcess / 0.15));
 
-      // Fractional accumulator — carry remainder across frames for smooth continuous spawn
+      // Fractional accumulator — carry remainder across render frames for smooth continuous spawn
       spawnAccum[name] += emission * spawnRate * dt;
-      const count = Math.floor(spawnAccum[name]);
+      // Cap per-frame spawn to prevent any single frame burst (e.g. after tab-switch)
+      const count = Math.min(Math.floor(spawnAccum[name]), 20);
       if (count < 1) continue;
       spawnAccum[name] -= count;
 
@@ -264,17 +272,7 @@ export function reclaimSmokeParticles(deadIndices) {
   }
 }
 
-// Return the count of particles currently alive (not in free-list)
-// Direct scan of pool to ensure accuracy, avoiding counter lag from 12-frame readback window
+// O(1) alive count. Counter is maintained incrementally on spawn / reclaim.
 export function getSmokeAliveCount() {
-  let count = 0;
-  for (let i = 0; i < smokePool.length; i++) {
-    if (smokePool[i] && smokePool[i].alive) {
-      count++;
-    }
-  }
-  if (count > 0 && count % 50 === 0) {
-    console.log(`[smoke] alive particles: ${count}`);
-  }
-  return count;
+  return smokeAliveCount;
 }

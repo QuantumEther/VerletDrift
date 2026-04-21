@@ -49,7 +49,7 @@ const MAX_SPLATS     = 600;
 const MAX_SKID_NEW   = 4096;  // max skid segments per render frame (covers full redraw of 4000-cap array)
 const MAX_SMOKE_GPU  = MAX_SMOKE; // 8000 — from smoke-system.js
 const SMOKE_COMPUTE_WORKGROUP_SIZE = 256;
-const SMOKE_READBACK_INTERVAL_FRAMES = 12;
+const SMOKE_READBACK_INTERVAL_FRAMES = 6;  // faster reclaim keeps free list healthy
 
 // Float RGB for spark palette (matches SPARK_COLORS_SDR in renderer.js).
 // Index matches spark.hdrIndex.
@@ -827,12 +827,6 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   }
 
   const smokeCount = Math.min(getSmokeAliveCount(), MAX_SMOKE_GPU);
-
-  // Debug: Log smoke particle counts every 60 frames to diagnose bright flashes
-  if (!window._smokeDebugCounter) window._smokeDebugCounter = 0;
-  if (++window._smokeDebugCounter % 60 === 0) {
-    console.log(`🔥 Smoke: CPU alive=${getSmokeAliveCount()}, GPU render=${smokeCount}`);
-  }
 
   // ---- Skid segment instances ----
   // Normally: add only new segments (incremental accumulation).

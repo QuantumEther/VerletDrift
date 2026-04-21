@@ -929,10 +929,9 @@ function runPhysicsStep(dt) {
     updateSparks(dt);
   }
 
-  // 24. Update tire smoke (spawn at locked/overspinning wheels, advect, cull).
-  if (state.params.smokeEnabled) {
-    updateSmoke(dt);
-  }
+  // Note: smoke spawning has moved to the render loop (main.js:renderFrame) so
+  // it runs at a steady wall-clock rate regardless of physics substep bursts.
+  // GPU compute shader still advects every render frame from renderFrameGPU.
 
   // 25. Check for physics-phase faults (wheel omega, constraints, slip anomalies)
   checkFaults('physics');
@@ -1062,6 +1061,12 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   drawCarGhosts(simCtx);
   drawCar(simCtx);
   removeCameraTransform(simCtx);
+
+  // --- Spawn smoke at wall-clock cadence (decoupled from physics substeps) ---
+  // Runs here so spawning is smooth at ~60Hz regardless of physics frame drops.
+  if (state.params.smokeEnabled) {
+    updateSmoke(wallRenderDt);
+  }
 
   // --- GPU world render (background + skid + arrows + particles) ---
   // Called after interpolated state is set but before restoring physics state.
