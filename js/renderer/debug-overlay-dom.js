@@ -98,10 +98,16 @@ export function syncDOMOverlay(state, eventBuffer) {
   if (elWheels) {
     const names  = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
     const labels = ['FL', 'FR', 'RL', 'RR'];
+    const formatValue = (val) => {
+      const absVal = Math.abs(val);
+      if (absVal < 10) return val.toFixed(2);
+      if (absVal < 100) return val.toFixed(1);
+      return val.toFixed(0);
+    };
     elWheels.textContent = names.map((w, i) => {
-      const omega = (state.wheelOmega?.[w]    ?? 0).toFixed(1);
-      const kappa = (state.wheelSlipRatio?.[w] ?? 0).toFixed(2);
-      const alpha = (state.wheelSlipAngle?.[w] ?? 0).toFixed(2);
+      const omega = formatValue(state.wheelOmega?.[w]    ?? 0);
+      const kappa = formatValue(state.wheelSlipRatio?.[w] ?? 0);
+      const alpha = formatValue(state.wheelSlipAngle?.[w] ?? 0);
       return `${labels[i]}: ω=${omega} κ=${kappa} α=${alpha}`;
     }).join('\n');
   }

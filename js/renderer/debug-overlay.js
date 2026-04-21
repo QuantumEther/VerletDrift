@@ -84,6 +84,13 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
   ctx.fillText('--- WHEELS ---', x, y);
   y += lineH;
 
+  const formatValue = (val) => {
+    const absVal = Math.abs(val);
+    if (absVal < 10) return val.toFixed(2);
+    if (absVal < 100) return val.toFixed(1);
+    return val.toFixed(0);
+  };
+
   for (let i = 0; i < wheels.length; i++) {
     const wheelName = wheels[i];
     const wheelOmega = state.wheelOmega?.[wheelName] ?? 0;
@@ -93,7 +100,7 @@ export function drawTelemetryPanel(ctx, canvasWidth, canvasHeight) {
     const wheelGripState = state.wheelGripState?.[wheelName]?.state ?? 'unknown';
 
     ctx.fillText(
-      `${wheelShort[i]}: ω=${wheelOmega.toFixed(1)} κ=${wheelSlipRatio.toFixed(2)} α=${wheelSlipAngle.toFixed(2)}`,
+      `${wheelShort[i]}: ω=${formatValue(wheelOmega)} κ=${formatValue(wheelSlipRatio)} α=${formatValue(wheelSlipAngle)}`,
       x,
       y
     );
