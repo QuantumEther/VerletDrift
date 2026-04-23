@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift UI — Proposal 2: Horizontal Cards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e13;
+  --bg-panel: #111820;
+  --bg-card: #182430;
+  --bg-input: #0d1520;
+  --accent: #e8c44a;
+  --accent-dim: rgba(232,196,74,0.12);
+  --cyan: #48d4e8;
+  --text: #d8eaf0;
+  --text-dim: #7a9aaa;
+  --border: rgba(255,255,255,0.08);
+  --font: 'SF Mono', 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+  --radius: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 12px; overflow: hidden; }
+
+.banner {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+}
+.banner-title { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+.banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
+.banner-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--cyan); white-space: nowrap; }
+
+details.meta { padding: 6px 24px; border-bottom: 1px solid var(--border); }
+summary { cursor: pointer; color: var(--text-dim); font-size: 11px; letter-spacing: 0.04em; user-select: none; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0; }
+.meta-col h4 { font-size: 10px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px; }
+.meta-col li { list-style: none; color: var(--text-dim); line-height: 1.7; font-size: 11px; }
+.meta-col li::before { content: '+  '; color: var(--cyan); }
+.meta-col:last-child li::before { content: '−  '; color: #e87b4a; }
+
+/* ── search bar ── */
+.search-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.search-wrap { position: relative; flex: 1; max-width: 480px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+#search {
+  width: 100%;
+  padding: 8px 10px 8px 30px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search:focus { border-color: rgba(232,196,74,0.4); }
+#search::placeholder { color: var(--text-dim); }
+#autocorrect {
+  display: none;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+#autocorrect span { color: var(--accent); cursor: pointer; text-decoration: underline; }
+.result-count { color: var(--text-dim); font-size: 11px; white-space: nowrap; }
+.result-count b { color: var(--accent); }
+
+/* ── cards scroll area ── */
+.cards-container {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: calc(100vh - 170px);
+  padding: 16px;
+  gap: 12px;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 16px;
+}
+.cards-container::-webkit-scrollbar { height: 4px; }
+.cards-container::-webkit-scrollbar-track { background: transparent; }
+.cards-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── card ── */
+.card {
+  min-width: 260px;
+  max-width: 260px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.card.has-match { border-top: 2px solid var(--accent); }
+.card.no-match { opacity: 0.4; }
+
+.card-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.card-badge {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-dim);
+}
+.card.has-match .card-badge { background: var(--accent); color: #000; }
+
+.card-sliders {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.card-sliders::-webkit-scrollbar { width: 3px; }
+.card-sliders::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.card-empty {
+  padding: 20px 14px;
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  display: none;
+}
+
+/* ── slider row ── */
+.slider-row {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.slider-row:last-child { border-bottom: none; }
+.slider-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.slider-label { font-size: 10px; color: var(--text); letter-spacing: 0.02em; }
+.slider-value { font-size: 10px; color: var(--accent); font-variant-numeric: tabular-nums; }
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--bg-card);
+  border-radius: 2px;
+  outline: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: block;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.3); }
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <span class="banner-title">PROPOSAL 2 — HORIZONTAL CARDS</span>
+  <span class="banner-desc">One card per subsystem, side-by-side in a horizontal scroll lane. Search filters all cards simultaneously — sliders that don't match collapse, cards with zero matches dim to 40%. Spatial layout lets you compare parameters across subsystems without switching tabs.</span>
+  <span class="banner-tag">Best for: cross-subsystem comparison</span>
+</div>
+
+<details class="meta">
+  <summary>▸ Pros / Cons</summary>
+  <div class="meta-grid">
+    <div class="meta-col">
+      <h4>PROS</h4>
+      <ul>
+        <li>All subsystems simultaneously visible</li>
+        <li>Spatial memory — you learn card positions</li>
+        <li>Search results span every subsystem at once</li>
+        <li>Card height independent per subsystem</li>
+      </ul>
+    </div>
+    <div class="meta-col">
+      <h4>CONS</h4>
+      <ul>
+        <li>Horizontal scroll is unusual for control panels</li>
+        <li>Cards can vary widely in height — uneven</li>
+        <li>Narrow cards squeeze slider labels</li>
+        <li>Hard to see all sliders without scrolling within card</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Search all subsystems… (try 'blur', 'pacejka', or 'camra' for autocorrect)">
+  </div>
+  <div id="autocorrect"></div>
+  <div class="result-count" id="resultCount"></div>
+</div>
+
+<div class="cards-container" id="cardsContainer"></div>
+
+<script>
+const SLIDERS = [
+  { id:'peakEngineTorqueNm', label:'Peak Torque',    subsystem:'Engine',       min:50,   max:2000, step:10,   value:350,  unit:'Nm'    },
+  { id:'redlineRpm',         label:'Redline RPM',    subsystem:'Engine',       min:4000, max:10000,step:100,  value:7000, unit:'RPM'   },
+  { id:'idleRpm',            label:'Idle RPM',       subsystem:'Engine',       min:400,  max:1500, step:50,   value:800,  unit:'RPM'   },
+  { id:'cylinderCount',      label:'Cylinders',      subsystem:'Engine',       min:1,    max:16,   step:1,    value:12,   unit:''      },
+  { id:'clutchBitePoint',    label:'Bite Point',     subsystem:'Transmission', min:0.05, max:0.85, step:0.01, value:0.35, unit:''      },
+  { id:'finalDriveRatio',    label:'Final Drive',    subsystem:'Transmission', min:1.0,  max:8.0,  step:0.1,  value:4.1,  unit:''      },
+  { id:'gearRatio1',         label:'Gear 1',         subsystem:'Transmission', min:0.5,  max:6.0,  step:0.05, value:3.5,  unit:''      },
+  { id:'gearRatio3',         label:'Gear 3',         subsystem:'Transmission', min:0.3,  max:3.0,  step:0.05, value:1.4,  unit:''      },
+  { id:'pacejkaB',           label:'Pacejka B',      subsystem:'Tires',        min:1,    max:30,   step:0.5,  value:10,   unit:''      },
+  { id:'peakSlipAngleDeg',   label:'Peak Slip °',    subsystem:'Tires',        min:2,    max:20,   step:0.5,  value:8,    unit:'°'     },
+  { id:'tireFrictionCoeff',  label:'Friction μ',     subsystem:'Tires',        min:0.3,  max:2.0,  step:0.05, value:1.0,  unit:''      },
+  { id:'wheelRadius',        label:'Wheel Radius',   subsystem:'Tires',        min:0.2,  max:0.6,  step:0.01, value:0.35, unit:'m'     },
+  { id:'carMassKg',          label:'Mass',           subsystem:'Physics',      min:600,  max:3000, step:50,   value:1200, unit:'kg'    },
+  { id:'aeroDragCoeff',      label:'Aero Drag',      subsystem:'Physics',      min:0.1,  max:1.0,  step:0.01, value:0.4,  unit:''      },
+  { id:'constraintDamping',  label:'Constraint Damp',subsystem:'Physics',      min:0.0,  max:1.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'cogHeight',          label:'CoG Height',     subsystem:'Suspension',   min:0.1,  max:2.0,  step:0.05, value:0.5,  unit:'m'     },
+  { id:'yawDamping',         label:'Yaw Damping',    subsystem:'Suspension',   min:0.0,  max:5.0,  step:0.1,  value:1.0,  unit:''      },
+  { id:'springStiffness',    label:'Spring Stiffness',subsystem:'Suspension',  min:1,    max:200,  step:1,    value:80,   unit:'N/m'   },
+  { id:'cameraOmega',        label:'Cam ω₀',         subsystem:'Camera',       min:0.5,  max:20.0, step:0.1,  value:2.2,  unit:'rad/s' },
+  { id:'cameraZeta',         label:'Cam ζ',          subsystem:'Camera',       min:0.1,  max:2.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'motionBlurSamples',  label:'Blur Samples',   subsystem:'Rendering',    min:1,    max:16,   step:1,    value:6,    unit:''      },
+  { id:'motionBlurIntensity',label:'Blur Intensity', subsystem:'Rendering',    min:0.0,  max:2.0,  step:0.1,  value:0.6,  unit:''      },
+  { id:'skidWidthMax',       label:'Skid Width',     subsystem:'Rendering',    min:0.1,  max:1.5,  step:0.01, value:0.47, unit:'m'     },
+  { id:'smokeSpawnRate',     label:'Smoke Rate',     subsystem:'Rendering',    min:5,    max:200,  step:5,    value:50,   unit:'/s'    },
+  { id:'masterVol',          label:'Master Volume',  subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0.5,  unit:''      },
+  { id:'exhaustBassGain',    label:'Exhaust Bass',   subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.35, unit:''      },
+  { id:'driftScreechGain',   label:'Drift Screech',  subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.55, unit:''      },
+  { id:'reverbMix',          label:'Reverb Mix',     subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0,    unit:''      },
+  { id:'steeringSelfCenter', label:'Self-Center',    subsystem:'Steering',     min:0,    max:30,   step:0.5,  value:5,    unit:'1/s'   },
+  { id:'maxFrontWheelAngle', label:'Max Steer',      subsystem:'Steering',     min:0.1,  max:1.2,  step:0.01, value:0.52, unit:'rad'   },
+];
+
+const SUBSYSTEMS = [...new Set(SLIDERS.map(s => s.subsystem))];
+let query = '';
+
+const fuse = new Fuse(SLIDERS, {
+  keys: [{ name:'label', weight:0.6 }, { name:'subsystem', weight:0.3 }, { name:'id', weight:0.1 }],
+  threshold: 0.4, includeScore: true, distance: 100
+});
+
+function fmt(v, step) {
+  if (step >= 1) return Math.round(v).toString();
+  if (step >= 0.1) return v.toFixed(1);
+  if (step >= 0.01) return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+function buildCards() {
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+  SUBSYSTEMS.forEach(sys => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.sys = sys;
+    const sysSl = SLIDERS.filter(s => s.subsystem === sys);
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-title">${sys.toUpperCase()}</span>
+        <span class="card-badge" id="cbadge-${sys}">${sysSl.length}</span>
+      </div>
+      <div class="card-sliders" id="csliders-${sys}"></div>
+      <div class="card-empty" id="cempty-${sys}">no matches</div>
+    `;
+    container.appendChild(card);
+    const sl = document.getElementById(`csliders-${sys}`);
+    sysSl.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'slider-row';
+      row.dataset.id = s.id;
+      row.style.overflow = 'hidden';
+      row.innerHTML = `
+        <div class="slider-top">
+          <span class="slider-label">${s.label}</span>
+          <span class="slider-value" id="cv-${s.id}">${fmt(s.value, s.step)}${s.unit}</span>
+        </div>
+        <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}">
+        <div class="range-ends"><span>${s.min}${s.unit}</span><span>${s.max}${s.unit}</span></div>
+      `;
+      sl.appendChild(row);
+      row.querySelector('input').addEventListener('input', e => {
+        s.value = parseFloat(e.target.value);
+        document.getElementById(`cv-${s.id}`).textContent = fmt(s.value, s.step) + s.unit;
+      });
+    });
+  });
+}
+
+function applyFilter() {
+  const matchIds = query
+    ? new Set(fuse.search(query).map(r => r.item.id))
+    : null;
+  let totalMatches = 0;
+
+  SUBSYSTEMS.forEach(sys => {
+    const card = document.querySelector(`.card[data-sys="${sys}"]`);
+    const rows = card.querySelectorAll('.slider-row');
+    const badge = document.getElementById(`cbadge-${sys}`);
+    const empty = document.getElementById(`cempty-${sys}`);
+    const sysSl = SLIDERS.filter(s => s.subsystem === sys);
+    const matched = matchIds ? sysSl.filter(s => matchIds.has(s.id)) : sysSl;
+
+    rows.forEach(row => {
+      const show = !matchIds || matchIds.has(row.dataset.id);
+      if (show) {
+        const nat = row._naturalHeight || 60;
+        gsap.to(row, { height: nat, opacity: 1, duration: 0.3, ease: 'power2.out',
+          onStart() { row.style.overflow = 'hidden'; },
+          onComplete() { row.style.height = 'auto'; row._naturalHeight = row.offsetHeight; }
+        });
+      } else {
+        if (!row._naturalHeight) row._naturalHeight = row.offsetHeight;
+        gsap.to(row, { height: 0, opacity: 0, duration: 0.18, ease: 'power2.in',
+          onComplete() { row.style.overflow = 'hidden'; }
+        });
+      }
+    });
+
+    const hasMatch = matched.length > 0;
+    card.classList.toggle('has-match', !!matchIds && hasMatch);
+    card.classList.toggle('no-match', !!matchIds && !hasMatch);
+    badge.textContent = matchIds ? `${matched.length}/${sysSl.length}` : sysSl.length;
+
+    if (matchIds && !hasMatch) {
+      empty.style.display = 'block';
+      gsap.fromTo(empty, { opacity: 0 }, { opacity: 1, duration: 0.2 });
+    } else {
+      gsap.to(empty, { opacity: 0, duration: 0.15, onComplete: () => empty.style.display = 'none' });
+    }
+
+    totalMatches += matched.length;
+  });
+
+  const rc = document.getElementById('resultCount');
+  if (matchIds) rc.innerHTML = `<b>${totalMatches}</b> / ${SLIDERS.length} sliders`;
+  else rc.innerHTML = '';
+}
+
+function getAutocorrect(q, results) {
+  if (q.length < 3 || results.length >= 4) return null;
+  const sf = new Fuse(SUBSYSTEMS, { threshold: 0.45 });
+  const m = sf.search(q)[0];
+  return m ? m.item : null;
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value.trim();
+  const allResults = query ? fuse.search(query) : [];
+  const ac = document.getElementById('autocorrect');
+  const suggestion = getAutocorrect(query, allResults);
+
+  if (suggestion) {
+    ac.style.display = 'inline';
+    ac.innerHTML = `Did you mean: <span>${suggestion}</span>?`;
+    gsap.fromTo(ac, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: 'back.out(1.7)' });
+    ac.querySelector('span').onclick = () => {
+      document.getElementById('search').value = suggestion;
+      query = suggestion;
+      ac.style.display = 'none';
+      applyFilter();
+    };
+  } else {
+    gsap.to(ac, { opacity: 0, duration: 0.12, onComplete: () => ac.style.display = 'none' });
+  }
+
+  applyFilter();
+});
+
+buildCards();
+// measure natural heights after render
+requestAnimationFrame(() => {
+  document.querySelectorAll('.slider-row').forEach(r => {
+    r._naturalHeight = r.offsetHeight;
+  });
+});
+</script>
+</body>
+</html>

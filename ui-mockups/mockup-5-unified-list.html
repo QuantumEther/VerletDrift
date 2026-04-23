@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift UI — Proposal 5: Unified List</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e13;
+  --bg-panel: #111820;
+  --bg-card: #182430;
+  --bg-input: #0d1520;
+  --accent: #e8c44a;
+  --accent-dim: rgba(232,196,74,0.1);
+  --cyan: #48d4e8;
+  --text: #d8eaf0;
+  --text-dim: #7a9aaa;
+  --border: rgba(255,255,255,0.08);
+  --font: 'SF Mono', 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+  --radius: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 12px; overflow: hidden; }
+
+.banner {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+}
+.banner-title { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+.banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
+.banner-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--cyan); white-space: nowrap; }
+
+details.meta { padding: 6px 24px; border-bottom: 1px solid var(--border); }
+summary { cursor: pointer; color: var(--text-dim); font-size: 11px; letter-spacing: 0.04em; user-select: none; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0; }
+.meta-col h4 { font-size: 10px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px; }
+.meta-col li { list-style: none; color: var(--text-dim); line-height: 1.7; font-size: 11px; }
+.meta-col li::before { content: '+  '; color: var(--cyan); }
+.meta-col:last-child li::before { content: '−  '; color: #e87b4a; }
+
+/* ── search bar ── */
+.search-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.search-row { display: flex; align-items: center; gap: 8px; }
+.search-wrap { position: relative; flex: 1; max-width: 520px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+#search {
+  width: 100%;
+  padding: 9px 36px 9px 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search:focus { border-color: rgba(232,196,74,0.4); }
+#search::placeholder { color: var(--text-dim); }
+#clearBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: color 0.15s;
+}
+#clearBtn:hover { color: var(--text); }
+#clearBtn.visible { opacity: 1; pointer-events: all; }
+.result-info { font-size: 11px; color: var(--text-dim); }
+.result-info b { color: var(--accent); }
+#autocorrect {
+  display: none;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+#autocorrect span { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+/* ── list container ── */
+.list-container {
+  height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+.list-container::-webkit-scrollbar { width: 4px; }
+.list-container::-webkit-scrollbar-track { background: transparent; }
+.list-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── section ── */
+.section { border-bottom: 1px solid var(--border); }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  cursor: pointer;
+  background: var(--bg-panel);
+  user-select: none;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.section-header:hover { background: rgba(255,255,255,0.02); }
+.section-left { display: flex; align-items: center; gap: 10px; }
+.section-name {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.section-count {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-dim);
+}
+.section.has-match .section-count { background: var(--accent); color: #000; }
+.section-arrow {
+  font-size: 9px;
+  color: var(--text-dim);
+  transition: transform 0.25s ease;
+}
+.section-header.collapsed .section-arrow { transform: rotate(-90deg); }
+
+.section-body { overflow: hidden; }
+
+/* ── slider row ── */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-left-color 0.3s;
+  border-left: 2px solid transparent;
+}
+.slider-row:last-child { border-bottom: none; }
+.slider-row.match-highlight { border-left-color: var(--accent); }
+.slider-row.focused { background: rgba(232,196,74,0.04); }
+
+.slider-label {
+  width: 160px;
+  min-width: 160px;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slider-label mark {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.slider-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 3px;
+  background: var(--bg-card);
+  border-radius: 2px; outline: none; border: 1px solid var(--border); cursor: pointer;
+}
+input[type="range"]:focus { outline: none; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:focus::-webkit-slider-thumb { transform: scale(1.25); }
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+.slider-value {
+  width: 68px;
+  text-align: right;
+  font-size: 11px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.subsys-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba(72,212,232,0.08);
+  border: 1px solid rgba(72,212,232,0.15);
+  color: var(--cyan);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: none; /* only shown during search */
+}
+.slider-row.cross-section .subsys-badge { display: block; }
+
+/* ── empty state ── */
+.global-empty {
+  display: none;
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <span class="banner-title">PROPOSAL 5 — UNIFIED LIST</span>
+  <span class="banner-desc">All sliders in a single scrollable list, grouped under collapsible subsystem headers. Search filters the entire list — matched rows are highlighted with a gold left-border, unmatched rows collapse, empty sections fold automatically. The simplest mental model: everything is in one place.</span>
+  <span class="banner-tag">Best for: power users, name-based search</span>
+</div>
+
+<details class="meta">
+  <summary>▸ Pros / Cons</summary>
+  <div class="meta-grid">
+    <div class="meta-col">
+      <h4>PROS</h4>
+      <ul>
+        <li>Simplest mental model — one list, one search</li>
+        <li>No mode-switching or tab navigation needed</li>
+        <li>Keyboard ↑↓ navigation feels natural</li>
+        <li>Autocorrect surfaced inline, not in a dialog</li>
+      </ul>
+    </div>
+    <div class="meta-col">
+      <h4>CONS</h4>
+      <ul>
+        <li>Long scroll even with sections collapsed</li>
+        <li>No spatial memory — everything is text</li>
+        <li>Search becomes essential, not optional</li>
+        <li>Sticky section headers stack visually when scrolling</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<div class="search-bar">
+  <div class="search-row">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search" placeholder="Search all sliders… (try 'torque', 'blur', or 'camra' for autocorrect)">
+      <button id="clearBtn" title="Clear search">✕</button>
+    </div>
+    <div class="result-info" id="resultInfo"></div>
+  </div>
+  <div id="autocorrect"></div>
+</div>
+
+<div class="list-container" id="listContainer">
+  <div class="global-empty" id="globalEmpty">
+    No sliders found for "<span id="emptyQuery"></span>"
+  </div>
+</div>
+
+<script>
+const SLIDERS = [
+  { id:'peakEngineTorqueNm', label:'Peak Torque',    subsystem:'Engine',       min:50,   max:2000, step:10,   value:350,  unit:'Nm'    },
+  { id:'redlineRpm',         label:'Redline RPM',    subsystem:'Engine',       min:4000, max:10000,step:100,  value:7000, unit:'RPM'   },
+  { id:'idleRpm',            label:'Idle RPM',       subsystem:'Engine',       min:400,  max:1500, step:50,   value:800,  unit:'RPM'   },
+  { id:'cylinderCount',      label:'Cylinders',      subsystem:'Engine',       min:1,    max:16,   step:1,    value:12,   unit:''      },
+  { id:'clutchBitePoint',    label:'Bite Point',     subsystem:'Transmission', min:0.05, max:0.85, step:0.01, value:0.35, unit:''      },
+  { id:'finalDriveRatio',    label:'Final Drive',    subsystem:'Transmission', min:1.0,  max:8.0,  step:0.1,  value:4.1,  unit:''      },
+  { id:'gearRatio1',         label:'Gear 1',         subsystem:'Transmission', min:0.5,  max:6.0,  step:0.05, value:3.5,  unit:''      },
+  { id:'gearRatio3',         label:'Gear 3',         subsystem:'Transmission', min:0.3,  max:3.0,  step:0.05, value:1.4,  unit:''      },
+  { id:'pacejkaB',           label:'Pacejka B',      subsystem:'Tires',        min:1,    max:30,   step:0.5,  value:10,   unit:''      },
+  { id:'peakSlipAngleDeg',   label:'Peak Slip °',    subsystem:'Tires',        min:2,    max:20,   step:0.5,  value:8,    unit:'°'     },
+  { id:'tireFrictionCoeff',  label:'Friction μ',     subsystem:'Tires',        min:0.3,  max:2.0,  step:0.05, value:1.0,  unit:''      },
+  { id:'wheelRadius',        label:'Wheel Radius',   subsystem:'Tires',        min:0.2,  max:0.6,  step:0.01, value:0.35, unit:'m'     },
+  { id:'carMassKg',          label:'Mass',           subsystem:'Physics',      min:600,  max:3000, step:50,   value:1200, unit:'kg'    },
+  { id:'aeroDragCoeff',      label:'Aero Drag',      subsystem:'Physics',      min:0.1,  max:1.0,  step:0.01, value:0.4,  unit:''      },
+  { id:'constraintDamping',  label:'Constraint Damp',subsystem:'Physics',      min:0.0,  max:1.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'cogHeight',          label:'CoG Height',     subsystem:'Suspension',   min:0.1,  max:2.0,  step:0.05, value:0.5,  unit:'m'     },
+  { id:'yawDamping',         label:'Yaw Damping',    subsystem:'Suspension',   min:0.0,  max:5.0,  step:0.1,  value:1.0,  unit:''      },
+  { id:'springStiffness',    label:'Spring Stiffness',subsystem:'Suspension',  min:1,    max:200,  step:1,    value:80,   unit:'N/m'   },
+  { id:'cameraOmega',        label:'Cam ω₀',         subsystem:'Camera',       min:0.5,  max:20.0, step:0.1,  value:2.2,  unit:'rad/s' },
+  { id:'cameraZeta',         label:'Cam ζ',          subsystem:'Camera',       min:0.1,  max:2.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'motionBlurSamples',  label:'Blur Samples',   subsystem:'Rendering',    min:1,    max:16,   step:1,    value:6,    unit:''      },
+  { id:'motionBlurIntensity',label:'Blur Intensity', subsystem:'Rendering',    min:0.0,  max:2.0,  step:0.1,  value:0.6,  unit:''      },
+  { id:'skidWidthMax',       label:'Skid Width',     subsystem:'Rendering',    min:0.1,  max:1.5,  step:0.01, value:0.47, unit:'m'     },
+  { id:'smokeSpawnRate',     label:'Smoke Rate',     subsystem:'Rendering',    min:5,    max:200,  step:5,    value:50,   unit:'/s'    },
+  { id:'masterVol',          label:'Master Volume',  subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0.5,  unit:''      },
+  { id:'exhaustBassGain',    label:'Exhaust Bass',   subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.35, unit:''      },
+  { id:'driftScreechGain',   label:'Drift Screech',  subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.55, unit:''      },
+  { id:'reverbMix',          label:'Reverb Mix',     subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0,    unit:''      },
+  { id:'steeringSelfCenter', label:'Self-Center',    subsystem:'Steering',     min:0,    max:30,   step:0.5,  value:5,    unit:'1/s'   },
+  { id:'maxFrontWheelAngle', label:'Max Steer',      subsystem:'Steering',     min:0.1,  max:1.2,  step:0.01, value:0.52, unit:'rad'   },
+];
+
+const SUBSYSTEMS = [...new Set(SLIDERS.map(s => s.subsystem))];
+let query = '';
+let sectionCollapsed = {};
+let focusedIdx = -1;
+let visibleRows = [];
+
+const fuse = new Fuse(SLIDERS, {
+  keys: [{ name:'label', weight:0.6 }, { name:'subsystem', weight:0.3 }, { name:'id', weight:0.1 }],
+  threshold: 0.4, includeScore: true, distance: 100
+});
+
+function fmt(v, step) {
+  if (step >= 1) return Math.round(v).toString();
+  if (step >= 0.1) return v.toFixed(1);
+  if (step >= 0.01) return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+// ── Build list ──────────────────────────────────────
+
+function buildList() {
+  const container = document.getElementById('listContainer');
+  // remove existing sections
+  container.querySelectorAll('.section').forEach(s => s.remove());
+
+  SUBSYSTEMS.forEach(sys => {
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.dataset.sys = sys;
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.dataset.sys = sys;
+    const count = SLIDERS.filter(s => s.subsystem === sys).length;
+    header.innerHTML = `
+      <div class="section-left">
+        <span class="section-name">${sys.toUpperCase()}</span>
+        <span class="section-count" id="sc-${sys}">${count}</span>
+      </div>
+      <span class="section-arrow">▾</span>
+    `;
+    header.addEventListener('click', () => toggleSection(sys));
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+    body.dataset.sysbody = sys;
+
+    SLIDERS.filter(s => s.subsystem === sys).forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'slider-row';
+      row.dataset.id = s.id;
+      row.dataset.sys = sys;
+      row.tabIndex = 0;
+      row.innerHTML = `
+        <span class="slider-label" id="lbl-${s.id}">${s.label}</span>
+        <div class="slider-wrap">
+          <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}" id="r-${s.id}">
+          <div class="range-ends"><span>${s.min}${s.unit}</span><span>${s.max}${s.unit}</span></div>
+        </div>
+        <span class="slider-value" id="v-${s.id}">${fmt(s.value, s.step)}${s.unit}</span>
+        <span class="subsys-badge">${sys}</span>
+      `;
+      body.appendChild(row);
+
+      row.querySelector('input').addEventListener('input', e => {
+        s.value = parseFloat(e.target.value);
+        document.getElementById(`v-${s.id}`).textContent = fmt(s.value, s.step) + s.unit;
+      });
+      row.addEventListener('focus', () => row.classList.add('focused'));
+      row.addEventListener('blur', () => row.classList.remove('focused'));
+    });
+
+    section.appendChild(header);
+    section.appendChild(body);
+    container.appendChild(section);
+  });
+}
+
+function toggleSection(sys) {
+  const body = document.querySelector(`[data-sysbody="${sys}"]`);
+  const header = document.querySelector(`.section-header[data-sys="${sys}"]`);
+  if (!body) return;
+  const collapsed = sectionCollapsed[sys];
+  if (collapsed) {
+    sectionCollapsed[sys] = false;
+    header.classList.remove('collapsed');
+    const nat = body._naturalHeight || body.scrollHeight;
+    gsap.fromTo(body, { height: 0 }, { height: nat, duration: 0.45, ease: 'back.out(1.3)',
+      onComplete: () => { body.style.height = 'auto'; }
+    });
+  } else {
+    sectionCollapsed[sys] = true;
+    body._naturalHeight = body.scrollHeight;
+    header.classList.add('collapsed');
+    gsap.to(body, { height: 0, duration: 0.3, ease: 'power2.inOut' });
+  }
+}
+
+// ── Filter ──────────────────────────────────────────
+
+function applyFilter() {
+  const matchIds = query
+    ? new Set(fuse.search(query).map(r => r.item.id))
+    : null;
+
+  let totalMatches = 0;
+  visibleRows = [];
+
+  SUBSYSTEMS.forEach(sys => {
+    const section = document.querySelector(`.section[data-sys="${sys}"]`);
+    const body = document.querySelector(`[data-sysbody="${sys}"]`);
+    const header = document.querySelector(`.section-header[data-sys="${sys}"]`);
+    const countEl = document.getElementById(`sc-${sys}`);
+    const rows = body.querySelectorAll('.slider-row');
+    const sysSl = SLIDERS.filter(s => s.subsystem === sys);
+    const matched = matchIds ? sysSl.filter(s => matchIds.has(s.id)) : sysSl;
+
+    rows.forEach(row => {
+      const isMatch = !matchIds || matchIds.has(row.dataset.id);
+      row.classList.toggle('cross-section', !!matchIds);
+
+      if (isMatch) {
+        if (!row._naturalHeight) row._naturalHeight = row.offsetHeight;
+        gsap.to(row, { height: row._naturalHeight || 40, opacity: 1, duration: 0.28, ease: 'power2.out',
+          onComplete: () => { row.style.height = 'auto'; }
+        });
+        // highlight matched
+        if (matchIds) {
+          row.classList.add('match-highlight');
+        } else {
+          row.classList.remove('match-highlight');
+        }
+        visibleRows.push(row);
+      } else {
+        if (!row._naturalHeight) row._naturalHeight = row.offsetHeight;
+        gsap.to(row, { height: 0, opacity: 0, duration: 0.16, ease: 'power2.in' });
+        row.classList.remove('match-highlight');
+      }
+    });
+
+    totalMatches += matched.length;
+    const hasMatch = matched.length > 0;
+    section.classList.toggle('has-match', !!matchIds && hasMatch);
+    countEl.textContent = matchIds ? `${matched.length}/${sysSl.length}` : sysSl.length;
+
+    // auto-collapse empty sections during search
+    if (matchIds && !hasMatch) {
+      if (!sectionCollapsed[sys]) {
+        sectionCollapsed[sys] = true;
+        header.classList.add('collapsed');
+        if (!body._naturalHeight) body._naturalHeight = body.scrollHeight;
+        gsap.to(body, { height: 0, duration: 0.25, ease: 'power2.inOut' });
+      }
+    } else if (matchIds && hasMatch && sectionCollapsed[sys]) {
+      sectionCollapsed[sys] = false;
+      header.classList.remove('collapsed');
+      const nat = body._naturalHeight || body.scrollHeight;
+      gsap.fromTo(body, { height: 0 }, { height: nat, duration: 0.35, ease: 'power2.out',
+        onComplete: () => { body.style.height = 'auto'; }
+      });
+    } else if (!matchIds && sectionCollapsed[sys]) {
+      // reset section if not manually collapsed
+    }
+  });
+
+  const ri = document.getElementById('resultInfo');
+  const empty = document.getElementById('globalEmpty');
+
+  if (matchIds && totalMatches === 0) {
+    ri.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('emptyQuery').textContent = query;
+    gsap.fromTo(empty, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+  } else {
+    empty.style.display = 'none';
+    if (matchIds) ri.innerHTML = `<b>${totalMatches}</b> / ${SLIDERS.length}`;
+    else ri.innerHTML = `${SLIDERS.length} sliders`;
+  }
+
+  focusedIdx = -1;
+}
+
+// ── Autocorrect ─────────────────────────────────────
+
+const sysFuse = new Fuse(SUBSYSTEMS, { threshold: 0.5 });
+
+function getAutocorrect(q, results) {
+  if (q.length < 3 || results.length >= 4) return null;
+  const sm = sysFuse.search(q)[0];
+  return sm ? sm.item : null;
+}
+
+// ── Search input ────────────────────────────────────
+
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value.trim();
+  const clearBtn = document.getElementById('clearBtn');
+  clearBtn.classList.toggle('visible', query.length > 0);
+
+  const allResults = query ? fuse.search(query) : [];
+  const ac = document.getElementById('autocorrect');
+  const suggestion = getAutocorrect(query, allResults);
+
+  if (suggestion && query) {
+    ac.style.display = 'block';
+    ac.innerHTML = `Did you mean: <span id="acLink">${suggestion}</span>?`;
+    gsap.fromTo(ac, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: 'back.out(1.7)' });
+    document.getElementById('acLink').onclick = () => {
+      const inp = document.getElementById('search');
+      inp.value = suggestion;
+      query = suggestion;
+      ac.style.display = 'none';
+      document.getElementById('clearBtn').classList.add('visible');
+      applyFilter();
+    };
+  } else {
+    gsap.to(ac, { opacity: 0, duration: 0.12, onComplete: () => ac.style.display = 'none' });
+  }
+
+  applyFilter();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('search').value = '';
+  query = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  document.getElementById('autocorrect').style.display = 'none';
+  applyFilter();
+});
+
+// ── Keyboard navigation ─────────────────────────────
+
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    focusedIdx = Math.min(focusedIdx + 1, visibleRows.length - 1);
+    if (visibleRows[focusedIdx]) {
+      visibleRows[focusedIdx].focus();
+      visibleRows[focusedIdx].scrollIntoView({ block: 'nearest' });
+    }
+  }
+});
+
+document.getElementById('listContainer').addEventListener('keydown', e => {
+  const row = e.target.closest('.slider-row');
+  if (!row) return;
+  const idx = visibleRows.indexOf(row);
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = visibleRows[idx + 1];
+    if (next) { next.focus(); next.scrollIntoView({ block: 'nearest' }); }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (idx === 0) {
+      document.getElementById('search').focus();
+    } else {
+      const prev = visibleRows[idx - 1];
+      if (prev) { prev.focus(); prev.scrollIntoView({ block: 'nearest' }); }
+    }
+  } else if (e.key === 'Enter') {
+    const input = row.querySelector('input[type="range"]');
+    if (input) input.focus();
+  }
+});
+
+// ── Init ─────────────────────────────────────────────
+
+buildList();
+requestAnimationFrame(() => {
+  document.querySelectorAll('.slider-row').forEach(r => { r._naturalHeight = r.offsetHeight; });
+  document.querySelectorAll('.section-body').forEach(b => { b._naturalHeight = b.scrollHeight; });
+  applyFilter();
+});
+</script>
+</body>
+</html>

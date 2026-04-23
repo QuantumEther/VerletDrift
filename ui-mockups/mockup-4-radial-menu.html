@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift UI — Proposal 4: Radial Menu</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e13;
+  --bg-panel: #111820;
+  --bg-card: #182430;
+  --bg-input: #0d1520;
+  --accent: #e8c44a;
+  --accent-dim: rgba(232,196,74,0.12);
+  --cyan: #48d4e8;
+  --text: #d8eaf0;
+  --text-dim: #7a9aaa;
+  --border: rgba(255,255,255,0.08);
+  --font: 'SF Mono', 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+  --radius: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 12px; overflow: hidden; }
+
+.banner {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+}
+.banner-title { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+.banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
+.banner-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--cyan); white-space: nowrap; }
+
+details.meta { padding: 6px 24px; border-bottom: 1px solid var(--border); }
+summary { cursor: pointer; color: var(--text-dim); font-size: 11px; letter-spacing: 0.04em; user-select: none; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0; }
+.meta-col h4 { font-size: 10px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px; }
+.meta-col li { list-style: none; color: var(--text-dim); line-height: 1.7; font-size: 11px; }
+.meta-col li::before { content: '+  '; color: var(--cyan); }
+.meta-col:last-child li::before { content: '−  '; color: #e87b4a; }
+
+/* ── main area ── */
+.main-area {
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ── global search ── */
+.global-search {
+  padding: 14px 0 10px;
+  width: 320px;
+  flex-shrink: 0;
+}
+.search-wrap { position: relative; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+#search {
+  width: 100%;
+  padding: 9px 10px 9px 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  text-align: center;
+}
+#search:focus { border-color: rgba(232,196,74,0.4); }
+#search::placeholder { color: var(--text-dim); }
+#autocorrect {
+  display: none;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 5px;
+}
+#autocorrect span { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+/* ── radial stage ── */
+.radial-stage {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── hub ── */
+.hub {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  transition: border-color 0.2s;
+}
+.hub:hover { border-color: var(--accent); }
+.hub-icon { font-size: 18px; line-height: 1; }
+.hub-label { font-size: 8px; color: var(--text-dim); letter-spacing: 0.06em; margin-top: 2px; }
+
+/* ── subsystem node ── */
+.sys-node {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  user-select: none;
+  transform: scale(0);
+  opacity: 0;
+}
+.sys-node:hover { border-color: var(--accent); }
+.sys-node.highlighted { border-color: var(--accent); background: var(--accent-dim); }
+.sys-icon { font-size: 18px; line-height: 1; }
+.sys-label { font-size: 8px; color: var(--text-dim); letter-spacing: 0.04em; margin-top: 3px; text-align: center; line-height: 1.2; }
+.sys-node:hover .sys-label { color: var(--accent); }
+.sys-node.highlighted .sys-label { color: var(--accent); }
+
+/* ── modal overlay ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  display: none;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  position: fixed;
+  width: 320px;
+  max-height: 60vh;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  z-index: 101;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+.modal.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.modal-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.modal-title { font-size: 13px; letter-spacing: 0.06em; color: var(--text); }
+.modal-subtitle { font-size: 10px; color: var(--text-dim); }
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-search {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-search input {
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 11px;
+  outline: none;
+}
+.modal-search input:focus { border-color: rgba(232,196,74,0.4); }
+.modal-search input::placeholder { color: var(--text-dim); }
+.modal-sliders {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.modal-sliders::-webkit-scrollbar { width: 3px; }
+.modal-sliders::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── slider row (modal) ── */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.slider-row:last-child { border-bottom: none; }
+.slider-label { width: 140px; min-width: 140px; font-size: 11px; color: var(--text); }
+.slider-wrap { flex: 1; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 3px;
+  background: var(--bg-card);
+  border-radius: 2px; outline: none; border: 1px solid var(--border); cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; transition: transform 0.12s;
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.25); }
+.slider-value { width: 60px; text-align: right; font-size: 11px; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+.modal-empty {
+  padding: 24px 18px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 11px;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <span class="banner-title">PROPOSAL 4 — RADIAL MENU</span>
+  <span class="banner-desc">Subsystem nodes radiate from a central hub. Click any node to open a modal sheet from the bottom with that subsystem's sliders. Global search above the hub highlights matching nodes and auto-opens the best match. Experimental — prioritizes discovery over speed.</span>
+  <span class="banner-tag">Best for: exploration &amp; onboarding</span>
+</div>
+
+<details class="meta">
+  <summary>▸ Pros / Cons</summary>
+  <div class="meta-grid">
+    <div class="meta-col">
+      <h4>PROS</h4>
+      <ul>
+        <li>Visually distinctive, feels intentional</li>
+        <li>Subsystem selection is explicit and spatial</li>
+        <li>Modal focuses attention — no distraction</li>
+        <li>Global search highlights matching subsystems</li>
+      </ul>
+    </div>
+    <div class="meta-col">
+      <h4>CONS</h4>
+      <ul>
+        <li>Two-step access to any slider (click node, then slider)</li>
+        <li>Radial layout has high mouse travel distance</li>
+        <li>Modal hides the game viewport during tuning</li>
+        <li>Node labels truncate on small circles</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<div class="main-area">
+  <div class="global-search">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search" placeholder="Search subsystems…">
+    </div>
+    <div id="autocorrect"></div>
+  </div>
+  <div class="radial-stage" id="radialStage">
+    <div class="hub" id="hub">
+      <span class="hub-icon">⚡</span>
+      <span class="hub-label">PARAMS</span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="overlay"></div>
+<div class="modal" id="modal">
+  <div class="modal-header">
+    <div>
+      <div class="modal-title" id="modalTitle">Engine</div>
+      <div class="modal-subtitle" id="modalSubtitle">4 parameters</div>
+    </div>
+    <button class="modal-close" id="modalClose">✕</button>
+  </div>
+  <div class="modal-search">
+    <input type="text" id="modalSearch" placeholder="Filter within this subsystem…">
+  </div>
+  <div class="modal-sliders" id="modalSliders"></div>
+  <div class="modal-empty" id="modalEmpty">No matching sliders</div>
+</div>
+
+<script>
+const SLIDERS = [
+  { id:'peakEngineTorqueNm', label:'Peak Torque',    subsystem:'Engine',       min:50,   max:2000, step:10,   value:350,  unit:'Nm'    },
+  { id:'redlineRpm',         label:'Redline RPM',    subsystem:'Engine',       min:4000, max:10000,step:100,  value:7000, unit:'RPM'   },
+  { id:'idleRpm',            label:'Idle RPM',       subsystem:'Engine',       min:400,  max:1500, step:50,   value:800,  unit:'RPM'   },
+  { id:'cylinderCount',      label:'Cylinders',      subsystem:'Engine',       min:1,    max:16,   step:1,    value:12,   unit:''      },
+  { id:'clutchBitePoint',    label:'Bite Point',     subsystem:'Transmission', min:0.05, max:0.85, step:0.01, value:0.35, unit:''      },
+  { id:'finalDriveRatio',    label:'Final Drive',    subsystem:'Transmission', min:1.0,  max:8.0,  step:0.1,  value:4.1,  unit:''      },
+  { id:'gearRatio1',         label:'Gear 1',         subsystem:'Transmission', min:0.5,  max:6.0,  step:0.05, value:3.5,  unit:''      },
+  { id:'gearRatio3',         label:'Gear 3',         subsystem:'Transmission', min:0.3,  max:3.0,  step:0.05, value:1.4,  unit:''      },
+  { id:'pacejkaB',           label:'Pacejka B',      subsystem:'Tires',        min:1,    max:30,   step:0.5,  value:10,   unit:''      },
+  { id:'peakSlipAngleDeg',   label:'Peak Slip °',    subsystem:'Tires',        min:2,    max:20,   step:0.5,  value:8,    unit:'°'     },
+  { id:'tireFrictionCoeff',  label:'Friction μ',     subsystem:'Tires',        min:0.3,  max:2.0,  step:0.05, value:1.0,  unit:''      },
+  { id:'wheelRadius',        label:'Wheel Radius',   subsystem:'Tires',        min:0.2,  max:0.6,  step:0.01, value:0.35, unit:'m'     },
+  { id:'carMassKg',          label:'Mass',           subsystem:'Physics',      min:600,  max:3000, step:50,   value:1200, unit:'kg'    },
+  { id:'aeroDragCoeff',      label:'Aero Drag',      subsystem:'Physics',      min:0.1,  max:1.0,  step:0.01, value:0.4,  unit:''      },
+  { id:'constraintDamping',  label:'Constraint Damp',subsystem:'Physics',      min:0.0,  max:1.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'cogHeight',          label:'CoG Height',     subsystem:'Suspension',   min:0.1,  max:2.0,  step:0.05, value:0.5,  unit:'m'     },
+  { id:'yawDamping',         label:'Yaw Damping',    subsystem:'Suspension',   min:0.0,  max:5.0,  step:0.1,  value:1.0,  unit:''      },
+  { id:'springStiffness',    label:'Spring Stiffness',subsystem:'Suspension',  min:1,    max:200,  step:1,    value:80,   unit:'N/m'   },
+  { id:'cameraOmega',        label:'Cam ω₀',         subsystem:'Camera',       min:0.5,  max:20.0, step:0.1,  value:2.2,  unit:'rad/s' },
+  { id:'cameraZeta',         label:'Cam ζ',          subsystem:'Camera',       min:0.1,  max:2.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'motionBlurSamples',  label:'Blur Samples',   subsystem:'Rendering',    min:1,    max:16,   step:1,    value:6,    unit:''      },
+  { id:'motionBlurIntensity',label:'Blur Intensity', subsystem:'Rendering',    min:0.0,  max:2.0,  step:0.1,  value:0.6,  unit:''      },
+  { id:'skidWidthMax',       label:'Skid Width',     subsystem:'Rendering',    min:0.1,  max:1.5,  step:0.01, value:0.47, unit:'m'     },
+  { id:'smokeSpawnRate',     label:'Smoke Rate',     subsystem:'Rendering',    min:5,    max:200,  step:5,    value:50,   unit:'/s'    },
+  { id:'masterVol',          label:'Master Volume',  subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0.5,  unit:''      },
+  { id:'exhaustBassGain',    label:'Exhaust Bass',   subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.35, unit:''      },
+  { id:'driftScreechGain',   label:'Drift Screech',  subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.55, unit:''      },
+  { id:'reverbMix',          label:'Reverb Mix',     subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0,    unit:''      },
+  { id:'steeringSelfCenter', label:'Self-Center',    subsystem:'Steering',     min:0,    max:30,   step:0.5,  value:5,    unit:'1/s'   },
+  { id:'maxFrontWheelAngle', label:'Max Steer',      subsystem:'Steering',     min:0.1,  max:1.2,  step:0.01, value:0.52, unit:'rad'   },
+];
+
+const SUBSYSTEMS = [...new Set(SLIDERS.map(s => s.subsystem))];
+const SYS_ICONS = { Engine:'⚙', Transmission:'🔧', Tires:'◎', Physics:'⬡', Suspension:'⊙', Camera:'◈', Rendering:'◻', Audio:'◁', Steering:'⊕' };
+
+const fuse = new Fuse(SLIDERS, {
+  keys: [{ name:'label', weight:0.6 }, { name:'subsystem', weight:0.3 }, { name:'id', weight:0.1 }],
+  threshold: 0.4, includeScore: true, distance: 100
+});
+
+function fmt(v, step) {
+  if (step >= 1) return Math.round(v).toString();
+  if (step >= 0.1) return v.toFixed(1);
+  if (step >= 0.01) return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+// ── Build radial nodes ──────────────────────────────
+
+const stage = document.getElementById('radialStage');
+const nodes = {};
+const RADIUS = 140;
+
+SUBSYSTEMS.forEach((sys, i) => {
+  const angle = (i / SUBSYSTEMS.length) * Math.PI * 2 - Math.PI / 2;
+  const cx = Math.cos(angle) * RADIUS;
+  const cy = Math.sin(angle) * RADIUS;
+  const node = document.createElement('div');
+  node.className = 'sys-node';
+  node.dataset.sys = sys;
+  node.style.left = `calc(50% + ${cx}px - 34px)`;
+  node.style.top = `calc(50% + ${cy}px - 34px)`;
+  node.innerHTML = `<span class="sys-icon">${SYS_ICONS[sys] || '◆'}</span><span class="sys-label">${sys}</span>`;
+  node.addEventListener('click', () => openModal(sys));
+  stage.appendChild(node);
+  nodes[sys] = node;
+});
+
+// Initially hide nodes, show on hub click
+const nodesList = Object.values(nodes);
+nodesList.forEach(n => { n.style.pointerEvents = 'none'; });
+
+let nodesVisible = false;
+
+// Hub toggle functionality
+document.getElementById('hub').addEventListener('click', () => {
+  nodesVisible = !nodesVisible;
+  if (nodesVisible) {
+    nodesList.forEach(n => { n.style.pointerEvents = 'auto'; });
+    gsap.to(nodesList, {
+      scale: 1, opacity: 1,
+      duration: 0.4, stagger: 0.05, ease: 'back.out(2)'
+    });
+  } else {
+    gsap.to(nodesList, {
+      scale: 0, opacity: 0,
+      duration: 0.3, stagger: -0.04, ease: 'back.in(1.5)',
+      onComplete: () => { nodesList.forEach(n => { n.style.pointerEvents = 'none'; }); }
+    });
+  }
+});
+
+// ── Modal ──────────────────────────────────────────
+
+let currentSys = null;
+let modalQuery = '';
+let modalFuse = null;
+let clickedNode = null;
+
+function openModal(sys) {
+  currentSys = sys;
+  modalQuery = '';
+  clickedNode = nodes[sys];
+  document.getElementById('modalSearch').value = '';
+  document.getElementById('modalTitle').textContent = sys;
+  const count = SLIDERS.filter(s => s.subsystem === sys).length;
+  document.getElementById('modalSubtitle').textContent = `${count} parameters`;
+
+  renderModalSliders();
+
+  const overlay = document.getElementById('overlay');
+  const modal = document.getElementById('modal');
+  overlay.style.display = 'block';
+  modal.classList.add('active');
+  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.2 });
+
+  // Position modal adjacent to clicked node
+  positionModalAdjacentToNode(sys);
+
+  gsap.fromTo(modal, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.4)' });
+}
+
+function positionModalAdjacentToNode(sys) {
+  const node = nodes[sys];
+  const modal = document.getElementById('modal');
+  if (!node) return;
+
+  const nodeRect = node.getBoundingClientRect();
+  const nodeX = nodeRect.left + nodeRect.width / 2;
+  const nodeY = nodeRect.top + nodeRect.height / 2;
+
+  const modalW = 320;
+  const modalH = modal.offsetHeight || 400;
+  const gap = 16;
+
+  let left, top;
+
+  // Try positioning to the right first
+  if (nodeX + nodeRect.width / 2 + gap + modalW < window.innerWidth) {
+    left = nodeX + nodeRect.width / 2 + gap;
+  } else {
+    // Otherwise position to the left
+    left = nodeX - nodeRect.width / 2 - gap - modalW;
+  }
+
+  // Vertical center, but keep within bounds
+  top = Math.max(60, Math.min(nodeY - modalH / 2, window.innerHeight - modalH - 60));
+
+  // Clamp horizontal
+  left = Math.max(10, Math.min(left, window.innerWidth - modalW - 10));
+
+  modal.style.left = left + 'px';
+  modal.style.top = top + 'px';
+}
+
+function closeModal() {
+  const overlay = document.getElementById('overlay');
+  const modal = document.getElementById('modal');
+  modal.classList.remove('active');
+  gsap.to(modal, { scale: 0.85, opacity: 0, duration: 0.25, ease: 'back.in(1.2)' });
+  gsap.to(overlay, { opacity: 0, duration: 0.2, onComplete: () => overlay.style.display = 'none' });
+  currentSys = null;
+  clickedNode = null;
+}
+
+function renderModalSliders() {
+  const container = document.getElementById('modalSliders');
+  const empty = document.getElementById('modalEmpty');
+  container.innerHTML = '';
+
+  const sysSl = SLIDERS.filter(s => s.subsystem === currentSys);
+  modalFuse = new Fuse(sysSl, {
+    keys: [{ name:'label', weight:0.7 }, { name:'id', weight:0.3 }],
+    threshold: 0.4, includeScore: true
+  });
+
+  const visible = modalQuery ? modalFuse.search(modalQuery).map(r => r.item) : sysSl;
+
+  if (visible.length === 0) {
+    empty.style.display = 'block';
+    gsap.fromTo(empty, { opacity: 0 }, { opacity: 1, duration: 0.2 });
+    return;
+  }
+  empty.style.display = 'none';
+
+  visible.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.dataset.id = s.id;
+    row.innerHTML = `
+      <span class="slider-label">${s.label}</span>
+      <div class="slider-wrap">
+        <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}">
+      </div>
+      <span class="slider-value" id="mv-${s.id}">${fmt(s.value, s.step)}${s.unit}</span>
+    `;
+    container.appendChild(row);
+    row.querySelector('input').addEventListener('input', e => {
+      s.value = parseFloat(e.target.value);
+      document.getElementById(`mv-${s.id}`).textContent = fmt(s.value, s.step) + s.unit;
+    });
+  });
+
+  gsap.fromTo(container.querySelectorAll('.slider-row'),
+    { opacity: 0, y: 8 },
+    { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out' }
+  );
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', closeModal);
+
+document.getElementById('modalSearch').addEventListener('input', e => {
+  modalQuery = e.target.value.trim();
+  renderModalSliders();
+});
+
+// ── Global search: highlight nodes ──────────────────
+
+const sysFuse = new Fuse(SUBSYSTEMS, { threshold: 0.5 });
+
+function getAutocorrect(q, results) {
+  if (q.length < 3 || results.length >= 4) return null;
+  const m = sysFuse.search(q)[0];
+  return m ? m.item : null;
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  const allResults = q ? fuse.search(q) : [];
+  const ac = document.getElementById('autocorrect');
+  const suggestion = getAutocorrect(q, allResults);
+
+  if (suggestion) {
+    ac.style.display = 'block';
+    ac.innerHTML = `Did you mean: <span>${suggestion}</span>?`;
+    gsap.fromTo(ac, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: 'back.out(1.7)' });
+    ac.querySelector('span').onclick = () => {
+      document.getElementById('search').value = suggestion;
+      ac.style.display = 'none';
+      openModal(suggestion);
+    };
+  } else {
+    gsap.to(ac, { opacity: 0, duration: 0.12, onComplete: () => ac.style.display = 'none' });
+  }
+
+  if (!q) {
+    // reset all nodes
+    Object.values(nodes).forEach(n => n.classList.remove('highlighted'));
+    return;
+  }
+
+  // score each subsystem by best match within it
+  const sysScores = {};
+  SUBSYSTEMS.forEach(s => sysScores[s] = 0);
+  allResults.forEach(r => {
+    const score = 1 - (r.score || 0);
+    sysScores[r.item.subsystem] = Math.max(sysScores[r.item.subsystem], score);
+  });
+
+  // highlight nodes proportionally
+  SUBSYSTEMS.forEach(sys => {
+    const node = nodes[sys];
+    const score = sysScores[sys] || 0;
+    node.classList.toggle('highlighted', score > 0.5);
+    gsap.to(node, { opacity: Math.max(0.3, score > 0 ? 0.6 + score * 0.4 : 0.3), duration: 0.2 });
+  });
+
+  // auto-open best matching subsystem
+  const bestSys = Object.entries(sysScores).sort((a,b) => b[1] - a[1])[0];
+  if (bestSys && bestSys[1] > 0.5 && q.length >= 3) {
+    openModal(bestSys[0]);
+  }
+});
+
+// keyboard ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
