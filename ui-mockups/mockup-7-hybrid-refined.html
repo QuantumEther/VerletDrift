@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift UI — Mockup 7: Hybrid (Refined)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<style>
+/* =============================================================
+   VERLET DRIFT — HYBRID UI MOCKUP 7 (REFINED)
+   Multi-panel workspace with draggable floating windows,
+   favorites sidebar with reordering, and radial subsystem menu.
+   ============================================================= */
+
+:root {
+  /* ---- Background ---- */
+  --bg-deep: #0a0e13;
+  --bg-panel: #111820;
+  --bg-card: #182430;
+  --bg-input: #0d1520;
+
+  /* ---- Accents ---- */
+  --accent-gold: #e8c44a;
+  --accent-gold-dim: rgba(232, 196, 74, 0.1);
+  --accent-gold-danger: #e87b4a;
+  --accent-cyan: #48d4e8;
+  --accent-cyan-dim: rgba(72, 212, 232, 0.1);
+
+  /* ---- Text ---- */
+  --text-primary: #d8eaf0;
+  --text-dim: #7a9aaa;
+
+  /* ---- Borders & Shadows ---- */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --shadow-heavy: rgba(0, 0, 0, 0.6);
+
+  /* ---- Spacing (design tokens) ---- */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+
+  /* ---- Font ---- */
+  --font-mono: 'SF Mono', 'Fira Mono', 'Cascadia Code', monospace;
+  --radius: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px; overflow: hidden; }
+
+/* ── HEADER / BANNER ── */
+.banner {
+  padding: var(--spacing-md) var(--spacing-lg); border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: baseline; gap: var(--spacing-lg); flex-wrap: wrap;
+}
+.banner-title { font-size: 13px; font-weight: 600; color: var(--accent-gold); letter-spacing: 0.04em; }
+.banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
+.banner-tag { font-size: 10px; padding: var(--spacing-xs) var(--spacing-sm); border-radius: 999px;
+  background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--accent-cyan); white-space: nowrap; }
+
+/* ── MAIN LAYOUT ── */
+.main-container { display: flex; height: calc(100vh - 80px); }
+
+/* ── FAVORITES PANEL (LEFT SIDEBAR) ── */
+.favorites-panel {
+  width: 260px; min-width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-subtle);
+  display: flex; flex-direction: column; z-index: 50;
+}
+
+.fav-header {
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.fav-title { font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); }
+.fav-count { font-size: 10px; color: var(--text-dim); }
+
+.fav-list { flex: 1; overflow-y: auto; padding: var(--spacing-xs) 0; }
+.fav-list::-webkit-scrollbar { width: 3px; }
+.fav-list::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+
+.fav-empty { padding: var(--spacing-xl) var(--spacing-lg); text-align: center; color: var(--text-dim);
+  font-size: 10px; line-height: 1.8; letter-spacing: 0.04em; }
+
+.fav-row {
+  padding: var(--spacing-sm) var(--spacing-lg); border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden; transition: background 0.15s;
+}
+.fav-row:hover { background: rgba(255, 255, 255, 0.02); }
+.fav-row:last-child { border-bottom: none; }
+
+.fav-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-xs); gap: var(--spacing-sm); }
+.fav-label { font-size: 10px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 100px; flex-shrink: 1; }
+.fav-right { display: flex; align-items: center; gap: var(--spacing-xs); flex-shrink: 0; }
+.fav-value { font-size: 10px; color: var(--accent-gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fav-badge { font-size: 8.5px; padding: var(--spacing-xs) var(--spacing-sm); border-radius: 999px;
+  background: var(--accent-cyan-dim); border: 1px solid rgba(72, 212, 232, 0.2); color: var(--accent-cyan); white-space: nowrap; }
+
+/* FIX #3: .fav-actions needs position:relative so .action-menu can anchor to it */
+.fav-actions {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.action-btn {
+  background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px;
+  padding: 0 var(--spacing-xs); line-height: 1; transition: all 0.15s; min-width: 16px; text-align: center;
+}
+.action-btn:hover { color: var(--text-primary); transform: scale(1.1); }
+
+.action-menu {
+  position: absolute; right: 0; top: 20px; background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius); padding: var(--spacing-xs) 0; min-width: 95px; z-index: 200;
+  display: none; box-shadow: 0 4px 16px var(--shadow-heavy);
+}
+.action-menu.show { display: block; }
+.action-menu-item {
+  padding: var(--spacing-sm) var(--spacing-md); font-size: 10px; color: var(--text-dim); cursor: pointer; transition: all 0.1s;
+}
+.action-menu-item:hover { background: var(--accent-gold-dim); color: var(--accent-gold); }
+.action-menu-item.danger { color: var(--accent-gold-danger); }
+.action-menu-item.danger:hover { background: rgba(232, 123, 74, 0.15); color: #ff9d6a; }
+
+.unpin-btn {
+  background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 11px;
+  padding: 0 var(--spacing-xs); transition: color 0.15s; line-height: 1; flex-shrink: 0;
+}
+.unpin-btn:hover { color: var(--accent-gold-danger); }
+
+.fav-row input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: var(--bg-card);
+  border-radius: 2px; outline: none; border: 1px solid var(--border-subtle); cursor: pointer; margin-top: var(--spacing-sm);
+}
+.fav-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent-gold);
+  cursor: pointer; transition: transform 0.12s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.fav-row input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.2); }
+
+/* ── RADIAL MENU AREA (RIGHT) ── */
+.radial-area { flex: 1; position: relative; display: flex; flex-direction: column; overflow: hidden; }
+
+.search-bar { padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-sm); border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0; background: rgba(17, 24, 32, 0.95); backdrop-filter: blur(4px); z-index: 40; }
+.search-wrap { position: relative; max-width: 360px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim);
+  font-size: 12px; pointer-events: none; }
+#search {
+  width: 100%; padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 30px; background: var(--bg-input);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius); color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 11px; outline: none; transition: border-color 0.15s;
+}
+#search:focus { border-color: rgba(232, 196, 74, 0.4); }
+#search::placeholder { color: var(--text-dim); }
+
+.radial-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+.hub {
+  position: absolute; width: 68px; height: 68px; border-radius: 50%; background: var(--bg-panel);
+  border: 1.5px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 200; cursor: pointer; box-shadow: 0 4px 20px var(--shadow-heavy); transition: border-color 0.3s, box-shadow 0.3s;
+}
+.hub:hover { border-color: var(--accent-gold); box-shadow: 0 4px 28px rgba(232, 196, 74, 0.25); }
+.hub-icon { font-size: 20px; line-height: 1; }
+.hub-label { font-size: 8.5px; color: var(--text-dim); letter-spacing: 0.08em; margin-top: var(--spacing-xs); }
+
+/* FIX #6: nodes start at scale(0)/opacity(0) — GSAP drives all visibility */
+.sys-node {
+  position: absolute; width: 62px; height: 62px; border-radius: 50%; background: var(--bg-panel);
+  border: 1.5px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45); user-select: none; z-index: 150;
+  transform: scale(0); opacity: 0;
+}
+.sys-node:hover { border-color: var(--accent-gold); box-shadow: 0 3px 16px rgba(232, 196, 74, 0.3); }
+.sys-node.highlighted {
+  border-color: var(--accent-gold) !important; background: var(--accent-gold-dim) !important;
+  box-shadow: 0 0 20px rgba(232, 196, 74, 0.4), inset 0 0 8px rgba(232, 196, 74, 0.15);
+}
+/* pointer-events controlled by GSAP (opacity:0 nodes get pointer-events:none) */
+.sys-node[style*="opacity: 0"] { pointer-events: none; }
+
+.sys-icon { font-size: 18px; line-height: 1; }
+.sys-label { font-size: 8px; color: var(--text-dim); letter-spacing: 0.06em; margin-top: var(--spacing-xs);
+  text-align: center; line-height: 1.1; max-width: 54px; overflow: hidden; white-space: nowrap; }
+.sys-node:hover .sys-label, .sys-node.highlighted .sys-label { color: var(--accent-gold); }
+
+.hub::after {
+  content: 'Click to toggle'; position: absolute; bottom: -26px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; color: var(--text-dim); white-space: nowrap; opacity: 0; transition: opacity 0.2s;
+  pointer-events: none; background: var(--bg-card); padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px; border: 1px solid var(--border-subtle);
+}
+.hub:hover::after { opacity: 1; }
+
+/* ── SLIDERS PANEL (FLOATING WINDOW) ── */
+.panel {
+  position: absolute; width: 280px; max-height: 450px; background: var(--bg-panel);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius); box-shadow: 0 6px 32px var(--shadow-heavy);
+  display: flex; flex-direction: column; overflow: hidden; z-index: 700;
+  opacity: 0; pointer-events: none; transform: scale(0.95);
+}
+.panel.open { pointer-events: auto; }
+.panel.focused { border-color: var(--accent-gold); box-shadow: 0 8px 40px rgba(232, 196, 74, 0.2), 0 0 0 1px rgba(232, 196, 74, 0.3); }
+.panel.dragging { cursor: grabbing; box-shadow: 0 12px 50px var(--shadow-heavy) !important; }
+
+.panel-header {
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-xs); border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  cursor: grab; user-select: none;
+  background: linear-gradient(180deg, rgba(232, 196, 74, 0.05) 0%, transparent 100%);
+}
+.panel-header:hover { background: linear-gradient(180deg, rgba(232, 196, 74, 0.08) 0%, transparent 100%); }
+.panel.dragging .panel-header { cursor: grabbing; }
+
+.panel-title { font-size: 11px; letter-spacing: 0.06em; color: var(--text-primary); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+.panel-close {
+  background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px;
+  padding: var(--spacing-xs) var(--spacing-sm); transition: all 0.15s; line-height: 1; min-width: 18px; text-align: center;
+}
+.panel-close:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px; transform: scale(1.1); }
+
+.panel-search-wrap { padding: var(--spacing-sm) var(--spacing-md) var(--spacing-xs); border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0; background: rgba(0, 0, 0, 0.2); }
+.panel-search-input { width: 100%; padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-input);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius); color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 10.5px; outline: none; transition: border-color 0.15s; }
+.panel-search-input:focus { border-color: rgba(232, 196, 74, 0.4); }
+.panel-search-input::placeholder { color: var(--text-dim); }
+
+.panel-sliders { flex: 1; overflow-y: auto; padding: var(--spacing-xs) 0; }
+.panel-sliders::-webkit-scrollbar { width: 3px; }
+.panel-sliders::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+
+.slider-row { display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-subtle); overflow: hidden; transition: background 0.1s; }
+.slider-row:hover { background: rgba(255, 255, 255, 0.02); }
+.slider-row:last-child { border-bottom: none; }
+
+.slider-label { width: 90px; min-width: 90px; font-size: 10px; color: var(--text-primary); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.slider-wrap { flex: 1; min-width: 80px; }
+
+.slider-row input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 3px; background: var(--bg-card);
+  border-radius: 2px; outline: none; border: 1px solid var(--border-subtle); cursor: pointer;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%; background: var(--accent-gold);
+  cursor: pointer; transition: transform 0.12s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.slider-row input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.3); }
+
+.slider-value { width: 52px; text-align: right; font-size: 10px; color: var(--accent-gold);
+  font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+.pin-btn {
+  background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 13px;
+  padding: 0; line-height: 1; transition: all 0.15s; flex-shrink: 0; min-width: 16px; text-align: center;
+}
+.pin-btn:hover { transform: scale(1.25); }
+.pin-btn.pinned { color: var(--accent-gold); }
+
+.panel-empty { padding: var(--spacing-xl) var(--spacing-md); text-align: center; color: var(--text-dim);
+  font-size: 10px; display: none; }
+
+/* ── OVERLAY FOR CLOSING PANELS ── */
+.panel-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.35); z-index: 600;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.panel-overlay.active { opacity: 1; pointer-events: auto; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <span class="banner-title">MOCKUP 7 — HYBRID (REFINED)</span>
+  <span class="banner-desc">Multi-panel workspace with draggable windows, favorites sidebar supporting 24 items with reorder menu, and radial subsystem selection. Follows VerletDrift code conventions.</span>
+  <span class="banner-tag">Production-ready</span>
+</div>
+
+<div class="main-container">
+  <!-- Favorites Panel -->
+  <div class="favorites-panel">
+    <div class="fav-header">
+      <span class="fav-title">FAVORITES</span>
+      <span class="fav-count" id="favCount">0 / 24</span>
+    </div>
+    <div class="fav-list" id="favList">
+      <div class="fav-empty" id="favEmpty">
+        Star (☆) any slider<br>to add to favorites
+      </div>
+    </div>
+  </div>
+
+  <!-- Radial Menu Area -->
+  <div class="radial-area">
+    <div class="search-bar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search" placeholder="Search all parameters…">
+      </div>
+    </div>
+    <div class="radial-stage" id="radialStage">
+      <div class="hub" id="hub">
+        <span class="hub-icon">⚡</span>
+        <span class="hub-label">PARAMS</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<script>
+/* =============================================================
+   DATA & CONSTANTS
+   ============================================================= */
+
+const SUBSYSTEMS = ['Engine', 'Transmission', 'Tires', 'Physics', 'Suspension', 'Camera', 'Rendering', 'Audio', 'Steering'];
+const SYS_ICONS = {
+  Engine:'⚙', Transmission:'🔧', Tires:'◎', Physics:'⬡', Suspension:'⊙',
+  Camera:'◈', Rendering:'◻', Audio:'◁', Steering:'⊕'
+};
+
+const SLIDERS = [
+  { id:'peakEngineTorqueNm', label:'Peak Torque',    subsystem:'Engine',       min:50,   max:2000, step:10,   value:350,  unit:'Nm'    },
+  { id:'redlineRpm',         label:'Redline RPM',    subsystem:'Engine',       min:4000, max:10000,step:100,  value:7000, unit:'RPM'   },
+  { id:'idleRpm',            label:'Idle RPM',       subsystem:'Engine',       min:400,  max:1500, step:50,   value:800,  unit:'RPM'   },
+  { id:'cylinderCount',      label:'Cylinders',      subsystem:'Engine',       min:1,    max:16,   step:1,    value:12,   unit:''      },
+  { id:'clutchBitePoint',    label:'Bite Point',     subsystem:'Transmission', min:0.05, max:0.85, step:0.01, value:0.35, unit:''      },
+  { id:'finalDriveRatio',    label:'Final Drive',    subsystem:'Transmission', min:1.0,  max:8.0,  step:0.1,  value:4.1,  unit:''      },
+  { id:'gearRatio1',         label:'Gear 1',         subsystem:'Transmission', min:0.5,  max:6.0,  step:0.05, value:3.5,  unit:''      },
+  { id:'gearRatio3',         label:'Gear 3',         subsystem:'Transmission', min:0.3,  max:3.0,  step:0.05, value:1.4,  unit:''      },
+  { id:'pacejkaB',           label:'Pacejka B',      subsystem:'Tires',        min:1,    max:30,   step:0.5,  value:10,   unit:''      },
+  { id:'peakSlipAngleDeg',   label:'Peak Slip °',    subsystem:'Tires',        min:2,    max:20,   step:0.5,  value:8,    unit:'°'     },
+  { id:'tireFrictionCoeff',  label:'Friction μ',     subsystem:'Tires',        min:0.3,  max:2.0,  step:0.05, value:1.0,  unit:''      },
+  { id:'wheelRadius',        label:'Wheel Radius',   subsystem:'Tires',        min:0.2,  max:0.6,  step:0.01, value:0.35, unit:'m'     },
+  { id:'carMassKg',          label:'Mass',           subsystem:'Physics',      min:600,  max:3000, step:50,   value:1200, unit:'kg'    },
+  { id:'aeroDragCoeff',      label:'Aero Drag',      subsystem:'Physics',      min:0.1,  max:1.0,  step:0.01, value:0.4,  unit:''      },
+  { id:'constraintDamping',  label:'Constraint Damp',subsystem:'Physics',      min:0.0,  max:1.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'cogHeight',          label:'CoG Height',     subsystem:'Suspension',   min:0.1,  max:2.0,  step:0.05, value:0.5,  unit:'m'     },
+  { id:'yawDamping',         label:'Yaw Damping',    subsystem:'Suspension',   min:0.0,  max:5.0,  step:0.1,  value:1.0,  unit:''      },
+  { id:'springStiffness',    label:'Spring Stiff',   subsystem:'Suspension',   min:1,    max:200,  step:1,    value:80,   unit:'N/m'   },
+  { id:'cameraOmega',        label:'Cam ω₀',         subsystem:'Camera',       min:0.5,  max:20.0, step:0.1,  value:2.2,  unit:'rad/s' },
+  { id:'cameraZeta',         label:'Cam ζ',          subsystem:'Camera',       min:0.1,  max:2.0,  step:0.05, value:0.8,  unit:''      },
+  { id:'motionBlurSamples',  label:'Blur Samples',   subsystem:'Rendering',    min:1,    max:16,   step:1,    value:6,    unit:''      },
+  { id:'motionBlurIntensity',label:'Blur Intensity', subsystem:'Rendering',    min:0.0,  max:2.0,  step:0.1,  value:0.6,  unit:''      },
+  { id:'skidWidthMax',       label:'Skid Width',     subsystem:'Rendering',    min:0.1,  max:1.5,  step:0.01, value:0.47, unit:'m'     },
+  { id:'smokeSpawnRate',     label:'Smoke Rate',     subsystem:'Rendering',    min:5,    max:200,  step:5,    value:50,   unit:'/s'    },
+  { id:'masterVol',          label:'Master Volume',  subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0.5,  unit:''      },
+  { id:'exhaustBassGain',    label:'Exhaust Bass',   subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.35, unit:''      },
+  { id:'driftScreechGain',   label:'Drift Screech',  subsystem:'Audio',        min:0.0,  max:1.5,  step:0.01, value:0.55, unit:''      },
+  { id:'reverbMix',          label:'Reverb Mix',     subsystem:'Audio',        min:0,    max:1,    step:0.01, value:0,    unit:''      },
+  { id:'steeringSelfCenter', label:'Self-Center',    subsystem:'Steering',     min:0,    max:30,   step:0.5,  value:5,    unit:'1/s'   },
+  { id:'maxFrontWheelAngle', label:'Max Steer',      subsystem:'Steering',     min:0.1,  max:1.2,  step:0.01, value:0.52, unit:'rad'   },
+];
+
+/* ---- Constants (VerletDrift convention: UPPER_SNAKE_CASE) ---- */
+const MAX_FAVORITES    = 24;
+const RADIAL_RADIUS    = 150;
+const PANEL_OFFSET_RADIUS = 210;
+const ACTION_MOVE_UP   = 'moveup';
+const ACTION_MOVE_DOWN = 'movedown';
+const ACTION_REMOVE    = 'remove';
+
+const BASE_Z_INDEX     = 700;
+const DRAGGING_OFFSET  = 200;
+
+/* ---- Formatting ---- */
+function fmt(value, step) {
+  if (step >= 1)    return Math.round(value).toString();
+  if (step >= 0.1)  return value.toFixed(1);
+  if (step >= 0.01) return value.toFixed(2);
+  return value.toFixed(3);
+}
+
+/* =============================================================
+   STATE & DOM CACHE
+   ============================================================= */
+
+let favorites = [];
+let openPanels = new Set();
+let focusedPanelSys = null;
+let circlesVisible = true;
+
+let draggedPanelSys = null;
+let dragOffset = { x: 0, y: 0 };
+let nextZIndex = BASE_Z_INDEX;
+
+/* Cache frequently-accessed DOM elements (VerletDrift pattern) */
+const DOM_CACHE = {
+  favList:     null,
+  favCount:    null,
+  favEmpty:    null,
+  radialStage: null,
+  hub:         null,
+  overlay:     null,
+};
+
+function initDOMCache() {
+  DOM_CACHE.favList     = document.getElementById('favList');
+  DOM_CACHE.favCount    = document.getElementById('favCount');
+  DOM_CACHE.favEmpty    = document.getElementById('favEmpty');
+  DOM_CACHE.radialStage = document.getElementById('radialStage');
+  DOM_CACHE.hub         = document.getElementById('hub');
+  DOM_CACHE.overlay     = document.getElementById('panelOverlay');
+}
+
+const fuse = new Fuse(SLIDERS, {
+  keys: [{ name:'label', weight:0.6 }, { name:'subsystem', weight:0.3 }, { name:'id', weight:0.1 }],
+  threshold: 0.4, includeScore: true
+});
+
+const nodes  = {};
+const panels = {};
+
+/* =============================================================
+   RADIAL MENU INITIALIZATION
+   ============================================================= */
+
+function initRadialMenu() {
+  SUBSYSTEMS.forEach((sys, i) => {
+    const angle = (i / SUBSYSTEMS.length) * Math.PI * 2 - Math.PI / 2;
+
+    /* ---- Create subsystem node circle ---- */
+    const node = document.createElement('div');
+    node.className = 'sys-node';   /* starts at scale(0)/opacity(0) per CSS */
+    node.dataset.sys = sys;
+    node.innerHTML = `<span class="sys-icon">${SYS_ICONS[sys] || '◆'}</span><span class="sys-label">${sys}</span>`;
+
+    const cx = Math.cos(angle) * RADIAL_RADIUS;
+    const cy = Math.sin(angle) * RADIAL_RADIUS;
+    node.style.left   = `calc(50% + ${cx}px - 31px)`;
+    node.style.top    = `calc(50% + ${cy}px - 31px)`;
+    node._angle = angle;
+
+    DOM_CACHE.radialStage.appendChild(node);
+    nodes[sys] = node;
+    node.addEventListener('click', () => openPanel(sys));
+
+    /* ---- Create floating panel for this subsystem ---- */
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.dataset.sys = sys;
+
+    const PANEL_X = Math.cos(angle) * PANEL_OFFSET_RADIUS;
+    const PANEL_Y = Math.sin(angle) * PANEL_OFFSET_RADIUS;
+    panel.style.left = `calc(50% + ${PANEL_X}px - 140px)`;
+    panel.style.top  = `calc(50% + ${PANEL_Y}px - 180px)`;
+
+    panel.innerHTML = `
+      <div class="panel-header">
+        <span class="panel-title">${sys}</span>
+        <button class="panel-close">×</button>
+      </div>
+      <div class="panel-search-wrap">
+        <input type="text" class="panel-search-input" placeholder="Filter…">
+      </div>
+      <div class="panel-sliders"></div>
+    `;
+
+    DOM_CACHE.radialStage.appendChild(panel);
+    panels[sys] = panel;
+
+    panel.querySelector('.panel-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      closePanel(sys);
+    });
+
+    const header = panel.querySelector('.panel-header');
+    header.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      draggedPanelSys = sys;
+      const rect = panel.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      panel.classList.add('dragging');
+      nextZIndex += 50;
+      panel.style.zIndex = String(nextZIndex + DRAGGING_OFFSET);
+      e.preventDefault();
+    });
+
+    /* Focus panel when header clicked (not dragged) */
+    header.addEventListener('click', () => {
+      if (!draggedPanelSys) bringToFront(sys);
+    });
+  });
+
+  /* FIX #6: nodes start at scale(0)/opacity(0) in CSS — animate them in */
+  gsap.fromTo(DOM_CACHE.hub, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' });
+
+  setTimeout(() => {
+    gsap.to(Object.values(nodes), {
+      scale: 1, opacity: 1,
+      duration: 0.5, stagger: 0.08,
+      ease: 'back.out(1.7)'
+    });
+  }, 150);
+}
+
+/* =============================================================
+   PANEL MANAGEMENT
+   ============================================================= */
+
+function bringToFront(sys) {
+  Object.values(panels).forEach(p => p.classList.remove('focused'));
+  const panel = panels[sys];
+  nextZIndex += 5;
+  panel.style.zIndex = String(nextZIndex);
+  panel.classList.add('focused');
+  focusedPanelSys = sys;
+}
+
+function openPanel(sys) {
+  /* FIX #10: auto-show circles instead of silently blocking */
+  if (!circlesVisible) {
+    circlesVisible = true;
+    const nodesList = Object.values(nodes);
+    gsap.to(nodesList, { scale: 1, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'back.out(1.7)' });
+  }
+
+  const panel = panels[sys];
+
+  if (openPanels.has(sys)) {
+    bringToFront(sys);
+    return;
+  }
+
+  openPanels.add(sys);
+
+  /* Populate slider rows */
+  const sysSliders = SLIDERS.filter(s => s.subsystem === sys);
+  const slidersContainer = panel.querySelector('.panel-sliders');
+  slidersContainer.innerHTML = '';
+
+  if (sysSliders.length === 0) {
+    slidersContainer.innerHTML = '<div class="panel-empty" style="display:block">No parameters</div>';
+  } else {
+    sysSliders.forEach(s => {
+      const pinned = favorites.includes(s.id);
+      const row = document.createElement('div');
+      row.className = 'slider-row';
+      row.dataset.id = s.id;
+      row.innerHTML = `
+        <span class="slider-label">${s.label}</span>
+        <div class="slider-wrap">
+          <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}">
+        </div>
+        <span class="slider-value" id="pv-${s.id}">${fmt(s.value, s.step)}${s.unit}</span>
+        <button class="pin-btn ${pinned ? 'pinned' : ''}" id="ppin-${s.id}">${pinned ? '★' : '☆'}</button>
+      `;
+      slidersContainer.appendChild(row);
+
+      row.querySelector('input').addEventListener('input', e => {
+        s.value = parseFloat(e.target.value);
+        const display = fmt(s.value, s.step) + s.unit;
+        document.getElementById(`pv-${s.id}`).textContent = display;
+
+        /* FIX #8: sync favorites text AND range input */
+        const favVal = document.getElementById(`fv-${s.id}`);
+        if (favVal) favVal.textContent = display;
+        const favRange = document.querySelector(`.fav-row[data-id="${s.id}"] input[type="range"]`);
+        if (favRange) favRange.value = s.value;
+      });
+
+      row.querySelector('.pin-btn').addEventListener('click', () => {
+        if (favorites.includes(s.id)) unpin(s.id);
+        else pin(s.id);
+      });
+    });
+  }
+
+  panel.classList.add('open');
+  /* FIX #7: kill any in-progress close animation before opening */
+  gsap.killTweensOf(panel);
+  gsap.fromTo(panel,
+    { opacity: 0, scale: 0.95 },
+    { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.5)' }
+  );
+
+  bringToFront(sys);
+  Object.values(nodes).forEach(n => n.classList.remove('highlighted'));
+  nodes[sys].classList.add('highlighted');
+}
+
+function closePanel(sys) {
+  if (!openPanels.has(sys)) return;
+  const panel = panels[sys];
+  openPanels.delete(sys);
+  nodes[sys].classList.remove('highlighted');
+
+  /* FIX #7: kill any in-progress open animation; guard onComplete against re-open race */
+  gsap.killTweensOf(panel);
+  gsap.to(panel, {
+    opacity: 0, scale: 0.95, duration: 0.15, ease: 'power2.inOut',
+    onComplete: () => {
+      /* Only remove 'open' if this panel wasn't re-opened during the animation */
+      if (!openPanels.has(sys)) panel.classList.remove('open');
+    }
+  });
+
+  if (focusedPanelSys === sys) {
+    const remaining = Array.from(openPanels).pop();
+    if (remaining) bringToFront(remaining);
+    else focusedPanelSys = null;
+  }
+}
+
+function closeAllPanels() {
+  /* Copy set first — closePanel modifies openPanels */
+  Array.from(openPanels).forEach(sys => closePanel(sys));
+}
+
+/* =============================================================
+   DRAGGING & MOUSE EVENTS
+   ============================================================= */
+
+document.addEventListener('mousemove', (e) => {
+  if (!draggedPanelSys) return;
+  const panel = panels[draggedPanelSys];
+  const stage = DOM_CACHE.radialStage;
+  const stageRect = stage.getBoundingClientRect();
+  panel.style.left = `${e.clientX - dragOffset.x - stageRect.left}px`;
+  panel.style.top  = `${e.clientY - dragOffset.y - stageRect.top}px`;
+});
+
+document.addEventListener('mouseup', () => {
+  if (!draggedPanelSys) return;
+  const panel = panels[draggedPanelSys];
+  panel.classList.remove('dragging');
+  bringToFront(draggedPanelSys);
+  draggedPanelSys = null;
+});
+
+/* =============================================================
+   HUB TOGGLE
+   ============================================================= */
+
+function initHubToggle() {
+  /* FIX #1: must run AFTER initDOMCache() — called from init() */
+  DOM_CACHE.hub.addEventListener('click', () => {
+    circlesVisible = !circlesVisible;
+    const nodesList = Object.values(nodes);
+
+    if (circlesVisible) {
+      gsap.to(nodesList, { scale: 1, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'back.out(1.7)', delay: 0.05 });
+    } else {
+      gsap.to(nodesList, { scale: 0, opacity: 0, duration: 0.35, ease: 'power2.in' });
+    }
+  });
+}
+
+/* =============================================================
+   FAVORITES SYSTEM
+   ============================================================= */
+
+function renderFavorites() {
+  if (!DOM_CACHE.favList) return;
+
+  DOM_CACHE.favCount.textContent = `${favorites.length} / ${MAX_FAVORITES}`;
+  DOM_CACHE.favList.querySelectorAll('.fav-row').forEach(r => r.remove());
+
+  if (favorites.length === 0) {
+    DOM_CACHE.favEmpty.style.display = 'block';
+    return;
+  }
+  DOM_CACHE.favEmpty.style.display = 'none';
+
+  favorites.forEach((id, index) => {
+    const s = SLIDERS.find(sl => sl.id === id);
+    if (!s) return;
+
+    const row = document.createElement('div');
+    row.className = 'fav-row';
+    row.dataset.id = id;
+    row.dataset.index = index;
+
+    /* Build fav-actions wrapper with dropdown — must use createElement so we can
+       attach listeners to the actual DOM nodes (not outerHTML strings) */
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'fav-actions';
+
+    const actionBtn = document.createElement('button');
+    actionBtn.className = 'action-btn';
+    actionBtn.innerHTML = '⋮';
+    actionBtn.title = 'Options';
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'action-menu';
+    dropdown.innerHTML = `
+      <div class="action-menu-item" data-action="${ACTION_MOVE_UP}">↑ Move Up</div>
+      <div class="action-menu-item" data-action="${ACTION_MOVE_DOWN}">↓ Move Down</div>
+      <div class="action-menu-item danger" data-action="${ACTION_REMOVE}">Remove</div>
+    `;
+
+    actionsDiv.appendChild(actionBtn);
+    actionsDiv.appendChild(dropdown);
+
+    /* Scaffold the static row HTML, then inject actionsDiv */
+    row.innerHTML = `
+      <div class="fav-top">
+        <span class="fav-label">${s.label}</span>
+        <div class="fav-right">
+          <span class="fav-value" id="fv-${s.id}">${fmt(s.value, s.step)}${s.unit}</span>
+          <span class="fav-badge">${s.subsystem}</span>
+          <div class="fav-actions-slot"></div>
+          <button class="unpin-btn" title="Unpin">×</button>
+        </div>
+      </div>
+      <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}">
+    `;
+    /* Insert actionsDiv (with its live listeners) into the slot */
+    row.querySelector('.fav-actions-slot').replaceWith(actionsDiv);
+
+    DOM_CACHE.favList.appendChild(row);
+
+    /* Dropdown toggle */
+    actionBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.action-menu.show').forEach(d => {
+        if (d !== dropdown) d.classList.remove('show');
+      });
+      dropdown.classList.toggle('show');
+    });
+
+    dropdown.querySelector(`[data-action="${ACTION_MOVE_UP}"]`).addEventListener('click', () => moveFavorite(index, -1));
+    dropdown.querySelector(`[data-action="${ACTION_MOVE_DOWN}"]`).addEventListener('click', () => moveFavorite(index, 1));
+    dropdown.querySelector(`[data-action="${ACTION_REMOVE}"]`).addEventListener('click', () => unpin(id));
+
+    /* FIX #8: sync panel range input position when fav slider moves */
+    row.querySelector('input[type="range"]').addEventListener('input', e => {
+      s.value = parseFloat(e.target.value);
+      const display = fmt(s.value, s.step) + s.unit;
+      document.getElementById(`fv-${s.id}`).textContent = display;
+
+      const pVal = document.getElementById(`pv-${s.id}`);
+      if (pVal) pVal.textContent = display;
+      const panelRange = document.querySelector(`.slider-row[data-id="${s.id}"] input[type="range"]`);
+      if (panelRange) panelRange.value = s.value;
+    });
+
+    row.querySelector('.unpin-btn').addEventListener('click', () => unpin(id));
+  });
+}
+
+function moveFavorite(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= favorites.length) return;
+  const [item] = favorites.splice(index, 1);
+  favorites.splice(newIndex, 0, item);
+  renderFavorites();
+}
+
+/* FIX #9: restructure pin() so renderFavorites runs AFTER any overflow-eviction animation */
+function pin(id) {
+  if (favorites.includes(id)) return;
+
+  const doPin = () => {
+    favorites.push(id);
+    renderFavorites();
+
+    const newRow = document.querySelector(`.fav-row[data-id="${id}"]`);
+    if (newRow) {
+      gsap.fromTo(newRow, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.35, ease: 'back.out(1.4)' });
+    }
+    const btn = document.getElementById(`ppin-${id}`);
+    if (btn) { btn.textContent = '★'; btn.classList.add('pinned'); }
+  };
+
+  if (favorites.length >= MAX_FAVORITES) {
+    const oldId = favorites.shift();
+    const oldBtn = document.getElementById(`ppin-${oldId}`);
+    if (oldBtn) { oldBtn.textContent = '☆'; oldBtn.classList.remove('pinned'); }
+
+    const oldRow = document.querySelector(`.fav-row[data-id="${oldId}"]`);
+    if (oldRow) {
+      /* FIX #11: animate padding too so no blank space lingers during collapse */
+      gsap.to(oldRow, {
+        opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0, duration: 0.2, ease: 'power2.in',
+        onComplete: doPin
+      });
+    } else {
+      doPin();
+    }
+  } else {
+    doPin();
+  }
+}
+
+function unpin(id) {
+  favorites = favorites.filter(f => f !== id);
+
+  const row = document.querySelector(`.fav-row[data-id="${id}"]`);
+  if (row) {
+    /* FIX #11: animate padding too so the row fully collapses */
+    gsap.to(row, {
+      opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0, duration: 0.2, ease: 'power2.in',
+      onComplete: () => { row.remove(); renderFavorites(); }
+    });
+  } else {
+    renderFavorites();
+  }
+
+  const btn = document.getElementById(`ppin-${id}`);
+  if (btn) { btn.textContent = '☆'; btn.classList.remove('pinned'); }
+}
+
+/* =============================================================
+   PANEL SEARCH — event-delegated so it works on panels created
+   AFTER script execution (FIX #2 + FIX #4)
+   ============================================================= */
+
+document.addEventListener('input', (e) => {
+  if (!e.target.classList.contains('panel-search-input')) return;
+  const panel = e.target.closest('.panel');
+  if (!panel) return;
+
+  const query = e.target.value.toLowerCase().trim();
+  panel.querySelectorAll('.slider-row').forEach(row => {
+    const label = row.querySelector('.slider-label').textContent.toLowerCase();
+    const matches = query === '' || label.includes(query);
+
+    if (matches) {
+      /* FIX #4: clear inline height so GSAP can properly measure and restore */
+      gsap.killTweensOf(row);
+      row.style.height   = '';
+      row.style.overflow = '';
+      gsap.to(row, { opacity: 1, duration: 0.2 });
+    } else {
+      gsap.killTweensOf(row);
+      gsap.to(row, { height: 0, overflow: 'hidden', opacity: 0, duration: 0.15 });
+    }
+  });
+});
+
+/* =============================================================
+   GLOBAL SEARCH
+   ============================================================= */
+
+document.getElementById('search').addEventListener('input', e => {
+  const query = e.target.value.trim();
+
+  if (!query) {
+    Object.values(nodes).forEach(n => {
+      n.classList.remove('highlighted');
+      gsap.to(n, { opacity: 1, duration: 0.2 });
+    });
+    return;
+  }
+
+  const results = fuse.search(query);
+  if (results.length === 0) return;
+
+  const sysScores = {};
+  SUBSYSTEMS.forEach(s => sysScores[s] = 0);
+  results.forEach(r => {
+    const score = 1 - (r.score || 0);
+    sysScores[r.item.subsystem] = Math.max(sysScores[r.item.subsystem], score);
+  });
+
+  SUBSYSTEMS.forEach(sys => {
+    const node  = nodes[sys];
+    const score = sysScores[sys] || 0;
+    if (score > 0.4) {
+      node.classList.add('highlighted');
+      gsap.to(node, { opacity: Math.min(1, 0.5 + score), duration: 0.2 });
+    } else {
+      node.classList.remove('highlighted');
+      gsap.to(node, { opacity: 0.35, duration: 0.2 });
+    }
+  });
+
+  const bestSys = Object.entries(sysScores).sort((a, b) => b[1] - a[1])[0];
+  if (bestSys && bestSys[1] > 0.6 && query.length >= 2) {
+    openPanel(bestSys[0]);
+  }
+});
+
+/* =============================================================
+   KEYBOARD
+   ============================================================= */
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAllPanels();
+});
+
+/* =============================================================
+   GLOBAL DROPDOWN CLOSE — single delegated listener (FIX #5)
+   ============================================================= */
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.fav-actions')) {
+    document.querySelectorAll('.action-menu.show').forEach(d => d.classList.remove('show'));
+  }
+});
+
+/* =============================================================
+   INITIALIZATION — order matters: cache → build → wire up
+   ============================================================= */
+
+initDOMCache();
+initRadialMenu();
+renderFavorites();
+
+/* FIX #1: wire overlay & hub click AFTER initDOMCache populates DOM_CACHE */
+DOM_CACHE.overlay.addEventListener('click', closeAllPanels);
+initHubToggle();
+</script>
+</body>
+</html>
