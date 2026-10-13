@@ -277,6 +277,17 @@ export function computeTireForces(dt) {
     const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
     const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
     const prev = state.prevTireForce[name];
+    // Load can change faster than the tire relaxation state (especially at
+    // wheel lift-off). Keep carried force inside the *current* friction circle
+    // before it enters either the rotor solve or lateral-force relaxation.
+    // With zero normal load this clears contact force immediately; when load
+    // returns, the normal relaxation path rebuilds force over time.
+    const previousMagnitude = Math.hypot(prev.lon, prev.lat);
+    if (previousMagnitude > frictionLimit && previousMagnitude > 0) {
+      const loadScale = frictionLimit / previousMagnitude;
+      prev.lon *= loadScale;
+      prev.lat *= loadScale;
+    }
     function cappedLongitudinalTarget(omega) {
       const longitudinal = longitudinalTarget(omega);
       const magnitude = Math.hypot(fadedLateralForceMag, longitudinal);
