@@ -60,6 +60,7 @@ describe('persistent wheel inertia', () => {
     state.engine.currentGear = '1';
     state.engine.rpm = 4000;
     state.engine.clutchEngagement = 1;
+    state.engine.transmittedTorqueNm = 12;
     state.input.throttleKeyHeld = true;
     for (let i = 0; i < 100; i++) computeTireForces(0.01);
     // 12 N m axle torque, shared by two rear wheels, for one second.
@@ -114,6 +115,7 @@ describe('passive wheel brakes', () => {
     state.engine.currentGear = '1';
     state.engine.rpm = 4000;
     state.engine.clutchEngagement = 1;
+    state.engine.transmittedTorqueNm = 12;
     state.input.throttleKeyHeld = true;
     state.input.handbrakeKeyHeld = true;
     state.input.handbrakeValue = 1;
@@ -172,6 +174,7 @@ describe('wheel/contact/chassis exchange', () => {
       state.engine.currentGear = '1';
       state.engine.rpm = 4000;
       state.engine.clutchEngagement = 1;
+      state.engine.transmittedTorqueNm = 200;
       state.input.throttleKeyHeld = true;
       for (let i = 0; i < Math.round(2 / dt); i++) stepChassis(dt);
       speeds.push(-state.body.velocityY);

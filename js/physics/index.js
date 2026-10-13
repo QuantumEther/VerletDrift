@@ -17,7 +17,7 @@ export { solveRigidBodyConstraints, clampParticleDisplacements,
          handleBoundaryCollisions }                               from './constraints.js';
 export { computeWeightTransfer }                                   from './weight.js';
 export { computeTireForces, computeDragForces, computeBrakeForce } from './tires.js';
-export { updateEngine, handleGearChange, applySleepIfNeeded,
+export { updateEngine, synchronizeEngineWithWheels, handleGearChange, applySleepIfNeeded,
          updateEngineSound }                                       from './engine.js';
 export { updateSteering }                                          from './steering.js';
 export { updateCamera }                                            from './camera.js';

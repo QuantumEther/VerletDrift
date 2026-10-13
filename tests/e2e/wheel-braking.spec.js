@@ -7,8 +7,11 @@ test('held throttle launches the vehicle and front brakes stop it in neutral', a
   await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
   const start = await page.evaluate(() => ({ ...window.state.body }));
 
-  await page.keyboard.down('KeyD');
+  await page.keyboard.down('KeyA');
   await page.keyboard.press('Numpad7');
+  await page.keyboard.down('KeyD');
+  await page.waitForTimeout(100);
+  await page.keyboard.up('KeyA');
   await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 8000 })
     .toBeGreaterThan(3);
   const launched = await page.evaluate(() => ({ ...window.state.body }));

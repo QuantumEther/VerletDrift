@@ -52,15 +52,6 @@ function getGearRatio(gear, params) {
   return map[gear] ?? 0;
 }
 
-// Returns normalised torque [0, 1] at a given RPM using a parabolic curve.
-// Peak (1.0) occurs at TORQUE_PEAK_RPM.
-function torqueCurveNormalized(rpm, idleRpm, redlineRpm) {
-  const TORQUE_PEAK_RPM = 4000; // must match constants.js value
-  const rpmRange         = redlineRpm - idleRpm;
-  const distanceFromPeak = (rpm - TORQUE_PEAK_RPM) / rpmRange;
-  return Math.max(0, 1.0 - 2.5 * distanceFromPeak * distanceFromPeak);
-}
-
 // Simplified Pacejka "Magic Formula" (E=0 variant).
 // F = normalLoad × frictionCoeff × sin(C × atan(B × normalisedSlip))
 function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C) {
@@ -121,11 +112,10 @@ export function computeTireForces(dt) {
   const longitudinalSpeed = dot(body.velocityX, body.velocityY, forwardX, forwardY);
   const speedMagnitude    = Math.max(0.05, body.speed);
 
-  // Compute available drive force from engine torque.
-  // Only transmitted to rear wheels (rear-wheel-drive assumption).
+  // Apply clutch-transmitted crank torque through the current gear ratio.
+  // Only the rear wheels are driven in this model.
   let driveForce = 0;
   if (gearRatio !== 0 && engine.clutchEngagement > 0 && !engine.isStalled) {
-    const torqueNormalized = torqueCurveNormalized(engine.rpm, params.idleRpm, params.redlineRpm);
     let throttleAmount = 0;
     if (state.input.mouseThrottleActive) {
       throttleAmount = state.input.mouseThrottleAmount;
@@ -133,9 +123,8 @@ export function computeTireForces(dt) {
       throttleAmount = 1.0;
     }
 
-    const engineTorque = params.peakEngineTorqueNm * torqueNormalized * throttleAmount;
-    const wheelTorque  = engineTorque * Math.abs(gearRatio) * params.finalDriveRatio
-                         * engine.clutchEngagement;
+    const wheelTorque = (engine.transmittedTorqueNm || 0)
+      * Math.abs(gearRatio) * params.finalDriveRatio;
     driveForce = wheelTorque / params.wheelRadius;
 
     // Reverse: flip the direction.
@@ -169,6 +158,10 @@ export function computeTireForces(dt) {
   const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
   const wheelKinematics = state.wheelKinematics;
   const wheelInertia = params.wheelInertia || 1.2;
+  const reflectedEngineInertia = engine.drivetrainLocked
+    ? (params.engineInertiaKgM2 || 0.25)
+      * (gearRatio * params.finalDriveRatio) ** 2 / 2
+    : 0;
   if (!state.wheelBrakeTorque) state.wheelBrakeTorque = {};
 
   let maxLateralWheelSpeed = 0;
@@ -298,7 +291,9 @@ export function computeTireForces(dt) {
     const previousOmega = state.wheelOmega[name];
     const torqueDrive = isFront ? 0 : driveForce * wheelRad * 0.5;
     const rotation = integrateWheelContact({
-      omega: previousOmega, inertia: wheelInertia, radius: wheelRad, dt,
+      omega: previousOmega,
+      inertia: wheelInertia + (isFront ? 0 : reflectedEngineInertia),
+      radius: wheelRad, dt,
       driveTorque: torqueDrive,
       brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
       previousForce: prev.lon, targetForce: cappedLongitudinalTarget,

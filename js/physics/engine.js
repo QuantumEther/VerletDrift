@@ -12,7 +12,6 @@ import {
   TAU,
 } from '../constants.js';
 
-import { logger } from '../debug/logger.js';
 import { eventBuffer } from '../debug/events.js';
 
 
@@ -88,186 +87,118 @@ function computeClutchEngagement(pedalPosition, bitePoint, biteRange, biteCurve)
 // RPM behaves differently depending on which clutch zone we are in.
 export function updateEngine(dt) {
   const engine = state.engine;
-  const input  = state.input;
-  const body   = state.body;
+  const input = state.input;
+  const body = state.body;
   const params = state.params;
 
   if (!engine.isRunning) {
     engine.rpm = 0;
+    engine.transmittedTorqueNm = 0;
+    engine.drivetrainLocked = false;
     return;
   }
 
-  // --- Compute throttle amount ---
-  // Mouse drag takes priority if active; keyboard D key is a binary fallback.
   let throttleAmount = 0;
-  if (input.mouseThrottleActive) {
-    throttleAmount = input.mouseThrottleAmount;
-  } else if (input.throttleKeyHeld) {
-    throttleAmount = 1.0;
-  }
+  if (input.mouseThrottleActive) throttleAmount = input.mouseThrottleAmount;
+  else if (input.throttleKeyHeld) throttleAmount = 1;
 
-  // --- Move clutch pedal toward target position ---
-  // A key held = push pedal to floor (disengage); released = pedal returns.
-  const targetPedalPosition = input.clutchKeyHeld ? 0.0 : 1.0;
-  const pedalRate = 1.0 / params.clutchEngageTime; // fraction per second
+  const targetPedalPosition = input.clutchKeyHeld ? 0 : 1;
+  const pedalRate = 1 / params.clutchEngageTime;
   if (engine.clutchPedalPosition < targetPedalPosition) {
-    engine.clutchPedalPosition = Math.min(
-      targetPedalPosition,
-      engine.clutchPedalPosition + pedalRate * dt
-    );
+    engine.clutchPedalPosition = Math.min(targetPedalPosition,
+      engine.clutchPedalPosition + pedalRate * dt);
   } else {
-    engine.clutchPedalPosition = Math.max(
-      targetPedalPosition,
-      engine.clutchPedalPosition - pedalRate * dt
-    );
+    engine.clutchPedalPosition = Math.max(targetPedalPosition,
+      engine.clutchPedalPosition - pedalRate * dt);
   }
 
-  // --- Compute engagement factor from pedal position ---
-  const prevClutchEngagement = engine.clutchEngagement; // save before update
-
+  const prevClutchEngagement = engine.clutchEngagement;
   engine.clutchEngagement = computeClutchEngagement(
-    engine.clutchPedalPosition,
-    params.clutchBitePoint,
-    params.clutchBiteRange,
-    params.clutchBiteCurve,
+    engine.clutchPedalPosition, params.clutchBitePoint,
+    params.clutchBiteRange, params.clutchBiteCurve,
   );
-
   const gearRatio = getGearRatio(engine.currentGear, params);
+  const drivetrainLocked = gearRatio !== 0 && engine.clutchEngagement > 0.99;
+  engine.drivetrainLocked = drivetrainLocked;
 
-  // Camera jerk at clutch bite point — when engagement crosses 0.5 upward
-  // (pedal releasing, clutch catching) at speed, the driveline loads up
-  // suddenly and the car lurches. Model this as a forward camera impulse.
   const bitePointCrossing = prevClutchEngagement < 0.5 && engine.clutchEngagement >= 0.5;
-  if (bitePointCrossing && body.speed > 2.0 && gearRatio !== 0) {
+  if (bitePointCrossing && body.speed > 2 && gearRatio !== 0) {
     const jerkMagnitude = Math.min(body.speed * 0.008, 0.12);
-    const forwardX      = Math.sin(body.heading);
-    const forwardY      = -Math.cos(body.heading);
-    // Forward lurch — car accelerates suddenly as clutch catches.
+    const forwardX = Math.sin(body.heading);
+    const forwardY = -Math.cos(body.heading);
     state.camera.jerkOffsetX = forwardX * jerkMagnitude;
     state.camera.jerkOffsetY = forwardY * jerkMagnitude;
   }
 
-  // --- Handle stalled engine ---
-  // A stalled engine produces no torque until restarted.
-  // Recovery: press clutch fully to floor (disengage), then apply throttle.
-  // This mirrors real life: stall → clutch in → throttle to idle → release.
   if (engine.isStalled) {
     engine.rpm = 0;
-    const clutchFullyDisengaged = engine.clutchEngagement < 0.01;
-    if (throttleAmount > 0.01 && clutchFullyDisengaged) {
+    engine.transmittedTorqueNm = 0;
+    if (engine.clutchEngagement < 0.01 && throttleAmount > 0.01) {
       engine.isStalled = false;
       engine.rpm = params.idleRpm;
-    }
-    return;
-  }
-
-  // --- Rev-match blip (automatic RPM assist on downshift) ---
-  // Briefly raises RPM to match wheel speed so a downshift doesn't cause a jerk.
-  if (engine.revMatchTimer > 0) {
-    engine.revMatchTimer -= dt;
-    // Blend RPM toward the target over the blip duration.
-    const blendRate = 8.0;
-    engine.rpm += (engine.revMatchTargetRpm - engine.rpm) * blendRate * dt;
-  }
-
-  // Read live slider values for RPM limits and drivetrain
-  const idleRpm    = params.idleRpm;
-  const redlineRpm = params.redlineRpm;
-  const stallRpm   = params.stallRpm;
-  const wheelRad   = params.wheelRadius;
-  const finalDrive = params.finalDriveRatio;
-
-  // --- RPM computation: three cases based on clutch zone ---
-  if (gearRatio === 0 || engine.clutchEngagement < 0.01) {
-    // CASE A: Neutral OR clutch fully disengaged → free-revving engine.
-    const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
-    // THROTTLE TUNING (User Investigation): Rise rate was 6.0/3.0 which was too aggressive.
-    // Small throttle press caused extreme RPM jump. Reduced to 2.5/1.8 for smoother response.
-    // This gives ~1.5-2s ramp time from idle to redline, matching realistic engine acceleration.
-    const riseRate = throttleAmount > 0.01 ? 2.5 : 1.8;
-    engine.rpm += (freeRevTarget - engine.rpm) * riseRate * dt;
-    engine.rpm  = clamp(engine.rpm, idleRpm, redlineRpm);
-
-  } else if (engine.clutchEngagement > 0.99) {
-    // CASE B: Clutch fully engaged → rigid mechanical coupling.
-    // NEW: Use wheel omega (rotational velocity) instead of body speed.
-    // This enables independent wheel spin-up during wheelspin/burnout.
-    //
-    // TRANSIENT FIX: During wheel spin-up (omega < threshold), blend free-rev
-    // with wheel RPM to allow smooth launch. Once wheels gain momentum, fully
-    // lock to wheel RPM (no runaway revving).
-    const rearAvgOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
-    // Convert wheel omega [rad/s] to wheel RPM
-    const wheelRpmValue = rearAvgOmega * (60 / TAU);
-    // In geared drivetrain: engineRpm = wheelRpm * gearRatio * finalDrive
-    // (gear ratios amplify wheel speed back to engine speed)
-    const engineRpmFromWheel = Math.abs(wheelRpmValue) * Math.abs(gearRatio) * finalDrive;
-
-    // Free-rev target based on current throttle
-    const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
-    // Same throttle tuning as CASE A for consistency
-    const riseRate = throttleAmount > 0.01 ? 2.5 : 1.8;
-    const freeRpm = engine.rpm + (freeRevTarget - engine.rpm) * riseRate * dt;
-
-    // Transient blend: if wheels are slow, blend free-rev with wheel demand.
-    // Smooth transition: as wheels spin up, gradually lock RPM to wheel speed.
-    // NOTE: At typical 0.3m wheel radius:
-    //   10 rad/s  ≈ 3 m/s surface speed ≈ 11 km/h (very early launch)
-    //   20 rad/s  ≈ 6 m/s surface speed ≈ 22 km/h (early acceleration)
-    //   30 rad/s  ≈ 9 m/s surface speed ≈ 32 km/h (mid launch)
-    //   50 rad/s  ≈ 15 m/s surface speed ≈ 54 km/h (full launch speed)
-    // Threshold of 40 rad/s keeps engine free-revving through most of launch,
-    // then locks to wheel speed as car reaches highway merging speed.
-    const wheelSpeedThreshold = 40.0;  // rad/s — allow free-rev until wheels reach ~12 m/s
-    const transientBlend = Math.max(0, 1.0 - rearAvgOmega / wheelSpeedThreshold);
-
-    engine.rpm = freeRpm * transientBlend + engineRpmFromWheel * (1 - transientBlend);
-
-    // During transient blending, allow RPM to dip lower when wheels are slow.
-    // Blend-aware clamp floor: transitions from idle * 0.8 (free-rev) to idle * 0.2 (wheel-locked)
-    // This lets engineRpmFromWheel dominate during early launch without being overridden by clamping.
-    const clampFloor = idleRpm * (0.8 * transientBlend + 0.2 * (1 - transientBlend));
-    engine.rpm = clamp(engine.rpm, clampFloor, redlineRpm);
-
-    // Debug: Log engine state when wheels are spinning (sampled, only in tuning/trace modes)
-    if (rearAvgOmega > 1 && throttleAmount > 0.1) {
-      logger.sampleEvery('debug', 'engine', 100, () => ({
-        rearAvgOmega: rearAvgOmega.toFixed(2),
-        freeRpm: freeRpm.toFixed(0),
-        engineRpmFromWheel: engineRpmFromWheel.toFixed(0),
-        blend: transientBlend.toFixed(2),
-        finalRpm: engine.rpm.toFixed(0),
-      }));
-    }
-
-    const effectiveStallRpm = stallRpm * (1.0 - params.stallResistance * 0.8);
-    if (engineRpmFromWheel < effectiveStallRpm && body.speed < 0.5 && throttleAmount < 0.05) {
-      engine.isStalled = true;
-      engine.rpm = 0;
+    } else {
       return;
     }
+  }
 
+  let revMatchTorque = 0;
+  if (engine.revMatchTimer > 0) {
+    engine.revMatchTimer -= dt;
+    const inertia = Math.max(params.engineInertiaKgM2 || 0.25, 1e-4);
+    const rpmError = engine.revMatchTargetRpm - engine.rpm;
+    revMatchTorque = clamp(rpmError * (TAU / 60) * inertia * 8,
+      0, params.peakEngineTorqueNm * 0.5);
+  }
+
+  const idleRpm = params.idleRpm;
+  const redlineRpm = params.redlineRpm;
+  const inertia = Math.max(params.engineInertiaKgM2 || 0.25, 1e-4);
+  const peakTorque = Math.max(params.peakEngineTorqueNm, 0);
+  const torqueNormalized = torqueCurveNormalized(engine.rpm, idleRpm, redlineRpm);
+  const engineFriction = peakTorque * 0.035 + engine.rpm * (TAU / 60) * 0.01;
+  const idleGovernor = clamp(engineFriction + (idleRpm - engine.rpm) * 0.05,
+    0, peakTorque * 0.25);
+  const combustionTorque = peakTorque * torqueNormalized * throttleAmount
+    + idleGovernor + revMatchTorque;
+
+  if (drivetrainLocked) {
+    // In locked gear, crank inertia is reflected into the rear-wheel solve.
+    // RPM is synchronized after that solve in synchronizeEngineWithWheels().
+    engine.transmittedTorqueNm = combustionTorque;
   } else {
-    // CASE C: Clutch in slip/bite zone → engine free-revs independently.
-    // Torque is applied to wheels through clutch engagement (in computeTireForces).
-    // Wheels accelerate based on wheel torque integration, NOT coupled to engine RPM.
-    // This allows clutch dumps, burnouts, and traction recovery to work correctly.
+    const rearOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
+    const shaftOmega = rearOmega * gearRatio * params.finalDriveRatio;
+    const crankOmega = engine.rpm * TAU / 60;
+    const clutchSlip = crankOmega - shaftOmega;
+    const clutchCapacity = peakTorque * engine.clutchEngagement;
+    const clutchTorque = clamp(clutchSlip * peakTorque / 100,
+      -clutchCapacity, clutchCapacity);
+    engine.transmittedTorqueNm = clutchTorque;
 
-    const freeRevTarget = idleRpm + throttleAmount * (redlineRpm - idleRpm);
-    const riseRate      = throttleAmount > 0.01 ? 6.0 : 3.0;
-    const freeRpm       = engine.rpm + (freeRevTarget - engine.rpm) * riseRate * dt;
+    const nextOmega = Math.max(0, crankOmega
+      + (combustionTorque - clutchTorque - engineFriction) * dt / inertia);
+    engine.rpm = clamp(nextOmega * 60 / TAU, 0, redlineRpm);
+  }
 
-    engine.rpm = clamp(freeRpm, idleRpm * 0.8, redlineRpm);
-
-    // Stall only if engine truly loses power (no throttle, wheels not spinning up from drag)
-    const stallThreshold = stallRpm * 0.5;  // Very lenient during slip
-    if (engine.rpm < stallThreshold && throttleAmount < 0.01 && body.speed < 0.2) {
-      engine.isStalled = true;
-      engine.rpm = 0;
-    }
+  const effectiveStallRpm = params.stallRpm * (1 - params.stallResistance * 0.8);
+  if (engine.rpm < effectiveStallRpm && engine.clutchEngagement > 0.01
+      && body.speed < 0.5 && throttleAmount < 0.05) {
+    engine.isStalled = true;
+    engine.rpm = 0;
+    engine.transmittedTorqueNm = 0;
   }
 }
 
+// A fully engaged clutch constrains crank speed to the driven axle. The engine
+// inertia is included in each rear wheel's effective inertia by the tire solve.
+export function synchronizeEngineWithWheels() {
+  const engine = state.engine;
+  if (!engine.isRunning || engine.isStalled || !engine.drivetrainLocked) return;
+  const gearRatio = getGearRatio(engine.currentGear, state.params);
+  const rearOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
+  const rpm = Math.abs(rearOmega * gearRatio * state.params.finalDriveRatio) * 60 / TAU;
+  engine.rpm = clamp(rpm, 0, state.params.redlineRpm);
+}
 
 // =============================================================
 // GEAR CHANGES

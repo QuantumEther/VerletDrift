@@ -12,6 +12,7 @@ import {
   REDLINE_RPM,
   STALL_RPM,
   PEAK_ENGINE_TORQUE_NM,
+  ENGINE_INERTIA_KG_M2,
   DEFAULT_BOUNCINESS,
   DEFAULT_STALL_RESISTANCE,
   DEFAULT_TIRE_FRICTION_COEFF,
@@ -358,6 +359,8 @@ const state = {
     previousGear:         'N',
     clutchPedalPosition:  0.0,   // starts floored (disengaged) — safe for gear selection
     clutchEngagement:     0.0,   // derived from pedal position
+    transmittedTorqueNm:  0.0,   // engine-side torque currently sent through the clutch
+    drivetrainLocked:     false, // engine inertia reflected into driven wheels
     isStalled:            false,
     isRunning:            true,
     revMatchTimer:        0,     // countdown for automatic blip on downshift
@@ -460,6 +463,7 @@ const state = {
 
     // --- Engine & Drivetrain (new sliders) ---
     peakEngineTorqueNm: PEAK_ENGINE_TORQUE_NM,
+    engineInertiaKgM2:   ENGINE_INERTIA_KG_M2,
     idleRpm:            IDLE_RPM,
     redlineRpm:         REDLINE_RPM,
     stallRpm:           STALL_RPM,

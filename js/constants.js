@@ -116,6 +116,10 @@ export const STALL_RPM = 600;
 //   driveForce = 350 × 3.5 × 4.1 / 0.35 ≈ 14,350 N  (~1.2 g before friction clamp)
 export const PEAK_ENGINE_TORQUE_NM = 350;
 
+// Effective crankshaft and flywheel rotational inertia (kg·m²).
+// This controls how quickly RPM changes under combustion and clutch load.
+export const ENGINE_INERTIA_KG_M2 = 0.25;
+
 // Braking force when the brake pedal is held (Newtons).
 // 9810 N / 1200 kg ≈ 8.2 m/s² ≈ 0.83 g — realistic for a road car.
 export const BRAKE_FORCE = 9810; // N
