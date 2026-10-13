@@ -8,9 +8,10 @@
 //   Low-speed lateral fade: clamp01(totalSpeed / 2.0)
 //   Tire relaxation: tireRelaxTau = max(relaxationLength / vLongAbs, 1e-4)
 //   Friction ellipse: scale both forces when hypot(lat, lon) > frictionLimit
-//   Wheel omega integration: omegaFromRolling + omegaDelta
+//   Wheel inertia: retain omega history; brakes oppose rotation, not chassis speed.
 
 import { physicsState as state } from '../state.js';
+import { integrateWheelContact } from './wheel.js';
 import {
   GRAVITY,
   TIRE_PEAK_SLIP_RATIO,
@@ -71,48 +72,23 @@ function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C)
          Math.sin(C * Math.atan(B * normalisedSlip));
 }
 
-// Computes brake force for both S key (front) and F key (rear handbrake),
-// returns { forceMag, torque, isBraking } for one wheel.
-function computeWheelBrakeTorque(name, wheelLongitudinalSpeed, normalLoad, frictionCoeff, wheelRad, params, safePeakSlipRatio) {
+// Nominal rim-force settings converted to rotor torque capacity. Road friction
+// limits tire contact force, not the brake's ability to stop an airborne wheel.
+function computeWheelBrakeCapacity(name, wheelRad, params) {
   let brakeForceMag = 0;
-  let isBraking = false;
   const isRearWheel = name.startsWith('rear');
 
   // Regular brake (S key, front wheels get 80%, so 0.4 per wheel × 2 wheels = 80%)
-  if (state.input.brakeKeyHeld && state.body.speed > 0.05) {
-    if (!isRearWheel) {
-      const perWheelBrake   = params.brakeForce * 0.4;
-      const frictionBudget  = normalLoad * frictionCoeff;
-      const brakeSlipInput  = Math.min(perWheelBrake / Math.max(frictionBudget, 1.0), 2.0);
-      const brakeForce = pacejkaForce(normalLoad, frictionCoeff,
-                                      brakeSlipInput * safePeakSlipRatio,
-                                      safePeakSlipRatio,
-                                      params.pacejkaB, params.pacejkaC);
-      brakeForceMag = brakeForce;
-      isBraking = true;
-    }
+  if (state.input.brakeKeyHeld && !isRearWheel) {
+    brakeForceMag = params.brakeForce * 0.4;
   }
 
   // Handbrake (F key, rear only, progressive with handbrakeValue 0–1)
-  if (state.input.handbrakeKeyHeld && state.body.speed > 0.05) {
-    if (isRearWheel) {
-      const hbVal          = state.input.handbrakeValue || 0;
-      const perWheelHB     = params.brakeForce * 0.5 * hbVal;
-      const frictionBudget = normalLoad * frictionCoeff;
-      const hbSlipInput    = Math.min(perWheelHB / Math.max(frictionBudget, 1.0), 3.0);
-      const hbForce = pacejkaForce(normalLoad, frictionCoeff,
-                                   hbSlipInput * safePeakSlipRatio,
-                                   safePeakSlipRatio,
-                                   params.pacejkaB, params.pacejkaC);
-      brakeForceMag = Math.max(brakeForceMag, hbForce);
-      isBraking = true;
-    }
+  if (state.input.handbrakeKeyHeld && isRearWheel) {
+    brakeForceMag = params.brakeForce * 0.5 * clamp01(state.input.handbrakeValue || 0);
   }
 
-  // Convert to torque: T_brake = F_brake × R, with sign opposing wheel velocity
-  const brakeTorque = brakeForceMag * wheelRad * (wheelLongitudinalSpeed >= 0 ? -1 : 1);
-
-  return { forceMag: brakeForceMag, torque: brakeTorque, isBraking };
+  return Math.max(0, brakeForceMag) * wheelRad;
 }
 
 // -----------------------------------------------
@@ -192,6 +168,8 @@ export function computeTireForces(dt) {
 
   const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
   const wheelKinematics = state.wheelKinematics;
+  const wheelInertia = params.wheelInertia || 1.2;
+  if (!state.wheelBrakeTorque) state.wheelBrakeTorque = {};
 
   let maxLateralWheelSpeed = 0;
   let anyWheelSlipping     = false;
@@ -275,42 +253,51 @@ export function computeTireForces(dt) {
     const lowSpeedFade = clamp01(totalSpeed / LOW_SPEED_FADE_END);
     const fadedLateralForceMag = lateralForceMag * lowSpeedFade;
 
-    // Longitudinal force via slip ratio model.
-    let longitudinalForceMag = 0;
-    let slipRatio = 0;
-
     // Compute true kinematic slip ratio: κ = (R·ω - v_long) / max(|R·ω|, |v_long|, ε)
     const wheelRad = params.wheelRadius;
-    const omega = state.wheelOmega[name];
-    const wheelSurfaceSpeed = omega * wheelRad;
-    const epsilon = 0.5;
-    const slipDenomLongitudinal = Math.max(Math.abs(wheelSurfaceSpeed), Math.abs(wheelLongitudinalSpeed), epsilon);
-    slipRatio = (wheelSurfaceSpeed - wheelLongitudinalSpeed) / slipDenomLongitudinal;
-    slipRatio = clamp(slipRatio, -1.0, 1.0);
-
-    if (Math.abs(slipRatio) > 0.001) {
-      longitudinalForceMag = pacejkaForce(normalLoad, frictionCoeff,
-                                           Math.abs(slipRatio), safePeakSlipRatio,
-                                           params.pacejkaB, params.pacejkaC);
-      if (slipRatio < 0) longitudinalForceMag = -longitudinalForceMag;
+    function slipAtOmega(omega) {
+      const surfaceSpeed = omega * wheelRad;
+      const denominator = Math.max(Math.abs(surfaceSpeed), Math.abs(wheelLongitudinalSpeed), 0.5);
+      return clamp((surfaceSpeed - wheelLongitudinalSpeed) / denominator, -1, 1);
     }
 
-    // --- PER-WHEEL BRAKING ---
-    const brakeResult = computeWheelBrakeTorque(name, wheelLongitudinalSpeed,
-                                                 normalLoad, frictionCoeff, wheelRad,
-                                                 params, safePeakSlipRatio);
-    if (brakeResult.isBraking) {
-      const brakeSign = wheelLongitudinalSpeed >= 0 ? -1 : 1;
-      longitudinalForceMag += Math.abs(brakeResult.forceMag) * brakeSign;
+    function longitudinalTarget(omega) {
+      const slip = slipAtOmega(omega);
+      return pacejkaForce(normalLoad, frictionCoeff, Math.abs(slip), safePeakSlipRatio,
+        params.pacejkaB, params.pacejkaC) * Math.sign(slip);
     }
 
-    // Store brake torque for wheel integration
-    if (!state.wheelBrakeTorque) state.wheelBrakeTorque = {};
-    state.wheelBrakeTorque[name] = brakeResult.torque;
-
-    // Friction ellipse: combined lateral and longitudinal force cannot exceed
-    // the tyre's grip circle (normalLoad × frictionCoeff).
+    // Preserve the combined-force cap and distance-based force relaxation.
+    // Resolve longitudinal force at the new rotor speed, so the contact force
+    // accelerating the body is the same force reacting against wheel inertia.
     const frictionLimit  = normalLoad * frictionCoeff;
+    const relaxationLength = params.tireRelaxationLength !== undefined
+      ? Math.max(params.tireRelaxationLength, 0.02) : 0.3;
+    const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
+    const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
+    const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
+    const prev = state.prevTireForce[name];
+    function cappedLongitudinalTarget(omega) {
+      const longitudinal = longitudinalTarget(omega);
+      const magnitude = Math.hypot(fadedLateralForceMag, longitudinal);
+      const scale = magnitude > frictionLimit && magnitude > 0 ? frictionLimit / magnitude : 1;
+      return longitudinal * scale;
+    }
+
+    const previousOmega = state.wheelOmega[name];
+    const torqueDrive = isFront ? 0 : driveForce * wheelRad * 0.5;
+    const rotation = integrateWheelContact({
+      omega: previousOmega, inertia: wheelInertia, radius: wheelRad, dt,
+      driveTorque: torqueDrive,
+      brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
+      previousForce: prev.lon, targetForce: cappedLongitudinalTarget,
+      frictionLimit, relaxationTime: tireRelaxTau,
+    });
+    // Retain the existing 500 rad/s runaway guard; it is not the integration rule.
+    state.wheelOmega[name] = clamp(rotation.omega, -500, 500);
+    state.wheelBrakeTorque[name] = dt > 0 ? rotation.brakeImpulse / dt : 0;
+    const slipRatio = slipAtOmega(state.wheelOmega[name]);
+    const longitudinalForceMag = longitudinalTarget(state.wheelOmega[name]);
     const combinedMag    = Math.hypot(fadedLateralForceMag, longitudinalForceMag);
     let frictionScale    = 1.0;
     if (combinedMag > frictionLimit && combinedMag > 0) {
@@ -330,17 +317,11 @@ export function computeTireForces(dt) {
     state.wheelSlipRatio[name] = slipRatio;
 
     // --- TIRE FORCE RELAXATION ---
-    // τ(v) = λ / max(|v_long|, ε) — distance-based relaxation, not time-based.
-    const relaxationLength = params.tireRelaxationLength !== undefined
-      ? Math.max(params.tireRelaxationLength, 0.02) : 0.3;
-    const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
-    const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
-    const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
-    const prev = state.prevTireForce[name];
     const relaxedLat = prev.lat + (scaledLateral - prev.lat) * tireRelaxAlpha;
-    const relaxedLon = prev.lon + (scaledLongitudinal - prev.lon) * tireRelaxAlpha;
+    const relaxedLon = dt > 0 ? rotation.contactImpulse / dt : prev.lon;
     prev.lat = relaxedLat;
-    prev.lon = relaxedLon;
+    prev.lon = rotation.force;
+    logger.trace('tires', () => `${name}: ωPrev=${previousOmega.toFixed(2)}, ωNew=${state.wheelOmega[name].toFixed(2)}, TBrake=${state.wheelBrakeTorque[name].toFixed(2)}`);
 
     // Per-wheel grip: lateral saturation
     const lateralSaturation = frictionLimit > 0
@@ -413,53 +394,9 @@ export function computeTireForces(dt) {
     netTorque += armX * wheelForceY - armY * wheelForceX;
   }
 
-  // ========== WHEEL TORQUE INTEGRATION ==========
-  // dω/dt = (T_drive - T_brake - T_traction) / I_w
-  const wheelInertia = params.wheelInertia || 1.2;
-  const maxOmega = 500;
-
+  // Rotor integration occurred with the tire reaction in the force loop above.
   for (const name of wheelNames) {
-    const isRear = name.startsWith('rear');
-    const wheelRad = params.wheelRadius;
-
-    // 1. Drive torque: only for rear wheels, split equally
-    let torqueDrive = 0;
-    if (isRear && Math.abs(driveForce) > 0.01) {
-      torqueDrive = driveForce * wheelRad * 0.5;
-    }
-
-    // 2. Brake torque
-    const torqueBrake = (state.wheelBrakeTorque && state.wheelBrakeTorque[name]) || 0;
-
-    // 3. Traction reaction torque: T = Fx · R (opposes wheel spin)
-    const kinematics = wheelKinematics[name];
-    const longitudinalForce = dot(
-      state.wheelForces[name].fx,
-      state.wheelForces[name].fy,
-      kinematics.wheelForwardX,
-      kinematics.wheelForwardY,
-    );
-    const torqueTraction = longitudinalForce * wheelRad;
-
-    // 4. Integrate: ω += (ΣT) / I_w · dt
-    const netWheelTorque = torqueDrive - torqueBrake - torqueTraction;
-    const omegaDelta = (netWheelTorque / wheelInertia) * dt;
-
-    // Rolling velocity baseline: ω = v_rolling / R, then add torque integration
-    const wheelLongitudinalSpeed = dot(
-      kinematics.wheelVelX,
-      kinematics.wheelVelY,
-      kinematics.wheelForwardX,
-      kinematics.wheelForwardY
-    );
-    const omegaFromRolling = wheelLongitudinalSpeed / wheelRad;
-
-    const sumOmega = omegaFromRolling + omegaDelta;
-    const finalOmega = clamp(sumOmega, -maxOmega, maxOmega);
-    state.wheelOmega[name] = finalOmega;
-
-    // Trace-gated wheel omega debug logging (only emitted in trace mode for tires channel)
-    logger.trace('tires', () => `${name}: vLong=${wheelLongitudinalSpeed.toFixed(2)}, ωRoll=${omegaFromRolling.toFixed(2)}, Δω=${omegaDelta.toFixed(4)}, final=${finalOmega.toFixed(2)}`);
+    const finalOmega = state.wheelOmega[name];
 
     // Phase C: Event Enrichment - Emit wheel overspin enter/exit events
     const OVERSPIN_THRESHOLD = 200; // rad/s
