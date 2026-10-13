@@ -46,12 +46,26 @@ export function computeWeightTransfer() {
   // Clamp to ±2 g to prevent constraint-solver transients from causing runaway
   // weight transfer that would amplify tire forces on the next step.
   const clampedLongAccel = clamp(body.longitudinalAccel, -2 * GRAVITY, 2 * GRAVITY);
-  const longitudinalTransfer = massKg * clampedLongAccel * cogHeight / wheelbase;
+  // This is the total load shifted from one axle to the other. Keep it within
+  // the static axle load so the receiving axle gains exactly what the other
+  // axle loses, including at wheel lift-off.
+  const longitudinalTransfer = clamp(
+    massKg * clampedLongAccel * cogHeight / wheelbase,
+    -halfWeight,
+    halfWeight,
+  );
 
   // Lateral transfer: cornering shifts load to the outside wheels.
   // Transfer = mass × lateral_accel × CoG_height / trackWidth
   const clampedLatAccel = clamp(body.lateralAccel, -2 * GRAVITY, 2 * GRAVITY);
-  const lateralTransfer = massKg * clampedLatAccel * cogHeight / trackWidth;
+  // The total outside-vs-inside shift is shared evenly by both axles, so each
+  // wheel changes by half this amount. Limit it to the lighter axle's wheel
+  // load so lateral transfer cannot create negative normal loads.
+  const lateralTransfer = clamp(
+    massKg * clampedLatAccel * cogHeight / (2 * trackWidth),
+    -Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,
+    Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,
+  );
 
   // Each axle gets half the total weight, then longitudinal transfer shifts
   // weight between front and rear axles. Within each axle, lateral transfer
@@ -63,8 +77,8 @@ export function computeWeightTransfer() {
   const frontAxleLoad = halfWeight - longitudinalTransfer;
   const rearAxleLoad  = halfWeight + longitudinalTransfer;
 
-  loads.frontLeft  = Math.max(0, frontAxleLoad * 0.5 - lateralTransfer);
-  loads.frontRight = Math.max(0, frontAxleLoad * 0.5 + lateralTransfer);
-  loads.rearLeft   = Math.max(0, rearAxleLoad  * 0.5 - lateralTransfer);
-  loads.rearRight  = Math.max(0, rearAxleLoad  * 0.5 + lateralTransfer);
+  loads.frontLeft  = frontAxleLoad * 0.5 - lateralTransfer;
+  loads.frontRight = frontAxleLoad * 0.5 + lateralTransfer;
+  loads.rearLeft   = rearAxleLoad  * 0.5 - lateralTransfer;
+  loads.rearRight  = rearAxleLoad  * 0.5 + lateralTransfer;
 }
