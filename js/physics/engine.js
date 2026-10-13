@@ -216,10 +216,13 @@ export function handleGearChange(newGear) {
 
   const previousRatio = getGearRatio(engine.currentGear, params);
   const newRatio      = getGearRatio(newGear, params);
+  const hasTwoGearRatios = newRatio !== 0 && previousRatio !== 0;
+  const ratioIsUpshift = hasTwoGearRatios && Math.abs(newRatio) < Math.abs(previousRatio);
+  const ratioIsDownshift = hasTwoGearRatios && Math.abs(newRatio) > Math.abs(previousRatio);
 
   // Rev-match blip for downshifts: if the new gear would demand a higher RPM
   // than the engine currently has, blip the throttle to close the gap.
-  if (newRatio !== 0 && previousRatio !== 0 && newRatio > previousRatio) {
+  if (newRatio !== 0 && previousRatio !== 0 && ratioIsDownshift) {
     const vehicleSpeed = body.speed;
     const wheelRpm     = (vehicleSpeed * 60) / (TAU * params.wheelRadius);
     const targetRpm    = wheelRpm * Math.abs(newRatio) * params.finalDriveRatio;
@@ -234,9 +237,7 @@ export function handleGearChange(newGear) {
 
   // Phase C: Event Enrichment - Emit gear change events
   if (newGear !== engine.previousGear && eventBuffer) {
-    const isUpshift = newRatio !== 0 && previousRatio !== 0 && newRatio < previousRatio;
-    const isDownshift = !isUpshift && newRatio !== 0 && previousRatio !== 0;
-    const eventType = isUpshift ? 'upshift' : isDownshift ? 'downshift' : 'gear_change';
+    const eventType = ratioIsUpshift ? 'upshift' : ratioIsDownshift ? 'downshift' : 'gear_change';
 
     eventBuffer.pushEvent({
       level: 'info',
@@ -247,8 +248,8 @@ export function handleGearChange(newGear) {
         fromGear: engine.previousGear,
         toGear: newGear,
         rpm: engine.rpm,
-        isUpshift: isUpshift,
-        isDownshift: isDownshift,
+        isUpshift: ratioIsUpshift,
+        isDownshift: ratioIsDownshift,
         previousRatio: previousRatio,
         newRatio: newRatio,
       },
@@ -259,7 +260,7 @@ export function handleGearChange(newGear) {
   }
 
   // Play gear change crack sound.
-  const isUpshift = newRatio !== 0 && previousRatio !== 0 && newRatio < previousRatio;
+  const isUpshift = newRatio !== 0 && previousRatio !== 0 && ratioIsUpshift;
   soundGearChange(isUpshift);
 
   // Camera jerk — offset the camera TARGET rearward briefly.

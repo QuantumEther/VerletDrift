@@ -5,7 +5,11 @@ vi.hoisted(() => {
 });
 
 import state from '../js/state.js';
-import { updateEngine, synchronizeEngineWithWheels } from '../js/physics/engine.js';
+import {
+  handleGearChange,
+  updateEngine,
+  synchronizeEngineWithWheels,
+} from '../js/physics/engine.js';
 import { TAU } from '../js/constants.js';
 
 const initial = structuredClone(state);
@@ -86,5 +90,36 @@ describe('engine and clutch rotational inertia', () => {
     synchronizeEngineWithWheels();
     const expectedRpm = 24 * state.params.gearRatio1 * state.params.finalDriveRatio * 60 / TAU;
     expect(state.engine.rpm).toBeCloseTo(expectedRpm, 10);
+  });
+
+  it('keeps engine RPM independent while shifting with the clutch disengaged', () => {
+    state.engine.currentGear = '1';
+    state.engine.rpm = 4000;
+    state.engine.clutchPedalPosition = 0;
+    state.engine.clutchEngagement = 0;
+    state.input.clutchKeyHeld = true;
+    state.body.speed = 12;
+
+    handleGearChange('2');
+    updateEngine(0.01);
+
+    expect(state.engine.currentGear).toBe('2');
+    expect(state.engine.drivetrainLocked).toBe(false);
+    expect(state.engine.rpm).toBeLessThan(4000);
+    expect(state.engine.rpm).toBeGreaterThan(3900);
+  });
+
+  it('classifies reverse gear changes by ratio magnitude for rev matching', () => {
+    state.engine.currentGear = '2';
+    state.engine.rpm = 1000;
+    state.body.speed = 10;
+
+    handleGearChange('R');
+
+    const expectedTarget = state.body.speed * 60 / (TAU * state.params.wheelRadius)
+      * Math.abs(state.params.gearRatio1) * state.params.finalDriveRatio;
+    expect(state.engine.currentGear).toBe('R');
+    expect(state.engine.revMatchTimer).toBeGreaterThan(0);
+    expect(state.engine.revMatchTargetRpm).toBeCloseTo(expectedTarget, 8);
   });
 });

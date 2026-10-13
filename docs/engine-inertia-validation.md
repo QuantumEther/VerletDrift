@@ -22,6 +22,10 @@ The model still assumes equal rear-wheel coupling and uses a simple slip-based
 clutch law; it does not model individual clutch plates, gearbox inertia, gear
 losses, or a calibrated engine torque map. The inertia value is a starting
 estimate and can be tuned against measured RPM rise and clutch-drop behavior.
+Upshift and downshift classification compares the magnitude of forward and
+reverse gear ratios; signed ratios still determine wheel torque direction.
+For clean shifts, hold `A` until the clutch is fully disengaged before selecting
+the next gear.
 
 Focused validation:
 
@@ -33,4 +37,5 @@ node node_modules/playwright/cli.js test --config /workspace/verlet-tools/playwr
 The engine tests check free-rev acceleration, RPM loading through a slipping
 clutch, stalling under clutch load at rest, and locked-engine RPM tracking.
 The browser launch test uses the manual launch sequence: hold `A`, select first
-with `Numpad7`, hold `D`, then release `A` gradually.
+with `Numpad7`, hold `D`, then release `A` gradually. A second browser case
+checks clutch-assisted upshifting and reverse travel with `Q` + `Numpad1`.
