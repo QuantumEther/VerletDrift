@@ -123,8 +123,22 @@ describe('passive wheel brakes', () => {
     expect(state.wheelOmega.rearLeft).toBe(0);
     expect(state.wheelBrakeTorque.rearLeft).toBeCloseTo(-6, 10);
     state.input.handbrakeKeyHeld = false;
+    state.input.handbrakeValue = 0;
     computeTireForces(0.01);
     expect(state.wheelOmega.rearLeft).toBeCloseTo(6 * 0.01 / state.params.wheelInertia, 10);
+  });
+
+  it('continues applying rear brake pressure while the handbrake release ramp decays', () => {
+    state.params.tireFrictionCoeff = 0;
+    state.params.brakeForce = 1000;
+    state.input.handbrakeKeyHeld = false;
+    state.input.handbrakeValue = 0.5;
+    state.wheelOmega.rearLeft = 10;
+
+    computeTireForces(0.01);
+
+    expect(state.wheelBrakeTorque.rearLeft).toBeCloseTo(-0.5 * 1000 * 0.5 * state.params.wheelRadius, 8);
+    expect(state.wheelOmega.rearLeft).toBeLessThan(10);
   });
 });
 

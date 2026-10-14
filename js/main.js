@@ -760,7 +760,7 @@ function mainLoop(timestampMilliseconds) {
 // Runs a single fixed-dt physics sub-step in the mandatory call order.
 // dt is in seconds.
 function runPhysicsStep(dt) {
-  // Handbrake progressive ramp: 0→1 in ~0.25s while held, releases instantly
+  // Handbrake pressure ramps on over 0.25s and decays over 0.15s after release.
   if (state.input.handbrakeKeyHeld) {
     state.input.handbrakeValue = Math.min(1.0, (state.input.handbrakeValue || 0) + dt / 0.25);
   } else {

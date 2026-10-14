@@ -75,8 +75,9 @@ function computeWheelBrakeCapacity(name, wheelRad, params) {
     brakeForceMag = params.brakeForce * (isRearWheel ? 0.1 : 0.4);
   }
 
-  // Handbrake (F key, rear only, progressive with handbrakeValue 0–1)
-  if (state.input.handbrakeKeyHeld && isRearWheel) {
+  // Handbrake pressure is stored as a ramped value. Continue applying it while
+  // that value decays after key release, rather than gating it on the key.
+  if (isRearWheel) {
     brakeForceMag += params.brakeForce * 0.5 * clamp01(state.input.handbrakeValue || 0);
   }
 
