@@ -20,6 +20,8 @@ import {
   NEEDLE_FALL_BOOST,
   NEEDLE_FLUTTER_THRESHOLD,
   KPH_TO_MPS,
+  CAR_HALF_LENGTH,
+  CAR_HALF_WIDTH,
 } from './constants.js';
 
 import { logger } from './debug/logger.js';
@@ -34,6 +36,10 @@ const INFO_BAR_CELL_IDS = [
   'trailDisplay',
   'renderFpsDisplay',
   'physicsTpsDisplay',
+  'motionEnergyTotal',
+  'motionEnergyLinear',
+  'motionEnergyYaw',
+  'motionEnergyWheels',
 ];
 
 const infoBarCellCache = new Map();
@@ -764,6 +770,22 @@ export function updateInfoBar() {
   // display framerate (bug: 1 tick / wallFrameTime = displayHz, not physicsHz).
   setInfoCell('physicsTpsDisplay',
     `${state.params.simulationFps}Hz · max ${state.params.maxSubstepsPerFrame}/f · drop ${state.loop.droppedSubsteps} (last ${state.loop.droppedSubstepsLastFrame})`);
+
+  // Kinetic energy estimate only: body translation, body yaw, and physical
+  // wheel spin. Engine inertia reflected into the rear wheel solver is omitted
+  // here to avoid counting drivetrain energy twice.
+  const mass = Math.max(0, state.params.carMassKg);
+  const yawInertia = mass * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3;
+  const linearJ = 0.5 * mass * (body.velocityX ** 2 + body.velocityY ** 2);
+  const yawJ = 0.5 * yawInertia * body.angularVelocity ** 2;
+  const wheelInertia = Math.max(0, state.params.wheelInertia || 0);
+  const wheelJ = Object.values(state.wheelOmega).reduce(
+    (sum, omega) => sum + 0.5 * wheelInertia * omega ** 2, 0);
+  const toKJ = (joules) => `${(joules / 1000).toFixed(2)} kJ`;
+  setInfoCell('motionEnergyTotal', toKJ(linearJ + yawJ + wheelJ));
+  setInfoCell('motionEnergyLinear', toKJ(linearJ));
+  setInfoCell('motionEnergyYaw', toKJ(yawJ));
+  setInfoCell('motionEnergyWheels', toKJ(wheelJ));
 }
 
 // Sets the textContent of an info cell by id, silently skipping if not found.

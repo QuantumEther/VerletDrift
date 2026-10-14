@@ -285,6 +285,42 @@ body {
   color: var(--accent-cyan);
 }
 
+.motion-energy-cell {
+  grid-column: span 4;
+  border-color: rgba(0, 255, 0, 0.65);
+  background: rgba(34, 40, 18, 0.92);
+}
+
+.motion-energy-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.motion-energy-values > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.motion-energy-values span {
+  color: var(--text-dim);
+  font: 0.58rem 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.motion-energy-values strong {
+  color: var(--accent-cyan);
+  font: 700 0.9rem 'JetBrains Mono', monospace;
+}
+
+@media (max-width: 720px) {
+  .motion-energy-cell { grid-column: span 2; }
+  .motion-energy-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 /* ---- Control Panels ---- */
 .control-grid {
   display: grid;
