@@ -215,6 +215,12 @@ export function initSliders() {
   bind('stallResistance',       'stallResistance',       parseFloat1, fmt2);
   bind('yawDamping',            'yawDamping',            parseFloat1, fmt1);
 
+  for (const key of ['springRateFront', 'springRateRear', 'damperRateFront',
+    'damperRateRear', 'antiRollStiffnessFront', 'antiRollStiffnessRear']) {
+    bind(key, key, parseFloat1, fmtInt);
+  }
+  bind('tireLoadSensitivity', 'tireLoadSensitivity', parseFloat1, fmt2);
+
   // ---- Clutch ----
   bind('clutchBitePoint',  'clutchBitePoint',  parseFloat1, fmt2);
   bind('clutchBiteRange',  'clutchBiteRange',  parseFloat1, fmt2);
@@ -294,6 +300,7 @@ export function initSliders() {
       state.params[paramsKey] = checkbox.checked;
     });
   }
+  bindCheckbox('suspensionEnabled', 'suspensionEnabled');
   bindCheckbox('showKinematicArrows', 'showKinematicArrows');
   bindCheckbox('showSparks',          'showSparks');
   bindCheckbox('showSkidMarks',       'showSkidMarks');
@@ -601,6 +608,9 @@ function applyPreset(presetKey) {
 
 // Walk all range inputs and checkboxes and set their values from state.params / state.soundParams.
 function refreshAllSliders() {
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+    if (typeof state.params[el.id] === 'boolean') el.checked = state.params[el.id];
+  });
   document.querySelectorAll('input[type="range"]').forEach(el => {
     const id = el.id;
     let val;
@@ -695,6 +705,13 @@ function initPresets() {
 // Called once per animation frame from main.js.
 // Reads from state.body and state.engine.
 export function updateInfoBar() {
+  const suspensionReadout = document.getElementById('suspensionReadout');
+  if (suspensionReadout) {
+    const s = state.suspension;
+    suspensionReadout.textContent = state.params.suspensionEnabled
+      ? `Pitch ${(s.pitch * 180 / Math.PI).toFixed(1)}° · Roll ${(s.roll * 180 / Math.PI).toFixed(1)}° · Loads FL/FR/RL/RR ${Object.values(state.wheelLoads).map(n => Math.round(n)).join('/')} N`
+      : 'Instant weight transfer';
+  }
   // Phase B: Use unified controller for HUD visibility check
   // GATING: Early return if HUD is not visible (zero overhead when disabled)
   if (!state.debug.controller.isHUDVisible()) return;

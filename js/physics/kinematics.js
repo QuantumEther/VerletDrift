@@ -5,6 +5,7 @@
 // =============================================================
 
 import { physicsState as state } from '../state.js';
+import { resetSuspension } from './suspension.js';
 import { CAR_HALF_WIDTH, CAR_HALF_LENGTH, TAU } from '../constants.js';
 
 // --------------- private helpers ---------------
@@ -31,6 +32,7 @@ export function wrapAngle(angle) {
 // Previous positions are set equal to current so initial velocity = 0.
 export function initializeCarBody(worldCenterX, worldCenterY) {
   const wheels = state.wheels;
+  resetSuspension();
 
   // The car faces "up" initially. In canvas coordinates +Y is down,
   // so "front" of the car is at smaller Y (towards the top of the screen).

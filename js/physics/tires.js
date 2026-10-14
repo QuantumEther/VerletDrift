@@ -12,6 +12,7 @@
 
 import { physicsState as state } from '../state.js';
 import { integrateWheelContact } from './wheel.js';
+import { tireGripLimit } from './tire-load.js';
 import {
   GRAVITY,
   TIRE_PEAK_SLIP_RATIO,
@@ -170,6 +171,9 @@ export function computeTireForces(dt) {
   for (const name of wheelNames) {
     const wheelPos    = wheelPositions[name];
     const normalLoad  = loads[name];
+    const gripLimit = tireGripLimit(normalLoad, frictionCoeff,
+      params.carMassKg * GRAVITY / 4, params.tireLoadSensitivity);
+    const effectiveFriction = normalLoad > 0 ? gripLimit / normalLoad : 0;
     const isFront     = name === 'frontLeft' || name === 'frontRight';
 
     // Arm vector: wheel position relative to body centre.
@@ -231,7 +235,7 @@ export function computeTireForces(dt) {
     const slipAngle = Math.atan2(vLat, slipDenom);
 
     // Lateral force (perpendicular to wheel heading): Pacejka.
-    const lateralForceMag = pacejkaForce(normalLoad, frictionCoeff,
+    const lateralForceMag = pacejkaForce(normalLoad, effectiveFriction,
                                           Math.abs(slipAngle), peakSlipAngleRad,
                                           params.pacejkaB, params.pacejkaC);
     // Sign: opposes lateral drift direction (use smoothed vLat so sign is stable).
@@ -256,14 +260,14 @@ export function computeTireForces(dt) {
 
     function longitudinalTarget(omega) {
       const slip = slipAtOmega(omega);
-      return pacejkaForce(normalLoad, frictionCoeff, Math.abs(slip), safePeakSlipRatio,
+      return pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip), safePeakSlipRatio,
         params.pacejkaB, params.pacejkaC) * Math.sign(slip);
     }
 
     // Preserve the combined-force cap and distance-based force relaxation.
     // Resolve longitudinal force at the new rotor speed, so the contact force
     // accelerating the body is the same force reacting against wheel inertia.
-    const frictionLimit  = normalLoad * frictionCoeff;
+    const frictionLimit  = gripLimit;
     const relaxationLength = params.tireRelaxationLength !== undefined
       ? Math.max(params.tireRelaxationLength, 0.02) : 0.3;
     const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);

@@ -50,12 +50,12 @@ describe('conserved four-wheel load transfer', () => {
   it('splits lateral transfer between axles and shifts load toward the outside wheels', () => {
     state.body.lateralAccel = 3;
     const result = loads();
-    const sideLoadDifference = result.frontRight + result.rearRight
-      - result.frontLeft - result.rearLeft;
+    const sideLoadDifference = result.frontLeft + result.rearLeft
+      - result.frontRight - result.rearRight;
     const expectedSideDifference = state.params.carMassKg * 3 * state.params.cogHeight / 0.8;
 
-    expect(result.frontRight).toBeGreaterThan(result.frontLeft);
-    expect(result.rearRight).toBeGreaterThan(result.rearLeft);
+    expect(result.frontLeft).toBeGreaterThan(result.frontRight);
+    expect(result.rearLeft).toBeGreaterThan(result.rearRight);
     expect(sideLoadDifference).toBeCloseTo(expectedSideDifference, 10);
     expect(totalLoad(result)).toBeCloseTo(state.params.carMassKg * GRAVITY, 10);
   });

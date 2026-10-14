@@ -16,6 +16,8 @@ Beyond pure physics, the simulator includes rich presentation and gameplay syste
   - Tyre friction and Pacejka-style parameters
   - Yaw damping, steering dynamics, and weight transfer behavior
   - Brake force, clutch bite/engagement, drivetrain and gear ratio tuning
+  - Flat-road suspension with pitch/roll, corner springs and dampers, and front/rear anti-roll bars
+  - Load-sensitive tire grip and a suspension comparison toggle
 
 - **Customizable environment and visuals**
   - Map width/height and track presentation
@@ -45,6 +47,8 @@ Beyond pure physics, the simulator includes rich presentation and gameplay syste
 
 ---
 
+See [Suspension testing and model assumptions](docs/suspension-validation.md) for a driving checklist and reproducible handling comparisons.
+
 ## Installation
 
 This project runs entirely in the browser. There is no backend service and no build step required.
@@ -52,9 +56,9 @@ This project runs entirely in the browser. There is no backend service and no bu
 ### 1) Clone and checkout branch
 
 ```bash
-git clone <your-fork-or-repo-url>
+git clone https://github.com/QuantumEther/VerletDrift.git
 cd VerletDrift
-git checkout verlet_v14_mod_GPT
+git checkout fix/wheel-inertia-braking
 ```
 
 ### 2) Start a local HTTP server

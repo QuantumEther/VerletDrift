@@ -162,6 +162,51 @@
         </div>
       </div>
 
+      <div class="panel-section">
+        <h3>Suspension</h3>
+        <div class="slider-row">
+          <label for="suspensionEnabled" class="slider-label">Dynamic suspension</label>
+          <input type="checkbox" id="suspensionEnabled" checked>
+        </div>
+        <p style="font-size:0.75rem;color:#aaa">Turn off to compare instant weight transfer. Set tire load sensitivity to zero for the original tire response.</p>
+        <div class="slider-row">
+          <label for="springRateFront" class="slider-label">Front spring (N/m)</label>
+          <input type="range" id="springRateFront" min="15000" max="80000" value="35000" step="1000">
+          <span class="slider-value" id="springRateFrontValue">35000</span>
+        </div>
+        <div class="slider-row">
+          <label for="springRateRear" class="slider-label">Rear spring (N/m)</label>
+          <input type="range" id="springRateRear" min="15000" max="80000" value="35000" step="1000">
+          <span class="slider-value" id="springRateRearValue">35000</span>
+        </div>
+        <div class="slider-row">
+          <label for="damperRateFront" class="slider-label">Front damper (N·s/m)</label>
+          <input type="range" id="damperRateFront" min="500" max="5000" value="2500" step="100">
+          <span class="slider-value" id="damperRateFrontValue">2500</span>
+        </div>
+        <div class="slider-row">
+          <label for="damperRateRear" class="slider-label">Rear damper (N·s/m)</label>
+          <input type="range" id="damperRateRear" min="500" max="5000" value="2500" step="100">
+          <span class="slider-value" id="damperRateRearValue">2500</span>
+        </div>
+        <div class="slider-row">
+          <label for="antiRollStiffnessFront" class="slider-label">Front bar (N·m/rad)</label>
+          <input type="range" id="antiRollStiffnessFront" min="0" max="40000" value="12000" step="1000">
+          <span class="slider-value" id="antiRollStiffnessFrontValue">12000</span>
+        </div>
+        <div class="slider-row">
+          <label for="antiRollStiffnessRear" class="slider-label">Rear bar (N·m/rad)</label>
+          <input type="range" id="antiRollStiffnessRear" min="0" max="40000" value="8000" step="1000">
+          <span class="slider-value" id="antiRollStiffnessRearValue">8000</span>
+        </div>
+        <div class="slider-row">
+          <label for="tireLoadSensitivity" class="slider-label">Tire load sensitivity</label>
+          <input type="range" id="tireLoadSensitivity" min="0" max="0.3" value="0.12" step="0.01">
+          <span class="slider-value" id="tireLoadSensitivityValue">0.12</span>
+        </div>
+        <output id="suspensionReadout" style="display:block;font-size:0.75rem;color:#aaa" aria-live="off"></output>
+      </div>
+
       <!-- Car Physics Panel -->
       <div class="panel-section">
         <h3>🏎️ Car Physics</h3>

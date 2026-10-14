@@ -110,11 +110,20 @@ const state = {
   },
 
   // -----------------------------------------------------------
-  // WHEEL LOADS — normal force on each tyre (Newtons, SI)
-  // Computed by computeWeightTransfer() each step.
-  // These scale the peak grip force in the Pacejka tire model.
-  // All four should sum to carMassKg × GRAVITY ≈ 11 772 N.
+  // SUSPENSION — independent vertical sprung-body state (SI, small angles).
+  // Planar wheel particles remain rigid.
   // -----------------------------------------------------------
+  suspension: {
+    initialized: false, wasEnabled: true,
+    heave: 0, pitch: 0, roll: 0,
+    heaveVelocity: 0, pitchVelocity: 0, rollVelocity: 0,
+    heaveAcceleration: 0,
+    compression: { frontLeft: 0, frontRight: 0, rearLeft: 0, rearRight: 0 },
+    contact: { frontLeft: true, frontRight: true, rearLeft: true, rearRight: true },
+  },
+
+  // Tick-average normal loads (N), or algebraic transfer when disabled.
+  // Sum equals vehicle weight at equilibrium; heave changes total road force.
   wheelLoads: {
     frontLeft:  0,
     frontRight: 0,
@@ -425,6 +434,19 @@ const state = {
     rollingResistanceCoeff:  DEFAULT_ROLLING_RESISTANCE_COEFF,
     aeroDragCoeff:           DEFAULT_AERO_DRAG_COEFF,
     tireFrictionCoeff:       DEFAULT_TIRE_FRICTION_COEFF,
+    suspensionEnabled:       true,
+    springRateFront:          35000, // N/m per wheel (wheel rates)
+    springRateRear:           35000,
+    damperRateFront:          2500,  // N s/m per wheel
+    damperRateRear:           2500,
+    antiRollStiffnessFront:   12000, // N m/rad per axle
+    antiRollStiffnessRear:    8000,
+    rollCenterFront:          0.08,  // m, estimated geometry
+    rollCenterRear:           0.12,
+    unsprungMassPerWheel:     35,    // kg; algebraic flat-road approximation
+    suspensionBumpTravel:     0.08,  // m from ride height
+    suspensionDroopTravel:    0.10,
+    tireLoadSensitivity:      0.12,  // peak grip exponent = 1 - sensitivity
     cogHeight:               COG_HEIGHT,        // metres (was cogHeightPx in pixels)
     bounciness:              DEFAULT_BOUNCINESS,
     stallResistance:         DEFAULT_STALL_RESISTANCE,

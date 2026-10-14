@@ -5,7 +5,8 @@
 //   integrator.js   — verletIntegrateAllPoints
 //   constraints.js  — solveRigidBodyConstraints, clampParticleDisplacements,
 //                      handleBoundaryCollisions
-//   weight.js       — computeWeightTransfer
+//   suspension.js   — updateSuspension, resetSuspension
+//   weight.js       — computeWeightTransfer (instant comparison mode)
 //   tires.js        — computeTireForces, computeDragForces, computeBrakeForce
 //   engine.js       — updateEngine, handleGearChange, applySleepIfNeeded, updateEngineSound
 //   steering.js     — updateSteering
@@ -21,3 +22,5 @@ export { updateEngine, synchronizeEngineWithWheels, handleGearChange, applySleep
          updateEngineSound }                                       from './engine.js';
 export { updateSteering }                                          from './steering.js';
 export { updateCamera }                                            from './camera.js';
+
+export { updateSuspension, resetSuspension } from './suspension.js';

@@ -8,6 +8,7 @@ import state from '../js/state.js';
 import { initializeCarBody, computeBodyDerivedState } from '../js/physics/kinematics.js';
 import { computeTireForces } from '../js/physics/tires.js';
 import { GRAVITY } from '../js/constants.js';
+import { tireGripLimit } from '../js/physics/tire-load.js';
 
 const initial = structuredClone(state);
 const quarterWeight = () => state.params.carMassKg * GRAVITY / 4;
@@ -33,6 +34,18 @@ function frontLeftForceMagnitude() {
 }
 
 describe('tire force during wheel unloading and recontact', () => {
+  it.each([0.25, 2])('uses the load-sensitive force limit at %s times reference load', ratio => {
+    state.wheelLoads.frontLeft = quarterWeight() * ratio;
+    state.wheelOmega.frontLeft = 120;
+    state.prevTireForce.frontLeft.lon = 6000;
+    state.prevTireForce.frontLeft.lat = 6000;
+    computeTireForces(0.01);
+    const limit = tireGripLimit(state.wheelLoads.frontLeft,
+      state.params.tireFrictionCoeff, quarterWeight(), state.params.tireLoadSensitivity);
+    expect(frontLeftForceMagnitude()).toBeGreaterThan(0);
+    expect(frontLeftForceMagnitude()).toBeLessThanOrEqual(limit + 1e-6);
+  });
+
   it('removes stale tire force as soon as normal load reaches zero', () => {
     state.prevTireForce.frontLeft.lon = 1200;
     state.prevTireForce.frontLeft.lat = 900;

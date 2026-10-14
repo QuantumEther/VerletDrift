@@ -21,8 +21,7 @@ function clamp(value, minimum, maximum) {
 // longitudinal (fore-aft) and lateral (left-right) acceleration.
 //
 // These loads scale the peak grip force in the Pacejka tire model.
-// More load on a tyre → more grip, but with diminishing returns
-// (Pacejka's D parameter scales linearly, so doubling load doubles peak force).
+// The tire module applies load sensitivity when converting these loads to grip.
 //
 // Weight transfer requires CoG height: a higher CoG transfers more load
 // for the same acceleration. That's why SUVs feel more tippy than sports cars.
@@ -73,12 +72,12 @@ export function computeWeightTransfer() {
   //
   // Sign convention:
   //   longitudinalAccel > 0 (accelerating forward) → weight shifts rearward
-  //   lateralAccel > 0 (rightward cornering force) → weight shifts to right wheels
+  //   lateralAccel > 0 (rightward cornering force) → outside LEFT wheels gain load
   const frontAxleLoad = halfWeight - longitudinalTransfer;
   const rearAxleLoad  = halfWeight + longitudinalTransfer;
 
-  loads.frontLeft  = frontAxleLoad * 0.5 - lateralTransfer;
-  loads.frontRight = frontAxleLoad * 0.5 + lateralTransfer;
-  loads.rearLeft   = rearAxleLoad  * 0.5 - lateralTransfer;
-  loads.rearRight  = rearAxleLoad  * 0.5 + lateralTransfer;
+  loads.frontLeft  = frontAxleLoad * 0.5 + lateralTransfer;
+  loads.frontRight = frontAxleLoad * 0.5 - lateralTransfer;
+  loads.rearLeft   = rearAxleLoad  * 0.5 + lateralTransfer;
+  loads.rearRight  = rearAxleLoad  * 0.5 - lateralTransfer;
 }

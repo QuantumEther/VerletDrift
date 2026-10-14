@@ -7,7 +7,7 @@
 // PHYSICS STEP ORDER (enforced here, documented in physics.js):
 //   1.  updateSteering(dt)
 //   2.  updateEngine(dt)
-//   3.  computeWeightTransfer()   [PHASE 3a: removed pre-force computeBodyDerivedState]
+//   3.  updateSuspension(dt)     [loads drive tire forces]
 //   4.  computeTireForces()
 //   5.  computeDragForces()
 //   6.  computeBrakeForce()
@@ -55,7 +55,7 @@ import {
   updateEngine,
   synchronizeEngineWithWheels,
   computeBodyDerivedState,
-  computeWeightTransfer,
+  updateSuspension,
   computeTireForces,
   computeDragForces,
   computeBrakeForce,
@@ -379,7 +379,7 @@ spawnBalloons();
 
 // Initial derivation so body state is valid before the first render.
 computeBodyDerivedState(1 / 60);
-computeWeightTransfer();
+updateSuspension(0);
 
 // Register dynamic gauges via the gauge registry.
 // These are added to the gauge row alongside the hardcoded RPM/Speed/LatG gauges.
@@ -784,9 +784,8 @@ function runPhysicsStep(dt) {
   // of the previous step, ensuring yaw damping has real angular velocity
   // to work with. See Deep Research Report: "Derived-state reset bug".
 
-  // 3. Weight transfer: distributes normal load to each wheel based on
-  //    the body's longitudinal and lateral accelerations (computed at end of previous step).
-  computeWeightTransfer();
+  // 3. Spring/damper chassis dynamics supply normal loads for this tire tick.
+  updateSuspension(dt);
 
   // 5–7. Compute all forces.
   const tireForces  = computeTireForces(dt);   // { forceX, forceY, torque }
