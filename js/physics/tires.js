@@ -70,14 +70,14 @@ function computeWheelBrakeCapacity(name, wheelRad, params) {
   let brakeForceMag = 0;
   const isRearWheel = name.startsWith('rear');
 
-  // Regular brake (S key, front wheels get 80%, so 0.4 per wheel × 2 wheels = 80%)
-  if (state.input.brakeKeyHeld && !isRearWheel) {
-    brakeForceMag = params.brakeForce * 0.4;
+  // Service brakes act on all wheels: 80% front / 20% rear axle bias.
+  if (state.input.brakeKeyHeld) {
+    brakeForceMag = params.brakeForce * (isRearWheel ? 0.1 : 0.4);
   }
 
   // Handbrake (F key, rear only, progressive with handbrakeValue 0–1)
   if (state.input.handbrakeKeyHeld && isRearWheel) {
-    brakeForceMag = params.brakeForce * 0.5 * clamp01(state.input.handbrakeValue || 0);
+    brakeForceMag += params.brakeForce * 0.5 * clamp01(state.input.handbrakeValue || 0);
   }
 
   return Math.max(0, brakeForceMag) * wheelRad;
@@ -109,33 +109,16 @@ export function computeTireForces(dt) {
   const rightX   =  Math.cos(heading);
   const rightY   =  Math.sin(heading);
 
-  // Longitudinal speed along the car's forward axis.
-  const longitudinalSpeed = dot(body.velocityX, body.velocityY, forwardX, forwardY);
-  const speedMagnitude    = Math.max(0.05, body.speed);
-
   // Apply clutch-transmitted crank torque through the current gear ratio.
   // Only the rear wheels are driven in this model.
   let driveForce = 0;
   if (gearRatio !== 0 && engine.clutchEngagement > 0 && !engine.isStalled) {
-    let throttleAmount = 0;
-    if (state.input.mouseThrottleActive) {
-      throttleAmount = state.input.mouseThrottleAmount;
-    } else if (state.input.throttleKeyHeld) {
-      throttleAmount = 1.0;
-    }
-
     const wheelTorque = (engine.transmittedTorqueNm || 0)
       * Math.abs(gearRatio) * params.finalDriveRatio;
     driveForce = wheelTorque / params.wheelRadius;
 
     // Reverse: flip the direction.
     if (gearRatio < 0) driveForce = -driveForce;
-
-    // Idle creep: small force at idle in a low gear even without throttle.
-    if (throttleAmount < 0.05 && Math.abs(gearRatio) >= 1.0 &&
-        engine.clutchEngagement > 0.9 && Math.abs(longitudinalSpeed) < 3) {
-      driveForce += params.idleCreepForce * engine.clutchEngagement;
-    }
   }
 
   // Wheel positions (arm vectors from body centre to wheel).
@@ -303,8 +286,9 @@ export function computeTireForces(dt) {
       previousForce: prev.lon, targetForce: cappedLongitudinalTarget,
       frictionLimit, relaxationTime: tireRelaxTau,
     });
-    // Retain the existing 500 rad/s runaway guard; it is not the integration rule.
-    state.wheelOmega[name] = clamp(rotation.omega, -500, 500);
+    // Preserve the torque-balanced result. A universal speed clamp hides
+    // drivetrain overspeed and silently discards angular momentum.
+    state.wheelOmega[name] = rotation.omega;
     state.wheelBrakeTorque[name] = dt > 0 ? rotation.brakeImpulse / dt : 0;
     const slipRatio = slipAtOmega(state.wheelOmega[name]);
     const longitudinalForceMag = longitudinalTarget(state.wheelOmega[name]);

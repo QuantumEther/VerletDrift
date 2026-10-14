@@ -39,3 +39,9 @@ clutch, stalling under clutch load at rest, and locked-engine RPM tracking.
 The browser launch test uses the manual launch sequence: hold `A`, select first
 with `Numpad7`, hold `D`, then release `A` gradually. A second browser case
 checks clutch-assisted upshifting and reverse travel with `Q` + `Numpad1`.
+
+The [wheel-omega audit](wheel-omega-audit.md) corrects the locked-clutch torque
+balance to include engine friction, adds combustion fuel cut at redline, and
+retains actual shaft-derived RPM during mechanical over-rev. Idle creep is now
+supplied by the crank idle governor, capped by the `idleCreepForce` setting in
+locked gear, rather than an additional wheel torque source.

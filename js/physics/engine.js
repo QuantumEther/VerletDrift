@@ -156,28 +156,46 @@ export function updateEngine(dt) {
   const peakTorque = Math.max(params.peakEngineTorqueNm, 0);
   const torqueNormalized = torqueCurveNormalized(engine.rpm, idleRpm, redlineRpm);
   const engineFriction = peakTorque * 0.035 + engine.rpm * (TAU / 60) * 0.01;
+  // Idle creep comes through the crank/clutch, never an extra wheel motor.
+  // In locked gear the force setting caps the governor's net wheel effort.
+  const idleTorqueLimit = drivetrainLocked
+    ? engineFriction + Math.max(0, params.idleCreepForce) * params.wheelRadius
+      / Math.max(Math.abs(gearRatio * params.finalDriveRatio), 1e-4)
+    : peakTorque * 0.25;
   const idleGovernor = clamp(engineFriction + (idleRpm - engine.rpm) * 0.05,
-    0, peakTorque * 0.25);
-  const combustionTorque = peakTorque * torqueNormalized * throttleAmount
-    + idleGovernor + revMatchTorque;
+    0, idleTorqueLimit);
+  // Redline is a fuel cut, not a clamp on the displayed crank speed. Wheels
+  // can mechanically over-rev the engine; that must remain visible and the
+  // crank must stop producing combustion/rev-match torque while overspeed.
+  const lockedShaftOmega = drivetrainLocked
+    ? (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5
+      * gearRatio * params.finalDriveRatio : 0;
+  const reverseCrank = drivetrainLocked && lockedShaftOmega < 0;
+  const fuelCut = engine.rpm >= redlineRpm || reverseCrank;
+  const combustionTorque = fuelCut ? 0
+    : peakTorque * torqueNormalized * throttleAmount + idleGovernor + revMatchTorque;
 
   if (drivetrainLocked) {
     // In locked gear, crank inertia is reflected into the rear-wheel solve.
     // RPM is synchronized after that solve in synchronizeEngineWithWheels().
-    engine.transmittedTorqueNm = combustionTorque;
+    // If the selected gear back-drives the crank in the wrong direction,
+    // combustion is off and friction must still oppose shaft rotation.
+    engine.transmittedTorqueNm = combustionTorque - engineFriction * (reverseCrank ? -1 : 1);
   } else {
     const rearOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
     const shaftOmega = rearOmega * gearRatio * params.finalDriveRatio;
     const crankOmega = engine.rpm * TAU / 60;
     const clutchSlip = crankOmega - shaftOmega;
-    const clutchCapacity = peakTorque * engine.clutchEngagement;
+    // Neutral does not connect the crank to a stationary driven axle, even
+    // with the pedal released. There is no modeled gearbox-input-shaft load.
+    const clutchCapacity = gearRatio === 0 ? 0 : peakTorque * engine.clutchEngagement;
     const clutchTorque = clamp(clutchSlip * peakTorque / 100,
       -clutchCapacity, clutchCapacity);
     engine.transmittedTorqueNm = clutchTorque;
 
     const nextOmega = Math.max(0, crankOmega
       + (combustionTorque - clutchTorque - engineFriction) * dt / inertia);
-    engine.rpm = clamp(nextOmega * 60 / TAU, 0, redlineRpm);
+    engine.rpm = nextOmega * 60 / TAU;
   }
 
   const effectiveStallRpm = params.stallRpm * (1 - params.stallResistance * 0.8);
@@ -197,7 +215,7 @@ export function synchronizeEngineWithWheels() {
   const gearRatio = getGearRatio(engine.currentGear, state.params);
   const rearOmega = (state.wheelOmega.rearLeft + state.wheelOmega.rearRight) * 0.5;
   const rpm = Math.abs(rearOmega * gearRatio * state.params.finalDriveRatio) * 60 / TAU;
-  engine.rpm = clamp(rpm, 0, state.params.redlineRpm);
+  engine.rpm = rpm;
 }
 
 // =============================================================

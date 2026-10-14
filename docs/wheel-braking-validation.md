@@ -21,10 +21,10 @@ body speed, so a spinning wheel can be stopped on frictionless ground or while
 the chassis is stationary. Static brake friction can hold a wheel at zero when
 drive/contact torque is below brake capacity; braking alone cannot reverse it.
 
-The existing input distribution remains: S brakes the front wheels, each using
-40% of the nominal `brakeForce` rim-force setting; F progressively brakes the rear
-wheels, each using 50% times `handbrakeValue`. Rim force times radius defines the
-brake torque capacity. This change does not add a rear service-brake circuit.
+S now operates all four service brakes with 80% front / 20% rear axle bias
+(40% per front wheel, 10% per rear wheel). F adds progressive rear handbrake
+torque, each using 50% times `handbrakeValue`. Rim force times radius defines
+the brake torque capacity. See [the wheel-omega audit](wheel-omega-audit.md).
 
 ## Numerical treatment
 
@@ -86,26 +86,22 @@ speed after three seconds was:
 | 2.5 ms | 2.320897 |
 | 1.25 ms | 2.320872 |
 
-This external characterization uses fixed RPM/engagement and no drag, rather
-than claiming the existing target-RPM engine is a constant-torque source.
+This historical characterization used fixed RPM/engagement and no drag. It
+isolates the wheel/contact component rather than measuring the current full
+engine, clutch, and suspension model.
 
 ## Remaining limitations
 
-- The original 500 rad/s wheel safety guard is retained. Its intervention changes
-  momentum/energy and is excluded from the conservation fixtures. Default
-  full-throttle first-gear burnout can reach this guard because engine RPM is
-  still a prescribed/clamped value with positive drive torque, not a dynamically
-  coupled inertial engine with torque fuel cut. The guard is not evidence of
-  physical wheel equilibrium.
-- Launches using the existing engine RPM blending remain timestep-sensitive.
-  An additional 20%-throttle launch characterization gave approximately 4.539 m/s
-  at 10 ms, 5.160 m/s at 5 ms, and 5.395 m/s at 2.5 ms after three seconds. The
-  constant-torque component converges, but this change does not establish full
-  powertrain convergence or repair the RPM/clutch model. Those engine transitions
-  need their own contract and validation task.
-- Existing load-transfer sign/clipping errors, unloaded-tire force history, tire
-  peak calibration, runtime timestep/history edits, reverse RPM blending/creep,
-  and missing engine/clutch energy accounting remain separate audit findings.
+- The former 500 rad/s clamp was removed by the [wheel-omega audit](wheel-omega-audit.md).
+  RPM now follows shaft speed, redline cuts combustion, and locked-clutch torque
+  includes engine friction. Service brakes now include a rear circuit.
+- Subsequent engine-inertia, unloaded-tire, and suspension work addressed the
+  original RPM blending, stale forces at lift-off, and load-transfer sign issues.
+  Engine/differential coupling and tire calibration remain simplified; consult
+  [engine validation](engine-inertia-validation.md) and
+  [suspension validation](suspension-validation.md) for their current scope.
+- Runtime timestep/history edits and full drivetrain energy/convergence under
+  asymmetric wheel speeds still require further validation.
 - The implicit/adaptive contact solver costs more than the original overwrite.
   A warmed external mechanical-subset benchmark on this machine measured about
   8 microseconds per rest step and 51 microseconds per driven step, versus the

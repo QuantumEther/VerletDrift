@@ -110,3 +110,34 @@ test('clutch shifts to second and reverse drives in the selected direction', asy
   await expect.poll(() => page.evaluate(() => window.state.body.centerY), { timeout: 8000 })
     .toBeGreaterThan(startY + 0.5);
 });
+
+test('low-traction wheelspin respects engine redline and service brakes stop the rear wheels', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  await page.keyboard.down('KeyA');
+  await page.evaluate(() => {
+    window.state.params.tireFrictionCoeff = 0.05;
+    window.state.engine.currentGear = '1';
+  });
+  await page.keyboard.down('KeyD');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm), { timeout: 5000 })
+    .toBeGreaterThan(1500);
+  await page.keyboard.up('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm / window.state.params.redlineRpm),
+    { timeout: 5000 }).toBeGreaterThan(0.98);
+  await page.waitForTimeout(4000);
+  const spinning = await page.evaluate(() => ({ omega: window.state.wheelOmega.rearLeft,
+    rpm: window.state.engine.rpm, ratio: window.state.params.gearRatio1 * window.state.params.finalDriveRatio,
+    redline: window.state.params.redlineRpm }));
+  expect(spinning.omega).toBeLessThan(70);
+  expect(spinning.rpm).toBeLessThan(spinning.redline + 150);
+  expect(spinning.rpm).toBeCloseTo(spinning.omega * spinning.ratio * 60 / (2 * Math.PI), 5);
+  await page.keyboard.up('KeyD');
+  await page.evaluate(() => { window.state.engine.currentGear = 'N'; });
+  await page.keyboard.down('KeyS');
+  await expect.poll(() => page.evaluate(() => Math.max(Math.abs(window.state.wheelOmega.rearLeft),
+    Math.abs(window.state.wheelOmega.rearRight))), { timeout: 5000 }).toBeLessThan(0.01);
+  expect(errors).toEqual([]);
+});
