@@ -60,10 +60,12 @@ export function solveWheelRotation({
 export function integrateWheelContact({
   omega, inertia, radius, dt, driveTorque, brakeCapacity,
   previousForce, targetForce, frictionLimit, relaxationTime,
+  previousLateralForce = 0, targetLateralForce = () => 0,
 }) {
-  if (dt === 0) return { omega, force: previousForce, contactImpulse: 0, brakeImpulse: 0 };
+  if (dt === 0) return { omega, force: previousForce, lateralForce: previousLateralForce,
+    contactImpulse: 0, lateralImpulse: 0, brakeImpulse: 0 };
 
-  function advance(speed, force, h) {
+  function advance(speed, force, lateralForce, h) {
     const alpha = 1 - Math.exp(-h / relaxationTime);
     const forceAtOmega = (nextSpeed) => force + (targetForce(nextSpeed) - force) * alpha;
     const rotation = solveWheelRotation({
@@ -72,34 +74,40 @@ export function integrateWheelContact({
       forceBound: Math.abs(force) * (1 - alpha) + frictionLimit * alpha,
     });
     const nextForce = forceAtOmega(rotation.omega);
+    const nextLateralForce = lateralForce
+      + (targetLateralForce(rotation.omega) - lateralForce) * alpha;
     return {
-      omega: rotation.omega, force: nextForce,
-      contactImpulse: nextForce * h, brakeImpulse: rotation.brakeTorque * h,
+      omega: rotation.omega, force: nextForce, lateralForce: nextLateralForce,
+      contactImpulse: nextForce * h, lateralImpulse: nextLateralForce * h,
+      brakeImpulse: rotation.brakeTorque * h,
     };
   }
 
-  function interval(speed, force, h, depth) {
-    const full = advance(speed, force, h);
-    const first = advance(speed, force, h * 0.5);
-    const second = advance(first.omega, first.force, h * 0.5);
+  function interval(speed, force, lateralForce, h, depth) {
+    const full = advance(speed, force, lateralForce, h);
+    const first = advance(speed, force, lateralForce, h * 0.5);
+    const second = advance(first.omega, first.force, first.lateralForce, h * 0.5);
     const speedTolerance = 1e-4 + 1e-3 * Math.max(Math.abs(speed), Math.abs(second.omega));
     const forceTolerance = 0.1 + 1e-3 * Math.max(frictionLimit, Math.abs(force));
     if (Math.abs(full.omega - second.omega) > speedTolerance ||
-        Math.abs(full.force - second.force) > forceTolerance) {
+        Math.abs(full.force - second.force) > forceTolerance ||
+        Math.abs(full.lateralForce - second.lateralForce) > forceTolerance) {
       if (depth === 12) throw new Error('Wheel/contact integration did not converge');
-      const left = interval(speed, force, h * 0.5, depth + 1);
-      const right = interval(left.omega, left.force, h * 0.5, depth + 1);
+      const left = interval(speed, force, lateralForce, h * 0.5, depth + 1);
+      const right = interval(left.omega, left.force, left.lateralForce, h * 0.5, depth + 1);
       return {
         ...right,
         contactImpulse: left.contactImpulse + right.contactImpulse,
+        lateralImpulse: left.lateralImpulse + right.lateralImpulse,
         brakeImpulse: left.brakeImpulse + right.brakeImpulse,
       };
     }
     return {
       ...second,
       contactImpulse: first.contactImpulse + second.contactImpulse,
+      lateralImpulse: first.lateralImpulse + second.lateralImpulse,
       brakeImpulse: first.brakeImpulse + second.brakeImpulse,
     };
   }
-  return interval(omega, previousForce, dt, 0);
+  return interval(omega, previousForce, previousLateralForce, dt, 0);
 }

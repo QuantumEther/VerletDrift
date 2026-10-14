@@ -7,7 +7,7 @@
 //   EMA smoothing on lateral velocity: latSmoothAlpha = 1 - exp(-dt / 0.025)
 //   Low-speed lateral fade: clamp01(totalSpeed / 2.0)
 //   Tire relaxation: tireRelaxTau = max(relaxationLength / vLongAbs, 1e-4)
-//   Friction ellipse: scale both forces when hypot(lat, lon) > frictionLimit
+//   Combined tire targets and relaxed force vectors stay inside frictionLimit.
 //   Wheel inertia: retain omega history; brakes oppose rotation, not chassis speed.
 
 import { physicsState as state } from '../state.js';
@@ -244,14 +244,8 @@ export function computeTireForces(dt) {
 
     function longitudinalTarget(omega) {
       const slip = slipAtOmega(omega);
-      const peakCurveForce = pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip),
+      const magnitude = pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip),
         safePeakSlipRatio, params.pacejkaB, params.pacejkaC);
-      // The E=0 curve falls back toward zero at large slip. A locked/sliding
-      // tire should retain kinetic friction, so keep a bounded post-peak floor.
-      const slidingRatio = clamp(params.tireSlidingFrictionRatio ?? 0.85, 0, 1);
-      const magnitude = Math.abs(slip) > safePeakSlipRatio
-        ? Math.max(peakCurveForce, frictionLimit * slidingRatio)
-        : peakCurveForce;
       return magnitude * Math.sign(slip);
     }
 
@@ -263,7 +257,6 @@ export function computeTireForces(dt) {
       ? Math.max(params.tireRelaxationLength, 0.02) : 0.3;
     const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
     const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
-    const tireRelaxAlpha = clamp01(1.0 - Math.exp(-dt / tireRelaxTau));
     const prev = state.prevTireForce[name];
     // Load can change faster than the tire relaxation state (especially at
     // wheel lift-off). Keep carried force inside the *current* friction circle
@@ -276,11 +269,31 @@ export function computeTireForces(dt) {
       prev.lon *= loadScale;
       prev.lat *= loadScale;
     }
-    function cappedLongitudinalTarget(omega) {
+    function contactTarget(omega) {
       const longitudinal = longitudinalTarget(omega);
       const magnitude = Math.hypot(fadedLateralForceMag, longitudinal);
       const scale = magnitude > frictionLimit && magnitude > 0 ? frictionLimit / magnitude : 1;
-      return longitudinal * scale;
+      const rollingLon = longitudinal * scale;
+      const rollingLat = fadedLateralForceMag * scale * lateralForceSign;
+
+      // A locked tire scrubs in the direction opposite contact-patch motion.
+      // It cannot independently deliver a rolling tire's cornering force.
+      // Blend beyond the configured slip-ratio scale; full lock (|kappa|=1) uses only
+      // kinetic friction. This also treats wheelspin and reverse consistently.
+      const blendStart = Math.min(safePeakSlipRatio, 0.95);
+      const t = clamp01((Math.abs(slipAtOmega(omega)) - blendStart) / (1 - blendStart));
+      const slidingBlend = t * t * (3 - 2 * t);
+      const patchLongitudinalSlip = omega * wheelRad - wheelLongitudinalSpeed;
+      const patchLateralSlip = -wheelLateralSpeed;
+      const patchSlipSpeed = Math.hypot(patchLongitudinalSlip, patchLateralSlip);
+      const slidingLimit = frictionLimit * clamp01(params.tireSlidingFrictionRatio ?? 0.85);
+      const slidingScale = patchSlipSpeed > 0 ? slidingLimit / patchSlipSpeed : 0;
+      return {
+        lon: rollingLon * (1 - slidingBlend)
+          + patchLongitudinalSlip * slidingScale * slidingBlend,
+        lat: rollingLat * (1 - slidingBlend)
+          + patchLateralSlip * slidingScale * slidingBlend,
+      };
     }
 
     const previousOmega = state.wheelOmega[name];
@@ -291,7 +304,8 @@ export function computeTireForces(dt) {
       radius: wheelRad, dt,
       driveTorque: torqueDrive,
       brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
-      previousForce: prev.lon, targetForce: cappedLongitudinalTarget,
+      previousForce: prev.lon, targetForce: omega => contactTarget(omega).lon,
+      previousLateralForce: prev.lat, targetLateralForce: omega => contactTarget(omega).lat,
       frictionLimit, relaxationTime: tireRelaxTau,
     });
     // Preserve the torque-balanced result. A universal speed clamp hides
@@ -299,15 +313,9 @@ export function computeTireForces(dt) {
     state.wheelOmega[name] = rotation.omega;
     state.wheelBrakeTorque[name] = dt > 0 ? rotation.brakeImpulse / dt : 0;
     const slipRatio = slipAtOmega(state.wheelOmega[name]);
-    const longitudinalForceMag = longitudinalTarget(state.wheelOmega[name]);
-    const combinedMag    = Math.hypot(fadedLateralForceMag, longitudinalForceMag);
-    let frictionScale    = 1.0;
-    if (combinedMag > frictionLimit && combinedMag > 0) {
-      frictionScale = frictionLimit / combinedMag;
-    }
-
-    const scaledLateral      = fadedLateralForceMag * frictionScale * lateralForceSign;
-    const scaledLongitudinal = longitudinalForceMag  * frictionScale;
+    const target = contactTarget(state.wheelOmega[name]);
+    const scaledLateral = target.lat;
+    const scaledLongitudinal = target.lon;
 
     // --- FRICTION CIRCLE UTILIZATION ---
     const utilization = frictionLimit > 0.01
@@ -319,9 +327,11 @@ export function computeTireForces(dt) {
     state.wheelSlipRatio[name] = slipRatio;
 
     // --- TIRE FORCE RELAXATION ---
-    const relaxedLat = prev.lat + (scaledLateral - prev.lat) * tireRelaxAlpha;
+    // Average both components over the same contact substeps. Mixing a lateral
+    // endpoint with a longitudinal average can exceed the friction circle.
+    const relaxedLat = dt > 0 ? rotation.lateralImpulse / dt : prev.lat;
     const relaxedLon = dt > 0 ? rotation.contactImpulse / dt : prev.lon;
-    prev.lat = relaxedLat;
+    prev.lat = rotation.lateralForce;
     prev.lon = rotation.force;
     logger.trace('tires', () => `${name}: ωPrev=${previousOmega.toFixed(2)}, ωNew=${state.wheelOmega[name].toFixed(2)}, TBrake=${state.wheelBrakeTorque[name].toFixed(2)}`);
 

@@ -447,7 +447,7 @@ const state = {
     suspensionBumpTravel:     0.08,  // m from ride height
     suspensionDroopTravel:    0.10,
     tireLoadSensitivity:      0.12,  // peak grip exponent = 1 - sensitivity
-    tireSlidingFrictionRatio: 0.85,  // post-peak longitudinal grip / limit
+    tireSlidingFrictionRatio: 0.85,  // kinetic sliding grip / peak grip limit
     cogHeight:               COG_HEIGHT,        // metres (was cogHeightPx in pixels)
     bounciness:              DEFAULT_BOUNCINESS,
     stallResistance:         DEFAULT_STALL_RESISTANCE,

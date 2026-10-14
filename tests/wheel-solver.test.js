@@ -7,6 +7,20 @@ const rotor = {
 };
 
 describe('wheel torque and contact integration', () => {
+  it.each([1 / 30, 0.1])('keeps averaged contact force inside the friction circle during direction changes at dt=%s', dt => {
+    const limit = 100;
+    const result = integrateWheelContact({
+      ...rotor, omega: 0, dt, brakeCapacity: 1000,
+      previousForce: -limit, previousLateralForce: 0,
+      targetForce: () => -0.8 * limit, targetLateralForce: () => 0.6 * limit,
+      frictionLimit: limit,
+    });
+    const appliedMagnitude = Math.hypot(result.contactImpulse, result.lateralImpulse) / dt;
+    expect(appliedMagnitude).toBeLessThanOrEqual(limit + 1e-8);
+    expect(Math.hypot(result.force, result.lateralForce)).toBeLessThanOrEqual(limit + 1e-8);
+    expect(rotor.inertia * (result.omega - 0))
+      .toBeCloseTo(result.brakeImpulse - rotor.radius * result.contactImpulse, 8);
+  });
   it.each([0.02, 0.01, 0.005])('integrates flywheel work independently of timestep %s', (dt) => {
     let omega = 0;
     for (let i = 0; i < Math.round(1 / dt); i++) {

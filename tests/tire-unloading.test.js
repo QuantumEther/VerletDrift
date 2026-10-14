@@ -44,13 +44,44 @@ describe('tire force during wheel unloading and recontact', () => {
     state.wheelOmega[name] = 0;
     state.input.handbrakeKeyHeld = true;
     state.input.handbrakeValue = 1;
-    computeTireForces(0.1);
+    // Let relaxation settle; the applied force is a tick-average impulse,
+    // rather than the endpoint force of an initially unloaded contact state.
+    for (let i = 0; i < 30; i++) computeTireForces(0.01);
     const limit = tireGripLimit(state.wheelLoads[name], state.params.tireFrictionCoeff,
       quarterWeight(), state.params.tireLoadSensitivity);
     const force = state.wheelForces[name];
     expect(state.wheelOmega[name]).toBe(0);
     expect(Math.hypot(force.fx, force.fy)).toBeGreaterThan(limit * 0.8);
     expect(Math.hypot(force.fx, force.fy)).toBeLessThanOrEqual(limit + 1e-6);
+  });
+
+  it.each([[12, 0], [12, 0.2], [12, 4], [12, -4], [-12, 4]])(
+    'locked contact opposes road slip at longitudinal/lateral velocity %s/%s m/s', (forward, side) => {
+      state.body.velocityX = side;
+      state.body.velocityY = -forward;
+      state.body.speed = Math.hypot(forward, side);
+      state.wheelOmega.rearLeft = 0;
+      state.input.handbrakeKeyHeld = true;
+      state.input.handbrakeValue = 1;
+      for (let i = 0; i < 60; i++) computeTireForces(0.01);
+      const force = state.wheelForces.rearLeft;
+      const limit = tireGripLimit(quarterWeight(), state.params.tireFrictionCoeff,
+        quarterWeight(), state.params.tireLoadSensitivity) * state.params.tireSlidingFrictionRatio;
+      expect(state.wheelOmega.rearLeft).toBe(0);
+      expect(force.fx).toBeCloseTo(-limit * side / state.body.speed, 4);
+      expect(force.fy).toBeCloseTo(limit * forward / state.body.speed, 4);
+      expect(force.fx * side - force.fy * forward).toBeLessThan(0);
+    });
+
+  it('restores rotation after handbrake pressure has fully released', () => {
+    state.wheelOmega.rearLeft = 0;
+    state.input.handbrakeKeyHeld = true;
+    state.input.handbrakeValue = 1;
+    for (let i = 0; i < 30; i++) computeTireForces(0.01);
+    state.input.handbrakeKeyHeld = false;
+    state.input.handbrakeValue = 0;
+    for (let i = 0; i < 100; i++) computeTireForces(0.01);
+    expect(state.wheelOmega.rearLeft).toBeCloseTo(10 / state.params.wheelRadius, 4);
   });
 
   it.each([0.25, 2])('uses the load-sensitive force limit at %s times reference load', ratio => {
