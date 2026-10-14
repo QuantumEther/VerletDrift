@@ -34,6 +34,25 @@ function frontLeftForceMagnitude() {
 }
 
 describe('tire force during wheel unloading and recontact', () => {
+  it('retains sliding friction at full slip when the rear wheel is handbrake-locked', () => {
+    const name = 'rearLeft';
+    state.body.velocityY = -12;
+    state.body.speed = 12;
+    state.engine.currentGear = 'N';
+    state.engine.clutchEngagement = 0;
+    state.wheelLoads[name] = quarterWeight();
+    state.wheelOmega[name] = 0;
+    state.input.handbrakeKeyHeld = true;
+    state.input.handbrakeValue = 1;
+    computeTireForces(0.1);
+    const limit = tireGripLimit(state.wheelLoads[name], state.params.tireFrictionCoeff,
+      quarterWeight(), state.params.tireLoadSensitivity);
+    const force = state.wheelForces[name];
+    expect(state.wheelOmega[name]).toBe(0);
+    expect(Math.hypot(force.fx, force.fy)).toBeGreaterThan(limit * 0.8);
+    expect(Math.hypot(force.fx, force.fy)).toBeLessThanOrEqual(limit + 1e-6);
+  });
+
   it.each([0.25, 2])('uses the load-sensitive force limit at %s times reference load', ratio => {
     state.wheelLoads.frontLeft = quarterWeight() * ratio;
     state.wheelOmega.frontLeft = 120;

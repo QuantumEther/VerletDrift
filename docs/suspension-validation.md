@@ -26,7 +26,8 @@ Use the `fix/wheel-inertia-braking` branch and launch the game as usual. The
    damping one axle at a time to compare how the load distribution settles.
 
 Use similar entry speeds and change one setting at a time. The default effects
-are modest; there is no artificial drift boost. Export/import presets include
+are modest; the handbrake creates rotation through rear tire sliding forces,
+without applying an artificial yaw torque. Export/import presets include
 suspension settings and the comparison checkbox. Rate changes preserve the
 assumed static ride height through automatic preload; changing modes resets
 suspension motion so stale oscillations are not restored.
@@ -74,7 +75,10 @@ The tire peak and combined-force limit both use:
 
 The reference is the static quarter-vehicle load. Sensitivity defaults to 0.12,
 is bounded to 0–0.3, and effective friction is bounded to 0.5–1.5 times nominal.
-Zero sensitivity reproduces linear load scaling; zero road load gives zero grip.
+At longitudinal slip above the peak, the curve retains at least 85% of the
+combined-force limit by default, representing kinetic friction for locked or
+spinning tires. The Sliding Grip control sets this floor from 50–100%. Zero
+sensitivity reproduces linear load scaling; zero road load gives zero grip.
 
 Default wheel rates are 35,000 N/m, dampers 2,500 N s/m, and bar stiffnesses
 12,000/8,000 N m/rad front/rear. Estimated roll centers are 0.08/0.12 m and wheel

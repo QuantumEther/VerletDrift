@@ -220,6 +220,7 @@ export function initSliders() {
     bind(key, key, parseFloat1, fmtInt);
   }
   bind('tireLoadSensitivity', 'tireLoadSensitivity', parseFloat1, fmt2);
+  bind('tireSlidingFrictionRatio', 'tireSlidingFrictionRatio', parseFloat1, fmtPct);
 
   // ---- Clutch ----
   bind('clutchBitePoint',  'clutchBitePoint',  parseFloat1, fmt2);

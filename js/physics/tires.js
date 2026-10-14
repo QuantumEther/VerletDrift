@@ -243,8 +243,15 @@ export function computeTireForces(dt) {
 
     function longitudinalTarget(omega) {
       const slip = slipAtOmega(omega);
-      return pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip), safePeakSlipRatio,
-        params.pacejkaB, params.pacejkaC) * Math.sign(slip);
+      const peakCurveForce = pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip),
+        safePeakSlipRatio, params.pacejkaB, params.pacejkaC);
+      // The E=0 curve falls back toward zero at large slip. A locked/sliding
+      // tire should retain kinetic friction, so keep a bounded post-peak floor.
+      const slidingRatio = clamp(params.tireSlidingFrictionRatio ?? 0.85, 0, 1);
+      const magnitude = Math.abs(slip) > safePeakSlipRatio
+        ? Math.max(peakCurveForce, frictionLimit * slidingRatio)
+        : peakCurveForce;
+      return magnitude * Math.sign(slip);
     }
 
     // Preserve the combined-force cap and distance-based force relaxation.
