@@ -41,9 +41,6 @@ import {
   CAR_HALF_LENGTH,
   CAR_HALF_WIDTH,
   TACHOMETER_MAX_RPM,
-  TACHOMETER_REDLINE_RPM,
-  SPEEDOMETER_MAX_KPH,
-  KPH_TO_MPS,
 } from './constants.js';
 
 import { initInput } from './input.js';
@@ -88,11 +85,6 @@ import {
   drawHandbrakeBar,
   drawClutchBar,
   drawGearIndicator,
-  drawAnalogGauge,
-  drawYawStabilityGauge,
-  drawFrictionCircle,
-  drawSlipAngleMeter,
-  drawDriftRadar,
   drawBalloons,
   drawSplatParticles,
   drawScoreHud,
@@ -103,13 +95,15 @@ import {
   updateSmoke,
   drawSparks,
   drawDebugOverlays,
-  drawWheelSlipGauge,
 } from './renderer/index.js';
 
 import { drawDebugPanels } from './renderer/debug-overlay.js';
 import { initDOMOverlay, syncDOMOverlay } from './renderer/debug-overlay-dom.js';
 
-import { initSliders, updateInfoBar, createNeedlePhysics, initChangeLogger, registerGauge, getGaugeRegistry } from './ui.js?v=3';
+import { updateInfoBar, initChangeLogger } from './ui.js';
+import { initWorkspace } from './ui/workspace.js';
+import { initControls } from './ui/controls.js';
+import { updateInstruments } from './ui/instruments.js';
 import { startEngine as startEngineSound, stopEngine as stopEngineSound } from './sound.js';
 import { initSoundStateManager } from './soundStateManager.js';
 import { spawnBalloons, checkBalloonCollisions, updateSplatParticles, updateComboTimer } from './balloon.js';
@@ -164,16 +158,11 @@ function applyCanvasResolution(canvas, ctx, cssWidth, cssHeight, resolutionScale
 // =============================================================
 
 // Canvases.
+initWorkspace();
 const simCanvas   = getCanvas('simCanvas');
-const rpmCanvas   = getCanvas('rpmCanvas');
-const speedCanvas = getCanvas('speedCanvas');
-const latGCanvas  = getCanvas('latGCanvas'); // lateral G gauge (third canvas)
 const gpuCanvasEl = document.getElementById('gpuCanvas'); // may be null (optional)
 
 const simCtx   = simCanvas.getContext('2d');
-const rpmCtx   = rpmCanvas.getContext('2d');
-const speedCtx = speedCanvas.getContext('2d');
-const latGCtx  = latGCanvas.getContext('2d');
 
 // Apply initial resolution (1× — sliders are not yet connected).
 // main canvas uses CSS size; gauge canvases are fixed size in HTML.
@@ -268,9 +257,8 @@ window.addEventListener('unhandledrejection', (e) => {
   }
 });
 
-// Bind HTML sliders to state.params. This reads initial HTML slider values
-// into state.params so physics starts with the correct parameters.
-initSliders();
+// Bind all controls before starting physics. This also restores valid sound preferences.
+initControls();
 
 // Initialize sound state manager for cross-window synchronization via localStorage.
 initSoundStateManager();
@@ -287,16 +275,12 @@ if (soundToggleButton) {
       startEngineSound();
       isSoundEnabled = true;
       soundToggleButton.textContent = 'Sound ON';
-      soundToggleButton.style.background = '#2ecc71';
-      soundToggleButton.style.borderColor = '#2ecc71';
-      soundToggleButton.style.color = '#111';
+      soundToggleButton.setAttribute('aria-pressed','true');
     } else {
       stopEngineSound();
       isSoundEnabled = false;
       soundToggleButton.textContent = 'Sound OFF';
-      soundToggleButton.style.background = '#e74c3c';
-      soundToggleButton.style.borderColor = '#e74c3c';
-      soundToggleButton.style.color = '#fff';
+      soundToggleButton.setAttribute('aria-pressed','false');
     }
   });
 }
@@ -344,219 +328,11 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Create needle physics instances for each gauge.
-// These are independent spring-damper systems — one per gauge.
-const rpmNeedle  = createNeedlePhysics();
-const speedNeedle = createNeedlePhysics();
-const latGNeedle  = createNeedlePhysics();
-
-// New gauge needle instances (v15: 4 new gauges + drift radar).
-const yawMarginNeedle = createNeedlePhysics();
-const betaNeedle = createNeedlePhysics();
-const radarNeedles = [
-  createNeedlePhysics(),  // Yaw Margin
-  createNeedlePhysics(),  // Rear Saturation
-  createNeedlePhysics(),  // Front Authority
-  createNeedlePhysics(),  // Slip Angle
-  createNeedlePhysics(),  // Countersteer Alignment
-  createNeedlePhysics(),  // Speed Ratio
-];
-
-// Custom renderer mapping: name → function
-const customRendererMap = {
-  drawYawStabilityGauge,
-  drawFrictionCircle,
-  drawSlipAngleMeter,
-  drawDriftRadar,
-};
-
-// Place the car in the centre of the default map (coordinates in metres).
+// Vehicle initialization is independent of instrument presentation.
 initializeCarBody(DEFAULT_MAP_WIDTH * 0.5, DEFAULT_MAP_HEIGHT * 0.5);
-
-// Scatter balloons across the map. Must be called after initializeCarBody
-// so state.params.mapWidth/Height are set correctly.
 spawnBalloons();
-
-// Initial derivation so body state is valid before the first render.
 computeBodyDerivedState(1 / 60);
 updateSuspension(0);
-
-// Register dynamic gauges via the gauge registry.
-// These are added to the gauge row alongside the hardcoded RPM/Speed/LatG gauges.
-// NOTE: Migrated from wheelGrip to wheelFrictionUtil for semantic clarity.
-// wheelGrip was repurposed to store friction circle utilization (0-1) instead of grip remaining.
-// Using wheelFrictionUtil directly makes the semantics clear: this gauge shows traction utilization.
-registerGauge({
-  label:          'FL Util',
-  getValue:       () => state.wheelFrictionUtil.frontLeft,
-  min:            0,
-  max:            1,
-  title:          'FL UTIL',
-  subtitle:       'friction utilization',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.8,  // Red zone above 80% utilization (near traction limit)
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-registerGauge({
-  label:          'FR Util',
-  getValue:       () => state.wheelFrictionUtil.frontRight,
-  min:            0,
-  max:            1,
-  title:          'FR UTIL',
-  subtitle:       'friction utilization',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.8,
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-registerGauge({
-  label:          'RL Util',
-  getValue:       () => state.wheelFrictionUtil.rearLeft,
-  min:            0,
-  max:            1,
-  title:          'RL UTIL',
-  subtitle:       'friction utilization',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.8,
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-registerGauge({
-  label:          'RR Util',
-  getValue:       () => state.wheelFrictionUtil.rearRight,
-  min:            0,
-  max:            1,
-  title:          'RR UTIL',
-  subtitle:       'friction utilization',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.8,
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-registerGauge({
-  label:          'Jerk',
-  getValue:       () => Math.min(state.body.jerkMagnitude, 500),
-  min:            0,
-  max:            500,
-  title:          'JERK',
-  subtitle:       'm/s³',
-  majorStep:      100,
-  minorDivisions: 5,
-  redFrom:        400,
-  labelFormatter: (v) => String(Math.round(v)),
-});
-
-
-registerGauge({
-  label:          'Drift',
-  getValue:       () => state.driftIntensity,
-  min:            0,
-  max:            1,
-  title:          'DRIFT',
-  subtitle:       'intensity',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.7,
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-registerGauge({
-  label:          'Blur',
-  getValue:       () => state.blurAccumulator || 0,
-  min:            0,
-  max:            1,
-  title:          'BLUR',
-  subtitle:       'intensity',
-  majorStep:      0.25,
-  minorDivisions: 5,
-  redFrom:        0.8,
-  labelFormatter: (v) => v.toFixed(2),
-});
-
-// --- NEW GAUGES (v15) ---
-
-// Yaw Stability Margin Gauge: needle rotates ±140° and grows in length.
-registerGauge({
-  label:            'YAW',
-  title:            'YAW STABILITY',
-  subtitle:         'Margin',
-  min:              -2.0,
-  max:               2.0,
-  majorStep:        0.5,
-  minorDivisions:   5,
-  redFrom:          1.5,
-  getValue:         () => state.body.angularVelocity,
-  needle:           yawMarginNeedle,
-  labelFormatter:   (v) => v.toFixed(1),
-  customRenderer:   'drawYawStabilityGauge',  // Custom renderer flag for ui.js
-});
-
-// Friction Circle Gauges (Front & Rear axles).
-registerGauge({
-  label:            'FRICTION F',
-  title:            'FRONT GRIP',
-  subtitle:         'Circle',
-  min:              0,
-  max:              1,
-  getValue:         () => {
-    const fxN = state.axleForces.front.N > 0 ? state.axleForces.front.fx / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
-    const fyN = state.axleForces.front.N > 0 ? state.axleForces.front.fy / (state.params.tireFrictionCoeff * state.axleForces.front.N) : 0;
-    return Math.hypot(fxN, fyN);
-  },
-  customRenderer:   'drawFrictionCircle',
-  axle:             'front',
-});
-
-registerGauge({
-  label:            'FRICTION R',
-  title:            'REAR GRIP',
-  subtitle:         'Circle',
-  min:              0,
-  max:              1,
-  getValue:         () => {
-    const fxN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fx / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
-    const fyN = state.axleForces.rear.N > 0 ? state.axleForces.rear.fy / (state.params.tireFrictionCoeff * state.axleForces.rear.N) : 0;
-    return Math.hypot(fxN, fyN);
-  },
-  customRenderer:   'drawFrictionCircle',
-  axle:             'rear',
-});
-
-// Slip Angle Meter (β): horizontal bar.
-registerGauge({
-  label:            'SLIP β',
-  title:            'SLIP ANGLE',
-  subtitle:         'Degrees',
-  min:              -45,
-  max:               45,
-  getValue:         () => {
-    const heading = state.body.heading;
-    const vLong = state.body.velocityX * Math.sin(heading) + state.body.velocityY * -Math.cos(heading);
-    const vLat = state.body.velocityX * Math.cos(heading) + state.body.velocityY * Math.sin(heading);
-    const beta = Math.atan2(vLat, Math.max(Math.abs(vLong), 0.25)) * 180 / Math.PI;
-    return beta;
-  },
-  needle:           betaNeedle,
-  customRenderer:   'drawSlipAngleMeter',
-});
-
-// Drift Stability Radar: 6-axis spider chart with spring-smoothed polygon.
-registerGauge({
-  label:            'DRIFT',
-  title:            'DRIFT RADAR',
-  subtitle:         'Stability',
-  min:              0,
-  max:              1,
-  getValue:         () => state.driftIntensity,
-  customRenderer:   'drawDriftRadar',
-  radarNeedles:     radarNeedles,  // Array of 6 needle physics for each axis
-});
-
 
 // =============================================================
 // RENDER INTERPOLATION SNAPSHOTS
@@ -1106,162 +882,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
 }
 
 
-// Draws all three analog gauge canvases.
+// Update the live DOM/SVG instruments without changing the physics tick rate.
 // dt: real wall-clock seconds since last render frame (for framerate-independent needle spring).
-function drawGauges(dt) {
-  const labelFontScale = state.params.gaugeLabelScale;
-
-  // Compute gauge shake intensity from vehicle speed.
-  // Below 40 m/s (~144 km/h) there is no shake.
-  // Above that it ramps to full amplitude at ~70 m/s (~250 km/h).
-  const SHAKE_THRESHOLD = 40; // m/s
-  const SHAKE_FULL_SPEED = 70; // m/s
-  const speedJitter = state.body.speed > SHAKE_THRESHOLD
-    ? Math.min((state.body.speed - SHAKE_THRESHOLD) / (SHAKE_FULL_SPEED - SHAKE_THRESHOLD), 1.0)
-    : 0;
-
-  // Tachometer: 0–7000 RPM, redline at 6500.
-  const rpmNormalized = rpmNeedle.step(
-    state.engine.isStalled || !state.engine.isRunning
-      ? 0
-      : state.engine.rpm / TACHOMETER_MAX_RPM,
-    dt
-  );
-  drawAnalogGauge(rpmCtx, rpmCanvas.width, rpmCanvas.height, {
-    value:           state.engine.rpm,
-    min:             0,
-    max:             TACHOMETER_MAX_RPM,
-    title:           'RPM',
-    subtitle:        '× 1000',
-    majorStep:       1000,
-    minorDivisions:  5,
-    redFrom:         TACHOMETER_REDLINE_RPM,
-    needleNormalized: rpmNormalized,
-    labelFormatter:  (v) => String(v / 1000),
-    labelFontScale,
-    speedJitter,
-  });
-
-  // Speedometer: 0–200 km/h.
-  const speedKph        = state.body.speed / KPH_TO_MPS;
-  const speedNormalized = speedNeedle.step(speedKph / SPEEDOMETER_MAX_KPH, dt);
-  drawAnalogGauge(speedCtx, speedCanvas.width, speedCanvas.height, {
-    value:           speedKph,
-    min:             0,
-    max:             SPEEDOMETER_MAX_KPH,
-    title:           'SPEED',
-    subtitle:        'km/h',
-    majorStep:       20,
-    minorDivisions:  4,
-    redFrom:         null,
-    needleNormalized: speedNormalized,
-    labelFormatter:  (v) => String(Math.round(v)),
-    labelFontScale,
-    speedJitter,
-  });
-
-  // Lateral G gauge: 0–1.5 G.
-  const lateralG       = Math.min(Math.abs(state.body.lateralAccel) / 9.81, 3.0);
-  const lateralGMax    = 1.5;
-  const latGNormalized = latGNeedle.step(lateralG / lateralGMax, dt);
-  drawAnalogGauge(latGCtx, latGCanvas.width, latGCanvas.height, {
-    value:           lateralG,
-    min:             0,
-    max:             lateralGMax,
-    title:           'LAT G',
-    subtitle:        'g-force',
-    majorStep:       0.5,
-    minorDivisions:  5,
-    redFrom:         1.0,
-    needleNormalized: latGNormalized,
-    labelFormatter:  (v) => v.toFixed(1),
-    labelFontScale,
-    speedJitter,
-  });
-
-  // --- Dynamic registered gauges ---
-  const registry = getGaugeRegistry();
-  for (const entry of registry) {
-    const value = entry.getValue();
-
-    // Check if this gauge has a custom renderer
-    if (entry.customRenderer) {
-      const customRenderer = customRendererMap[entry.customRenderer];
-      if (customRenderer) {
-        // For custom renderers, handle needle smoothing based on gauge type
-        let config = {
-          value,
-          labelFontScale,
-          speedJitter,
-        };
-
-        // Add type-specific config
-        if (entry.needle && entry.customRenderer === 'drawYawStabilityGauge') {
-          const normalized = entry.needle.step(
-            (value - entry.min) / Math.max(entry.max - entry.min, 1),
-            dt
-          );
-          config.needleNormalized = normalized;
-        } else if (entry.needle && entry.customRenderer === 'drawSlipAngleMeter') {
-          const normalized = (value - entry.min) / Math.max(entry.max - entry.min, 1);
-          config.needleNormalized = entry.needle.step(Math.max(0, Math.min(normalized, 1)), dt);
-        } else if (entry.radarNeedles && entry.customRenderer === 'drawDriftRadar') {
-          config.radarNeedles = entry.radarNeedles;
-        } else if (entry.axle && entry.customRenderer === 'drawFrictionCircle') {
-          config.axle = entry.axle;
-        }
-
-        // Call the custom renderer
-        customRenderer(entry.ctx, entry.canvas.width, entry.canvas.height, config);
-      }
-    } else {
-      // Standard analog gauge rendering
-      const range = entry.max - entry.min;
-      const normalized = (entry.needle ? entry.needle.step(
-        range > 0 ? (value - entry.min) / range : 0,
-        dt
-      ) : 0);
-
-      drawAnalogGauge(entry.ctx, entry.canvas.width, entry.canvas.height, {
-        value:            value,
-        min:              entry.min,
-        max:              entry.max,
-        title:            entry.title,
-        subtitle:         entry.subtitle,
-        majorStep:        entry.majorStep,
-        minorDivisions:   entry.minorDivisions,
-        redFrom:          entry.redFrom,
-        needleNormalized: normalized,
-        labelFormatter:   entry.labelFormatter,
-        labelFontScale,
-        speedJitter,
-      });
-    }
-  }
-
-  // --- Wheel slip ratio gauges (Phase 5.5) ---
-  const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
-  const canvasIds = ['wheelFLCanvas', 'wheelFRCanvas', 'wheelRLCanvas', 'wheelRRCanvas'];
-
-  for (let i = 0; i < 4; i++) {
-    const name = wheelNames[i];
-    const canvasId = canvasIds[i];
-    const canvas = document.getElementById(canvasId);
-
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        drawWheelSlipGauge(ctx, canvas.width, canvas.height, {
-          slipRatio: state.wheelSlipRatio[name] || 0,
-          utilization: state.wheelFrictionUtil[name] || 0,
-          wheelName: name,
-          peakSlipRatio: state.params.peakSlipRatio || 0.12,
-        });
-      }
-    }
-  }
-}
-
+function drawGauges() { updateInstruments(state); }
 
 // =============================================================
 // BALLOON RESPAWN

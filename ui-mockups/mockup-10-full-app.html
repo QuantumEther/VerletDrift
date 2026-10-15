@@ -1,0 +1,3980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerletDrift UI — Mockup 10: Complete Control Workspace</title>
+<style>
+
+:root {
+  --bg: #0a0e13;
+  --bg-panel: #111820;
+  --bg-card: #182430;
+  --bg-input: #0d1520;
+  --accent: #e8c44a;
+  --accent-dim: rgba(232,196,74,0.12);
+  --cyan: #48d4e8;
+  --text: #d8eaf0;
+  --text-dim: #7a9aaa;
+  --border: rgba(255,255,255,0.08);
+  --font: 'SF Mono', 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+  --radius: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 12px; overflow: hidden; }
+
+.banner {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+}
+.banner-title { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+.banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
+.banner-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--cyan); white-space: nowrap; }
+
+details.meta { padding: 6px 24px; border-bottom: 1px solid var(--border); }
+summary { cursor: pointer; color: var(--text-dim); font-size: 11px; letter-spacing: 0.04em; user-select: none; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0; }
+.meta-col h4 { font-size: 10px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px; }
+.meta-col li { list-style: none; color: var(--text-dim); line-height: 1.7; font-size: 11px; }
+.meta-col li::before { content: '+  '; color: var(--cyan); }
+.meta-col:last-child li::before { content: '−  '; color: #e87b4a; }
+
+/* ── search bar ── */
+.search-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.search-wrap { position: relative; flex: 1; max-width: 480px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+#search {
+  width: 100%;
+  padding: 8px 10px 8px 30px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search:focus { border-color: rgba(232,196,74,0.4); }
+#search::placeholder { color: var(--text-dim); }
+#autocorrect {
+  display: none;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+#autocorrect span { color: var(--accent); cursor: pointer; text-decoration: underline; }
+.result-count { color: var(--text-dim); font-size: 11px; white-space: nowrap; }
+.result-count b { color: var(--accent); }
+
+/* ── cards scroll area ── */
+.cards-container {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: calc(100vh - 170px);
+  padding: 16px;
+  gap: 12px;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 16px;
+}
+.cards-container::-webkit-scrollbar { height: 4px; }
+.cards-container::-webkit-scrollbar-track { background: transparent; }
+.cards-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── card ── */
+.card {
+  min-width: 260px;
+  max-width: 260px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.card.has-match { border-top: 2px solid var(--accent); }
+.card.no-match { opacity: 0.4; }
+
+.card-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.card-badge {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-dim);
+}
+.card.has-match .card-badge { background: var(--accent); color: #000; }
+
+.card-sliders {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.card-sliders::-webkit-scrollbar { width: 3px; }
+.card-sliders::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.card-empty {
+  padding: 20px 14px;
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  display: none;
+}
+
+/* ── slider row ── */
+.slider-row {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.slider-row:last-child { border-bottom: none; }
+.slider-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.slider-label { font-size: 10px; color: var(--text); letter-spacing: 0.02em; }
+.slider-value { font-size: 10px; color: var(--accent); font-variant-numeric: tabular-nums; }
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--bg-card);
+  border-radius: 2px;
+  outline: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: block;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.3); }
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Mockup 2's palette, typography, card surfaces and sliders;
+   mockup 5's collapsible groups, compact rows and unified browsing. */
+body { display: flex; flex-direction: column; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, summary:focus-visible, input:focus-visible, input[type="range"]:focus-visible {
+  outline: 2px solid var(--cyan); outline-offset: 4px;
+}
+[hidden] { display: none !important; }
+.banner { flex-shrink: 0; padding: 16px 24px; }
+.banner-desc { max-width: 760px; }
+.banner-tag { margin-left: auto; }
+.search-bar { flex-shrink: 0; flex-wrap: wrap; padding: 14px 20px 10px; }
+.search-wrap { max-width: 500px; min-width: 200px; }
+#search { padding-right: 36px; }
+.clear-search { position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: 0; color: var(--text-dim); font-size: 15px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; gap: 3px;
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); }
+.view-switch button, .toolbar-button { padding: 7px 11px; color: var(--text-dim);
+  background: transparent; border: 1px solid transparent; border-radius: 5px; font-size: 11px; }
+.view-switch button[aria-pressed="true"] { color: var(--accent); background: var(--accent-dim); }
+.toolbar-button { border-color: var(--border); }
+button:hover { color: var(--text); }
+.subsystem-nav { display: flex; gap: 6px; padding: 12px 20px; overflow-x: auto;
+  flex-shrink: 0; border-bottom: 1px solid var(--border); scrollbar-width: thin; }
+.subsystem-nav button { display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-dim); padding: 8px 11px; font-size: 10px; }
+.subsystem-nav button[aria-pressed="true"] { color: var(--accent); border-color: rgba(232,196,74,.4); background: var(--accent-dim); }
+.subsystem-nav .nav-count { opacity: .65; font-size: 9px; }
+.workspace { overflow-anchor: none; flex: 1; min-height: 0; overflow-y: auto; padding: 20px; scrollbar-width: thin;
+  scrollbar-color: var(--bg-card) transparent; }
+.workspace-heading { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+h1 { font-size: 11px; font-weight: 500; letter-spacing: .1em; }
+.workspace-heading p { color: var(--text-dim); font-size: 10px; margin-left: auto; }
+/* Each column has its own vertical stack; collapsed cards leave no grid-row holes. */
+.cards-container { display: block; position: relative; height: 0; padding: 0;
+  overflow: visible; scroll-snap-type: none; }
+.card { position: absolute; top: 0; left: 0; min-width: 0; max-width: none;
+  display: block; border-radius: 10px; border-top: 2px solid transparent;
+  transition: transform .42s cubic-bezier(.22, 1, .36, 1), width .35s ease,
+    border-color .25s ease, box-shadow .25s ease; }
+.card[data-expanded="true"] { border-top-color: var(--accent); }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.45); }
+.card-header { list-style: none; padding: 13px 14px; gap: 10px; color: var(--text); }
+.card-header::-webkit-details-marker { display: none; }
+.card-header:hover { background: rgba(255,255,255,.025); }
+.card-title { flex: 1; }
+.card-number { font-size: 9px; color: var(--cyan); opacity: .8; }
+.card-arrow { color: var(--text-dim); transition: transform .18s; }
+.card[data-expanded="true"] .card-arrow { transform: rotate(90deg); }
+.card-sliders { overflow: hidden; padding: 0; }
+.slider-row { display: grid; grid-template-columns: minmax(115px, 1fr) minmax(95px, 1.2fr) 62px;
+  gap: 12px; align-items: center; padding: 12px 14px; border-left: 2px solid transparent; }
+.slider-row:hover { background: rgba(255,255,255,.02); }
+.slider-row:focus-within { background: var(--accent-dim); }
+.slider-row.edited { border-left-color: var(--cyan); }
+.slider-label { line-height: 1.5; }
+.slider-value { text-align: right; white-space: nowrap; }
+.slider-wrap { min-width: 0; }
+.range-ends { margin-top: 7px; font-size: 8px; }
+input[type="range"] { height: 4px; margin-top: 4px; background: linear-gradient(to right,
+  rgba(232,196,74,.45) var(--fill), var(--bg-card) var(--fill)); }
+input[type="range"]::-moz-range-thumb { width: 11px; height: 11px; border: 0;
+  border-radius: 50%; background: var(--accent); }
+mark { background: var(--accent-dim); color: var(--accent); border-radius: 2px; }
+.cards-container.list-view { max-width: 1100px; margin: 0 auto; }
+.list-view .slider-row { grid-template-columns: minmax(160px, 1fr) minmax(100px, 3fr) 90px; padding: 11px 20px; }
+.list-view .card-header { padding-left: 20px; padding-right: 20px; }
+.empty-state { text-align: center; color: var(--text-dim); padding: 60px 20px; line-height: 1.8; }
+.empty-state strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 8px; }
+.empty-state button { margin-top: 16px; color: var(--accent); background: var(--accent-dim); }
+.suggestion { width: 100%; color: var(--text-dim); font-size: 10px; }
+.suggestion button { color: var(--accent); text-decoration: underline; border: 0; background: none; }
+.footer { display: flex; gap: 16px; padding: 10px 20px; border-top: 1px solid var(--border);
+  flex-shrink: 0; font-size: 9px; line-height: 1.5; color: var(--text-dim); }
+.footer .status { margin-left: auto; color: var(--cyan); }
+kbd { font: inherit; color: var(--text); background: var(--bg-card); border-radius: 3px; padding: 2px 4px; }
+@media (max-width: 700px) {
+  .banner { padding: 14px 16px; gap: 8px; }
+  .banner-desc { min-width: 100%; font-size: 10px; }
+  .banner-tag { display: none; }
+  .search-bar { padding: 12px; gap: 8px; }
+  .search-wrap { max-width: none; flex-basis: calc(100% - 110px); }
+  .view-switch { margin-left: 0; }
+  .subsystem-nav { padding: 10px 12px; }
+  .workspace { padding: 12px; }
+  .workspace-heading p { display: none; }
+  .slider-row, .list-view .slider-row { grid-template-columns: minmax(90px, 1fr) minmax(80px, 1.1fr) 60px; gap: 8px; padding: 12px; }
+  .footer .keyboard-help { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+
+/* Full-app shell: original gauge captures and a static scene, then the new controls. */
+html, body { height: auto; min-height: 100%; overflow: visible; }
+body { display: block; }
+.app-shell { max-width: 1440px; padding: 24px 20px; margin: 0 auto; }
+.app-heading { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.app-brand { font-size: 16px; font-weight: 600; letter-spacing: .08em; }
+.app-brand span { color: var(--accent); }
+.app-heading p { color: var(--text-dim); font-size: 10px; }
+.mockup-label { margin-left: auto; color: var(--cyan); border: 1px solid var(--border); border-radius: 20px; padding: 6px 10px; font-size: 9px; }
+.jump-controls { color: var(--accent); font-size: 10px; text-underline-offset: 4px; }
+.jump-controls:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+.gauge-capture { display: block; width: 100%; height: auto; margin-bottom: 20px; }
+.simulation-frame { background: var(--bg-panel); border: 1px solid var(--border); padding: 16px; border-radius: 20px; margin-bottom: 24px; }
+.resolution-controls { display: flex; gap: 12px; margin-bottom: 12px; }
+.resolution-control { flex: 1; display: flex; gap: 14px; align-items: center; background: var(--bg-input); border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; }
+.resolution-control label { white-space: nowrap; color: var(--text-dim); font-size: 10px; }
+.resolution-control output { color: var(--accent); min-width: 35px; text-align: right; }
+.scene-wrap { position: relative; border-radius: 12px; overflow: hidden; }
+.scene-capture { display: block; width: 100%; height: auto; }
+.scene-label { position: absolute; bottom: 12px; right: 12px; color: var(--cyan); font-size: 9px; padding: 7px 10px; background: rgba(10,14,19,.9); border: 1px solid var(--border); border-radius: 6px; }
+.info-bar { margin-top: 16px; display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; }
+.info-cell { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; min-width: 0; }
+.info-cell .label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.info-cell .value { font-size: 13px; color: var(--cyan); font-weight: 600; }
+.motion-energy-cell { grid-column: span 4; background: rgba(34,40,18,.92); border-color: rgba(0,255,0,.4); }
+.motion-energy-values { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+.motion-energy-values > div { display: flex; flex-direction: column; gap: 4px; }
+.motion-energy-values span { color: var(--text-dim); font-size: 8px; }
+.motion-energy-values strong { color: #b8df88; font-size: 12px; }
+.controls-intro { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; padding: 0 0 16px; }
+.controls-intro h1 { font-size: 13px; color: var(--accent); }
+.controls-intro p { color: var(--text-dim); font-size: 10px; line-height: 1.6; }
+.preset-bar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-panel); margin-bottom: 12px; }
+.preset-label { color: var(--text-dim); font-size: 9px; letter-spacing: .1em; margin: 0 5px; }
+.preset-btn { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); padding: 8px 10px; border-radius: 6px; font-size: 10px; }
+.preset-btn[aria-pressed="true"] { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,196,74,.45); }
+.action-divider { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+.local-toggle { margin-left: auto; }
+.local-toggle[aria-pressed="true"] { color: var(--cyan); border-color: rgba(72,212,232,.3); }
+.controls-sticky { position: sticky; top: 0; z-index: 20; background: var(--bg); box-shadow: 0 8px 16px rgba(0,0,0,.2); }
+.search-bar { padding-left: 0; padding-right: 0; }
+.search-wrap { max-width: 580px; }
+.subsystem-nav { padding-left: 0; padding-right: 0; }
+.workspace { overflow: visible; padding: 18px 0; min-height: 220px; }
+.cards-container { margin-bottom: 20px; }
+.card-title { font-size: 10px; line-height: 1.5; }
+.category-caption { display: block; font-weight: 400; color: var(--cyan); font-size: 8px; letter-spacing: .12em; margin-bottom: 4px; }
+.slider-row { grid-template-columns: minmax(115px,1fr) minmax(85px,1fr) 78px; padding: 13px 14px; }
+.slider-label { font-size: 10px; overflow-wrap: anywhere; }
+.slider-value { font-size: 10px; }
+.list-view .slider-row { grid-template-columns: minmax(170px,1fr) minmax(110px,3fr) 110px; }
+.toggle-row, .list-view .toggle-row { grid-template-columns: minmax(115px,1fr) 36px 78px; }
+.toggle { position: relative; display: block; width: 30px; height: 17px; }
+.toggle input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 1; }
+.toggle-track { position: absolute; inset: 0; border: 1px solid var(--border); background: var(--bg-card); border-radius: 20px; transition: background .2s; }
+.toggle-track::after { content: ''; position: absolute; width: 11px; height: 11px; border-radius: 50%; top: 2px; left: 2px; background: var(--text-dim); transition: transform .2s, background .2s; }
+.toggle input:checked + .toggle-track { background: var(--accent-dim); border-color: rgba(232,196,74,.4); }
+.toggle input:checked + .toggle-track::after { transform: translateX(13px); background: var(--accent); }
+.toggle input:focus-visible + .toggle-track { outline: 2px solid var(--cyan); outline-offset: 3px; }
+#actionStatus { color: var(--cyan); font-size: 10px; line-height: 1.6; min-height: 20px; padding: 4px 0 8px; }
+.footer { padding-left: 0; padding-right: 0; align-items: center; flex-wrap: wrap; }
+.keys-hint { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; color: var(--text-dim); font-size: 9px; line-height: 2; }
+@media(max-width:700px) {
+ .app-shell { padding: 16px 12px; }
+ .app-heading p { width: 100%; }
+ .mockup-label { margin-left: 0; }
+ .gauge-capture { margin-bottom: 12px; }
+ .simulation-frame { padding: 10px; border-radius: 12px; }
+ .resolution-controls { flex-direction: column; gap: 6px; }
+ .info-bar { grid-template-columns: repeat(3,minmax(0,1fr)); }
+ .motion-energy-cell { grid-column: span 3; }
+ .info-cell .value { font-size: 10px; }
+ .motion-energy-values strong { font-size: 9px; }
+ .controls-intro p { width: 100%; }
+ .preset-bar { padding: 10px; }
+ .local-toggle { margin-left: 0; }
+ .search-bar { padding-top: 10px; padding-bottom: 10px; }
+ .slider-row, .list-view .slider-row { grid-template-columns: minmax(100px,1fr) minmax(70px,1fr) 65px; gap: 8px; padding: 12px; }
+ .toggle-row, .list-view .toggle-row { grid-template-columns: minmax(100px,1fr) 36px 65px; }
+ .footer { gap: 10px; }
+}
+
+</style>
+</head>
+<body>
+<div class="app-shell">
+<header class="app-heading"><div class="app-brand">VERLET<span>DRIFT</span></div><p>Vehicle dynamics sandbox</p><a class="jump-controls" href="#controls">Tune controls ↓</a><span class="mockup-label">PROPOSAL 10 · FULL APP / STATIC PREVIEW</span></header>
+<section aria-label="Existing gauges, static capture">
+ <img class="gauge-capture" src="assets/mockup-10-gauges.png" width="1400" height="2048" alt="Original instrument dashboard: speed, RPM, lateral G, tire utilization, yaw, grip, slip and drift gauges; unchanged design.">
+ <img class="gauge-capture" src="assets/mockup-10-wheel-gauges.png" width="1400" height="927" alt="Existing front-left, front-right, rear-left and rear-right slip gauges at rest; unchanged design.">
+</section>
+<section class="simulation-frame" aria-label="Static simulator preview">
+ <div class="resolution-controls">
+ <div class="resolution-control"><label for="canvasResolutionSlider">Canvas Res</label><input type="range" id="canvasResolutionSlider" min="0.5" max="2.0" value="1.0" step="0.1"><output for="canvasResolutionSlider">1.0</output></div>
+ <div class="resolution-control"><label for="gpuResolutionScale">GPU Res</label><input type="range" id="gpuResolutionScale" min="0.25" max="2.0" value="1.0" step="0.05"><output for="gpuResolutionScale">1.0</output></div>
+ </div>
+ <div class="scene-wrap"><img class="scene-capture" src="assets/mockup-10-scene.png" width="1366" height="1026" alt="Static top-down simulator scene with the vehicle on its checkerboard course."><span class="scene-label">STATIC SCENE · UI PREVIEW</span></div>
+<div class="info-bar">
+        <div class="info-cell">
+          <div class="label">Speed</div>
+          <div class="value" id="velocityDisplay">0.0 km/h</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">RPM</div>
+          <div class="value" id="rpmDisplay">800</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Gear</div>
+          <div class="value" id="gearDisplay">N</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Heading</div>
+          <div class="value" id="headingDisplay">0°</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Clutch</div>
+          <div class="value" id="clutchDisplay">100%</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Wheel ω</div>
+          <div class="value" id="wheelOmegaDisplay">FL:0.00 FR:0.00<br>RL:0.00 RR:0.00</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Render</div>
+          <div class="value" id="renderFpsDisplay">0 fps</div>
+        </div>
+        <div class="info-cell">
+          <div class="label">Physics</div>
+          <div class="value" id="physicsTpsDisplay">0 Hz</div>
+        </div>
+        <div class="info-cell motion-energy-cell">
+          <div class="label">Motion energy · estimate</div>
+          <div class="motion-energy-values">
+            <div><span>Total</span><strong id="motionEnergyTotal">0.00 kJ</strong></div>
+            <div><span>Forward</span><strong id="motionEnergyLinear">0.00 kJ</strong></div>
+            <div><span>Yaw</span><strong id="motionEnergyYaw">0.00 kJ</strong></div>
+            <div><span>Wheel spin</span><strong id="motionEnergyWheels">0.00 kJ</strong></div>
+          </div>
+        </div>
+      </div>
+</section>
+<section class="controls-intro" id="controls"><h1>CONTROL WORKSPACE</h1><p>160 sliders · 14 toggles · 9 categories · proposal-9 motion</p></section>
+<div class="preset-bar" aria-label="Presets and mock engine controls">
+ <span class="preset-label">SETUP</span>
+ <button class="preset-btn" data-preset="driftCar" aria-pressed="false">Drift Car</button>
+ <button class="preset-btn" data-preset="heavySUV" aria-pressed="false">Heavy SUV</button>
+ <button class="preset-btn" data-preset="goKart" aria-pressed="false">Go-Kart</button>
+ <button class="preset-btn" data-preset="iceSurface" aria-pressed="false">Ice Surface</button>
+ <button class="preset-btn" data-preset="stockCar" aria-pressed="false">Stock Road</button>
+ <span class="action-divider" aria-hidden="true"></span>
+ <button class="toolbar-button" id="exportPreset">↓ Export</button>
+ <button class="toolbar-button" id="importButton">↑ Import</button>
+ <input type="file" id="importPreset" accept=".json,application/json" hidden>
+ <button class="toolbar-button local-toggle" id="engineToggle" aria-pressed="true">Engine ON</button>
+ <button class="toolbar-button" id="soundToggle" aria-pressed="false">Sound OFF</button>
+</div>
+<div id="actionStatus" role="status">Controls edit this mockup only. Presets preview available control values; scene and gauges stay static.</div>
+<div class="controls-sticky">
+<section class="search-bar" aria-label="Parameter search and layout">
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">⌕</span>
+    <input type="search" id="search" aria-label="Search all 174 controls" placeholder="Search every control… torque, smoke, clutch, camra" autocomplete="off">
+    <button class="clear-search" id="clearSearch" aria-label="Clear search" hidden>×</button>
+  </div>
+  <div class="result-count" id="resultCount" role="status" aria-live="polite"></div>
+  <div class="view-switch" role="group" aria-label="Layout">
+    <button id="cardsView" aria-pressed="true">▦ Cards</button>
+    <button id="listView" aria-pressed="false">☷ List</button>
+  </div>
+  <button class="toolbar-button" id="foldAll">Collapse all</button>
+  <div class="suggestion" id="suggestion" hidden>Did you mean <button id="suggestionButton"></button>?</div>
+</section>
+<nav class="subsystem-nav" id="subsystemNav" aria-label="Filter by subsystem"></nav>
+</div>
+<main class="workspace" id="workspace">
+  <div class="workspace-heading">
+    <h1 id="workspaceTitle">ALL SUBSYSTEMS</h1>
+    <p>Independent columns · no gaps when groups fold</p>
+  </div>
+  <div class="cards-container" id="cardsContainer"></div>
+  <div class="empty-state" id="emptyState" hidden>
+    <strong>No matching controls</strong>
+    Try another name or clear the filters to see every subsystem.<br>
+    <button class="toolbar-button" id="resetFilters">Clear filters</button>
+  </div>
+</main>
+<footer class="footer">
+  <span>162 sliders total · 14 toggles · static simulator preview</span>
+  <span class="keyboard-help"><kbd>/</kbd> search · <kbd>Esc</kbd> clear · <kbd>↓</kbd> first result</span>
+  <span class="status" id="editStatus" role="status">Default setup</span>
+  <button class="toolbar-button" id="resetValues" hidden>Reset values</button>
+</footer>
+<div class="keys-hint">
+      <span><kbd>🖱️ R-Drag</kbd> steer</span>
+      <span><kbd>🖱️ L-Drag↑↓</kbd> throttle</span>
+      <span><kbd>D</kbd> full throttle</span>
+      <span><kbd>S</kbd> service brake</span>
+      <span><kbd>F</kbd> handbrake (rear lock)</span>
+      <span><kbd>A</kbd> clutch pedal (hold=floor, release=engage)</span>
+      <span><kbd>Numpad 7/1/8/2/9/3</kbd> gears 1–6</span>
+      <span><kbd>Numpad 4/5/6</kbd> neutral</span>
+      <span><kbd>Q+Numpad1</kbd> reverse</span>
+    </div>
+</div>
+<script>
+// Complete control inventory from index.html on verlet_gpt6_v18.
+// Original IDs, HTML ranges, steps and default values are preserved.
+const SLIDERS = [
+  {
+    "id": "peakEngineTorqueNm",
+    "type": "range",
+    "label": "Peak Torque",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 50,
+    "max": 2000,
+    "step": 10,
+    "value": 350,
+    "display": "350",
+    "htmlDefault": 350,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": "Nm"
+  },
+  {
+    "id": "idleRpm",
+    "type": "range",
+    "label": "Idle RPM",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 400,
+    "max": 1500,
+    "step": 50,
+    "value": 800,
+    "display": "800",
+    "htmlDefault": 800,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": "RPM"
+  },
+  {
+    "id": "redlineRpm",
+    "type": "range",
+    "label": "Redline RPM",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 4000,
+    "max": 10000,
+    "step": 100,
+    "value": 7000,
+    "display": "7000",
+    "htmlDefault": 7000,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": "RPM"
+  },
+  {
+    "id": "stallRpm",
+    "type": "range",
+    "label": "Stall RPM",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 100,
+    "max": 1000,
+    "step": 50,
+    "value": 600,
+    "display": "600",
+    "htmlDefault": 600,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": "RPM"
+  },
+  {
+    "id": "stallResistance",
+    "type": "range",
+    "label": "Stall Resist.",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": ""
+  },
+  {
+    "id": "cylinderCount",
+    "type": "range",
+    "label": "Cylinders",
+    "section": "🔩 Engine Character",
+    "detail": "",
+    "min": 1,
+    "max": 16,
+    "step": 1,
+    "value": 12,
+    "display": "12",
+    "htmlDefault": 12,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": ""
+  },
+  {
+    "id": "idleCreepForce",
+    "type": "range",
+    "label": "Idle Creep",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0,
+    "max": 500,
+    "step": 10,
+    "value": 200,
+    "display": "200",
+    "htmlDefault": 200,
+    "subsystem": "Engine",
+    "group": "Engine / Torque & idle",
+    "groupLabel": "Torque & idle",
+    "unit": "N"
+  },
+  {
+    "id": "finalDriveRatio",
+    "type": "range",
+    "label": "Final Drive",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 1,
+    "max": 8,
+    "step": 0.1,
+    "value": 4.1,
+    "display": "4.1",
+    "htmlDefault": 4.1,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio1",
+    "type": "range",
+    "label": "Gear 1",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.5,
+    "max": 6,
+    "step": 0.05,
+    "value": 3.5,
+    "display": "3.50",
+    "htmlDefault": 3.5,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio2",
+    "type": "range",
+    "label": "Gear 2",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.5,
+    "max": 5,
+    "step": 0.05,
+    "value": 2.1,
+    "display": "2.10",
+    "htmlDefault": 2.1,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio3",
+    "type": "range",
+    "label": "Gear 3",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.3,
+    "max": 3,
+    "step": 0.05,
+    "value": 1.4,
+    "display": "1.40",
+    "htmlDefault": 1.4,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio4",
+    "type": "range",
+    "label": "Gear 4",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.2,
+    "max": 2,
+    "step": 0.05,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio5",
+    "type": "range",
+    "label": "Gear 5",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.1,
+    "max": 1.5,
+    "step": 0.05,
+    "value": 0.75,
+    "display": "0.75",
+    "htmlDefault": 0.75,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "gearRatio6",
+    "type": "range",
+    "label": "Gear 6",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.1,
+    "max": 1.2,
+    "step": 0.05,
+    "value": 0.58,
+    "display": "0.58",
+    "htmlDefault": 0.58,
+    "subsystem": "Transmission",
+    "group": "Transmission / Gear ratios",
+    "groupLabel": "Gear ratios",
+    "unit": ""
+  },
+  {
+    "id": "clutchBitePoint",
+    "type": "range",
+    "label": "Bite Point",
+    "section": "⚙️ Clutch",
+    "detail": "",
+    "min": 0.05,
+    "max": 0.85,
+    "step": 0.01,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Transmission",
+    "group": "Transmission / Clutch engagement",
+    "groupLabel": "Clutch engagement",
+    "unit": ""
+  },
+  {
+    "id": "clutchBiteRange",
+    "type": "range",
+    "label": "Slip Zone",
+    "section": "⚙️ Clutch",
+    "detail": "",
+    "min": 0.02,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.2,
+    "display": "0.20",
+    "htmlDefault": 0.2,
+    "subsystem": "Transmission",
+    "group": "Transmission / Clutch engagement",
+    "groupLabel": "Clutch engagement",
+    "unit": ""
+  },
+  {
+    "id": "clutchBiteCurve",
+    "type": "range",
+    "label": "Bite Sharpness",
+    "section": "⚙️ Clutch",
+    "detail": "",
+    "min": 1,
+    "max": 6,
+    "step": 0.1,
+    "value": 2.5,
+    "display": "2.5",
+    "htmlDefault": 2.5,
+    "subsystem": "Transmission",
+    "group": "Transmission / Clutch engagement",
+    "groupLabel": "Clutch engagement",
+    "unit": ""
+  },
+  {
+    "id": "clutchEngageTime",
+    "type": "range",
+    "label": "Engage Time",
+    "section": "⚙️ Clutch",
+    "detail": "",
+    "min": 0.05,
+    "max": 1.5,
+    "step": 0.01,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Transmission",
+    "group": "Transmission / Clutch engagement",
+    "groupLabel": "Clutch engagement",
+    "unit": "s"
+  },
+  {
+    "id": "tireFrictionCoeff",
+    "type": "range",
+    "label": "Tire Friction",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0.3,
+    "max": 2,
+    "step": 0.05,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Tires",
+    "group": "Tires / Friction & slip",
+    "groupLabel": "Friction & slip",
+    "unit": ""
+  },
+  {
+    "id": "tireSlidingFrictionRatio",
+    "type": "range",
+    "label": "Sliding Grip",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0.5,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.85,
+    "display": "85%",
+    "htmlDefault": 0.85,
+    "subsystem": "Tires",
+    "group": "Tires / Friction & slip",
+    "groupLabel": "Friction & slip",
+    "unit": "%",
+    "displayScale": 100
+  },
+  {
+    "id": "tireLoadSensitivity",
+    "type": "range",
+    "label": "Tire load sensitivity",
+    "section": "Suspension",
+    "detail": "",
+    "min": 0,
+    "max": 0.3,
+    "step": 0.01,
+    "value": 0.12,
+    "display": "0.12",
+    "htmlDefault": 0.12,
+    "subsystem": "Tires",
+    "group": "Tires / Friction & slip",
+    "groupLabel": "Friction & slip",
+    "unit": ""
+  },
+  {
+    "id": "peakSlipAngleDeg",
+    "type": "range",
+    "label": "Peak Slip Angle",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 2,
+    "max": 20,
+    "step": 0.5,
+    "value": 8,
+    "display": "8.0",
+    "htmlDefault": 8,
+    "subsystem": "Tires",
+    "group": "Tires / Friction & slip",
+    "groupLabel": "Friction & slip",
+    "unit": "°"
+  },
+  {
+    "id": "peakSlipRatio",
+    "type": "range",
+    "label": "Peak Slip Ratio",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 0.05,
+    "max": 0.3,
+    "step": 0.01,
+    "value": 0.12,
+    "display": "0.12",
+    "htmlDefault": 0.12,
+    "subsystem": "Tires",
+    "group": "Tires / Friction & slip",
+    "groupLabel": "Friction & slip",
+    "unit": ""
+  },
+  {
+    "id": "pacejkaB",
+    "type": "range",
+    "label": "Pacejka B",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 1,
+    "max": 30,
+    "step": 0.5,
+    "value": 10,
+    "display": "10.0",
+    "htmlDefault": 10,
+    "subsystem": "Tires",
+    "group": "Tires / Tire model",
+    "groupLabel": "Tire model",
+    "unit": ""
+  },
+  {
+    "id": "pacejkaC",
+    "type": "range",
+    "label": "Pacejka C",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 0.5,
+    "max": 3,
+    "step": 0.05,
+    "value": 1.9,
+    "display": "1.90",
+    "htmlDefault": 1.9,
+    "subsystem": "Tires",
+    "group": "Tires / Tire model",
+    "groupLabel": "Tire model",
+    "unit": ""
+  },
+  {
+    "id": "tireRelaxationLength",
+    "type": "range",
+    "label": "Relax Length",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 0.05,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Tires",
+    "group": "Tires / Tire model",
+    "groupLabel": "Tire model",
+    "unit": "m"
+  },
+  {
+    "id": "wheelRadius",
+    "type": "range",
+    "label": "Wheel Radius",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 0.2,
+    "max": 0.6,
+    "step": 0.01,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Tires",
+    "group": "Tires / Tire model",
+    "groupLabel": "Tire model",
+    "unit": "m"
+  },
+  {
+    "id": "wheelInertia",
+    "type": "range",
+    "label": "Wheel Inertia",
+    "section": "🏎️ Tire Model (Pacejka)",
+    "detail": "",
+    "min": 0.5,
+    "max": 3,
+    "step": 0.1,
+    "value": 1.2,
+    "display": "1.20",
+    "htmlDefault": 1.2,
+    "subsystem": "Tires",
+    "group": "Tires / Tire model",
+    "groupLabel": "Tire model",
+    "unit": "kg·m²"
+  },
+  {
+    "id": "gripLossThreshold",
+    "type": "range",
+    "label": "Loss Threshold",
+    "section": "🏁 Grip State Machine",
+    "detail": "",
+    "min": 0.1,
+    "max": 0.98,
+    "step": 0.01,
+    "value": 0.7,
+    "display": "0.70",
+    "htmlDefault": 0.7,
+    "subsystem": "Tires",
+    "group": "Tires / Grip state",
+    "groupLabel": "Grip state",
+    "unit": ""
+  },
+  {
+    "id": "gripRecoveryThreshold",
+    "type": "range",
+    "label": "Recovery Thresh.",
+    "section": "🏁 Grip State Machine",
+    "detail": "",
+    "min": 0.3,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.85,
+    "display": "0.85",
+    "htmlDefault": 0.85,
+    "subsystem": "Tires",
+    "group": "Tires / Grip state",
+    "groupLabel": "Grip state",
+    "unit": ""
+  },
+  {
+    "id": "gripEmaStable",
+    "type": "range",
+    "label": "EMA α (stable)",
+    "section": "🏁 Grip State Machine",
+    "detail": "",
+    "min": 0.01,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.15,
+    "display": "0.15",
+    "htmlDefault": 0.15,
+    "subsystem": "Tires",
+    "group": "Tires / Grip state",
+    "groupLabel": "Grip state",
+    "unit": ""
+  },
+  {
+    "id": "gripEmaSlipping",
+    "type": "range",
+    "label": "EMA α (slip)",
+    "section": "🏁 Grip State Machine",
+    "detail": "",
+    "min": 0.05,
+    "max": 0.8,
+    "step": 0.01,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Tires",
+    "group": "Tires / Grip state",
+    "groupLabel": "Grip state",
+    "unit": ""
+  },
+  {
+    "id": "simulationFps",
+    "type": "range",
+    "label": "Physics Hz",
+    "section": "⚡ Simulation",
+    "detail": "",
+    "min": 30,
+    "max": 200,
+    "step": 10,
+    "value": 100,
+    "display": "100",
+    "htmlDefault": 100,
+    "subsystem": "Physics",
+    "group": "Physics / Simulation timing",
+    "groupLabel": "Simulation timing",
+    "unit": "Hz"
+  },
+  {
+    "id": "timeScale",
+    "type": "range",
+    "label": "Time Scale",
+    "section": "⚡ Simulation",
+    "detail": "",
+    "min": 0.1,
+    "max": 3,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Physics",
+    "group": "Physics / Simulation timing",
+    "groupLabel": "Simulation timing",
+    "unit": ""
+  },
+  {
+    "id": "maxSubstepsPerFrame",
+    "type": "range",
+    "label": "Max Substeps/Frame",
+    "section": "⚡ Simulation",
+    "detail": "",
+    "min": 1,
+    "max": 12,
+    "step": 1,
+    "value": 6,
+    "display": "6",
+    "htmlDefault": 6,
+    "subsystem": "Physics",
+    "group": "Physics / Simulation timing",
+    "groupLabel": "Simulation timing",
+    "unit": ""
+  },
+  {
+    "id": "carMassKg",
+    "type": "range",
+    "label": "Mass",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 600,
+    "max": 3000,
+    "step": 50,
+    "value": 1200,
+    "display": "1200",
+    "htmlDefault": 1200,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": "kg"
+  },
+  {
+    "id": "rollingResistanceCoeff",
+    "type": "range",
+    "label": "Roll Resist.",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0.001,
+    "max": 0.03,
+    "step": 0.001,
+    "value": 0.012,
+    "display": "0.012",
+    "htmlDefault": 0.012,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": ""
+  },
+  {
+    "id": "aeroDragCoeff",
+    "type": "range",
+    "label": "Aero Drag",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0.1,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.4,
+    "display": "0.40",
+    "htmlDefault": 0.4,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": ""
+  },
+  {
+    "id": "bounciness",
+    "type": "range",
+    "label": "Bounciness",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": ""
+  },
+  {
+    "id": "yawDamping",
+    "type": "range",
+    "label": "Yaw Damping",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0,
+    "max": 5,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": ""
+  },
+  {
+    "id": "brakeForce",
+    "type": "range",
+    "label": "Brake Force",
+    "section": "🔧 Engine & Drivetrain",
+    "detail": "",
+    "min": 500,
+    "max": 20000,
+    "step": 100,
+    "value": 9810,
+    "display": "9810",
+    "htmlDefault": 9810,
+    "subsystem": "Physics",
+    "group": "Physics / Chassis & resistance",
+    "groupLabel": "Chassis & resistance",
+    "unit": "N"
+  },
+  {
+    "id": "constraintIterations",
+    "type": "range",
+    "label": "Constraint Iters",
+    "section": "🌍 World & Visual",
+    "detail": "",
+    "min": 1,
+    "max": 12,
+    "step": 1,
+    "value": 6,
+    "display": "6",
+    "htmlDefault": 6,
+    "subsystem": "Physics",
+    "group": "Physics / Constraints & world",
+    "groupLabel": "Constraints & world",
+    "unit": ""
+  },
+  {
+    "id": "constraintDamping",
+    "type": "range",
+    "label": "Constraint Damp",
+    "section": "🌍 World & Visual",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.8,
+    "display": "0.50",
+    "htmlDefault": 0.8,
+    "subsystem": "Physics",
+    "group": "Physics / Constraints & world",
+    "groupLabel": "Constraints & world",
+    "unit": ""
+  },
+  {
+    "id": "mapWidth",
+    "type": "range",
+    "label": "Width",
+    "section": "🗺️ Map Size",
+    "detail": "",
+    "min": 100,
+    "max": 1000,
+    "step": 10,
+    "value": 300,
+    "display": "300",
+    "htmlDefault": 300,
+    "subsystem": "Physics",
+    "group": "Physics / Constraints & world",
+    "groupLabel": "Constraints & world",
+    "unit": "m"
+  },
+  {
+    "id": "mapHeight",
+    "type": "range",
+    "label": "Height",
+    "section": "🗺️ Map Size",
+    "detail": "",
+    "min": 100,
+    "max": 1000,
+    "step": 10,
+    "value": 240,
+    "display": "240",
+    "htmlDefault": 240,
+    "subsystem": "Physics",
+    "group": "Physics / Constraints & world",
+    "groupLabel": "Constraints & world",
+    "unit": "m"
+  },
+  {
+    "id": "maxBalloons",
+    "type": "range",
+    "label": "Max Balloons",
+    "section": "🎈 Balloon System",
+    "detail": "",
+    "min": 1,
+    "max": 500,
+    "step": 1,
+    "value": 240,
+    "display": "240",
+    "htmlDefault": 240,
+    "subsystem": "Physics",
+    "group": "Physics / Balloons",
+    "groupLabel": "Balloons",
+    "unit": ""
+  },
+  {
+    "id": "balloonRespawnRate",
+    "type": "range",
+    "label": "Respawn Rate/s",
+    "section": "🎈 Balloon System",
+    "detail": "",
+    "min": 0.01,
+    "max": 5,
+    "step": 0.01,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Physics",
+    "group": "Physics / Balloons",
+    "groupLabel": "Balloons",
+    "unit": ""
+  },
+  {
+    "id": "suspensionEnabled",
+    "type": "checkbox",
+    "label": "Dynamic suspension",
+    "section": "Suspension",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": true,
+    "display": "",
+    "htmlDefault": true,
+    "subsystem": "Suspension",
+    "group": "Suspension / Springs & dampers",
+    "groupLabel": "Springs & dampers",
+    "unit": ""
+  },
+  {
+    "id": "springRateFront",
+    "type": "range",
+    "label": "Front spring",
+    "section": "Suspension",
+    "detail": "",
+    "min": 15000,
+    "max": 80000,
+    "step": 1000,
+    "value": 35000,
+    "display": "35000",
+    "htmlDefault": 35000,
+    "subsystem": "Suspension",
+    "group": "Suspension / Springs & dampers",
+    "groupLabel": "Springs & dampers",
+    "unit": "N/m"
+  },
+  {
+    "id": "springRateRear",
+    "type": "range",
+    "label": "Rear spring",
+    "section": "Suspension",
+    "detail": "",
+    "min": 15000,
+    "max": 80000,
+    "step": 1000,
+    "value": 35000,
+    "display": "35000",
+    "htmlDefault": 35000,
+    "subsystem": "Suspension",
+    "group": "Suspension / Springs & dampers",
+    "groupLabel": "Springs & dampers",
+    "unit": "N/m"
+  },
+  {
+    "id": "damperRateFront",
+    "type": "range",
+    "label": "Front damper",
+    "section": "Suspension",
+    "detail": "",
+    "min": 500,
+    "max": 5000,
+    "step": 100,
+    "value": 2500,
+    "display": "2500",
+    "htmlDefault": 2500,
+    "subsystem": "Suspension",
+    "group": "Suspension / Springs & dampers",
+    "groupLabel": "Springs & dampers",
+    "unit": "N·s/m"
+  },
+  {
+    "id": "damperRateRear",
+    "type": "range",
+    "label": "Rear damper",
+    "section": "Suspension",
+    "detail": "",
+    "min": 500,
+    "max": 5000,
+    "step": 100,
+    "value": 2500,
+    "display": "2500",
+    "htmlDefault": 2500,
+    "subsystem": "Suspension",
+    "group": "Suspension / Springs & dampers",
+    "groupLabel": "Springs & dampers",
+    "unit": "N·s/m"
+  },
+  {
+    "id": "cogHeight",
+    "type": "range",
+    "label": "CoG Height",
+    "section": "🏎️ Car Physics",
+    "detail": "",
+    "min": 0.1,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Suspension",
+    "group": "Suspension / Weight transfer",
+    "groupLabel": "Weight transfer",
+    "unit": "m"
+  },
+  {
+    "id": "antiRollStiffnessFront",
+    "type": "range",
+    "label": "Front bar",
+    "section": "Suspension",
+    "detail": "",
+    "min": 0,
+    "max": 40000,
+    "step": 1000,
+    "value": 12000,
+    "display": "12000",
+    "htmlDefault": 12000,
+    "subsystem": "Suspension",
+    "group": "Suspension / Weight transfer",
+    "groupLabel": "Weight transfer",
+    "unit": "N·m/rad"
+  },
+  {
+    "id": "antiRollStiffnessRear",
+    "type": "range",
+    "label": "Rear bar",
+    "section": "Suspension",
+    "detail": "",
+    "min": 0,
+    "max": 40000,
+    "step": 1000,
+    "value": 8000,
+    "display": "8000",
+    "htmlDefault": 8000,
+    "subsystem": "Suspension",
+    "group": "Suspension / Weight transfer",
+    "groupLabel": "Weight transfer",
+    "unit": "N·m/rad"
+  },
+  {
+    "id": "cameraOmega",
+    "type": "range",
+    "label": "Freq ω₀",
+    "section": "📷 Camera",
+    "detail": "",
+    "min": 0.5,
+    "max": 20,
+    "step": 0.1,
+    "value": 2.2,
+    "display": "2.2",
+    "htmlDefault": 2.2,
+    "subsystem": "Camera",
+    "group": "Camera / Response & scale",
+    "groupLabel": "Response & scale",
+    "unit": ""
+  },
+  {
+    "id": "cameraZeta",
+    "type": "range",
+    "label": "Zeta ζ",
+    "section": "📷 Camera",
+    "detail": "",
+    "min": 0.1,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.8,
+    "display": "0.80",
+    "htmlDefault": 0.8,
+    "subsystem": "Camera",
+    "group": "Camera / Response & scale",
+    "groupLabel": "Response & scale",
+    "unit": ""
+  },
+  {
+    "id": "cameraZoomSensitivity",
+    "type": "range",
+    "label": "Zoom Sens",
+    "section": "📷 Camera",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Camera",
+    "group": "Camera / Response & scale",
+    "groupLabel": "Response & scale",
+    "unit": ""
+  },
+  {
+    "id": "pixelsPerMeter",
+    "type": "range",
+    "label": "Pixels/Metre",
+    "section": "🔭 View Scale",
+    "detail": "",
+    "min": 5,
+    "max": 60,
+    "step": 1,
+    "value": 20,
+    "display": "20",
+    "htmlDefault": 20,
+    "subsystem": "Camera",
+    "group": "Camera / Response & scale",
+    "groupLabel": "Response & scale",
+    "unit": ""
+  },
+  {
+    "id": "showKinematicArrows",
+    "type": "checkbox",
+    "label": "Accel/Jerk Arrows",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": true,
+    "display": "",
+    "htmlDefault": true,
+    "subsystem": "Rendering",
+    "group": "Rendering / Effect visibility",
+    "groupLabel": "Effect visibility",
+    "unit": ""
+  },
+  {
+    "id": "showSparks",
+    "type": "checkbox",
+    "label": "HDR Sparks",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": true,
+    "display": "",
+    "htmlDefault": true,
+    "subsystem": "Rendering",
+    "group": "Rendering / Effect visibility",
+    "groupLabel": "Effect visibility",
+    "unit": ""
+  },
+  {
+    "id": "showSkidMarks",
+    "type": "checkbox",
+    "label": "Skid Marks",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": true,
+    "display": "",
+    "htmlDefault": true,
+    "subsystem": "Rendering",
+    "group": "Rendering / Effect visibility",
+    "groupLabel": "Effect visibility",
+    "unit": ""
+  },
+  {
+    "id": "sparkIntensity",
+    "type": "range",
+    "label": "Intensity",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.1,
+    "max": 3,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Sparks",
+    "groupLabel": "Sparks",
+    "unit": ""
+  },
+  {
+    "id": "sparkSize",
+    "type": "range",
+    "label": "Size",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.3,
+    "max": 3,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Sparks",
+    "groupLabel": "Sparks",
+    "unit": ""
+  },
+  {
+    "id": "sparkLifetime",
+    "type": "range",
+    "label": "Lifetime",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.3,
+    "max": 3,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Sparks",
+    "groupLabel": "Sparks",
+    "unit": ""
+  },
+  {
+    "id": "sparkGripThreshold",
+    "type": "range",
+    "label": "Grip Threshold",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.05,
+    "max": 0.8,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.3",
+    "htmlDefault": 0.3,
+    "subsystem": "Rendering",
+    "group": "Rendering / Sparks",
+    "groupLabel": "Sparks",
+    "unit": ""
+  },
+  {
+    "id": "splatViolence",
+    "type": "range",
+    "label": "Violence",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.5,
+    "max": 3,
+    "step": 0.1,
+    "value": 1.5,
+    "display": "1.5",
+    "htmlDefault": 1.5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Splatter",
+    "groupLabel": "Splatter",
+    "unit": ""
+  },
+  {
+    "id": "splatDecalPersistence",
+    "type": "range",
+    "label": "Decal Opacity",
+    "section": "🏎️ Car Physics",
+    "detail": "👁 Visual Effects",
+    "min": 0.1,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.7,
+    "display": "0.7",
+    "htmlDefault": 0.7,
+    "subsystem": "Rendering",
+    "group": "Rendering / Splatter",
+    "groupLabel": "Splatter",
+    "unit": ""
+  },
+  {
+    "id": "motionBlurSamples",
+    "type": "range",
+    "label": "Samples",
+    "section": "💨 Motion Blur",
+    "detail": "",
+    "min": 1,
+    "max": 16,
+    "step": 1,
+    "value": 6,
+    "display": "6",
+    "htmlDefault": 6,
+    "subsystem": "Rendering",
+    "group": "Rendering / Motion blur",
+    "groupLabel": "Motion blur",
+    "unit": ""
+  },
+  {
+    "id": "motionBlurIntensity",
+    "type": "range",
+    "label": "Intensity",
+    "section": "💨 Motion Blur",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.1,
+    "value": 0.6,
+    "display": "0.60",
+    "htmlDefault": 0.6,
+    "subsystem": "Rendering",
+    "group": "Rendering / Motion blur",
+    "groupLabel": "Motion blur",
+    "unit": ""
+  },
+  {
+    "id": "motionBlurThreshold",
+    "type": "range",
+    "label": "Threshold",
+    "section": "💨 Motion Blur",
+    "detail": "",
+    "min": 1,
+    "max": 50,
+    "step": 1,
+    "value": 10,
+    "display": "10",
+    "htmlDefault": 10,
+    "subsystem": "Rendering",
+    "group": "Rendering / Motion blur",
+    "groupLabel": "Motion blur",
+    "unit": "m/s"
+  },
+  {
+    "id": "blurSpeedWeight",
+    "type": "range",
+    "label": "Speed Weight",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurDriftWeight",
+    "type": "range",
+    "label": "Drift Weight",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.7,
+    "display": "0.70",
+    "htmlDefault": 0.7,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurAngularWeight",
+    "type": "range",
+    "label": "Angular Weight",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.4,
+    "display": "0.40",
+    "htmlDefault": 0.4,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurJerkWeight",
+    "type": "range",
+    "label": "Jerk Weight",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurAttackRate",
+    "type": "range",
+    "label": "Attack Rate",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0.01,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurDecayRate",
+    "type": "range",
+    "label": "Decay Rate",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0.001,
+    "max": 0.3,
+    "step": 0.001,
+    "value": 0.04,
+    "display": "0.040",
+    "htmlDefault": 0.04,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur dynamics",
+    "groupLabel": "Blur dynamics",
+    "unit": ""
+  },
+  {
+    "id": "blurMaxOffset",
+    "type": "range",
+    "label": "Max Offset",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0.5,
+    "max": 20,
+    "step": 0.5,
+    "value": 5,
+    "display": "5.0",
+    "htmlDefault": 5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur appearance",
+    "groupLabel": "Blur appearance",
+    "unit": "m"
+  },
+  {
+    "id": "blurOpacityMin",
+    "type": "range",
+    "label": "Opacity Min",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.1,
+    "display": "0.10",
+    "htmlDefault": 0.1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur appearance",
+    "groupLabel": "Blur appearance",
+    "unit": ""
+  },
+  {
+    "id": "blurOpacityMax",
+    "type": "range",
+    "label": "Opacity Max",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0.3,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.8,
+    "display": "0.80",
+    "htmlDefault": 0.8,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur appearance",
+    "groupLabel": "Blur appearance",
+    "unit": ""
+  },
+  {
+    "id": "blurOpacityCurve",
+    "type": "range",
+    "label": "Opacity Curve",
+    "section": "💨 Blur Weights",
+    "detail": "",
+    "min": 0.5,
+    "max": 5,
+    "step": 0.1,
+    "value": 2,
+    "display": "2.0",
+    "htmlDefault": 2,
+    "subsystem": "Rendering",
+    "group": "Rendering / Blur appearance",
+    "groupLabel": "Blur appearance",
+    "unit": ""
+  },
+  {
+    "id": "skidGripThreshold",
+    "type": "range",
+    "label": "Grip Threshold",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.1,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.6,
+    "display": "0.60",
+    "htmlDefault": 0.6,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": ""
+  },
+  {
+    "id": "skidFadeRate",
+    "type": "range",
+    "label": "Grip Fade",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.5,
+    "max": 30,
+    "step": 0.5,
+    "value": 8,
+    "display": "8.0",
+    "htmlDefault": 8,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": "/s"
+  },
+  {
+    "id": "skidWidthMin",
+    "type": "range",
+    "label": "Width Min",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.01,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.12,
+    "display": "0.12",
+    "htmlDefault": 0.12,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": "m"
+  },
+  {
+    "id": "skidWidthMax",
+    "type": "range",
+    "label": "Width Max",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.1,
+    "max": 1.5,
+    "step": 0.01,
+    "value": 0.47,
+    "display": "0.47",
+    "htmlDefault": 0.47,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": "m"
+  },
+  {
+    "id": "skidAlphaMin",
+    "type": "range",
+    "label": "Alpha Min",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.2,
+    "display": "0.20",
+    "htmlDefault": 0.2,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": ""
+  },
+  {
+    "id": "skidAlphaMax",
+    "type": "range",
+    "label": "Alpha Max",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.7,
+    "display": "0.70",
+    "htmlDefault": 0.7,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": ""
+  },
+  {
+    "id": "skidJerkBoostMax",
+    "type": "range",
+    "label": "Jerk Boost Max",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid appearance",
+    "groupLabel": "Skid appearance",
+    "unit": ""
+  },
+  {
+    "id": "skidMaxSegments",
+    "type": "range",
+    "label": "Max Segments",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 500,
+    "max": 20000,
+    "step": 500,
+    "value": 4000,
+    "display": "4000",
+    "htmlDefault": 4000,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid persistence & GPU",
+    "groupLabel": "Skid persistence & GPU",
+    "unit": ""
+  },
+  {
+    "id": "skidMaxAge",
+    "type": "range",
+    "label": "Max Age",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 1,
+    "max": 30,
+    "step": 0.5,
+    "value": 5,
+    "display": "5.0",
+    "htmlDefault": 5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid persistence & GPU",
+    "groupLabel": "Skid persistence & GPU",
+    "unit": "s"
+  },
+  {
+    "id": "skidAlphaDecayRate",
+    "type": "range",
+    "label": "Alpha Decay",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.05,
+    "max": 5,
+    "step": 0.05,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid persistence & GPU",
+    "groupLabel": "Skid persistence & GPU",
+    "unit": "/s"
+  },
+  {
+    "id": "gpuSkidRedrawInterval",
+    "type": "range",
+    "label": "Redraw Interval",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 30,
+    "max": 600,
+    "step": 10,
+    "value": 120,
+    "display": "120",
+    "htmlDefault": 120,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid persistence & GPU",
+    "groupLabel": "Skid persistence & GPU",
+    "unit": ""
+  },
+  {
+    "id": "gpuSkidResolution",
+    "type": "range",
+    "label": "GPU Line Width",
+    "section": "🖤 Skid Marks",
+    "detail": "",
+    "min": 0.5,
+    "max": 3,
+    "step": 0.05,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Skid persistence & GPU",
+    "groupLabel": "Skid persistence & GPU",
+    "unit": ""
+  },
+  {
+    "id": "paintPickupRate",
+    "type": "range",
+    "label": "Pickup Rate",
+    "section": "🎨 Paint Mixing",
+    "detail": "",
+    "min": 0.1,
+    "max": 10,
+    "step": 0.1,
+    "value": 2.5,
+    "display": "2.5",
+    "htmlDefault": 2.5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Paint mixing",
+    "groupLabel": "Paint mixing",
+    "unit": ""
+  },
+  {
+    "id": "paintSatPickupRate",
+    "type": "range",
+    "label": "Sat Pickup/s",
+    "section": "🎨 Paint Mixing",
+    "detail": "",
+    "min": 0.05,
+    "max": 5,
+    "step": 0.05,
+    "value": 0.8,
+    "display": "0.80",
+    "htmlDefault": 0.8,
+    "subsystem": "Rendering",
+    "group": "Rendering / Paint mixing",
+    "groupLabel": "Paint mixing",
+    "unit": ""
+  },
+  {
+    "id": "paintDepletionRate",
+    "type": "range",
+    "label": "Depletion/s",
+    "section": "🎨 Paint Mixing",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.1,
+    "display": "0.10",
+    "htmlDefault": 0.1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Paint mixing",
+    "groupLabel": "Paint mixing",
+    "unit": ""
+  },
+  {
+    "id": "paintMinSat",
+    "type": "range",
+    "label": "Min Saturation",
+    "section": "🎨 Paint Mixing",
+    "detail": "",
+    "min": 0.01,
+    "max": 0.3,
+    "step": 0.01,
+    "value": 0.05,
+    "display": "0.05",
+    "htmlDefault": 0.05,
+    "subsystem": "Rendering",
+    "group": "Rendering / Paint mixing",
+    "groupLabel": "Paint mixing",
+    "unit": ""
+  },
+  {
+    "id": "paintDecalDepletion",
+    "type": "range",
+    "label": "Decal Depletion",
+    "section": "🎨 Paint Mixing",
+    "detail": "",
+    "min": 0,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.08,
+    "display": "0.08",
+    "htmlDefault": 0.08,
+    "subsystem": "Rendering",
+    "group": "Rendering / Paint mixing",
+    "groupLabel": "Paint mixing",
+    "unit": ""
+  },
+  {
+    "id": "smokeEnabled",
+    "type": "checkbox",
+    "label": "Enable Smoke",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke emission",
+    "groupLabel": "Smoke emission",
+    "unit": ""
+  },
+  {
+    "id": "smokeSpawnRate",
+    "type": "range",
+    "label": "Spawn Rate",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 5,
+    "max": 200,
+    "step": 5,
+    "value": 50,
+    "display": "50",
+    "htmlDefault": 50,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke emission",
+    "groupLabel": "Smoke emission",
+    "unit": ""
+  },
+  {
+    "id": "smokeLifetimeMin",
+    "type": "range",
+    "label": "Lifetime Min",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0.1,
+    "max": 3,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke emission",
+    "groupLabel": "Smoke emission",
+    "unit": "s"
+  },
+  {
+    "id": "smokeLifetimeMax",
+    "type": "range",
+    "label": "Lifetime Max",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0.5,
+    "max": 5,
+    "step": 0.1,
+    "value": 2,
+    "display": "2.0",
+    "htmlDefault": 2,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke emission",
+    "groupLabel": "Smoke emission",
+    "unit": "s"
+  },
+  {
+    "id": "smokeCurlNoiseScale",
+    "type": "range",
+    "label": "Curl Noise Scale",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0.5,
+    "max": 5,
+    "step": 0.1,
+    "value": 2.5,
+    "display": "2.5",
+    "htmlDefault": 2.5,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke emission",
+    "groupLabel": "Smoke emission",
+    "unit": ""
+  },
+  {
+    "id": "smokeSizeMin",
+    "type": "range",
+    "label": "Size Min",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0.1,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke appearance",
+    "groupLabel": "Smoke appearance",
+    "unit": "m"
+  },
+  {
+    "id": "smokeSizeMax",
+    "type": "range",
+    "label": "Size Max",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0.5,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.7,
+    "display": "0.70",
+    "htmlDefault": 0.7,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke appearance",
+    "groupLabel": "Smoke appearance",
+    "unit": "m"
+  },
+  {
+    "id": "smokeOpacityLocked",
+    "type": "range",
+    "label": "Opacity (Locked)",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.65,
+    "display": "0.65",
+    "htmlDefault": 0.65,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke appearance",
+    "groupLabel": "Smoke appearance",
+    "unit": ""
+  },
+  {
+    "id": "smokeOpacityOverspun",
+    "type": "range",
+    "label": "Opacity (Overspun)",
+    "section": "💨 Tire Smoke",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.4,
+    "display": "0.40",
+    "htmlDefault": 0.4,
+    "subsystem": "Rendering",
+    "group": "Rendering / Smoke appearance",
+    "groupLabel": "Smoke appearance",
+    "unit": ""
+  },
+  {
+    "id": "decalLifetime",
+    "type": "range",
+    "label": "Lifetime",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 2,
+    "max": 300,
+    "step": 1,
+    "value": 30,
+    "display": "30",
+    "htmlDefault": 30,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": "s"
+  },
+  {
+    "id": "decalEvapRate",
+    "type": "range",
+    "label": "Evap Rate/s",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 0,
+    "max": 0.2,
+    "step": 0.001,
+    "value": 0.008,
+    "display": "0.008",
+    "htmlDefault": 0.008,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": ""
+  },
+  {
+    "id": "decalMaxCount",
+    "type": "range",
+    "label": "Max Count",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 100,
+    "max": 10000,
+    "step": 100,
+    "value": 4000,
+    "display": "4000",
+    "htmlDefault": 4000,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": ""
+  },
+  {
+    "id": "decalMinRadius",
+    "type": "range",
+    "label": "Min Radius",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 0.05,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.15,
+    "display": "0.15",
+    "htmlDefault": 0.15,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": "m"
+  },
+  {
+    "id": "decalMaxRadius",
+    "type": "range",
+    "label": "Max Radius",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 0.2,
+    "max": 3,
+    "step": 0.05,
+    "value": 0.9,
+    "display": "0.90",
+    "htmlDefault": 0.9,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": "m"
+  },
+  {
+    "id": "decalEdgeSoftness",
+    "type": "range",
+    "label": "Edge Softness",
+    "section": "💧 Decal / Puddle System",
+    "detail": "",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.4,
+    "display": "0.40",
+    "htmlDefault": 0.4,
+    "subsystem": "Rendering",
+    "group": "Rendering / Decals & puddles",
+    "groupLabel": "Decals & puddles",
+    "unit": ""
+  },
+  {
+    "id": "trailSpawnInterval",
+    "type": "range",
+    "label": "Spawn",
+    "section": "🎯 Velocity Trail",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": 35,
+    "display": "0.080s",
+    "htmlDefault": 35,
+    "subsystem": "Rendering",
+    "group": "Rendering / Velocity trails",
+    "groupLabel": "Velocity trails",
+    "unit": "s",
+    "displayScale": 0.01
+  },
+  {
+    "id": "trailLifespan",
+    "type": "range",
+    "label": "Lifespan",
+    "section": "🎯 Velocity Trail",
+    "detail": "",
+    "min": 0.5,
+    "max": 10,
+    "step": 0.1,
+    "value": 3,
+    "display": "3.0",
+    "htmlDefault": 3,
+    "subsystem": "Rendering",
+    "group": "Rendering / Velocity trails",
+    "groupLabel": "Velocity trails",
+    "unit": "s"
+  },
+  {
+    "id": "trailFade",
+    "type": "range",
+    "label": "Fade",
+    "section": "🎯 Velocity Trail",
+    "detail": "",
+    "min": 0.2,
+    "max": 3,
+    "step": 0.05,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Rendering",
+    "group": "Rendering / Velocity trails",
+    "groupLabel": "Velocity trails",
+    "unit": ""
+  },
+  {
+    "id": "maxTrailArrows",
+    "type": "range",
+    "label": "Max Trail Arrows",
+    "section": "🌍 World & Visual",
+    "detail": "",
+    "min": 50,
+    "max": 1200,
+    "step": 50,
+    "value": 600,
+    "display": "600",
+    "htmlDefault": 600,
+    "subsystem": "Rendering",
+    "group": "Rendering / Velocity trails",
+    "groupLabel": "Velocity trails",
+    "unit": ""
+  },
+  {
+    "id": "checkerboardTileSize",
+    "type": "range",
+    "label": "Checker Tile",
+    "section": "🌍 World & Visual",
+    "detail": "",
+    "min": 20,
+    "max": 200,
+    "step": 5,
+    "value": 80,
+    "display": "80",
+    "htmlDefault": 80,
+    "subsystem": "Rendering",
+    "group": "Rendering / Display & overlays",
+    "groupLabel": "Display & overlays",
+    "unit": "px"
+  },
+  {
+    "id": "gaugeLabelScale",
+    "type": "range",
+    "label": "Label Scale",
+    "section": "🎚️ Gauges",
+    "detail": "",
+    "min": 60,
+    "max": 160,
+    "step": 5,
+    "value": 100,
+    "display": "1.0×",
+    "htmlDefault": 100,
+    "subsystem": "Rendering",
+    "group": "Rendering / Display & overlays",
+    "groupLabel": "Display & overlays",
+    "unit": "×",
+    "displayScale": 0.01
+  },
+  {
+    "id": "debugFontSize",
+    "type": "range",
+    "label": "Overlay Size",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 4,
+    "max": 14,
+    "step": 1,
+    "value": 8,
+    "display": "8",
+    "htmlDefault": 8,
+    "subsystem": "Rendering",
+    "group": "Rendering / Display & overlays",
+    "groupLabel": "Display & overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowTireForces",
+    "type": "checkbox",
+    "label": "Tire Forces",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowSlipAngles",
+    "type": "checkbox",
+    "label": "Slip Angles",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowSAT",
+    "type": "checkbox",
+    "label": "Self-Align Torque",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowSmoothingFilter",
+    "type": "checkbox",
+    "label": "Filter Signal",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowCrossover",
+    "type": "checkbox",
+    "label": "Sign Flips",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "debugShowWheelSpeeds",
+    "type": "checkbox",
+    "label": "Wheel Velocities",
+    "section": "🔧 Debug Overlays",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "",
+    "htmlDefault": false,
+    "subsystem": "Rendering",
+    "group": "Rendering / Debug overlays",
+    "groupLabel": "Debug overlays",
+    "unit": ""
+  },
+  {
+    "id": "masterVol",
+    "type": "range",
+    "label": "Master Volume",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.5,
+    "display": "0.5",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": ""
+  },
+  {
+    "id": "mainGain",
+    "type": "range",
+    "label": "Main Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.3,
+    "display": "0.3",
+    "htmlDefault": 0.3,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": ""
+  },
+  {
+    "id": "mainFltLow",
+    "type": "range",
+    "label": "Main Filter Low",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 50,
+    "max": 1000,
+    "step": 10,
+    "value": 200,
+    "display": "200",
+    "htmlDefault": 200,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": "Hz"
+  },
+  {
+    "id": "mainFltHigh",
+    "type": "range",
+    "label": "Main Filter High",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 500,
+    "max": 5000,
+    "step": 50,
+    "value": 2000,
+    "display": "2000",
+    "htmlDefault": 2000,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": "Hz"
+  },
+  {
+    "id": "mainFltQ",
+    "type": "range",
+    "label": "Main Filter Q",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0.1,
+    "max": 10,
+    "step": 0.1,
+    "value": 0.7,
+    "display": "0.7",
+    "htmlDefault": 0.7,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": ""
+  },
+  {
+    "id": "agcThreshold",
+    "type": "range",
+    "label": "AGC Threshold",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": -40,
+    "max": 0,
+    "step": 1,
+    "value": -18,
+    "display": "-18",
+    "htmlDefault": -18,
+    "subsystem": "Audio",
+    "group": "Audio / Master & main filter",
+    "groupLabel": "Master & main filter",
+    "unit": "dBFS"
+  },
+  {
+    "id": "subGain",
+    "type": "range",
+    "label": "Sub Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.25,
+    "display": "0.2",
+    "htmlDefault": 0.25,
+    "subsystem": "Audio",
+    "group": "Audio / Sub & harmonics",
+    "groupLabel": "Sub & harmonics",
+    "unit": ""
+  },
+  {
+    "id": "subMult",
+    "type": "range",
+    "label": "Sub Multiplier",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0.1,
+    "max": 2,
+    "step": 0.1,
+    "value": 0.5,
+    "display": "0.5",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Sub & harmonics",
+    "groupLabel": "Sub & harmonics",
+    "unit": ""
+  },
+  {
+    "id": "harmonicEnable",
+    "type": "checkbox",
+    "label": "Harmonic Enable",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "OFF",
+    "htmlDefault": false,
+    "subsystem": "Audio",
+    "group": "Audio / Sub & harmonics",
+    "groupLabel": "Sub & harmonics",
+    "unit": ""
+  },
+  {
+    "id": "harmonicGain",
+    "type": "range",
+    "label": "Harmonic Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.2,
+    "display": "0.2",
+    "htmlDefault": 0.2,
+    "subsystem": "Audio",
+    "group": "Audio / Sub & harmonics",
+    "groupLabel": "Sub & harmonics",
+    "unit": ""
+  },
+  {
+    "id": "harmonicMult",
+    "type": "range",
+    "label": "Harmonic Multiplier",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0.5,
+    "max": 5,
+    "step": 0.1,
+    "value": 2.5,
+    "display": "2.5",
+    "htmlDefault": 2.5,
+    "subsystem": "Audio",
+    "group": "Audio / Sub & harmonics",
+    "groupLabel": "Sub & harmonics",
+    "unit": ""
+  },
+  {
+    "id": "noiseGain",
+    "type": "range",
+    "label": "Noise Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.1,
+    "display": "0.1",
+    "htmlDefault": 0.1,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": ""
+  },
+  {
+    "id": "noiseLow",
+    "type": "range",
+    "label": "Noise Low",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 100,
+    "max": 2000,
+    "step": 50,
+    "value": 300,
+    "display": "300",
+    "htmlDefault": 300,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": "Hz"
+  },
+  {
+    "id": "noiseHigh",
+    "type": "range",
+    "label": "Noise High",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 1000,
+    "max": 10000,
+    "step": 100,
+    "value": 2500,
+    "display": "2500",
+    "htmlDefault": 2500,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": "Hz"
+  },
+  {
+    "id": "noiseQ",
+    "type": "range",
+    "label": "Noise Q",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0.1,
+    "max": 5,
+    "step": 0.1,
+    "value": 1.5,
+    "display": "1.5",
+    "htmlDefault": 1.5,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": ""
+  },
+  {
+    "id": "turboEnable",
+    "type": "checkbox",
+    "label": "Turbo Enable",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": false,
+    "display": "OFF",
+    "htmlDefault": false,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": ""
+  },
+  {
+    "id": "turboGain",
+    "type": "range",
+    "label": "Turbo Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.15,
+    "display": "0.1",
+    "htmlDefault": 0.15,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": ""
+  },
+  {
+    "id": "turboMult",
+    "type": "range",
+    "label": "Turbo Multiplier",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 1,
+    "max": 50,
+    "step": 1,
+    "value": 20,
+    "display": "20",
+    "htmlDefault": 20,
+    "subsystem": "Audio",
+    "group": "Audio / Noise & turbo",
+    "groupLabel": "Noise & turbo",
+    "unit": ""
+  },
+  {
+    "id": "distDrive",
+    "type": "range",
+    "label": "Distortion Drive",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0,
+    "display": "0.0",
+    "htmlDefault": 0,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": ""
+  },
+  {
+    "id": "reverbMix",
+    "type": "range",
+    "label": "Reverb Mix",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0,
+    "display": "0.0",
+    "htmlDefault": 0,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": ""
+  },
+  {
+    "id": "pulseDecayMs",
+    "type": "range",
+    "label": "Pulse Decay",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 5,
+    "max": 80,
+    "step": 1,
+    "value": 30,
+    "display": "30",
+    "htmlDefault": 30,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": "ms"
+  },
+  {
+    "id": "jitterAmount",
+    "type": "range",
+    "label": "Jitter Amount",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.15,
+    "display": "0.15",
+    "htmlDefault": 0.15,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": ""
+  },
+  {
+    "id": "derivativeMix",
+    "type": "range",
+    "label": "Derivative Mix",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 0.3,
+    "step": 0.01,
+    "value": 0.1,
+    "display": "0.10",
+    "htmlDefault": 0.1,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": ""
+  },
+  {
+    "id": "exhaustConvMix",
+    "type": "range",
+    "label": "Exhaust Conv Mix",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Sound character",
+    "groupLabel": "Sound character",
+    "unit": ""
+  },
+  {
+    "id": "popMasterGain",
+    "type": "range",
+    "label": "Pop Master Gain",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popBassTone",
+    "type": "range",
+    "label": "Pop Bass Thump",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popCrackBrightness",
+    "type": "range",
+    "label": "Pop Crack Brightness",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popSprayAmount",
+    "type": "range",
+    "label": "Pop Spray Amount",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.5,
+    "display": "0.50",
+    "htmlDefault": 0.5,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popDistortion",
+    "type": "range",
+    "label": "Pop Distortion",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popSpeedSensitivity",
+    "type": "range",
+    "label": "Pop Speed Sensitivity",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": 0,
+    "max": 2,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.00",
+    "htmlDefault": 1,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": ""
+  },
+  {
+    "id": "popPitchShift",
+    "type": "range",
+    "label": "Pop Pitch Shift",
+    "section": "🏎️ Car Physics",
+    "detail": "🔊 Sound Settings",
+    "min": -12,
+    "max": 12,
+    "step": 1,
+    "value": 0,
+    "display": "0",
+    "htmlDefault": 0,
+    "subsystem": "Audio",
+    "group": "Audio / Balloon pop sound",
+    "groupLabel": "Balloon pop sound",
+    "unit": "st"
+  },
+  {
+    "id": "exhaustPopVolume",
+    "type": "range",
+    "label": "Pop Volume",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.05,
+    "value": 0.3,
+    "display": "0.30",
+    "htmlDefault": 0.3,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": ""
+  },
+  {
+    "id": "exhaustPopDensity",
+    "type": "range",
+    "label": "Pop Density",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 0.1,
+    "max": 5,
+    "step": 0.1,
+    "value": 1,
+    "display": "1.0",
+    "htmlDefault": 1,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": ""
+  },
+  {
+    "id": "backfireThreshold",
+    "type": "range",
+    "label": "Backfire RPM",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 500,
+    "max": 6000,
+    "step": 100,
+    "value": 1500,
+    "display": "1500",
+    "htmlDefault": 1500,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": "RPM"
+  },
+  {
+    "id": "exhaustBassGain",
+    "type": "range",
+    "label": "Bass Gain",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 0,
+    "max": 1.5,
+    "step": 0.01,
+    "value": 0.35,
+    "display": "0.35",
+    "htmlDefault": 0.35,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": ""
+  },
+  {
+    "id": "exhaustBassTune",
+    "type": "range",
+    "label": "Bass Freq",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 20,
+    "max": 200,
+    "step": 1,
+    "value": 65,
+    "display": "65",
+    "htmlDefault": 65,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": "Hz"
+  },
+  {
+    "id": "exhaustBassQ",
+    "type": "range",
+    "label": "Bass Q",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 0.3,
+    "max": 8,
+    "step": 0.1,
+    "value": 1.2,
+    "display": "1.2",
+    "htmlDefault": 1.2,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": ""
+  },
+  {
+    "id": "driftScreechGain",
+    "type": "range",
+    "label": "Drift Screech",
+    "section": "💨 Exhaust & Burble",
+    "detail": "",
+    "min": 0,
+    "max": 1.5,
+    "step": 0.01,
+    "value": 0.55,
+    "display": "0.55",
+    "htmlDefault": 0.55,
+    "subsystem": "Audio",
+    "group": "Audio / Exhaust & burble",
+    "groupLabel": "Exhaust & burble",
+    "unit": ""
+  },
+  {
+    "id": "dopplerEnabled",
+    "type": "checkbox",
+    "label": "Enable",
+    "section": "📡 Doppler Effect",
+    "detail": "",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "value": true,
+    "display": "",
+    "htmlDefault": true,
+    "subsystem": "Audio",
+    "group": "Audio / Doppler",
+    "groupLabel": "Doppler",
+    "unit": ""
+  },
+  {
+    "id": "dopplerStrength",
+    "type": "range",
+    "label": "Strength",
+    "section": "📡 Doppler Effect",
+    "detail": "",
+    "min": 0,
+    "max": 0.05,
+    "step": 0.001,
+    "value": 0.008,
+    "display": "0.008",
+    "htmlDefault": 0.008,
+    "subsystem": "Audio",
+    "group": "Audio / Doppler",
+    "groupLabel": "Doppler",
+    "unit": ""
+  },
+  {
+    "id": "dopplerMaxShift",
+    "type": "range",
+    "label": "Max Shift",
+    "section": "📡 Doppler Effect",
+    "detail": "",
+    "min": 0,
+    "max": 0.5,
+    "step": 0.01,
+    "value": 0.25,
+    "display": "0.25",
+    "htmlDefault": 0.25,
+    "subsystem": "Audio",
+    "group": "Audio / Doppler",
+    "groupLabel": "Doppler",
+    "unit": ""
+  },
+  {
+    "id": "steeringSelfCenterRate",
+    "type": "range",
+    "label": "Self-Center Rate",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0,
+    "max": 30,
+    "step": 0.5,
+    "value": 5,
+    "display": "5.0",
+    "htmlDefault": 5,
+    "subsystem": "Steering",
+    "group": "Steering / Response & self-centering",
+    "groupLabel": "Response & self-centering",
+    "unit": ""
+  },
+  {
+    "id": "steeringColumnInertia",
+    "type": "range",
+    "label": "Column Inertia",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0.01,
+    "max": 1,
+    "step": 0.01,
+    "value": 0.08,
+    "display": "0.08",
+    "htmlDefault": 0.08,
+    "subsystem": "Steering",
+    "group": "Steering / Response & self-centering",
+    "groupLabel": "Response & self-centering",
+    "unit": ""
+  },
+  {
+    "id": "steeringViscousDamping",
+    "type": "range",
+    "label": "Viscous Damp",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0,
+    "max": 10,
+    "step": 0.1,
+    "value": 5.5,
+    "display": "5.50",
+    "htmlDefault": 5.5,
+    "subsystem": "Steering",
+    "group": "Steering / Response & self-centering",
+    "groupLabel": "Response & self-centering",
+    "unit": ""
+  },
+  {
+    "id": "steeringCoulombFriction",
+    "type": "range",
+    "label": "Coulomb Friction",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0,
+    "max": 2,
+    "step": 0.01,
+    "value": 0.05,
+    "display": "0.05",
+    "htmlDefault": 0.05,
+    "subsystem": "Steering",
+    "group": "Steering / Response & self-centering",
+    "groupLabel": "Response & self-centering",
+    "unit": ""
+  },
+  {
+    "id": "pneumaticTrail",
+    "type": "range",
+    "label": "Pneumatic Trail",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0,
+    "max": 0.2,
+    "step": 0.005,
+    "value": 0.035,
+    "display": "0.035",
+    "htmlDefault": 0.035,
+    "subsystem": "Steering",
+    "group": "Steering / Geometry & input",
+    "groupLabel": "Geometry & input",
+    "unit": ""
+  },
+  {
+    "id": "maxFrontWheelAngle",
+    "type": "range",
+    "label": "Max Steer",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 0.1,
+    "max": 1.2,
+    "step": 0.01,
+    "value": 0.52,
+    "display": "0.52",
+    "htmlDefault": 0.52,
+    "subsystem": "Steering",
+    "group": "Steering / Geometry & input",
+    "groupLabel": "Geometry & input",
+    "unit": "rad"
+  },
+  {
+    "id": "steeringDragRange",
+    "type": "range",
+    "label": "Steer Drag Range",
+    "section": "🔄 Steering Dynamics",
+    "detail": "",
+    "min": 50,
+    "max": 400,
+    "step": 10,
+    "value": 150,
+    "display": "150",
+    "htmlDefault": 150,
+    "subsystem": "Steering",
+    "group": "Steering / Geometry & input",
+    "groupLabel": "Geometry & input",
+    "unit": ""
+  }
+];
+
+
+const SUBSYSTEMS = ['Engine', 'Transmission', 'Tires', 'Physics', 'Suspension', 'Camera', 'Rendering', 'Audio', 'Steering'];
+const CARD_GROUPS = [...new Set(SLIDERS.map(s => s.group))];
+const defaults = new Map(SLIDERS.map(s => [s.id, s.value]));
+const search = document.getElementById('search');
+const container = document.getElementById('cardsContainer');
+const groups = new Map();
+const rows = new Map();
+let selectedSystem = 'All';
+let searchOpenState = null;
+let currentMatches = [];
+let initialized = false;
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+const activeMotions = new Map();
+let layoutFrame = 0;
+
+// Height animations stay in normal flow inside each card. Observing the changing
+// card sizes lets the cards below glide upward throughout a fold or search.
+function layoutCards() {
+  layoutFrame = 0;
+  const width = container.clientWidth;
+  const columns = container.classList.contains('list-view') || innerWidth <= 700
+    ? 1 : Math.max(1, Math.min(4, Math.floor((width + 12) / 402)));
+  const gap = 12;
+  const cardWidth = (width - gap * (columns - 1)) / columns;
+  const bottoms = Array(columns).fill(0);
+  const visible = [...groups.values()].filter(group => !group.hidden);
+  // Keep reading order across columns, but let each column close its own gaps.
+  visible.forEach((group, index) => {
+    const column = index % columns;
+    group.style.width = `${cardWidth}px`;
+    group.style.transform = `translate(${column * (cardWidth + gap)}px, ${bottoms[column]}px)`;
+    bottoms[column] += group.getBoundingClientRect().height + gap;
+  });
+  container.style.height = `${Math.max(0, ...bottoms) - (visible.length ? gap : 0)}px`;
+}
+function scheduleLayout() {
+  if (!layoutFrame) layoutFrame = requestAnimationFrame(layoutCards);
+}
+const cardObserver = new ResizeObserver(scheduleLayout);
+new ResizeObserver(scheduleLayout).observe(container);
+
+function finishMotion(element) {
+  const motion = activeMotions.get(element);
+  if (!motion) return;
+  motion.animation.cancel();
+  activeMotions.delete(element);
+  motion.finish();
+}
+function transitionElement(element, from, to, finish, duration = 320, easing = 'cubic-bezier(.22, 1, .36, 1)') {
+  // Callers measure the current interpolated appearance before interruption.
+  const previous = activeMotions.get(element);
+  if (previous) {
+    previous.animation.cancel();
+    activeMotions.delete(element);
+  }
+  if (!initialized || motionPreference.matches) { finish(); scheduleLayout(); return; }
+  const animation = element.animate([from, to], { duration, easing });
+  activeMotions.set(element, { animation, finish });
+  animation.onfinish = () => {
+    if (activeMotions.get(element)?.animation !== animation) return;
+    activeMotions.delete(element);
+    finish();
+    scheduleLayout();
+  };
+}
+function setRowVisible(row, visible) {
+  if ((row._shown ?? true) === visible) return;
+  row._shown = visible;
+  const style = getComputedStyle(row);
+  const from = {height: `${row.getBoundingClientRect().height}px`, opacity: style.opacity,
+    paddingTop: style.paddingTop, paddingBottom: style.paddingBottom, borderBottomWidth: style.borderBottomWidth};
+  row.hidden = false;
+  row.inert = !visible;
+  // Measure the natural size without retaining a previous animation's height.
+  const previous = activeMotions.get(row);
+  if (previous) { previous.animation.cancel(); activeMotions.delete(row); }
+  const natural = getComputedStyle(row);
+  const to = visible ? {height: `${row.getBoundingClientRect().height}px`, opacity: 1,
+    paddingTop: natural.paddingTop, paddingBottom: natural.paddingBottom, borderBottomWidth: natural.borderBottomWidth}
+    : {height: '0px', opacity: 0, paddingTop: '0px', paddingBottom: '0px', borderBottomWidth: '0px'};
+  if (visible && from.height === '0px') from.opacity = 0;
+  transitionElement(row, from, to, () => { row.hidden = !visible; }, visible ? 360 : 230);
+}
+function setGroupOpen(group, open) {
+  if (group._expanded === open) return;
+  group._expanded = open;
+  group.dataset.expanded = String(open);
+  group.querySelector('summary').setAttribute('aria-expanded', String(open));
+  const body = group.querySelector('.card-sliders');
+  const fromHeight = group.open ? body.getBoundingClientRect().height : 0;
+  const fromOpacity = group.open ? getComputedStyle(body).opacity : 0;
+  const previous = activeMotions.get(body);
+  if (previous) { previous.animation.cancel(); activeMotions.delete(body); }
+  group.open = true; // Native details must remain open until the closing fold finishes.
+  body.inert = !open;
+  if (!open && body.contains(document.activeElement)) group.querySelector('summary').focus();
+  const toHeight = open ? body.scrollHeight : 0;
+  transitionElement(body, {height: `${fromHeight}px`, opacity: fromOpacity},
+    {height: `${toHeight}px`, opacity: open ? 1 : 0},
+    () => { group.open = open; }, open ? 450 : 300,
+    open ? 'cubic-bezier(.18, .85, .3, 1.08)' : 'cubic-bezier(.4, 0, .2, 1)');
+  scheduleLayout();
+}
+function setGroupVisible(group, visible) {
+  if ((group._shown ?? true) === visible) return;
+  group._shown = visible;
+  const fromHeight = group.hidden ? 0 : group.getBoundingClientRect().height;
+  const fromOpacity = group.hidden ? 0 : getComputedStyle(group).opacity;
+  const previous = activeMotions.get(group);
+  if (previous) { previous.animation.cancel(); activeMotions.delete(group); }
+  group.hidden = false;
+  group.inert = !visible;
+  const target = visible ? group.getBoundingClientRect().height : 0;
+  transitionElement(group, {height: `${fromHeight}px`, opacity: fromOpacity},
+    {height: `${target}px`, opacity: visible ? 1 : 0},
+    () => { group.hidden = !visible; }, visible ? 360 : 220);
+  scheduleLayout();
+}
+motionPreference.addEventListener('change', () => {
+  if (motionPreference.matches) [...activeMotions.keys()].forEach(finishMotion);
+  scheduleLayout();
+});
+
+
+function fmt(value, step) {
+  const decimals = (String(step).split('.')[1] || '').length;
+  return Number(value).toFixed(decimals);
+}
+
+// A small local typo matcher keeps the mockup usable without CDN libraries.
+function editDistance(a, b) {
+  let previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const next = [i];
+    for (let j = 1; j <= b.length; j++) {
+      next[j] = Math.min(next[j - 1] + 1, previous[j] + 1,
+        previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    previous = next;
+  }
+  return previous[b.length];
+}
+function matches(slider, query) {
+  const text = `${slider.label} ${slider.subsystem} ${slider.groupLabel} ${slider.id}`.toLowerCase();
+  return query.split(/\s+/).every(token => text.includes(token) ||
+    (token.length >= 4 && text.split(/[^a-z0-9]+/).some(word =>
+      editDistance(token, word) <= (token.length > 6 ? 2 : 1))));
+}
+function highlight(label, query) {
+  const fragment = document.createDocumentFragment();
+  const index = query ? label.toLowerCase().indexOf(query) : -1;
+  if (index < 0) { fragment.append(label); return fragment; }
+  const mark = document.createElement('mark');
+  mark.textContent = label.slice(index, index + query.length);
+  fragment.append(label.slice(0, index), mark, label.slice(index + query.length));
+  return fragment;
+}
+function displayValue(slider, value) {
+  if (slider.type === 'checkbox') return value ? 'ON' : 'OFF';
+  const scale = slider.displayScale || 1;
+  const scaledStep = Number((slider.step * scale).toPrecision(8));
+  const decimals = Math.min(5, (String(scaledStep).split('.')[1] || '').length);
+  return (value * scale).toFixed(decimals) + (slider.unit ? ` ${slider.unit}` : '');
+}
+function updateValue(slider, input, output, row) {
+  slider.value = slider.type === 'checkbox' ? input.checked : Number(input.value);
+  output.textContent = displayValue(slider, slider.value);
+  if (slider.type === 'range') input.style.setProperty('--fill', `${100 * (slider.value - slider.min) / (slider.max - slider.min)}%`);
+  row.classList.toggle('edited', slider.value !== defaults.get(slider.id));
+  updateEditStatus();
+}
+function updateEditStatus() {
+  const edited = SLIDERS.filter(s => s.value !== defaults.get(s.id)).length;
+  document.getElementById('editStatus').textContent = edited ? `${edited} modified control${edited === 1 ? '' : 's'}` : 'Default setup';
+  document.getElementById('resetValues').hidden = !edited;
+}
+function syncFoldButton() {
+  const visible = [...groups.values()].filter(group => !group.hidden);
+  document.getElementById('foldAll').textContent = visible.some(group => group._expanded) ? 'Collapse all' : 'Expand all';
+  document.getElementById('foldAll').disabled = !visible.length;
+}
+
+for (const [index, system] of CARD_GROUPS.entries()) {
+  const sliders = SLIDERS.filter(s => s.group === system);
+  const category = sliders[0].subsystem;
+  const group = document.createElement('details');
+  group.className = 'card';
+  group.dataset.category = category;
+  group.dataset.group = system;
+  group.open = true;
+  group._expanded = true;
+  group.dataset.expanded = 'true';
+  group.innerHTML = `<summary class="card-header"><span class="card-number">${String(index + 1).padStart(2, '0')}</span>
+    <span class="card-title"><span class="category-caption">${category}</span>${sliders[0].groupLabel.toUpperCase()}</span><span class="card-badge">${sliders.length}</span>
+    <span class="card-arrow" aria-hidden="true">▸</span></summary><div class="card-sliders"></div>`;
+  group.querySelector('summary').setAttribute('aria-expanded', 'true');
+  group.querySelector('summary').addEventListener('click', event => {
+    event.preventDefault();
+    setGroupOpen(group, !group._expanded);
+    syncFoldButton();
+  });
+  group.addEventListener('toggle', scheduleLayout);
+  cardObserver.observe(group);
+  for (const slider of sliders) {
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.dataset.control = slider.id;
+    row.innerHTML = `<label class="slider-label" for="${slider.id}">${slider.label}</label>`;
+    const input = document.createElement('input');
+    input.id = slider.id;
+    input.type = slider.type;
+    const output = document.createElement('output');
+    output.className = 'slider-value';
+    output.htmlFor = slider.id;
+    output.id = slider.id + 'Value';
+    if (slider.type === 'checkbox') {
+      row.classList.add('toggle-row');
+      input.checked = slider.value;
+      const toggle = document.createElement('label');
+      toggle.className = 'toggle';
+      toggle.htmlFor = slider.id;
+      const track = document.createElement('span');
+      track.className = 'toggle-track';
+      track.setAttribute('aria-hidden', 'true');
+      toggle.append(input, track);
+      row.append(toggle, output);
+      input.addEventListener('change', () => updateValue(slider, input, output, row));
+    } else {
+      input.min = slider.min; input.max = slider.max;
+      input.step = slider.step; input.value = slider.value;
+      const wrap = document.createElement('div');
+      wrap.className = 'slider-wrap';
+      wrap.append(input);
+      const ends = document.createElement('div');
+      ends.className = 'range-ends';
+      ends.setAttribute('aria-hidden', 'true');
+      ends.innerHTML = `<span>${displayValue(slider, slider.min)}</span><span>${displayValue(slider, slider.max)}</span>`;
+      wrap.append(ends);
+      row.append(wrap, output);
+      input.addEventListener('input', () => updateValue(slider, input, output, row));
+    }
+    // Match the browser's own sanitization of off-step HTML defaults.
+    defaults.set(slider.id, slider.type === 'checkbox' ? input.checked : Number(input.value));
+    updateValue(slider, input, output, row);
+    group.querySelector('.card-sliders').append(row);
+    rows.set(slider.id, row);
+  }
+  container.append(group);
+  groups.set(system, group);
+}
+
+for (const system of ['All', ...SUBSYSTEMS]) {
+  const button = document.createElement('button');
+  button.dataset.system = system;
+  button.innerHTML = `${system === 'All' ? 'All subsystems' : system}<span class="nav-count"></span>`;
+  button.addEventListener('click', () => { selectedSystem = system; applyFilter(); });
+  document.getElementById('subsystemNav').append(button);
+}
+
+function applyFilter() {
+  const query = search.value.trim().toLowerCase();
+  if (query && !searchOpenState) searchOpenState = new Map([...groups].map(([system, group]) => [system, group._expanded]));
+  const found = SLIDERS.filter(s => !query || matches(s, query));
+  const ids = new Set(found.map(s => s.id));
+  currentMatches = found.filter(s => selectedSystem === 'All' || s.subsystem === selectedSystem);
+  for (const slider of SLIDERS) {
+    const row = rows.get(slider.id);
+    setRowVisible(row, ids.has(slider.id));
+    row.querySelector('label').replaceChildren(highlight(slider.label, query));
+  }
+  for (const [system, group] of groups) {
+    const count = found.filter(s => s.group === system).length;
+    const category = group.dataset.category;
+    const visible = !!count && (selectedSystem === 'All' || category === selectedSystem);
+    setGroupVisible(group, visible);
+    group.querySelector('.card-badge').textContent = query ? `${count}/${SLIDERS.filter(s => s.group === system).length}` : count;
+    if (query && visible) setGroupOpen(group, true);
+    else if (!query && searchOpenState) setGroupOpen(group, searchOpenState.get(system));
+  }
+  if (!query) searchOpenState = null;
+  document.querySelectorAll('#subsystemNav button').forEach(button => {
+    const system = button.dataset.system;
+    button.setAttribute('aria-pressed', String(system === selectedSystem));
+    button.querySelector('.nav-count').textContent = system === 'All' ? found.length : found.filter(s => s.subsystem === system).length;
+  });
+  document.getElementById('workspaceTitle').textContent = selectedSystem === 'All' ? 'ALL SUBSYSTEMS' : selectedSystem.toUpperCase();
+  document.getElementById('resultCount').textContent = `${currentMatches.length} / ${SLIDERS.length} controls`;
+  document.getElementById('emptyState').hidden = currentMatches.length > 0;
+  document.getElementById('clearSearch').hidden = !search.value;
+  const suggestion = query.length >= 3 && !SUBSYSTEMS.some(s => s.toLowerCase() === query)
+    ? SUBSYSTEMS.find(s => editDistance(query, s.toLowerCase()) <= 2) : null;
+  const suggestionElement = document.getElementById('suggestion');
+  const suggestionChanged = suggestion && (suggestionElement.hidden || document.getElementById('suggestionButton').textContent !== suggestion);
+  suggestionElement.hidden = !suggestion;
+  if (suggestionChanged && initialized && !motionPreference.matches) {
+    suggestionElement.animate([{opacity: 0, transform: 'translateY(-5px)'},
+      {opacity: 1, transform: 'translateY(0)'}], {duration: 300, easing: 'cubic-bezier(.18,.85,.3,1.15)'});
+  }
+  document.getElementById('suggestionButton').textContent = suggestion || '';
+  syncFoldButton();
+  scheduleLayout();
+}
+search.addEventListener('input', applyFilter);
+function clearSearch() { search.value = ''; applyFilter(); search.focus(); }
+document.getElementById('clearSearch').addEventListener('click', clearSearch);
+document.getElementById('suggestionButton').addEventListener('click', event => {
+  search.value = event.currentTarget.textContent; applyFilter(); search.focus();
+});
+document.getElementById('resetFilters').addEventListener('click', () => { selectedSystem = 'All'; clearSearch(); });
+document.getElementById('foldAll').addEventListener('click', () => {
+  const visible = [...groups.values()].filter(group => !group.hidden);
+  const open = !visible.some(group => group._expanded);
+  visible.forEach(group => setGroupOpen(group, open));
+  syncFoldButton();
+});
+for (const view of ['cards', 'list']) {
+  document.getElementById(`${view}View`).addEventListener('click', () => {
+    container.classList.toggle('list-view', view === 'list');
+    scheduleLayout();
+    document.getElementById('cardsView').setAttribute('aria-pressed', String(view === 'cards'));
+    document.getElementById('listView').setAttribute('aria-pressed', String(view === 'list'));
+  });
+}
+document.getElementById('resetValues').addEventListener('click', () => {
+  for (const slider of SLIDERS) {
+    const row = rows.get(slider.id);
+    const input = row.querySelector('input');
+    if (slider.type === 'checkbox') input.checked = defaults.get(slider.id);
+    else input.value = defaults.get(slider.id);
+    updateValue(slider, input, row.querySelector('output'), row);
+  }
+});
+document.addEventListener('keydown', event => {
+  const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) || document.activeElement.isContentEditable;
+  if (event.key === '/' && !typing) { event.preventDefault(); search.focus(); }
+  if (event.key === 'Escape' && document.activeElement === search) clearSearch();
+  if (event.key === 'ArrowDown' && document.activeElement === search && currentMatches.length) {
+    event.preventDefault();
+    const first = currentMatches[0];
+    setGroupOpen(groups.get(first.group), true);
+    rows.get(first.id).querySelector('input').focus();
+  }
+});
+applyFilter();
+layoutCards();
+initialized = true;
+if (!motionPreference.matches) {
+  [...groups.values()].forEach((group, index) => {
+    group.animate([{opacity: 0, translate: '0 12px'}, {opacity: 1, translate: '0 0'}],
+      {duration: 420, delay: index * 35, fill: 'backwards', easing: 'cubic-bezier(.22,1,.36,1)'});
+  });
+}
+// Local UI fixtures only: no physics, renderer, audio engine or app bootstrap imports.
+const PRESETS = {
+  driftCar: {
+    label: '🚗 Drift Car',
+    params: {
+      mass: 900, tireFrictionCoeff: 1.55, peakSlipAngleDeg: 8.0,
+      tireRelaxationLength: 0.22, pneumaticTrail: 0.025,
+      yawDampingCoeff: 800, cogHeight: 0.55, brakeForceMult: 1.0,
+      aeroDownforce: 0.5, finalDriveRatio: 4.2, rollResistCoeff: 0.006,
+      brakeForce: 8000, steeringSelfCenterRate: 3.0, steeringCoulombFriction: 0.03,
+      steeringViscousDamping: 0.3, steeringColumnInertia: 0.05,
+    },
+    soundParams: {
+      exhaustBassGain: 0.6, exhaustBassTune: 55, exhaustBassQ: 2.0,
+      driftScreechGain: 0.9, mainGain: 0.35, subGain: 0.3,
+    },
+  },
+  heavySUV: {
+    label: '🚙 Heavy SUV',
+    params: {
+      mass: 2200, tireFrictionCoeff: 1.15, peakSlipAngleDeg: 5.5,
+      tireRelaxationLength: 0.45, pneumaticTrail: 0.055,
+      yawDampingCoeff: 3500, cogHeight: 1.3, brakeForceMult: 1.2,
+      aeroDownforce: 0.2, finalDriveRatio: 3.5, rollResistCoeff: 0.018,
+      brakeForce: 18000, steeringSelfCenterRate: 8.0, steeringCoulombFriction: 0.12,
+      steeringViscousDamping: 1.2, steeringColumnInertia: 0.25,
+    },
+    soundParams: {
+      exhaustBassGain: 1.0, exhaustBassTune: 45, exhaustBassQ: 1.5,
+      driftScreechGain: 0.25, mainGain: 0.28, subGain: 0.45,
+    },
+  },
+  goKart: {
+    label: '🏎️ Go-Kart',
+    params: {
+      mass: 165, tireFrictionCoeff: 2.1, peakSlipAngleDeg: 11.0,
+      tireRelaxationLength: 0.12, pneumaticTrail: 0.010,
+      yawDampingCoeff: 200, cogHeight: 0.25, brakeForceMult: 0.7,
+      aeroDownforce: 0.05, finalDriveRatio: 6.5, rollResistCoeff: 0.003,
+      brakeForce: 3500, steeringSelfCenterRate: 2.0, steeringCoulombFriction: 0.01,
+      steeringViscousDamping: 0.1, steeringColumnInertia: 0.01,
+      cylinderCount: 1,
+    },
+    soundParams: {
+      exhaustBassGain: 0.1, exhaustBassTune: 120, exhaustBassQ: 0.8,
+      driftScreechGain: 0.4, mainGain: 0.4, subGain: 0.1,
+    },
+  },
+  iceSurface: {
+    label: '❄️ Ice Surface',
+    params: {
+      mass: 1200, tireFrictionCoeff: 0.28, peakSlipAngleDeg: 4.0,
+      tireRelaxationLength: 0.65, pneumaticTrail: 0.015,
+      yawDampingCoeff: 450, cogHeight: 0.62, brakeForceMult: 0.4,
+      aeroDownforce: 0.0, finalDriveRatio: 3.8, rollResistCoeff: 0.001,
+      brakeForce: 4500, steeringSelfCenterRate: 1.5, steeringCoulombFriction: 0.02,
+      steeringViscousDamping: 0.2, steeringColumnInertia: 0.07,
+    },
+    soundParams: {
+      exhaustBassGain: 0.3, exhaustBassTune: 65, exhaustBassQ: 1.2,
+      driftScreechGain: 0.15, mainGain: 0.3, subGain: 0.25,
+    },
+  },
+  stockCar: {
+    label: '🔧 Stock Road Car',
+    params: {
+      mass: 1350, tireFrictionCoeff: 1.35, peakSlipAngleDeg: 7.0,
+      tireRelaxationLength: 0.30, pneumaticTrail: 0.038,
+      yawDampingCoeff: 1800, cogHeight: 0.65, brakeForceMult: 1.0,
+      aeroDownforce: 0.3, finalDriveRatio: 3.9, rollResistCoeff: 0.010,
+      brakeForce: 12000, steeringSelfCenterRate: 6.0, steeringCoulombFriction: 0.06,
+      steeringViscousDamping: 0.6, steeringColumnInertia: 0.10,
+    },
+    soundParams: {
+      exhaustBassGain: 0.35, exhaustBassTune: 65, exhaustBassQ: 1.2,
+      driftScreechGain: 0.55, mainGain: 0.30, subGain: 0.25,
+    },
+  },
+};
+
+const actionStatus = document.getElementById('actionStatus');
+function refreshControl(slider, value) {
+  const row = rows.get(slider.id);
+  const input = row.querySelector('input');
+  if (slider.type === 'checkbox') input.checked = value;
+  else input.value = value;
+  updateValue(slider, input, row.querySelector('output'), row);
+}
+function clearPresetSelection() {
+  document.querySelectorAll('[data-preset]').forEach(button => button.setAttribute('aria-pressed', 'false'));
+}
+container.addEventListener('input', clearPresetSelection);
+container.addEventListener('change', clearPresetSelection);
+document.getElementById('resetValues').addEventListener('click', () => {
+  clearPresetSelection();
+  actionStatus.textContent = 'All 174 workspace controls restored to their original HTML defaults.';
+});
+const presetAliases = {mass: 'carMassKg', rollResistCoeff: 'rollingResistanceCoeff'};
+document.querySelectorAll('[data-preset]').forEach(button => {
+  button.addEventListener('click', () => {
+    const preset = PRESETS[button.dataset.preset];
+    const values = {...preset.params, ...preset.soundParams};
+    let applied = 0, limited = 0;
+    // Start with the same baseline so switching presets is predictable in the mockup.
+    SLIDERS.forEach(slider => refreshControl(slider, defaults.get(slider.id)));
+    for (const [key, value] of Object.entries(values)) {
+      const slider = SLIDERS.find(s => s.id === (presetAliases[key] || key));
+      if (!slider) continue;
+      refreshControl(slider, value);
+      if (slider.value !== value) limited++;
+      applied++;
+    }
+    clearPresetSelection();
+    button.setAttribute('aria-pressed', 'true');
+    actionStatus.textContent = `${button.textContent} preview: ${applied} matching controls applied${limited ? `; ${limited} adjusted to the existing slider range/step` : ''}. Remaining controls use defaults. Scene and gauges are static.`;
+  });
+});
+for (const [id, label] of [['engineToggle', 'Engine'], ['soundToggle', 'Sound']]) {
+  const button = document.getElementById(id);
+  button.addEventListener('click', () => {
+    const on = button.getAttribute('aria-pressed') !== 'true';
+    button.setAttribute('aria-pressed', String(on));
+    button.textContent = `${label} ${on ? 'ON' : 'OFF'}`;
+    actionStatus.textContent = `${label} ${on ? 'ON' : 'OFF'} in this UI preview. The static scene and gauges do not change.`;
+  });
+}
+const topControls = [...document.querySelectorAll('.resolution-control input')];
+topControls.forEach(input => {
+  input.style.setProperty('--fill', `${100 * (input.value - input.min) / (input.max - input.min)}%`);
+  input.addEventListener('input', () => {
+    input.parentElement.querySelector('output').textContent = Number(input.value).toFixed(2);
+    input.style.setProperty('--fill', `${100 * (input.value - input.min) / (input.max - input.min)}%`);
+    actionStatus.textContent = 'Resolution value updated for preview. The captured scene keeps its original resolution.';
+  });
+});
+document.getElementById('exportPreset').addEventListener('click', () => {
+  const values = Object.fromEntries(SLIDERS.map(s => [s.id, s.value]));
+  topControls.forEach(input => { values[input.id] = Number(input.value); });
+  const data = {kind: 'verlet-ui-mockup', version: 1, values};
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'verlet-ui-mockup-setup.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  actionStatus.textContent = 'Exported all 176 control values as a mockup setup. Import here to restore it; this is a UI preview format.';
+});
+document.getElementById('importButton').addEventListener('click', () => document.getElementById('importPreset').click());
+document.getElementById('importPreset').addEventListener('change', async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 1024 * 1024) throw Error('Choose a mockup setup smaller than 1 MB.');
+    const data = JSON.parse(await file.text());
+    if (data.kind !== 'verlet-ui-mockup' || data.version !== 1 || !data.values || typeof data.values !== 'object') throw Error('Choose a setup exported from this mockup.');
+    const allControls = [...SLIDERS, ...topControls.map(input => ({id:input.id, type:'range', min:Number(input.min), max:Number(input.max)}))];
+    // Validate the entire file before changing any control.
+    for (const slider of allControls) {
+      if (!(slider.id in data.values)) throw Error(`Missing control: ${slider.id}`);
+      const value = data.values[slider.id];
+      if (slider.type === 'checkbox' ? typeof value !== 'boolean' : typeof value !== 'number' || !Number.isFinite(value) || value < slider.min || value > slider.max) throw Error(`Invalid value for ${slider.id}`);
+    }
+    SLIDERS.forEach(slider => refreshControl(slider, data.values[slider.id]));
+    topControls.forEach(input => {input.value = data.values[input.id]; input.dispatchEvent(new Event('input'));});
+    clearPresetSelection();
+    actionStatus.textContent = 'Imported 176 control values. Scene and gauges remain static.';
+  } catch (error) {
+    actionStatus.textContent = `Import failed: ${error.message}`;
+  } finally { event.target.value = ''; }
+});
+
+</script>
+</body>
+</html>

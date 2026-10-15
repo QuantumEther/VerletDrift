@@ -61,6 +61,15 @@ const MAX_VISUAL_WHEEL_ANGLE_RAD = Math.PI * 2.5;
 export function initInput(simulationCanvas) {
   document.addEventListener('keydown',  onKeyDown);
   document.addEventListener('keyup',    onKeyUp);
+  const releaseInput = () => {
+    state.input.heldKeys = {};
+    state.input.throttleKeyHeld = state.input.brakeKeyHeld = false;
+    state.input.handbrakeKeyHeld = state.input.clutchKeyHeld = false;
+    state.input.mouseThrottleActive = false;
+    state.steering.isDragging = false;
+  };
+  window.addEventListener('blur', releaseInput);
+  document.addEventListener('visibilitychange', () => { if(document.hidden) releaseInput(); });
 
   simulationCanvas.addEventListener('mousedown',  onMouseDown);
   simulationCanvas.addEventListener('mousemove',  onMouseMove);
@@ -77,6 +86,8 @@ export function initInput(simulationCanvas) {
 // =============================================================
 
 function onKeyDown(event) {
+  if (event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  if (event.code === 'Space' && event.target.closest?.('button')) return;
   if (KEYS_TO_SUPPRESS_DEFAULT.has(event.code)) {
     event.preventDefault();
   }

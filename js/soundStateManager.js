@@ -1,5 +1,6 @@
 import { audioState as state } from './state.js';
 import { setSoundParam } from './sound.js';
+import { CONTROLS } from './ui/control-data.js';
 
 /**
  * Sound State Manager
@@ -28,6 +29,10 @@ export function initSoundStateManager() {
       const paramName = event.key.replace('soundParam_', '');
       const newValue = event.newValue === 'true' ? true : event.newValue === 'false' ? false : parseFloat(event.newValue);
 
+      const control = CONTROLS.find(control => control.id === paramName);
+      if (!control || !Object.hasOwn(state.soundParams,paramName)) return;
+      if (control.type === 'checkbox' ? !['true','false'].includes(event.newValue) :
+          !Number.isFinite(newValue) || newValue < control.min || newValue > control.max) return;
       // Update local state
       state.soundParams[paramName] = newValue;
 
@@ -55,7 +60,7 @@ export function updateSoundParam(paramName, newValue) {
   state.soundParams[paramName] = newValue;
 
   // Persist to localStorage (triggers 'storage' event in OTHER windows)
-  localStorage.setItem(`soundParam_${paramName}`, String(newValue));
+  try { localStorage.setItem(`soundParam_${paramName}`, String(newValue)); } catch { /* Audio still works without persistence. */ }
 
   // Apply to audio nodes immediately (if engine is running)
   setSoundParam(paramName, newValue);
@@ -72,15 +77,10 @@ export function updateSoundParam(paramName, newValue) {
 function updateUISliderForParam(paramName, newValue) {
   const slider = document.getElementById(paramName);
   if (slider) {
-    slider.value = newValue;
-    // Trigger the display label update
-    const displayLabel = document.getElementById(paramName + 'Value');
-    if (displayLabel && slider.dataset.formatter) {
-      // Sliders should have data-formatter set to their format function name
-      // For now, just update with the raw value
-      displayLabel.textContent = formatValue(newValue, paramName);
-    }
+    if (slider.type === 'checkbox') slider.checked = newValue;
+    else slider.value = newValue;
   }
+  window.dispatchEvent(new CustomEvent('soundparamchange', {detail: {paramName,newValue}}));
 }
 
 /**

@@ -54,6 +54,17 @@ import { DebugController } from './debug/controller.js';
 // Every mutable value in the simulation lives as a property here.
 // Physics functions update this; the renderer reads from it.
 // =============================================================
+// Sound settings remain usable when storage is empty or disabled. Zero is valid.
+function storedSound(key, fallback) {
+  try {
+    const raw = localStorage.getItem('soundParam_' + key);
+    if (raw === null) return fallback;
+    if (typeof fallback === 'boolean') return raw === 'true';
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : fallback;
+  } catch { return fallback; }
+}
+
 const state = {
 
   // -----------------------------------------------------------
@@ -720,45 +731,45 @@ const state = {
   // Sound synthesis parameters (from engine_sound.html)
   // Initialized from localStorage with defaults matching sound.js
   soundParams: {
-    masterVol:     parseFloat(localStorage.getItem('soundParam_masterVol')) ?? 0.5,
-    mainGain:      parseFloat(localStorage.getItem('soundParam_mainGain')) ?? 0.3,
-    mainFltLow:    parseFloat(localStorage.getItem('soundParam_mainFltLow')) ?? 200,
-    mainFltHigh:   parseFloat(localStorage.getItem('soundParam_mainFltHigh')) ?? 2000,
-    mainFltQ:      parseFloat(localStorage.getItem('soundParam_mainFltQ')) ?? 0.7,
-    subGain:       parseFloat(localStorage.getItem('soundParam_subGain')) ?? 0.25,
-    subMult:       parseFloat(localStorage.getItem('soundParam_subMult')) ?? 0.5,
-    harmonicEnable: localStorage.getItem('soundParam_harmonicEnable') === 'true' ?? false,
-    harmonicGain:  parseFloat(localStorage.getItem('soundParam_harmonicGain')) ?? 0.2,
-    harmonicMult:  parseFloat(localStorage.getItem('soundParam_harmonicMult')) ?? 2.5,
-    noiseGain:     parseFloat(localStorage.getItem('soundParam_noiseGain')) ?? 0.1,
-    noiseLow:      parseFloat(localStorage.getItem('soundParam_noiseLow')) ?? 300,
-    noiseHigh:     parseFloat(localStorage.getItem('soundParam_noiseHigh')) ?? 2500,
-    noiseQ:        parseFloat(localStorage.getItem('soundParam_noiseQ')) ?? 1.5,
-    turboEnable:   localStorage.getItem('soundParam_turboEnable') === 'true' ?? false,
-    turboGain:     parseFloat(localStorage.getItem('soundParam_turboGain')) ?? 0.15,
-    turboMult:     parseFloat(localStorage.getItem('soundParam_turboMult')) ?? 20,
-    distDrive:     parseFloat(localStorage.getItem('soundParam_distDrive')) ?? 0,
-    reverbMix:     parseFloat(localStorage.getItem('soundParam_reverbMix')) ?? 0,
+    masterVol:     storedSound('masterVol', 0.5),
+    mainGain:      storedSound('mainGain', 0.3),
+    mainFltLow:    storedSound('mainFltLow', 200),
+    mainFltHigh:   storedSound('mainFltHigh', 2000),
+    mainFltQ:      storedSound('mainFltQ', 0.7),
+    subGain:       storedSound('subGain', 0.25),
+    subMult:       storedSound('subMult', 0.5),
+    harmonicEnable: storedSound('harmonicEnable', false),
+    harmonicGain:  storedSound('harmonicGain', 0.2),
+    harmonicMult:  storedSound('harmonicMult', 2.5),
+    noiseGain:     storedSound('noiseGain', 0.1),
+    noiseLow:      storedSound('noiseLow', 300),
+    noiseHigh:     storedSound('noiseHigh', 2500),
+    noiseQ:        storedSound('noiseQ', 1.5),
+    turboEnable:   storedSound('turboEnable', false),
+    turboGain:     storedSound('turboGain', 0.15),
+    turboMult:     storedSound('turboMult', 20),
+    distDrive:     storedSound('distDrive', 0),
+    reverbMix:     storedSound('reverbMix', 0),
     // Exhaust bass layer
-    exhaustBassGain: parseFloat(localStorage.getItem('soundParam_exhaustBassGain')) ?? 0.35,
-    exhaustBassTune: parseFloat(localStorage.getItem('soundParam_exhaustBassTune')) ?? 65,
-    exhaustBassQ:    parseFloat(localStorage.getItem('soundParam_exhaustBassQ'))    ?? 1.2,
+    exhaustBassGain: storedSound('exhaustBassGain', 0.35),
+    exhaustBassTune: storedSound('exhaustBassTune', 65),
+    exhaustBassQ:    storedSound('exhaustBassQ', 1.2),
     // Drift screech intensity cap
-    driftScreechGain: parseFloat(localStorage.getItem('soundParam_driftScreechGain')) ?? 0.55,
+    driftScreechGain: storedSound('driftScreechGain', 0.55),
     // Pulse synthesis parameters (physics-informed discrete combustion events)
-    pulseDecayMs:    parseFloat(localStorage.getItem('soundParam_pulseDecayMs'))    || 30,
-    jitterAmount:    parseFloat(localStorage.getItem('soundParam_jitterAmount'))    || 0.15,
-    derivativeMix:   parseFloat(localStorage.getItem('soundParam_derivativeMix'))   || 0.10,
-    exhaustConvMix:  parseFloat(localStorage.getItem('soundParam_exhaustConvMix'))  || 0.50,
-    agcThreshold:    parseFloat(localStorage.getItem('soundParam_agcThreshold'))    || -18,
+    pulseDecayMs:    storedSound('pulseDecayMs', 30),
+    jitterAmount:    storedSound('jitterAmount', 0.15),
+    derivativeMix:   storedSound('derivativeMix', 0.10),
+    exhaustConvMix:  storedSound('exhaustConvMix', 0.50),
+    agcThreshold:    storedSound('agcThreshold', -18),
     // Balloon collision sound parameters
-    popMasterGain:        parseFloat(localStorage.getItem('soundParam_popMasterGain'))        || 0.3,
-    popBassTone:          parseFloat(localStorage.getItem('soundParam_popBassTone'))          || 0.5,
-    popCrackBrightness:   parseFloat(localStorage.getItem('soundParam_popCrackBrightness'))   || 0.5,
-    popSprayAmount:       parseFloat(localStorage.getItem('soundParam_popSprayAmount'))       || 0.5,
-    popDistortion:        parseFloat(localStorage.getItem('soundParam_popDistortion'))        || 0.3,
-    popSpeedSensitivity:  parseFloat(localStorage.getItem('soundParam_popSpeedSensitivity'))  || 1.0,
-    popPitchShift:        parseInt(localStorage.getItem('soundParam_popPitchShift'))          || 0,
+    popMasterGain:        storedSound('popMasterGain', 0.3),
+    popBassTone:          storedSound('popBassTone', 0.5),
+    popCrackBrightness:   storedSound('popCrackBrightness', 0.5),
+    popSprayAmount:       storedSound('popSprayAmount', 0.5),
+    popDistortion:        storedSound('popDistortion', 0.3),
+    popSpeedSensitivity:  storedSound('popSpeedSensitivity', 1.0),
+    popPitchShift:        storedSound('popPitchShift', 0),
   },
 
   // Car position history for motion blur ghost rendering.

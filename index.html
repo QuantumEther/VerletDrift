@@ -1,84 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verlet Driving Simulator</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>Verlet Drift — Driving Simulator</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-layout">
-
-    <!-- ==================== GAUGES ==================== -->
-    <div class="gauge-row" id="gauge-row">
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="latGCanvas" width="900" height="780" class="gauge-canvas"></canvas>
-          <div class="badge"><b>LAT G</b> g-force</div>
-        </div>
-      </div>
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="speedCanvas" width="900" height="780" class="gauge-canvas"></canvas>
-          <div class="badge"><b>SPEED</b> km/h</div>
-        </div>
-      </div>
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="rpmCanvas" width="900" height="780" class="gauge-canvas"></canvas>
-          <div class="badge"><b>ENGINE</b> RPM</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Per-Wheel Slip Ratio & Utilization Gauges -->
-    <div class="gauge-row" id="wheel-gauges-row">
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="wheelFLCanvas" width="400" height="400" class="gauge-canvas" title="Front Left"></canvas>
-          <div class="badge"><b>FL</b> Slip Ratio</div>
-        </div>
-      </div>
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="wheelFRCanvas" width="400" height="400" class="gauge-canvas" title="Front Right"></canvas>
-          <div class="badge"><b>FR</b> Slip Ratio</div>
-        </div>
-      </div>
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="wheelRLCanvas" width="400" height="400" class="gauge-canvas" title="Rear Left"></canvas>
-          <div class="badge"><b>RL</b> Slip Ratio</div>
-        </div>
-      </div>
-      <div class="gauge-frame">
-        <div class="gauge-inner">
-          <canvas id="wheelRRCanvas" width="400" height="400" class="gauge-canvas" title="Rear Right"></canvas>
-          <div class="badge"><b>RR</b> Slip Ratio</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== SIMULATION ==================== -->
-    <div class="canvas-wrapper">
-      <div class="canvas-resolution-control">
-        <span>Canvas Res</span>
-        <input type="range" id="canvasResolutionSlider" min="0.5" max="2.0" value="1.0" step="0.1">
-        <span class="canvas-resolution-value" id="canvasResolutionValue">1.0</span>
-      </div>
-      <div class="canvas-resolution-control">
-        <span>GPU Res</span>
-        <input type="range" id="gpuResolutionScale" min="0.25" max="2.0" value="1.0" step="0.05">
-        <span class="canvas-resolution-value" id="gpuResolutionScaleValue">1.0</span>
-      </div>
-      <!-- Stacked canvas container: gpuCanvas (world) + simCanvas (HUD overlay) + debugOverlay (DOM) -->
+<noscript>This simulator requires JavaScript to run its physics and controls.</noscript>
+<div class="app-shell">
+<header class="app-heading"><div class="app-brand">VERLET<span>DRIFT</span></div><p>Vehicle dynamics sandbox</p><a class="jump-controls" href="#controls">Tune controls ↓</a><span class="app-status">LIVE SIMULATOR</span></header>
+<section class="instrument-dashboard" aria-label="Redesigned instrument dashboard">
+<div class="dashboard-topline"><h1>DRIVER TELEMETRY</h1><p>19 instruments · live vehicle telemetry</p>
+<span class="live-status">LIVE TELEMETRY</span></div>
+<div class="dashboard-layout-tools" aria-label="Instrument layout controls">
+<button class="toolbar-button" id="toggleDiagnostics">Expand diagnostics</button>
+<button class="toolbar-button" id="resetGaugeLayout">Reset layout</button>
+<span class="layout-status" id="gaugeLayoutStatus" role="status">Layout choices are remembered in this browser.</span>
+</div>
+<div class="instruments-primary">
+<article class="instrument primary-instrument" data-instrument="speed"><div class="instrument-heading"><h3>ROAD SPEED</h3><span class="instrument-tag">01 / VELOCITY</span></div><div class="instrument-body"><div class="speed-layout"><svg class="speed-arc" id="speed-chart" viewBox="0 0 300 225" role="img" aria-label="Speed, 0 kilometers per hour, scale 0 to 400"><path d="M 50.41 200.5 A 115 115 0 1 1 249.59 200.5" fill="none" stroke="#182430" stroke-width="4"/>
+<path id="speed-progress" d="M 50.41 200.5 A 115 115 0 1 1 249.59 200.5" pathLength="400" fill="none" stroke="#48d4e8" stroke-width="4" stroke-dasharray="400" stroke-dashoffset="400"/><line x1="51.27" y1="200.00" x2="42.61" y2="205.00" stroke="#7a9aaa" stroke-width="1"/><text x="64.26" y="192.50" text-anchor="middle" dominant-baseline="middle">0</text><line x1="45.86" y1="189.37" x2="41.29" y2="191.40" stroke="#304351" stroke-width="1"/><line x1="41.58" y1="178.23" x2="36.82" y2="179.77" stroke="#304351" stroke-width="1"/><line x1="38.49" y1="166.70" x2="33.60" y2="167.74" stroke="#304351" stroke-width="1"/><line x1="36.62" y1="154.92" x2="31.65" y2="155.44" stroke="#304351" stroke-width="1"/><line x1="36.00" y1="143.00" x2="31.00" y2="143.00" stroke="#304351" stroke-width="1"/><line x1="36.62" y1="131.08" x2="31.65" y2="130.56" stroke="#304351" stroke-width="1"/><line x1="38.49" y1="119.30" x2="33.60" y2="118.26" stroke="#304351" stroke-width="1"/><line x1="41.58" y1="107.77" x2="36.82" y2="106.23" stroke="#304351" stroke-width="1"/><line x1="45.86" y1="96.63" x2="41.29" y2="94.60" stroke="#304351" stroke-width="1"/><line x1="51.27" y1="86.00" x2="42.61" y2="81.00" stroke="#7a9aaa" stroke-width="1"/><text x="64.26" y="93.50" text-anchor="middle" dominant-baseline="middle">100</text><line x1="57.77" y1="75.99" x2="53.73" y2="73.05" stroke="#304351" stroke-width="1"/><line x1="65.28" y1="66.72" x2="61.57" y2="63.37" stroke="#304351" stroke-width="1"/><line x1="73.72" y1="58.28" x2="70.37" y2="54.57" stroke="#304351" stroke-width="1"/><line x1="82.99" y1="50.77" x2="80.05" y2="46.73" stroke="#304351" stroke-width="1"/><line x1="93.00" y1="44.27" x2="90.50" y2="39.94" stroke="#304351" stroke-width="1"/><line x1="103.63" y1="38.86" x2="101.60" y2="34.29" stroke="#304351" stroke-width="1"/><line x1="114.77" y1="34.58" x2="113.23" y2="29.82" stroke="#304351" stroke-width="1"/><line x1="126.30" y1="31.49" x2="125.26" y2="26.60" stroke="#304351" stroke-width="1"/><line x1="138.08" y1="29.62" x2="137.56" y2="24.65" stroke="#304351" stroke-width="1"/><line x1="150.00" y1="29.00" x2="150.00" y2="19.00" stroke="#7a9aaa" stroke-width="1"/><text x="150.00" y="44.00" text-anchor="middle" dominant-baseline="middle">200</text><line x1="161.92" y1="29.62" x2="162.44" y2="24.65" stroke="#304351" stroke-width="1"/><line x1="173.70" y1="31.49" x2="174.74" y2="26.60" stroke="#304351" stroke-width="1"/><line x1="185.23" y1="34.58" x2="186.77" y2="29.82" stroke="#304351" stroke-width="1"/><line x1="196.37" y1="38.86" x2="198.40" y2="34.29" stroke="#304351" stroke-width="1"/><line x1="207.00" y1="44.27" x2="209.50" y2="39.94" stroke="#304351" stroke-width="1"/><line x1="217.01" y1="50.77" x2="219.95" y2="46.73" stroke="#304351" stroke-width="1"/><line x1="226.28" y1="58.28" x2="229.63" y2="54.57" stroke="#304351" stroke-width="1"/><line x1="234.72" y1="66.72" x2="238.43" y2="63.37" stroke="#304351" stroke-width="1"/><line x1="242.23" y1="75.99" x2="246.27" y2="73.05" stroke="#304351" stroke-width="1"/><line x1="248.73" y1="86.00" x2="257.39" y2="81.00" stroke="#7a9aaa" stroke-width="1"/><text x="235.74" y="93.50" text-anchor="middle" dominant-baseline="middle">300</text><line x1="254.14" y1="96.63" x2="258.71" y2="94.60" stroke="#304351" stroke-width="1"/><line x1="258.42" y1="107.77" x2="263.18" y2="106.23" stroke="#304351" stroke-width="1"/><line x1="261.51" y1="119.30" x2="266.40" y2="118.26" stroke="#304351" stroke-width="1"/><line x1="263.38" y1="131.08" x2="268.35" y2="130.56" stroke="#304351" stroke-width="1"/><line x1="264.00" y1="143.00" x2="269.00" y2="143.00" stroke="#304351" stroke-width="1"/><line x1="263.38" y1="154.92" x2="268.35" y2="155.44" stroke="#304351" stroke-width="1"/><line x1="261.51" y1="166.70" x2="266.40" y2="167.74" stroke="#304351" stroke-width="1"/><line x1="258.42" y1="178.23" x2="263.18" y2="179.77" stroke="#304351" stroke-width="1"/><line x1="254.14" y1="189.37" x2="258.71" y2="191.40" stroke="#304351" stroke-width="1"/><line x1="248.73" y1="200.00" x2="257.39" y2="205.00" stroke="#7a9aaa" stroke-width="1"/><text x="235.74" y="192.50" text-anchor="middle" dominant-baseline="middle">400</text>
+<g id="speed-needle" transform="translate(150 143)"><circle cx="-115" r="5" fill="#e8c44a"/></g></svg><div class="speed-reading"><div class="metric-number" id="instrument-speed">0</div><div class="metric-label">KM / H</div></div></div><div class="instrument-caption"><span>0—400 km/h</span><b>Vehicle speed</b></div></div></article>
+<article class="instrument primary-instrument" data-instrument="rpm"><div class="instrument-heading"><h3>ENGINE SPEED</h3><span class="instrument-tag">02 / POWERTRAIN</span></div><div class="instrument-body rpm-body"><div class="rpm-headline"><div><div class="metric-number" id="instrument-rpm">0</div><div class="metric-label">REVOLUTIONS / MIN</div></div><span class="status-pill" id="rpm-state">BELOW REDLINE</span></div><div class="rpm-track"><div class="rpm-segments"><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span><span class="rpm-segment red-zone" aria-hidden="true"></span></div><span class="redline-marker" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10 × 1,000</span></div><div class="rpm-note" id="rpmRedlineNote">Redline 6,500 RPM · scale 0—10,000</div></div></article>
+<article class="instrument primary-instrument gear-instrument"><div class="instrument-heading"><h3>SELECTED GEAR</h3><span class="instrument-tag">DRIVETRAIN</span></div><div class="instrument-body gear-body"><div class="gear-value" id="instrument-gear">N</div><div class="metric-label">MANUAL<br>TRANSMISSION</div><div class="gear-sequence" aria-hidden="true"><span data-gear="R">R</span><span data-gear="N">N</span><span data-gear="1">1</span><span data-gear="2">2</span><span data-gear="3">3</span><span data-gear="4">4</span><span data-gear="5">5</span><span data-gear="6">6</span></div></div></article>
+</div>
+<div class="dashboard-section-label"><h2>BODY DYNAMICS</h2><span>Direction, rotation and lateral load</span></div>
+<div class="dynamics-row">
+<article class="instrument" data-instrument="lateral-g"><div class="instrument-heading"><h3>LATERAL G</h3><span class="instrument-tag">0—1.5 g</span></div><div class="instrument-body"><div class="secondary-reading"><strong id="instrument-lateral">0.00 <small>g</small></strong><span class="status-pill" id="lateral-state">BELOW 1.0 g</span></div><div class="telemetry-track "><div class="telemetry-fill" id="lateral-fill"></div><span class="telemetry-threshold" style="left:66.6667%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>0.5</span><span>1.0 ↑</span><span>1.5 g</span></div></div></article>
+<article class="instrument" data-instrument="yaw-stability"><div class="instrument-heading"><h3>YAW STABILITY</h3><span class="instrument-tag">−2—+2 rad/s</span></div><div class="instrument-body"><div class="secondary-reading"><strong id="instrument-yaw">0.00 <small>rad/s</small></strong><span class="status-pill" id="yaw-state">0% LIMIT USED</span></div><div class="telemetry-track signed-track"><span class="track-pointer" id="yaw-pointer"></span></div><div class="axis-labels"><span>−2</span><span>−1.5 warning</span><span>0</span><span>+1.5 warning</span><span>+2</span></div></div></article>
+<article class="instrument" data-instrument="slip-angle"><div class="instrument-heading"><h3>BODY SLIP ANGLE / β</h3><span class="instrument-tag">−45°—+45°</span></div><div class="instrument-body"><div class="secondary-reading"><strong id="instrument-beta">0.0 <small>°</small></strong><span class="metric-label">VELOCITY VS HEADING</span></div><div class="telemetry-track signed-track"><span class="track-pointer" id="beta-pointer"></span></div><div class="axis-labels"><span>−45°</span><span>−15°</span><span>0°</span><span>+15°</span><span>+45°</span></div></div></article>
+</div>
+<div class="dashboard-section-label"><h2>TIRE CONTACT / FOUR CORNERS</h2><span>Utilization warning ≥ 80% · <span id="slipPeakNote">slip peak |κ| = 0.12</span></span></div>
+<div class="wheels-row"><article class="instrument wheel-card"><div class="instrument-heading"><h3>FRONT LEFT</h3><span class="instrument-tag">FL</span></div><div class="instrument-body">
+<div class="wheel-utilization" data-instrument="fl-utilization"><div class="wheel-label"><span>Friction utilization</span><b id="wheel-util-0">0%</b></div><div class="telemetry-track "><div class="telemetry-fill" id="wheel-util-0-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>80% ↑</span><span>100%</span></div></div>
+<div data-instrument="fl-slip"><div class="wheel-label"><span>Slip ratio / κ</span><b id="wheel-slip-0">+0.00</b></div><div class="telemetry-track signed-track slip-track"><span class="track-pointer" id="wheel-slip-0-pointer"></span></div><div class="axis-labels"><span>−1 lock</span><span>0 roll</span><span>+1 spin</span></div></div>
+<div class="wheel-footnote"><span class="status-pill" id="wheel-state-0">ROLLING</span> · nominal |κ| &lt; 0.08</div></div></article><article class="instrument wheel-card"><div class="instrument-heading"><h3>FRONT RIGHT</h3><span class="instrument-tag">FR</span></div><div class="instrument-body">
+<div class="wheel-utilization" data-instrument="fr-utilization"><div class="wheel-label"><span>Friction utilization</span><b id="wheel-util-1">0%</b></div><div class="telemetry-track "><div class="telemetry-fill" id="wheel-util-1-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>80% ↑</span><span>100%</span></div></div>
+<div data-instrument="fr-slip"><div class="wheel-label"><span>Slip ratio / κ</span><b id="wheel-slip-1">+0.00</b></div><div class="telemetry-track signed-track slip-track"><span class="track-pointer" id="wheel-slip-1-pointer"></span></div><div class="axis-labels"><span>−1 lock</span><span>0 roll</span><span>+1 spin</span></div></div>
+<div class="wheel-footnote"><span class="status-pill" id="wheel-state-1">ROLLING</span> · nominal |κ| &lt; 0.08</div></div></article><article class="instrument wheel-card"><div class="instrument-heading"><h3>REAR LEFT</h3><span class="instrument-tag">RL</span></div><div class="instrument-body">
+<div class="wheel-utilization" data-instrument="rl-utilization"><div class="wheel-label"><span>Friction utilization</span><b id="wheel-util-2">0%</b></div><div class="telemetry-track "><div class="telemetry-fill" id="wheel-util-2-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>80% ↑</span><span>100%</span></div></div>
+<div data-instrument="rl-slip"><div class="wheel-label"><span>Slip ratio / κ</span><b id="wheel-slip-2">+0.00</b></div><div class="telemetry-track signed-track slip-track"><span class="track-pointer" id="wheel-slip-2-pointer"></span></div><div class="axis-labels"><span>−1 lock</span><span>0 roll</span><span>+1 spin</span></div></div>
+<div class="wheel-footnote"><span class="status-pill" id="wheel-state-2">ROLLING</span> · nominal |κ| &lt; 0.08</div></div></article><article class="instrument wheel-card"><div class="instrument-heading"><h3>REAR RIGHT</h3><span class="instrument-tag">RR</span></div><div class="instrument-body">
+<div class="wheel-utilization" data-instrument="rr-utilization"><div class="wheel-label"><span>Friction utilization</span><b id="wheel-util-3">0%</b></div><div class="telemetry-track "><div class="telemetry-fill" id="wheel-util-3-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>80% ↑</span><span>100%</span></div></div>
+<div data-instrument="rr-slip"><div class="wheel-label"><span>Slip ratio / κ</span><b id="wheel-slip-3">+0.00</b></div><div class="telemetry-track signed-track slip-track"><span class="track-pointer" id="wheel-slip-3-pointer"></span></div><div class="axis-labels"><span>−1 lock</span><span>0 roll</span><span>+1 spin</span></div></div>
+<div class="wheel-footnote"><span class="status-pill" id="wheel-state-3">ROLLING</span> · nominal |κ| &lt; 0.08</div></div></article></div><div class="dashboard-section-label"><h2>TRACTION & DRIFT ANALYSIS</h2><span>Normalized forces · measured motion signals</span></div><div class="analysis-row"><article class="instrument" data-instrument="front-grip"><div class="instrument-heading"><h3>FRONT GRIP</h3><span class="instrument-tag">FORCE CIRCLE</span></div><div class="instrument-body"><svg class="chart-svg" id="front-chart" viewBox="0 0 260 218" role="img" aria-label="front axle normalized longitudinal and lateral forces">
+<circle cx="130" cy="105" r="77" fill="#0d1520" stroke="#304351"/><circle cx="130" cy="105" r="38.5" fill="none" stroke="#223341" stroke-dasharray="2 4"/>
+<path d="M38 105H222 M130 13V197" stroke="#223341"/><text x="130" y="10" text-anchor="middle">+Fx / μN</text><text x="230" y="109">+Fy</text><text x="19" y="109">−Fy</text><text x="130" y="211" text-anchor="middle">−Fx / μN</text><text x="136" y="31" class="svg-muted">1.0</text><text x="136" y="69" class="svg-muted">0.5</text>
+<line id="front-vector" x1="130" y1="105" x2="130" y2="105" stroke="#48d4e8" stroke-width="1.5"/><g id="front-dot"><circle r="10" fill="rgba(72,212,232,.1)"/><circle r="4" fill="#48d4e8"/></g></svg>
+<div class="chart-summary" id="front-force-value">0.00 μN<small>Fx and Fy normalized by μN</small></div></div></article><article class="instrument" data-instrument="rear-grip"><div class="instrument-heading"><h3>REAR GRIP</h3><span class="instrument-tag">FORCE CIRCLE</span></div><div class="instrument-body"><svg class="chart-svg" id="rear-chart" viewBox="0 0 260 218" role="img" aria-label="rear axle normalized longitudinal and lateral forces">
+<circle cx="130" cy="105" r="77" fill="#0d1520" stroke="#304351"/><circle cx="130" cy="105" r="38.5" fill="none" stroke="#223341" stroke-dasharray="2 4"/>
+<path d="M38 105H222 M130 13V197" stroke="#223341"/><text x="130" y="10" text-anchor="middle">+Fx / μN</text><text x="230" y="109">+Fy</text><text x="19" y="109">−Fy</text><text x="130" y="211" text-anchor="middle">−Fx / μN</text><text x="136" y="31" class="svg-muted">1.0</text><text x="136" y="69" class="svg-muted">0.5</text>
+<line id="rear-vector" x1="130" y1="105" x2="130" y2="105" stroke="#48d4e8" stroke-width="1.5"/><g id="rear-dot"><circle r="10" fill="rgba(72,212,232,.1)"/><circle r="4" fill="#48d4e8"/></g></svg>
+<div class="chart-summary" id="rear-force-value">0.00 μN<small>Fx and Fy normalized by μN</small></div></div></article><article class="instrument" data-instrument="drift-radar"><div class="instrument-heading"><h3>DRIFT RADAR</h3><span class="instrument-tag">6 AXES / 0—1</span></div><div class="instrument-body"><svg class="chart-svg" id="radar-chart" viewBox="0 0 260 218" role="img" aria-label="Six-axis drift radar: yaw, rear saturation, front authority, slip angle, steering alignment, speed"><polygon points="130.00,89.00 146.45,98.50 146.45,117.50 130.00,127.00 113.55,117.50 113.55,98.50" fill="none" stroke="#223341"/><polygon points="130.00,70.00 162.91,89.00 162.91,127.00 130.00,146.00 97.09,127.00 97.09,89.00" fill="none" stroke="#223341"/><polygon points="130.00,51.00 179.36,79.50 179.36,136.50 130.00,165.00 80.64,136.50 80.64,79.50" fill="none" stroke="#223341"/><polygon points="130.00,32.00 195.82,70.00 195.82,146.00 130.00,184.00 64.18,146.00 64.18,70.00" fill="none" stroke="#223341"/><line x1="130" y1="108" x2="130.00" y2="32.00" stroke="#223341"/><text x="130" y="18" text-anchor="middle" class="svg-muted">Yaw</text><line x1="130" y1="108" x2="195.82" y2="70.00" stroke="#223341"/><text x="222" y="67" text-anchor="middle" class="svg-muted">Rear sat.</text><line x1="130" y1="108" x2="195.82" y2="146.00" stroke="#223341"/><text x="218" y="160" text-anchor="middle" class="svg-muted">Front auth.</text><line x1="130" y1="108" x2="130.00" y2="184.00" stroke="#223341"/><text x="130" y="204" text-anchor="middle" class="svg-muted">Slip β</text><line x1="130" y1="108" x2="64.18" y2="146.00" stroke="#223341"/><text x="42" y="160" text-anchor="middle" class="svg-muted">Steer align</text><line x1="130" y1="108" x2="64.18" y2="70.00" stroke="#223341"/><text x="37" y="67" text-anchor="middle" class="svg-muted">Speed</text><polygon id="drift-polygon" fill="rgba(232,196,74,.12)" stroke="#e8c44a" stroke-width="1.5" points="130,108 130,108 130,108 130,108 130,108 130,108"/></svg><div class="chart-summary">Drift balance<small>Axis values normalized to 0—1</small></div></div></article>
+<article class="instrument"><div class="instrument-heading"><h3>MOTION SIGNALS</h3><span class="instrument-tag">EFFECTS & DYNAMICS</span></div><div class="instrument-body"><div class="motion-meter" data-instrument="jerk"><div class="wheel-label"><span>Jerk</span><b id="motion-jerk"></b></div><div class="telemetry-track "><div class="telemetry-fill" id="motion-jerk-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>400 ↑</span><span>500 m/s³</span></div></div><div class="motion-meter" data-instrument="drift"><div class="wheel-label"><span>Drift intensity</span><b id="motion-drift"></b></div><div class="telemetry-track "><div class="telemetry-fill" id="motion-drift-fill"></div><span class="telemetry-threshold" style="left:70%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>0.7 ↑</span><span>1</span></div></div><div class="motion-meter" data-instrument="blur"><div class="wheel-label"><span>Blur intensity</span><b id="motion-blur"></b></div><div class="telemetry-track "><div class="telemetry-fill" id="motion-blur-fill"></div><span class="telemetry-threshold" style="left:80%" aria-hidden="true"></span></div><div class="axis-labels"><span>0</span><span>0.8 ↑</span><span>1</span></div></div></div></article></div><div class="dashboard-footnote"><span class="telemetry-status" id="telemetryStatus" role="status" aria-live="polite">Live vehicle telemetry</span><span><i class="legend-dot"></i>Live value</span><span><i class="legend-dot gold"></i>Attention / active</span><span><i class="legend-dot red"></i>Threshold exceeded</span></div></section>
+<section class="simulation-frame" aria-label="Driving simulator">
+ <div class="resolution-controls">
+ <div class="resolution-control"><label for="canvasResolutionSlider">Canvas Res</label><input type="range" id="canvasResolutionSlider" min="0.5" max="2.0" value="1.0" step="0.1"><output id="canvasResolutionValue" for="canvasResolutionSlider">1.0</output></div>
+ <div class="resolution-control"><label for="gpuResolutionScale">GPU Res</label><input type="range" id="gpuResolutionScale" min="0.25" max="2.0" value="1.0" step="0.05"><output id="gpuResolutionScaleValue" for="gpuResolutionScale">1.0</output></div>
+ </div>
       <div class="canvas-container">
         <!-- WebGPU world-space canvas (below HUD) -->
         <canvas id="gpuCanvas" width="1600" height="1200"></canvas>
@@ -100,7 +81,8 @@
           </div>
         </div>
       </div>
-      <div class="info-bar">
+
+<div class="info-bar">
         <div class="info-cell">
           <div class="label">Speed</div>
           <div class="value" id="velocityDisplay">0.0 km/h</div>
@@ -131,7 +113,7 @@
         </div>
         <div class="info-cell">
           <div class="label">Physics</div>
-          <div class="value" id="physicsTpsDisplay">0 Hz</div>
+          <div class="value" class="physics-readout" id="physicsTpsDisplay">0 Hz</div>
         </div>
         <div class="info-cell motion-energy-cell">
           <div class="label">Motion energy · estimate</div>
@@ -143,1062 +125,59 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- ==================== CONTROLS ==================== -->
-    <div class="control-grid">
-
-      <!-- Simulation Panel -->
-      <div class="panel-section">
-        <h3>⚡ Simulation</h3>
-        <div class="slider-row">
-          <span class="slider-label">Physics Hz</span>
-          <!-- Physics tick rate (wall-clock Hz). timeScale only shrinks dt per tick,
-               not the tick rate. Higher = more accurate tire model, more CPU.
-               100Hz is the sweet spot for vehicle dynamics. Range: 30–200Hz. -->
-          <input type="range" id="simulationFps" min="30" max="200" value="100" step="10">
-          <span class="slider-value" id="simulationFpsValue">100</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Time Scale</span>
-          <input type="range" id="timeScale" min="0.1" max="3.0" value="1.0" step="0.1">
-          <span class="slider-value" id="timeScaleValue">1.00</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Substeps/Frame</span>
-          <input type="range" id="maxSubstepsPerFrame" min="1" max="12" value="6" step="1">
-          <span class="slider-value" id="maxSubstepsPerFrameValue">6</span>
-        </div>
-      </div>
-
-      <div class="panel-section">
-        <h3>Suspension</h3>
-        <div class="slider-row">
-          <label for="suspensionEnabled" class="slider-label">Dynamic suspension</label>
-          <input type="checkbox" id="suspensionEnabled" checked>
-        </div>
-        <p style="font-size:0.75rem;color:#aaa">Turn off to compare instant weight transfer. Set tire load sensitivity to zero for the original tire response.</p>
-        <div class="slider-row">
-          <label for="springRateFront" class="slider-label">Front spring (N/m)</label>
-          <input type="range" id="springRateFront" min="15000" max="80000" value="35000" step="1000">
-          <span class="slider-value" id="springRateFrontValue">35000</span>
-        </div>
-        <div class="slider-row">
-          <label for="springRateRear" class="slider-label">Rear spring (N/m)</label>
-          <input type="range" id="springRateRear" min="15000" max="80000" value="35000" step="1000">
-          <span class="slider-value" id="springRateRearValue">35000</span>
-        </div>
-        <div class="slider-row">
-          <label for="damperRateFront" class="slider-label">Front damper (N·s/m)</label>
-          <input type="range" id="damperRateFront" min="500" max="5000" value="2500" step="100">
-          <span class="slider-value" id="damperRateFrontValue">2500</span>
-        </div>
-        <div class="slider-row">
-          <label for="damperRateRear" class="slider-label">Rear damper (N·s/m)</label>
-          <input type="range" id="damperRateRear" min="500" max="5000" value="2500" step="100">
-          <span class="slider-value" id="damperRateRearValue">2500</span>
-        </div>
-        <div class="slider-row">
-          <label for="antiRollStiffnessFront" class="slider-label">Front bar (N·m/rad)</label>
-          <input type="range" id="antiRollStiffnessFront" min="0" max="40000" value="12000" step="1000">
-          <span class="slider-value" id="antiRollStiffnessFrontValue">12000</span>
-        </div>
-        <div class="slider-row">
-          <label for="antiRollStiffnessRear" class="slider-label">Rear bar (N·m/rad)</label>
-          <input type="range" id="antiRollStiffnessRear" min="0" max="40000" value="8000" step="1000">
-          <span class="slider-value" id="antiRollStiffnessRearValue">8000</span>
-        </div>
-        <div class="slider-row">
-          <label for="tireLoadSensitivity" class="slider-label">Tire load sensitivity</label>
-          <input type="range" id="tireLoadSensitivity" min="0" max="0.3" value="0.12" step="0.01">
-          <span class="slider-value" id="tireLoadSensitivityValue">0.12</span>
-        </div>
-        <output id="suspensionReadout" style="display:block;font-size:0.75rem;color:#aaa" aria-live="off"></output>
-      </div>
-
-      <!-- Car Physics Panel -->
-      <div class="panel-section">
-        <h3>🏎️ Car Physics</h3>
-        <div class="slider-row">
-          <span class="slider-label">Mass (kg)</span>
-          <input type="range" id="carMassKg" min="600" max="3000" value="1200" step="50">
-          <span class="slider-value" id="carMassKgValue">1200</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Roll Resist.</span>
-          <!-- Rolling resistance coefficient (SI): F = coeff × mass × g; typical 0.010–0.020 -->
-          <input type="range" id="rollingResistanceCoeff" min="0.001" max="0.03" value="0.012" step="0.001">
-          <span class="slider-value" id="rollingResistanceCoeffValue">0.012</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Aero Drag</span>
-          <!-- Aero drag coefficient (N·s²/m²): F = k × speed²; 0.5×ρ×Cd×A ≈ 0.4 -->
-          <input type="range" id="aeroDragCoeff" min="0.1" max="1.0" value="0.4" step="0.01">
-          <span class="slider-value" id="aeroDragCoeffValue">0.40</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Tire Friction</span>
-          <input type="range" id="tireFrictionCoeff" min="0.3" max="2.0" value="1.0" step="0.05">
-          <span class="slider-value" id="tireFrictionCoeffValue">1.00</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Sliding Grip</span>
-          <input type="range" id="tireSlidingFrictionRatio" min="0.5" max="1.0" value="0.85" step="0.05">
-          <span class="slider-value" id="tireSlidingFrictionRatioValue">85%</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">CoG Height (m)</span>
-          <!-- Height of centre of gravity in metres; higher = more weight transfer -->
-          <input type="range" id="cogHeight" min="0.1" max="2.0" value="0.5" step="0.05">
-          <span class="slider-value" id="cogHeightValue">0.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Bounciness</span>
-          <input type="range" id="bounciness" min="0.0" max="1.0" value="0.3" step="0.05">
-          <span class="slider-value" id="bouncinessValue">0.30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Stall Resist.</span>
-          <!-- How hard the engine fights stalling when RPM drops in the slip zone -->
-          <input type="range" id="stallResistance" min="0.0" max="1.0" value="0.5" step="0.05">
-          <span class="slider-value" id="stallResistanceValue">0.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Yaw Damping</span>
-          <!-- Decay rate (1/s): 0=undamped spin, 1=realistic, 3=stability, 5=heavy assist -->
-          <input type="range" id="yawDamping" min="0.0" max="5.0" value="1.0" step="0.1">
-          <span class="slider-value" id="yawDampingValue">1.0</span>
-        </div>
-        <button id="engineToggle" style="width:100%;padding:8px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:700;letter-spacing:1px;background:#2ecc71;color:#111;border:2px solid #2ecc71;border-radius:8px;cursor:pointer">Engine ON</button>
-        <button id="soundToggle" style="width:100%;padding:8px;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:700;letter-spacing:1px;background:#e74c3c;color:#fff;border:2px solid #e74c3c;border-radius:8px;cursor:pointer">Sound OFF</button>
-
-        <details style="margin-top:10px;padding:8px;background:#1a1a1a;border-radius:6px;border:1px solid #444;">
-          <summary style="cursor:pointer;font-weight:700;color:#00ddff;user-select:none;">👁 Visual Effects</summary>
-          <div style="margin-top:10px;">
-            <div class="slider-row" style="align-items:center;">
-              <label style="flex:1;">Accel/Jerk Arrows</label>
-              <input type="checkbox" id="showKinematicArrows" checked style="width:30px;height:20px;">
-            </div>
-            <div class="slider-row" style="align-items:center;">
-              <label style="flex:1;">HDR Sparks</label>
-              <input type="checkbox" id="showSparks" checked style="width:30px;height:20px;">
-            </div>
-            <div class="slider-row" style="align-items:center;">
-              <label style="flex:1;">Skid Marks</label>
-              <input type="checkbox" id="showSkidMarks" checked style="width:30px;height:20px;">
-            </div>
-
-            <div style="margin-top:10px;padding-top:8px;border-top:1px solid #333;">
-              <div style="color:#ffaa00;font-weight:600;margin-bottom:6px;font-size:11px;">⚡ SPARK TUNING</div>
-              <div class="slider-row">
-                <label>Intensity</label>
-                <input type="range" id="sparkIntensity" min="0.1" max="3.0" step="0.1" value="1.0" style="flex:2;">
-                <span class="slider-value" id="sparkIntensityValue">1.0</span>
-              </div>
-              <div class="slider-row">
-                <label>Size</label>
-                <input type="range" id="sparkSize" min="0.3" max="3.0" step="0.1" value="1.0" style="flex:2;">
-                <span class="slider-value" id="sparkSizeValue">1.0</span>
-              </div>
-              <div class="slider-row">
-                <label>Lifetime</label>
-                <input type="range" id="sparkLifetime" min="0.3" max="3.0" step="0.1" value="1.0" style="flex:2;">
-                <span class="slider-value" id="sparkLifetimeValue">1.0</span>
-              </div>
-              <div class="slider-row">
-                <label>Grip Threshold</label>
-                <input type="range" id="sparkGripThreshold" min="0.05" max="0.8" step="0.05" value="0.3" style="flex:2;">
-                <span class="slider-value" id="sparkGripThresholdValue">0.3</span>
-              </div>
-            </div>
-
-            <div style="margin-top:10px;padding-top:8px;border-top:1px solid #333;">
-              <div style="color:#ff4444;font-weight:600;margin-bottom:6px;font-size:11px;">💥 SPLATTER VIOLENCE</div>
-              <div class="slider-row">
-                <label>Violence</label>
-                <input type="range" id="splatViolence" min="0.5" max="3.0" step="0.1" value="1.5" style="flex:2;">
-                <span class="slider-value" id="splatViolenceValue">1.5</span>
-              </div>
-              <div class="slider-row">
-                <label>Decal Opacity</label>
-                <input type="range" id="splatDecalPersistence" min="0.1" max="1.0" step="0.05" value="0.7" style="flex:2;">
-                <span class="slider-value" id="splatDecalPersistenceValue">0.7</span>
-              </div>
-            </div>
-          </div>
-        </details>
-
-
-
-        <details style="margin-top:10px;padding:8px;background:#1a1a1a;border-radius:6px;border:1px solid #444;">
-          <summary style="cursor:pointer;font-weight:700;color:#ffa500;user-select:none;">🔊 Sound Settings</summary>
-          <div style="margin-top:10px;">
-            <div class="slider-row">
-              <label style="flex:1;">Master Volume</label>
-              <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.5" style="flex:2;">
-              <span class="slider-value" id="masterVolValue">0.5</span>
-            </div>
-            <div class="slider-row">
-              <label>Main Gain</label>
-              <input type="range" id="mainGain" min="0" max="1" step="0.01" value="0.3" style="flex:2;">
-              <span class="slider-value" id="mainGainValue">0.3</span>
-            </div>
-            <div class="slider-row">
-              <label>Main Filter Low (Hz)</label>
-              <input type="range" id="mainFltLow" min="50" max="1000" step="10" value="200" style="flex:2;">
-              <span class="slider-value" id="mainFltLowValue">200</span>
-            </div>
-            <div class="slider-row">
-              <label>Main Filter High (Hz)</label>
-              <input type="range" id="mainFltHigh" min="500" max="5000" step="50" value="2000" style="flex:2;">
-              <span class="slider-value" id="mainFltHighValue">2000</span>
-            </div>
-            <div class="slider-row">
-              <label>Main Filter Q</label>
-              <input type="range" id="mainFltQ" min="0.1" max="10" step="0.1" value="0.7" style="flex:2;">
-              <span class="slider-value" id="mainFltQValue">0.7</span>
-            </div>
-            <div class="slider-row">
-              <label>Sub Gain</label>
-              <input type="range" id="subGain" min="0" max="1" step="0.01" value="0.25" style="flex:2;">
-              <span class="slider-value" id="subGainValue">0.2</span>
-            </div>
-            <div class="slider-row">
-              <label>Sub Multiplier</label>
-              <input type="range" id="subMult" min="0.1" max="2" step="0.1" value="0.5" style="flex:2;">
-              <span class="slider-value" id="subMultValue">0.5</span>
-            </div>
-            <div class="slider-row">
-              <label>Harmonic Enable</label>
-              <input type="checkbox" id="harmonicEnable" style="width:30px;height:20px;">
-              <span class="slider-value" id="harmonicEnableValue">OFF</span>
-            </div>
-            <div class="slider-row">
-              <label>Harmonic Gain</label>
-              <input type="range" id="harmonicGain" min="0" max="1" step="0.01" value="0.2" style="flex:2;">
-              <span class="slider-value" id="harmonicGainValue">0.2</span>
-            </div>
-            <div class="slider-row">
-              <label>Harmonic Multiplier</label>
-              <input type="range" id="harmonicMult" min="0.5" max="5" step="0.1" value="2.5" style="flex:2;">
-              <span class="slider-value" id="harmonicMultValue">2.5</span>
-            </div>
-            <div class="slider-row">
-              <label>Noise Gain</label>
-              <input type="range" id="noiseGain" min="0" max="1" step="0.01" value="0.1" style="flex:2;">
-              <span class="slider-value" id="noiseGainValue">0.1</span>
-            </div>
-            <div class="slider-row">
-              <label>Noise Low (Hz)</label>
-              <input type="range" id="noiseLow" min="100" max="2000" step="50" value="300" style="flex:2;">
-              <span class="slider-value" id="noiseLowValue">300</span>
-            </div>
-            <div class="slider-row">
-              <label>Noise High (Hz)</label>
-              <input type="range" id="noiseHigh" min="1000" max="10000" step="100" value="2500" style="flex:2;">
-              <span class="slider-value" id="noiseHighValue">2500</span>
-            </div>
-            <div class="slider-row">
-              <label>Noise Q</label>
-              <input type="range" id="noiseQ" min="0.1" max="5" step="0.1" value="1.5" style="flex:2;">
-              <span class="slider-value" id="noiseQValue">1.5</span>
-            </div>
-            <div class="slider-row">
-              <label>Turbo Enable</label>
-              <input type="checkbox" id="turboEnable" style="width:30px;height:20px;">
-              <span class="slider-value" id="turboEnableValue">OFF</span>
-            </div>
-            <div class="slider-row">
-              <label>Turbo Gain</label>
-              <input type="range" id="turboGain" min="0" max="1" step="0.01" value="0.15" style="flex:2;">
-              <span class="slider-value" id="turboGainValue">0.1</span>
-            </div>
-            <div class="slider-row">
-              <label>Turbo Multiplier</label>
-              <input type="range" id="turboMult" min="1" max="50" step="1" value="20" style="flex:2;">
-              <span class="slider-value" id="turboMultValue">20</span>
-            </div>
-            <div class="slider-row">
-              <label>Distortion Drive</label>
-              <input type="range" id="distDrive" min="0" max="1" step="0.01" value="0" style="flex:2;">
-              <span class="slider-value" id="distDriveValue">0.0</span>
-            </div>
-            <div class="slider-row">
-              <label>Reverb Mix</label>
-              <input type="range" id="reverbMix" min="0" max="1" step="0.01" value="0" style="flex:2;">
-              <span class="slider-value" id="reverbMixValue">0.0</span>
-            </div>
-            <div class="slider-row">
-              <label>Pulse Decay (ms)</label>
-              <input type="range" id="pulseDecayMs" min="5" max="80" step="1" value="30" style="flex:2;">
-              <span class="slider-value" id="pulseDecayMsValue">30</span>
-            </div>
-            <div class="slider-row">
-              <label>Jitter Amount</label>
-              <input type="range" id="jitterAmount" min="0" max="0.5" step="0.01" value="0.15" style="flex:2;">
-              <span class="slider-value" id="jitterAmountValue">0.15</span>
-            </div>
-            <div class="slider-row">
-              <label>Derivative Mix</label>
-              <input type="range" id="derivativeMix" min="0" max="0.30" step="0.01" value="0.10" style="flex:2;">
-              <span class="slider-value" id="derivativeMixValue">0.10</span>
-            </div>
-            <div class="slider-row">
-              <label>Exhaust Conv Mix</label>
-              <input type="range" id="exhaustConvMix" min="0" max="1" step="0.01" value="0.5" style="flex:2;">
-              <span class="slider-value" id="exhaustConvMixValue">0.50</span>
-            </div>
-            <div class="slider-row">
-              <label>AGC Threshold (dBFS)</label>
-              <input type="range" id="agcThreshold" min="-40" max="0" step="1" value="-18" style="flex:2;">
-              <span class="slider-value" id="agcThresholdValue">-18</span>
-            </div>
-
-            <!-- Balloon Collision Sound Section -->
-            <div style="margin: 1rem 0 0.5rem 0; border-top: 1px solid #666; padding-top: 0.5rem;">
-              <strong>🎈 Balloon Collision Sound</strong>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Master Gain</label>
-              <input type="range" id="popMasterGain" min="0" max="2" step="0.05" value="0.3" style="flex:2;">
-              <span class="slider-value" id="popMasterGainValue">0.30</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Bass Thump</label>
-              <input type="range" id="popBassTone" min="0" max="1" step="0.05" value="0.5" style="flex:2;">
-              <span class="slider-value" id="popBassToneValue">0.50</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Crack Brightness</label>
-              <input type="range" id="popCrackBrightness" min="0" max="1" step="0.05" value="0.5" style="flex:2;">
-              <span class="slider-value" id="popCrackBrightnessValue">0.50</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Spray Amount</label>
-              <input type="range" id="popSprayAmount" min="0" max="1" step="0.05" value="0.5" style="flex:2;">
-              <span class="slider-value" id="popSprayAmountValue">0.50</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Distortion</label>
-              <input type="range" id="popDistortion" min="0" max="1" step="0.05" value="0.3" style="flex:2;">
-              <span class="slider-value" id="popDistortionValue">0.30</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Speed Sensitivity</label>
-              <input type="range" id="popSpeedSensitivity" min="0" max="2" step="0.1" value="1.0" style="flex:2;">
-              <span class="slider-value" id="popSpeedSensitivityValue">1.00</span>
-            </div>
-
-            <div class="slider-row">
-              <label>Pop Pitch Shift (st)</label>
-              <input type="range" id="popPitchShift" min="-12" max="12" step="1" value="0" style="flex:2;">
-              <span class="slider-value" id="popPitchShiftValue">0</span>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <!-- Clutch Panel -->
-      <div class="panel-section">
-        <h3>⚙️ Clutch</h3>
-        <div class="slider-row">
-          <span class="slider-label">Bite Point</span>
-          <!-- Pedal position (0=floor) where clutch begins to engage -->
-          <input type="range" id="clutchBitePoint" min="0.05" max="0.85" value="0.35" step="0.01">
-          <span class="slider-value" id="clutchBitePointValue">0.35</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Slip Zone</span>
-          <!-- Width of the partial-engagement zone above bite point -->
-          <input type="range" id="clutchBiteRange" min="0.02" max="0.5" value="0.20" step="0.01">
-          <span class="slider-value" id="clutchBiteRangeValue">0.20</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Bite Sharpness</span>
-          <!-- Exponent: 1.0=linear, >1=bites sharply near top of slip zone -->
-          <input type="range" id="clutchBiteCurve" min="1.0" max="6.0" value="2.5" step="0.1">
-          <span class="slider-value" id="clutchBiteCurveValue">2.5</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Engage Time (s)</span>
-          <!-- Time in seconds for pedal to travel full range -->
-          <input type="range" id="clutchEngageTime" min="0.05" max="1.5" value="0.30" step="0.01">
-          <span class="slider-value" id="clutchEngageTimeValue">0.30</span>
-        </div>
-      </div>
-
-      <!-- Trail Panel -->
-      <div class="panel-section">
-        <h3>🎯 Velocity Trail</h3>
-        <div class="slider-row">
-          <span class="slider-label">Spawn (s)</span>
-          <!-- Logarithmic: slider 0–100 maps to 0.001s–10s -->
-          <input type="range" id="trailSpawnInterval" min="0" max="100" value="35" step="1">
-          <span class="slider-value" id="trailSpawnIntervalValue">0.080s</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Lifespan (s)</span>
-          <input type="range" id="trailLifespan" min="0.5" max="10.0" value="3.0" step="0.1">
-          <span class="slider-value" id="trailLifespanValue">3.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Fade</span>
-          <!-- Fade exponent: 1.0=linear fade, 2.0=quadratic, etc. -->
-          <input type="range" id="trailFade" min="0.2" max="3.0" value="1.0" step="0.05">
-          <span class="slider-value" id="trailFadeValue">1.00</span>
-        </div>
-      </div>
-
-      <!-- Camera Panel -->
-      <div class="panel-section">
-        <h3>📷 Camera</h3>
-        <div class="slider-row">
-          <span class="slider-label">Freq ω₀</span>
-          <input type="range" id="cameraOmega" min="0.5" max="20.0" value="2.2" step="0.1">
-          <span class="slider-value" id="cameraOmegaValue">2.2</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Zeta ζ</span>
-          <input type="range" id="cameraZeta" min="0.1" max="2.0" value="0.8" step="0.05">
-          <span class="slider-value" id="cameraZetaValue">0.80</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Zoom Sens</span>
-          <input type="range" id="cameraZoomSensitivity" min="0.0" max="1.0" value="0.3" step="0.05">
-          <span class="slider-value" id="cameraZoomSensitivityValue">0.30</span>
-        </div>
-      </div>
-
-      <!-- Motion Blur Panel -->
-      <div class="panel-section">
-        <h3>💨 Motion Blur</h3>
-        <div class="slider-row">
-          <span class="slider-label">Samples</span>
-          <input type="range" id="motionBlurSamples" min="1" max="16" value="6" step="1">
-          <span class="slider-value" id="motionBlurSamplesValue">6</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Intensity</span>
-          <input type="range" id="motionBlurIntensity" min="0.0" max="2.0" value="0.6" step="0.1">
-          <span class="slider-value" id="motionBlurIntensityValue">0.60</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Threshold (m/s)</span>
-          <!-- Speed above which blur activates; 10 m/s ≈ 36 km/h -->
-          <input type="range" id="motionBlurThreshold" min="1" max="50" value="10" step="1">
-          <span class="slider-value" id="motionBlurThresholdValue">10</span>
-        </div>
-      </div>
-
-      <!-- Map Size Panel -->
-      <div class="panel-section">
-        <h3>🗺️ Map Size</h3>
-        <div class="slider-row">
-          <span class="slider-label">Width (m)</span>
-          <input type="range" id="mapWidth" min="100" max="1000" value="300" step="10">
-          <span class="slider-value" id="mapWidthValue">300</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Height (m)</span>
-          <input type="range" id="mapHeight" min="100" max="1000" value="240" step="10">
-          <span class="slider-value" id="mapHeightValue">240</span>
-        </div>
-      </div>
-
-      <!-- Gauges Panel -->
-      <div class="panel-section">
-        <h3>🎚️ Gauges</h3>
-        <div class="slider-row">
-          <span class="slider-label">Label Scale</span>
-          <!-- Slider 60–160 → scale 0.6×–1.6× in ui.js -->
-          <input type="range" id="gaugeLabelScale" min="60" max="160" value="100" step="5">
-          <span class="slider-value" id="gaugeLabelScaleValue">1.0×</span>
-        </div>
-      </div>
-
-      <!-- Engine & Drivetrain Panel -->
-      <div class="panel-section">
-        <h3>🔧 Engine &amp; Drivetrain</h3>
-        <div class="slider-row">
-          <span class="slider-label">Peak Torque (Nm)</span>
-          <!-- === PHASE 3c: ENGINE TORQUE RESCALING ===
-               OLD range: 100–5000 value=2800 (hypercar territory)
-               NEW range: 50–2000 value=350 (realistic road car) -->
-          <input type="range" id="peakEngineTorqueNm" min="50" max="2000" value="350" step="10">
-          <span class="slider-value" id="peakEngineTorqueNmValue">350</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Idle RPM</span>
-          <input type="range" id="idleRpm" min="400" max="1500" value="800" step="50">
-          <span class="slider-value" id="idleRpmValue">800</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Redline RPM</span>
-          <input type="range" id="redlineRpm" min="4000" max="10000" value="7000" step="100">
-          <span class="slider-value" id="redlineRpmValue">7000</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Stall RPM</span>
-          <input type="range" id="stallRpm" min="100" max="1000" value="600" step="50">
-          <span class="slider-value" id="stallRpmValue">600</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Wheel Radius (m)</span>
-          <input type="range" id="wheelRadius" min="0.2" max="0.6" value="0.35" step="0.01">
-          <span class="slider-value" id="wheelRadiusValue">0.35</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Final Drive</span>
-          <input type="range" id="finalDriveRatio" min="1.0" max="8.0" value="4.1" step="0.1">
-          <span class="slider-value" id="finalDriveRatioValue">4.1</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Brake Force (N)</span>
-          <input type="range" id="brakeForce" min="500" max="20000" value="9810" step="100">
-          <span class="slider-value" id="brakeForceValue">9810</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Idle Creep (N)</span>
-          <input type="range" id="idleCreepForce" min="0" max="500" value="200" step="10">
-          <span class="slider-value" id="idleCreepForceValue">200</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 1</span>
-          <input type="range" id="gearRatio1" min="0.5" max="6.0" value="3.5" step="0.05">
-          <span class="slider-value" id="gearRatio1Value">3.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 2</span>
-          <input type="range" id="gearRatio2" min="0.5" max="5.0" value="2.1" step="0.05">
-          <span class="slider-value" id="gearRatio2Value">2.10</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 3</span>
-          <input type="range" id="gearRatio3" min="0.3" max="3.0" value="1.4" step="0.05">
-          <span class="slider-value" id="gearRatio3Value">1.40</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 4</span>
-          <input type="range" id="gearRatio4" min="0.2" max="2.0" value="1.0" step="0.05">
-          <span class="slider-value" id="gearRatio4Value">1.00</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 5</span>
-          <input type="range" id="gearRatio5" min="0.1" max="1.5" value="0.75" step="0.05">
-          <span class="slider-value" id="gearRatio5Value">0.75</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Gear 6</span>
-          <input type="range" id="gearRatio6" min="0.1" max="1.2" value="0.58" step="0.05">
-          <span class="slider-value" id="gearRatio6Value">0.58</span>
-        </div>
-      </div>
-
-      <!-- Tire Model Panel -->
-      <div class="panel-section">
-        <h3>🏎️ Tire Model (Pacejka)</h3>
-        <div class="slider-row">
-          <span class="slider-label">Pacejka B</span>
-          <!-- Stiffness factor: higher = sharper grip peak, more sudden breakaway -->
-          <input type="range" id="pacejkaB" min="1" max="30" value="10" step="0.5">
-          <span class="slider-value" id="pacejkaBValue">10.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Pacejka C</span>
-          <!-- Shape factor: controls how wide the force curve is -->
-          <input type="range" id="pacejkaC" min="0.5" max="3.0" value="1.9" step="0.05">
-          <span class="slider-value" id="pacejkaCValue">1.90</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Peak Slip Angle (°)</span>
-          <!-- Slip angle at peak lateral force; typical 6–10° -->
-          <input type="range" id="peakSlipAngleDeg" min="2" max="20" value="8" step="0.5">
-          <span class="slider-value" id="peakSlipAngleDegValue">8.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Peak Slip Ratio</span>
-          <!-- Longitudinal slip ratio at peak traction; typical 0.1–0.15 -->
-          <input type="range" id="peakSlipRatio" min="0.05" max="0.30" value="0.12" step="0.01">
-          <span class="slider-value" id="peakSlipRatioValue">0.12</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Relax Length (m)</span>
-          <input type="range" id="tireRelaxationLength" min="0.05" max="1.0" value="0.3" step="0.01">
-          <span class="slider-value" id="tireRelaxationLengthValue">0.30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Wheel Inertia (kg·m²)</span>
-          <input type="range" id="wheelInertia" min="0.5" max="3.0" value="1.2" step="0.1">
-          <span class="slider-value" id="wheelInertiaValue">1.20</span>
-        </div>
-
-      <!-- World & Visual Panel -->
-      <div class="panel-section">
-        <h3>🌍 World &amp; Visual</h3>
-        <div class="slider-row">
-          <span class="slider-label">Constraint Iters</span>
-          <!-- Jakobsen solver passes per step; more = stiffer body, slower -->
-          <input type="range" id="constraintIterations" min="1" max="12" value="6" step="1">
-          <span class="slider-value" id="constraintIterationsValue">6</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Constraint Damp</span>
-          <!-- Jakobsen velocity damping: 0=pure (can jitter), 0.5=balanced, 1=fully absorbed -->
-          <input type="range" id="constraintDamping" min="0.0" max="1.0" value="0.8" step="0.05">
-          <span class="slider-value" id="constraintDampingValue">0.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Checker Tile (px)</span>
-          <!-- Visual size of each checkerboard square in screen pixels at zoom=1 -->
-          <input type="range" id="checkerboardTileSize" min="20" max="200" value="80" step="5">
-          <span class="slider-value" id="checkerboardTileSizeValue">80</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Trail Arrows</span>
-          <!-- Hard cap on total alive arrows; higher = more history, more CPU -->
-          <input type="range" id="maxTrailArrows" min="50" max="1200" value="600" step="50">
-          <span class="slider-value" id="maxTrailArrowsValue">600</span>
-        </div>
-      </div>
-
-      <!-- ==================== PIXELS PER METRE ==================== -->
-      <div class="panel-section">
-        <h3>🔭 View Scale</h3>
-        <div class="slider-row">
-          <span class="slider-label">Pixels/Metre</span>
-          <input type="range" id="pixelsPerMeter" min="5" max="60" value="20" step="1">
-          <span class="slider-value" id="pixelsPerMeterValue">20</span>
-        </div>
-      </div>
-
-      <!-- ==================== SKID MARKS ==================== -->
-      <div class="panel-section">
-        <h3>🖤 Skid Marks</h3>
-        <div class="slider-row">
-          <span class="slider-label">Grip Threshold</span>
-          <input type="range" id="skidGripThreshold" min="0.1" max="1.0" value="0.6" step="0.01">
-          <span class="slider-value" id="skidGripThresholdValue">0.60</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Grip Fade (/s)</span>
-          <input type="range" id="skidFadeRate" min="0.5" max="30" value="8" step="0.5">
-          <span class="slider-value" id="skidFadeRateValue">8.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Width Min (m)</span>
-          <input type="range" id="skidWidthMin" min="0.01" max="0.5" value="0.12" step="0.01">
-          <span class="slider-value" id="skidWidthMinValue">0.12</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Width Max (m)</span>
-          <input type="range" id="skidWidthMax" min="0.1" max="1.5" value="0.47" step="0.01">
-          <span class="slider-value" id="skidWidthMaxValue">0.47</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Alpha Min</span>
-          <input type="range" id="skidAlphaMin" min="0.0" max="1.0" value="0.2" step="0.01">
-          <span class="slider-value" id="skidAlphaMinValue">0.20</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Alpha Max</span>
-          <input type="range" id="skidAlphaMax" min="0.0" max="1.0" value="0.7" step="0.01">
-          <span class="slider-value" id="skidAlphaMaxValue">0.70</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Jerk Boost Max</span>
-          <input type="range" id="skidJerkBoostMax" min="0.0" max="0.5" value="0.3" step="0.01">
-          <span class="slider-value" id="skidJerkBoostMaxValue">0.30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Segments</span>
-          <input type="range" id="skidMaxSegments" min="500" max="20000" value="4000" step="500">
-          <span class="slider-value" id="skidMaxSegmentsValue">4000</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Age (s)</span>
-          <input type="range" id="skidMaxAge" min="1" max="30" value="5" step="0.5">
-          <span class="slider-value" id="skidMaxAgeValue">5.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Alpha Decay (/s)</span>
-          <input type="range" id="skidAlphaDecayRate" min="0.05" max="5" value="1" step="0.05">
-          <span class="slider-value" id="skidAlphaDecayRateValue">1.00</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Redraw Interval</span>
-          <input type="range" id="gpuSkidRedrawInterval" min="30" max="600" value="120" step="10">
-          <span class="slider-value" id="gpuSkidRedrawIntervalValue">120</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">GPU Line Width</span>
-          <input type="range" id="gpuSkidResolution" min="0.5" max="3" value="1" step="0.05">
-          <span class="slider-value" id="gpuSkidResolutionValue">1.00</span>
-        </div>
-      </div>
-
-      <!-- ==================== PAINT MIXING ==================== -->
-      <div class="panel-section">
-        <h3>🎨 Paint Mixing</h3>
-        <div class="slider-row">
-          <span class="slider-label">Pickup Rate</span>
-          <input type="range" id="paintPickupRate" min="0.1" max="10" value="2.5" step="0.1">
-          <span class="slider-value" id="paintPickupRateValue">2.5</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Sat Pickup/s</span>
-          <input type="range" id="paintSatPickupRate" min="0.05" max="5" value="0.8" step="0.05">
-          <span class="slider-value" id="paintSatPickupRateValue">0.80</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Depletion/s</span>
-          <input type="range" id="paintDepletionRate" min="0.0" max="1.0" value="0.1" step="0.01">
-          <span class="slider-value" id="paintDepletionRateValue">0.10</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Min Saturation</span>
-          <input type="range" id="paintMinSat" min="0.01" max="0.3" value="0.05" step="0.01">
-          <span class="slider-value" id="paintMinSatValue">0.05</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Decal Depletion</span>
-          <input type="range" id="paintDecalDepletion" min="0.0" max="0.5" value="0.08" step="0.01">
-          <span class="slider-value" id="paintDecalDepletionValue">0.08</span>
-        </div>
-      </div>
-
-      <!-- ==================== MOTION BLUR ADVANCED ==================== -->
-      <div class="panel-section">
-        <h3>💨 Blur Weights</h3>
-        <div class="slider-row">
-          <span class="slider-label">Speed Weight</span>
-          <input type="range" id="blurSpeedWeight" min="0" max="2" value="0.5" step="0.05">
-          <span class="slider-value" id="blurSpeedWeightValue">0.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Drift Weight</span>
-          <input type="range" id="blurDriftWeight" min="0" max="2" value="0.7" step="0.05">
-          <span class="slider-value" id="blurDriftWeightValue">0.70</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Angular Weight</span>
-          <input type="range" id="blurAngularWeight" min="0" max="2" value="0.4" step="0.05">
-          <span class="slider-value" id="blurAngularWeightValue">0.40</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Jerk Weight</span>
-          <input type="range" id="blurJerkWeight" min="0" max="2" value="0.3" step="0.05">
-          <span class="slider-value" id="blurJerkWeightValue">0.30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Attack Rate</span>
-          <input type="range" id="blurAttackRate" min="0.01" max="1.0" value="0.35" step="0.01">
-          <span class="slider-value" id="blurAttackRateValue">0.35</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Decay Rate</span>
-          <input type="range" id="blurDecayRate" min="0.001" max="0.3" value="0.04" step="0.001">
-          <span class="slider-value" id="blurDecayRateValue">0.040</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Offset (m)</span>
-          <input type="range" id="blurMaxOffset" min="0.5" max="20" value="5" step="0.5">
-          <span class="slider-value" id="blurMaxOffsetValue">5.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Opacity Min</span>
-          <input type="range" id="blurOpacityMin" min="0" max="0.5" value="0.1" step="0.01">
-          <span class="slider-value" id="blurOpacityMinValue">0.10</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Opacity Max</span>
-          <input type="range" id="blurOpacityMax" min="0.3" max="1" value="0.8" step="0.01">
-          <span class="slider-value" id="blurOpacityMaxValue">0.80</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Opacity Curve</span>
-          <input type="range" id="blurOpacityCurve" min="0.5" max="5" value="2" step="0.1">
-          <span class="slider-value" id="blurOpacityCurveValue">2.0</span>
-        </div>
-      </div>
-
-      <!-- ==================== TIRE SMOKE CONTROLS ==================== -->
-      <div class="panel-section">
-        <h3>💨 Tire Smoke</h3>
-        <div class="slider-row">
-          <span class="slider-label">Enable Smoke</span>
-          <input type="checkbox" id="smokeEnabled" style="width: 20px; height: 20px;">
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Spawn Rate</span>
-          <input type="range" id="smokeSpawnRate" min="5" max="200" value="50" step="5">
-          <span class="slider-value" id="smokeSpawnRateValue">50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Lifetime Min (s)</span>
-          <input type="range" id="smokeLifetimeMin" min="0.1" max="3.0" value="1.0" step="0.1">
-          <span class="slider-value" id="smokeLifetimeMinValue">1.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Lifetime Max (s)</span>
-          <input type="range" id="smokeLifetimeMax" min="0.5" max="5.0" value="2.0" step="0.1">
-          <span class="slider-value" id="smokeLifetimeMaxValue">2.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Size Min (m)</span>
-          <input type="range" id="smokeSizeMin" min="0.1" max="1.0" value="0.35" step="0.05">
-          <span class="slider-value" id="smokeSizeMinValue">0.35</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Size Max (m)</span>
-          <input type="range" id="smokeSizeMax" min="0.5" max="2.0" value="0.70" step="0.05">
-          <span class="slider-value" id="smokeSizeMaxValue">0.70</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Opacity (Locked)</span>
-          <input type="range" id="smokeOpacityLocked" min="0" max="1" value="0.65" step="0.05">
-          <span class="slider-value" id="smokeOpacityLockedValue">0.65</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Opacity (Overspun)</span>
-          <input type="range" id="smokeOpacityOverspun" min="0" max="1" value="0.40" step="0.05">
-          <span class="slider-value" id="smokeOpacityOverspunValue">0.40</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Curl Noise Scale</span>
-          <input type="range" id="smokeCurlNoiseScale" min="0.5" max="5.0" value="2.5" step="0.1">
-          <span class="slider-value" id="smokeCurlNoiseScaleValue">2.5</span>
-        </div>
-      </div>
-
-      <!-- ==================== GRIP STATE MACHINE ==================== -->
-      <div class="panel-section">
-        <h3>🏁 Grip State Machine</h3>
-        <div class="slider-row">
-          <span class="slider-label">Loss Threshold</span>
-          <input type="range" id="gripLossThreshold" min="0.1" max="0.98" value="0.7" step="0.01">
-          <span class="slider-value" id="gripLossThresholdValue">0.70</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Recovery Thresh.</span>
-          <input type="range" id="gripRecoveryThreshold" min="0.3" max="1.0" value="0.85" step="0.01">
-          <span class="slider-value" id="gripRecoveryThresholdValue">0.85</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">EMA α (stable)</span>
-          <input type="range" id="gripEmaStable" min="0.01" max="0.5" value="0.15" step="0.01">
-          <span class="slider-value" id="gripEmaStableValue">0.15</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">EMA α (slip)</span>
-          <input type="range" id="gripEmaSlipping" min="0.05" max="0.8" value="0.35" step="0.01">
-          <span class="slider-value" id="gripEmaSlippingValue">0.35</span>
-        </div>
-      </div>
-
-      <!-- ==================== BALLOON SYSTEM ==================== -->
-      <div class="panel-section">
-        <h3>🎈 Balloon System</h3>
-        <div class="slider-row">
-          <span class="slider-label">Max Balloons</span>
-          <input type="range" id="maxBalloons" min="1" max="500" value="240" step="1">
-          <span class="slider-value" id="maxBalloonsValue">240</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Respawn Rate/s</span>
-          <input type="range" id="balloonRespawnRate" min="0.01" max="5.0" value="0.5" step="0.01">
-          <span class="slider-value" id="balloonRespawnRateValue">0.50</span>
-        </div>
-      </div>
-
-      <!-- ==================== ENGINE CYLINDERS ==================== -->
-      <div class="panel-section">
-        <h3>🔩 Engine Character</h3>
-        <div class="slider-row">
-          <span class="slider-label">Cylinders</span>
-          <input type="range" id="cylinderCount" min="1" max="16" value="12" step="1">
-          <span class="slider-value" id="cylinderCountValue">12</span>
-        </div>
-      </div>
-
-      <!-- ==================== DECAL SYSTEM ==================== -->
-      <div class="panel-section">
-        <h3>💧 Decal / Puddle System</h3>
-        <div class="slider-row">
-          <span class="slider-label">Lifetime (s)</span>
-          <input type="range" id="decalLifetime" min="2" max="300" value="30" step="1">
-          <span class="slider-value" id="decalLifetimeValue">30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Evap Rate/s</span>
-          <input type="range" id="decalEvapRate" min="0.0" max="0.2" value="0.008" step="0.001">
-          <span class="slider-value" id="decalEvapRateValue">0.008</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Count</span>
-          <input type="range" id="decalMaxCount" min="100" max="10000" value="4000" step="100">
-          <span class="slider-value" id="decalMaxCountValue">4000</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Min Radius (m)</span>
-          <input type="range" id="decalMinRadius" min="0.05" max="0.5" value="0.15" step="0.01">
-          <span class="slider-value" id="decalMinRadiusValue">0.15</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Radius (m)</span>
-          <input type="range" id="decalMaxRadius" min="0.2" max="3.0" value="0.9" step="0.05">
-          <span class="slider-value" id="decalMaxRadiusValue">0.90</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Edge Softness</span>
-          <input type="range" id="decalEdgeSoftness" min="0.0" max="1.0" value="0.4" step="0.01">
-          <span class="slider-value" id="decalEdgeSoftnessValue">0.40</span>
-        </div>
-      </div>
-
-      <!-- ==================== DOPPLER ==================== -->
-      <div class="panel-section">
-        <h3>📡 Doppler Effect</h3>
-        <div class="slider-row" style="align-items:center;">
-          <span class="slider-label">Enable</span>
-          <input type="checkbox" id="dopplerEnabled" checked style="width:30px;height:20px;">
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Strength</span>
-          <input type="range" id="dopplerStrength" min="0.0" max="0.05" value="0.008" step="0.001">
-          <span class="slider-value" id="dopplerStrengthValue">0.008</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Shift</span>
-          <input type="range" id="dopplerMaxShift" min="0.0" max="0.5" value="0.25" step="0.01">
-          <span class="slider-value" id="dopplerMaxShiftValue">0.25</span>
-        </div>
-      </div>
-
-      <!-- ==================== ENGINE SOUND ADVANCED ==================== -->
-      <div class="panel-section">
-        <h3>💨 Exhaust &amp; Burble</h3>
-        <div class="slider-row">
-          <span class="slider-label">Pop Volume</span>
-          <input type="range" id="exhaustPopVolume" min="0.0" max="2.0" value="0.3" step="0.05">
-          <span class="slider-value" id="exhaustPopVolumeValue">0.30</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Pop Density</span>
-          <input type="range" id="exhaustPopDensity" min="0.1" max="5.0" value="1.0" step="0.1">
-          <span class="slider-value" id="exhaustPopDensityValue">1.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Backfire RPM</span>
-          <input type="range" id="backfireThreshold" min="500" max="6000" value="1500" step="100">
-          <span class="slider-value" id="backfireThresholdValue">1500</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Bass Gain</span>
-          <input type="range" id="exhaustBassGain" min="0.0" max="1.5" value="0.35" step="0.01">
-          <span class="slider-value" id="exhaustBassGainValue">0.35</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Bass Freq (Hz)</span>
-          <input type="range" id="exhaustBassTune" min="20" max="200" value="65" step="1">
-          <span class="slider-value" id="exhaustBassTuneValue">65</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Bass Q</span>
-          <input type="range" id="exhaustBassQ" min="0.3" max="8.0" value="1.2" step="0.1">
-          <span class="slider-value" id="exhaustBassQValue">1.2</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Drift Screech</span>
-          <input type="range" id="driftScreechGain" min="0.0" max="1.5" value="0.55" step="0.01">
-          <span class="slider-value" id="driftScreechGainValue">0.55</span>
-        </div>
-      </div>
-
-      <!-- ==================== PRESETS ==================== -->
-      <div class="panel-section">
-        <h3>🎛️ Presets</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
-          <button class="preset-btn" data-preset="driftCar">🚗 Drift Car</button>
-          <button class="preset-btn" data-preset="heavySUV">🚙 Heavy SUV</button>
-          <button class="preset-btn" data-preset="goKart">🏎️ Go-Kart</button>
-          <button class="preset-btn" data-preset="iceSurface">❄️ Ice Surface</button>
-          <button class="preset-btn" data-preset="stockCar">🔧 Stock Road</button>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button id="exportPreset" style="flex:1; font-size:11px; padding:5px 8px;">⬇️ Export Current</button>
-          <label style="flex:1; cursor:pointer;">
-            <span style="display:block; text-align:center; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:5px 8px; font-size:11px;">⬆️ Import Preset</span>
-            <input type="file" id="importPreset" accept=".json" style="display:none;">
-          </label>
-        </div>
-      </div>
-
-      <!-- ==================== STEERING ==================== -->
-      <div class="panel-section">
-        <h3>🔄 Steering Dynamics</h3>
-        <div class="slider-row">
-          <span class="slider-label">Self-Center Rate</span>
-          <input type="range" id="steeringSelfCenterRate" min="0" max="30" value="5" step="0.5">
-          <span class="slider-value" id="steeringSelfCenterRateValue">5.0</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Column Inertia</span>
-          <input type="range" id="steeringColumnInertia" min="0.01" max="1.0" value="0.08" step="0.01">
-          <span class="slider-value" id="steeringColumnInertiaValue">0.08</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Viscous Damp</span>
-          <input type="range" id="steeringViscousDamping" min="0.0" max="10.0" value="5.5" step="0.1">
-          <span class="slider-value" id="steeringViscousDampingValue">5.50</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Coulomb Friction</span>
-          <input type="range" id="steeringCoulombFriction" min="0.0" max="2.0" value="0.05" step="0.01">
-          <span class="slider-value" id="steeringCoulombFrictionValue">0.05</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Pneumatic Trail</span>
-          <input type="range" id="pneumaticTrail" min="0.0" max="0.2" value="0.035" step="0.005">
-          <span class="slider-value" id="pneumaticTrailValue">0.035</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Max Steer (rad)</span>
-          <input type="range" id="maxFrontWheelAngle" min="0.1" max="1.2" value="0.52" step="0.01">
-          <span class="slider-value" id="maxFrontWheelAngleValue">0.52</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Steer Drag Range</span>
-          <input type="range" id="steeringDragRange" min="50" max="400" value="150" step="10">
-          <span class="slider-value" id="steeringDragRangeValue">150</span>
-        </div>
-
-      <!-- ==================== DEBUG OVERLAYS ==================== -->
-      <div class="panel-section">
-        <h3>🔧 Debug Overlays</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-          <label><input type="checkbox" id="debugShowTireForces"> Tire Forces</label>
-          <label><input type="checkbox" id="debugShowSlipAngles"> Slip Angles</label>
-          <label><input type="checkbox" id="debugShowSAT"> Self-Align Torque</label>
-          <label><input type="checkbox" id="debugShowSmoothingFilter"> Filter Signal</label>
-          <label><input type="checkbox" id="debugShowCrossover"> Sign Flips</label>
-          <label><input type="checkbox" id="debugShowWheelSpeeds"> Wheel Velocities</label>
-        </div>
-        <div class="slider-row">
-          <span class="slider-label">Overlay Size</span>
-          <input type="range" id="debugFontSize" min="4" max="14" value="8" style="flex: 1; margin: 0 8px;">
-          <span class="slider-value" id="debugFontSizeValue">8</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== KEY HINTS ==================== -->
-    <div class="keys-hint">
+</section>
+<section class="controls-intro" id="controls"><h1>CONTROL WORKSPACE</h1><p>160 sliders · 14 toggles · 9 categories</p></section>
+<div class="preset-bar" aria-label="Presets and engine controls">
+ <span class="preset-label">SETUP</span>
+ <button class="preset-btn" data-preset="driftCar" aria-pressed="false">Drift Car</button>
+ <button class="preset-btn" data-preset="heavySUV" aria-pressed="false">Heavy SUV</button>
+ <button class="preset-btn" data-preset="goKart" aria-pressed="false">Go-Kart</button>
+ <button class="preset-btn" data-preset="iceSurface" aria-pressed="false">Ice Surface</button>
+ <button class="preset-btn" data-preset="stockCar" aria-pressed="false">Stock Road</button>
+ <span class="action-divider" aria-hidden="true"></span>
+ <button class="toolbar-button" id="exportPreset">↓ Export</button>
+ <button class="toolbar-button" id="importButton">↑ Import</button>
+ <input type="file" id="importPreset" accept=".json,application/json" hidden>
+ <button class="toolbar-button local-toggle" id="engineToggle" aria-pressed="true">Engine ON</button>
+ <button class="toolbar-button" id="soundToggle" aria-pressed="false">Sound OFF</button>
+</div>
+<div id="actionStatus" role="status">Adjust a control or choose a setup. Changes apply immediately to the simulator.</div>
+<div class="controls-sticky">
+<section class="search-bar" aria-label="Parameter search and layout">
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">⌕</span>
+    <input type="search" id="search" aria-label="Search all 174 controls" placeholder="Search every control… torque, smoke, clutch, camra" autocomplete="off">
+    <button class="clear-search" id="clearSearch" aria-label="Clear search" hidden>×</button>
+  </div>
+  <div class="result-count" id="resultCount" role="status" aria-live="polite"></div>
+  <div class="view-switch" role="group" aria-label="Layout">
+    <button id="cardsView" aria-pressed="true">▦ Cards</button>
+    <button id="listView" aria-pressed="false">☷ List</button>
+  </div>
+  <button class="toolbar-button" id="foldAll">Collapse all</button>
+  <div class="suggestion" id="suggestion" hidden>Did you mean <button id="suggestionButton"></button>?</div>
+</section>
+<nav class="subsystem-nav" id="subsystemNav" aria-label="Filter by subsystem"></nav>
+</div>
+<main class="workspace" id="workspace">
+  <div class="workspace-heading">
+    <h1 id="workspaceTitle">ALL SUBSYSTEMS</h1>
+    <p>Independent columns · no gaps when groups fold</p>
+  </div>
+  <div class="cards-container" id="cardsContainer"></div>
+  <div class="empty-state" id="emptyState" hidden>
+    <strong>No matching controls</strong>
+    Try another name or clear the filters to see every subsystem.<br>
+    <button class="toolbar-button" id="resetFilters">Clear filters</button>
+  </div>
+</main>
+<footer class="footer">
+  <span>162 sliders · 14 toggles · live telemetry</span>
+  <span class="keyboard-help"><kbd>/</kbd> search · <kbd>Esc</kbd> clear · <kbd>↓</kbd> first result</span>
+  <span class="status" id="editStatus" role="status">Default setup</span>
+  <button class="toolbar-button" id="resetValues" hidden>Reset values</button>
+</footer>
+<div class="keys-hint">
       <span><kbd>🖱️ R-Drag</kbd> steer</span>
       <span><kbd>🖱️ L-Drag↑↓</kbd> throttle</span>
       <span><kbd>D</kbd> full throttle</span>
@@ -1209,10 +188,8 @@
       <span><kbd>Numpad 4/5/6</kbd> neutral</span>
       <span><kbd>Q+Numpad1</kbd> reverse</span>
     </div>
+</div>
 
-  </div>
-
-  <!-- Entry point — ES module -->
-  <script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
