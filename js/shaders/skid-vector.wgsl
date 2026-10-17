@@ -39,6 +39,11 @@ struct Out {
  // Tread grain is attached to the ground and band-limited at a distance.
  let frequency=96.;let attenuation=1.-smoothstep(.2,1.,length(fwidth(in.world))*frequency);
  let grain=.92+.08*sin(dot(in.world,vec2(71.3,129.7)))*attenuation;
- let alpha=in.color.a*coverage*grain;
+ // Partition rounded-cap coverage along the stroke. Adjacent short events
+ // then carry the same optical density as one long event, instead of beads.
+ let reach=max(sqrt(max(in.shape.y*in.shape.y-in.local.y*in.local.y,0.)),.00001);
+ let weight=clamp((in.local.x+reach)/(2.*reach),0.,1.)
+           -clamp((in.local.x-in.shape.x+reach)/(2.*reach),0.,1.);
+ let alpha=1.-pow(1.-clamp(in.color.a,0.,.9999),coverage*grain*max(weight,0.));
  return vec4(in.color.rgb*alpha,alpha);
 }

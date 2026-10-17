@@ -91,3 +91,27 @@ GPU main-pass timing is optionally available with `?gpuProfile=1` when
 reports render-pass duration separately from JS encoding. It excludes smoke
 compute, Canvas overlays, browser compositing and display latency. No queue wait
 or per-frame resource creation is added to the production profiling path.
+
+## Consolidation and final gate
+
+Follow-up corrections normalize rounded-cap optical density (one event versus
+200 short events is pixel-tested), suppress paint-pattern aliasing, handle
+partial resource-allocation failures, drain the fallback's legacy skid upload
+queue, and cap raster pixels per quality. The decal budget supports the existing
+10000 slider maximum. Final validation: 151 unit tests pass; normal browser validation has 40 passes
+and six adapter skips, and all nine isolated GPU/fallback cases pass, including
+every skipped case. All 46 distinct browser tests are exercised.
+
+Completion-fenced timestamps revealed a significant **software GPU regression**,
+not a demonstrated hardware speedup. Fallback adapters now select Canvas before
+allocating a device; explicit `renderer=gpu` permits diagnostics. Native hardware
+performance/live presentation and long-run replay qualification remain open.
+See [the full report](GPU_RENDERING_REPORT.md) for the measurements, captures,
+compatibility controls and exact limits on conclusions. Do not promote this
+checkpoint based on the software tests alone.
+
+A subsequent forced-software full run exposed wall-clock assumptions in two
+existing handling tests. The unchanged handbrake test also fails on the baseline
+under that load. Equal simulation-duration/deadline fixture clocks pass both
+source trees, without changing physical thresholds or production algorithms.
+Failure history and controlled comparison logs are retained in validation/.

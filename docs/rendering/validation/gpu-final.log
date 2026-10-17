@@ -1,0 +1,21 @@
+
+Running 9 tests using 1 worker
+
+[1A[2K(node:118454) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:118454) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/9] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[1A[2K[2/9] [chromium] › tests/e2e/gpu-world.spec.js:208:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[1A[2K[3/9] [chromium] › tests/e2e/gpu-world.spec.js:264:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[1A[2K[4/9] [chromium] › tests/e2e/gpu-world.spec.js:305:3 › GPU performance/checker respects logical units and reuses resized targets
+[1A[2K[5/9] [chromium] › tests/e2e/gpu-world.spec.js:305:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[1A[2K[6/9] [chromium] › tests/e2e/gpu-world.spec.js:305:3 › GPU high/studio respects logical units and reuses resized targets
+[1A[2K[7/9] [chromium] › tests/e2e/gpu-world.spec.js:305:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[1A[2K[8/9] [chromium] › tests/e2e/gpu-world.spec.js:378:1 › initialization failure leaves the simulator running in Canvas
+[1A[2K[9/9] [chromium] › tests/e2e/gpu-world.spec.js:406:1 › software adapters automatically select usable Canvas without allocating a device
+[1A[2K  9 passed (25.7s)

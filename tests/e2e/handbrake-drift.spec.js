@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 async function runTurn(page, handbrake) {
   await page.goto('/?debugMode=quiet');
   await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
-  await page.evaluate((applyHandbrake) => {
+  const startedAt = await page.evaluate((applyHandbrake) => {
     const s = window.state;
     const dt = 1 / s.params.simulationFps;
     const speed = 18;
@@ -24,9 +24,12 @@ async function runTurn(page, handbrake) {
     s.steering.isDragging = true;
     s.steering.wheelAngle = 0.22 / s.params.maxFrontWheelAngle * Math.PI * 2.5;
     s.input.handbrakeKeyHeld = applyHandbrake;
+    return s.loop.simulationTime;
   }, handbrake);
 
-  await page.waitForTimeout(2200);
+  // Compare equal physical durations even when rendering drops wall-clock ticks.
+  await page.waitForFunction(start => window.state.loop.simulationTime - start >= 2.2,
+    startedAt, { timeout: 45000 });
   return page.evaluate(() => {
     const s = window.state;
     const b = s.body;
@@ -43,6 +46,7 @@ async function runTurn(page, handbrake) {
 }
 
 test('handbrake lock helps a steered car rotate and build sideslip', async ({ page }) => {
+  test.setTimeout(90000); // Host watchdog; maneuver duration remains 2.2 simulated seconds.
   const coastingTurn = await runTurn(page, false);
   const handbrakeTurn = await runTurn(page, true);
 

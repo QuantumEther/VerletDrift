@@ -1,0 +1,168 @@
+{
+  "requestedBackend": "software",
+  "measurementScope": "Offscreen; timestamps cover main render pass only; no automatic hardware claims",
+  "results": [
+    {
+      "scene": "empty",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.30500000081956385,
+        "median": 0.20000000298023224,
+        "p95": 1.1999999955296516,
+        "p99": 1.1999999955296516,
+        "variance": 0.10047499938085677
+      },
+      "frameMs": {
+        "mean": 130.70000000000002,
+        "median": 133.29999999999973,
+        "p95": 166.69999999999982,
+        "p99": 166.69999999999982,
+        "variance": 300.7884210526281
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.4000000059604645,
+        "uploadBytes": 244,
+        "drawCalls": 2,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "main render pass only",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0
+      },
+      "gpuMainPassSamplesMs": [
+        114.885474,
+        114.079358
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "drift",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.9300000000745058,
+        "median": 0.5,
+        "p95": 3.6999999955296516,
+        "p99": 3.6999999955296516,
+        "variance": 0.9430999993547795
+      },
+      "frameMs": {
+        "mean": 208.76315789473685,
+        "median": 200,
+        "p95": 233.4000000000001,
+        "p99": 233.4000000000001,
+        "variance": 128.5318005540155
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.5,
+        "uploadBytes": 32388,
+        "drawCalls": 4,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "main render pass only",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0
+      },
+      "gpuMainPassSamplesMs": [
+        221.993534,
+        204.10172
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "smoke",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 1.1300000004470347,
+        "median": 0.6000000014901161,
+        "p95": 3.600000001490116,
+        "p99": 3.600000001490116,
+        "variance": 1.2240999980509284
+      },
+      "frameMs": {
+        "mean": 277.178947368421,
+        "median": 216.80000000000018,
+        "p95": 683.3999999999996,
+        "p99": 683.3999999999996,
+        "variance": 14014.234293628806
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 3.600000001490116,
+        "uploadBytes": 32596,
+        "drawCalls": 5,
+        "computeWorkgroups": 1,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "main render pass only",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0
+      },
+      "gpuMainPassSamplesMs": [
+        198.13303,
+        514.222736
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    }
+  ]
+}

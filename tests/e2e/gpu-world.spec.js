@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 // Run with an actual adapter; software WebGPU is valid for shader correctness,
 // never hardware performance. Ordinary no-adapter regression runs report skips.
 async function adapterPage(page) {
-  await page.goto("/gauge-guide.html");
+  await page.goto("/gauge-guide.html?renderer=gpu");
   const available = await page.evaluate(
     async () => !!(await navigator.gpu?.requestAdapter()),
   );
@@ -146,10 +146,32 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
     await imageBuffer.mapAsync(GPUMapMode.READ);
     const image = new Uint8Array(imageBuffer.getMappedRange()).slice();
     imageBuffer.unmap();
-    imageBuffer.destroy();
     const sample = (x, y) =>
       Array.from(image.slice((y * 512 + x) * 4, (y * 512 + x) * 4 + 4));
+    // A straight path split into many physical events must not grow darker
+    // solely because rounded segment caps overlap at a higher event frequency.
+    s.skidMarks = Array.from({ length: 200 }, (_, i) =>
+      Object.freeze({ ...seg, x1: 190 + i * 0.02, x2: 190 + (i + 1) * 0.02 }),
+    );
+    gpu.renderFrameGPU(512, 512);
+    const joinEncoder = device.createCommandEncoder();
+    joinEncoder.copyTextureToBuffer(
+      { texture: targetTexture },
+      { buffer: imageBuffer, bytesPerRow: 2048 },
+      [512, 512],
+    );
+    device.queue.submit([joinEncoder.finish()]);
+    await imageBuffer.mapAsync(GPUMapMode.READ);
+    const jointPixel = Array.from(
+      new Uint8Array(imageBuffer.getMappedRange()).slice(
+        (256 * 512 + 256) * 4,
+        (256 * 512 + 256) * 4 + 4,
+      ),
+    );
+    imageBuffer.unmap();
+    imageBuffer.destroy();
     return {
+      jointPixel,
       resourcesBefore,
       resourcesAfter,
       computePeak,
@@ -175,6 +197,9 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   expect(result.stats.skidTextureBytes).toBe(0);
   expect(result.stats.omittedSkids).toBe(0);
   expect(result.mark[3]).toBe(255);
+  result.jointPixel.forEach((value, i) =>
+    expect(Math.abs(value - result.mark[i])).toBeLessThanOrEqual(4),
+  );
   expect(result.mark.slice(0, 3)).not.toEqual(result.ground.slice(0, 3));
   expect(result.decal[2]).toBeGreaterThan(result.decal[0]);
   expect(result.unchanged).toBe(true);
@@ -248,6 +273,12 @@ test("explicit Canvas fallback remains drivable and produces no renderer errors"
       (await import("/js/gpu-renderer.js")).isGPUReady(),
     ),
   ).toBe(false);
+  await page.evaluate(() =>
+    state.skidMarksNewThisFrame.push({ renderQueueProbe: true }),
+  );
+  await expect
+    .poll(() => page.evaluate(() => state.skidMarksNewThisFrame.length))
+    .toBe(0);
   await page.keyboard.down("KeyA");
   await page.keyboard.press("Numpad7");
   await page.keyboard.down("KeyD");
@@ -274,7 +305,9 @@ for (const [quality, surface, factor] of [
   test(`GPU ${quality}/${surface} respects logical units and reuses resized targets`, async ({
     page,
   }) => {
-    await page.goto(`/gauge-guide.html?quality=${quality}&surface=${surface}`);
+    await page.goto(
+      `/gauge-guide.html?renderer=gpu&quality=${quality}&surface=${surface}`,
+    );
     const available = await page.evaluate(
       async () => !!(await navigator.gpu?.requestAdapter()),
     );
@@ -367,5 +400,36 @@ test("initialization failure leaves the simulator running in Canvas", async ({
   expect(stats.ready).toBe(false);
   expect(stats.error).toContain("Injected resource exhaustion");
   expect(stats.resourceCount).toBe(0);
+  expect(errors).toEqual([]);
+});
+
+test("software adapters automatically select usable Canvas without allocating a device", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "gpu", {
+      configurable: true,
+      value: {
+        requestAdapter: async () => ({
+          info: { isFallbackAdapter: true },
+          requestDevice: async () => {
+            throw Error("Software device must not be allocated automatically");
+          },
+        }),
+      },
+    });
+  });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/?debugMode=quiet");
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0.1);
+  const stats = await page.evaluate(async () =>
+    (await import("/js/gpu-renderer.js")).getGPURenderStats(),
+  );
+  expect(stats.ready).toBe(false);
+  expect(stats.backend).toBe("canvas");
+  expect(stats.resourceCount).toBe(0);
+  expect(stats.error).toBeNull();
+  expect(stats.fallbackReason).toContain("Software");
   expect(errors).toEqual([]);
 });

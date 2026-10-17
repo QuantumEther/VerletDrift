@@ -43,7 +43,8 @@ struct Out {
    let edge=.77+.07*sin(angle*5.+in.seed)+.05*sin(angle*9.-in.seed*1.7);
    let r=length(uv);let aa=max(length(uvWidth)*2.,.001);
    let coverage=1.-smoothstep(edge-aa,edge+aa,r);
-   let pigment=.88+.12*sin(uv.x*37.+sin(uv.y*19.)+in.seed)*sin(uv.y*31.);
+   let filtered=1.-smoothstep(.3,1.,length(uvWidth)*7.);
+   let pigment=.96+.04*sin(uv.x*7.+sin(uv.y*5.)+in.seed)*sin(uv.y*6.)*filtered;
    // Shading follows authoritative depletion; no independent deposition/aging.
    let wet=smoothstep(.35,.9,in.color.a);
    let sheen=pow(max(0.,1.-length((uv-vec2(-.2,-.25))*2.)),6.)*.12*wet;

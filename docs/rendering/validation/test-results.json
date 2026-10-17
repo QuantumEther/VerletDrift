@@ -1,0 +1,104 @@
+{
+  "status": "Correctness-validated development checkpoint; native hardware performance and high-refresh qualification pending",
+  "baselineCommit": "f4c9440d26b04909b53dab165f6bd5d979b9fa5a",
+  "branch": "verlet_gpt_v21_gpu_rendering",
+  "unit": {
+    "passed": 151,
+    "failed": 0,
+    "skipped": 0,
+    "files": 14
+  },
+  "protectedFileHashes": {
+    "assets/vehicles/delorean/DeLorean.png": "a2ee4abdde5eea5029d7cd491bfe27f069bc9876f043b291e5306226577d1e0c",
+    "assets/vehicles/delorean/DeLorean_Wheel.png": "4370af6cadb8e105c7f75cf2867e81818d8e11f15f053899812831407b35bfbb",
+    "assets/vehicles/delorean/README.md": "4965e90d1a07434b0f58e7f71bd67c42c456bc103673cc1f14c699e9dec86835",
+    "index.html": "2ab4418d9ce870b2e285254bbb73bcb17d49f564a7443bd2fc318533266c8e51",
+    "js/constants.js": "672aa8b9ade424fdf0493aa06dabb834f75d0c73d4e41442a0fa390909fd0250",
+    "js/input.js": "c202ad0b412e7fd4ddfb1c60654223b1c350afd16d46b1d78273d3facd6e329b",
+    "js/physics/camera.js": "ed3655feb347162e391129c7a7aa9150a69f4ac80b6769d8c97fe559bc7ad170",
+    "js/physics/constraints.js": "c952c8c85a580dc84bb3a0db48c1ebeade017457bc05f3460b4f2b7f4d032214",
+    "js/physics/engine.js": "f509d44c48e041a5b8ab0ab814facad7a71dfdbf532f2f311ed8e7f4db0667fb",
+    "js/physics/index.js": "b15463db1520a5a9eee5e84c3a491e24986023a97425a392eecc79cb58a9abc4",
+    "js/physics/integrator.js": "e39ea7d9c03cb458677132af7c36212500e2bcf8b158a65641210d396ede836b",
+    "js/physics/kinematics.js": "27ebb8b837e6631c046a45a908d024881413be2461c675a97d5484819694c092",
+    "js/physics/steering.js": "06968222184d9b2da97d36e98d8e392817cf8115f1cb3a49e3ec47e9c5312e97",
+    "js/physics/suspension.js": "c110a4d0d096243234408e555a90942ee3c877b624abec825c9c8dd7efb218f6",
+    "js/physics/tire-load.js": "b1dec5b2e36c697e75f7d62079e82c0dbbad757a4ff5a1fca8f70bcaab318afa",
+    "js/physics/tires.js": "dcfe5216e7a26fe5085ced481741b562be7e88f22535b102983e99af92e47fc9",
+    "js/physics/weight.js": "1292f9f0a7710798cbb9e3a569a9b0443d2f73251322d0f1aae031d948ee812f",
+    "js/physics/wheel.js": "79d6f6d7ae15f35d72763b88379ba30ed38eaafcb1d164c9859daefa664313ae",
+    "js/renderer/vehicle-geometry.js": "3047d98c51f856e1911d8d228959b0e5fdd012aa148f39fbe85d443d9c19fee6",
+    "js/renderer/vehicle-sprites.js": "5b956843d95da39b4b73fcb6db3b6985212692d372c190b9dce1ab7c68e7ae2c",
+    "js/state.js": "756a86cb4481ceeaedf70c60171d4bfd21be4850065b4985a028b99e94340195",
+    "styles.css": "08f033934c3fcc0fa13577668caae521df2e2938bf2ef24d987ab592b03396f2",
+    "js/balloon.js": "1f129385061c5fdb1b8166477b1843c0c0461bb8299ce5715e06c101df2357e9",
+    "js/trail.js": "a1831ff1b3e7cb886e740fdaba06bd6275b275d4c1549eab423aea85ace30c67",
+    "js/random.js": "15b7879c6006adca8fd4968ef09ba89ce50221dabb16d5024ba9c66d6075f2c8",
+    "js/renderer/sparks.js": "48d9aa84e165619fbc93f14d09081cfcc1a0ac5a211e020fb79b6974cd44a9ca",
+    "js/renderer/world.js": "1fc351d8c951b162898cf0d47ca6c64e55361e4c9c8ca8d3ee64c1242df3cac9",
+    "js/ui/control-data.js": "2be6a5d3b12befb9f611cf63fee6523920a614bd23121c037ea298d00596beb8",
+    "js/ui/controls.js": "3c4bdc8b5c7c469d151fa482cf88da5bd831451b293fcecef05ab2bc700abc13",
+    "js/ui/instruments.js": "9b42b26fcc0f90b2142bc75495a5a906332f40c68001f7ad712ec0ee88305a4a",
+    "js/ui/presets.js": "f083697e472a867595337fe48fec3c9df1540f57bc4e90d11c26be83a8147ccc",
+    "js/ui/workspace.js": "f65aefeb337ce36816d74cd93f7cc3f8b9e9f962dce0a175145289c8cd58f9ad"
+  },
+  "physicsTickSha256": "2c4c317d53b8693c79498a4649f8ae126009f9aabd64ce7153c83a9c36e2c9d6",
+  "nativeGpuPresentation": "unverified; headless software swap-chain fails a standalone clear-only probe",
+  "hardwarePerformance": "unverified; software GPU main pass is significantly slower than baseline, software auto-selection disabled in favor of Canvas",
+  "merged": false,
+  "pushed": false,
+  "unchangedSmokeEmitterSha256": "213e9b6e1fcd0b33b5af4d0ca28985f6a2a3fa1720cb20d80c16dae460b54fcd",
+  "earlierFullBrowserSuite": {
+    "passed": 46,
+    "failed": 0,
+    "skipped": 0,
+    "backend": "Chromium with software WebGPU enabled; ordinary simulator auto-selects Canvas, GPU-specific tests explicitly force real offscreen WGSL/compute"
+  },
+  "handlingComparison": {
+    "unchangedFixtures": {
+      "baseline": "one failure, one pass",
+      "new": "two failures"
+    },
+    "correctedFixtureClocks": {
+      "baseline": "two passed",
+      "new": "two passed"
+    },
+    "physicalManeuverDurationSeconds": 2.2,
+    "brakingDeadlineSimulationSeconds": 10,
+    "brakingSpeedThreshold": 0.05,
+    "productionPhysicsChanged": false
+  },
+  "historicalForcedSoftwareFailure": {
+    "passed": 44,
+    "failed": 2,
+    "skipped": 0,
+    "configuration": "forced software graphics; includes ordinary Canvas fallback plus offscreen GPU tests",
+    "failures": [
+      {
+        "test": "handbrake lock helps a steered car rotate and build sideslip",
+        "observedRearOmega": 10.767353791143654,
+        "requiredRearOmegaLessThan": 0.01
+      },
+      {
+        "test": "clutch shifts to second and reverse drives in the selected direction",
+        "observedBrakingSpeed": 0.06198308855118739,
+        "requiredSpeedLessThan": 0.05,
+        "wallTimeoutSeconds": 10
+      }
+    ]
+  },
+  "finalFullBrowserSuite": {
+    "passed": 40,
+    "failed": 0,
+    "skipped": 6,
+    "configuration": "normal Chromium; skipped cases require an adapter and all executed in isolated GPU validation"
+  },
+  "finalIsolatedGPUValidation": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "configuration": "real offscreen software WebGPU; includes all six cases skipped in stock Chromium"
+  },
+  "wallWatchdogsChanged": true,
+  "numericalTolerancesChanged": false
+}

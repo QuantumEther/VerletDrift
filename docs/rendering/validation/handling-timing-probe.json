@@ -1,0 +1,110 @@
+[
+  {
+    "name": "baseline-canvas",
+    "n": 0,
+    "elapsed": 0.6500000000000004,
+    "speed": 15.332531783902079,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "baseline-canvas",
+    "n": 1,
+    "elapsed": 0.3700000000000002,
+    "speed": 16.645208509303522,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "baseline-canvas",
+    "n": 2,
+    "elapsed": 0.8800000000000006,
+    "speed": 14.186545143146697,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-canvas",
+    "n": 0,
+    "elapsed": 0.3400000000000002,
+    "speed": 16.78412665323399,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-canvas",
+    "n": 1,
+    "elapsed": 0.8800000000000007,
+    "speed": 14.186545143146697,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-canvas",
+    "n": 2,
+    "elapsed": 0.5400000000000004,
+    "speed": 15.85603809696961,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-auto",
+    "n": 0,
+    "elapsed": 0.8200000000000006,
+    "speed": 14.490226708662531,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-auto",
+    "n": 1,
+    "elapsed": 0.3800000000000002,
+    "speed": 16.598455560927846,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  },
+  {
+    "name": "new-auto",
+    "n": 2,
+    "elapsed": 0.7500000000000006,
+    "speed": 14.839936416101054,
+    "rearOmega": 0,
+    "handbrake": true,
+    "value": 1,
+    "focus": true,
+    "visibility": "visible",
+    "blurLog": []
+  }
+]

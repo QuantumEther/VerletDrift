@@ -69,6 +69,7 @@ test('braking a backward-rolling vehicle removes kinetic energy', async ({ page 
 });
 
 test('clutch shifts to second and reverse drives in the selected direction', async ({ page }) => {
+  test.setTimeout(90000); // Allow the fixed simulation-time budget on slow graphical backends.
   await page.goto('/?debugMode=quiet');
   await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
   const startY = await page.evaluate(() => window.state.body.centerY);
@@ -92,9 +93,13 @@ test('clutch shifts to second and reverse drives in the selected direction', asy
 
   await page.keyboard.up('KeyD');
   await page.keyboard.press('Numpad4');
+  const brakingStartedAt = await page.evaluate(() => window.state.loop.simulationTime);
   await page.keyboard.down('KeyS');
-  await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 10000 })
-    .toBeLessThan(0.05);
+  // A wall-clock timeout can expire before the original 10-second physical
+  // budget elapses under software graphics. Keep the speed assertion unchanged.
+  await page.waitForFunction(start => window.state.body.speed < 0.05 ||
+    window.state.loop.simulationTime - start >= 10, brakingStartedAt, { timeout: 60000 });
+  expect(await page.evaluate(() => window.state.body.speed)).toBeLessThan(0.05);
   await page.keyboard.up('KeyS');
 
   await page.keyboard.down('KeyA');

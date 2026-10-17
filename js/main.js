@@ -806,6 +806,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     drawBalloons(simCtx);
     drawTrailArrows(simCtx);
     drawFallbackSmoke(simCtx);
+    // This legacy upload queue is render-only. The authoritative marks remain
+    // in state.skidMarks; retaining this duplicate queue leaks in Canvas mode.
+    state.skidMarksNewThisFrame.length = 0;
     if (state.params.showSparks) {
       drawSparks(simCtx);
     }

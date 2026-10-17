@@ -1,0 +1,20 @@
+
+Running 2 tests using 1 worker
+
+[1A[2K(node:113085) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:113085) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:51:1 › handbrake lock helps a steered car rotate and build sideslip
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:51:1 › handbrake lock helps a steered car rotate and build sideslip
+PROBE {"title":"handbrake lock helps a steered car rotate and build sideslip","status":"passed","simTime":2.2699999999999956,"dropped":381,"speed":6.6681150022009215,"handbrake":true,"brake":false,"gear":"N"}
+
+[1A[2K[2/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+PROBE {"title":"clutch shifts to second and reverse drives in the selected direction","status":"passed","simTime":5.83999999999992,"dropped":372,"speed":6.18229701270252,"handbrake":false,"brake":false,"gear":"R"}
+
+[1A[2K  2 passed (36.0s)

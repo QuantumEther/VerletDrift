@@ -1,0 +1,79 @@
+
+Running 2 tests using 1 worker
+
+[1A[2K(node:112570) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:112570) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+PROBE {"title":"handbrake lock helps a steered car rotate and build sideslip","status":"failed","simTime":0.5000000000000002,"dropped":94,"speed":16.31660231384431,"handbrake":true,"brake":false,"gear":"N"}
+
+[1A[2K  1) [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m3.1340081301709324[39m
+    Received:   [31m0.7584810683804104[39m
+
+      51 |
+      52 |   expect(handbrakeTurn.rearOmega).toBeLessThan(0.01);
+    > 53 |   expect(handbrakeTurn.sideslipDegrees).toBeGreaterThan(coastingTurn.sideslipDegrees + 1.5);
+         |                                         ^
+      54 |   expect(handbrakeTurn.speed).toBeLessThan(coastingTurn.speed);
+      55 | });
+      56 |
+        at /workspace/VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:53:41
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../VerletDrift-tools/test-results/handbrake-drift-handbrake--b5d36-r-rotate-and-build-sideslip-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../VerletDrift-tools/test-results/handbrake-drift-handbrake--b5d36-r-rotate-and-build-sideslip-chromium/error-context.md
+
+
+[1A[2K(node:112814) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:112814) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[2/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+PROBE {"title":"clutch shifts to second and reverse drives in the selected direction","status":"failed","simTime":4.849999999999941,"dropped":616,"speed":0.13605372287037965,"handbrake":false,"brake":true,"gear":"N"}
+
+[1A[2K  2) [chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m0.05[39m
+    Received:   [31m0.06990767133789119[39m
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+       97 |   await page.keyboard.press('Numpad4');
+       98 |   await page.keyboard.down('KeyS');
+    >  99 |   await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 10000 })
+          |   ^
+      100 |     .toBeLessThan(0.05);
+      101 |   await page.keyboard.up('KeyS');
+      102 |
+        at /workspace/VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:99:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../VerletDrift-tools/test-results/wheel-braking-clutch-shift-7b1b5-s-in-the-selected-direction-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../VerletDrift-tools/test-results/wheel-braking-clutch-shift-7b1b5-s-in-the-selected-direction-chromium/error-context.md
+
+
+[1A[2K  2 failed
+    [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip 
+    [chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction 

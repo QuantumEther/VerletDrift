@@ -50,7 +50,12 @@ fn vs_main(@builtin(vertex_index) vi: u32) -> VertOut {
   return out;
 }
 
-fn hash(p:vec2<f32>)->f32 { return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+fn hash(p:vec2<f32>)->f32 {
+ let q=vec2<i32>(floor(p));
+ var n=bitcast<u32>(q.x)*1664525u+bitcast<u32>(q.y)*1013904223u;
+ n=(n^(n>>16u))*2246822519u;n=(n^(n>>13u))*3266489917u;
+ return f32((n^(n>>16u))>>8u)/16777216.;
+}
 fn noise(p:vec2<f32>)->f32 {
  let i=floor(p);let f=fract(p);let q=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1.,0.)),q.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),q.x),q.y);
@@ -71,9 +76,10 @@ fn material(world:vec2<f32>)->vec3<f32>{
  if(u.surface<1.5){
   let coarse=noise(world*1.7)-.5;
   let microScale=55.;let atten=1.-smoothstep(.2,1.,length(fwidth(world))*microScale);
-  let micro=(noise(world*microScale)-.5)*atten*select(0.,1.,u.detail>0.);
+  var micro=0.;
+  if(u.detail>0. && atten>0.){micro=(noise(world*microScale)-.5)*atten;}
   var detail=coarse*.018+micro*.030;
-  if(u.detail>1.){let fineScale=110.;let fineFade=1.-smoothstep(.2,1.,length(fwidth(world))*fineScale);detail+=(noise(world*fineScale)-.5)*fineFade*.012;}
+  if(u.detail>1.){let fineScale=110.;let fineFade=1.-smoothstep(.2,1.,length(fwidth(world))*fineScale);if(fineFade>0.){detail+=(noise(world*fineScale)-.5)*fineFade*.012;}}
   return vec3(.105,.119,.131)+vec3(detail)+vec3(.004)*check;
  }
  if(u.surface<2.5){return vec3(.19,.205,.215)+vec3(.009)*check-vec3(.012)*grid(world/u.tileSize,.1);}

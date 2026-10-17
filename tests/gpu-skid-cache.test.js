@@ -89,3 +89,20 @@ describe("resident GPU skid event geometry", () => {
     expect(writes.some((w) => w.label === "skidGeometry")).toBe(true);
   });
 });
+
+it("releases partial GPU allocations if initialization exhausts resources", () => {
+  const destroyed = [];
+  let count = 0;
+  const device = {
+    createBuffer: () => {
+      if (++count === 2) throw Error("exhausted");
+      return {
+        destroy() {
+          destroyed.push(count);
+        },
+      };
+    },
+  };
+  expect(() => new GPUSkidCache(device, {}, {})).toThrow("exhausted");
+  expect(destroyed).toHaveLength(1);
+});

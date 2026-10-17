@@ -1,0 +1,70 @@
+{
+  "requestedBackend": "software",
+  "measurementScope": "Offscreen; timestamps cover main render pass only; no automatic hardware claims",
+  "results": [
+    {
+      "scene": "empty",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.14000000014901162,
+        "median": 0.10000000149011612,
+        "p95": 0.30000000447034836,
+        "p99": 1.3000000044703484,
+        "variance": 0.03600000021457675
+      },
+      "frameMs": {
+        "mean": 22.448979591836736,
+        "median": 16.699999999999818,
+        "p95": 50,
+        "p99": 50.09999999999991,
+        "variance": 153.55188671386935
+      },
+      "gpuMainPassSamplesMs": [
+        16.584553,
+        16.676578,
+        17.45383,
+        24.855467
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "drift",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.16200000032782555,
+        "median": 0.10000000149011612,
+        "p95": 0.5,
+        "p99": 1,
+        "variance": 0.03115599987590313
+      },
+      "frameMs": {
+        "mean": 22.106122448979594,
+        "median": 16.700000000000045,
+        "p95": 50,
+        "p99": 50,
+        "variance": 151.5495543523534
+      },
+      "gpuMainPassSamplesMs": [
+        16.840349,
+        17.080463,
+        18.556726,
+        17.465123
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    }
+  ]
+}

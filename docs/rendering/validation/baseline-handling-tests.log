@@ -1,0 +1,53 @@
+
+Running 2 tests using 1 worker
+
+[1A[2K(node:112158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:112158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+PROBE {"title":"handbrake lock helps a steered car rotate and build sideslip","status":"failed","simTime":0.38000000000000017,"dropped":75,"speed":16.876112419150772,"handbrake":true,"brake":false,"gear":"N"}
+
+[1A[2K  1) [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m0.01[39m
+    Received:   [31m51.08128707291791[39m
+
+      50 |   const handbrakeTurn = await runTurn(page, true);
+      51 |
+    > 52 |   expect(handbrakeTurn.rearOmega).toBeLessThan(0.01);
+         |                                   ^
+      53 |   expect(handbrakeTurn.sideslipDegrees).toBeGreaterThan(coastingTurn.sideslipDegrees + 1.5);
+      54 |   expect(handbrakeTurn.speed).toBeLessThan(coastingTurn.speed);
+      55 | });
+        at /workspace/VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:52:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../VerletDrift-tools/test-results/handbrake-drift-handbrake--b5d36-r-rotate-and-build-sideslip-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../VerletDrift-tools/test-results/handbrake-drift-handbrake--b5d36-r-rotate-and-build-sideslip-chromium/error-context.md
+
+
+[1A[2K(node:112351) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:112351) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[2/2] [chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+[1A[2K[chromium] › ../VerletDrift-tools/render-audit/repro-tests/wheel-braking.spec.js:74:1 › clutch shifts to second and reverse drives in the selected direction
+PROBE {"title":"clutch shifts to second and reverse drives in the selected direction","status":"passed","simTime":7.999999999999874,"dropped":733,"speed":7.510443771940345,"handbrake":false,"brake":false,"gear":"R"}
+
+[1A[2K  1 failed
+    [chromium] › ../VerletDrift-tools/render-audit/repro-tests/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip 
+  1 passed (29.8s)

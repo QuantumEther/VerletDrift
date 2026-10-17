@@ -36,7 +36,7 @@ const PREMUL = {
 };
 const MAX_ARROWS = 20000,
   MAX_PARTICLES = 8000,
-  MAX_SURFACE = 4096;
+  MAX_SURFACE = 16384;
 const RGB_PHASE = [0, 8, 4],
   EMPTY_EVENTS = Object.freeze([]);
 const SPARK_PALETTE = [
@@ -84,6 +84,9 @@ let lastSkidTime = NaN,
 const smokeDirty = new Uint8Array(MAX_SMOKE);
 let renderStats = {
   ready: false,
+  backend: "canvas",
+  resourceCount: 0,
+  fallbackReason: null,
   cpuEncodeMs: 0,
   uploadBytes: 0,
   drawCalls: 0,
@@ -98,7 +101,10 @@ let renderStats = {
   surface: renderingOptions.surface,
 };
 export function getGPURenderStats() {
-  return { ...renderStats };
+  return {
+    ...renderStats,
+    gpuRenderMs: timing?.milliseconds ?? renderStats.gpuRenderMs,
+  };
 }
 function track(resource) {
   resources.push(resource);
@@ -137,6 +143,7 @@ function release(reason) {
   rendererGeneration++;
   ready = false;
   renderStats.ready = false;
+  renderStats.backend = "canvas";
   if (!renderStats.error) renderStats.error = reason;
   if (canvas) canvas.style && (canvas.style.visibility = "hidden");
   try {
@@ -150,6 +157,7 @@ function release(reason) {
   timing = null;
   renderStats.residentBytes = 0;
   renderStats.resourceCount = 0;
+  device?.destroy?.();
   // GPU positions are not read back: retire existing visual smoke on loss rather
   // than resurrecting it at stale spawn positions. Gameplay state is untouched.
   if (reason) {
@@ -200,6 +208,21 @@ export async function initGPU(target) {
     });
     if (!adapter) return false;
     adapterRef = adapter;
+    const software =
+      adapter.info?.isFallbackAdapter ?? adapter.isFallbackAdapter ?? false;
+    renderStats.adapter = {
+      vendor: adapter.info?.vendor,
+      architecture: adapter.info?.architecture,
+      isFallbackAdapter: software,
+    };
+    // Profiling demonstrated that this backend is unsuitable for these effects.
+    // Keep CPU-only systems usable instead of equating WebGPU API availability
+    // with useful hardware acceleration. Explicit GPU mode is diagnostic only.
+    if (software && !renderingOptions.forceGPU) {
+      renderStats.fallbackReason = "Software WebGPU adapter; Canvas selected";
+      logger.info("gpu", renderStats.fallbackReason);
+      return false;
+    }
     const profiling =
       new URLSearchParams(globalThis.location?.search || "").get(
         "gpuProfile",
@@ -212,13 +235,16 @@ export async function initGPU(target) {
     if (!context) throw Error("WebGPU canvas unavailable");
     format = navigator.gpu.getPreferredCanvasFormat();
     context.configure({ device, format, alphaMode: "premultiplied" });
+    const ownedDevice = device;
     device.addEventListener?.("uncapturederror", (event) => {
+      if (device !== ownedDevice) return;
       logger.warn("gpu", "GPU validation failure", {
         error: event.error.message,
       });
       release(event.error.message);
     });
     device.lost?.then((info) => {
+      if (device !== ownedDevice) return;
       release(`Device lost: ${info.message || info.reason}`);
       logger.warn("gpu", "Device lost; using Canvas fallback.");
     });
@@ -300,6 +326,8 @@ export async function initGPU(target) {
     renderStats.error = null;
     ready = true;
     renderStats.ready = true;
+    renderStats.backend = "webgpu";
+    renderStats.fallbackReason = null;
     canvas.style && (canvas.style.visibility = "visible");
     logger.info("gpu", "GPU world renderer initialized.");
     return true;
@@ -321,11 +349,12 @@ export function resizeGPU(width, height) {
   const limit = device.limits?.maxTextureDimension2D || 8192;
   const scale = Math.min(
     renderQuality.resolution,
+    Math.sqrt(renderQuality.maxPixels / Math.max(1, width * height)),
     limit / Math.max(1, width),
     limit / Math.max(1, height),
   );
-  width = Math.max(1, Math.round(width * scale));
-  height = Math.max(1, Math.round(height * scale));
+  width = Math.max(1, Math.floor(width * scale));
+  height = Math.max(1, Math.floor(height * scale));
   if (canvas.width !== width) canvas.width = width;
   if (canvas.height !== height) canvas.height = height;
 }
@@ -502,6 +531,10 @@ export function renderFrameGPU(width, height) {
       rgb(s.hue, 80, 40, splats, b + 3);
       splats[b + 6] = s.alpha;
     }
+    renderStats.omittedSplats = Math.max(
+      0,
+      state.splatParticles.length - MAX_PARTICLES,
+    );
     write(buffers.splats, splats, splatCount * 7);
     let decalCount = 0,
       balloonCount = 0,

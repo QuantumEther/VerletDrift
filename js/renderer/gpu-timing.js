@@ -8,15 +8,20 @@ export class GPUTiming {
     this.active = false;
     this.closed = false;
     this.milliseconds = null;
-    this.queries = device.createQuerySet({ type: "timestamp", count: 2 });
-    this.resolve = device.createBuffer({
-      size: 16,
-      usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC,
-    });
-    this.readback = device.createBuffer({
-      size: 16,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-    });
+    try {
+      this.queries = device.createQuerySet({ type: "timestamp", count: 2 });
+      this.resolve = device.createBuffer({
+        size: 16,
+        usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC,
+      });
+      this.readback = device.createBuffer({
+        size: 16,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+    } catch (error) {
+      this.destroy();
+      throw error;
+    }
   }
   begin() {
     this.active = !this.pending && ++this.frame % 30 === 0;
@@ -51,8 +56,8 @@ export class GPUTiming {
   }
   destroy() {
     this.closed = true;
-    this.queries.destroy();
-    this.resolve.destroy();
-    this.readback.destroy();
+    this.queries?.destroy();
+    this.resolve?.destroy();
+    this.readback?.destroy();
   }
 }

@@ -14,30 +14,35 @@ export class GPUSkidCache {
     this.count = 0;
     this.generation = 0;
     this.widthScale = NaN;
-    this.geometryBuffer = device.createBuffer({
-      label: "skidGeometry",
-      size: capacity * 32,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    });
-    this.alphaBuffer = device.createBuffer({
-      label: "skidOpacity",
-      size: capacity * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    });
-    this.orderBuffer = device.createBuffer({
-      label: "skidDrawOrder",
-      size: capacity * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    });
-    this.bindGroup = device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries: [
-        { binding: 0, resource: { buffer: cameraBuffer } },
-        { binding: 1, resource: { buffer: this.geometryBuffer } },
-        { binding: 2, resource: { buffer: this.alphaBuffer } },
-        { binding: 3, resource: { buffer: this.orderBuffer } },
-      ],
-    });
+    try {
+      this.geometryBuffer = device.createBuffer({
+        label: "skidGeometry",
+        size: capacity * 32,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+      this.alphaBuffer = device.createBuffer({
+        label: "skidOpacity",
+        size: capacity * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+      this.orderBuffer = device.createBuffer({
+        label: "skidDrawOrder",
+        size: capacity * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+      this.bindGroup = device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: cameraBuffer } },
+          { binding: 1, resource: { buffer: this.geometryBuffer } },
+          { binding: 2, resource: { buffer: this.alphaBuffer } },
+          { binding: 3, resource: { buffer: this.orderBuffer } },
+        ],
+      });
+    } catch (error) {
+      this.destroy();
+      throw error;
+    }
   }
   update(events, widthScale, color) {
     const generation = ++this.generation;
@@ -116,8 +121,8 @@ export class GPUSkidCache {
     return { uploadedBytes, instances, omitted: start };
   }
   destroy() {
-    this.geometryBuffer.destroy();
-    this.alphaBuffer.destroy();
-    this.orderBuffer.destroy();
+    this.geometryBuffer?.destroy();
+    this.alphaBuffer?.destroy();
+    this.orderBuffer?.destroy();
   }
 }
