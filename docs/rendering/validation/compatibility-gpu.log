@@ -1,0 +1,24 @@
+
+Running 12 tests using 1 worker
+
+[1A[2K(node:138924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:138924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/12] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[1A[2K[2/12] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[1A[2K[3/12] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[1A[2K[4/12] [chromium] › tests/e2e/gpu-world.spec.js:214:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[1A[2K[5/12] [chromium] › tests/e2e/gpu-world.spec.js:270:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[1A[2K[6/12] [chromium] › tests/e2e/gpu-world.spec.js:311:3 › GPU performance/checker respects logical units and reuses resized targets
+[1A[2K[7/12] [chromium] › tests/e2e/gpu-world.spec.js:311:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[1A[2K[8/12] [chromium] › tests/e2e/gpu-world.spec.js:311:3 › GPU high/studio respects logical units and reuses resized targets
+[1A[2K[9/12] [chromium] › tests/e2e/gpu-world.spec.js:311:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[1A[2K[10/12] [chromium] › tests/e2e/gpu-world.spec.js:384:1 › initialization failure leaves the simulator running in Canvas
+[1A[2K[11/12] [chromium] › tests/e2e/gpu-world.spec.js:412:1 › software adapters automatically select usable Canvas without allocating a device
+[1A[2K[12/12] [chromium] › tests/e2e/gpu-world.spec.js:443:1 › smoke billboards are neutral, translucent and irregular in both backends
+[1A[2K  12 passed (27.8s)

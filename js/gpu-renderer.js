@@ -99,6 +99,8 @@ let renderStats = {
   error: null,
   quality: renderingOptions.quality,
   surface: renderingOptions.surface,
+  powerPreference: renderingOptions.gpuPower,
+  alphaMode: renderingOptions.gpuAlpha,
 };
 export function getGPURenderStats() {
   return {
@@ -144,6 +146,7 @@ function release(reason) {
   ready = false;
   renderStats.ready = false;
   renderStats.backend = "canvas";
+  renderStats.fallbackReason = reason || "GPU resources released";
   if (!renderStats.error) renderStats.error = reason;
   if (canvas) canvas.style && (canvas.style.visibility = "hidden");
   try {
@@ -204,15 +207,20 @@ export async function initGPU(target) {
   try {
     if (!navigator.gpu) return false;
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: "high-performance",
+      powerPreference: renderingOptions.gpuPower,
     });
-    if (!adapter) return false;
+    if (!adapter) {
+      renderStats.fallbackReason = "Browser returned no WebGPU adapter";
+      return false;
+    }
     adapterRef = adapter;
     const software =
       adapter.info?.isFallbackAdapter ?? adapter.isFallbackAdapter ?? false;
     renderStats.adapter = {
       vendor: adapter.info?.vendor,
       architecture: adapter.info?.architecture,
+      device: adapter.info?.device,
+      description: adapter.info?.description,
       isFallbackAdapter: software,
     };
     // Profiling demonstrated that this backend is unsuitable for these effects.
@@ -234,13 +242,11 @@ export async function initGPU(target) {
     context = canvas.getContext("webgpu");
     if (!context) throw Error("WebGPU canvas unavailable");
     format = navigator.gpu.getPreferredCanvasFormat();
-    context.configure({ device, format, alphaMode: "premultiplied" });
+    context.configure({ device, format, alphaMode: renderingOptions.gpuAlpha });
     const ownedDevice = device;
     device.addEventListener?.("uncapturederror", (event) => {
       if (device !== ownedDevice) return;
-      logger.warn("gpu", "GPU validation failure", {
-        error: event.error.message,
-      });
+      logger.warn("gpu", `GPU validation failure: ${event.error.message}`);
       release(event.error.message);
     });
     device.lost?.then((info) => {

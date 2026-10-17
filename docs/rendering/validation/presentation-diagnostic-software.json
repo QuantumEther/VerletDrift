@@ -1,0 +1,212 @@
+{
+  "url": "http://localhost:8000/gpu-diagnostics.html",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "devicePixelRatio": 1,
+  "date": "2026-10-17T17:11:32.467Z",
+  "results": [
+    {
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "width": 960,
+      "height": 720,
+      "offscreen": true,
+      "passed": true,
+      "errors": [],
+      "frames": 12,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "width": 960,
+      "height": 720,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "width": 1024,
+      "height": 768,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "high-performance",
+      "alphaMode": "opaque",
+      "width": 960,
+      "height": 720,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "high-performance",
+      "alphaMode": "opaque",
+      "width": 1024,
+      "height": 768,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "low-power",
+      "alphaMode": "premultiplied",
+      "width": 960,
+      "height": 720,
+      "offscreen": true,
+      "passed": true,
+      "errors": [],
+      "frames": 12,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "low-power",
+      "alphaMode": "premultiplied",
+      "width": 960,
+      "height": 720,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: unknown: A valid external Instance reference no longer exists.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "low-power",
+      "alphaMode": "premultiplied",
+      "width": 1024,
+      "height": 768,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "low-power",
+      "alphaMode": "opaque",
+      "width": 960,
+      "height": 720,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    },
+    {
+      "powerPreference": "low-power",
+      "alphaMode": "opaque",
+      "width": 1024,
+      "height": 768,
+      "offscreen": false,
+      "passed": false,
+      "errors": [
+        "Device lost: destroyed: Device was destroyed.",
+        "A valid external Instance reference no longer exists."
+      ],
+      "frames": 0,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "format": "rgba8unorm"
+    }
+  ]
+}

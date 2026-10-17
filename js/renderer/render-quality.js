@@ -36,6 +36,10 @@ export const renderingOptions = Object.freeze({
     : "asphalt",
   forceCanvas: query.get("renderer") === "canvas",
   forceGPU: query.get("renderer") === "gpu",
+  // Explicit compatibility probes; keep normal adapter/presentation unchanged.
+  gpuPower: ["low-power", "high-performance"].includes(query.get("gpuPower"))
+    ? query.get("gpuPower") : "high-performance",
+  gpuAlpha: query.get("gpuAlpha") === "opaque" ? "opaque" : "premultiplied",
 });
 export const renderQuality = presets[renderingOptions.quality];
 export const surfaceIndex = surfaces.indexOf(renderingOptions.surface);

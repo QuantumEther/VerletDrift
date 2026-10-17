@@ -17,11 +17,13 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   page,
 }) => {
   await adapterPage(page);
+  await page.goto("/gauge-guide.html?renderer=gpu&gpuPower=low-power&gpuAlpha=opaque");
   const result = await page.evaluate(async () => {
     const errors = [];
     const original = navigator.gpu.requestAdapter.bind(navigator.gpu);
-    let device, particleBuffer;
+    let device, particleBuffer, requestedPower, configuredAlpha;
     navigator.gpu.requestAdapter = async (opts) => {
+      requestedPower = opts.powerPreference;
       const adapter = await original(opts);
       const request = adapter.requestDevice.bind(adapter);
       adapter.requestDevice = async (desc) => {
@@ -54,7 +56,8 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
       height: 512,
       style: {},
       getContext: () => ({
-        configure({ device, format }) {
+        configure({ device, format, alphaMode }) {
+          configuredAlpha = alphaMode;
           targetTexture = device.createTexture({
             size: [512, 512],
             format,
@@ -171,6 +174,7 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
     imageBuffer.unmap();
     imageBuffer.destroy();
     return {
+      requestedPower, configuredAlpha,
       jointPixel,
       resourcesBefore,
       resourcesAfter,
@@ -186,6 +190,8 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
     };
   });
   expect(result.ok, result.stats.error).toBe(true);
+  expect(result.requestedPower).toBe("low-power");
+  expect(result.configuredAlpha).toBe("opaque");
   expect(result.particle[4]).toBeCloseTo(0.94, 5);
   expect(result.particle[11]).toBeCloseTo(0.7, 5);
   expect(result.computePeak).toBe(32);

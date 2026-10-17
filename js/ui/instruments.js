@@ -25,7 +25,9 @@ function renderInstruments(s) {
  element('speed-chart').setAttribute('aria-label',`Speed ${Math.round(s.speed)} kilometers per hour; scale 0 to 400`);
  rpmSegments.forEach((el,i)=>{el.classList.toggle('lit',s.rpm/250>i);el.classList.toggle('red-zone',i*250>=s.redlineRpm)});
  element('rpmRedlineNote').textContent=`Redline ${Math.round(s.redlineRpm).toLocaleString('en-US')} RPM · scale 0—10,000`;
- document.querySelector('.redline-marker').style.left=`${s.redlineRpm/100}%`;
+ // The decorative marker may be absent in an older/cached dashboard template.
+ const redlineMarker=document.querySelector('.redline-marker');
+ if(redlineMarker)redlineMarker.style.left=`${s.redlineRpm/100}%`;
  element('slipPeakNote').textContent=`slip peak |κ| = ${s.peakSlipRatio.toFixed(2)}`;
  pill('rpm-state',s.engineState==='stalled'?'ENGINE STALLED':s.engineState==='off'?'ENGINE OFF':s.rpm>=s.redlineRpm?'REDLINE EXCEEDED':'BELOW REDLINE',s.engineState==='stalled'||s.rpm>=s.redlineRpm?'danger':'normal');
  setText('instrument-lateral',s.lateral.toFixed(2)+' g');

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VerletDrift — GPU presentation diagnostic</title>
+<style>
+body{max-width:1050px;margin:32px auto;padding:0 20px;background:#10171c;color:#dce5e9;font:16px/1.5 system-ui}h1{font-size:24px}button,a{font:inherit;color:#e8c44a}button{background:#26333d;border:1px solid #526675;padding:8px 14px;cursor:pointer}button:disabled{opacity:.5;cursor:default}canvas{display:block;width:320px;height:240px;max-width:100%;background:#080c10;margin:16px 0}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:8px;text-align:left;border-bottom:1px solid #34434d}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}#status{min-height:24px}.pass{color:#96d6b3}.fail{color:#edaa9d}
+</style>
+<h1>GPU presentation diagnostic</h1>
+<p>This page runs independently of the simulator. It clears a small GPU image, then tests whether the browser can display it. No vehicle, smoke shaders or physics are loaded.</p>
+<p>Keep this tab visible. The tests compare high-performance and low-power adapter preferences, opaque and transparent presentation, and two image sizes. These are browser hints; a preference does not guarantee a particular GPU.</p>
+<button id="run">Run diagnostic</button> <button id="download" disabled>Download report</button>
+<p id="status" role="status">Ready. No tests run yet.</p>
+<div id="preview"></div>
+<table><thead><tr><th>Target</th><th>Preference</th><th>Alpha</th><th>Size</th><th>Result</th></tr></thead><tbody id="results"></tbody></table>
+<div id="links"></div>
+<details><summary>Full report</summary><pre id="report"></pre></details>
+<p>A passed clear test is not a guarantee that a full scene or every window size will work. If ordinary GPU textures pass but canvas tests fail, browser image import/presentation is implicated. If all presentation tests fail, retain Canvas fallback and use this report with a browser/driver bug report.</p>
+<script type="module">
+import { probePresentation } from './js/diagnostics/webgpu-presentation.js';
+const get = id => document.getElementById(id);
+let report;
+get('run').onclick = async () => {
+  get('run').disabled = true;
+  get('download').disabled = true;
+  get('results').replaceChildren();
+  get('links').replaceChildren();
+  report = { url: location.href, userAgent: navigator.userAgent,
+    devicePixelRatio, date: new Date().toISOString(), results: [] };
+  try {
+    for (const powerPreference of ['high-performance', 'low-power']) {
+      const configs = [{ offscreen: true, powerPreference }];
+      for (const alphaMode of ['premultiplied', 'opaque']) {
+        for (const [width, height] of [[960, 720], [1024, 768]]) {
+          configs.push({ powerPreference, alphaMode, width, height });
+        }
+      }
+      for (const config of configs) {
+        get('status').textContent = `Running test ${report.results.length + 1} of 10…`;
+        const canvas = document.createElement('canvas');
+        get('preview').replaceChildren(canvas);
+        const result = await probePresentation(canvas, config);
+        report.results.push(result);
+        const row = document.createElement('tr');
+        for (const value of [result.offscreen ? 'Texture only' : 'Canvas',
+          result.powerPreference, result.offscreen ? '—' : result.alphaMode,
+          `${result.width} × ${result.height}`, result.passed ? 'Passed' : 'Failed']) {
+          const cell = document.createElement('td');cell.textContent = value;row.append(cell);
+        }
+        row.className = result.passed ? 'pass' : 'fail';
+        get('results').append(row);
+        get('report').textContent = JSON.stringify(report, null, 2);
+      }
+    }
+    for (const power of ['high-performance', 'low-power']) for (const alpha of ['premultiplied', 'opaque']) {
+      const matching = report.results.filter(r => !r.offscreen && r.powerPreference === power && r.alphaMode === alpha);
+      if (matching.length === 2 && matching.every(r => r.passed && r.adapter?.isFallbackAdapter === false)) {
+        const url = new URL('./', location.href);
+        url.searchParams.set('gpuPower', power);url.searchParams.set('gpuAlpha', alpha);
+        const line = document.createElement('p'), link = document.createElement('a');
+        link.href = url;link.target = '_blank';link.rel = 'noopener';
+        link.textContent = `Try simulator: ${power}, ${alpha} (both clear tests passed)`;
+        line.append(link);get('links').append(line);
+      }
+    }
+    get('status').textContent = `Finished: ${report.results.filter(r => r.passed).length}/10 clear tests passed. Download the report to share the results.`;
+  } catch (error) {
+    report.error = String(error);
+    get('status').textContent = `Diagnostic interrupted: ${error}`;
+  } finally {
+    get('report').textContent = JSON.stringify(report, null, 2);
+    get('run').disabled = false;
+    get('download').disabled = false;
+  }
+};
+get('download').onclick = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }));
+  const link = document.createElement('a');link.href = url;link.download = 'verlet-gpu-diagnostic.json';link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+</script>
+</html>
