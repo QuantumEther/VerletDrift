@@ -433,3 +433,46 @@ test("software adapters automatically select usable Canvas without allocating a 
   expect(stats.fallbackReason).toContain("Software");
   expect(errors).toEqual([]);
 });
+
+test("smoke billboards are neutral, translucent and irregular in both backends", async ({ page }) => {
+  await adapterPage(page);
+  const result = await page.evaluate(async () => {
+    const device = await (await navigator.gpu.requestAdapter()).requestDevice();
+    const module = device.createShaderModule({code: await (await fetch('/js/shaders/smoke.wgsl')).text()});
+    const pipeline = await device.createRenderPipelineAsync({layout:'auto', vertex:{module,entryPoint:'vs_main'}, fragment:{module,entryPoint:'fs_main',targets:[{format:'rgba8unorm'}]},primitive:{topology:'triangle-list'}});
+    function buffer(data,usage) {const b=device.createBuffer({size:data.byteLength,usage:usage|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(b,0,data);return b;}
+    const cam=buffer(new Float32Array([1,80,256,256,0,0]),GPUBufferUsage.UNIFORM);
+    const settings=buffer(new Float32Array([0,0,0,1,0,0,2,0]),GPUBufferUsage.UNIFORM);
+    // Deliberately tinted input must still yield neutral tire smoke.
+    const particle=buffer(new Float32Array([0,0,0,0,1,2,2,1,1,0,1,.8]),GPUBufferUsage.STORAGE);
+    const flags=buffer(new Uint32Array([1]),GPUBufferUsage.STORAGE);
+    const group=(n,bs)=>device.createBindGroup({layout:pipeline.getBindGroupLayout(n),entries:bs.map((b,binding)=>({binding,resource:{buffer:b}}))});
+    const texture=device.createTexture({size:[256,256],format:'rgba8unorm',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
+    const read=device.createBuffer({size:256*256*4,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+    const enc=device.createCommandEncoder(),pass=enc.beginRenderPass({colorAttachments:[{view:texture.createView(),clearValue:[0,0,0,0],loadOp:'clear',storeOp:'store'}]});
+    pass.setPipeline(pipeline);pass.setBindGroup(0,group(0,[cam,settings]));pass.setBindGroup(1,group(1,[particle,flags]));pass.draw(6);pass.end();
+    enc.copyTextureToBuffer({texture},{buffer:read,bytesPerRow:1024},[256,256]);device.queue.submit([enc.finish()]);await read.mapAsync(GPUMapMode.READ);
+    const gpu=new Uint8Array(read.getMappedRange()).slice();read.unmap();device.destroy();
+    const {default:s}=await import('/js/state.js');
+    const smoke=await import('/js/renderer/smoke-system.js');
+    s.params.smokeEnabled=true;s.loop.simulationTime=0;
+    const p=smoke.getSmokePool()[0];Object.assign(p,{alive:true,life:1,maxLife:2,sizeBase:1,alpha:.8,r:1,g:0,b:1});p.pos.x=0;p.pos.y=0;p.vel.x=p.vel.y=0;
+    const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
+    const ctx=canvas.getContext('2d');ctx.translate(128,128);ctx.scale(80,80);
+    const {drawFallbackSmoke}=await import('/js/renderer/smoke-fallback.js');drawFallbackSmoke(ctx);
+    const preview=document.createElement('canvas');preview.width=preview.height=256;
+    const pixels=new Uint8ClampedArray(gpu);
+    for(let i=0;i<pixels.length;i+=4) if(pixels[i+3]) for(let c=0;c<3;c++) pixels[i+c]=Math.min(255,pixels[i+c]*255/pixels[i+3]);
+    preview.getContext('2d').putImageData(new ImageData(pixels,256,256),0,0);
+    document.body.replaceChildren();
+    for(const [label,image] of [['WebGPU procedural smoke',preview],['Canvas fallback',canvas]]) {
+      const panel=document.createElement('div');panel.style.cssText='display:inline-block;margin:12px;color:white;font:16px sans-serif';
+      panel.append(label,document.createElement('br'),image);image.style.cssText='width:480px;height:480px;background:#242729';document.body.append(panel);
+    }
+    const cpu=ctx.getImageData(0,0,256,256).data;
+    function inspect(data) {let tinted=0,visible=0,peak=0;for(let i=0;i<data.length;i+=4){const alpha=data[i+3];if(alpha>5){visible++;if(Math.max(data[i],data[i+1],data[i+2])-Math.min(data[i],data[i+1],data[i+2])>2)tinted++;peak=Math.max(peak,alpha);}}return {visible,tinted,peak};}
+    return {gpu:inspect(gpu),canvas:inspect(cpu)};
+  });
+  for(const backend of Object.values(result)){expect(backend.visible).toBeGreaterThan(1000);expect(backend.tinted).toBe(0);expect(backend.peak).toBeGreaterThan(20);expect(backend.peak).toBeLessThan(200);}
+  await page.screenshot({path:'docs-smoke-neutral.png'});
+});

@@ -168,7 +168,7 @@ function release(reason) {
   }
 }
 async function shader(name) {
-  const r = await fetch(new URL(`./shaders/${name}.wgsl`, import.meta.url));
+  const r = await fetch(new URL(`./shaders/${name}.wgsl`, import.meta.url), { cache: "no-cache" });
   if (!r.ok) throw Error(`Shader ${name}: ${r.status}`);
   return device.createShaderModule({ label: name, code: await r.text() });
 }

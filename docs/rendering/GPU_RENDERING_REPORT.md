@@ -1,8 +1,8 @@
 # GPU world rendering checkpoint
 
 Development branch: `verlet_gpt_v21_gpu_rendering`. Baseline: `f4c9440` on
-`verlet_gpt_v20_delorean_geometry`; v19 and v20 are preserved, with no merge or
-push. Checkpoint `975b5d5` contains the initial pipelines; the follow-up fixes
+`verlet_gpt_v20_delorean_geometry`; v19 and v20 are preserved, with no
+merge. The checkpoint has since been pushed to the dedicated v21 branch. Checkpoint `975b5d5` contains the initial pipelines; the follow-up fixes
 optical density, resource bounds and backend selection.
 
 **Status: correctness-validated development checkpoint. Final unit, full browser
@@ -13,6 +13,10 @@ slower than the baseline, so auto-selection now uses Canvas on reported fallback
 adapters. Native WebGPU is the primary path. Software GPU execution remains an
 explicit diagnostic option. Passing correctness checks is not a hardware
 performance claim or authorization to merge.
+
+For a candid requirement-by-requirement completion map, see
+[implementation status](IMPLEMENTATION_STATUS.md). This checkpoint does not
+complete the original visual-overhaul mission.
 
 ## Architecture and changes
 

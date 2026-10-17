@@ -74,8 +74,8 @@ fn vs_main(
   let p = particles[inst_id];
 
   // Camera-relative billboard position + local quad position
-  let world_x = p.pos.x + local_pos.x * p.size;
-  let world_y = p.pos.y + local_pos.y * p.size;
+  let world_x = p.pos.x + local_pos.x * p.size * 1.3;
+  let world_y = p.pos.y + local_pos.y * p.size * 1.3;
 
   // Transform to NDC — subtract camera position first (particles stored in world-space)
   let eff = cam.zoom * cam.ppm;
@@ -86,8 +86,10 @@ fn vs_main(
 
   let lifeFrac = clamp(p.life/max(p.maxLife,.0001),0.,1.);
   let envelope=smoothstep(0.,.12,1.-lifeFrac)*smoothstep(0.,.25,lifeFrac);
-  let alpha=p.alpha*envelope;
-  let color=vec4<f32>(p.r*alpha,p.g*alpha,p.b*alpha,alpha);
+  let alpha=p.alpha*envelope/(1.+(1.-lifeFrac)*.8);
+  // Tire smoke is neutral: emitter RGB variations affect luminance, never tint.
+  let shade=dot(vec3<f32>(p.r,p.g,p.b),vec3<f32>(.2126,.7152,.0722));
+  let color=vec4<f32>(vec3<f32>(shade*alpha),alpha);
 
   return VertexOutput(
     vec4<f32>(ndc_x, ndc_y, 0.0, 1.0),
@@ -101,16 +103,63 @@ fn vs_main(
 // FRAGMENT SHADER
 // =============================================================
 
+// Smooth density field in particle coordinates. Integer hashing avoids the
+// unstable high-frequency sin hashes that can shimmer across GPU vendors.
+fn smokeHash(cell: vec2<i32>) -> f32 {
+  let c=vec2<u32>(cell);
+  var h=c.x*1597334677u+c.y*3812015801u;
+  h=(h^(h>>16u))*2246822519u;
+  h=(h^(h>>13u))*3266489917u;
+  return f32(h^(h>>16u))/4294967295.;
+}
+fn smokeNoise(p: vec2<f32>) -> f32 {
+  let cell=vec2<i32>(floor(p));
+  let f=fract(p);
+  let u=f*f*f*(f*(f*6.-15.)+10.);
+  return mix(mix(smokeHash(cell),smokeHash(cell+vec2<i32>(1,0)),u.x),
+    mix(smokeHash(cell+vec2<i32>(0,1)),smokeHash(cell+vec2<i32>(1,1)),u.x),u.y);
+}
+fn smokeFbm(p: vec2<f32>) -> f32 {
+  var q=p;
+  var value=0.;
+  var weight=.57;
+  // Filter the fine octaves at low pixel coverage rather than adding static.
+  let footprint=max(length(dpdx(p)),length(dpdy(p)));
+  var frequency=1.;
+  let octaves=select(3u,5u,settings.detail>1.);
+  for(var i=0u;i<octaves;i++) {
+    let visibility=1.-smoothstep(.25,.8,footprint*frequency);
+    value+=weight*mix(.5,smokeNoise(q),visibility);
+    q=vec2<f32>(q.x*.8-q.y*.6,q.x*.6+q.y*.8)*2.03+vec2<f32>(17.1,9.2);
+    frequency*=2.03;
+    weight*=.5;
+  }
+  return value;
+}
+fn smokeDensity(uv: vec2<f32>, seed: vec2<f32>, drift: vec2<f32>) -> f32 {
+  // Domain warping creates rounded rolling structures, then finer noise
+  // erodes their boundaries into wisps. The whole cloud remains soft at edges.
+  let q=uv*2.6+seed;
+  let warp=vec2<f32>(smokeNoise(q+drift),smokeNoise(q+vec2<f32>(5.2,1.3)-drift));
+  let field=smokeFbm(q+(warp-.5)*1.7+drift*.5);
+  let radius=length(uv+(warp-.5)*.19);
+  let envelope=1.-smoothstep(.25,1.,radius);
+  let billows=smoothstep(.20,.78,field);
+  return envelope*billows;
+}
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-  let r=length(in.uv);
-  let aa=max(fwidth(r),.002);
-  let coverage=1.-smoothstep(.95-aa,1.+aa,r);
-  // Overlapping lobes soften the billboard without a texture upload. Density
-  // is coherent within each puff; compute supplies the larger turbulent flow.
-  var lobe=1.;
-  if(settings.detail>0.){lobe=.83+.10*sin(in.uv.x*6.+sin(in.uv.y*4.)+in.seed)+.07*cos(in.uv.y*7.+in.seed);}
-  if(settings.detail>1.){lobe*=.92+.08*sin(in.uv.x*13.+in.seed+settings.time*.2)*cos(in.uv.y*11.-in.seed);}
-  let density=exp(-r*r*3.2)*coverage*lobe;
-  return in.col*density;
+  let angle=in.seed;
+  let uv=vec2<f32>(in.uv.x*cos(angle)-in.uv.y*sin(angle),
+    in.uv.x*sin(angle)+in.uv.y*cos(angle));
+  let seed=vec2<f32>(sin(in.seed)*31.,cos(in.seed)*27.);
+  let drift=vec2<f32>(settings.time*.085,-settings.time*.12);
+  let density=smokeDensity(uv,seed,drift);
+  // Beer-Lambert extinction; soft forward scatter and directional density
+  // gradient suggest volume without pretending to sample scene depth.
+  let alpha=1.-exp(-density*in.col.a*1.65);
+  let litDensity=smokeDensity(uv+vec2<f32>(-.11,-.16),seed,drift);
+  let light=clamp(.72+(density-litDensity)*1.2+.18*(1.-density),.50,1.);
+  let shade=in.col.rgb/max(in.col.a,.00001);
+  return vec4<f32>(shade*light*alpha,alpha);
 }

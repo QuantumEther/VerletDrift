@@ -11,15 +11,28 @@ const sprites = [];
 function sprite(index) {
   if (sprites[index]) return sprites[index];
   const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = 64;
-  const ctx = canvas.getContext("2d"),
-    shade = [150, 195, 225][index];
-  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-  gradient.addColorStop(0, `rgba(${shade},${shade},${shade + 5},.8)`);
-  gradient.addColorStop(0.5, `rgba(${shade},${shade},${shade + 5},.35)`);
-  gradient.addColorStop(1, `rgba(${shade},${shade},${shade + 5},0)`);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 64, 64);
+  canvas.width = canvas.height = 128;
+  const ctx = canvas.getContext("2d");
+  const image = ctx.createImageData(128, 128);
+  const shade = [158, 202, 226][index];
+  // Cached, neutral density billboards; deterministic lobes avoid perfect discs.
+  for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
+    const u = (x + 0.5) / 64 - 1, v = (y + 0.5) / 64 - 1;
+    const angle = index * 2.399;
+    const a = u * Math.cos(angle) - v * Math.sin(angle);
+    const b = u * Math.sin(angle) + v * Math.cos(angle);
+    const warp = 0.10 * Math.sin(a * 5 + Math.sin(b * 4));
+    const radius = Math.hypot(a + warp, b + 0.08 * Math.sin(a * 6));
+    const edge = Math.max(0, 1 - radius * radius);
+    const billow = 0.72 + 0.18 * Math.sin(a * 7 + Math.sin(b * 5))
+      + 0.10 * Math.cos(b * 9 - a * 3);
+    const density = edge * edge * billow;
+    const offset = (y * 128 + x) * 4;
+    const light = shade * (0.90 + 0.10 * billow);
+    image.data[offset] = image.data[offset + 1] = image.data[offset + 2] = light;
+    image.data[offset + 3] = 255 * density * 0.65;
+  }
+  ctx.putImageData(image, 0, 0);
   return (sprites[index] = canvas);
 }
 export function drawFallbackSmoke(ctx) {
@@ -49,18 +62,18 @@ export function drawFallbackSmoke(ctx) {
     const fraction = p.life / p.maxLife;
     p.size = p.sizeBase * (1 + (1 - fraction) * 2);
     if (!state.params.smokeEnabled) continue;
+    // Expansion dilutes the cloud instead of building opaque overlapping dots.
     ctx.globalAlpha =
-      p.alpha *
+      p.alpha / (1 + (1 - fraction) * 0.8) *
       Math.min(1, (1 - fraction) / 0.12) *
       Math.min(1, fraction / 0.25);
     const index = p.r < 0.65 ? 0 : p.r < 0.83 ? 1 : 2;
-    ctx.drawImage(
-      sprite(index),
-      p.pos.x - p.size * 0.5,
-      p.pos.y - p.size * 0.5,
-      p.size,
-      p.size,
-    );
+    ctx.save();
+    ctx.translate(p.pos.x, p.pos.y);
+    ctx.rotate(i * 2.399 + (1 - fraction) * 0.25);
+    ctx.drawImage(sprite(index), -p.size * 0.65, -p.size * 0.65,
+      p.size * 1.3, p.size * 1.3);
+    ctx.restore();
   }
   ctx.restore();
   reclaimSmokeParticles(dead);
