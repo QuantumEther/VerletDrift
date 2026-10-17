@@ -7,6 +7,7 @@
 
 import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
+import { drawVehicleSprites } from './vehicle-sprites.js';
 import {
   CAR_HALF_WIDTH,
   CAR_HALF_LENGTH,
@@ -280,6 +281,11 @@ export function drawCarGhosts(ctx) {
     ctx.save();
     ctx.globalAlpha = ghostAlpha;
 
+    if (drawVehicleSprites(ctx, pose)) {
+      ctx.restore();
+      continue;
+    }
+
     // Ghost wheels (simplified — just dark rectangles)
     const wheelDefs = [
       { name: 'frontLeft', isFront: true },
@@ -330,6 +336,11 @@ export function drawCar(ctx) {
   const engine     = state.engine;
   const wheels     = state.wheels;
   const steerAngle = state.steering.frontWheelAngle;
+
+  if (drawVehicleSprites(ctx, {
+    cx: body.centerX, cy: body.centerY, heading: body.heading,
+    wheels, steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
+  })) return;
 
   // Tire proportions (top-down view):
   // - wheelW: half the tire WIDTH (sidewall to sidewall) — relatively wide
