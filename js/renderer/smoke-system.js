@@ -47,6 +47,7 @@ for (let i = MAX_SMOKE - 1; i >= 0; i--) smokeFreeList.push(i);
 
 // Spawn queue consumed by gpu-renderer. Contains particle indices written this frame.
 const spawnedSmokeIndices = [];
+const EMPTY_SPAWNS = Object.freeze([]);
 
 // Track alive particles: MAX_SMOKE - smokeFreeList.length
 // Updated when particles are spawned and when dead particles are reclaimed from GPU
@@ -218,6 +219,7 @@ export function updateSmoke(dt) {
 export function getSmokePool() { return smokePool; }
 
 export function consumeSpawnedSmokeIndices() {
+  if (!spawnedSmokeIndices.length) return EMPTY_SPAWNS;
   const out = spawnedSmokeIndices.slice();
   spawnedSmokeIndices.length = 0;
   return out;
@@ -250,20 +252,10 @@ export function reclaimSmokeParticles(deadIndices) {
     p.maxLife = 0;
     smokeFreeList.push(idx);
     smokeAliveCount--;
+    while (maxSpawnedIndex >= 0 && !smokePool[maxSpawnedIndex].alive) maxSpawnedIndex--;
   }
 }
 
 // Return the count of particles currently alive (not in free-list)
-// Direct scan of pool to ensure accuracy, avoiding counter lag from 12-frame readback window
-export function getSmokeAliveCount() {
-  let count = 0;
-  for (let i = 0; i < smokePool.length; i++) {
-    if (smokePool[i] && smokePool[i].alive) {
-      count++;
-    }
-  }
-  if (count > 0 && count % 50 === 0) {
-    console.log(`[smoke] alive particles: ${count}`);
-  }
-  return count;
-}
+// Count is maintained by the emitter/reclaimer; avoid scanning 8000 slots.
+export function getSmokeAliveCount() { return smokeAliveCount; }

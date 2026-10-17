@@ -16,8 +16,8 @@ struct BgUniforms {
   blurVelY:    f32,  // normalised velocity direction Y
   blurOffset:  f32,  // max world-space blur offset in metres
   sampleCount: f32,  // number of blur samples (cast to i32 in shader)
-  shakeX:      f32,  // screen-shake world offset X (metres)
-  shakeY:      f32,  // screen-shake world offset Y (metres)
+  surface:     f32,  // 0 checker, 1 asphalt, 2 studio, 3 diagnostic
+  detail:      f32,  // visual quality only
   angularVel:      f32,  // angular velocity (rad/s) for rotational blur
   blurOpacityMin:  f32,  // minimum opacity for historical samples
   blurOpacityMax:  f32,  // maximum opacity for historical samples
@@ -50,6 +50,37 @@ fn vs_main(@builtin(vertex_index) vi: u32) -> VertOut {
   return out;
 }
 
+fn hash(p:vec2<f32>)->f32 { return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+fn noise(p:vec2<f32>)->f32 {
+ let i=floor(p);let f=fract(p);let q=f*f*(3.-2.*f);
+ return mix(mix(hash(i),hash(i+vec2(1.,0.)),q.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),q.x),q.y);
+}
+fn triangle(x:vec2<f32>)->vec2<f32>{return vec2(1.)-abs(fract(x*.5)*2.-1.);}
+fn filteredChecker(p:vec2<f32>)->f32{
+ let w=max(fwidth(p),vec2(.0001));
+ let mean=(triangle(p+w*.5)-triangle(p-w*.5))/w;
+ return .5+.5*mean.x*mean.y;
+}
+fn grid(p:vec2<f32>,thickness:f32)->f32{
+ let line=abs(fract(p-.5)-.5)/max(fwidth(p),vec2(.0001));
+ return 1.-smoothstep(thickness,thickness+1.,min(line.x,line.y));
+}
+fn material(world:vec2<f32>)->vec3<f32>{
+ let check=filteredChecker(world/u.tileSize);
+ if(u.surface<.5){return mix(vec3(.0667,.0784,.0863),vec3(.1333,.1255,.1490),check);}
+ if(u.surface<1.5){
+  let coarse=noise(world*1.7)-.5;
+  let microScale=55.;let atten=1.-smoothstep(.2,1.,length(fwidth(world))*microScale);
+  let micro=(noise(world*microScale)-.5)*atten*select(0.,1.,u.detail>0.);
+  var detail=coarse*.018+micro*.030;
+  if(u.detail>1.){let fineScale=110.;let fineFade=1.-smoothstep(.2,1.,length(fwidth(world))*fineScale);detail+=(noise(world*fineScale)-.5)*fineFade*.012;}
+  return vec3(.105,.119,.131)+vec3(detail)+vec3(.004)*check;
+ }
+ if(u.surface<2.5){return vec3(.19,.205,.215)+vec3(.009)*check-vec3(.012)*grid(world/u.tileSize,.1);}
+ let fine=grid(world,.3);let major=grid(world/u.tileSize,.5);
+ return vec3(.055,.075,.09)+vec3(.025,.052,.065)*fine+vec3(.025,.045,.05)*major;
+}
+
 @fragment
 fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
   // Fragment pixel position in canvas pixels.
@@ -62,8 +93,8 @@ fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
   // World-space coordinates of this fragment (camera + shake offset).
   let camRelX = (pixX - u.viewportW * 0.5) / eff;
   let camRelY = (pixY - u.viewportH * 0.5) / eff;
-  let worldX = u.camX + u.shakeX + camRelX;
-  let worldY = u.camY + u.shakeY + camRelY;
+  let worldX = u.camX + camRelX;
+  let worldY = u.camY + camRelY;
 
   // --- MOTION BLUR ---
   let numSamples = max(i32(u.sampleCount), 1);
@@ -102,17 +133,7 @@ fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
     let sWorldX = worldX + offX;
     let sWorldY = worldY + offY;
 
-    // Checkerboard tile parity.
-    // Use floor→i32 to handle negative coordinates correctly.
-    let tileIX = i32(floor(sWorldX / u.tileSize));
-    let tileIY = i32(floor(sWorldY / u.tileSize));
-    // Bitwise AND handles sign correctly: (-1) & 1 == 1
-    let isLight = ((tileIX + tileIY) & 1) == 0;
-
-    // Tile colours matching drawCheckerboard: '#222026' and '#111416'
-    let lightC = vec3<f32>(0.1333, 0.1255, 0.1490); // #222026
-    let darkC  = vec3<f32>(0.0667, 0.0784, 0.0863); // #111416
-    let tileC  = select(darkC, lightC, isLight);
+    let tileC = material(vec2(sWorldX,sWorldY));
 
     colorAcc += tileC * sampleAlpha;
     alphaAcc += sampleAlpha;

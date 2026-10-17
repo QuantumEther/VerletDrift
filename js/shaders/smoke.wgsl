@@ -30,9 +30,12 @@ struct VertexOutput {
   @builtin(position) pos: vec4<f32>,
   @location(0) uv: vec2<f32>,
   @location(1) col: vec4<f32>,
+  @location(2) @interpolate(flat) seed: f32,
 }
 
+struct SmokeSettings {dt:f32,count:u32,turbulence:f32,time:f32,camera:vec2<f32>,detail:f32,pad:f32}
 @group(0) @binding(0) var<uniform> cam: CameraUniforms;
+@group(0) @binding(1) var<uniform> settings: SmokeSettings;
 @group(1) @binding(0) var<storage, read> particles: array<SmokeParticle>;
 @group(1) @binding(1) var<storage, read> aliveFlags: array<u32>;
 
@@ -63,6 +66,7 @@ fn vs_main(
       vec4<f32>(2.0, 2.0, 0.0, 1.0),
       uv,
       vec4<f32>(0.0, 0.0, 0.0, 0.0),
+      0.,
     );
   }
 
@@ -80,26 +84,16 @@ fn vs_main(
   let ndc_x =  camRelX * eff / (cam.viewportW * 0.5);
   let ndc_y = -camRelY * eff / (cam.viewportH * 0.5);
 
-  // DEBUG: Use bright magenta for visibility test (uncomment to debug)
-  let color = vec4<f32>(1.0, 0.0, 1.0, 0.8);  // Bright magenta - SHOULD BE VISIBLE
-
-  // Normal smoke color (disabled for debug):
-  // let color = vec4<f32>(
-  //   p.r * p.alpha,
-  //   p.g * p.alpha,
-  //   p.b * p.alpha,
-  //   p.alpha
-  // );
-
-  // Debug: Log particle position and size (first 5 particles only)
-  // if (inst_id < 5u) {
-  //   debugValue.x = p.pos.x; debugValue.y = p.pos.y; debugValue.z = p.size;
-  // }
+  let lifeFrac = clamp(p.life/max(p.maxLife,.0001),0.,1.);
+  let envelope=smoothstep(0.,.12,1.-lifeFrac)*smoothstep(0.,.25,lifeFrac);
+  let alpha=p.alpha*envelope;
+  let color=vec4<f32>(p.r*alpha,p.g*alpha,p.b*alpha,alpha);
 
   return VertexOutput(
     vec4<f32>(ndc_x, ndc_y, 0.0, 1.0),
     uv,
     color,
+    f32(inst_id)*2.399,
   );
 }
 
@@ -109,28 +103,14 @@ fn vs_main(
 
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-  // Circle clipping: discard if outside unit circle
-  let dist_sq = dot(in.uv, in.uv);
-  if (dist_sq > 1.0) {
-    discard;
-  }
-
-  // Soft gradient falloff: center opaque, edges fade
-  // Uses radial falloff for smooth billboards (not harsh circles)
-  let falloff = 1.0 - sqrt(dist_sq);  // 1.0 at center, 0.0 at edge
-  let soft_alpha = falloff * falloff;  // quadratic fade for softer look
-
-  // Debug: visualize color values
-  // Uncomment to see what colors are being read
-  // return vec4<f32>(in.col.r, in.col.g, in.col.b, 1.0);  // Full brightness to see colors
-
-  // Premultiplied alpha blend: scale RGB by soft_alpha so edges fade smoothly
-  let final_color = vec4<f32>(
-    in.col.r * soft_alpha,
-    in.col.g * soft_alpha,
-    in.col.b * soft_alpha,
-    in.col.a * soft_alpha
-  );
-
-  return final_color;
+  let r=length(in.uv);
+  let aa=max(fwidth(r),.002);
+  let coverage=1.-smoothstep(.95-aa,1.+aa,r);
+  // Overlapping lobes soften the billboard without a texture upload. Density
+  // is coherent within each puff; compute supplies the larger turbulent flow.
+  var lobe=1.;
+  if(settings.detail>0.){lobe=.83+.10*sin(in.uv.x*6.+sin(in.uv.y*4.)+in.seed)+.07*cos(in.uv.y*7.+in.seed);}
+  if(settings.detail>1.){lobe*=.92+.08*sin(in.uv.x*13.+in.seed+settings.time*.2)*cos(in.uv.y*11.-in.seed);}
+  let density=exp(-r*r*3.2)*coverage*lobe;
+  return in.col*density;
 }

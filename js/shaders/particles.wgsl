@@ -66,7 +66,11 @@ fn vs_main(
 
 @fragment
 fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
-  // Circular clip: discard outside unit circle
-  if (dot(in.uv, in.uv) > 1.0) { discard; }
-  return in.color;
+  let r=length(in.uv);
+  let aa=max(fwidth(r),.002);
+  let coverage=1.-smoothstep(1.-aa,1.+aa,r);
+  let core=exp(-r*r*5.);
+  // A small luminous core and restrained halo, without a fullscreen bloom pass.
+  let alpha=in.color.a*coverage*(.25+.75*core);
+  return vec4(in.color.rgb*coverage*(.25+.75*core),alpha);
 }

@@ -82,7 +82,7 @@ fn sampleCurlNoise(pos: vec2<f32>, time: f32) -> vec2<f32> {
 
   // Compute curl: perpendicular to gradient
   let curl_x = (n2 - n3) / (2.0 * eps);  // ∂/∂y
-  let curl_y = (n0 - n1) / (2.0 * eps);  // -∂/∂x
+  let curl_y = (n1 - n0) / (2.0 * eps);  // -∂/∂x
 
   return vec2<f32>(curl_x, curl_y);
 }
@@ -117,18 +117,9 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
     return;
   }
 
-  // ---- 2. FADE IN/OUT ----
-  // Fade in during first 10% of life, fade out during last 20%
-  let lifeFrac = p.life / p.maxLife;
-  var fadeMul = 1.0;
-  if (lifeFrac > 0.90) {
-    // Fade out: linear from 90% to 100%
-    fadeMul = (1.0 - lifeFrac) / 0.10;
-  } else if (lifeFrac < 0.10) {
-    // Fade in: linear from 0% to 10%
-    fadeMul = lifeFrac / 0.10;
-  }
-  p.alpha *= fadeMul;
+  // Opacity remains the spawn value; the render shader evaluates the envelope
+  // from normalized lifetime rather than multiplying it away every frame.
+  let lifeFrac = p.life / max(p.maxLife, .0001);
 
   // ---- 3. CURL NOISE ADVECTION ----
   // Sample turbulence field at particle position
@@ -137,7 +128,7 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
   // ---- 4. APPLY FORCES ----
   // Gravity (reduced, gives light upward drift for smoke)
-  let gravity = vec2<f32>(0.0, -0.8 * uniforms.dt);  // upward (Y-down = negative)
+  let gravity = vec2<f32>(0.0, -0.8);  // upward (Y-down = negative)
 
   // Turbulent advection
   let advectForce = turbForce * 1.5;
@@ -146,7 +137,7 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   p.vel = p.vel + (gravity + advectForce) * uniforms.dt;
 
   // ---- 5. DRAG (Air resistance) ----
-  p.vel *= 0.96;  // per-frame drag
+  p.vel *= pow(0.96, uniforms.dt * 60.0);  // per-frame drag
 
   // ---- 6. INTEGRATE POSITION ----
   p.pos += p.vel * uniforms.dt;

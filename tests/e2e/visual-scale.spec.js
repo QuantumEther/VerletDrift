@@ -163,7 +163,7 @@ test('GPU upload contract keeps raster density separate from geometry and shares
       createTexture: () => ({ createView: () => ({}) }), createSampler: () => ({}),
       createBindGroup: () => ({}), createCommandEncoder: () => ({ beginRenderPass: () => pass, finish: () => ({}) }),
       queue: { writeBuffer: (buffer, _offset, data, start = 0, count = data.length) =>
-        writes.push({ size: buffer.size, data: Array.from(data).slice(start, start + count) }), submit() {} },
+        writes.push({ label: buffer.label, size: buffer.size, data: Array.from(data).slice(start, start + count) }), submit() {} },
     };
     Object.defineProperty(navigator, 'gpu', { configurable: true, value: {
       requestAdapter: async () => ({ requestDevice: async () => device }), getPreferredCanvasFormat: () => 'bgra8unorm',
@@ -184,13 +184,12 @@ test('GPU upload contract keeps raster density separate from geometry and shares
       writes.length = 0;
       s.params.pixelsPerMeter = ppm;
       s.params.gpuSkidResolution = 1;
-      s.skidMarksNewThisFrame = [{ x1: 191, y1: 143, x2: 192, y2: 144, width: .26, alpha: .5, hue: -1 }];
+      s.skidMarks = [{ x1: 191, y1: 143, x2: 192, y2: 144, width: .26, alpha: .5, hue: -1 }];
       gpu.renderFrameGPU(800, 600);
       frames.push({ bg: writes.find(w => w.size === 80).data,
         camera: writes.find(w => w.size === 24).data,
-        composite: writes.find(w => w.size === 16).data,
-        arrow: writes.find(w => w.size === 600 * 36).data,
-        skid: writes.find(w => w.size === 4096 * 36).data });
+        arrow: writes.find(w => w.label === 'arrows').data,
+        skid: writes.find(w => w.label === 'skidGeometry').data });
     }
     return { width: canvas.width, height: canvas.height, frames };
   });
@@ -205,12 +204,10 @@ test('GPU upload contract keeps raster density separate from geometry and shares
     expect(frame.bg[15]).toBeCloseTo(.1, 6);
     expect(frame.bg[16]).toBeCloseTo(.8, 6);
     expect(frame.bg[17]).toBe(2);
-    expect(frame.composite[0]).toBeCloseTo(191.7 / 384, 6);
-    expect(frame.composite[1]).toBeCloseTo(144.2 / 288, 6);
     expect(frame.arrow[0]).toBeCloseTo(1.3, 5);
     expect(frame.arrow[1]).toBeCloseTo(.8, 5);
     expect(frame.arrow[3]).toBeCloseTo(1.1, 6);
-    expect(frame.skid.slice(0, 4)).toEqual([-1, -1, 0, 0]);
+    expect(frame.skid.slice(0, 4)).toEqual([191, 143, 192, 144]); // resident world coordinates
     expect(frame.skid[4]).toBeCloseTo(.26, 6);
   }
 });

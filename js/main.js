@@ -46,6 +46,7 @@ import {
 import { initInput } from './input.js';
 import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
 import { getSkidWidth } from './renderer/vehicle-geometry.js';
+import { drawFallbackSmoke } from './renderer/smoke-fallback.js';
 
 import {
   initializeCarBody,
@@ -787,16 +788,9 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   applyCameraTransform(simCtx, canvasWidth, canvasHeight);
 
   if (isGPUReady()) {
-    // GPU handles: background, skid marks, trail arrows, sparks, splat particles.
-    // Canvas 2D handles remaining world-space elements (map boundary, decals,
-    // balloons, car) on the transparent simCanvas (z-index:1) that sits above.
+    // GPU owns ground, paint, marks, balloons and particles. Canvas retains
+    // the unchanged vehicle, boundary, diagnostics and HUD above the GPU layer.
     drawMapBoundary(simCtx);
-    drawSplatDecals(simCtx);
-    // drawSkidMarks: handled by GPU accumulation texture
-    // drawSplatParticles: handled by GPU particle pipeline
-    drawBalloons(simCtx);
-    // drawTrailArrows: handled by GPU instanced arrows
-    // drawSparks: handled by GPU particle pipeline
     if (state.params.showKinematicArrows) {
       drawKinematicArrows(simCtx);
     }
@@ -811,6 +805,7 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     drawSplatParticles(simCtx);
     drawBalloons(simCtx);
     drawTrailArrows(simCtx);
+    drawFallbackSmoke(simCtx);
     if (state.params.showSparks) {
       drawSparks(simCtx);
     }
