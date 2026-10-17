@@ -1,7 +1,11 @@
-import { BODY_CROP, WHEEL_CROP, BODY_RECT, getTireDimensions } from './vehicle-geometry.js';
+import { BODY_CROP, WHEEL_CROP, BODY_RECT, getTireSpriteDimensions } from './vehicle-geometry.js';
+import { drawVehicleCalibration } from './vehicle-calibration.js';
 
 // Rendering-only switch; disabling this restores the original car and ghosts.
-export const vehicleSpriteSettings = { enabled: true };
+export const vehicleSpriteSettings = {
+  enabled: true,
+  calibration: typeof location !== 'undefined' && new URLSearchParams(location.search).get('vehicleCalibration') === '1',
+};
 
 function loadImage(path) {
   if (typeof Image === 'undefined') return null;
@@ -30,8 +34,8 @@ function selectWheelImage(_name, _angularSpeed) {
 export function drawVehicleSprites(ctx, pose) {
   if (!vehicleSpriteSettings.enabled || !ready(bodyImage) || !ready(wheelImage)) return false;
 
-  const tire = getTireDimensions(pose.wheelRadius);
   for (const [name, isFront] of WHEELS) {
+    const tire = getTireSpriteDimensions(pose.wheelRadius, name);
     const wheel = pose.wheels[name];
     const image = selectWheelImage(name, pose.wheelOmega?.[name] ?? 0);
     ctx.save();
@@ -51,5 +55,6 @@ export function drawVehicleSprites(ctx, pose) {
     ctx.fillRect(BODY_RECT.x, BODY_RECT.y, BODY_RECT.width, BODY_RECT.length);
   }
   ctx.restore();
+  if (vehicleSpriteSettings.calibration && !pose.isGhost) drawVehicleCalibration(ctx, pose);
   return true;
 }

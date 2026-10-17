@@ -11,7 +11,7 @@ const { CAR_HALF_LENGTH: L, CAR_HALF_WIDTH: W } = await import('../js/constants.
 const initial = structuredClone(state);
 
 export function compareRun({ enabled = true, sensitivity = 0.12, frontBar = 12000,
-  rearBar = 8000, dt = 0.01, maneuver = 'transition' } = {}) {
+  rearBar = 8000, dt = 0.01, maneuver = 'transition', steeringReversal = 1.75 } = {}) {
   Object.assign(state, structuredClone(initial));
   Object.assign(state.params, { suspensionEnabled: enabled, tireLoadSensitivity: sensitivity,
     antiRollStiffnessFront: frontBar, antiRollStiffnessRear: rearBar });
@@ -30,13 +30,17 @@ export function compareRun({ enabled = true, sensitivity = 0.12, frontBar = 1200
   state.body.longitudinalAccel = state.body.lateralAccel = 0;
   let maxRoll = 0, maxSlip = 0, maxYaw = 0, minLoad = Infinity;
   const samples = [];
+  const steeringEvents = [];
   for (let i = 0; i < Math.round(3 / dt); i++) {
     const t = i * dt;
     state.input.brakeKeyHeld = maneuver === 'braking';
     state.input.handbrakeKeyHeld = maneuver === 'drift' && t >= 0.5 && t < 0.8;
     state.input.handbrakeValue = state.input.handbrakeKeyHeld ? 1 : 0;
     state.steering.frontWheelAngle = ['braking', 'acceleration'].includes(maneuver) ? 0
-      : t < 0.5 ? 0 : ['transition', 'drift'].includes(maneuver) && t >= 1.75 ? -0.16 : 0.16;
+      : t < 0.5 ? 0 : ['transition', 'drift'].includes(maneuver) && t >= steeringReversal ? -0.16 : 0.16;
+    if (steeringEvents.at(-1)?.angle !== state.steering.frontWheelAngle) {
+      steeringEvents.push({ time: t, angle: state.steering.frontWheelAngle });
+    }
     updateSuspension(dt);
     const f = computeTireForces(dt);
     const drag = computeDragForces();
@@ -61,7 +65,7 @@ export function compareRun({ enabled = true, sensitivity = 0.12, frontBar = 1200
   }
   return { maneuver, maxRollDegrees: maxRoll * 180 / Math.PI,
     maxSlipDegrees: maxSlip * 180 / Math.PI, maxYaw, minLoad,
-    finalSpeed: state.body.speed, finalHeading: state.body.heading, samples };
+    finalSpeed: state.body.speed, finalHeading: state.body.heading, samples, steeringEvents };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

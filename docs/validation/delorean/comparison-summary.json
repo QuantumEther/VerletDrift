@@ -1,0 +1,271 @@
+{
+  "status": "HISTORICAL INITIAL SNAPSHOT: PAUSED: existing coupled 50 Hz heading-refinement gate fails; no solver/tuning fix attempted",
+  "baselineCommit": "09a3e3605c4d1890e8c4723df28d7b864dc03fc6",
+  "settingsIdentical": true,
+  "mechanicalSourcesIdentical": true,
+  "baselineGeometry": {
+    "trackM": 1.6,
+    "wheelbaseM": 3,
+    "diagonalM": 3.4,
+    "yawInertiaKgM2": 1156,
+    "displacementClampM": 0.7200000000000001,
+    "initializationErrorM": 5.773159728050814e-15,
+    "perturbedErrorM": 0.19643311523818885,
+    "solvedErrorM": 1.3766765505351941e-14
+  },
+  "targetGeometry": {
+    "trackM": 1.589,
+    "wheelbaseM": 2.408,
+    "diagonalM": 2.8850277295027857,
+    "yawInertiaKgM2": 832.3384999999998,
+    "displacementClampM": 0.71505,
+    "initializationErrorM": 1.2878587085651816e-14,
+    "perturbedErrorM": 0.19640494040802126,
+    "solvedErrorM": 9.103828801926284e-15
+  },
+  "refinement": [
+    {
+      "configuration": "baseline-3m",
+      "samples": [
+        {
+          "dt": 0.02,
+          "headingError": 0.010630995823724954,
+          "speedError": 0.0034623306613177363,
+          "yawError": 0.0007066560911206388
+        },
+        {
+          "dt": 0.01,
+          "headingError": 0.00038116186234149474,
+          "speedError": 0.002314105884583917,
+          "yawError": 0.0032739319719032878
+        },
+        {
+          "dt": 0.005,
+          "headingError": 0.0018392746553950179,
+          "speedError": 0.0012314745305144204,
+          "yawError": 0.0025727486824944634
+        }
+      ]
+    },
+    {
+      "configuration": "target-dmc12",
+      "samples": [
+        {
+          "dt": 0.02,
+          "headingError": 0.017965070544291972,
+          "speedError": 0.00718857897443681,
+          "yawError": 0.014289395358013657
+        },
+        {
+          "dt": 0.01,
+          "headingError": 0.007190371784454808,
+          "speedError": 0.005712411186784561,
+          "yawError": 0.018353773178603205
+        },
+        {
+          "dt": 0.005,
+          "headingError": 0.003965053720845768,
+          "speedError": 0.004220703300251039,
+          "yawError": 0.011393240820112283
+        }
+      ]
+    }
+  ],
+  "isolatedLongRun": [
+    {
+      "configuration": "baseline-3m",
+      "maxYawRadS": 0.5482936278889627,
+      "finalSpeedMps": 22.991858439692386,
+      "maxConstraintErrorM": 1.2811973704174306e-12,
+      "maxBoundaryOvershootM": 0,
+      "minLoadN": 1093.4921123923732,
+      "elapsedMs": 14884.508275
+    },
+    {
+      "configuration": "target-dmc12",
+      "maxYawRadS": 0.7471695023694158,
+      "finalSpeedMps": 22.983859776028478,
+      "maxConstraintErrorM": 1.2829737272568309e-12,
+      "maxBoundaryOvershootM": 0,
+      "minLoadN": 1044.8922935612416,
+      "elapsedMs": 14701.99155
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "rest",
+      "oldFinalSpeedMps": 0,
+      "newFinalSpeedMps": 0,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "launch",
+      "oldFinalSpeedMps": 18.8374690764725,
+      "newFinalSpeedMps": 19.605501328566177,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N",
+        "1"
+      ]
+    },
+    {
+      "name": "braking",
+      "oldFinalSpeedMps": 0.05098331061930139,
+      "newFinalSpeedMps": 0.0186113419069045,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "cornering",
+      "oldFinalSpeedMps": 15.874418890349979,
+      "newFinalSpeedMps": 15.606249911324445,
+      "oldMaxYawRadS": 0.6069824014441227,
+      "newMaxYawRadS": 0.6200919051316589,
+      "targetMaxConstraintErrorM": 2.7977620220553945e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "handbrake",
+      "oldFinalSpeedMps": 4.384413308311672,
+      "newFinalSpeedMps": 4.05997186204588,
+      "oldMaxYawRadS": 1.485097856258366,
+      "newMaxYawRadS": 1.5233544882292671,
+      "targetMaxConstraintErrorM": 1.8207657603852567e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "transition",
+      "oldFinalSpeedMps": 17.490433780190767,
+      "newFinalSpeedMps": 17.287889795665,
+      "oldMaxYawRadS": 0.5529082377104366,
+      "newMaxYawRadS": 0.5661886982458064,
+      "targetMaxConstraintErrorM": 1.865174681370263e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "gear_clutch",
+      "oldFinalSpeedMps": 17.413844141695733,
+      "newFinalSpeedMps": 17.80756669338146,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N",
+        "1",
+        "2"
+      ]
+    },
+    {
+      "name": "stall",
+      "oldFinalSpeedMps": 0,
+      "newFinalSpeedMps": 0,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": true,
+      "targetGears": [
+        "N",
+        "1"
+      ]
+    },
+    {
+      "name": "reverse",
+      "oldFinalSpeedMps": 12.490468577443892,
+      "newFinalSpeedMps": 12.241815863896477,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N",
+        "R"
+      ]
+    },
+    {
+      "name": "collision",
+      "oldFinalSpeedMps": 0.0053294032895431775,
+      "newFinalSpeedMps": 0.0017702680170487723,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.3322676295501878e-15,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "high_speed",
+      "oldFinalSpeedMps": 0.9896187094952325,
+      "newFinalSpeedMps": 0.7944543753444222,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "extreme_speed_clamp",
+      "oldFinalSpeedMps": 0.10717713251563918,
+      "newFinalSpeedMps": 0.08894544990819116,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "low_speed",
+      "oldFinalSpeedMps": 0,
+      "newFinalSpeedMps": 0,
+      "oldMaxYawRadS": 0,
+      "newMaxYawRadS": 0,
+      "targetMaxConstraintErrorM": 1.2878587085651816e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N"
+      ]
+    },
+    {
+      "name": "long_drive",
+      "oldFinalSpeedMps": 22.993028468966305,
+      "newFinalSpeedMps": 19.239071329720197,
+      "oldMaxYawRadS": 0.5796051166254035,
+      "newMaxYawRadS": 4.135171129835413,
+      "targetMaxConstraintErrorM": 7.172040739078511e-14,
+      "targetStalled": false,
+      "targetGears": [
+        "N",
+        "1"
+      ]
+    }
+  ],
+  "supersededBy": "shared-event-refinement.json and ../../DELOREAN_TIMESTEP_INVESTIGATION.md; final rerun: 147 unit and 37 browser tests passed"
+}

@@ -1075,7 +1075,7 @@ function recordSkidMarks(dt) {
       if (dist > 0.03) {
         // Skid intensity scales with utilization above threshold
         const excessUtilization = Math.max(0, u - skidUtilThreshold);
-        const width = getSkidWidth(u, p);
+        const width = getSkidWidth(u, p, wheelName);
         const baseAlpha = alphaMin + excessUtilization * (alphaMax - alphaMin);
         const jerkBoost = Math.min((body.jerkMagnitude || 0) / 300, jerkBoostMax);
         const alpha     = Math.min(baseAlpha * fade + jerkBoost, 0.95);

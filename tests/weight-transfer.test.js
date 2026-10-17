@@ -5,7 +5,7 @@ vi.hoisted(() => {
 });
 
 import state from '../js/state.js';
-import { GRAVITY } from '../js/constants.js';
+import { GRAVITY, CAR_HALF_WIDTH } from '../js/constants.js';
 import { computeWeightTransfer } from '../js/physics/weight.js';
 
 const initial = structuredClone(state);
@@ -52,7 +52,7 @@ describe('conserved four-wheel load transfer', () => {
     const result = loads();
     const sideLoadDifference = result.frontLeft + result.rearLeft
       - result.frontRight - result.rearRight;
-    const expectedSideDifference = state.params.carMassKg * 3 * state.params.cogHeight / 0.8;
+    const expectedSideDifference = state.params.carMassKg * 3 * state.params.cogHeight / CAR_HALF_WIDTH;
 
     expect(result.frontLeft).toBeGreaterThan(result.frontRight);
     expect(result.rearLeft).toBeGreaterThan(result.rearRight);

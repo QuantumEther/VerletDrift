@@ -19,7 +19,7 @@
 // -------------------------------------------------------------
 // WORLD SCALE
 // 1 metre of real-world length = PIXELS_PER_METER pixels.
-// At 10 px/m the car body (8 m long) renders as 80 px on screen.
+// At 20 px/m the 2.408 m wheelbase renders as 48.16 px at zoom 1.
 // This constant is used ONLY by the renderer to scale world→screen.
 // Physics never multiplies by this value.
 // -------------------------------------------------------------
@@ -32,23 +32,24 @@ export const KPH_TO_MPS = 1000 / 3600; // ≈ 0.2778
 // -------------------------------------------------------------
 // CAR BODY GEOMETRY (metres)
 // The car is represented by four Verlet particles at wheel positions.
-// Half-width and half-length are measured from the car's centre of mass.
-// These determine rest distances for the six rigid constraints.
-// At PIXELS_PER_METER = 10:  0.8m → 8px, 1.5m → 15px on screen.
-// === PHASE 3c: CAR DIMENSION RESCALING ===
-// OLD: 2.0m width, 4.0m length (tanker truck proportions, 8m × 4m wheelbase)
-// NEW: 0.8m width, 1.5m length (realistic sports car: ~3m wheelbase, ~1.6m track)
-// Moment of inertia automatically recalculates from updated dimensions.
-// Old I ≈ 8000 kg·m²; New I ≈ 1156 kg·m² (car now feels more responsive to torque).
+// These legacy names mean HALF TRACK and HALF WHEELBASE, not shell dimensions.
+// DMC-12 targets use the average of 1.590/1.588 m axle tracks to preserve the
+// existing rectangular four-particle architecture. No dynamic tuning is changed.
 // -------------------------------------------------------------
-export const CAR_HALF_WIDTH  = 0.8; // m
-export const CAR_HALF_LENGTH = 1.5; // m
+export const DELOREAN_GEOMETRY = Object.freeze({
+  bodyLength: 4.267, bodyWidth: 1.988,
+  wheelbase: 2.408, frontTrack: 1.590, rearTrack: 1.588,
+  frontTire: Object.freeze({ width: .195, diameter: .195 * .60 * 2 + 14 * .0254 }),
+  rearTire: Object.freeze({ width: .235, diameter: .235 * .60 * 2 + 15 * .0254 }),
+});
+export const CAR_HALF_WIDTH = (DELOREAN_GEOMETRY.frontTrack + DELOREAN_GEOMETRY.rearTrack) / 4;
+export const CAR_HALF_LENGTH = DELOREAN_GEOMETRY.wheelbase / 2;
 
 // Derived rest distances for all six rigid distance constraints (metres).
-export const CONSTRAINT_AXLE_WIDTH  = CAR_HALF_WIDTH  * 2; // 4.0 m
-export const CONSTRAINT_SIDE_LENGTH = CAR_HALF_LENGTH * 2; // 8.0 m
+export const CONSTRAINT_AXLE_WIDTH  = CAR_HALF_WIDTH  * 2; // 1.589 m
+export const CONSTRAINT_SIDE_LENGTH = CAR_HALF_LENGTH * 2; // 2.408 m
 export const CONSTRAINT_DIAGONAL    =
-  Math.sqrt(CONSTRAINT_AXLE_WIDTH ** 2 + CONSTRAINT_SIDE_LENGTH ** 2); // ≈ 8.944 m
+  Math.sqrt(CONSTRAINT_AXLE_WIDTH ** 2 + CONSTRAINT_SIDE_LENGTH ** 2);
 
 // Number of Jakobsen constraint solver iterations per physics sub-step.
 // === PHASE 3c: CONSTRAINT ITERATIONS INCREASE ===
@@ -74,14 +75,14 @@ export const COG_HEIGHT = 0.5; // m
 
 // Moment of inertia (rectangular plate approximation, kg·m²).
 // I = mass × (halfLength² + halfWidth²) / 3
-// With metre geometry: 1200 × (4² + 2²) / 3 = 8000 kg·m².
+// Uses axle half-distances, preserving the existing approximation and mass.
 // Previously ≈800,000 kg·px² — 100× too large due to pixel units.
 export const MOMENT_OF_INERTIA =
-  CAR_MASS_KG * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3; // ≈ 8000 kg·m²
+  CAR_MASS_KG * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3; // 832.3385 kg·m² at 1200 kg
 
 // Maximum displacement a wheel particle can move in a single sub-step (metres).
 // Prevents tunnelling through map walls.
-export const MAX_DISPLACEMENT_PER_STEP = CAR_HALF_WIDTH * 0.9; // 1.8 m
+export const MAX_DISPLACEMENT_PER_STEP = CAR_HALF_WIDTH * 0.9; // 0.71505 m, same geometric rule
 
 // Default coefficient of restitution for wall collisions.
 export const DEFAULT_BOUNCINESS = 0.5;

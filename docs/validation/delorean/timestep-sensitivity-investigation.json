@@ -1,0 +1,4874 @@
+{
+  "description": "Same production mechanical functions; original versus common-boundary input schedules",
+  "timesteps": [
+    0.02,
+    0.01,
+    0.005,
+    0.0025,
+    0.00125,
+    0.000625,
+    0.0003125
+  ],
+  "configurations": [
+    {
+      "configuration": "baseline-3m",
+      "wheelbase": 3,
+      "track": 1.6,
+      "inertia": 1156,
+      "harnessSha256": "88f04df145d2d5314a2315c18e2daeca74f5abc2b1c33c87333b4bb45db12a54",
+      "schedules": [
+        {
+          "requestedReversal": 1.75,
+          "profile": "step control",
+          "reference6400": {
+            "eventSchedule": {
+              "positiveStart": 0.5,
+              "negativeStart": 1.75,
+              "positiveSeconds": 1.2500000000000628,
+              "negativeSeconds": 1.2500000000000628
+            },
+            "maxConstraintError": 1.9984014443252818e-14,
+            "maneuver": "transition",
+            "maxRollDegrees": 2.303406780870445,
+            "maxSlipDegrees": 10.630517572528367,
+            "maxYaw": 0.5422596514009115,
+            "minLoad": 878.7238326070787,
+            "finalSpeed": 18.04649349953876,
+            "finalHeading": 0.04725415587479498,
+            "samples": [
+              {
+                "time": 1,
+                "yaw": 0.44059755454952665,
+                "speed": 19.488778445128133,
+                "roll": -0.03868636115898017,
+                "loads": {
+                  "frontLeft": 4841.615738229912,
+                  "frontRight": 1245.6215136133537,
+                  "rearLeft": 4669.842675311735,
+                  "rearRight": 1014.9200728450003
+                }
+              },
+              {
+                "time": 2,
+                "yaw": -0.3765866182803279,
+                "speed": 18.768770478908692,
+                "roll": 0.03498206059027711,
+                "loads": {
+                  "frontLeft": 1126.4165567516065,
+                  "frontRight": 4968.454057152328,
+                  "rearLeft": 879.8727537574515,
+                  "rearRight": 4797.2566323386145
+                }
+              },
+              {
+                "time": 3,
+                "yaw": -0.478739574916176,
+                "speed": 18.04649349953876,
+                "roll": 0.03839551799287497,
+                "loads": {
+                  "frontLeft": 1247.291431212915,
+                  "frontRight": 4836.834514574331,
+                  "rearLeft": 1018.9895255655154,
+                  "rearRight": 4668.884528647239
+                }
+              }
+            ]
+          },
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2600000000000007,
+                "negativeSeconds": 1.2400000000000007
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2747471701972994,
+              "maxSlipDegrees": 10.951432580238606,
+              "maxYaw": 0.5361816809642428,
+              "minLoad": 912.6474153238028,
+              "finalSpeed": 18.124868119508932,
+              "finalHeading": 0.05902043055541761,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4210106398646829,
+                  "speed": 19.50096709673193,
+                  "roll": -0.038010944028068414,
+                  "loads": {
+                    "frontLeft": 4834.106158312462,
+                    "frontRight": 1233.9522238420034,
+                    "rearLeft": 4683.437929316026,
+                    "rearRight": 1020.5036885295093
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.31334981861060873,
+                  "speed": 18.813592581651253,
+                  "roll": 0.02576070268135918,
+                  "loads": {
+                    "frontLeft": 1418.916056807367,
+                    "frontRight": 4648.372472885956,
+                    "rearLeft": 1174.1312142506833,
+                    "rearRight": 4530.580256055993
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5293486123434499,
+                  "speed": 18.124868119508932,
+                  "roll": 0.03582421504636648,
+                  "loads": {
+                    "frontLeft": 1492.667739090408,
+                    "frontRight": 4573.855020217178,
+                    "rearLeft": 1286.5417167118426,
+                    "rearRight": 4418.935523980574
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.010630995823724954,
+                "speedFraction": 0.0034623306613177363,
+                "yaw": 0.0007066560911206388
+              },
+              "errorVs3200": {
+                "heading": 0.011818547451725836,
+                "speedFraction": 0.004355540449465289,
+                "yaw": 0.005251056492416861
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2500000000000009,
+                "negativeSeconds": 1.2500000000000009
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2653025643462064,
+              "maxSlipDegrees": 10.573650366074872,
+              "maxYaw": 0.5322010929012189,
+              "minLoad": 924.4600764564868,
+              "finalSpeed": 18.10412850426484,
+              "finalHeading": 0.048770596594034155,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4086855229961106,
+                  "speed": 19.499366856221624,
+                  "roll": -0.03882378423468597,
+                  "loads": {
+                    "frontLeft": 4832.004861824929,
+                    "frontRight": 1247.1570889919383,
+                    "rearLeft": 4667.994251644061,
+                    "rearRight": 1024.8437975390711
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3481378782511424,
+                  "speed": 18.796922957246128,
+                  "roll": 0.028701524715282097,
+                  "loads": {
+                    "frontLeft": 1345.5219759343665,
+                    "frontRight": 4731.7643768173875,
+                    "rearLeft": 1100.4110273640458,
+                    "rearRight": 4594.3026198842
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5087727954024901,
+                  "speed": 18.10412850426484,
+                  "roll": 0.03619876575720327,
+                  "loads": {
+                    "frontLeft": 1328.8075582110382,
+                    "frontRight": 4745.962482999702,
+                    "rearLeft": 1104.526038472883,
+                    "rearRight": 4592.703920316378
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00038116186234149474,
+                "speedFraction": 0.002314105884583917,
+                "yaw": 0.0032739319719032878
+              },
+              "errorVs3200": {
+                "heading": 0.0015687134903423772,
+                "speedFraction": 0.003206293605855226,
+                "yaw": 0.009231644555440788
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2499999999999953,
+                "negativeSeconds": 1.2499999999999953
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.292672369372698,
+              "maxSlipDegrees": 10.610519159923085,
+              "maxYaw": 0.5329022761906277,
+              "minLoad": 897.3626237504263,
+              "finalSpeed": 18.08457365909031,
+              "finalHeading": 0.04655016007629764,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.41872583277089426,
+                  "speed": 19.494748772379197,
+                  "roll": -0.03883212594922943,
+                  "loads": {
+                    "frontLeft": 4834.507620007926,
+                    "frontRight": 1249.084953006555,
+                    "rearLeft": 4666.089142044727,
+                    "rearRight": 1022.3182849407933
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3587805838805469,
+                  "speed": 18.784215863527237,
+                  "roll": 0.03427218157034225,
+                  "loads": {
+                    "frontLeft": 1150.9443529994064,
+                    "frontRight": 4939.452670390266,
+                    "rearLeft": 906.3120679641844,
+                    "rearRight": 4775.290908646143
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.514843201138504,
+                  "speed": 18.08457365909031,
+                  "roll": 0.03632190402928524,
+                  "loads": {
+                    "frontLeft": 1329.5146613496959,
+                    "frontRight": 4750.1236549788955,
+                    "rearLeft": 1100.8118168188546,
+                    "rearRight": 4591.549866852554
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0018392746553950179,
+                "speedFraction": 0.0012314745305144204,
+                "yaw": 0.0025727486824944634
+              },
+              "errorVs3200": {
+                "heading": 0.0006517230273941355,
+                "speedFraction": 0.0021226985714433155,
+                "yaw": 0.008530461266031963
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2499999999999845,
+                "negativeSeconds": 1.2499999999999845
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2724251846021106,
+              "maxSlipDegrees": 10.583955103083824,
+              "maxYaw": 0.5354750248731222,
+              "minLoad": 914.5032953020409,
+              "finalSpeed": 18.062330359291106,
+              "finalHeading": 0.04838943473169266,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4323633081868117,
+                  "speed": 19.490759506837623,
+                  "roll": -0.03870274244636906,
+                  "loads": {
+                    "frontLeft": 4839.49641511498,
+                    "frontRight": 1245.8613751218338,
+                    "rearLeft": 4669.626657301511,
+                    "rearRight": 1017.0155524616769
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.43067900090241196,
+                  "speed": 18.77589130771757,
+                  "roll": 0.03189334613842243,
+                  "loads": {
+                    "frontLeft": 1251.3414001272342,
+                    "frontRight": 4841.376692240034,
+                    "rearLeft": 999.2645495457064,
+                    "rearRight": 4680.017358087025
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4673056057695746,
+                  "speed": 18.062330359291106,
+                  "roll": 0.03857922277639526,
+                  "loads": {
+                    "frontLeft": 1251.0443515913857,
+                    "frontRight": 4831.210740352166,
+                    "rearLeft": 1025.4477514300431,
+                    "rearRight": 4664.297156626406
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.0011875516280008824,
+                "speedFraction": 0.0008901278711268557,
+                "yaw": 0.0059577125835375
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.249999999999979,
+                "negativeSeconds": 1.249999999999979
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.274664104557626,
+              "maxSlipDegrees": 10.680444109518104,
+              "maxYaw": 0.5377853984146697,
+              "minLoad": 797.7647479712642,
+              "finalSpeed": 18.04557807144661,
+              "finalHeading": 0.04787784889573388,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.44295190561314257,
+                  "speed": 19.488459839835574,
+                  "roll": -0.0384791495693245,
+                  "loads": {
+                    "frontLeft": 4843.297086371867,
+                    "frontRight": 1242.8674773252244,
+                    "rearLeft": 4673.157131411688,
+                    "rearRight": 1012.6783048912189
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.25540916313495643,
+                  "speed": 18.77454909456793,
+                  "roll": 0.039019594326277496,
+                  "loads": {
+                    "frontLeft": 1187.035514677294,
+                    "frontRight": 4907.9762582920175,
+                    "rearLeft": 974.9883570053929,
+                    "rearRight": 4701.9998700252945
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5322935518822902,
+                  "speed": 18.04557807144661,
+                  "roll": 0.03747028177435589,
+                  "loads": {
+                    "frontLeft": 1494.2550180117405,
+                    "frontRight": 4589.178165512616,
+                    "rearLeft": 1280.5581379559965,
+                    "rearRight": 4408.008678519647
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0005115858359587833,
+                "speedFraction": 0.0009274710134996589,
+                "yaw": 0.0023103735415475057
+              },
+              "errorVs3200": {
+                "heading": 0.0006759657920420992,
+                "speedFraction": 0.00003816871017159329,
+                "yaw": 0.0036473390419899943
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2500000000000204,
+                "negativeSeconds": 1.2500000000000204
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.305691999424537,
+              "maxSlipDegrees": 10.606138438326198,
+              "maxYaw": 0.5401856981023911,
+              "minLoad": 871.8081932250589,
+              "finalSpeed": 18.049281502494587,
+              "finalHeading": 0.047759511478315586,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4460887005190983,
+                  "speed": 19.487878309662428,
+                  "roll": -0.038434802471775366,
+                  "loads": {
+                    "frontLeft": 4844.185440041705,
+                    "frontRight": 1242.4703080091808,
+                    "rearLeft": 4673.64574623852,
+                    "rearRight": 1011.6985057105964
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.36046158837628184,
+                  "speed": 18.76700991460064,
+                  "roll": 0.03578775388571378,
+                  "loads": {
+                    "frontLeft": 1115.7282900731366,
+                    "frontRight": 4978.206412037439,
+                    "rearLeft": 871.8419703727976,
+                    "rearRight": 4806.223327516627
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.46538449153814554,
+                  "speed": 18.049281502494587,
+                  "roll": 0.038736475398328564,
+                  "loads": {
+                    "frontLeft": 1251.0061511603922,
+                    "frontRight": 4833.038125614321,
+                    "rearLeft": 1023.6166366708192,
+                    "rearRight": 4664.339086554468
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0006299232533770738,
+                "speedFraction": 0.0007224348429551997,
+                "yaw": 0.004710673229268991
+              },
+              "errorVs3200": {
+                "heading": 0.0005576283746238087,
+                "speedFraction": 0.00016704996878291745,
+                "yaw": 0.0012470393542685088
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.250000000000019,
+                "negativeSeconds": 1.250000000000019
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2992956566815277,
+              "maxSlipDegrees": 10.591603145855682,
+              "maxYaw": 0.5414327374566597,
+              "minLoad": 885.8537032703284,
+              "finalSpeed": 18.04626687417661,
+              "finalHeading": 0.04720188310369178,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4451536336546269,
+                  "speed": 19.488054991373357,
+                  "roll": -0.0385109049087274,
+                  "loads": {
+                    "frontLeft": 4843.906992910769,
+                    "frontRight": 1243.0643639481254,
+                    "rearLeft": 4672.854578913069,
+                    "rearRight": 1012.1740642280357
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.38237914913281656,
+                  "speed": 18.767184524227478,
+                  "roll": 0.0348653161016308,
+                  "loads": {
+                    "frontLeft": 1134.2910696635818,
+                    "frontRight": 4960.056979654532,
+                    "rearLeft": 887.9351934744789,
+                    "rearRight": 4789.716757207409
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4771886989757945,
+                  "speed": 18.04626687417661,
+                  "roll": 0.03843688148831698,
+                  "loads": {
+                    "frontLeft": 1247.543996822519,
+                    "frontRight": 4836.4739608354075,
+                    "rearLeft": 1019.4398627851646,
+                    "rearRight": 4668.542179556909
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0011875516280008824,
+                "speedFraction": 0.000889336248145578,
+                "yaw": 0.0059577125835375
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.74,
+          "profile": "step control",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000007,
+                "negativeSeconds": 1.2600000000000007
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.247189172566677,
+              "maxSlipDegrees": 11.042477208093137,
+              "maxYaw": 0.5345252409424628,
+              "minLoad": 864.8967491952732,
+              "finalSpeed": 18.12747490334028,
+              "finalHeading": 0.04032889125473482,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4210106398646829,
+                  "speed": 19.50096709673193,
+                  "roll": -0.038010944028068414,
+                  "loads": {
+                    "frontLeft": 4834.106158312462,
+                    "frontRight": 1233.9522238420034,
+                    "rearLeft": 4683.437929316026,
+                    "rearRight": 1020.5036885295093
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4572690286835934,
+                  "speed": 18.80994400234217,
+                  "roll": 0.03477898846218483,
+                  "loads": {
+                    "frontLeft": 1576.9738272696848,
+                    "frontRight": 4510.382549954684,
+                    "rearLeft": 1413.1683980727212,
+                    "rearRight": 4271.47522470291
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4564769180248951,
+                  "speed": 18.12747490334028,
+                  "roll": 0.038135346211449074,
+                  "loads": {
+                    "frontLeft": 1243.2469821742675,
+                    "frontRight": 4821.498042971584,
+                    "rearLeft": 1033.4993308608077,
+                    "rearRight": 4673.7556439933405
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0010727135350503403,
+                "speedFraction": 0.003502198066877904,
+                "yaw": 0.00045857738695254113
+              },
+              "errorVs3200": {
+                "heading": 0.0030299111282523494,
+                "speedFraction": 0.0045739532410440376,
+                "yaw": 0.006582733644444616
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000009,
+                "negativeSeconds": 1.260000000000001
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.261104683656672,
+              "maxSlipDegrees": 10.578792693772268,
+              "maxYaw": 0.5310890238991783,
+              "minLoad": 924.4600764564868,
+              "finalSpeed": 18.104306194922682,
+              "finalHeading": 0.03958816536132814,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4086855229961106,
+                  "speed": 19.499366856221624,
+                  "roll": -0.03882378423468597,
+                  "loads": {
+                    "frontLeft": 4832.004861824929,
+                    "frontRight": 1247.1570889919383,
+                    "rearLeft": 4667.994251644061,
+                    "rearRight": 1024.8437975390711
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.33788046347207334,
+                  "speed": 18.79566299320705,
+                  "roll": 0.030389846246135735,
+                  "loads": {
+                    "frontLeft": 1282.0802771089257,
+                    "frontRight": 4797.116096282998,
+                    "rearLeft": 1038.7156368361566,
+                    "rearRight": 4654.08798977192
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5025067002703665,
+                  "speed": 18.104306194922682,
+                  "roll": 0.036463634627705355,
+                  "loads": {
+                    "frontLeft": 1308.1353030030496,
+                    "frontRight": 4766.500153576288,
+                    "rearLeft": 1084.5194213336474,
+                    "rearRight": 4612.8451220870165
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0003319876416436607,
+                "speedFraction": 0.0022196228628077463,
+                "yaw": 0.003894794430236992
+              },
+              "errorVs3200": {
+                "heading": 0.00228918523484567,
+                "speedFraction": 0.003290008227706087,
+                "yaw": 0.010018950687729067
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999956,
+                "negativeSeconds": 1.2599999999999951
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2877101896936543,
+              "maxSlipDegrees": 10.595804905829372,
+              "maxYaw": 0.531948757148637,
+              "minLoad": 907.2716851852334,
+              "finalSpeed": 18.085960398061225,
+              "finalHeading": 0.03699907519349788,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.41872583277089426,
+                  "speed": 19.494748772379197,
+                  "roll": -0.03883212594922943,
+                  "loads": {
+                    "frontLeft": 4834.507620007926,
+                    "frontRight": 1249.084953006555,
+                    "rearLeft": 4666.089142044727,
+                    "rearRight": 1022.3182849407933
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3696745070977059,
+                  "speed": 18.78218889216859,
+                  "roll": 0.034985759521284285,
+                  "loads": {
+                    "frontLeft": 1154.2892666804596,
+                    "frontRight": 4935.18752655913,
+                    "rearLeft": 912.2683821135737,
+                    "rearRight": 4770.254824646838
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5057287207218764,
+                  "speed": 18.085960398061225,
+                  "roll": 0.03669902403684669,
+                  "loads": {
+                    "frontLeft": 1300.0893964543939,
+                    "frontRight": 4779.374329543866,
+                    "rearLeft": 1072.3354238338582,
+                    "rearRight": 4620.200850167884
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.002257102526186605,
+                "speedFraction": 0.0012040347804118667,
+                "yaw": 0.0030350611807783423
+              },
+              "errorVs3200": {
+                "heading": 0.000299904932984596,
+                "speedFraction": 0.0022733354822330742,
+                "yaw": 0.009159217438270417
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999847,
+                "negativeSeconds": 1.2599999999999842
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2759251946501555,
+              "maxSlipDegrees": 10.598536424657652,
+              "maxYaw": 0.5349838183294153,
+              "minLoad": 914.5032953020409,
+              "finalSpeed": 18.06421046038624,
+              "finalHeading": 0.03925617771968448,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4323633081868117,
+                  "speed": 19.490759506837623,
+                  "roll": -0.03870274244636906,
+                  "loads": {
+                    "frontLeft": 4839.49641511498,
+                    "frontRight": 1245.8613751218338,
+                    "rearLeft": 4669.626657301511,
+                    "rearRight": 1017.0155524616769
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.41536310491014916,
+                  "speed": 18.77355181488817,
+                  "roll": 0.03379426205069033,
+                  "loads": {
+                    "frontLeft": 1198.5339549380801,
+                    "frontRight": 4892.94856047249,
+                    "rearLeft": 952.0743607300265,
+                    "rearRight": 4728.443123859404
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4949397568105418,
+                  "speed": 18.06421046038624,
+                  "roll": 0.03850046491157297,
+                  "loads": {
+                    "frontLeft": 1393.1179098413154,
+                    "frontRight": 4689.375396432193,
+                    "rearLeft": 1189.8731080097523,
+                    "rearRight": 4499.63358571674
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.001957197593202009,
+                "speedFraction": 0.0010680147748862723,
+                "yaw": 0.006124156257492075
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999791,
+                "negativeSeconds": 1.2599999999999787
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.321312186828739,
+              "maxSlipDegrees": 10.662317790572798,
+              "maxYaw": 0.5380819210834886,
+              "minLoad": 832.607872719383,
+              "finalSpeed": 18.051424493691414,
+              "finalHeading": 0.038222192280799705,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.44295190561314257,
+                  "speed": 19.488459839835574,
+                  "roll": -0.0384791495693245,
+                  "loads": {
+                    "frontLeft": 4843.297086371867,
+                    "frontRight": 1242.8674773252244,
+                    "rearLeft": 4673.157131411688,
+                    "rearRight": 1012.6783048912189
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.29953031154619225,
+                  "speed": 18.768970166956848,
+                  "roll": 0.03866619454636015,
+                  "loads": {
+                    "frontLeft": 1100.3018618667693,
+                    "frontRight": 4993.111913205251,
+                    "rearLeft": 863.98401561414,
+                    "rearRight": 4814.602209313841
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5338154902029046,
+                  "speed": 18.051424493691414,
+                  "roll": 0.037381511989134635,
+                  "loads": {
+                    "frontLeft": 1488.6673136277582,
+                    "frontRight": 4594.780642220665,
+                    "rearLeft": 1272.9704053592804,
+                    "rearRight": 4415.581638792297
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.001033985438884777,
+                "speedFraction": 0.0007078065616464846,
+                "yaw": 0.0030981027540732953
+              },
+              "errorVs3200": {
+                "heading": 0.0009232121543172322,
+                "speedFraction": 0.0003594522653740384,
+                "yaw": 0.0030260535034187797
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000189,
+                "negativeSeconds": 1.260000000000022
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.295984202149016,
+              "maxSlipDegrees": 10.558811424988827,
+              "maxYaw": 0.5397532026250929,
+              "minLoad": 890.7113146024417,
+              "finalSpeed": 18.048456039183254,
+              "finalHeading": 0.03779691321387646,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4460887005190983,
+                  "speed": 19.487878309662428,
+                  "roll": -0.038434802471775366,
+                  "loads": {
+                    "frontLeft": 4844.185440041705,
+                    "frontRight": 1242.4703080091808,
+                    "rearLeft": 4673.64574623852,
+                    "rearRight": 1011.6985057105964
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.381189461598197,
+                  "speed": 18.76464202987625,
+                  "roll": 0.03611371035697433,
+                  "loads": {
+                    "frontLeft": 1132.9333014162016,
+                    "frontRight": 4959.997014678478,
+                    "rearLeft": 890.7496869046762,
+                    "rearRight": 4788.319997000644
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.46770824462001315,
+                  "speed": 18.048456039183254,
+                  "roll": 0.038683356353810795,
+                  "loads": {
+                    "frontLeft": 1250.1220550811631,
+                    "frontRight": 4833.866193143494,
+                    "rearLeft": 1022.6440949982136,
+                    "rearRight": 4665.367656777131
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0014592645058080222,
+                "speedFraction": 0.0008721345025033411,
+                "yaw": 0.004769384295677526
+              },
+              "errorVs3200": {
+                "heading": 0.0004979330873939869,
+                "speedFraction": 0.000194948819848495,
+                "yaw": 0.0013547719618145493
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.240000000000021,
+                "negativeSeconds": 1.260000000000017
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2916021379151448,
+              "maxSlipDegrees": 10.557600503922288,
+              "maxYaw": 0.5411079745869074,
+              "minLoad": 900.7281423593225,
+              "finalSpeed": 18.04493819977697,
+              "finalHeading": 0.03729898012648247,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4451536336546269,
+                  "speed": 19.488054991373357,
+                  "roll": -0.0385109049087274,
+                  "loads": {
+                    "frontLeft": 4843.906992910769,
+                    "frontRight": 1243.0643639481254,
+                    "rearLeft": 4672.854578913069,
+                    "rearRight": 1012.1740642280357
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3979504591463012,
+                  "speed": 18.765011127847096,
+                  "roll": 0.03539048747647124,
+                  "loads": {
+                    "frontLeft": 1146.2322535980074,
+                    "frontRight": 4947.148605593965,
+                    "rearLeft": 901.9974526167978,
+                    "rearRight": 4776.6216881912305
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4795821319959259,
+                  "speed": 18.04493819977697,
+                  "roll": 0.03834837435944516,
+                  "loads": {
+                    "frontLeft": 1247.6086613379755,
+                    "frontRight": 4836.347525855721,
+                    "rearLeft": 1019.3599380167097,
+                    "rearRight": 4668.6838747895945
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.001957197593202009,
+                "speedFraction": 0.0010668753362641503,
+                "yaw": 0.006124156257492075
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.76,
+          "profile": "step control",
+          "reference6400": {
+            "eventSchedule": {
+              "positiveStart": 0.5,
+              "negativeStart": 1.76,
+              "positiveSeconds": 1.260000000000068,
+              "negativeSeconds": 1.2400000000000577
+            },
+            "maxConstraintError": 1.9984014443252818e-14,
+            "maneuver": "transition",
+            "maxRollDegrees": 2.313306157888542,
+            "maxSlipDegrees": 10.680406723454805,
+            "maxYaw": 0.5428893249217026,
+            "minLoad": 859.8351898154581,
+            "finalSpeed": 18.04655525905829,
+            "finalHeading": 0.05704815362841553,
+            "samples": [
+              {
+                "time": 1,
+                "yaw": 0.44059755454952665,
+                "speed": 19.488778445128133,
+                "roll": -0.03868636115898017,
+                "loads": {
+                  "frontLeft": 4841.615738229912,
+                  "frontRight": 1245.6215136133537,
+                  "rearLeft": 4669.842675311735,
+                  "rearRight": 1014.9200728450003
+                }
+              },
+              {
+                "time": 2,
+                "yaw": -0.3556143198423456,
+                "speed": 18.771062994167842,
+                "roll": 0.034424307632865574,
+                "loads": {
+                  "frontLeft": 1110.1185271406332,
+                  "frontRight": 4985.5587044162185,
+                  "rearLeft": 861.560918776315,
+                  "rearRight": 4814.761849666834
+                }
+              },
+              {
+                "time": 3,
+                "yaw": -0.4774661183049034,
+                "speed": 18.04655525905829,
+                "roll": 0.038445959270379325,
+                "loads": {
+                  "frontLeft": 1247.1199390846753,
+                  "frontRight": 4837.0322506654,
+                  "rearLeft": 1018.9104537425642,
+                  "rearRight": 4668.937356507362
+                }
+              }
+            ]
+          },
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2600000000000007,
+                "negativeSeconds": 1.2400000000000007
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2747471701972994,
+              "maxSlipDegrees": 10.951432580238606,
+              "maxYaw": 0.5361816809642428,
+              "minLoad": 912.6474153238028,
+              "finalSpeed": 18.124868119508932,
+              "finalHeading": 0.05902043055541761,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4210106398646829,
+                  "speed": 19.50096709673193,
+                  "roll": -0.038010944028068414,
+                  "loads": {
+                    "frontLeft": 4834.106158312462,
+                    "frontRight": 1233.9522238420034,
+                    "rearLeft": 4683.437929316026,
+                    "rearRight": 1020.5036885295093
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.31334981861060873,
+                  "speed": 18.813592581651253,
+                  "roll": 0.02576070268135918,
+                  "loads": {
+                    "frontLeft": 1418.916056807367,
+                    "frontRight": 4648.372472885956,
+                    "rearLeft": 1174.1312142506833,
+                    "rearRight": 4530.580256055993
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5293486123434499,
+                  "speed": 18.124868119508932,
+                  "roll": 0.03582421504636648,
+                  "loads": {
+                    "frontLeft": 1492.667739090408,
+                    "frontRight": 4573.855020217178,
+                    "rearLeft": 1286.5417167118426,
+                    "rearRight": 4418.935523980574
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.001502058704111242,
+                "speedFraction": 0.0035741711307171187,
+                "yaw": 0.00036917959201909767
+              },
+              "errorVs3200": {
+                "heading": 0.0019673744320580777,
+                "speedFraction": 0.004328283742795591,
+                "yaw": 0.005780824848888866
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000001,
+                "negativeSeconds": 1.2400000000000009
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.263172669355002,
+              "maxSlipDegrees": 10.574050623003357,
+              "maxYaw": 0.5337476793311868,
+              "minLoad": 924.4600764564868,
+              "finalSpeed": 18.102903158676366,
+              "finalHeading": 0.058601301611632906,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4086855229961106,
+                  "speed": 19.499366856221624,
+                  "roll": -0.03882378423468597,
+                  "loads": {
+                    "frontLeft": 4832.004861824929,
+                    "frontRight": 1247.1570889919383,
+                    "rearLeft": 4667.994251644061,
+                    "rearRight": 1024.8437975390711
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.34252930673541737,
+                  "speed": 18.79893495471028,
+                  "roll": 0.027480991593742822,
+                  "loads": {
+                    "frontLeft": 1387.3633347566354,
+                    "frontRight": 4688.217492541507,
+                    "rearLeft": 1141.1368901052883,
+                    "rearRight": 4555.2822825965695
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5136787075729732,
+                  "speed": 18.102903158676366,
+                  "roll": 0.036103427295536936,
+                  "loads": {
+                    "frontLeft": 1340.950182230237,
+                    "frontRight": 4733.9080650199985,
+                    "rearLeft": 1116.4602474297305,
+                    "rearRight": 4580.681505320035
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0010829297603265342,
+                "speedFraction": 0.002357970978742907,
+                "yaw": 0.0020648220410368623
+              },
+              "errorVs3200": {
+                "heading": 0.0015482454882733698,
+                "speedFraction": 0.003111169705330985,
+                "yaw": 0.008214826481944826
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999951,
+                "negativeSeconds": 1.2399999999999956
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2973829356836895,
+              "maxSlipDegrees": 10.624886784674176,
+              "maxYaw": 0.5329723279814846,
+              "minLoad": 887.676426596301,
+              "finalSpeed": 18.085809433169057,
+              "finalHeading": 0.05597365512917829,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.41872583277089426,
+                  "speed": 19.494748772379197,
+                  "roll": -0.03883212594922943,
+                  "loads": {
+                    "frontLeft": 4834.507620007926,
+                    "frontRight": 1249.084953006555,
+                    "rearLeft": 4666.089142044727,
+                    "rearRight": 1022.3182849407933
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.34767033872369346,
+                  "speed": 18.786032807637856,
+                  "roll": 0.033415156664896105,
+                  "loads": {
+                    "frontLeft": 1149.862690224422,
+                    "frontRight": 4941.1408008953,
+                    "rearLeft": 902.6016857249231,
+                    "rearRight": 4778.394823155355
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5128890670206943,
+                  "speed": 18.085809433169057,
+                  "roll": 0.03638142190619293,
+                  "loads": {
+                    "frontLeft": 1321.976079781732,
+                    "frontRight": 4757.598920626567,
+                    "rearLeft": 1093.4334782076264,
+                    "rearRight": 4598.991521384074
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.001544716722128081,
+                "speedFraction": 0.0014114911867564306,
+                "yaw": 0.0028401733907390536
+              },
+              "errorVs3200": {
+                "heading": 0.0010794009941812455,
+                "speedFraction": 0.002163978702983904,
+                "yaw": 0.008990177831647017
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999842,
+                "negativeSeconds": 1.2399999999999847
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.270670617518309,
+              "maxSlipDegrees": 10.570848727097314,
+              "maxYaw": 0.5358125013722237,
+              "minLoad": 914.5032953020409,
+              "finalSpeed": 18.060317454252356,
+              "finalHeading": 0.05751837185130637,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4323633081868117,
+                  "speed": 19.490759506837623,
+                  "roll": -0.03870274244636906,
+                  "loads": {
+                    "frontLeft": 4839.49641511498,
+                    "frontRight": 1245.8613751218338,
+                    "rearLeft": 4669.626657301511,
+                    "rearRight": 1017.0155524616769
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4412525709691195,
+                  "speed": 18.778112298855287,
+                  "roll": 0.030212309917903874,
+                  "loads": {
+                    "frontLeft": 1312.1109002145038,
+                    "frontRight": 4781.849372528259,
+                    "rearLeft": 1055.0647536222561,
+                    "rearRight": 4622.974973634983
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.475343266961481,
+                  "speed": 18.060317454252356,
+                  "roll": 0.03830935512521987,
+                  "loads": {
+                    "frontLeft": 1248.8694421093724,
+                    "frontRight": 4833.10843447806,
+                    "rearLeft": 1022.4505463822245,
+                    "rearRight": 4667.571577030343
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.0004653157279468356,
+                "speedFraction": 0.0007514268838033633,
+                "yaw": 0.0061500044409079635
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999787,
+                "negativeSeconds": 1.2399999999999791
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.274664104557626,
+              "maxSlipDegrees": 10.646375135585153,
+              "maxYaw": 0.5393281044453246,
+              "minLoad": 813.3312899217556,
+              "finalSpeed": 18.0580238932884,
+              "finalHeading": 0.05560589573851327,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.44295190561314257,
+                  "speed": 19.488459839835574,
+                  "roll": -0.0384791495693245,
+                  "loads": {
+                    "frontLeft": 4843.297086371867,
+                    "frontRight": 1242.8674773252244,
+                    "rearLeft": 4673.157131411688,
+                    "rearRight": 1012.6783048912189
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4401195251451995,
+                  "speed": 18.776355776489915,
+                  "roll": 0.03500472031744136,
+                  "loads": {
+                    "frontLeft": 1771.9921798775565,
+                    "frontRight": 4323.214920939832,
+                    "rearLeft": 1585.674511608629,
+                    "rearRight": 4091.1183875739816
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5180901744976651,
+                  "speed": 18.0580238932884,
+                  "roll": 0.036171909200750085,
+                  "loads": {
+                    "frontLeft": 1314.5862337271462,
+                    "frontRight": 4768.270092970081,
+                    "rearLeft": 1082.3637398772705,
+                    "rearRight": 4606.779933425502
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0019124761127931045,
+                "speedFraction": 0.0001269944988379068,
+                "yaw": 0.003515603073100948
+              },
+              "errorVs3200": {
+                "heading": 0.0014471603848462689,
+                "speedFraction": 0.0006243369578851077,
+                "yaw": 0.0026344013678070155
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000022,
+                "negativeSeconds": 1.2400000000000189
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.318163128967519,
+              "maxSlipDegrees": 10.661455425624919,
+              "maxYaw": 0.540985387175752,
+              "minLoad": 847.6451676969848,
+              "finalSpeed": 18.048469724761148,
+              "finalHeading": 0.05757215412035621,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4460887005190983,
+                  "speed": 19.487878309662428,
+                  "roll": -0.038434802471775366,
+                  "loads": {
+                    "frontLeft": 4844.185440041705,
+                    "frontRight": 1242.4703080091808,
+                    "rearLeft": 4673.64574623852,
+                    "rearRight": 1011.6985057105964
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.33175529662692327,
+                  "speed": 18.76965044910026,
+                  "roll": 0.035527562975099625,
+                  "loads": {
+                    "frontLeft": 1093.1095972485514,
+                    "frontRight": 5001.72061076298,
+                    "rearLeft": 847.7977739352007,
+                    "rearRight": 4829.372018053268
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.46428458498688485,
+                  "speed": 18.048469724761148,
+                  "roll": 0.03876488039042273,
+                  "loads": {
+                    "frontLeft": 1251.5073832484509,
+                    "frontRight": 4832.554306796264,
+                    "rearLeft": 1024.226228985844,
+                    "rearRight": 4663.712080969441
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00005378226904984018,
+                "speedFraction": 0.0006560089279282755,
+                "yaw": 0.00517288580352826
+              },
+              "errorVs3200": {
+                "heading": 0.0005190979969966758,
+                "speedFraction": 0.00009492501313079771,
+                "yaw": 0.0009771186373797036
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000017,
+                "negativeSeconds": 1.240000000000021
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3090603649070744,
+              "maxSlipDegrees": 10.640611906435097,
+              "maxYaw": 0.5419625058131317,
+              "minLoad": 867.0821847505688,
+              "finalSpeed": 18.046756636150494,
+              "finalHeading": 0.057053056123359536,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4451536336546269,
+                  "speed": 19.488054991373357,
+                  "roll": -0.0385109049087274,
+                  "loads": {
+                    "frontLeft": 4843.906992910769,
+                    "frontRight": 1243.0643639481254,
+                    "rearLeft": 4672.854578913069,
+                    "rearRight": 1012.1740642280357
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.36155884130764093,
+                  "speed": 18.769463501332993,
+                  "roll": 0.03434401421012387,
+                  "loads": {
+                    "frontLeft": 1118.0197368425552,
+                    "frontRight": 4977.1473149797275,
+                    "rearLeft": 869.7146465125213,
+                    "rearRight": 4807.118301665196
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47523076221622773,
+                  "speed": 18.046756636150494,
+                  "roll": 0.03850641267236737,
+                  "loads": {
+                    "frontLeft": 1247.5866129434469,
+                    "frontRight": 4836.478646290462,
+                    "rearLeft": 1019.6003123106943,
+                    "rearRight": 4668.334428455397
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0004653157279468356,
+                "speedFraction": 0.0007508626654105788,
+                "yaw": 0.0061500044409079635
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.78,
+          "profile": "step control",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000007,
+                "negativeSeconds": 1.2200000000000006
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2737687613228683,
+              "maxSlipDegrees": 10.92858449568107,
+              "maxYaw": 0.5324166396981078,
+              "minLoad": 938.3015516590145,
+              "finalSpeed": 18.11760102245382,
+              "finalHeading": 0.0825248287092828,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4210106398646829,
+                  "speed": 19.50096709673193,
+                  "roll": -0.038010944028068414,
+                  "loads": {
+                    "frontLeft": 4834.106158312462,
+                    "frontRight": 1233.9522238420034,
+                    "rearLeft": 4683.437929316026,
+                    "rearRight": 1020.5036885295093
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.37939767718431217,
+                  "speed": 18.821314354000712,
+                  "roll": 0.021309788702486072,
+                  "loads": {
+                    "frontLeft": 1956.42858758866,
+                    "frontRight": 4102.822173209835,
+                    "rearLeft": 1746.2359643177883,
+                    "rearRight": 3966.5132748837177
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4659619891411504,
+                  "speed": 18.11760102245382,
+                  "roll": 0.03841891113854045,
+                  "loads": {
+                    "frontLeft": 1242.2489073743898,
+                    "frontRight": 4823.194802415971,
+                    "rearLeft": 1032.761186986705,
+                    "rearRight": 4673.795103222936
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0060163820086645,
+                "speedFraction": 0.0032160801462701727,
+                "yaw": 0.0037101304564024495
+              },
+              "errorVs3200": {
+                "heading": 0.006231336540467813,
+                "speedFraction": 0.0042750133037707805,
+                "yaw": 0.012237016767391307
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.280000000000001,
+                "negativeSeconds": 1.2200000000000009
+              },
+              "maxConstraintError": 2.042810365310288e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2584199593192125,
+              "maxSlipDegrees": 10.587555813824975,
+              "maxYaw": 0.5337767726534937,
+              "minLoad": 922.0036101177567,
+              "finalSpeed": 18.104200531708884,
+              "finalHeading": 0.07773346360694511,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4086855229961106,
+                  "speed": 19.499366856221624,
+                  "roll": -0.03882378423468597,
+                  "loads": {
+                    "frontLeft": 4832.004861824929,
+                    "frontRight": 1247.1570889919383,
+                    "rearLeft": 4667.994251644061,
+                    "rearRight": 1024.8437975390711
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.33491405236019123,
+                  "speed": 18.803037671669404,
+                  "roll": 0.024785672342825107,
+                  "loads": {
+                    "frontLeft": 1507.0611398864755,
+                    "frontRight": 4562.944986993145,
+                    "rearLeft": 1261.791793100071,
+                    "rearRight": 4440.202080020309
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5189116659404469,
+                  "speed": 18.104200531708884,
+                  "roll": 0.035893940748033655,
+                  "loads": {
+                    "frontLeft": 1369.975953136905,
+                    "frontRight": 4705.158511020979,
+                    "rearLeft": 1145.001671734071,
+                    "rearRight": 4551.863864108046
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0012250169063268146,
+                "speedFraction": 0.0024740620512413436,
+                "yaw": 0.0023499975010166096
+              },
+              "errorVs3200": {
+                "heading": 0.0014399714381301276,
+                "speedFraction": 0.0035322119801037832,
+                "yaw": 0.010876883812005467
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999947,
+                "negativeSeconds": 1.219999999999996
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3063597210030657,
+              "maxSlipDegrees": 10.708641581106612,
+              "maxYaw": 0.5323476069719391,
+              "minLoad": 851.4397276404723,
+              "finalSpeed": 18.085280468490144,
+              "finalHeading": 0.07557819828427226,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.41872583277089426,
+                  "speed": 19.494748772379197,
+                  "roll": -0.03883212594922943,
+                  "loads": {
+                    "frontLeft": 4834.507620007926,
+                    "frontRight": 1249.084953006555,
+                    "rearLeft": 4666.089142044727,
+                    "rearRight": 1022.3182849407933
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3099211283615233,
+                  "speed": 18.790577379692404,
+                  "roll": 0.03162513654788616,
+                  "loads": {
+                    "frontLeft": 1128.17120364677,
+                    "frontRight": 4963.506773644797,
+                    "rearLeft": 876.0356805150077,
+                    "rearRight": 4804.286342193424
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5134380081598611,
+                  "speed": 18.085280468490144,
+                  "roll": 0.03633914974317087,
+                  "loads": {
+                    "frontLeft": 1326.6799144163583,
+                    "frontRight": 4752.942566329367,
+                    "rearLeft": 1098.014974037017,
+                    "rearRight": 4594.362545217258
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0009302484163460356,
+                "speedFraction": 0.00142641166778823,
+                "yaw": 0.00377916318257121
+              },
+              "errorVs3200": {
+                "heading": 0.0007152938845427226,
+                "speedFraction": 0.0024834557613770958,
+                "yaw": 0.012306049493560067
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999838,
+                "negativeSeconds": 1.219999999999985
+              },
+              "maxConstraintError": 1.887379141862766e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.270180946006671,
+              "maxSlipDegrees": 10.551603230274514,
+              "maxYaw": 0.5361267701545103,
+              "minLoad": 914.5032953020409,
+              "finalSpeed": 18.059520158221797,
+              "finalHeading": 0.0765084467006183,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4323633081868117,
+                  "speed": 19.490759506837623,
+                  "roll": -0.03870274244636906,
+                  "loads": {
+                    "frontLeft": 4839.49641511498,
+                    "frontRight": 1245.8613751218338,
+                    "rearLeft": 4669.626657301511,
+                    "rearRight": 1017.0155524616769
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4474697116902071,
+                  "speed": 18.782587372695975,
+                  "roll": 0.02748967030412677,
+                  "loads": {
+                    "frontLeft": 1441.8551025122679,
+                    "frontRight": 4653.99451353713,
+                    "rearLeft": 1177.8119563515595,
+                    "rearRight": 4498.338427599043
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.48533566294342023,
+                  "speed": 18.059520158221797,
+                  "roll": 0.03787676070857821,
+                  "loads": {
+                    "frontLeft": 1252.6797859820726,
+                    "frontRight": 4829.034693665465,
+                    "rearLeft": 1025.5069745428523,
+                    "rearRight": 4664.7785458096105
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.00021495453180331303,
+                "speedFraction": 0.001055538461211869,
+                "yaw": 0.008526886310988857
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999783,
+                "negativeSeconds": 1.2199999999999795
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.286120984749611,
+              "maxSlipDegrees": 10.59746823886323,
+              "maxYaw": 0.5383138913321872,
+              "minLoad": 910.2027356001971,
+              "finalSpeed": 18.05444935461257,
+              "finalHeading": 0.07620987205727703,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.44295190561314257,
+                  "speed": 19.488459839835574,
+                  "roll": -0.0384791495693245,
+                  "loads": {
+                    "frontLeft": 4843.297086371867,
+                    "frontRight": 1242.8674773252244,
+                    "rearLeft": 4673.157131411688,
+                    "rearRight": 1012.6783048912189
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.40428589739747167,
+                  "speed": 18.775706728966913,
+                  "roll": 0.02909790250251907,
+                  "loads": {
+                    "frontLeft": 1273.9650316157122,
+                    "frontRight": 4821.289993959322,
+                    "rearLeft": 1013.474782991953,
+                    "rearRight": 4663.270191433014
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47791687270368755,
+                  "speed": 18.05444935461257,
+                  "roll": 0.03831804268350325,
+                  "loads": {
+                    "frontLeft": 1248.0365593872243,
+                    "frontRight": 4835.061256472387,
+                    "rearLeft": 1020.548549846957,
+                    "rearRight": 4668.353634293432
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00029857464334126504,
+                "speedFraction": 0.00028078285385235713,
+                "yaw": 0.002187121177676943
+              },
+              "errorVs3200": {
+                "heading": 0.00008362011153795201,
+                "speedFraction": 0.0007744592302580955,
+                "yaw": 0.006339765133311914
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000251,
+                "negativeSeconds": 1.2200000000000157
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.276004334967928,
+              "maxSlipDegrees": 10.698713119089788,
+              "maxYaw": 0.5399612960363953,
+              "minLoad": 782.9062353463901,
+              "finalSpeed": 18.04152498683082,
+              "finalHeading": 0.0778299061042591,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4460887005190983,
+                  "speed": 19.487878309662428,
+                  "roll": -0.038434802471775366,
+                  "loads": {
+                    "frontLeft": 4844.185440041705,
+                    "frontRight": 1242.4703080091808,
+                    "rearLeft": 4673.64574623852,
+                    "rearRight": 1011.6985057105964
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.21314042357012397,
+                  "speed": 18.779286102095483,
+                  "roll": 0.03584247737825878,
+                  "loads": {
+                    "frontLeft": 1118.0542454460278,
+                    "frontRight": 4978.5054511672415,
+                    "rearLeft": 892.6394063745953,
+                    "rearRight": 4782.800897012136
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47017459483953417,
+                  "speed": 18.04152498683082,
+                  "roll": 0.03881273654665546,
+                  "loads": {
+                    "frontLeft": 1348.5417397223127,
+                    "frontRight": 4735.680038007037,
+                    "rearLeft": 1138.9922323577418,
+                    "rearRight": 4548.785989912908
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0013214594036408123,
+                "speedFraction": 0.0009964368506649723,
+                "yaw": 0.0038345258818850425
+              },
+              "errorVs3200": {
+                "heading": 0.0015364139354441253,
+                "speedFraction": 0.00005804983312684975,
+                "yaw": 0.004692360429103815
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000131,
+                "negativeSeconds": 1.220000000000025
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3174484571021448,
+              "maxSlipDegrees": 10.74384836195206,
+              "maxYaw": 0.5446536564654991,
+              "minLoad": 811.1832630998263,
+              "finalSpeed": 18.040477740108475,
+              "finalHeading": 0.07629349216881498,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4451536336546269,
+                  "speed": 19.488054991373357,
+                  "roll": -0.0385109049087274,
+                  "loads": {
+                    "frontLeft": 4843.906992910769,
+                    "frontRight": 1243.0643639481254,
+                    "rearLeft": 4672.854578913069,
+                    "rearRight": 1012.1740642280357
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.2845781344909426,
+                  "speed": 18.77534131134492,
+                  "roll": 0.033645172369689794,
+                  "loads": {
+                    "frontLeft": 1062.9907131429245,
+                    "frontRight": 5033.033042611794,
+                    "rearLeft": 812.4372942101165,
+                    "rearRight": 4863.538950035165
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47648435572256176,
+                  "speed": 18.040477740108475,
+                  "roll": 0.03849064521881204,
+                  "loads": {
+                    "frontLeft": 1246.298831641203,
+                    "frontRight": 4837.68855420154,
+                    "rearLeft": 1018.35557413228,
+                    "rearRight": 4669.657040024978
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00021495453180331303,
+                "speedFraction": 0.0010544254745690207,
+                "yaw": 0.008526886310988857
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.76,
+          "profile": "100 ms smooth control ramps",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.52,
+                "negativeStart": 1.82,
+                "positiveSeconds": 1.3000000000000007,
+                "negativeSeconds": 1.1800000000000006
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.256159031057512,
+              "maxSlipDegrees": 10.438905221361733,
+              "maxYaw": 0.5338651889102541,
+              "minLoad": 951.9135141606288,
+              "finalSpeed": 18.160804311872848,
+              "finalHeading": 0.11286018919801255,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.46100137260209895,
+                  "speed": 19.525446109337658,
+                  "roll": -0.0345628152999268,
+                  "loads": {
+                    "frontLeft": 4710.012449894381,
+                    "frontRight": 1356.207323822989,
+                    "rearLeft": 4569.740109843226,
+                    "rearRight": 1136.0401164394061
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.35671032781420253,
+                  "speed": 18.85961032354247,
+                  "roll": 0.02320672201407539,
+                  "loads": {
+                    "frontLeft": 1790.6614069205275,
+                    "frontRight": 4282.356900096964,
+                    "rearLeft": 1646.5515849563433,
+                    "rearRight": 4052.4301080261653
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.49980984252807614,
+                  "speed": 18.160804311872848,
+                  "roll": 0.03858483309396752,
+                  "loads": {
+                    "frontLeft": 1266.5603689500372,
+                    "frontRight": 4799.8955994819835,
+                    "rearLeft": 1060.499280363956,
+                    "rearRight": 4645.044751204023
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.01929326772487361,
+                "speedFraction": 0.004988740695564431,
+                "yaw": 0.0031704634101403784
+              },
+              "errorVs3200": {
+                "heading": 0.019526147736251165,
+                "speedFraction": 0.005873756155895027,
+                "yaw": 0.008048995657561342
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.51,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.300000000000001,
+                "negativeSeconds": 1.1900000000000008
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.258707701188478,
+              "maxSlipDegrees": 9.997865709306398,
+              "maxYaw": 0.5322156536126332,
+              "minLoad": 926.2223635560308,
+              "finalSpeed": 18.127437184018664,
+              "finalHeading": 0.10121452322839808,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4372596870626744,
+                  "speed": 19.52158522751031,
+                  "roll": -0.037737320168763924,
+                  "loads": {
+                    "frontLeft": 4833.229102278856,
+                    "frontRight": 1243.9060871883653,
+                    "rearLeft": 4674.023018489873,
+                    "rearRight": 1020.8417920429067
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3417354657610838,
+                  "speed": 18.836820264489948,
+                  "roll": 0.02207234751525106,
+                  "loads": {
+                    "frontLeft": 1799.5988542639227,
+                    "frontRight": 4262.61838713637,
+                    "rearLeft": 1575.7269502479394,
+                    "rearRight": 4134.055808351768
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5322156536126332,
+                  "speed": 18.127437184018664,
+                  "roll": 0.03685957311879495,
+                  "loads": {
+                    "frontLeft": 1460.6147326598393,
+                    "frontRight": 4615.233466255094,
+                    "rearLeft": 1247.090593366981,
+                    "rearRight": 4449.061207718085
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.007647601755259137,
+                "speedFraction": 0.00314225927178291,
+                "yaw": 0.004819998707761286
+              },
+              "errorVs3200": {
+                "heading": 0.007880481766636693,
+                "speedFraction": 0.004025648679461202,
+                "yaw": 0.00969853095518225
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.505,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3049999999999942,
+                "negativeSeconds": 1.1899999999999966
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.288690844914316,
+              "maxSlipDegrees": 10.022996093728564,
+              "maxYaw": 0.5331347793426477,
+              "minLoad": 905.0126397272418,
+              "finalSpeed": 18.108026575245248,
+              "finalHeading": 0.09839148364088102,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.44204491550252634,
+                  "speed": 19.51648317065488,
+                  "roll": -0.03793158046543834,
+                  "loads": {
+                    "frontLeft": 4838.084795970792,
+                    "frontRight": 1244.274875185057,
+                    "rearLeft": 4673.172561228811,
+                    "rearRight": 1016.4677676153407
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3769132031517852,
+                  "speed": 18.81883782122525,
+                  "roll": 0.024864805451589655,
+                  "loads": {
+                    "frontLeft": 1426.7195499949466,
+                    "frontRight": 4663.89797738269,
+                    "rearLeft": 1162.2523861596906,
+                    "rearRight": 4519.130086462673
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5315500672942175,
+                  "speed": 18.108026575245248,
+                  "roll": 0.036477328257997724,
+                  "loads": {
+                    "frontLeft": 1418.1831512174188,
+                    "frontRight": 4662.152387784279,
+                    "rearLeft": 1192.0134060613614,
+                    "rearRight": 4499.651054936941
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.004824562167742075,
+                "speedFraction": 0.0020681084284430717,
+                "yaw": 0.003900872977746772
+              },
+              "errorVs3200": {
+                "heading": 0.005057442179119631,
+                "speedFraction": 0.0029505519149735093,
+                "yaw": 0.008779405225167736
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5025000000000001,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3074999999999832,
+                "negativeSeconds": 1.1899999999999857
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2693413263678615,
+              "maxSlipDegrees": 9.76521127730572,
+              "maxYaw": 0.5370356523203945,
+              "minLoad": 802.0321867416394,
+              "finalSpeed": 18.070654502361432,
+              "finalHeading": 0.09356692147313894,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.45513897396221026,
+                  "speed": 19.512358686642504,
+                  "roll": -0.037554917241542383,
+                  "loads": {
+                    "frontLeft": 4836.547621048737,
+                    "frontRight": 1247.7937766102223,
+                    "rearLeft": 4670.458761451713,
+                    "rearRight": 1017.1998408893279
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.45602578801249294,
+                  "speed": 18.806091878586827,
+                  "roll": 0.027423462473233087,
+                  "loads": {
+                    "frontLeft": 1769.391159814761,
+                    "frontRight": 4325.076427046245,
+                    "rearLeft": 1529.1748940796012,
+                    "rearRight": 4148.357519059393
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5143635879388597,
+                  "speed": 18.070654502361432,
+                  "roll": 0.0362303358705721,
+                  "loads": {
+                    "frontLeft": 1311.7373794409145,
+                    "frontRight": 4769.944311939227,
+                    "rearLeft": 1080.7674793824704,
+                    "rearRight": 4609.550829237389
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.00023288001137755643,
+                "speedFraction": 0.000880622264203712,
+                "yaw": 0.004878532247420964
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.50125,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3087499999999777,
+                "negativeSeconds": 1.1899999999999802
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.306962556645645,
+              "maxSlipDegrees": 9.946445245758426,
+              "maxYaw": 0.5376227570055292,
+              "minLoad": 851.0948871438037,
+              "finalSpeed": 18.074193207274806,
+              "finalHeading": 0.09495115201571691,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.466330052435282,
+                  "speed": 19.509842982027592,
+                  "roll": -0.036962596543163785,
+                  "loads": {
+                    "frontLeft": 4827.64620651718,
+                    "frontRight": 1257.6536048572375,
+                    "rearLeft": 4661.934333816701,
+                    "rearRight": 1024.765854808882
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3195782283619053,
+                  "speed": 18.79928307159737,
+                  "roll": 0.028536121842530904,
+                  "loads": {
+                    "frontLeft": 1177.7179870359764,
+                    "frontRight": 4916.7454736246855,
+                    "rearLeft": 916.9822726149989,
+                    "rearRight": 4760.554266724339
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.46410136881469555,
+                  "speed": 18.074193207274806,
+                  "roll": 0.038723153685985855,
+                  "loads": {
+                    "frontLeft": 1250.3981394951456,
+                    "frontRight": 4833.11317502157,
+                    "rearLeft": 1023.5393242078065,
+                    "rearRight": 4664.949361275479
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0013842305425779688,
+                "speedFraction": 0.00019582605117651752,
+                "yaw": 0.0005871046851346762
+              },
+              "errorVs3200": {
+                "heading": 0.0016171105539555253,
+                "speedFraction": 0.0010766207641608183,
+                "yaw": 0.004291427562286287
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.500625,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3093750000000297,
+                "negativeSeconds": 1.190000000000011
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.289520909198181,
+              "maxSlipDegrees": 9.922459131540208,
+              "maxYaw": 0.5401977442055284,
+              "minLoad": 903.3084113732895,
+              "finalSpeed": 18.063917232061115,
+              "finalHeading": 0.09325826228327916,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.47222050122321946,
+                  "speed": 19.508550986447347,
+                  "roll": -0.03661127439886848,
+                  "loads": {
+                    "frontLeft": 4820.269264462871,
+                    "frontRight": 1265.5493544016747,
+                    "rearLeft": 4654.83243503245,
+                    "rearRight": 1031.348946103005
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.40891160957379213,
+                  "speed": 18.79511591757321,
+                  "roll": 0.026031344899971196,
+                  "loads": {
+                    "frontLeft": 1360.1461123599431,
+                    "frontRight": 4735.47503772041,
+                    "rearLeft": 1093.4099549584632,
+                    "rearRight": 4582.968894961185
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.49753766558140455,
+                  "speed": 18.063917232061115,
+                  "roll": 0.03739103455519789,
+                  "loads": {
+                    "frontLeft": 1258.8256992301588,
+                    "frontRight": 4824.472062514267,
+                    "rearLeft": 1029.0038947907192,
+                    "rearRight": 4659.698343464855
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00030865918985978347,
+                "speedFraction": 0.0003728293460226739,
+                "yaw": 0.003162091885133833
+              },
+              "errorVs3200": {
+                "heading": 0.00007577917848222704,
+                "speedFraction": 0.000507464596358087,
+                "yaw": 0.0017164403622871305
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5003125,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3096875000000072,
+                "negativeSeconds": 1.190000000000031
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.275385895567093,
+              "maxSlipDegrees": 9.848098694262058,
+              "maxYaw": 0.5419141845678155,
+              "minLoad": 932.3265147542602,
+              "finalSpeed": 18.054755083060545,
+              "finalHeading": 0.09333404146176139,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4755814645477585,
+                  "speed": 19.507843410847013,
+                  "roll": -0.036377354310948934,
+                  "loads": {
+                    "frontLeft": 4814.385064724614,
+                    "frontRight": 1271.7006013034986,
+                    "rearLeft": 4649.200380476248,
+                    "rearRight": 1036.7139534956405
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4468533464333291,
+                  "speed": 18.793633503908676,
+                  "roll": 0.025608166924659222,
+                  "loads": {
+                    "frontLeft": 1500.3007190751446,
+                    "frontRight": 4596.251981418435,
+                    "rearLeft": 1233.9007781742562,
+                    "rearRight": 4441.546521332164
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5234401862935556,
+                  "speed": 18.054755083060545,
+                  "roll": 0.035819085844197865,
+                  "loads": {
+                    "frontLeft": 1326.5118931072043,
+                    "frontRight": 4757.193129308405,
+                    "rearLeft": 1092.6807854702286,
+                    "rearRight": 4595.6141921141625
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00023288001137755643,
+                "speedFraction": 0.0008798474509491561,
+                "yaw": 0.004878532247420964
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        }
+      ],
+      "signedHeadingDecompositionAt50Hz": {
+        "originalComparison": 0.010630995823724954,
+        "sameInputNumericalDifference": 0.001502058704111242,
+        "referenceInputTimingDifference": 0.009128937119613711
+      }
+    },
+    {
+      "configuration": "target-dmc12",
+      "wheelbase": 2.408,
+      "track": 1.589,
+      "inertia": 832.3384999999998,
+      "harnessSha256": "88f04df145d2d5314a2315c18e2daeca74f5abc2b1c33c87333b4bb45db12a54",
+      "schedules": [
+        {
+          "requestedReversal": 1.75,
+          "profile": "step control",
+          "reference6400": {
+            "eventSchedule": {
+              "positiveStart": 0.5,
+              "negativeStart": 1.75,
+              "positiveSeconds": 1.2500000000000628,
+              "negativeSeconds": 1.2500000000000628
+            },
+            "maxConstraintError": 2.042810365310288e-14,
+            "maneuver": "transition",
+            "maxRollDegrees": 2.312034559687648,
+            "maxSlipDegrees": 10.003169975261445,
+            "maxYaw": 0.5659650736120625,
+            "minLoad": 873.5463073993884,
+            "finalSpeed": 17.885870355597053,
+            "finalHeading": 0.033676591070246564,
+            "samples": [
+              {
+                "time": 1,
+                "yaw": 0.4808161867913441,
+                "speed": 19.469834196112828,
+                "roll": -0.037933156735628734,
+                "loads": {
+                  "frontLeft": 4872.078317122491,
+                  "frontRight": 1264.6744685639974,
+                  "rearLeft": 4652.700337458479,
+                  "rearRight": 982.5468768550325
+                }
+              },
+              {
+                "time": 2,
+                "yaw": -0.4904658592437272,
+                "speed": 18.694768904095923,
+                "roll": 0.0345662853427446,
+                "loads": {
+                  "frontLeft": 1183.107432878099,
+                  "frontRight": 4963.472811402193,
+                  "rearLeft": 883.6876887633562,
+                  "rearRight": 4741.732066956351
+                }
+              },
+              {
+                "time": 3,
+                "yaw": -0.47379284194164484,
+                "speed": 17.885870355597053,
+                "roll": 0.03939293022730996,
+                "loads": {
+                  "frontLeft": 1272.9902866322825,
+                  "frontRight": 4860.748208052708,
+                  "rearLeft": 997.4165718051119,
+                  "rearRight": 4640.844933509898
+                }
+              }
+            ]
+          },
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2600000000000007,
+                "negativeSeconds": 1.2400000000000007
+              },
+              "maxConstraintError": 1.7319479184152442e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2888121053490083,
+              "maxSlipDegrees": 10.139221728557516,
+              "maxYaw": 0.5479448676432019,
+              "minLoad": 915.5670366953866,
+              "finalSpeed": 18.000616968539042,
+              "finalHeading": 0.04919110444727015,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4628176375593651,
+                  "speed": 19.483218279127993,
+                  "roll": -0.036720906878952776,
+                  "loads": {
+                    "frontLeft": 4827.252096222471,
+                    "frontRight": 1283.0124986089468,
+                    "rearLeft": 4637.73183936798,
+                    "rearRight": 1024.0035658006038
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3914781707735182,
+                  "speed": 18.745877339247755,
+                  "roll": 0.026208036452007286,
+                  "loads": {
+                    "frontLeft": 1671.417086336378,
+                    "frontRight": 4426.413945589165,
+                    "rearLeft": 1408.1951318474194,
+                    "rearRight": 4265.973836227037
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4591819140966069,
+                  "speed": 18.000616968539042,
+                  "roll": 0.0386152052287194,
+                  "loads": {
+                    "frontLeft": 1252.4382367797364,
+                    "frontRight": 4856.0464784917995,
+                    "rearLeft": 1000.1226065483395,
+                    "rearRight": 4663.392678180125
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.017965070544291972,
+                "speedFraction": 0.00718857897443681,
+                "yaw": 0.014289395358013657
+              },
+              "errorVs3200": {
+                "heading": 0.0164905648174567,
+                "speedFraction": 0.005493208721845555,
+                "yaw": 0.015421789345304582
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2500000000000009,
+                "negativeSeconds": 1.2500000000000009
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3049693995956555,
+              "maxSlipDegrees": 10.057387289572947,
+              "maxYaw": 0.5438804898226124,
+              "minLoad": 841.8532503986312,
+              "finalSpeed": 17.97423468871426,
+              "finalHeading": 0.038416405687432986,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4396644144305517,
+                  "speed": 19.480374480986598,
+                  "roll": -0.03886928951626006,
+                  "loads": {
+                    "frontLeft": 4869.437955234646,
+                    "frontRight": 1256.3996435397296,
+                    "rearLeft": 4658.841965268329,
+                    "rearRight": 987.3204359572948
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.32000313712936546,
+                  "speed": 18.730293638658612,
+                  "roll": 0.03497293804242011,
+                  "loads": {
+                    "frontLeft": 1135.1688139656972,
+                    "frontRight": 4998.317464638675,
+                    "rearLeft": 848.1379863416824,
+                    "rearRight": 4790.375735053945
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5438804898226124,
+                  "speed": 17.97423468871426,
+                  "roll": 0.03779897331984274,
+                  "loads": {
+                    "frontLeft": 1489.4157777822556,
+                    "frontRight": 4632.75449765489,
+                    "rearLeft": 1241.199448926983,
+                    "rearRight": 4408.630275635873
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.007190371784454808,
+                "speedFraction": 0.005712411186784561,
+                "yaw": 0.018353773178603205
+              },
+              "errorVs3200": {
+                "heading": 0.005715866057619534,
+                "speedFraction": 0.0040195257230473125,
+                "yaw": 0.01948616716589413
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2499999999999953,
+                "negativeSeconds": 1.2499999999999953
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.356646204473296,
+              "maxSlipDegrees": 10.009128898658906,
+              "maxYaw": 0.5508410221811033,
+              "minLoad": 780.729926592094,
+              "finalSpeed": 17.947574674040766,
+              "finalHeading": 0.03519108762382395,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.45519136195659726,
+                  "speed": 19.474458168371,
+                  "roll": -0.03866395974882183,
+                  "loads": {
+                    "frontLeft": 4873.787340494986,
+                    "frontRight": 1257.97984428856,
+                    "rearLeft": 4657.834949028566,
+                    "rearRight": 982.3978661878871
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3335488517427265,
+                  "speed": 18.713480377763165,
+                  "roll": 0.038842281847748975,
+                  "loads": {
+                    "frontLeft": 1090.8895325553356,
+                    "frontRight": 5051.38850147145,
+                    "rearLeft": 805.4198521697921,
+                    "rearRight": 4824.302113803424
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.48115697602884033,
+                  "speed": 17.947574674040766,
+                  "roll": 0.03922523133146876,
+                  "loads": {
+                    "frontLeft": 1307.0211882822996,
+                    "frontRight": 4821.631596867552,
+                    "rearLeft": 1045.067783407736,
+                    "rearRight": 4598.279431442414
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.003965053720845768,
+                "speedFraction": 0.004220703300251039,
+                "yaw": 0.011393240820112283
+              },
+              "errorVs3200": {
+                "heading": 0.0024905479940104946,
+                "speedFraction": 0.002530328783549196,
+                "yaw": 0.012525634807403208
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2499999999999845,
+                "negativeSeconds": 1.2499999999999845
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3027832773578316,
+              "maxSlipDegrees": 9.824981501714262,
+              "maxYaw": 0.5622342630012156,
+              "minLoad": 781.8424424416894,
+              "finalSpeed": 17.87214166672546,
+              "finalHeading": 0.03122603390297818,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.47302552232340034,
+                  "speed": 19.47061808983699,
+                  "roll": -0.038033456272284744,
+                  "loads": {
+                    "frontLeft": 4870.207947304196,
+                    "frontRight": 1263.9152733290189,
+                    "rearLeft": 4653.334881730178,
+                    "rearRight": 984.5418976366095
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5461102009950203,
+                  "speed": 18.700988925485508,
+                  "roll": 0.03166789186098634,
+                  "loads": {
+                    "frontLeft": 1354.9369046577015,
+                    "frontRight": 4788.0581201313225,
+                    "rearLeft": 1052.0296221579308,
+                    "rearRight": 4576.975353053046
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.510235623167965,
+                  "speed": 17.87214166672546,
+                  "roll": 0.038133312474513195,
+                  "loads": {
+                    "frontLeft": 1259.2871852389967,
+                    "frontRight": 4870.09339115231,
+                    "rearLeft": 984.9315051660321,
+                    "rearRight": 4657.687918442662
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.0014745057268352735,
+                "speedFraction": 0.0016832699337373525,
+                "yaw": 0.001132393987290925
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.249999999999979,
+                "negativeSeconds": 1.249999999999979
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.301126040157368,
+              "maxSlipDegrees": 9.88909933289182,
+              "maxYaw": 0.5682257560597037,
+              "minLoad": 828.5734462121322,
+              "finalSpeed": 17.853933144217503,
+              "finalHeading": 0.03125076095308699,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.48759639307416336,
+                  "speed": 19.46816581447019,
+                  "roll": -0.03719031038787241,
+                  "loads": {
+                    "frontLeft": 4853.893932883502,
+                    "frontRight": 1281.4597777419401,
+                    "rearLeft": 4637.73466105384,
+                    "rearRight": 998.9116283207186
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5500247303077188,
+                  "speed": 18.694312497741628,
+                  "roll": 0.03176687860636492,
+                  "loads": {
+                    "frontLeft": 1332.294631918559,
+                    "frontRight": 4812.1276271143615,
+                    "rearLeft": 1028.3123364665594,
+                    "rearRight": 4599.26540450052
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5336375512797531,
+                  "speed": 17.853933144217503,
+                  "roll": 0.036720512857153983,
+                  "loads": {
+                    "frontLeft": 1291.9705501684339,
+                    "frontRight": 4838.601012102711,
+                    "rearLeft": 1013.1628161035692,
+                    "rearRight": 4628.265621625285
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.000024727050108808157,
+                "speedFraction": 0.0010188215182883598,
+                "yaw": 0.005991493058488118
+              },
+              "errorVs3200": {
+                "heading": 0.0014497786767264653,
+                "speedFraction": 0.002700376500396229,
+                "yaw": 0.004859099071197193
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.2500000000000204,
+                "negativeSeconds": 1.2500000000000204
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3276139793066104,
+              "maxSlipDegrees": 9.966634504740883,
+              "maxYaw": 0.5617892812615821,
+              "minLoad": 840.6945678487791,
+              "finalSpeed": 17.907977291514122,
+              "finalHeading": 0.03437694915767642,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4915488417328362,
+                  "speed": 19.467725411015696,
+                  "roll": -0.03700230691478672,
+                  "loads": {
+                    "frontLeft": 4849.661586595933,
+                    "frontRight": 1286.3989060075464,
+                    "rearLeft": 4633.209589190454,
+                    "rearRight": 1002.7299182060677
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.427905253740235,
+                  "speed": 18.692287579089072,
+                  "roll": 0.036849839196303726,
+                  "loads": {
+                    "frontLeft": 1135.1486242674366,
+                    "frontRight": 5010.695563557908,
+                    "rearLeft": 841.6956195256716,
+                    "rearRight": 4784.460192648984
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5478527188419235,
+                  "speed": 17.907977291514122,
+                  "roll": 0.03585470746211087,
+                  "loads": {
+                    "frontLeft": 1380.6687937919123,
+                    "frontRight": 4751.841039946341,
+                    "rearLeft": 1098.1398321595168,
+                    "rearRight": 4541.350334102231
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.003150915254698239,
+                "speedFraction": 0.002005110828736223,
+                "yaw": 0.00044498173963347654
+              },
+              "errorVs3200": {
+                "heading": 0.0016764095278629654,
+                "speedFraction": 0.0003184657522270484,
+                "yaw": 0.0015773757269244015
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.75,
+                "positiveSeconds": 1.250000000000019,
+                "negativeSeconds": 1.250000000000019
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3041054930694105,
+              "maxSlipDegrees": 10.009949213279183,
+              "maxYaw": 0.5633666569885065,
+              "minLoad": 771.8182042119743,
+              "finalSpeed": 17.902276029711743,
+              "finalHeading": 0.03270053962981345,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4898903026415269,
+                  "speed": 19.468269136411656,
+                  "roll": -0.037200770807406525,
+                  "loads": {
+                    "frontLeft": 4856.426254628021,
+                    "frontRight": 1279.9981699368232,
+                    "rearLeft": 4639.113220427462,
+                    "rearRight": 996.4623550076954
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3777557873647197,
+                  "speed": 18.70161054717654,
+                  "roll": 0.03894751301324113,
+                  "loads": {
+                    "frontLeft": 1478.2159273248126,
+                    "frontRight": 4670.246812302573,
+                    "rearLeft": 1247.0363369504691,
+                    "rearRight": 4376.500923422146
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5163431414899833,
+                  "speed": 17.902276029711743,
+                  "roll": 0.037967328185610494,
+                  "loads": {
+                    "frontLeft": 1264.0670579934972,
+                    "frontRight": 4868.205777621276,
+                    "rearLeft": 986.5244951050059,
+                    "rearRight": 4653.202669280221
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0014745057268352735,
+                "speedFraction": 0.001686108108821971,
+                "yaw": 0.001132393987290925
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.74,
+          "profile": "step control",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000007,
+                "negativeSeconds": 1.2600000000000007
+              },
+              "maxConstraintError": 1.7319479184152442e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2888121053490083,
+              "maxSlipDegrees": 10.138485924937156,
+              "maxYaw": 0.5492256849433663,
+              "minLoad": 915.5670366953866,
+              "finalSpeed": 17.994517952898253,
+              "finalHeading": 0.027727163548790568,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4628176375593651,
+                  "speed": 19.483218279127993,
+                  "roll": -0.036720906878952776,
+                  "loads": {
+                    "frontLeft": 4827.252096222471,
+                    "frontRight": 1283.0124986089468,
+                    "rearLeft": 4637.73183936798,
+                    "rearRight": 1024.0035658006038
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3798666233679526,
+                  "speed": 18.742233845302238,
+                  "roll": 0.02887536454572037,
+                  "loads": {
+                    "frontLeft": 1484.1308706342172,
+                    "frontRight": 4622.3393326957475,
+                    "rearLeft": 1209.9404807107373,
+                    "rearRight": 4455.589315959298
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4665399924943081,
+                  "speed": 17.994517952898253,
+                  "roll": 0.038487014056060004,
+                  "loads": {
+                    "frontLeft": 1251.183330814189,
+                    "frontRight": 4856.4425416819595,
+                    "rearLeft": 999.395615939644,
+                    "rearRight": 4664.978511564208
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.006416072575929022,
+                "speedFraction": 0.0070130546604574295,
+                "yaw": 0.013774057749482704
+              },
+              "errorVs3200": {
+                "heading": 0.004099067586157412,
+                "speedFraction": 0.005655420534837585,
+                "yaw": 0.024127966337317286
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000009,
+                "negativeSeconds": 1.260000000000001
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3087816611973806,
+              "maxSlipDegrees": 10.044597826168982,
+              "maxYaw": 0.5462328567681363,
+              "minLoad": 861.1148611982144,
+              "finalSpeed": 17.970538993287093,
+              "finalHeading": 0.029232539440643635,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4396644144305517,
+                  "speed": 19.480374480986598,
+                  "roll": -0.03886928951626006,
+                  "loads": {
+                    "frontLeft": 4869.437955234646,
+                    "frontRight": 1256.3996435397296,
+                    "rearLeft": 4658.841965268329,
+                    "rearRight": 987.3204359572948
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.33716939953625236,
+                  "speed": 18.72879911649368,
+                  "roll": 0.03530440936666271,
+                  "loads": {
+                    "frontLeft": 1152.4937666835428,
+                    "frontRight": 4980.2016574596,
+                    "rearLeft": 867.2028085106992,
+                    "rearRight": 4772.101767346158
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.46186463199635597,
+                  "speed": 17.970538993287093,
+                  "roll": 0.039238195777845306,
+                  "loads": {
+                    "frontLeft": 1263.0910066340757,
+                    "frontRight": 4859.214337672531,
+                    "rearLeft": 998.6353635472229,
+                    "rearRight": 4651.059292146172
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.007921448467782088,
+                "speedFraction": 0.005671139004321368,
+                "yaw": 0.01676688592471276
+              },
+              "errorVs3200": {
+                "heading": 0.005604443478010479,
+                "speedFraction": 0.0043153140215721475,
+                "yaw": 0.02712079451254734
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999956,
+                "negativeSeconds": 1.2599999999999951
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3436497910881613,
+              "maxSlipDegrees": 9.99603567250495,
+              "maxYaw": 0.5493346121857368,
+              "minLoad": 811.6407970651464,
+              "finalSpeed": 17.947500827337688,
+              "finalHeading": 0.025092489630485604,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.45519136195659726,
+                  "speed": 19.474458168371,
+                  "roll": -0.03866395974882183,
+                  "loads": {
+                    "frontLeft": 4873.787340494986,
+                    "frontRight": 1257.97984428856,
+                    "rearLeft": 4657.834949028566,
+                    "rearRight": 982.3978661878871
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3817332675103202,
+                  "speed": 18.70912003750505,
+                  "roll": 0.03866186934264651,
+                  "loads": {
+                    "frontLeft": 1113.1596055624286,
+                    "frontRight": 5026.931516202788,
+                    "rearLeft": 829.3507282670707,
+                    "rearRight": 4802.558149967713
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47248335506595573,
+                  "speed": 17.947500827337688,
+                  "roll": 0.03918083586972578,
+                  "loads": {
+                    "frontLeft": 1267.4943492669372,
+                    "frontRight": 4860.843976752875,
+                    "rearLeft": 997.8014404479591,
+                    "rearRight": 4645.860233532228
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0037813986576240577,
+                "speedFraction": 0.004381872243899521,
+                "yaw": 0.013665130507112266
+              },
+              "errorVs3200": {
+                "heading": 0.0014643936678524483,
+                "speedFraction": 0.0030277854238711654,
+                "yaw": 0.024019039094946848
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999847,
+                "negativeSeconds": 1.2599999999999842
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3027832773578316,
+              "maxSlipDegrees": 9.827846520401225,
+              "maxYaw": 0.562999742692849,
+              "minLoad": 771.5276332236364,
+              "finalSpeed": 17.869200274633588,
+              "finalHeading": 0.021311090972861546,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.47302552232340034,
+                  "speed": 19.47061808983699,
+                  "roll": -0.038033456272284744,
+                  "loads": {
+                    "frontLeft": 4870.207947304196,
+                    "frontRight": 1263.9152733290189,
+                    "rearLeft": 4653.334881730178,
+                    "rearRight": 984.5418976366095
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5456035655083902,
+                  "speed": 18.69914375053201,
+                  "roll": 0.03253375524769046,
+                  "loads": {
+                    "frontLeft": 1322.6522253211622,
+                    "frontRight": 4818.717466998207,
+                    "rearLeft": 1023.2272613316113,
+                    "rearRight": 4607.403046349021
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5114749525669815,
+                  "speed": 17.869200274633588,
+                  "roll": 0.03806836617327133,
+                  "loads": {
+                    "frontLeft": 1259.98850118995,
+                    "frontRight": 4869.339888203708,
+                    "rearLeft": 985.531561246647,
+                    "rearRight": 4657.140049359694
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.0023170049897716094,
+                "speedFraction": 0.0013481792707022988,
+                "yaw": 0.010353908587834582
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2399999999999791,
+                "negativeSeconds": 1.2599999999999787
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.301126040157368,
+              "maxSlipDegrees": 9.910028409906632,
+              "maxYaw": 0.5659978169328284,
+              "minLoad": 885.4166268055999,
+              "finalSpeed": 17.86439504388456,
+              "finalHeading": 0.021168555503014108,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.48759639307416336,
+                  "speed": 19.46816581447019,
+                  "roll": -0.03719031038787241,
+                  "loads": {
+                    "frontLeft": 4853.893932883502,
+                    "frontRight": 1281.4597777419401,
+                    "rearLeft": 4637.73466105384,
+                    "rearRight": 998.9116283207186
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5296834062283651,
+                  "speed": 18.691393951015776,
+                  "roll": 0.033870590686366074,
+                  "loads": {
+                    "frontLeft": 1245.4092199309384,
+                    "frontRight": 4897.20972727112,
+                    "rearLeft": 947.99932928688,
+                    "rearRight": 4681.381723511063
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5071800403108284,
+                  "speed": 17.86439504388456,
+                  "roll": 0.03854569198540527,
+                  "loads": {
+                    "frontLeft": 1255.1180919380863,
+                    "frontRight": 4876.002016105551,
+                    "rearLeft": 980.0366885819384,
+                    "rearRight": 4660.843203374424
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00014253546984743792,
+                "speedFraction": 0.0002689113488670847,
+                "yaw": 0.0029980742399793314
+              },
+              "errorVs3200": {
+                "heading": 0.0024595404596190473,
+                "speedFraction": 0.001616728078863261,
+                "yaw": 0.00735583434785525
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.2400000000000189,
+                "negativeSeconds": 1.260000000000022
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3014829257558254,
+              "maxSlipDegrees": 9.987235558108917,
+              "maxYaw": 0.5654703552366414,
+              "minLoad": 762.921512079045,
+              "finalSpeed": 17.89965720557393,
+              "finalHeading": 0.02251427183230348,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4915488417328362,
+                  "speed": 19.467725411015696,
+                  "roll": -0.03700230691478672,
+                  "loads": {
+                    "frontLeft": 4849.661586595933,
+                    "frontRight": 1286.3989060075464,
+                    "rearLeft": 4633.209589190454,
+                    "rearRight": 1002.7299182060677
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4412192112365432,
+                  "speed": 18.699218785775603,
+                  "roll": 0.038926591650446075,
+                  "loads": {
+                    "frontLeft": 1642.6552069597867,
+                    "frontRight": 4503.280684452101,
+                    "rearLeft": 1420.8839002410277,
+                    "rearRight": 4205.180208347085
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5143453248809493,
+                  "speed": 17.89965720557393,
+                  "roll": 0.03805200827569614,
+                  "loads": {
+                    "frontLeft": 1262.780761546003,
+                    "frontRight": 4869.1181165576645,
+                    "rearLeft": 985.7878055081144,
+                    "rearRight": 4654.3133163882185
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0012031808594419324,
+                "speedFraction": 0.001704437270400927,
+                "yaw": 0.0024706125437923276
+              },
+              "errorVs3200": {
+                "heading": 0.001113824130329677,
+                "speedFraction": 0.00035396011270227845,
+                "yaw": 0.007883296044042254
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.74,
+                "positiveSeconds": 1.240000000000021,
+                "negativeSeconds": 1.260000000000017
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3610806501603125,
+              "maxSlipDegrees": 10.019331018616311,
+              "maxYaw": 0.5733536512806836,
+              "minLoad": 754.0439439318609,
+              "finalSpeed": 17.89332368270658,
+              "finalHeading": 0.023628095962633155,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4898903026415269,
+                  "speed": 19.468269136411656,
+                  "roll": -0.037200770807406525,
+                  "loads": {
+                    "frontLeft": 4856.426254628021,
+                    "frontRight": 1279.9981699368232,
+                    "rearLeft": 4639.113220427462,
+                    "rearRight": 996.4623550076954
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3170580411698154,
+                  "speed": 18.69672484915527,
+                  "roll": 0.040470160102555,
+                  "loads": {
+                    "frontLeft": 1119.9140687628555,
+                    "frontRight": 5027.272716403284,
+                    "rearLeft": 834.762737353094,
+                    "rearRight": 4790.050477480766
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.543252135297223,
+                  "speed": 17.89332368270658,
+                  "roll": 0.03601509530341285,
+                  "loads": {
+                    "frontLeft": 1334.9097900832887,
+                    "frontRight": 4797.389223940504,
+                    "rearLeft": 1052.8032449040825,
+                    "rearRight": 4586.897741072125
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0023170049897716094,
+                "speedFraction": 0.0013499993117900289,
+                "yaw": 0.010353908587834582
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.76,
+          "profile": "step control",
+          "reference6400": {
+            "eventSchedule": {
+              "positiveStart": 0.5,
+              "negativeStart": 1.76,
+              "positiveSeconds": 1.260000000000068,
+              "negativeSeconds": 1.2400000000000577
+            },
+            "maxConstraintError": 2.042810365310288e-14,
+            "maneuver": "transition",
+            "maxRollDegrees": 2.307647188424297,
+            "maxSlipDegrees": 9.982579307556879,
+            "maxYaw": 0.5714292271832733,
+            "minLoad": 873.6542138710693,
+            "finalSpeed": 17.857862626341404,
+            "finalHeading": 0.04155123839536201,
+            "samples": [
+              {
+                "time": 1,
+                "yaw": 0.4808161867913441,
+                "speed": 19.469834196112828,
+                "roll": -0.037933156735628734,
+                "loads": {
+                  "frontLeft": 4872.078317122491,
+                  "frontRight": 1264.6744685639974,
+                  "rearLeft": 4652.700337458479,
+                  "rearRight": 982.5468768550325
+                }
+              },
+              {
+                "time": 2,
+                "yaw": -0.538582688828626,
+                "speed": 18.69742138373588,
+                "roll": 0.03125431557641069,
+                "loads": {
+                  "frontLeft": 1298.614597483338,
+                  "frontRight": 4849.674726809902,
+                  "rearLeft": 989.8950314611643,
+                  "rearRight": 4633.815644245597
+                }
+              },
+              {
+                "time": 3,
+                "yaw": -0.5348014021350878,
+                "speed": 17.857862626341404,
+                "roll": 0.03688082753700902,
+                "loads": {
+                  "frontLeft": 1283.9905201479517,
+                  "frontRight": 4847.921816510076,
+                  "rearLeft": 1004.2934997259757,
+                  "rearRight": 4635.794163615997
+                }
+              }
+            ]
+          },
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2600000000000007,
+                "negativeSeconds": 1.2400000000000007
+              },
+              "maxConstraintError": 1.7319479184152442e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2888121053490083,
+              "maxSlipDegrees": 10.139221728557516,
+              "maxYaw": 0.5479448676432019,
+              "minLoad": 915.5670366953866,
+              "finalSpeed": 18.000616968539042,
+              "finalHeading": 0.04919110444727015,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4628176375593651,
+                  "speed": 19.483218279127993,
+                  "roll": -0.036720906878952776,
+                  "loads": {
+                    "frontLeft": 4827.252096222471,
+                    "frontRight": 1283.0124986089468,
+                    "rearLeft": 4637.73183936798,
+                    "rearRight": 1024.0035658006038
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3914781707735182,
+                  "speed": 18.745877339247755,
+                  "roll": 0.026208036452007286,
+                  "loads": {
+                    "frontLeft": 1671.417086336378,
+                    "frontRight": 4426.413945589165,
+                    "rearLeft": 1408.1951318474194,
+                    "rearRight": 4265.973836227037
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4591819140966069,
+                  "speed": 18.000616968539042,
+                  "roll": 0.0386152052287194,
+                  "loads": {
+                    "frontLeft": 1252.4382367797364,
+                    "frontRight": 4856.0464784917995,
+                    "rearLeft": 1000.1226065483395,
+                    "rearRight": 4663.392678180125
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.008126734162686722,
+                "speedFraction": 0.007183925922797263,
+                "yaw": 0.014509622089708962
+              },
+              "errorVs3200": {
+                "heading": 0.0022135120379298545,
+                "speedFraction": 0.005573585723456453,
+                "yaw": 0.015682310169773395
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000001,
+                "negativeSeconds": 1.2400000000000009
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2848406378912065,
+              "maxSlipDegrees": 10.061293760479943,
+              "maxYaw": 0.5471257417762665,
+              "minLoad": 814.4338069538607,
+              "finalSpeed": 17.967285816183573,
+              "finalHeading": 0.04823532908530037,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4396644144305517,
+                  "speed": 19.480374480986598,
+                  "roll": -0.03886928951626006,
+                  "loads": {
+                    "frontLeft": 4869.437955234646,
+                    "frontRight": 1256.3996435397296,
+                    "rearLeft": 4658.841965268329,
+                    "rearRight": 987.3204359572948
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.2826981169885556,
+                  "speed": 18.732536616533498,
+                  "roll": 0.03525194369925924,
+                  "loads": {
+                    "frontLeft": 1105.520758655483,
+                    "frontRight": 5030.460659209552,
+                    "rearLeft": 816.6530707039096,
+                    "rearRight": 4819.365511431055
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4636316398878737,
+                  "speed": 17.967285816183573,
+                  "roll": 0.039276706778955936,
+                  "loads": {
+                    "frontLeft": 1267.7064354781385,
+                    "frontRight": 4854.851368786133,
+                    "rearLeft": 1003.7001315685535,
+                    "rearRight": 4645.742064167176
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.007170958800716942,
+                "speedFraction": 0.005318956464051006,
+                "yaw": 0.015328747956644406
+              },
+              "errorVs3200": {
+                "heading": 0.001257736675960075,
+                "speedFraction": 0.00371159807886845,
+                "yaw": 0.01650143603670884
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999951,
+                "negativeSeconds": 1.2399999999999956
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.314954029353826,
+              "maxSlipDegrees": 9.997549396791769,
+              "maxYaw": 0.5532595087198722,
+              "minLoad": 780.2563414188708,
+              "finalSpeed": 17.945943988217852,
+              "finalHeading": 0.04443763078019769,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.45519136195659726,
+                  "speed": 19.474458168371,
+                  "roll": -0.03866395974882183,
+                  "loads": {
+                    "frontLeft": 4873.787340494986,
+                    "frontRight": 1257.97984428856,
+                    "rearLeft": 4657.834949028566,
+                    "rearRight": 982.3978661878871
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.30756840410886,
+                  "speed": 18.717368040643887,
+                  "roll": 0.03813393816729093,
+                  "loads": {
+                    "frontLeft": 1083.1390510851127,
+                    "frontRight": 5060.610690700719,
+                    "rearLeft": 794.4201395337907,
+                    "rearRight": 4833.830118680378
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.47436948149814917,
+                  "speed": 17.945943988217852,
+                  "roll": 0.03925550557685115,
+                  "loads": {
+                    "frontLeft": 1285.4949083859897,
+                    "frontRight": 4843.072687287976,
+                    "rearLeft": 1019.5656425762671,
+                    "rearRight": 4623.866761749768
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.003373260495614261,
+                "speedFraction": 0.004124822612169732,
+                "yaw": 0.009194981013038728
+              },
+              "errorVs3200": {
+                "heading": 0.0025399616291426064,
+                "speedFraction": 0.0025193734728512496,
+                "yaw": 0.01036766909310316
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999842,
+                "negativeSeconds": 1.2399999999999847
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3027832773578316,
+              "maxSlipDegrees": 9.826367573360727,
+              "maxYaw": 0.5624544897329109,
+              "minLoad": 795.1755822232078,
+              "finalSpeed": 17.872224233569458,
+              "finalHeading": 0.04106437028458343,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.47302552232340034,
+                  "speed": 19.47061808983699,
+                  "roll": -0.038033456272284744,
+                  "loads": {
+                    "frontLeft": 4870.207947304196,
+                    "frontRight": 1263.9152733290189,
+                    "rearLeft": 4653.334881730178,
+                    "rearRight": 984.5418976366095
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5483185268946755,
+                  "speed": 18.7028015244628,
+                  "roll": 0.03070741738261757,
+                  "loads": {
+                    "frontLeft": 1396.1513113135547,
+                    "frontRight": 4748.382256103637,
+                    "rearLeft": 1089.7888422943029,
+                    "rearRight": 4537.677590288506
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5139460551067287,
+                  "speed": 17.872224233569458,
+                  "roll": 0.037894718517100065,
+                  "loads": {
+                    "frontLeft": 1262.9350036066094,
+                    "frontRight": 4866.3414732612655,
+                    "rearLeft": 988.1194770607487,
+                    "rearRight": 4654.604046071377
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.005913222124756867,
+                "speedFraction": 0.0015988541495687292,
+                "yaw": 0.0011726880800644324
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.2599999999999787,
+                "negativeSeconds": 1.2399999999999791
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.301126040157368,
+              "maxSlipDegrees": 9.871516915761266,
+              "maxYaw": 0.5696392503040215,
+              "minLoad": 779.421153689686,
+              "finalSpeed": 17.84770345935862,
+              "finalHeading": 0.04211684913115987,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.48759639307416336,
+                  "speed": 19.46816581447019,
+                  "roll": -0.03719031038787241,
+                  "loads": {
+                    "frontLeft": 4853.893932883502,
+                    "frontRight": 1281.4597777419401,
+                    "rearLeft": 4637.73466105384,
+                    "rearRight": 998.9116283207186
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5625245915327426,
+                  "speed": 18.69686057209213,
+                  "roll": 0.03029378832688683,
+                  "loads": {
+                    "frontLeft": 1428.2340016231826,
+                    "frontRight": 4717.93922061773,
+                    "rearLeft": 1119.5937658386642,
+                    "rearRight": 4506.233011920424
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5506524274636604,
+                  "speed": 17.84770345935862,
+                  "roll": 0.035454117218551004,
+                  "loads": {
+                    "frontLeft": 1366.9123988315957,
+                    "frontRight": 4764.146620924139,
+                    "rearLeft": 1084.7667028106569,
+                    "rearRight": 4556.174277433607
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0010524788465764434,
+                "speedFraction": 0.00137200461959186,
+                "yaw": 0.0071847605711106155
+              },
+              "errorVs3200": {
+                "heading": 0.004860743278180424,
+                "speedFraction": 0.0029686651338813874,
+                "yaw": 0.006012072491046183
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000022,
+                "negativeSeconds": 1.2400000000000189
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.303049689496756,
+              "maxSlipDegrees": 9.94847218098495,
+              "maxYaw": 0.5657333244805329,
+              "minLoad": 884.3227921118319,
+              "finalSpeed": 17.876439576215905,
+              "finalHeading": 0.04186987232021111,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4915488417328362,
+                  "speed": 19.467725411015696,
+                  "roll": -0.03700230691478672,
+                  "loads": {
+                    "frontLeft": 4849.661586595933,
+                    "frontRight": 1286.3989060075464,
+                    "rearLeft": 4633.209589190454,
+                    "rearRight": 1002.7299182060677
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5106923181106282,
+                  "speed": 18.692992392128765,
+                  "roll": 0.032682396596594936,
+                  "loads": {
+                    "frontLeft": 1236.4766772152639,
+                    "frontRight": 4909.977651013989,
+                    "rearLeft": 932.6970251994214,
+                    "rearRight": 4692.848646571326
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.48954533711409454,
+                  "speed": 17.876439576215905,
+                  "roll": 0.03923025800871584,
+                  "loads": {
+                    "frontLeft": 1260.8149664177147,
+                    "frontRight": 4871.868517230039,
+                    "rearLeft": 985.8691928372779,
+                    "rearRight": 4653.447323514968
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.000805502035627681,
+                "speedFraction": 0.00023585999097575083,
+                "yaw": 0.003278834747622028
+              },
+              "errorVs3200": {
+                "heading": 0.005107720089129186,
+                "speedFraction": 0.0013633712643182916,
+                "yaw": 0.0021061466675575957
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.76,
+                "positiveSeconds": 1.260000000000017,
+                "negativeSeconds": 1.240000000000021
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3215309837577216,
+              "maxSlipDegrees": 9.989489142637554,
+              "maxYaw": 0.5636271778129753,
+              "minLoad": 854.175631594681,
+              "finalSpeed": 17.900845073996805,
+              "finalHeading": 0.046977592409340296,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4898903026415269,
+                  "speed": 19.468269136411656,
+                  "roll": -0.037200770807406525,
+                  "loads": {
+                    "frontLeft": 4856.426254628021,
+                    "frontRight": 1279.9981699368232,
+                    "rearLeft": 4639.113220427462,
+                    "rearRight": 996.4623550076954
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.45766376916631657,
+                  "speed": 18.694164823039653,
+                  "roll": 0.03458747244594386,
+                  "loads": {
+                    "frontLeft": 1160.7707506279855,
+                    "frontRight": 4986.595272192089,
+                    "rearLeft": 860.6499955274758,
+                    "rearRight": 4763.98398165245
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5265931724736106,
+                  "speed": 17.900845073996805,
+                  "roll": 0.03820207712970849,
+                  "loads": {
+                    "frontLeft": 1532.1386555098359,
+                    "frontRight": 4601.352023808565,
+                    "rearLeft": 1280.1996502852928,
+                    "rearRight": 4358.3096703963065
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.005913222124756867,
+                "speedFraction": 0.0016014145779117417,
+                "yaw": 0.0011726880800644324
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.78,
+          "profile": "step control",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000007,
+                "negativeSeconds": 1.2200000000000006
+              },
+              "maxConstraintError": 1.7319479184152442e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2888121053490083,
+              "maxSlipDegrees": 10.136067935276108,
+              "maxYaw": 0.5453488288754249,
+              "minLoad": 915.5670366953866,
+              "finalSpeed": 18.00255152906528,
+              "finalHeading": 0.066410152921903,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4628176375593651,
+                  "speed": 19.483218279127993,
+                  "roll": -0.036720906878952776,
+                  "loads": {
+                    "frontLeft": 4827.252096222471,
+                    "frontRight": 1283.0124986089468,
+                    "rearLeft": 4637.73183936798,
+                    "rearRight": 1024.0035658006038
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3853224784087339,
+                  "speed": 18.748279547601975,
+                  "roll": 0.02674994019176846,
+                  "loads": {
+                    "frontLeft": 1808.5125343090879,
+                    "frontRight": 4299.285197962992,
+                    "rearLeft": 1569.9195776496686,
+                    "rearRight": 4094.282690078252
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.45985508898799266,
+                  "speed": 18.00255152906528,
+                  "roll": 0.038749311274752674,
+                  "loads": {
+                    "frontLeft": 1252.0487809547224,
+                    "frontRight": 4856.3757133729705,
+                    "rearLeft": 1000.1702332783182,
+                    "rearRight": 4663.4052723939885
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.005513680047976477,
+                "speedFraction": 0.007000872579690398,
+                "yaw": 0.017117763150342746
+              },
+              "errorVs3200": {
+                "heading": 0.003630980156954511,
+                "speedFraction": 0.008650826394567046,
+                "yaw": 0.02748838717432367
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.280000000000001,
+                "negativeSeconds": 1.2200000000000009
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2903859415543026,
+              "maxSlipDegrees": 10.051586527828036,
+              "maxYaw": 0.5446495229153081,
+              "minLoad": 875.2496139016359,
+              "finalSpeed": 17.97532937080713,
+              "finalHeading": 0.06850094352604619,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4396644144305517,
+                  "speed": 19.480374480986598,
+                  "roll": -0.03886928951626006,
+                  "loads": {
+                    "frontLeft": 4869.437955234646,
+                    "frontRight": 1256.3996435397296,
+                    "rearLeft": 4658.841965268329,
+                    "rearRight": 987.3204359572948
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.3512790719965242,
+                  "speed": 18.736266011261222,
+                  "roll": 0.027640900710201123,
+                  "loads": {
+                    "frontLeft": 1350.7381120699602,
+                    "frontRight": 4768.868192779972,
+                    "rearLeft": 1061.190155926342,
+                    "rearRight": 4591.203539223727
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4639119047442408,
+                  "speed": 17.97532937080713,
+                  "roll": 0.03911020511396552,
+                  "loads": {
+                    "frontLeft": 1259.4915176852633,
+                    "frontRight": 4862.276337539913,
+                    "rearLeft": 995.1452870224721,
+                    "rearRight": 4655.0868577523515
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.007604470652119666,
+                "speedFraction": 0.005478158586887938,
+                "yaw": 0.01781706911045955
+              },
+              "errorVs3200": {
+                "heading": 0.0057217707610977,
+                "speedFraction": 0.007125617460767231,
+                "yaw": 0.028187693134440472
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999947,
+                "negativeSeconds": 1.219999999999996
+              },
+              "maxConstraintError": 1.8207657603852567e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.309945659439982,
+              "maxSlipDegrees": 9.96429148414399,
+              "maxYaw": 0.5487578701788287,
+              "minLoad": 877.442257340718,
+              "finalSpeed": 17.939700812011072,
+              "finalHeading": 0.06208937012037974,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.45519136195659726,
+                  "speed": 19.474458168371,
+                  "roll": -0.03866395974882183,
+                  "loads": {
+                    "frontLeft": 4873.787340494986,
+                    "frontRight": 1257.97984428856,
+                    "rearLeft": 4657.834949028566,
+                    "rearRight": 982.3978661878871
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4608086543422818,
+                  "speed": 18.715811119220376,
+                  "roll": 0.030123664994539848,
+                  "loads": {
+                    "frontLeft": 1279.1293320468276,
+                    "frontRight": 4861.349956817874,
+                    "rearLeft": 974.7592700473523,
+                    "rearRight": 4656.761441087947
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5161606437595001,
+                  "speed": 17.939700812011072,
+                  "roll": 0.037193796148382266,
+                  "loads": {
+                    "frontLeft": 1299.4929273821112,
+                    "frontRight": 4827.483289893364,
+                    "rearLeft": 1025.2217377590378,
+                    "rearRight": 4619.802044965488
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0011928972464532173,
+                "speedFraction": 0.003485219433875919,
+                "yaw": 0.013708721846938943
+              },
+              "errorVs3200": {
+                "heading": 0.0006898026445687488,
+                "speedFraction": 0.005129412910824804,
+                "yaw": 0.024079345870919866
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999838,
+                "negativeSeconds": 1.219999999999985
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3027832773578316,
+              "maxSlipDegrees": 9.84290453993961,
+              "maxYaw": 0.5624665920257677,
+              "minLoad": 851.5470819234357,
+              "finalSpeed": 17.87739417042126,
+              "finalHeading": 0.06089647287392652,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.47302552232340034,
+                  "speed": 19.47061808983699,
+                  "roll": -0.038033456272284744,
+                  "loads": {
+                    "frontLeft": 4870.207947304196,
+                    "frontRight": 1263.9152733290189,
+                    "rearLeft": 4653.334881730178,
+                    "rearRight": 984.5418976366095
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5440843395565942,
+                  "speed": 18.70635077835457,
+                  "roll": 0.028862098574710445,
+                  "loads": {
+                    "frontLeft": 1467.830133237971,
+                    "frontRight": 4679.208265188513,
+                    "rearLeft": 1155.9289391772088,
+                    "rearRight": 4469.032662396307
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5124936182351547,
+                  "speed": 17.87739417042126,
+                  "roll": 0.03798196375947734,
+                  "loads": {
+                    "frontLeft": 1261.4982047686017,
+                    "frontRight": 4867.827763006429,
+                    "rearLeft": 986.8392809733673,
+                    "rearRight": 4655.834751251601
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.0018826998910219661,
+                "speedFraction": 0.0016384830041407117,
+                "yaw": 0.010370624023980923
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2799999999999783,
+                "negativeSeconds": 1.2199999999999795
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.301126040157368,
+              "maxSlipDegrees": 9.840793703582515,
+              "maxYaw": 0.5721224532408087,
+              "minLoad": 732.0260221249,
+              "finalSpeed": 17.841878148549768,
+              "finalHeading": 0.06385248701944501,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.48759639307416336,
+                  "speed": 19.46816581447019,
+                  "roll": -0.03719031038787241,
+                  "loads": {
+                    "frontLeft": 4853.893932883502,
+                    "frontRight": 1281.4597777419401,
+                    "rearLeft": 4637.73466105384,
+                    "rearRight": 998.9116283207186
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5702636632463509,
+                  "speed": 18.701004070519403,
+                  "roll": 0.02904579496083612,
+                  "loads": {
+                    "frontLeft": 1624.9776317888807,
+                    "frontRight": 4523.3982198335725,
+                    "rearLeft": 1316.6390823042088,
+                    "rearRight": 4306.985066073338
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5642081090991624,
+                  "speed": 17.841878148549768,
+                  "roll": 0.035654152549878616,
+                  "loads": {
+                    "frontLeft": 1512.7636967641324,
+                    "frontRight": 4619.48319037303,
+                    "rearLeft": 1233.7730817123759,
+                    "rearRight": 4405.9800311504605
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.002956014145518493,
+                "speedFraction": 0.001986644224148293,
+                "yaw": 0.009655861215041028
+              },
+              "errorVs3200": {
+                "heading": 0.0010733142544965268,
+                "speedFraction": 0.0003514163028042194,
+                "yaw": 0.000714762808939895
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000251,
+                "negativeSeconds": 1.2200000000000157
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3014829257558254,
+              "maxSlipDegrees": 9.907924869166292,
+              "maxYaw": 0.5725579569915595,
+              "minLoad": 821.6133677332605,
+              "finalSpeed": 17.843457330241556,
+              "finalHeading": 0.06334137729002887,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4915488417328362,
+                  "speed": 19.467725411015696,
+                  "roll": -0.03700230691478672,
+                  "loads": {
+                    "frontLeft": 4849.661586595933,
+                    "frontRight": 1286.3989060075464,
+                    "rearLeft": 4633.209589190454,
+                    "rearRight": 1002.7299182060677
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5635010584395417,
+                  "speed": 18.69880621484944,
+                  "roll": 0.02848815943314561,
+                  "loads": {
+                    "frontLeft": 1529.8096252084842,
+                    "frontRight": 4619.703287794568,
+                    "rearLeft": 1215.677565044239,
+                    "rearRight": 4406.809521952709
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5635433648805588,
+                  "speed": 17.843457330241556,
+                  "roll": 0.03511503491050863,
+                  "loads": {
+                    "frontLeft": 1453.1086217723978,
+                    "frontRight": 4679.370108975194,
+                    "rearLeft": 1169.592118487299,
+                    "rearRight": 4469.929150765109
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0024449044161023448,
+                "speedFraction": 0.0018983102266577623,
+                "yaw": 0.010091364965791882
+              },
+              "errorVs3200": {
+                "heading": 0.0005622045250803787,
+                "speedFraction": 0.00026293757156004016,
+                "yaw": 0.00027925905818904084
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5,
+                "negativeStart": 1.78,
+                "positiveSeconds": 1.2800000000000131,
+                "negativeSeconds": 1.220000000000025
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3041054930694105,
+              "maxSlipDegrees": 9.947829543224664,
+              "maxYaw": 0.5728372160497486,
+              "minLoad": 880.2357511138158,
+              "finalSpeed": 17.848150279532895,
+              "finalHeading": 0.06277917276494849,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4898903026415269,
+                  "speed": 19.468269136411656,
+                  "roll": -0.037200770807406525,
+                  "loads": {
+                    "frontLeft": 4856.426254628021,
+                    "frontRight": 1279.9981699368232,
+                    "rearLeft": 4639.113220427462,
+                    "rearRight": 996.4623550076954
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5558302573668072,
+                  "speed": 18.6990628876165,
+                  "roll": 0.02839147769874286,
+                  "loads": {
+                    "frontLeft": 1469.6109126756028,
+                    "frontRight": 4680.590729595104,
+                    "rearLeft": 1153.7355617102464,
+                    "rearRight": 4468.062796019048
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5579363248386926,
+                  "speed": 17.848150279532895,
+                  "roll": 0.035158951976209406,
+                  "loads": {
+                    "frontLeft": 1393.7113954400713,
+                    "frontRight": 4738.63733289724,
+                    "rearLeft": 1109.749416876094,
+                    "rearRight": 4529.901854786594
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0018826998910219661,
+                "speedFraction": 0.0016358027691053545,
+                "yaw": 0.010370624023980923
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        },
+        {
+          "requestedReversal": 1.76,
+          "profile": "100 ms smooth control ramps",
+          "reference6400": null,
+          "runs": [
+            {
+              "dt": 0.02,
+              "eventSchedule": {
+                "positiveStart": 0.52,
+                "negativeStart": 1.82,
+                "positiveSeconds": 1.3000000000000007,
+                "negativeSeconds": 1.1800000000000006
+              },
+              "maxConstraintError": 1.865174681370263e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.278169995874183,
+              "maxSlipDegrees": 9.81896170101845,
+              "maxYaw": 0.5486912084317175,
+              "minLoad": 824.8460283407981,
+              "finalSpeed": 17.997463394394607,
+              "finalHeading": 0.10220669471225419,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.49004998103828745,
+                  "speed": 19.508694805382905,
+                  "roll": -0.034622742246325736,
+                  "loads": {
+                    "frontLeft": 4617.673160478481,
+                    "frontRight": 1494.7502299387504,
+                    "rearLeft": 4428.251138026354,
+                    "rearRight": 1231.3254715564144
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4057155441020144,
+                  "speed": 18.78538646724717,
+                  "roll": 0.02679313280242715,
+                  "loads": {
+                    "frontLeft": 1395.9431863384132,
+                    "frontRight": 4727.809911703907,
+                    "rearLeft": 1173.6855032170688,
+                    "rearRight": 4474.561398740611
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.44051328490307684,
+                  "speed": 17.997463394394607,
+                  "roll": 0.039249315488018806,
+                  "loads": {
+                    "frontLeft": 1255.8070989921373,
+                    "frontRight": 4854.901980788669,
+                    "rearLeft": 1003.1587680862036,
+                    "rearRight": 4658.132152132992
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.015599741118464294,
+                "speedFraction": 0.006575380587875879,
+                "yaw": 0.021405954964548446
+              },
+              "errorVs3200": {
+                "heading": 0.01598117664480525,
+                "speedFraction": 0.007935450789630094,
+                "yaw": 0.024879706589830963
+              }
+            },
+            {
+              "dt": 0.01,
+              "eventSchedule": {
+                "positiveStart": 0.51,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.300000000000001,
+                "negativeSeconds": 1.1900000000000008
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3004870144408676,
+              "maxSlipDegrees": 9.718077501170375,
+              "maxYaw": 0.5449350532556796,
+              "minLoad": 896.8015851086255,
+              "finalSpeed": 17.99840216603921,
+              "finalHeading": 0.09811535129193283,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.4802681520016616,
+                  "speed": 19.502333949474814,
+                  "roll": -0.03646706842738409,
+                  "loads": {
+                    "frontLeft": 4816.654998662413,
+                    "frontRight": 1307.2193532640335,
+                    "rearLeft": 4613.926174460486,
+                    "rearRight": 1034.199473613068
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.42041889989057335,
+                  "speed": 18.770628454565276,
+                  "roll": 0.021949101445928324,
+                  "loads": {
+                    "frontLeft": 1901.3944430787653,
+                    "frontRight": 4205.818190177444,
+                    "rearLeft": 1652.2811772931327,
+                    "rearRight": 4012.506189450659
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.503317748688592,
+                  "speed": 17.99840216603921,
+                  "roll": 0.03742190773503901,
+                  "loads": {
+                    "frontLeft": 1282.1480087526988,
+                    "frontRight": 4837.872348567742,
+                    "rearLeft": 1015.395345917126,
+                    "rearRight": 4636.584296762435
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.011508397698142936,
+                "speedFraction": 0.006627884899441661,
+                "yaw": 0.025162110140586336
+              },
+              "errorVs3200": {
+                "heading": 0.011889833224483892,
+                "speedFraction": 0.007988026044267738,
+                "yaw": 0.028635861765868853
+              }
+            },
+            {
+              "dt": 0.005,
+              "eventSchedule": {
+                "positiveStart": 0.505,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3049999999999942,
+                "negativeSeconds": 1.1899999999999966
+              },
+              "maxConstraintError": 1.9095836023552692e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.3220107697007633,
+              "maxSlipDegrees": 9.576182822429413,
+              "maxYaw": 0.5508672968546069,
+              "minLoad": 853.2355982736564,
+              "finalSpeed": 17.963747947312054,
+              "finalHeading": 0.089899306012593,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.48799810957604883,
+                  "speed": 19.495460168495235,
+                  "roll": -0.03636018473070242,
+                  "loads": {
+                    "frontLeft": 4809.165050038971,
+                    "frontRight": 1321.8026031467195,
+                    "rearLeft": 4599.55211691001,
+                    "rearRight": 1041.4802299043008
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4502234383888082,
+                  "speed": 18.745545665751184,
+                  "roll": 0.025149867911507563,
+                  "loads": {
+                    "frontLeft": 1392.216449632738,
+                    "frontRight": 4749.290725461207,
+                    "rearLeft": 1076.8999735991233,
+                    "rearRight": 4553.592851306932
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5255048693007858,
+                  "speed": 17.963747947312054,
+                  "roll": 0.03664581506969402,
+                  "loads": {
+                    "frontLeft": 1332.1040690585346,
+                    "frontRight": 4795.167816830686,
+                    "rearLeft": 1056.305104264192,
+                    "rearRight": 4588.423009846588
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0032923524188031017,
+                "speedFraction": 0.004689718245627139,
+                "yaw": 0.019229866541659035
+              },
+              "errorVs3200": {
+                "heading": 0.003673787945144058,
+                "speedFraction": 0.006047240567498946,
+                "yaw": 0.022703618166941553
+              }
+            },
+            {
+              "dt": 0.0025,
+              "eventSchedule": {
+                "positiveStart": 0.5025000000000001,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3074999999999832,
+                "negativeSeconds": 1.1899999999999857
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.2921507908009735,
+              "maxSlipDegrees": 9.310895237278844,
+              "maxYaw": 0.5700971633962659,
+              "minLoad": 653.8244972330436,
+              "finalSpeed": 17.879896271537504,
+              "finalHeading": 0.08660695359378989,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.5061851358886038,
+                  "speed": 19.490709160568443,
+                  "roll": -0.03556853430214341,
+                  "loads": {
+                    "frontLeft": 4751.6554871018525,
+                    "frontRight": 1382.68162099742,
+                    "rearLeft": 4540.2452805508265,
+                    "rearRight": 1097.4176113499013
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.4809555388944009,
+                  "speed": 18.731891994654198,
+                  "roll": 0.03161052081623416,
+                  "loads": {
+                    "frontLeft": 1833.447435052628,
+                    "frontRight": 4311.114221090502,
+                    "rearLeft": 1604.6897752589393,
+                    "rearRight": 4022.7485685979327
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.558738738809339,
+                  "speed": 17.879896271537504,
+                  "roll": 0.035626167898629324,
+                  "loads": {
+                    "frontLeft": 1487.8268123832815,
+                    "frontRight": 4643.145104659086,
+                    "rearLeft": 1208.809775520541,
+                    "rearRight": 4432.218307437092
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              },
+              "errorVs3200": {
+                "heading": 0.00038143552634095634,
+                "speedFraction": 0.0013511856419137214,
+                "yaw": 0.0034737516252825174
+              }
+            },
+            {
+              "dt": 0.00125,
+              "eventSchedule": {
+                "positiveStart": 0.50125,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3087499999999777,
+                "negativeSeconds": 1.1899999999999802
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.31858506860026,
+              "maxSlipDegrees": 9.444844350858025,
+              "maxYaw": 0.5605950862793918,
+              "minLoad": 858.9915799458362,
+              "finalSpeed": 17.923610089068948,
+              "finalHeading": 0.0881559036909978,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.5189187531374984,
+                  "speed": 19.48703812245109,
+                  "roll": -0.03552354006419389,
+                  "loads": {
+                    "frontLeft": 4665.148409088182,
+                    "frontRight": 1471.3382022724452,
+                    "rearLeft": 4450.224008563335,
+                    "rearRight": 1185.2893800760376
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.47271578014775884,
+                  "speed": 18.720519996053586,
+                  "roll": 0.026911785413419893,
+                  "loads": {
+                    "frontLeft": 1336.8393487965513,
+                    "frontRight": 4811.9137483926115,
+                    "rearLeft": 1018.8016391828253,
+                    "rearRight": 4604.445263628012
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.4760874984002683,
+                  "speed": 17.923610089068948,
+                  "roll": 0.039151117625349056,
+                  "loads": {
+                    "frontLeft": 1385.9283898568897,
+                    "frontRight": 4747.1799078244785,
+                    "rearLeft": 1129.878045977754,
+                    "rearRight": 4509.013656340878
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0015489500972079018,
+                "speedFraction": 0.0024448585644778476,
+                "yaw": 0.00950207711687412
+              },
+              "errorVs3200": {
+                "heading": 0.0019303856235488581,
+                "speedFraction": 0.0037993476641804413,
+                "yaw": 0.012975828742156637
+              }
+            },
+            {
+              "dt": 0.000625,
+              "eventSchedule": {
+                "positiveStart": 0.500625,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3093750000000297,
+                "negativeSeconds": 1.190000000000011
+              },
+              "maxConstraintError": 1.9984014443252818e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.305332108567786,
+              "maxSlipDegrees": 9.427426852194236,
+              "maxYaw": 0.567219753900261,
+              "minLoad": 885.2427080502221,
+              "finalSpeed": 17.88662278162798,
+              "finalHeading": 0.0830424487154513,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.5208177072898224,
+                  "speed": 19.48509601152538,
+                  "roll": -0.03600523500085204,
+                  "loads": {
+                    "frontLeft": 4616.6973490011505,
+                    "frontRight": 1520.6846684244838,
+                    "rearLeft": 4396.35082787479,
+                    "rearRight": 1238.2671546995755
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5227932208452302,
+                  "speed": 18.71569153009112,
+                  "roll": 0.02614420796864554,
+                  "loads": {
+                    "frontLeft": 1454.2911369559504,
+                    "frontRight": 4695.822531252588,
+                    "rearLeft": 1134.6260792919481,
+                    "rearRight": 4487.260252499514
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5145831474614226,
+                  "speed": 17.88662278162798,
+                  "roll": 0.03821126104913049,
+                  "loads": {
+                    "frontLeft": 1257.554882071623,
+                    "frontRight": 4874.1880298170245,
+                    "rearLeft": 981.0913475083006,
+                    "rearRight": 4659.165740603053
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.0035645048783385924,
+                "speedFraction": 0.00037620520769943155,
+                "yaw": 0.0028774094960049013
+              },
+              "errorVs3200": {
+                "heading": 0.003183069351997636,
+                "speedFraction": 0.0017278991726881188,
+                "yaw": 0.006351161121287419
+              }
+            },
+            {
+              "dt": 0.0003125,
+              "eventSchedule": {
+                "positiveStart": 0.5003125,
+                "negativeStart": 1.81,
+                "positiveSeconds": 1.3096875000000072,
+                "negativeSeconds": 1.190000000000031
+              },
+              "maxConstraintError": 1.9539925233402755e-14,
+              "maneuver": "transition",
+              "maxRollDegrees": 2.290079166203958,
+              "maxSlipDegrees": 9.356127497799154,
+              "maxYaw": 0.5735709150215484,
+              "minLoad": 825.6461811788333,
+              "finalSpeed": 17.85576981174256,
+              "finalHeading": 0.08622551806744894,
+              "samples": [
+                {
+                  "time": 1,
+                  "yaw": 0.5173482677307106,
+                  "speed": 19.483973288086844,
+                  "roll": -0.03650596716641182,
+                  "loads": {
+                    "frontLeft": 4590.046734807933,
+                    "frontRight": 1547.634337421715,
+                    "rearLeft": 4363.895474003743,
+                    "rearRight": 1270.423453766609
+                  }
+                },
+                {
+                  "time": 2,
+                  "yaw": -0.5487998444152709,
+                  "speed": 18.714220772490382,
+                  "roll": 0.02711494673076973,
+                  "loads": {
+                    "frontLeft": 1643.794396143334,
+                    "frontRight": 4506.410615536821,
+                    "rearLeft": 1335.5254274388662,
+                    "rearRight": 4286.269560880979
+                  }
+                },
+                {
+                  "time": 3,
+                  "yaw": -0.5668129477214734,
+                  "speed": 17.85576981174256,
+                  "roll": 0.035496285648118124,
+                  "loads": {
+                    "frontLeft": 1510.622560696753,
+                    "frontRight": 4622.582174494054,
+                    "rearLeft": 1229.7542473471694,
+                    "rearRight": 4409.041017462024
+                  }
+                }
+              ],
+              "errorVs400": {
+                "heading": 0.00038143552634095634,
+                "speedFraction": 0.001349362402809251,
+                "yaw": 0.0034737516252825174
+              },
+              "errorVs3200": {
+                "heading": 0,
+                "speedFraction": 0,
+                "yaw": 0
+              }
+            }
+          ]
+        }
+      ],
+      "signedHeadingDecompositionAt50Hz": {
+        "originalComparison": 0.017965070544291972,
+        "sameInputNumericalDifference": 0.008126734162686722,
+        "referenceInputTimingDifference": 0.00983833638160525
+      }
+    }
+  ]
+}

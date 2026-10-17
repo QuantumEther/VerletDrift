@@ -1,0 +1,2861 @@
+{
+  "dt": 0.01,
+  "settingsSha256": "c63b6bf6aef3b6e86bca954036845abd54ca248ba655c173e5279a61ad2ac6bd",
+  "mechanicalSha256": {
+    "physics/constraints.js": "c952c8c85a580dc84bb3a0db48c1ebeade017457bc05f3460b4f2b7f4d032214",
+    "physics/kinematics.js": "27ebb8b837e6631c046a45a908d024881413be2461c675a97d5484819694c092",
+    "physics/weight.js": "1292f9f0a7710798cbb9e3a569a9b0443d2f73251322d0f1aae031d948ee812f",
+    "physics/suspension.js": "c110a4d0d096243234408e555a90942ee3c877b624abec825c9c8dd7efb218f6",
+    "physics/tires.js": "dcfe5216e7a26fe5085ced481741b562be7e88f22535b102983e99af92e47fc9",
+    "physics/wheel.js": "79d6f6d7ae15f35d72763b88379ba30ed38eaafcb1d164c9859daefa664313ae",
+    "physics/integrator.js": "e39ea7d9c03cb458677132af7c36212500e2bcf8b158a65641210d396ede836b",
+    "physics/engine.js": "f509d44c48e041a5b8ab0ab814facad7a71dfdbf532f2f311ed8e7f4db0667fb",
+    "physics/steering.js": "06968222184d9b2da97d36e98d8e392817cf8115f1cb3a49e3ec47e9c5312e97",
+    "physics/camera.js": "ed3655feb347162e391129c7a7aa9150a69f4ac80b6769d8c97fe559bc7ad170",
+    "input.js": "c202ad0b412e7fd4ddfb1c60654223b1c350afd16d46b1d78273d3facd6e329b"
+  },
+  "geometry": {
+    "trackM": 1.589,
+    "wheelbaseM": 2.408,
+    "diagonalM": 2.8850277295027857,
+    "yawInertiaKgM2": 832.3384999999998,
+    "displacementClampM": 0.71505,
+    "initializationErrorM": 1.2878587085651816e-14,
+    "perturbedErrorM": 0.19640494040802126,
+    "solvedErrorM": 9.103828801926284e-15
+  },
+  "scenarios": [
+    {
+      "name": "rest",
+      "seconds": 120,
+      "steps": 12000,
+      "elapsedMs": 334.61619499999995,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.2878587085651816e-14,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 0,
+      "finalSpeedMps": 0,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        0
+      ],
+      "maxSlipRatio": 0,
+      "minLoadN": 2943.0000000000005,
+      "maxRollRad": 0,
+      "maxCameraLagM": 0,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 0,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 5,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 6,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 7,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 8,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 9,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 10,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 11,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 12,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 13,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 14,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 15,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 16,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 17,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 18,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 19,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 20,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 21,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 22,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 23,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 24,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 25,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 26,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 27,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 28,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 29,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 30,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 31,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 32,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 33,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 34,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 35,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 36,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 37,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 38,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 39,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 40,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 41,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 42,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 43,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 44,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 45,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 46,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 47,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 48,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 49,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 50,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 51,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 52,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 53,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 54,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 55,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 56,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 57,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 58,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 59,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 60,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 61,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 62,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 63,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 64,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 65,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 66,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 67,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 68,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 69,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 70,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 71,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 72,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 73,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 74,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 75,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 76,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 77,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 78,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 79,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 80,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 81,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 82,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 83,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 84,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 85,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 86,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 87,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 88,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 89,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 90,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 91,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 92,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 93,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 94,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 95,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 96,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 97,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 98,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 99,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 100,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 101,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 102,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 103,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 104,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 105,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 106,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 107,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 108,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 109,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 110,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 111,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 112,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 113,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 114,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 115,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 116,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 117,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 118,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 119,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 120,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "launch",
+      "seconds": 6,
+      "steps": 600,
+      "elapsedMs": 697.483928,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 5.773159728050814e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 19.605501328566177,
+      "finalSpeedMps": 19.605501328566177,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -48.334734773971746
+      ],
+      "maxSlipRatio": 0.9996332024652252,
+      "minLoadN": 2230.2149446220433,
+      "maxRollRad": 0,
+      "maxCameraLagM": 12.398749398931457,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 238637.5766556897,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N",
+        "1"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0.23922606481221464,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7718.048430846003,
+          "gear": "1"
+        },
+        {
+          "time": 2,
+          "speed": 3.6957792299944003,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8402.788344457555,
+          "gear": "1"
+        },
+        {
+          "time": 3,
+          "speed": 7.957272872516796,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8443.454958986456,
+          "gear": "1"
+        },
+        {
+          "time": 4,
+          "speed": 11.730431693646892,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8561.851822974097,
+          "gear": "1"
+        },
+        {
+          "time": 5,
+          "speed": 15.285606448559008,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8585.33170039347,
+          "gear": "1"
+        },
+        {
+          "time": 6,
+          "speed": 19.605501328566177,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8174.507566698965,
+          "gear": "1"
+        }
+      ]
+    },
+    {
+      "name": "braking",
+      "seconds": 5,
+      "steps": 500,
+      "elapsedMs": 265.9790499999999,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.3322676295501878e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 19.99748946666955,
+      "finalSpeedMps": 0.0186113419069045,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -34.64812765332974
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 1947.9663532719192,
+      "maxRollRad": 0,
+      "maxCameraLagM": 11.54936335300097,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 247836.73469388435,
+      "finalEnergyJ": 0.20782922854541977,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 15.190094068317705,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 8.27634156061805,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 1.4077152661460701,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 0.2880451438194598,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 5,
+          "speed": 0.0186113419069045,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "cornering",
+      "seconds": 4,
+      "steps": 400,
+      "elapsedMs": 210.915432,
+      "maxConstraintErrorM": 2.7977620220553945e-14,
+      "finalConstraintErrorM": 2.220446049250313e-14,
+      "maxYawRadS": 0.6200919051316589,
+      "maxSpeedMps": 17.997742800004346,
+      "finalSpeedMps": 15.606249911324445,
+      "finalHeadingRad": 1.8555444171594635,
+      "displacementM": [
+        38.699175742002325,
+        -40.39602443541615
+      ],
+      "maxSlipRatio": 0.007275097427660485,
+      "minLoadN": 898.5140070714205,
+      "maxRollRad": 0.039369496310969844,
+      "maxCameraLagM": 12.367258901341671,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 200747.75510205555,
+      "finalEnergyJ": 151026.9085708186,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 17.521392052720817,
+          "yaw": 0.47234280872758827,
+          "heading": 0.20060408093424753,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 16.846280154396464,
+          "yaw": 0.5220142953975215,
+          "heading": 0.7304582716444119,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 16.208000893266114,
+          "yaw": 0.535542482956064,
+          "heading": 1.282950916303545,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 15.606249911324445,
+          "yaw": 0.5395374214540061,
+          "heading": 1.8555444171594635,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "handbrake",
+      "seconds": 4,
+      "steps": 400,
+      "elapsedMs": 502.5881589999999,
+      "maxConstraintErrorM": 1.8207657603852567e-14,
+      "finalConstraintErrorM": 9.769962616701378e-15,
+      "maxYawRadS": 1.5233544882292671,
+      "maxSpeedMps": 17.997742800004346,
+      "finalSpeedMps": 4.05997186204588,
+      "finalHeadingRad": 1.7422129616856177,
+      "displacementM": [
+        12.228332755319968,
+        -45.099748050051005
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 741.9118946061334,
+      "maxRollRad": 0.032879794960671234,
+      "maxCameraLagM": 11.484053465244335,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 200747.75510205555,
+      "finalEnergyJ": 10067.386847212001,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 16.001489029393348,
+          "yaw": 1.5233544882292671,
+          "heading": 0.3907724813554092,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 12.308505972596372,
+          "yaw": 0.43559870999114736,
+          "heading": 1.298687459014066,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 8.308956543797288,
+          "yaw": 0.18973322207587184,
+          "heading": 1.535089280454432,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 4.05997186204588,
+          "yaw": 0.22486964800072506,
+          "heading": 1.7422129616856177,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "transition",
+      "seconds": 4,
+      "steps": 400,
+      "elapsedMs": 260.2042499999998,
+      "maxConstraintErrorM": 1.865174681370263e-14,
+      "finalConstraintErrorM": 5.773159728050814e-15,
+      "maxYawRadS": 0.5661886982458064,
+      "maxSpeedMps": 19.99748946666955,
+      "finalSpeedMps": 17.287889795665,
+      "finalHeadingRad": -0.48355287556520743,
+      "displacementM": [
+        9.20088240070659,
+        -71.3986658322729
+      ],
+      "maxSlipRatio": 0.007056319224092469,
+      "minLoadN": 841.8532504038302,
+      "maxRollRad": 0.04022930518072834,
+      "maxCameraLagM": 13.78066739797739,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 247836.73469388435,
+      "finalEnergyJ": 185289.2836240643,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 19.480374480986598,
+          "yaw": 0.4396644144305517,
+          "heading": 0.18749347133415606,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 18.730293638660168,
+          "yaw": -0.3200031371306755,
+          "heading": 0.5195826272203654,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 17.974234688731027,
+          "yaw": -0.5438804905475214,
+          "heading": 0.03841640566565241,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 17.287889795665,
+          "yaw": -0.5367128757422623,
+          "heading": -0.48355287556520743,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "gear_clutch",
+      "seconds": 6,
+      "steps": 600,
+      "elapsedMs": 405.77194499999996,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 5.773159728050814e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 17.80756669338146,
+      "finalSpeedMps": 17.80756669338146,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -45.07580030377267
+      ],
+      "maxSlipRatio": 0.9996332024652252,
+      "minLoadN": 2377.494137988183,
+      "maxRollRad": 0,
+      "maxCameraLagM": 11.47214950700156,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 204103.90128537058,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N",
+        "1",
+        "2"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0.23922606481221464,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7718.048430846003,
+          "gear": "1"
+        },
+        {
+          "time": 2,
+          "speed": 3.6957792299944003,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8402.788344457555,
+          "gear": "1"
+        },
+        {
+          "time": 3,
+          "speed": 7.957272872516796,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8443.454958986456,
+          "gear": "1"
+        },
+        {
+          "time": 4,
+          "speed": 10.443660121627829,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 4720.542714152082,
+          "gear": "2"
+        },
+        {
+          "time": 5,
+          "speed": 14.18177506123186,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7433.323382707911,
+          "gear": "2"
+        },
+        {
+          "time": 6,
+          "speed": 17.80756669338146,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7779.917670106925,
+          "gear": "2"
+        }
+      ]
+    },
+    {
+      "name": "stall",
+      "seconds": 2,
+      "steps": 200,
+      "elapsedMs": 7.2699179999999615,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.2878587085651816e-14,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 0,
+      "finalSpeedMps": 0,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        0
+      ],
+      "maxSlipRatio": 0,
+      "minLoadN": 2943.0000000000005,
+      "maxRollRad": 0,
+      "maxCameraLagM": 0,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 0,
+      "minClutch": 1,
+      "maxClutch": 1,
+      "stalled": true,
+      "gears": [
+        "N",
+        "1"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 0,
+          "gear": "1"
+        },
+        {
+          "time": 2,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 0,
+          "gear": "1"
+        }
+      ]
+    },
+    {
+      "name": "reverse",
+      "seconds": 5,
+      "steps": 500,
+      "elapsedMs": 469.01903900000025,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.2878587085651816e-14,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 12.241815863896477,
+      "finalSpeedMps": 12.241815863896477,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        24.887880454912207
+      ],
+      "maxSlipRatio": 0.9996339900548796,
+      "minLoadN": 2519.8539934098617,
+      "maxRollRad": 0,
+      "maxCameraLagM": 7.78838571005403,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 96313.54076614777,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N",
+        "R"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0.23069746068671293,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7726.330134714125,
+          "gear": "R"
+        },
+        {
+          "time": 2,
+          "speed": 3.009510757993894,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8674.264945037756,
+          "gear": "R"
+        },
+        {
+          "time": 3,
+          "speed": 6.302848614133438,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8691.509450737443,
+          "gear": "R"
+        },
+        {
+          "time": 4,
+          "speed": 9.372370220654602,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8748.134560434828,
+          "gear": "R"
+        },
+        {
+          "time": 5,
+          "speed": 12.241815863896477,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8791.400423949319,
+          "gear": "R"
+        }
+      ]
+    },
+    {
+      "name": "collision",
+      "seconds": 2,
+      "steps": 200,
+      "elapsedMs": 156.42315199999985,
+      "maxConstraintErrorM": 1.3322676295501878e-15,
+      "finalConstraintErrorM": 1.3322676295501878e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 11.998342799999145,
+      "finalSpeedMps": 0.0017702680170487723,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -0.794645978938535
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 276.31603574572836,
+      "maxRollRad": 0,
+      "maxCameraLagM": 0.8317269339723823,
+      "maxBoundaryOvershootM": 0.044377101297259185,
+      "initialEnergyJ": 89221.224489796,
+      "finalEnergyJ": 17.186445472506705,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0.007896214282698301,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 0.0017702680170487723,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "high_speed",
+      "seconds": 4,
+      "steps": 400,
+      "elapsedMs": 279.3257319999998,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.3322676295501878e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 59.986822799996276,
+      "finalSpeedMps": 0.7944543753444222,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -97.78042156662909
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 63.320235794989834,
+      "maxRollRad": 0,
+      "maxCameraLagM": 42.18402874611693,
+      "maxBoundaryOvershootM": 0.21629912616808933,
+      "initialEnergyJ": 2230530.612244857,
+      "finalEnergyJ": 401.48013714419807,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 58.74756266712424,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 0.21019987401808088,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 0.9889793443391623,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 0.7944543753444222,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "extreme_speed_clamp",
+      "seconds": 2,
+      "steps": 200,
+      "elapsedMs": 224.47956900000008,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.3322676295501878e-15,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 71.5050000000005,
+      "finalSpeedMps": 0.08894544990819116,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -98.79721690320403
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 72.22724516231116,
+      "maxRollRad": 0,
+      "maxCameraLagM": 49.70631115798165,
+      "maxBoundaryOvershootM": 0.25282053461185316,
+      "initialEnergyJ": 6195918.367346939,
+      "finalEnergyJ": 62750.377391643546,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 70.01494195313285,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 0.08894544990819116,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "low_speed",
+      "seconds": 15,
+      "steps": 1500,
+      "elapsedMs": 349.31773799999974,
+      "maxConstraintErrorM": 1.2878587085651816e-14,
+      "finalConstraintErrorM": 1.2878587085651816e-14,
+      "maxYawRadS": 0,
+      "maxSpeedMps": 0.048822791666225385,
+      "finalSpeedMps": 0,
+      "finalHeadingRad": 0,
+      "displacementM": [
+        0,
+        -0.009169846379961655
+      ],
+      "maxSlipRatio": 0.04267193141498286,
+      "minLoadN": 2883.1320441910975,
+      "maxRollRad": 0,
+      "maxCameraLagM": 0.008598403591108195,
+      "maxBoundaryOvershootM": 0,
+      "initialEnergyJ": 1.5489795918510592,
+      "finalEnergyJ": 6.296027658909972e-28,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 2,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 3,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 4,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 5,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 6,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 7,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 8,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 9,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 10,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 11,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 12,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 13,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 14,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        },
+        {
+          "time": 15,
+          "speed": 0,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 800,
+          "gear": "N"
+        }
+      ]
+    },
+    {
+      "name": "long_drive",
+      "seconds": 120,
+      "steps": 12000,
+      "elapsedMs": 11269.519011,
+      "maxConstraintErrorM": 7.172040739078511e-14,
+      "finalConstraintErrorM": 4.3076653355456074e-14,
+      "maxYawRadS": 4.135171129835413,
+      "maxSpeedMps": 23.01654262460258,
+      "finalSpeedMps": 19.239071329720197,
+      "finalHeadingRad": -0.015552427671813751,
+      "displacementM": [
+        -99.19284691342075,
+        167.22301837256197
+      ],
+      "maxSlipRatio": 1,
+      "minLoadN": 0,
+      "maxRollRad": 0.10390187249734507,
+      "maxCameraLagM": 16.26695176837967,
+      "maxBoundaryOvershootM": 0.28093503333991515,
+      "initialEnergyJ": 0,
+      "finalEnergyJ": 230823.58140420535,
+      "minClutch": 0,
+      "maxClutch": 1,
+      "stalled": false,
+      "gears": [
+        "N",
+        "1"
+      ],
+      "samples": [
+        {
+          "time": 1,
+          "speed": 0.23922606481221464,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 7718.048430846003,
+          "gear": "1"
+        },
+        {
+          "time": 2,
+          "speed": 3.6957792299944003,
+          "yaw": 0,
+          "heading": 0,
+          "rpm": 8402.788344457555,
+          "gear": "1"
+        },
+        {
+          "time": 3,
+          "speed": 7.590952705133838,
+          "yaw": 0.013457583255283012,
+          "heading": 0.09727181059395162,
+          "rpm": 8581.670749480201,
+          "gear": "1"
+        },
+        {
+          "time": 4,
+          "speed": 10.598148087160324,
+          "yaw": 0.1305400875181606,
+          "heading": 0.3014160667511798,
+          "rpm": 8793.230927447787,
+          "gear": "1"
+        },
+        {
+          "time": 5,
+          "speed": 13.039475848213556,
+          "yaw": 0.40945882942411416,
+          "heading": 0.6248837719475,
+          "rpm": 8902.809961433863,
+          "gear": "1"
+        },
+        {
+          "time": 6,
+          "speed": 15.323999173666634,
+          "yaw": 0.4930143072756188,
+          "heading": 1.0556576705076712,
+          "rpm": 8863.060028348096,
+          "gear": "1"
+        },
+        {
+          "time": 7,
+          "speed": 16.804414137188026,
+          "yaw": 0.6836528413745047,
+          "heading": 1.6691605082692802,
+          "rpm": 8973.289656211582,
+          "gear": "1"
+        },
+        {
+          "time": 8,
+          "speed": 17.094219414470576,
+          "yaw": 0.17536465992464834,
+          "heading": 2.2467991098519327,
+          "rpm": 8976.336988411094,
+          "gear": "1"
+        },
+        {
+          "time": 9,
+          "speed": 17.335554892761557,
+          "yaw": 0.5140331096542106,
+          "heading": 2.539026402642784,
+          "rpm": 9006.745795963481,
+          "gear": "1"
+        },
+        {
+          "time": 10,
+          "speed": 18.109796317690936,
+          "yaw": 0.4840619686015124,
+          "heading": 3.032066665330034,
+          "rpm": 8992.486562860026,
+          "gear": "1"
+        },
+        {
+          "time": 11,
+          "speed": 18.93178566338071,
+          "yaw": 0.46169633171460056,
+          "heading": 3.5078787032698275,
+          "rpm": 8991.91975339753,
+          "gear": "1"
+        },
+        {
+          "time": 12,
+          "speed": 19.721624282077517,
+          "yaw": 0.43398863276555844,
+          "heading": 3.965476802154134,
+          "rpm": 9004.033830670503,
+          "gear": "1"
+        },
+        {
+          "time": 13,
+          "speed": 20.80070749436602,
+          "yaw": 0.3613175311420136,
+          "heading": 4.364788395016909,
+          "rpm": 8994.76283904674,
+          "gear": "1"
+        },
+        {
+          "time": 14,
+          "speed": 22.615765860743686,
+          "yaw": 0.19539338261722605,
+          "heading": 4.667178779490586,
+          "rpm": 8950.815432120202,
+          "gear": "1"
+        },
+        {
+          "time": 15,
+          "speed": 22.982124448246143,
+          "yaw": 0.14377745729134972,
+          "heading": -1.4334845158622982,
+          "rpm": 9000.433686598144,
+          "gear": "1"
+        },
+        {
+          "time": 16,
+          "speed": 23.00211227365226,
+          "yaw": -0.06732176121739819,
+          "heading": -1.3968366118583346,
+          "rpm": 9009.62024124365,
+          "gear": "1"
+        },
+        {
+          "time": 17,
+          "speed": 22.999374566168363,
+          "yaw": -0.2552529655210023,
+          "heading": -1.5340116912680126,
+          "rpm": 9007.581655288237,
+          "gear": "1"
+        },
+        {
+          "time": 18,
+          "speed": 22.994833157070076,
+          "yaw": -0.3542831904370658,
+          "heading": 4.461862105476712,
+          "rpm": 9001.981090424812,
+          "gear": "1"
+        },
+        {
+          "time": 19,
+          "speed": 22.999154012144466,
+          "yaw": -0.4265101548392991,
+          "heading": 4.070843595190284,
+          "rpm": 9005.904688878725,
+          "gear": "1"
+        },
+        {
+          "time": 20,
+          "speed": 16.2417179974203,
+          "yaw": -0.4667686029597107,
+          "heading": 3.0051276402608167,
+          "rpm": 8841.573952941786,
+          "gear": "1"
+        },
+        {
+          "time": 21,
+          "speed": 18.119702559966324,
+          "yaw": -0.6761771600547473,
+          "heading": 2.456059773163387,
+          "rpm": 8996.335124433035,
+          "gear": "1"
+        },
+        {
+          "time": 22,
+          "speed": 18.374021264947174,
+          "yaw": -0.1834386379103048,
+          "heading": 1.8913429141748956,
+          "rpm": 9000.89150228716,
+          "gear": "1"
+        },
+        {
+          "time": 23,
+          "speed": 18.515529835247424,
+          "yaw": -0.46877250743717624,
+          "heading": 1.6166705821907894,
+          "rpm": 8992.057547656312,
+          "gear": "1"
+        },
+        {
+          "time": 24,
+          "speed": 19.183060396509557,
+          "yaw": -0.4629579878691059,
+          "heading": 1.1510313539575403,
+          "rpm": 8986.71839878664,
+          "gear": "1"
+        },
+        {
+          "time": 25,
+          "speed": 19.912040637208243,
+          "yaw": -0.42716756798745203,
+          "heading": 0.6992016957356529,
+          "rpm": 8995.911444456036,
+          "gear": "1"
+        },
+        {
+          "time": 26,
+          "speed": 20.58795816905154,
+          "yaw": -0.42827339936684083,
+          "heading": 0.26000002900752595,
+          "rpm": 8986.444667228809,
+          "gear": "1"
+        },
+        {
+          "time": 27,
+          "speed": 21.379706784682313,
+          "yaw": -0.392459086534358,
+          "heading": -0.159800126187442,
+          "rpm": 8991.870220675513,
+          "gear": "1"
+        },
+        {
+          "time": 28,
+          "speed": 22.525605830947953,
+          "yaw": -0.3929696512118497,
+          "heading": -0.5568239497435856,
+          "rpm": 8975.634078320441,
+          "gear": "1"
+        },
+        {
+          "time": 29,
+          "speed": 23.00436978375716,
+          "yaw": -0.3604955737132265,
+          "heading": -0.943464132863272,
+          "rpm": 9002.61721322781,
+          "gear": "1"
+        },
+        {
+          "time": 30,
+          "speed": 23.002159011475168,
+          "yaw": -0.2469564690633419,
+          "heading": -1.2383600104124435,
+          "rpm": 9002.65425911098,
+          "gear": "1"
+        },
+        {
+          "time": 31,
+          "speed": 23.00326540408569,
+          "yaw": -0.11945635676062771,
+          "heading": -1.39435924814045,
+          "rpm": 8999.08106291355,
+          "gear": "1"
+        },
+        {
+          "time": 32,
+          "speed": 3.258820437952495,
+          "yaw": -0.6868605989492238,
+          "heading": 4.590500344704973,
+          "rpm": 8985.150158421664,
+          "gear": "1"
+        },
+        {
+          "time": 33,
+          "speed": 0.5611199812848093,
+          "yaw": -0.8131346587218591,
+          "heading": 3.6520836558242538,
+          "rpm": 8537.82050996505,
+          "gear": "1"
+        },
+        {
+          "time": 34,
+          "speed": 3.937677536645192,
+          "yaw": 0.2156997918020931,
+          "heading": 3.3625892710555894,
+          "rpm": 8375.22028948482,
+          "gear": "1"
+        },
+        {
+          "time": 35,
+          "speed": 6.178081324139138,
+          "yaw": 0.5557176036639522,
+          "heading": 3.733184921391838,
+          "rpm": 8513.7997306419,
+          "gear": "1"
+        },
+        {
+          "time": 36,
+          "speed": 5.691361221184909,
+          "yaw": 0.9181966439925304,
+          "heading": 4.44286965745408,
+          "rpm": 8559.16523434424,
+          "gear": "1"
+        },
+        {
+          "time": 37,
+          "speed": 1.9224905080771277,
+          "yaw": 1.5510973395378436,
+          "heading": -0.8533134618653149,
+          "rpm": 8516.347719698431,
+          "gear": "1"
+        },
+        {
+          "time": 38,
+          "speed": 2.742940954634171,
+          "yaw": 0.6484592127719901,
+          "heading": -0.01110854358141733,
+          "rpm": 8314.737246833458,
+          "gear": "1"
+        },
+        {
+          "time": 39,
+          "speed": 6.761416022340756,
+          "yaw": 0.05995496223825114,
+          "heading": 0.2242654623613909,
+          "rpm": 8527.211123815097,
+          "gear": "1"
+        },
+        {
+          "time": 40,
+          "speed": 9.88076176169682,
+          "yaw": 0.161015036204315,
+          "heading": 0.520540919488977,
+          "rpm": 8786.362055037063,
+          "gear": "1"
+        },
+        {
+          "time": 41,
+          "speed": 12.28291304819154,
+          "yaw": 0.48053170039720206,
+          "heading": 0.9178879220145874,
+          "rpm": 8901.842381245866,
+          "gear": "1"
+        },
+        {
+          "time": 42,
+          "speed": 14.403778266469528,
+          "yaw": 0.4332118924744055,
+          "heading": 1.349435819954205,
+          "rpm": 8896.701127302422,
+          "gear": "1"
+        },
+        {
+          "time": 43,
+          "speed": 16.493288536431567,
+          "yaw": 0.38583171732911037,
+          "heading": 1.7748100398842794,
+          "rpm": 8979.70968597723,
+          "gear": "1"
+        },
+        {
+          "time": 44,
+          "speed": 17.604496267414927,
+          "yaw": 0.3867886955596589,
+          "heading": 2.149613459925364,
+          "rpm": 8995.510353882259,
+          "gear": "1"
+        },
+        {
+          "time": 45,
+          "speed": 18.88432212527897,
+          "yaw": 0.20479779601871861,
+          "heading": 2.44905983255837,
+          "rpm": 8987.673351500167,
+          "gear": "1"
+        },
+        {
+          "time": 46,
+          "speed": 20.3812889380464,
+          "yaw": 0.11529551800326665,
+          "heading": 2.6516905671325506,
+          "rpm": 8952.499584371852,
+          "gear": "1"
+        },
+        {
+          "time": 47,
+          "speed": 22.509915041132803,
+          "yaw": -0.11291488592197751,
+          "heading": 2.734001458950307,
+          "rpm": 8817.29955176929,
+          "gear": "1"
+        },
+        {
+          "time": 48,
+          "speed": 23.00122044913493,
+          "yaw": -0.09730994559946637,
+          "heading": 2.6768297144501654,
+          "rpm": 9021.933138386677,
+          "gear": "1"
+        },
+        {
+          "time": 49,
+          "speed": 22.987668199662842,
+          "yaw": -0.2737488117906306,
+          "heading": 2.446070474241839,
+          "rpm": 8996.519358940184,
+          "gear": "1"
+        },
+        {
+          "time": 50,
+          "speed": 23.000616147182136,
+          "yaw": -0.40581790491422964,
+          "heading": 2.0906571648293095,
+          "rpm": 9002.288303795973,
+          "gear": "1"
+        },
+        {
+          "time": 51,
+          "speed": 22.9896613395763,
+          "yaw": -0.3981381589727162,
+          "heading": 1.6854610728805342,
+          "rpm": 9020.865913362302,
+          "gear": "1"
+        },
+        {
+          "time": 52,
+          "speed": 23.001544302181735,
+          "yaw": -0.4055026061644318,
+          "heading": 1.281514851492768,
+          "rpm": 9017.91886327524,
+          "gear": "1"
+        },
+        {
+          "time": 53,
+          "speed": 22.999321152236867,
+          "yaw": -0.4085157158893571,
+          "heading": 0.8781799941207253,
+          "rpm": 9017.155100485961,
+          "gear": "1"
+        },
+        {
+          "time": 54,
+          "speed": 22.991935334170098,
+          "yaw": -0.39875014400423403,
+          "heading": 0.47522167010271543,
+          "rpm": 8994.02388041956,
+          "gear": "1"
+        },
+        {
+          "time": 55,
+          "speed": 22.995304653386867,
+          "yaw": -0.409840559864616,
+          "heading": 0.07185619077016137,
+          "rpm": 9001.243310909034,
+          "gear": "1"
+        },
+        {
+          "time": 56,
+          "speed": 22.98291709799017,
+          "yaw": -0.42091818139893267,
+          "heading": -0.3317280464192254,
+          "rpm": 9015.244081797531,
+          "gear": "1"
+        },
+        {
+          "time": 57,
+          "speed": 22.990618665961133,
+          "yaw": -0.41855876593612784,
+          "heading": -0.7327298176284311,
+          "rpm": 8991.625084871337,
+          "gear": "1"
+        },
+        {
+          "time": 58,
+          "speed": 22.993810309273314,
+          "yaw": -0.4227197478491984,
+          "heading": -1.1354827095092133,
+          "rpm": 9005.69680585561,
+          "gear": "1"
+        },
+        {
+          "time": 59,
+          "speed": 22.988636092925297,
+          "yaw": -0.3798824548391533,
+          "heading": -1.5394606352653715,
+          "rpm": 9018.327534849172,
+          "gear": "1"
+        },
+        {
+          "time": 60,
+          "speed": 22.993543490707587,
+          "yaw": -0.404777710100479,
+          "heading": 4.339360429390292,
+          "rpm": 9020.253052657295,
+          "gear": "1"
+        },
+        {
+          "time": 61,
+          "speed": 23.010354560832617,
+          "yaw": -0.2783445118550443,
+          "heading": 3.9918985346852764,
+          "rpm": 8999.212498292241,
+          "gear": "1"
+        },
+        {
+          "time": 62,
+          "speed": 22.99457152944495,
+          "yaw": -0.08047692121104788,
+          "heading": 3.7771444208637757,
+          "rpm": 9016.078165037941,
+          "gear": "1"
+        },
+        {
+          "time": 63,
+          "speed": 23.009071688280752,
+          "yaw": -0.06759654728814013,
+          "heading": 3.7228174263016856,
+          "rpm": 8999.236490857631,
+          "gear": "1"
+        },
+        {
+          "time": 64,
+          "speed": 23.002737614759567,
+          "yaw": 0.17510135778207037,
+          "heading": 3.83686424924053,
+          "rpm": 9000.908831600738,
+          "gear": "1"
+        },
+        {
+          "time": 65,
+          "speed": 22.97886505035532,
+          "yaw": 0.35704914572027846,
+          "heading": 4.1089616368215,
+          "rpm": 9015.986790208835,
+          "gear": "1"
+        },
+        {
+          "time": 66,
+          "speed": 22.991845478345834,
+          "yaw": 0.4145102401055034,
+          "heading": 4.4927553089365775,
+          "rpm": 9015.380791255768,
+          "gear": "1"
+        },
+        {
+          "time": 67,
+          "speed": 23.005534106937606,
+          "yaw": 0.40757321363780186,
+          "heading": -1.3869474623992981,
+          "rpm": 9020.661125187515,
+          "gear": "1"
+        },
+        {
+          "time": 68,
+          "speed": 7.146289772494004,
+          "yaw": -1.6882570724932933,
+          "heading": 4.234991619104676,
+          "rpm": 8893.22121006853,
+          "gear": "1"
+        },
+        {
+          "time": 69,
+          "speed": 1.798071510494689,
+          "yaw": 0.007571276181206343,
+          "heading": 3.1127870095373664,
+          "rpm": 8286.30046678941,
+          "gear": "1"
+        },
+        {
+          "time": 70,
+          "speed": 3.017527121184144,
+          "yaw": 0.267982153620272,
+          "heading": 2.9152119685913083,
+          "rpm": 8298.791406500532,
+          "gear": "1"
+        },
+        {
+          "time": 71,
+          "speed": 7.049017119241928,
+          "yaw": 0.14705732367223945,
+          "heading": 3.097341629457839,
+          "rpm": 8536.69499208084,
+          "gear": "1"
+        },
+        {
+          "time": 72,
+          "speed": 10.097875774549376,
+          "yaw": 0.3822170286037263,
+          "heading": 3.4104524368414957,
+          "rpm": 8775.476259376019,
+          "gear": "1"
+        },
+        {
+          "time": 73,
+          "speed": 11.45876511544782,
+          "yaw": -0.020197569453905828,
+          "heading": 3.1756474608887926,
+          "rpm": 8839.57234677098,
+          "gear": "1"
+        },
+        {
+          "time": 74,
+          "speed": 13.413071556820517,
+          "yaw": 0.020424400742413695,
+          "heading": 3.1678630374567627,
+          "rpm": 8916.917189139083,
+          "gear": "1"
+        },
+        {
+          "time": 75,
+          "speed": 15.103835259144464,
+          "yaw": -0.06271335595857686,
+          "heading": 3.1609692837487637,
+          "rpm": 8990.284742917424,
+          "gear": "1"
+        },
+        {
+          "time": 76,
+          "speed": 16.709094676650835,
+          "yaw": -0.10244904384193454,
+          "heading": 3.159159901874685,
+          "rpm": 8976.034483423857,
+          "gear": "1"
+        },
+        {
+          "time": 77,
+          "speed": 18.433425679230222,
+          "yaw": 0.09825444399105265,
+          "heading": 3.1597073947628243,
+          "rpm": 8935.288861068719,
+          "gear": "1"
+        },
+        {
+          "time": 78,
+          "speed": 20.72308579788296,
+          "yaw": 0.07798751373293555,
+          "heading": 3.1567245369037877,
+          "rpm": 8749.388409986048,
+          "gear": "1"
+        },
+        {
+          "time": 79,
+          "speed": 23.002969064575726,
+          "yaw": -0.024496891412084665,
+          "heading": 3.1366672470370913,
+          "rpm": 8998.47207858043,
+          "gear": "1"
+        },
+        {
+          "time": 80,
+          "speed": 23.000117384863955,
+          "yaw": -0.2216286698955905,
+          "heading": 2.9878751106977592,
+          "rpm": 9002.90397963264,
+          "gear": "1"
+        },
+        {
+          "time": 81,
+          "speed": 23.0055779862414,
+          "yaw": -0.3718567040642995,
+          "heading": 2.678150769821068,
+          "rpm": 9018.340007886918,
+          "gear": "1"
+        },
+        {
+          "time": 82,
+          "speed": 22.992831597112723,
+          "yaw": -0.4140655192855558,
+          "heading": 2.2789131629802046,
+          "rpm": 9001.607148085934,
+          "gear": "1"
+        },
+        {
+          "time": 83,
+          "speed": 22.999026564887227,
+          "yaw": -0.40220405252600067,
+          "heading": 1.8749989829478544,
+          "rpm": 8996.357899971521,
+          "gear": "1"
+        },
+        {
+          "time": 84,
+          "speed": 22.991404790802584,
+          "yaw": -0.3997227973754125,
+          "heading": 1.4711768998030097,
+          "rpm": 9018.542210183712,
+          "gear": "1"
+        },
+        {
+          "time": 85,
+          "speed": 22.993974041188437,
+          "yaw": -0.4078985345165709,
+          "heading": 1.0681184405093154,
+          "rpm": 8996.234250445765,
+          "gear": "1"
+        },
+        {
+          "time": 86,
+          "speed": 22.99383188407509,
+          "yaw": -0.39899865872171647,
+          "heading": 0.6644832144357548,
+          "rpm": 9015.25819589135,
+          "gear": "1"
+        },
+        {
+          "time": 87,
+          "speed": 22.98848497263254,
+          "yaw": -0.38934288534193673,
+          "heading": 0.2605982705090437,
+          "rpm": 8991.969105115637,
+          "gear": "1"
+        },
+        {
+          "time": 88,
+          "speed": 22.986827820018906,
+          "yaw": -0.404753977070027,
+          "heading": -0.14144152410459676,
+          "rpm": 8999.845120000653,
+          "gear": "1"
+        },
+        {
+          "time": 89,
+          "speed": 22.98659476849826,
+          "yaw": -0.4153058291950451,
+          "heading": -0.5430051820669748,
+          "rpm": 9000.641514976987,
+          "gear": "1"
+        },
+        {
+          "time": 90,
+          "speed": 22.98824062573468,
+          "yaw": -0.4170539636088044,
+          "heading": -0.9455734602495198,
+          "rpm": 9017.216285052493,
+          "gear": "1"
+        },
+        {
+          "time": 91,
+          "speed": 22.99149871208127,
+          "yaw": -0.38827964731331654,
+          "heading": -1.3517090216882446,
+          "rpm": 8991.093425513802,
+          "gear": "1"
+        },
+        {
+          "time": 92,
+          "speed": 22.994730839731286,
+          "yaw": -0.33709213058052967,
+          "heading": 4.545059294846181,
+          "rpm": 9025.329669505283,
+          "gear": "1"
+        },
+        {
+          "time": 93,
+          "speed": 22.9927445500938,
+          "yaw": -0.25029574901989093,
+          "heading": 4.2697955260280995,
+          "rpm": 8992.071020676882,
+          "gear": "1"
+        },
+        {
+          "time": 94,
+          "speed": 22.99577755698019,
+          "yaw": -0.024181201560047327,
+          "heading": 4.146961066244886,
+          "rpm": 9021.07568517808,
+          "gear": "1"
+        },
+        {
+          "time": 95,
+          "speed": 10.620130335734812,
+          "yaw": 0.6326426381852102,
+          "heading": 4.553456571167802,
+          "rpm": 8656.452173605016,
+          "gear": "1"
+        },
+        {
+          "time": 96,
+          "speed": 6.297161116061222,
+          "yaw": 0.8355208739378117,
+          "heading": -1.1988540876061187,
+          "rpm": 8591.14103493231,
+          "gear": "1"
+        },
+        {
+          "time": 97,
+          "speed": 1.250024737417427,
+          "yaw": 0.5501497019237522,
+          "heading": -0.07304463828639629,
+          "rpm": 8284.24262234341,
+          "gear": "1"
+        },
+        {
+          "time": 98,
+          "speed": 3.553767403797881,
+          "yaw": 0.18276170302762296,
+          "heading": 0.024873542185885,
+          "rpm": 8354.625662269866,
+          "gear": "1"
+        },
+        {
+          "time": 99,
+          "speed": 7.367500318810538,
+          "yaw": 0.26090380529790735,
+          "heading": 0.1606159276389616,
+          "rpm": 8597.361325550195,
+          "gear": "1"
+        },
+        {
+          "time": 100,
+          "speed": 10.291286400954252,
+          "yaw": 0.2439129833285314,
+          "heading": 0.4210256056804602,
+          "rpm": 8812.51714642753,
+          "gear": "1"
+        },
+        {
+          "time": 101,
+          "speed": 12.562140163300642,
+          "yaw": 0.3642105606906587,
+          "heading": 0.8133653013885056,
+          "rpm": 8973.561376054004,
+          "gear": "1"
+        },
+        {
+          "time": 102,
+          "speed": 14.90692503622968,
+          "yaw": 0.5210946965110708,
+          "heading": 1.288979307846041,
+          "rpm": 8844.806141618585,
+          "gear": "1"
+        },
+        {
+          "time": 103,
+          "speed": 16.07718045277656,
+          "yaw": 0.5288834894668248,
+          "heading": 1.8220544841904038,
+          "rpm": 8986.045130369095,
+          "gear": "1"
+        },
+        {
+          "time": 104,
+          "speed": 16.95465393902155,
+          "yaw": 0.5051765476125958,
+          "heading": 2.3398717290788316,
+          "rpm": 9002.713816753218,
+          "gear": "1"
+        },
+        {
+          "time": 105,
+          "speed": 17.834162597667806,
+          "yaw": 0.4896703557696558,
+          "heading": 2.841985169545459,
+          "rpm": 8979.176254991527,
+          "gear": "1"
+        },
+        {
+          "time": 106,
+          "speed": 18.700446599736786,
+          "yaw": 0.4481545903535,
+          "heading": 3.308879290936769,
+          "rpm": 8996.73935240827,
+          "gear": "1"
+        },
+        {
+          "time": 107,
+          "speed": 19.789314360614107,
+          "yaw": 0.35006062659879156,
+          "heading": 3.7134524580093378,
+          "rpm": 8991.693867421109,
+          "gear": "1"
+        },
+        {
+          "time": 108,
+          "speed": 21.355506147341945,
+          "yaw": 0.29964069621977174,
+          "heading": 4.032261344730474,
+          "rpm": 8996.03562707963,
+          "gear": "1"
+        },
+        {
+          "time": 109,
+          "speed": 23.00526070090617,
+          "yaw": 0.19962494410252773,
+          "heading": 4.241032405000531,
+          "rpm": 9003.122476134895,
+          "gear": "1"
+        },
+        {
+          "time": 110,
+          "speed": 11.429429629241149,
+          "yaw": 4.135171129835413,
+          "heading": 4.509810027080249,
+          "rpm": 8974.232205759408,
+          "gear": "1"
+        },
+        {
+          "time": 111,
+          "speed": 4.0787897210886745,
+          "yaw": 0.5094241394290266,
+          "heading": -0.06684323705858608,
+          "rpm": 8347.424458900845,
+          "gear": "1"
+        },
+        {
+          "time": 112,
+          "speed": 0.8815521999857778,
+          "yaw": -0.31049787123968997,
+          "heading": -0.06454230101160308,
+          "rpm": 8268.846931015642,
+          "gear": "1"
+        },
+        {
+          "time": 113,
+          "speed": 5.314010308452494,
+          "yaw": -0.26744110391019316,
+          "heading": -0.1830024772785328,
+          "rpm": 8412.409117343293,
+          "gear": "1"
+        },
+        {
+          "time": 114,
+          "speed": 8.258424748234146,
+          "yaw": 0.07248893528695177,
+          "heading": -0.05035967315995826,
+          "rpm": 8631.910987832624,
+          "gear": "1"
+        },
+        {
+          "time": 115,
+          "speed": 10.910371268575073,
+          "yaw": 0.04037067637874259,
+          "heading": -0.026742335485043345,
+          "rpm": 8780.300102137215,
+          "gear": "1"
+        },
+        {
+          "time": 116,
+          "speed": 12.964230562773558,
+          "yaw": 0.03012562980380107,
+          "heading": -0.026450435078517964,
+          "rpm": 8910.377574893137,
+          "gear": "1"
+        },
+        {
+          "time": 117,
+          "speed": 14.653470465196952,
+          "yaw": 0.02007296193140551,
+          "heading": -0.019923203272286694,
+          "rpm": 8977.63706067452,
+          "gear": "1"
+        },
+        {
+          "time": 118,
+          "speed": 16.13420890779192,
+          "yaw": 0.10666337586733299,
+          "heading": -0.019405192551458672,
+          "rpm": 9000.70057350298,
+          "gear": "1"
+        },
+        {
+          "time": 119,
+          "speed": 17.60549463489893,
+          "yaw": -0.017595063309250314,
+          "heading": -0.01591345157365387,
+          "rpm": 8982.429815013125,
+          "gear": "1"
+        },
+        {
+          "time": 120,
+          "speed": 19.239071329720197,
+          "yaw": 0.10747485289690495,
+          "heading": -0.015552427671813751,
+          "rpm": 8963.868821837286,
+          "gear": "1"
+        }
+      ]
+    }
+  ]
+}

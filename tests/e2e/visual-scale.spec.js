@@ -103,6 +103,7 @@ test('tire and mark centres agree through turns, zoom, view scale and shake', as
   const audit = await page.evaluate(async () => {
     const { drawVehicleSprites } = await import('/js/renderer/vehicle-sprites.js');
     const { applyCameraTransform, removeCameraTransform, drawSkidMarks } = await import('/js/renderer/world.js');
+    const { CAR_HALF_WIDTH: W, CAR_HALF_LENGTH: L } = await import('/js/constants.js');
     const saved = { camera: { ...state.camera }, shake: { ...state.screenShake },
       ppm: state.params.pixelsPerMeter, exaggeration: state.params.gpuSkidResolution, marks: state.skidMarks };
     let maxError = 0, cases = 0;
@@ -114,8 +115,8 @@ test('tire and mark centres agree through turns, zoom, view scale and shake', as
         state.camera.zoom = zoom;
         state.params.pixelsPerMeter = ppm;
         const wheels = {};
-        for (const [name, x, y] of [['frontLeft', -.8, -1.5], ['frontRight', .8, -1.5],
-          ['rearLeft', -.8, 1.5], ['rearRight', .8, 1.5]]) {
+        for (const [name, x, y] of [['frontLeft', -W, -L], ['frontRight', W, -L],
+          ['rearLeft', -W, L], ['rearRight', W, L]]) {
           wheels[name] = { x: 10 + x * Math.cos(heading) - y * Math.sin(heading),
             y: 20 + x * Math.sin(heading) + y * Math.cos(heading) };
         }

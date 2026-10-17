@@ -1,0 +1,249 @@
+{
+  "tolerances": {
+    "heading": 0.015,
+    "speedFraction": 0.01,
+    "yaw": 0.025
+  },
+  "schedules": [
+    {
+      "steeringReversal": 1.74,
+      "referenceDt": 0.0025,
+      "referenceEvents": [
+        {
+          "time": 0,
+          "angle": 0
+        },
+        {
+          "time": 0.5,
+          "angle": 0.16
+        },
+        {
+          "time": 1.74,
+          "angle": -0.16
+        }
+      ],
+      "runs": [
+        {
+          "dt": 0.02,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.74,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.006416072575929022,
+          "speedFractionError": 0.0070130546604574295,
+          "yawError": 0.013774057749482704
+        },
+        {
+          "dt": 0.01,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.74,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.007921448467782088,
+          "speedFractionError": 0.005671139004321368,
+          "yawError": 0.01676688592471276
+        },
+        {
+          "dt": 0.005,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.74,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.0037813986576240577,
+          "speedFractionError": 0.004381872243899521,
+          "yawError": 0.013665130507112266
+        }
+      ]
+    },
+    {
+      "steeringReversal": 1.76,
+      "referenceDt": 0.0025,
+      "referenceEvents": [
+        {
+          "time": 0,
+          "angle": 0
+        },
+        {
+          "time": 0.5,
+          "angle": 0.16
+        },
+        {
+          "time": 1.76,
+          "angle": -0.16
+        }
+      ],
+      "runs": [
+        {
+          "dt": 0.02,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.76,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.008126734162686722,
+          "speedFractionError": 0.007183925922797263,
+          "yawError": 0.014509622089708962
+        },
+        {
+          "dt": 0.01,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.76,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.007170958800716942,
+          "speedFractionError": 0.005318956464051006,
+          "yawError": 0.015328747956644406
+        },
+        {
+          "dt": 0.005,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.76,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.003373260495614261,
+          "speedFractionError": 0.004124822612169732,
+          "yawError": 0.009194981013038728
+        }
+      ]
+    },
+    {
+      "steeringReversal": 1.78,
+      "referenceDt": 0.0025,
+      "referenceEvents": [
+        {
+          "time": 0,
+          "angle": 0
+        },
+        {
+          "time": 0.5,
+          "angle": 0.16
+        },
+        {
+          "time": 1.78,
+          "angle": -0.16
+        }
+      ],
+      "runs": [
+        {
+          "dt": 0.02,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.78,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.005513680047976477,
+          "speedFractionError": 0.007000872579690398,
+          "yawError": 0.017117763150342746
+        },
+        {
+          "dt": 0.01,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.78,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.007604470652119666,
+          "speedFractionError": 0.005478158586887938,
+          "yawError": 0.01781706911045955
+        },
+        {
+          "dt": 0.005,
+          "steeringEvents": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 0.16
+            },
+            {
+              "time": 1.78,
+              "angle": -0.16
+            }
+          ],
+          "headingError": 0.0011928972464532173,
+          "speedFractionError": 0.003485219433875919,
+          "yawError": 0.013708721846938943
+        }
+      ]
+    }
+  ]
+}

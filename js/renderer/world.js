@@ -7,7 +7,8 @@
 
 import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
-import { drawVehicleSprites } from './vehicle-sprites.js';
+import { drawVehicleSprites, vehicleSpriteSettings } from './vehicle-sprites.js';
+import { drawVehicleCalibration } from './vehicle-calibration.js';
 import { getSkidRenderWidth } from './vehicle-geometry.js';
 import { getViewCamera, getCheckerTileMetres } from './view.js';
 import {
@@ -279,7 +280,7 @@ export function drawCarGhosts(ctx) {
     ctx.save();
     ctx.globalAlpha = ghostAlpha;
 
-    if (drawVehicleSprites(ctx, { ...pose, wheelRadius: state.params.wheelRadius })) {
+    if (drawVehicleSprites(ctx, { ...pose, wheelRadius: state.params.wheelRadius, isGhost: true })) {
       ctx.restore();
       continue;
     }
@@ -335,11 +336,13 @@ export function drawCar(ctx) {
   const wheels     = state.wheels;
   const steerAngle = state.steering.frontWheelAngle;
 
-  if (drawVehicleSprites(ctx, {
+  const spritePose = {
     cx: body.centerX, cy: body.centerY, heading: body.heading,
     wheels, steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
     wheelRadius: state.params.wheelRadius,
-  })) return;
+    viewScale: state.camera.zoom * (state.params.pixelsPerMeter || PIXELS_PER_METER),
+  };
+  if (drawVehicleSprites(ctx, spritePose)) return;
 
   // Tire proportions (top-down view):
   // - wheelW: half the tire WIDTH (sidewall to sidewall) — relatively wide
@@ -738,6 +741,7 @@ export function drawCar(ctx) {
   }
 
   ctx.restore();
+  if (vehicleSpriteSettings.calibration) drawVehicleCalibration(ctx, spritePose);
 }
 
 

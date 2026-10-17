@@ -1,0 +1,31 @@
+{
+  "unit": {
+    "passed": 147,
+    "failed": 0,
+    "skipped": 0,
+    "files": 13
+  },
+  "browser": {
+    "passed": 37,
+    "failed": 0,
+    "skipped": 0,
+    "project": "Chromium"
+  },
+  "steeringReversalsSeconds": [
+    1.74,
+    1.76,
+    1.78
+  ],
+  "timestepsSeconds": [
+    0.02,
+    0.01,
+    0.005,
+    0.0025
+  ],
+  "originalTolerancesUnchanged": true,
+  "productionDraftUnchangedDuringFollowup": true,
+  "originalBranch": "verlet_gpt_v19_ui",
+  "originalCommit": "09a3e3605c4d1890e8c4723df28d7b864dc03fc6",
+  "merged": false,
+  "pushed": false
+}

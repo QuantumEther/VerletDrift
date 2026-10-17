@@ -1,32 +1,36 @@
 import { describe, expect, it, vi } from 'vitest';
 vi.hoisted(() => { globalThis.localStorage = { getItem: () => null }; });
-import { BODY_CROP, BODY_AXLES, BODY_RECT, getTireDimensions, getSkidWidth,
-  getSkidRenderWidth } from '../js/renderer/vehicle-geometry.js';
+import { BODY_CROP, BODY_RECT, BODY_ENVELOPE, getTireDimensions, getTireSpriteDimensions,
+  getSkidWidth, getSkidRenderWidth } from '../js/renderer/vehicle-geometry.js';
 import { getViewCamera, getCheckerTileMetres } from '../js/renderer/view.js';
 import { getTrailArrowGeometry } from '../js/trail.js';
 
 describe('SI vehicle and visual geometry', () => {
-  it('maps all four artwork wheel arches to the authoritative 1.6 m track and 3 m wheelbase', () => {
-    for (const [sourceX, targetX] of [[BODY_AXLES.left, -.8], [BODY_AXLES.right, .8]]) {
-      expect(BODY_RECT.x + (sourceX - BODY_CROP[0]) / BODY_CROP[2] * BODY_RECT.width).toBeCloseTo(targetX, 12);
-    }
-    for (const [sourceY, targetY] of [[BODY_AXLES.front, -1.5], [BODY_AXLES.rear, 1.5]]) {
-      expect(BODY_RECT.y + (sourceY - BODY_CROP[1]) / BODY_CROP[3] * BODY_RECT.length).toBeCloseTo(targetY, 12);
-    }
-    expect(BODY_RECT.width).toBeCloseTo(1.829, 3);
-    expect(BODY_RECT.length).toBeCloseTo(4.844, 3);
+  it('preserves original body proportions within the specified DMC-12 envelope', () => {
+    expect(BODY_ENVELOPE.width).toBe(1.988);
+    expect(BODY_ENVELOPE.length).toBe(4.267);
+    expect(BODY_RECT.width / BODY_CROP[2]).toBeCloseTo(BODY_RECT.length / BODY_CROP[3], 12);
+    expect(BODY_RECT.width).toBeCloseTo(1.988, 12);
+    expect(BODY_RECT.length).toBeLessThan(BODY_ENVELOPE.length); // Known artwork mismatch, not hidden stretching.
   });
 
-  it('uses physical rolling diameter and bounds mark coverage by the inferred tread width', () => {
-    expect(getTireDimensions().length).toBe(.7);
-    expect(getTireDimensions().width).toBeCloseTo(.29724, 5);
+  it('uses nominal front/rear tire envelopes without retuning the common rolling radius', () => {
+    const front = getTireDimensions(.35, 'frontLeft');
+    expect(front.length).toBeCloseTo(.5896, 12);
+    expect(front.width).toBe(.195);
+    expect(getTireDimensions().length).toBeCloseTo(.663, 12);
+    expect(getTireDimensions().width).toBe(.235);
     for (const wheelRadius of [.15, .35, .6]) {
       const params = { wheelRadius, skidWidthMin: .5, skidWidthMax: 1.5 };
-      for (const u of [0, .6, .9, 1, 2]) {
-        expect(getSkidWidth(u, params)).toBeLessThanOrEqual(getTireDimensions(wheelRadius).width);
+      for (const name of ['frontLeft', 'rearLeft']) for (const u of [0, .6, .9, 1, 2]) {
+        expect(getSkidWidth(u, params, name)).toBeLessThanOrEqual(getTireDimensions(wheelRadius, name).width);
+        const sprite = getTireSpriteDimensions(wheelRadius, name);
+        expect(sprite.width).toBeCloseTo(getTireDimensions(wheelRadius, name).width, 12);
+        expect(sprite.length).toBeLessThanOrEqual(getTireDimensions(wheelRadius, name).length);
       }
     }
-    expect(getSkidWidth(1, {})).toBeCloseTo(.26, 12); // Existing default appearance is retained.
+    expect(getSkidWidth(1, {}, 'frontLeft')).toBe(.195);
+    expect(getSkidWidth(1, {})).toBe(.235);
     expect(getSkidRenderWidth(.26, {})).toBe(.26);
     expect(getSkidRenderWidth(.26, { gpuSkidResolution: 2 })).toBe(.52);
   });
