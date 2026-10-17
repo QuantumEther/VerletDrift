@@ -1,0 +1,25 @@
+
+Running 13 tests using 1 worker
+
+[1A[2K(node:153762) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:153762) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/13] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[1A[2K[2/13] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[1A[2K[3/13] [chromium] › tests/e2e/gpu-diagnostics.spec.js:48:1 › opt-in performance recorder downloads bounded CPU/GPU scope data
+[1A[2K[4/13] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[1A[2K[5/13] [chromium] › tests/e2e/gpu-world.spec.js:224:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[1A[2K[6/13] [chromium] › tests/e2e/gpu-world.spec.js:280:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[1A[2K[7/13] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU performance/checker respects logical units and reuses resized targets
+[1A[2K[8/13] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[1A[2K[9/13] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU high/studio respects logical units and reuses resized targets
+[1A[2K[10/13] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[1A[2K[11/13] [chromium] › tests/e2e/gpu-world.spec.js:394:1 › initialization failure leaves the simulator running in Canvas
+[1A[2K[12/13] [chromium] › tests/e2e/gpu-world.spec.js:422:1 › software adapters automatically select usable Canvas without allocating a device
+[1A[2K[13/13] [chromium] › tests/e2e/gpu-world.spec.js:453:1 › smoke billboards are neutral, translucent and irregular in both backends
+[1A[2K  13 passed (32.0s)

@@ -11,7 +11,7 @@ import {
   MAX_SMOKE,
 } from "./renderer/smoke-system.js";
 import { getTrailArrowGeometry } from "./trail.js";
-import { getViewCamera, getCheckerTileMetres } from "./renderer/view.js";
+import { getViewCamera, getCheckerTileMetres, isInView } from "./renderer/view.js";
 import { BODY_RECT } from "./renderer/vehicle-geometry.js";
 import { GPUSkidCache } from "./renderer/gpu-skid-cache.js";
 import { GPUTiming } from "./renderer/gpu-timing.js";
@@ -92,7 +92,7 @@ let renderStats = {
   drawCalls: 0,
   computeWorkgroups: 0,
   gpuRenderMs: null,
-  gpuTimingScope: "main render pass only",
+  gpuTimingScope: "world render pass; separate smoke compute; excludes Canvas and presentation",
   residentBytes: 0,
   skidTextureBytes: 0,
   omittedSkids: 0,
@@ -106,6 +106,11 @@ export function getGPURenderStats() {
   return {
     ...renderStats,
     gpuRenderMs: timing?.milliseconds ?? renderStats.gpuRenderMs,
+    gpuComputeMs: timing?.computeMilliseconds ?? null,
+    gpuTimestampSamples: timing?.sampleCount ?? 0,
+    gpuTimingEnabled: !!timing,
+    backingWidth: canvas?.width ?? 0,
+    backingHeight: canvas?.height ?? 0,
   };
 }
 function track(resource) {
@@ -326,7 +331,7 @@ export async function initGPU(target) {
     renderStats.residentBytes =
       resources.reduce((sum, r) => sum + (r.size || 0), 0) +
       32768 * 40 +
-      (timing ? 32 : 0);
+      (timing ? 64 : 0);
     renderStats.resourceCount = resources.length + 3 + (timing ? 3 : 0);
     rendererGeneration++;
     renderStats.error = null;
@@ -423,6 +428,10 @@ export function renderFrameGPU(width, height) {
       cam = state.camera,
       view = getViewCamera(cam, state.screenShake),
       ppm = p.pixelsPerMeter || PIXELS_PER_METER;
+    const halfWidth = width / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
+    const halfHeight = height / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
+    const visible = (x, y, rx, ry = rx) => isInView(x, y, rx, ry, view, halfWidth, halfHeight);
+    let culledInstances = 0;
     const elapsed = Math.max(
       0,
       Math.min(0.1, state.loop.simulationTime - lastSimTime),
@@ -477,16 +486,18 @@ export function renderFrameGPU(width, height) {
       0,
     ]);
     write(buffers.bg, background);
-    let arrowCount = 0;
+    let arrowCount = 0, arrowCandidates = 0;
     for (const a of state.trail.arrows) {
-      if (arrowCount === MAX_ARROWS) break;
       const alpha = Math.pow(
         Math.max(0, 1 - a.age / a.lifespan),
         p.trailFade ?? 0.7,
       );
       if (alpha < 0.01) continue;
-      const b = arrowCount++ * 9,
-        g = getTrailArrowGeometry(a.speed);
+      if (arrowCandidates++ === MAX_ARROWS) break;
+      const g = getTrailArrowGeometry(a.speed);
+      const radius = g.length + 1.1 * g.lineWidth;
+      if (!visible(a.x, a.y, radius)) { culledInstances++; continue; }
+      const b = arrowCount++ * 9;
       arrows[b] = a.x - view.x;
       arrows[b + 1] = a.y - view.y;
       arrows[b + 2] = a.angle;
@@ -513,23 +524,17 @@ export function renderFrameGPU(width, height) {
         const t = s.life / s.maxLife,
           b = sparkCount++ * 7,
           c = SPARK_PALETTE[s.hdrIndex % 5];
-        sparks.set(
-          [
-            s.x - view.x,
-            s.y - view.y,
-            s.size * (1 - t * 0.5),
-            c[0],
-            c[1],
-            c[2],
-            (1 - t) ** 2,
-          ],
-          b,
-        );
+        sparks[b] = s.x - view.x;
+        sparks[b+1] = s.y - view.y;
+        sparks[b+2] = s.size * (1 - t * .5);
+        sparks[b+3] = c[0]; sparks[b+4] = c[1]; sparks[b+5] = c[2];
+        sparks[b+6] = (1 - t) ** 2;
       }
     write(buffers.sparks, sparks, sparkCount * 7);
     let splatCount = 0;
-    for (const s of state.splatParticles) {
-      if (splatCount === MAX_PARTICLES) break;
+    for (let index = 0; index < Math.min(state.splatParticles.length, MAX_PARTICLES); index++) {
+      const s = state.splatParticles[index];
+      if (!visible(s.x, s.y, s.radius)) { culledInstances++; continue; }
       const b = splatCount++ * 7;
       splats[b] = s.x - view.x;
       splats[b + 1] = s.y - view.y;
@@ -545,9 +550,11 @@ export function renderFrameGPU(width, height) {
     let decalCount = 0,
       balloonCount = 0,
       shadowCount = 0;
+    let decalCandidates = 0;
     for (const d of state.splatDecals) {
-      if (decalCount === MAX_SURFACE) break;
       if (d.alpha <= 0.005) continue;
+      if (decalCandidates++ === MAX_SURFACE) break;
+      if (!visible(d.x, d.y, d.radius)) { culledInstances++; continue; }
       surface(
         decals,
         decalCount++,
@@ -579,9 +586,14 @@ export function renderFrameGPU(width, height) {
         2,
       );
     }
+    let balloonCandidates = 0;
     for (const b of state.balloons) {
       if (b.isPopped) continue;
-      if (balloonCount === MAX_SURFACE || shadowCount === MAX_SURFACE) break;
+      if (balloonCandidates++ === MAX_SURFACE - 3) break;
+      // Include the string and displaced contact shadow in the union bound.
+      if (!visible(b.x, b.y, b.radius * 1.2 + .12, b.radius * 2 + .18)) {
+        culledInstances += 2; continue;
+      }
       surface(
         sh,
         shadowCount++,
@@ -608,6 +620,9 @@ export function renderFrameGPU(width, height) {
     write(buffers.decals, decals, decalCount * 9);
     write(buffers.balloons, balloons, balloonCount * 9);
     write(buffers.shadows, sh, shadowCount * 9);
+    renderStats.culledInstances = culledInstances;
+    renderStats.instances = { decals: decalCount, balloons: balloonCount,
+      shadows: shadowCount, arrows: arrowCount, splats: splatCount, sparks: sparkCount };
     const skidEvents = p.showSkidMarks ? state.skidMarks : EMPTY_EVENTS,
       skidWidth = p.gpuSkidResolution ?? 1;
     if (
@@ -632,23 +647,13 @@ export function renderFrameGPU(width, height) {
       const s = pool[i];
       if (!s?.alive) return;
       const b = i * 12;
-      smokeData.set(
-        [
-          s.pos.x,
-          s.pos.y,
-          s.vel.x,
-          s.vel.y,
-          s.life,
-          s.maxLife,
-          s.size,
-          s.sizeBase,
-          s.r,
-          s.g,
-          s.b,
-          s.alpha,
-        ],
-        b,
-      );
+      // Spawn bursts reuse the staging array without allocating JS tuples.
+      smokeData[b] = s.pos.x; smokeData[b+1] = s.pos.y;
+      smokeData[b+2] = s.vel.x; smokeData[b+3] = s.vel.y;
+      smokeData[b+4] = s.life; smokeData[b+5] = s.maxLife;
+      smokeData[b+6] = s.size; smokeData[b+7] = s.sizeBase;
+      smokeData[b+8] = s.r; smokeData[b+9] = s.g;
+      smokeData[b+10] = s.b; smokeData[b+11] = s.alpha;
       smokeFlags[i] = 1;
       smokeDirty[i] = 1;
       lo = Math.min(lo, i);
@@ -690,6 +695,7 @@ export function renderFrameGPU(width, height) {
       }
     }
     const smokeSlots = getMaxSpawnedSmokeIndex() + 1;
+    renderStats.smokeSlots = smokeSlots;
     smokeUniform[0] = elapsed;
     smokeUniformU32[1] = smokeSlots;
     smokeUniform[2] = p.smokeCurlNoiseScale ?? 2.5;
@@ -700,8 +706,9 @@ export function renderFrameGPU(width, height) {
     smokeUniform[7] = 0;
     write(buffers.smokeUniform, smokeUniform);
     const encoder = device.createCommandEncoder({ label: "worldFrame" });
+    timing?.startFrame();
     if (smokeSlots > 0 && elapsed > 0) {
-      const pass = encoder.beginComputePass({ label: "smokeCompute" });
+      const pass = encoder.beginComputePass({ label: "smokeCompute", timestampWrites: timing?.begin("compute") });
       pass.setPipeline(pipelines.compute);
       pass.setBindGroup(0, groups.compute);
       const n = Math.ceil(smokeSlots / 256);

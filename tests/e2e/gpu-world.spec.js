@@ -17,7 +17,7 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   page,
 }) => {
   await adapterPage(page);
-  await page.goto("/gauge-guide.html?renderer=gpu&gpuPower=low-power&gpuAlpha=opaque");
+  await page.goto("/gauge-guide.html?renderer=gpu&gpuPower=low-power&gpuAlpha=opaque&gpuProfile=1");
   const result = await page.evaluate(async () => {
     const errors = [];
     const original = navigator.gpu.requestAdapter.bind(navigator.gpu);
@@ -88,9 +88,11 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
     s.skidMarks = [seg];
     s.splatDecals = [
       Object.freeze({ x: 192, y: 145, radius: 0.8, hue: 210, alpha: 0.7 }),
+      Object.freeze({ x: -1000, y: -1000, radius: 1, hue: 50, alpha: .7 }),
     ];
     s.balloons = [
       Object.freeze({ x: 190, y: 142, radius: 0.5, hue: 35, isPopped: false }),
+      Object.freeze({ x: -1000, y: -1000, radius: 1, hue: 20, isPopped: false }),
     ];
     const smoke = await import("/js/renderer/smoke-system.js");
     // Fill through the real emitter, then leave one sparse high slot alive.
@@ -200,8 +202,16 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   expect(result.stats.computeWorkgroups).toBe(0);
   expect(result.errors).toEqual([]);
   expect(result.stats.ready).toBe(true);
+  if (result.stats.gpuTimingEnabled) {
+    expect(result.stats.gpuTimestampSamples).toBeGreaterThan(0);
+    expect(result.stats.gpuRenderMs).toBeGreaterThanOrEqual(0);
+    expect(result.stats.gpuComputeMs).toBeGreaterThanOrEqual(0);
+  }
   expect(result.stats.skidTextureBytes).toBe(0);
   expect(result.stats.omittedSkids).toBe(0);
+  expect(result.stats.culledInstances).toBeGreaterThanOrEqual(3);
+  expect(result.stats.instances.decals).toBe(1);
+  expect(result.stats.instances.balloons).toBe(1);
   expect(result.mark[3]).toBe(255);
   result.jointPixel.forEach((value, i) =>
     expect(Math.abs(value - result.mark[i])).toBeLessThanOrEqual(4),

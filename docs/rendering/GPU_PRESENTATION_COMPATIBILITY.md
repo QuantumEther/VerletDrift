@@ -84,3 +84,13 @@ loads. These are correctness checks, not a successful native presentation claim.
 
 [Cloud diagnostic output](validation/presentation-diagnostic-software.json) ·
 [Diagnostic screenshot](validation/presentation-diagnostic.png).
+
+
+## User-verified NVIDIA setup
+
+Follow-up PRIME **plus X11** testing identifies NVIDIA/Blackwell explicitly and
+passes all high-performance presentation probes; Intel texture tests pass but
+Intel canvas probes fail in that configuration. The user subsequently reports
+smoother full-simulator driving. This establishes a practical browser launch
+workaround, not a quantitative renderer performance benchmark. See
+[performance investigation](GPU_PERFORMANCE_AUDIT.md) for the new opt-in recorder.

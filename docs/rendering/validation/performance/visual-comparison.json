@@ -1,0 +1,42 @@
+[
+  {
+    "scene": "empty",
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0.0,
+    "fractionPixelsOver3": 0.0,
+    "beforeFinalUploadBytes": 244,
+    "afterFinalUploadBytes": 244
+  },
+  {
+    "scene": "drift",
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0.0,
+    "fractionPixelsOver3": 0.0,
+    "beforeFinalUploadBytes": 32388,
+    "afterFinalUploadBytes": 388
+  },
+  {
+    "scene": "combined",
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0.0,
+    "fractionPixelsOver3": 0.0,
+    "beforeFinalUploadBytes": 34548,
+    "afterFinalUploadBytes": 2548
+  },
+  {
+    "scene": "smoke",
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0.0,
+    "fractionPixelsOver3": 0.0,
+    "beforeFinalUploadBytes": 32596,
+    "afterFinalUploadBytes": 596
+  },
+  {
+    "scene": "blur",
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0.0,
+    "fractionPixelsOver3": 0.0,
+    "beforeFinalUploadBytes": 32388,
+    "afterFinalUploadBytes": 388
+  }
+]

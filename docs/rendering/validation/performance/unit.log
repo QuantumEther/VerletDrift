@@ -1,0 +1,48 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift-tools
+
+ ✓ tests/events.test.js  (24 tests) 8ms
+ ✓ tests/faults.test.js  (12 tests) 4ms
+stderr | tests/faults.test.js > Fault timer independence > omega runaway should not suppress a simultaneous constraint spike
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Fault timer independence > constraint spike should not suppress a simultaneous omega runaway
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Wheel rearLeft omega runaway: 2000.0 rad/s
+
+stderr | tests/faults.test.js > Fault timer independence > omega timer deduplicates its own events but does not affect constraint timer
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Constraint spike startup guard > should fire when prev >= 0.001m AND current > 5× prev
+[FAULT] Constraint spike: 0.0600m
+
+stderr | tests/faults.test.js > resetFaultState > should clear omega timer so next call fires immediately
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+
+stderr | tests/faults.test.js > resetFaultState > should clear constraint timer so next call fires immediately
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Constraint spike: 0.1000m
+
+ ✓ tests/wheels.test.js  (14 tests) 624ms
+ ✓ tests/suspension.test.js  (13 tests) 789ms
+ ✓ tests/logger.test.js  (14 tests) 28ms
+ ✓ tests/tire-unloading.test.js  (11 tests) 732ms
+ ✓ tests/engine-inertia.test.js  (6 tests) 8ms
+ ✓ tests/wheel-omega-audit.test.js  (23 tests) 698ms
+ ✓ tests/gpu-skid-cache.test.js  (6 tests) 8ms
+ ✓ tests/wheel-solver.test.js  (9 tests) 13ms
+ ✓ tests/weight-transfer.test.js  (5 tests) 5ms
+ ✓ tests/visual-geometry.test.js  (3 tests) 5ms
+ ✓ tests/handbrake-handling.test.js  (4 tests) 1614ms
+ ✓ tests/performance-summary.test.js  (1 test) 5ms
+ ✓ tests/suspension-handling.test.js  (9 tests) 5580ms
+ ✓ tests/render-culling.test.js  (1 test) 1ms
+
+ Test Files  16 passed (16)
+      Tests  155 passed (155)
+   Start at  18:05:51
+   Duration  10.11s (transform 529ms, setup 0ms, collect 1.58s, tests 10.12s, environment 5ms, prepare 1.31s)
+

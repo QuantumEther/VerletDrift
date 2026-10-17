@@ -1,0 +1,371 @@
+{
+  "requestedBackend": "software",
+  "measurementScope": "Offscreen; timestamps cover main render pass only; no automatic hardware claims",
+  "results": [
+    {
+      "scene": "empty",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.11499999947845936,
+        "median": 0.10000000149011612,
+        "p95": 0.3999999985098839,
+        "p99": 0.3999999985098839,
+        "variance": 0.00827499979212881
+      },
+      "frameMs": {
+        "mean": 125.43157894736841,
+        "median": 116.69999999999982,
+        "p95": 150,
+        "p99": 150,
+        "variance": 98.85163434903095
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.19999999552965164,
+        "uploadBytes": 244,
+        "drawCalls": 2,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "world render pass; separate smoke compute; excludes Canvas and presentation",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "powerPreference": "high-performance",
+        "alphaMode": "premultiplied",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": "",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0,
+        "culledInstances": 0,
+        "instances": {
+          "decals": 0,
+          "balloons": 0,
+          "shadows": 3,
+          "arrows": 0,
+          "splats": 0,
+          "sparks": 0
+        },
+        "smokeSlots": 0,
+        "gpuComputeMs": null,
+        "gpuTimestampSamples": 0,
+        "gpuTimingEnabled": false,
+        "backingWidth": 1024,
+        "backingHeight": 768
+      },
+      "gpuMainPassSamplesMs": [
+        115.784995,
+        126.315789
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "drift",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.4099999997764826,
+        "median": 0.30000000447034836,
+        "p95": 0.8999999985098839,
+        "p99": 0.8999999985098839,
+        "variance": 0.04090000015348196
+      },
+      "frameMs": {
+        "mean": 321.921052631579,
+        "median": 216.70000000000027,
+        "p95": 733.1999999999998,
+        "p99": 733.1999999999998,
+        "variance": 36543.273240997216
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.3999999985098839,
+        "uploadBytes": 388,
+        "drawCalls": 4,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "world render pass; separate smoke compute; excludes Canvas and presentation",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "powerPreference": "high-performance",
+        "alphaMode": "premultiplied",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": "",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0,
+        "culledInstances": 0,
+        "instances": {
+          "decals": 0,
+          "balloons": 2,
+          "shadows": 5,
+          "arrows": 0,
+          "splats": 0,
+          "sparks": 0
+        },
+        "smokeSlots": 0,
+        "gpuComputeMs": null,
+        "gpuTimestampSamples": 0,
+        "gpuTimingEnabled": false,
+        "backingWidth": 1024,
+        "backingHeight": 768
+      },
+      "gpuMainPassSamplesMs": [
+        199.326786,
+        206.589382
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "combined",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.4,
+        "median": 0.3999999985098839,
+        "p95": 1.3999999985098839,
+        "p99": 1.3999999985098839,
+        "variance": 0.06599999988079074
+      },
+      "frameMs": {
+        "mean": 212.27368421052634,
+        "median": 216.60000000000036,
+        "p95": 216.80000000000018,
+        "p99": 216.80000000000018,
+        "variance": 53.45562326869771
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.4000000059604645,
+        "uploadBytes": 2548,
+        "drawCalls": 5,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "world render pass; separate smoke compute; excludes Canvas and presentation",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "powerPreference": "high-performance",
+        "alphaMode": "premultiplied",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": "",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0,
+        "culledInstances": 0,
+        "instances": {
+          "decals": 60,
+          "balloons": 2,
+          "shadows": 5,
+          "arrows": 0,
+          "splats": 0,
+          "sparks": 0
+        },
+        "smokeSlots": 0,
+        "gpuComputeMs": null,
+        "gpuTimestampSamples": 0,
+        "gpuTimingEnabled": false,
+        "backingWidth": 1024,
+        "backingHeight": 768
+      },
+      "gpuMainPassSamplesMs": [
+        220.93244,
+        202.94117
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "smoke",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.5400000005960465,
+        "median": 0.30000000447034836,
+        "p95": 3.899999998509884,
+        "p99": 3.899999998509884,
+        "variance": 0.6323999991029499
+      },
+      "frameMs": {
+        "mean": 272.7947368421053,
+        "median": 250,
+        "p95": 466.60000000000036,
+        "p99": 466.60000000000036,
+        "variance": 3748.765761772876
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.5,
+        "uploadBytes": 596,
+        "drawCalls": 5,
+        "computeWorkgroups": 1,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "world render pass; separate smoke compute; excludes Canvas and presentation",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "powerPreference": "high-performance",
+        "alphaMode": "premultiplied",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": "",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0,
+        "culledInstances": 0,
+        "instances": {
+          "decals": 0,
+          "balloons": 2,
+          "shadows": 5,
+          "arrows": 0,
+          "splats": 0,
+          "sparks": 0
+        },
+        "smokeSlots": 120,
+        "gpuComputeMs": null,
+        "gpuTimestampSamples": 0,
+        "gpuTimingEnabled": false,
+        "backingWidth": 1024,
+        "backingHeight": 768
+      },
+      "gpuMainPassSamplesMs": [
+        239.541215,
+        213.687316
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    },
+    {
+      "scene": "blur",
+      "adapterInfo": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "completionFenced": true,
+      "encodeMs": {
+        "mean": 0.9050000000745058,
+        "median": 0.6000000014901161,
+        "p95": 4.5999999940395355,
+        "p99": 4.5999999940395355,
+        "variance": 0.8524749977491796
+      },
+      "frameMs": {
+        "mean": 1136.7947368421053,
+        "median": 866.5999999999985,
+        "p95": 2899.800000000001,
+        "p99": 2899.800000000001,
+        "variance": 341504.57628808916
+      },
+      "renderer": {
+        "ready": true,
+        "backend": "webgpu",
+        "resourceCount": 15,
+        "fallbackReason": null,
+        "cpuEncodeMs": 0.7000000029802322,
+        "uploadBytes": 388,
+        "drawCalls": 4,
+        "computeWorkgroups": 0,
+        "gpuRenderMs": null,
+        "gpuTimingScope": "world render pass; separate smoke compute; excludes Canvas and presentation",
+        "residentBytes": 4480728,
+        "skidTextureBytes": 0,
+        "omittedSkids": 0,
+        "error": null,
+        "quality": "balanced",
+        "surface": "asphalt",
+        "powerPreference": "high-performance",
+        "alphaMode": "premultiplied",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": "",
+          "isFallbackAdapter": true
+        },
+        "omittedSplats": 0,
+        "culledInstances": 0,
+        "instances": {
+          "decals": 0,
+          "balloons": 2,
+          "shadows": 5,
+          "arrows": 0,
+          "splats": 0,
+          "sparks": 0
+        },
+        "smokeSlots": 0,
+        "gpuComputeMs": null,
+        "gpuTimestampSamples": 0,
+        "gpuTimingEnabled": false,
+        "backingWidth": 1024,
+        "backingHeight": 768
+      },
+      "gpuMainPassSamplesMs": [
+        865.694547,
+        833.416219
+      ],
+      "validation": [],
+      "spriteLoaded": true
+    }
+  ]
+}

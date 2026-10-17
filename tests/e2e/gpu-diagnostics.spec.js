@@ -44,3 +44,24 @@ test('missing decorative RPM marker does not interrupt live instruments', async 
   expect(result.replace(/\D/g, '')).toBe('2400');
   expect(errors).toEqual([]);
 });
+
+test('opt-in performance recorder downloads bounded CPU/GPU scope data', async ({ page }) => {
+  await page.goto('/?renderer=canvas&gpuProfile=1');
+  await page.getByRole('button', { name: 'Record 30s performance' }).click();
+  const downloadEvent = page.waitForEvent('download');
+  await page.evaluate(async () => {
+    const { recordPerformanceFrame } = await import('/js/diagnostics/performance-capture.js');
+    recordPerformanceFrame(performance.now()+31000, 16.67, 2, 3, 6, 0);
+  });
+  const download = await downloadEvent;
+  const { readFile } = await import('node:fs/promises');
+  const report = JSON.parse(await readFile(await download.path(), 'utf8'));
+  expect(report.endReason).toBe('30-second capture complete');
+  expect(report.frames.length).toBeGreaterThan(0);
+  expect(report.frames.length).toBeLessThanOrEqual(15000);
+  expect(report.summary.cpuRenderMs.samples).toBeGreaterThan(0);
+  expect(report.summary.gpuRenderMs).toBeNull();
+  expect(report.scope).toContain('not independently measured presented FPS');
+  expect(report.finalRenderer.backend).toBe('canvas');
+  await expect(page.getByRole('button', { name: 'Record 30s performance' })).toBeEnabled();
+});

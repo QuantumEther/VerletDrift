@@ -1,0 +1,22 @@
+{
+  "baseline": "f1f0b59",
+  "unit": {
+    "passed": 155,
+    "failed": 0
+  },
+  "browser": {
+    "passed": 43,
+    "adapterSkipped": 7,
+    "failed": 0
+  },
+  "gpuAndDiagnostics": {
+    "passed": 13,
+    "skipped": 0,
+    "failed": 0
+  },
+  "allSkippedGpuCasesExercised": true,
+  "nativeGpuPerformanceMeasured": false,
+  "nativePresentationUserVerified": "NVIDIA Blackwell via PRIME + X11; user reports smoother full simulator",
+  "visualComparison": "All five final controlled scenes pixel-identical on software WebGPU",
+  "rejectedCandidate": "Terrain uniform-table blur rewrite removed after inconclusive/regressive software timings"
+}

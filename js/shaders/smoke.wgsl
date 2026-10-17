@@ -30,7 +30,7 @@ struct VertexOutput {
   @builtin(position) pos: vec4<f32>,
   @location(0) uv: vec2<f32>,
   @location(1) col: vec4<f32>,
-  @location(2) @interpolate(flat) seed: f32,
+  @location(2) @interpolate(flat) seed: vec2<f32>,
 }
 
 struct SmokeSettings {dt:f32,count:u32,turbulence:f32,time:f32,camera:vec2<f32>,detail:f32,pad:f32}
@@ -59,14 +59,19 @@ fn vs_main(
   );
 
   let local_pos = quad_verts[vert_id];
-  let uv = local_pos * 2.0;  // [-1, 1] for circle clip
+  // Rotation is affine: interpolate rotated UVs instead of repeating sin/cos
+  // for every covered pixel of every overlapping puff.
+  let angle = f32(inst_id)*2.399;
+  let c = cos(angle); let s = sin(angle);
+  let uv = vec2<f32>(local_pos.x*c-local_pos.y*s,
+    local_pos.x*s+local_pos.y*c)*2.;
 
   if (aliveFlags[inst_id] == 0u) {
     return VertexOutput(
       vec4<f32>(2.0, 2.0, 0.0, 1.0),
       uv,
       vec4<f32>(0.0, 0.0, 0.0, 0.0),
-      0.,
+      vec2<f32>(0.),
     );
   }
 
@@ -95,7 +100,7 @@ fn vs_main(
     vec4<f32>(ndc_x, ndc_y, 0.0, 1.0),
     uv,
     color,
-    f32(inst_id)*2.399,
+    vec2<f32>(s*31.,c*27.),
   );
 }
 
@@ -129,7 +134,10 @@ fn smokeFbm(p: vec2<f32>) -> f32 {
   let octaves=select(3u,5u,settings.detail>1.);
   for(var i=0u;i<octaves;i++) {
     let visibility=1.-smoothstep(.25,.8,footprint*frequency);
-    value+=weight*mix(.5,smokeNoise(q),visibility);
+    var octave=.5;
+    // Fully filtered detail contributes its exact mean, without noise hashing.
+    if (visibility>0.) { octave=mix(.5,smokeNoise(q),visibility); }
+    value+=weight*octave;
     q=vec2<f32>(q.x*.8-q.y*.6,q.x*.6+q.y*.8)*2.03+vec2<f32>(17.1,9.2);
     frequency*=2.03;
     weight*=.5;
@@ -149,10 +157,8 @@ fn smokeDensity(uv: vec2<f32>, seed: vec2<f32>, drift: vec2<f32>) -> f32 {
 }
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-  let angle=in.seed;
-  let uv=vec2<f32>(in.uv.x*cos(angle)-in.uv.y*sin(angle),
-    in.uv.x*sin(angle)+in.uv.y*cos(angle));
-  let seed=vec2<f32>(sin(in.seed)*31.,cos(in.seed)*27.);
+  let uv=in.uv;
+  let seed=in.seed;
   let drift=vec2<f32>(settings.time*.085,-settings.time*.12);
   let density=smokeDensity(uv,seed,drift);
   // Beer-Lambert extinction; soft forward scatter and directional density

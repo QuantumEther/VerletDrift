@@ -191,6 +191,14 @@ try {
         });
         s.params.pixelsPerMeter = 35;
         s.params.motionBlurIntensity = 0;
+        if (scene === "blur") {
+          s.params.motionBlurSamples = 12;
+          s.params.motionBlurIntensity = .8;
+          s.body.speed = 30;
+          s.body.velocityX = 30;
+          s.body.angularVelocity = .8;
+          s.blurAccumulator = .8;
+        }
         const marks = scene === "empty" || scene === "paint" ? 0 : 4000;
         s.skidMarks = Array.from({ length: marks }, (_, i) => {
           const t = i * 0.004,

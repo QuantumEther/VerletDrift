@@ -55,7 +55,6 @@ describe("resident GPU skid event geometry", () => {
     update([seg]);
     expect(writes.map((w) => w.label)).toEqual([
       "skidOpacity",
-      "skidDrawOrder",
     ]);
     expect(cache.alpha[0]).toBeCloseTo(0.21, 7);
     expect(cache.geometry.slice(0, 4)).toEqual(new Float32Array([1, 2, 2, 3]));
@@ -105,4 +104,29 @@ it("releases partial GPU allocations if initialization exhausts resources", () =
   };
   expect(() => new GPUSkidCache(device, {}, {})).toThrow("exhausted");
   expect(destroyed).toHaveLength(1);
+});
+
+it("does not re-upload static opacity or draw order, including nonexact f32 values", () => {
+  const { writes, update } = fixture();
+  const a = segment(), b = segment(4);
+  update([a,b]);
+  writes.length = 0;
+  expect(update([a,b]).uploadedBytes).toBe(0);
+  b.alpha = .3;
+  update([a,b]);
+  expect(writes).toHaveLength(1);
+  expect(writes[0].label).toBe('skidOpacity');
+  expect(writes[0].offset).toBe(4);
+  expect(writes[0].data).toHaveLength(1);
+  writes.length=0;
+  update([b,a]);
+  expect(writes.map(w=>w.label)).toEqual(['skidDrawOrder']);
+});
+it('retains duplicate event references and source order when new slots are assigned', () => {
+  const { cache, update } = fixture(2);
+  const a = segment();
+  update([a,a]);
+  expect(cache.count).toBe(1);
+  expect([...cache.order.slice(0,2)]).toEqual([0,0]);
+  expect(update([a,a]).uploadedBytes).toBe(0);
 });

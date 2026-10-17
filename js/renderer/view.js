@@ -15,3 +15,10 @@ export function getCheckerTileMetres(tilePixels = 80) {
   return tilePixels / PIXELS_PER_METER;
 }
 
+
+// Conservative world-space bounds. Logical viewport units keep culling stable
+// across GPU quality/DPR changes; retain a two-logical-pixel guard at edges.
+export function isInView(x, y, radiusX, radiusY, view, halfWidth, halfHeight) {
+  return Math.abs(x - view.x) <= halfWidth + radiusX &&
+    Math.abs(y - view.y) <= halfHeight + radiusY;
+}

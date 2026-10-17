@@ -1,3 +1,4 @@
+import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
 // =============================================================
 // MAIN — entry point and game loop
 // =============================================================
@@ -403,6 +404,9 @@ let physicsTpsEma = 0; // ticks per second (actual, measured)
 // =============================================================
 
 function mainLoop(timestampMilliseconds) {
+  const profileStart = profilingEnabled ? performance.now() : 0;
+  const profileIntervalMs = profilingEnabled && state.loop.previousTimestamp > 0
+    ? timestampMilliseconds - state.loop.previousTimestamp * 1000 : 0;
   requestAnimationFrame(mainLoop);
 
   const timestampSeconds = timestampMilliseconds * 0.001;
@@ -508,7 +512,9 @@ function mainLoop(timestampMilliseconds) {
 
   // Render once per animation frame using interpolated state.
   // Always runs — even when frozen — so the debug overlay can display fault information.
+  const profileRenderStart = profilingEnabled ? performance.now() : 0;
   renderFrame(alpha, snapPrev, snapCurr, wallFrameTime);
+  const profileRenderEnd = profilingEnabled ? performance.now() : 0;
 
   // Sync DOM debug overlay — always runs (even when frozen) so FROZEN banner stays current.
   syncDOMOverlay(state, eventBuffer);
@@ -528,6 +534,9 @@ function mainLoop(timestampMilliseconds) {
     // Reset frame flags
     state.debug.transitionState.gearChangedThisFrame = false;
   }
+  if (profilingEnabled) recordPerformanceFrame(timestampMilliseconds, profileIntervalMs,
+    profileRenderStart - profileStart, profileRenderEnd - profileRenderStart,
+    performance.now() - profileStart, state.loop.droppedSubstepsLastFrame);
 }
 
 
@@ -1164,3 +1173,6 @@ window.getState = () => state;
 
 // Kick off the game loop.
 requestAnimationFrame(mainLoop);
+
+// Diagnostic overlay is opt-in through ?gpuProfile=1; normal UI is unchanged.
+installPerformanceCapture();

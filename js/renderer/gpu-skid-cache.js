@@ -7,6 +7,7 @@ export class GPUSkidCache {
     this.geometry = new Float32Array(capacity * 8);
     this.alpha = new Float32Array(capacity);
     this.order = new Uint32Array(capacity);
+    this.eventSlots = new Int32Array(capacity);
     this.seen = new Uint32Array(capacity);
     this.objects = new Array(capacity);
     this.slots = new WeakMap();
@@ -14,6 +15,7 @@ export class GPUSkidCache {
     this.count = 0;
     this.generation = 0;
     this.widthScale = NaN;
+    this.lastInstances = -1;
     try {
       this.geometryBuffer = device.createBuffer({
         label: "skidGeometry",
@@ -47,15 +49,21 @@ export class GPUSkidCache {
   update(events, widthScale, color) {
     const generation = ++this.generation;
     const start = Math.max(0, events.length - this.capacity);
+    let alphaLo = this.capacity, alphaHi = -1, orderChanged = false;
     for (let i = start; i < events.length; i++) {
       const slot = this.slots.get(events[i]);
+      this.eventSlots[i - start] = slot ?? -1;
       if (slot !== undefined) this.seen[slot] = generation;
     }
     for (let slot = 0; slot < this.count; slot++) {
       if (this.objects[slot] && this.seen[slot] !== generation) {
         this.slots.delete(this.objects[slot]);
         this.objects[slot] = null;
-        this.alpha[slot] = 0;
+        if (this.alpha[slot] !== 0) {
+          this.alpha[slot] = 0;
+          alphaLo = Math.min(alphaLo, slot);
+          alphaHi = Math.max(alphaHi, slot);
+        }
         this.free.push(slot);
       }
     }
@@ -63,15 +71,24 @@ export class GPUSkidCache {
       hi = -1;
     for (let i = start; i < events.length; i++) {
       const seg = events[i];
-      let slot = this.slots.get(seg);
+      const knownSlot = this.eventSlots[i - start];
+      // Resolve each retained event only once; newly duplicated source objects
+      // still share a slot when inserted earlier in this same update.
+      let slot = knownSlot < 0 ? this.slots.get(seg) : knownSlot;
       const fresh = slot === undefined;
       if (fresh) {
         slot = this.free.length ? this.free.pop() : this.count++;
         this.slots.set(seg, slot);
         this.objects[slot] = seg;
       }
-      this.order[i - start] = slot; // Source order preserves pigment overlap after slot reuse.
-      this.alpha[slot] = seg.alpha ?? 0.55;
+      if (this.order[i - start] !== slot) orderChanged = true;
+      this.order[i - start] = slot; // Preserve pigment overlap after slot reuse.
+      const alpha = Math.fround(seg.alpha ?? 0.55);
+      if (this.alpha[slot] !== alpha) {
+        this.alpha[slot] = alpha;
+        alphaLo = Math.min(alphaLo, slot);
+        alphaHi = Math.max(alphaHi, slot);
+      }
       if (fresh || widthScale !== this.widthScale) {
         const base = slot * 8;
         this.geometry[base] = seg.x1;
@@ -97,18 +114,14 @@ export class GPUSkidCache {
       );
       uploadedBytes += floats * 4;
     }
-    if (this.count) {
-      this.device.queue.writeBuffer(
-        this.alphaBuffer,
-        0,
-        this.alpha,
-        0,
-        this.count,
-      );
-      uploadedBytes += this.count * 4;
+    if (alphaHi >= alphaLo) {
+      const count = alphaHi - alphaLo + 1;
+      this.device.queue.writeBuffer(this.alphaBuffer, alphaLo * 4,
+        this.alpha, alphaLo, count);
+      uploadedBytes += count * 4;
     }
     const instances = events.length - start;
-    if (instances) {
+    if (instances && (orderChanged || this.lastInstances !== instances)) {
       this.device.queue.writeBuffer(
         this.orderBuffer,
         0,
@@ -118,6 +131,7 @@ export class GPUSkidCache {
       );
       uploadedBytes += instances * 4;
     }
+    this.lastInstances = instances;
     return { uploadedBytes, instances, omitted: start };
   }
   destroy() {
