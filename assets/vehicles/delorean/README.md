@@ -3,14 +3,24 @@ Vehicle artwork used by `js/renderer/vehicle-sprites.js`:
 - `DeLorean.png`: chassis, facing up (local negative Y).
 - `DeLorean_Wheel.png`: static tire, rolling along local Y.
 
-The original PNGs are kept unchanged. The renderer crops transparent padding
-using source rectangles. The chassis fits the existing 1.6 m × 3 m body bounds;
-wheel sprites retain their aspect ratio within the original tire footprint.
-Physics wheel anchors remain unchanged. For display, each wheel is offset
-0.10 m inward across the chassis; front wheels are shifted 0.60 m toward the
-rear, and rear wheels 0.54 m toward the front. These artwork-calibration offsets
-rotate with the chassis (not steering), placing tires under the fenders rather
-than at the bumper corners. Ghosts apply the same offsets to historical anchors.
+The original PNGs are kept unchanged. `js/renderer/vehicle-geometry.js` owns the
+source crops and wheel-arch calibration. Wheels are drawn at the exact physical
+anchors, with front steering, so skid marks, paint, smoke and sparks coincide.
+
+The solver's 1.6 m track and 3 m wheelbase are axle distances, not the shell's
+outer bounds. The shell is fitted around them using source-pixel arch centres
+(left/right X = 327/928, front/rear Y = 267/1012). This gives a roughly
+1.829 m × 4.844 m visual envelope. Its front/rear overhangs are artwork-derived,
+not collision geometry or factory DeLorean specifications. Fitting both axle
+distances requires independent X/Y image scaling because the supplied artwork's
+axle proportions differ from the simulated model.
+
+Tread length is the current physical rolling diameter (`2 * params.wheelRadius`);
+width is inferred from the wheel image aspect ratio because physics has no tire
+width parameter. At the default radius these are 0.700 m × 0.297 m. Mark coverage
+cannot exceed tread width; explicitly named width exaggeration remains optional.
+Ghosts use the same geometry. See `docs/VEHICLE_VISUAL_SCALE_AUDIT.md` for the full
+diagnosis, scaling conventions, validation and remaining limitations.
 
 To restore the original visuals at runtime:
 

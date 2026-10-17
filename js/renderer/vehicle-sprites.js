@@ -1,4 +1,4 @@
-import { CAR_HALF_WIDTH, CAR_HALF_LENGTH, WHEEL_RADIUS } from '../constants.js';
+import { BODY_CROP, WHEEL_CROP, BODY_RECT, getTireDimensions } from './vehicle-geometry.js';
 
 // Rendering-only switch; disabling this restores the original car and ghosts.
 export const vehicleSpriteSettings = { enabled: true };
@@ -13,19 +13,9 @@ function loadImage(path) {
 const bodyImage = loadImage('../../assets/vehicles/delorean/DeLorean.png');
 const wheelImage = loadImage('../../assets/vehicles/delorean/DeLorean_Wheel.png');
 
-// Visible artwork bounds in the original 1254px PNGs, excluding transparent padding.
-const BODY_CROP = [284, 26, 687, 1203];
-const WHEEL_CROP = [411, 119, 431, 1015];
-const WHEEL_LENGTH = WHEEL_RADIUS * 0.85 * 2;
-const WHEEL_WIDTH = WHEEL_LENGTH * WHEEL_CROP[2] / WHEEL_CROP[3];
-// Artwork calibration only: tuck tires under the fenders, away from the bumpers.
-// Offsets are from the original corner anchors, in chassis-local metres.
-const WHEEL_INSET_X = CAR_HALF_WIDTH * 0.125;
-const FRONT_WHEEL_INSET_Y = CAR_HALF_LENGTH * 0.4;
-const REAR_WHEEL_INSET_Y = CAR_HALF_LENGTH * 0.36;
 const WHEELS = [
-  ['frontLeft', true, 1], ['frontRight', true, -1],
-  ['rearLeft', false, 1], ['rearRight', false, -1],
+  ['frontLeft', true], ['frontRight', true],
+  ['rearLeft', false], ['rearRight', false],
 ];
 
 const ready = image => image?.complete && image.naturalWidth > 0;
@@ -40,30 +30,25 @@ function selectWheelImage(_name, _angularSpeed) {
 export function drawVehicleSprites(ctx, pose) {
   if (!vehicleSpriteSettings.enabled || !ready(bodyImage) || !ready(wheelImage)) return false;
 
-  const cos = Math.cos(pose.heading);
-  const sin = Math.sin(pose.heading);
-  for (const [name, isFront, inwardSign] of WHEELS) {
+  const tire = getTireDimensions(pose.wheelRadius);
+  for (const [name, isFront] of WHEELS) {
     const wheel = pose.wheels[name];
-    const dx = inwardSign * WHEEL_INSET_X;
-    const dy = isFront ? FRONT_WHEEL_INSET_Y : -REAR_WHEEL_INSET_Y;
     const image = selectWheelImage(name, pose.wheelOmega?.[name] ?? 0);
     ctx.save();
-    // Rotate the visual offset with the chassis, never with steering.
-    ctx.translate(wheel.x + dx * cos - dy * sin, wheel.y + dx * sin + dy * cos);
+    ctx.translate(wheel.x, wheel.y);
     ctx.rotate(pose.heading + (isFront ? pose.steerAngle : 0));
-    ctx.drawImage(image, ...WHEEL_CROP, -WHEEL_WIDTH / 2, -WHEEL_LENGTH / 2,
-      WHEEL_WIDTH, WHEEL_LENGTH);
+    ctx.drawImage(image, ...WHEEL_CROP, -tire.width / 2, -tire.length / 2,
+      tire.width, tire.length);
     ctx.restore();
   }
 
   ctx.save();
   ctx.translate(pose.cx, pose.cy);
   ctx.rotate(pose.heading);
-  ctx.drawImage(bodyImage, ...BODY_CROP, -CAR_HALF_WIDTH, -CAR_HALF_LENGTH,
-    CAR_HALF_WIDTH * 2, CAR_HALF_LENGTH * 2);
+  ctx.drawImage(bodyImage, ...BODY_CROP, BODY_RECT.x, BODY_RECT.y, BODY_RECT.width, BODY_RECT.length);
   if (pose.isStalled) {
     ctx.fillStyle = 'rgba(200, 50, 50, 0.28)';
-    ctx.fillRect(-CAR_HALF_WIDTH, -CAR_HALF_LENGTH, CAR_HALF_WIDTH * 2, CAR_HALF_LENGTH * 2);
+    ctx.fillRect(BODY_RECT.x, BODY_RECT.y, BODY_RECT.width, BODY_RECT.length);
   }
   ctx.restore();
   return true;

@@ -571,7 +571,7 @@ const state = {
 
     // --- GPU Effect Quality ---
     gpuResolutionScale:    1.0,    // GPU canvas pixel density (0.25–2.0); lower = faster, higher = sharper
-    gpuSkidResolution:     1.0,    // scale factor for GPU skid mark line width (0.5–3.0)
+    gpuSkidResolution:     1.0,    // legacy key: artistic skid width multiplier for both renderers (0.5–3.0)
     gpuSkidRedrawInterval: 120,    // frames between full skid texture redraws (30–600); lower = faster fade
 
     // --- Pixels per Metre (visual scale) ---

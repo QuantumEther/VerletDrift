@@ -45,6 +45,7 @@ import {
 
 import { initInput } from './input.js';
 import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
+import { getSkidWidth } from './renderer/vehicle-geometry.js';
 
 import {
   initializeCarBody,
@@ -740,20 +741,26 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   const cssHeight = simCanvas.clientHeight || simCanvas.height;
   const resolutionScale = getCanvasResolutionScale();
 
-  const canvasWidth  = Math.round(cssWidth  * resolutionScale);
-  const canvasHeight = Math.round(cssHeight * resolutionScale);
+  // World and HUD coordinates remain CSS pixels; resolution affects sampling only.
+  const canvasWidth = cssWidth;
+  const canvasHeight = cssHeight;
+  const pixelScale = resolutionScale * (window.devicePixelRatio || 1);
+  const backingWidth = Math.round(cssWidth * pixelScale);
+  const backingHeight = Math.round(cssHeight * pixelScale);
 
-  if (simCanvas.width  !== canvasWidth  ||
-      simCanvas.height !== canvasHeight) {
-    simCanvas.width  = canvasWidth;
-    simCanvas.height = canvasHeight;
+  if (simCanvas.width !== backingWidth || simCanvas.height !== backingHeight) {
+    simCanvas.width = backingWidth;
+    simCanvas.height = backingHeight;
   }
+  simCtx.setTransform(backingWidth / cssWidth, 0, 0, backingHeight / cssHeight, 0, 0);
+  simCtx.imageSmoothingEnabled = true;
+  simCtx.imageSmoothingQuality = 'high';
 
   // Sync gpuCanvas pixel size to simCanvas, scaled by gpuResolutionScale.
   // Lower scale = fewer GPU pixels = better performance; higher = sharper effects.
   if (gpuCanvasEl) {
     const gpuScale = state.params.gpuResolutionScale ?? 1.0;
-    resizeGPU(Math.round(canvasWidth * gpuScale), Math.round(canvasHeight * gpuScale));
+    resizeGPU(Math.round(backingWidth * gpuScale), Math.round(backingHeight * gpuScale));
   }
 
   // --- INTERPOLATE RENDER STATE ---
@@ -957,8 +964,6 @@ function recordSkidMarks(dt) {
   // skidGripThreshold is now skidUtilizationThreshold (0.6 = trigger skids when 60%+ utilization)
   const skidUtilThreshold = p.skidGripThreshold !== undefined ? p.skidGripThreshold : 0.6;
   const fadeRate       = p.skidFadeRate         !== undefined ? p.skidFadeRate         : 8.0;
-  const widthMin       = p.skidWidthMin         !== undefined ? p.skidWidthMin         : 0.12;
-  const widthMax       = p.skidWidthMax         !== undefined ? p.skidWidthMax         : 0.47;
   const alphaMin       = p.skidAlphaMin         !== undefined ? p.skidAlphaMin         : 0.2;
   const alphaMax       = p.skidAlphaMax         !== undefined ? p.skidAlphaMax         : 0.7;
   const jerkBoostMax   = p.skidJerkBoostMax     !== undefined ? p.skidJerkBoostMax     : 0.3;
@@ -1070,7 +1075,7 @@ function recordSkidMarks(dt) {
       if (dist > 0.03) {
         // Skid intensity scales with utilization above threshold
         const excessUtilization = Math.max(0, u - skidUtilThreshold);
-        const width     = widthMin + excessUtilization * (widthMax - widthMin);
+        const width = getSkidWidth(u, p);
         const baseAlpha = alphaMin + excessUtilization * (alphaMax - alphaMin);
         const jerkBoost = Math.min((body.jerkMagnitude || 0) / 300, jerkBoostMax);
         const alpha     = Math.min(baseAlpha * fade + jerkBoost, 0.95);

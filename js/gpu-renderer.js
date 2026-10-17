@@ -15,7 +15,6 @@
 import { renderState as state } from './state.js';
 import {
   PIXELS_PER_METER,
-  TRAIL_ARROW_BASE_LENGTH_PX,
   TRAIL_REFERENCE_SPEED,
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
@@ -31,6 +30,9 @@ import {
 } from './renderer/index.js';
 import { initGaugeSystem, updateGaugeNeedle, getGaugeInstanceData, getGaugeCount } from './renderer/gpu-gauges.js';
 import { logger } from './debug/logger.js';
+import { getTrailArrowGeometry } from './trail.js';
+import { getSkidRenderWidth } from './renderer/vehicle-geometry.js';
+import { getViewCamera, getCheckerTileMetres } from './renderer/view.js';
 
 
 // =============================================================
@@ -639,13 +641,12 @@ export function resizeGPU(w, h) {
 
 // Renders one GPU frame. Must be called AFTER the interpolated state has been
 // applied to state.body / state.camera (main.js does this before calling).
-// canvasWidth/Height: physical pixel dimensions of the canvas this frame.
+// canvasWidth/Height: logical CSS viewport. main.js sizes the raster independently.
 export function renderFrameGPU(canvasWidth, canvasHeight) {
   if (!ready) return;
 
-  resizeGPU(canvasWidth, canvasHeight);
-
   const camera = state.camera;
+  const view = getViewCamera(camera, state.screenShake);
   smokePool = getSmokePool();
   const body   = state.body;
   const params = state.params;
@@ -685,10 +686,9 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   const blurVelY       = -body.velocityY * invSpeed;
 
   // ---- Background uniforms ----
-  const tileMetres = (params.checkerboardTileSize || 80) / ppm;
-  const shake      = state.screenShake;
-  BG_DATA[ 0] = camera.x;
-  BG_DATA[ 1] = camera.y;
+  const tileMetres = getCheckerTileMetres(params.checkerboardTileSize);
+  BG_DATA[ 0] = view.x;
+  BG_DATA[ 1] = view.y;
   BG_DATA[ 2] = zoom;
   BG_DATA[ 3] = ppm;
   BG_DATA[ 4] = canvasWidth;
@@ -699,28 +699,29 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   BG_DATA[ 9] = blurVelY;
   BG_DATA[10] = blurOffset;
   BG_DATA[11] = sampleCount;
-  BG_DATA[12] = shake.shakeX || 0;
-  BG_DATA[13] = shake.shakeY || 0;
+  BG_DATA[12] = 0; // shake is already included in the shared view camera
+  BG_DATA[13] = 0;
   BG_DATA[14] = body.angularVelocity || 0;
-  BG_DATA[15] = 0;  // _pad (original)
-  BG_DATA[16] = params.blurOpacityMin || 0.1;
-  BG_DATA[17] = params.blurOpacityMax || 0.8;
-  BG_DATA[18] = params.blurOpacityCurve || 2.0;
-  BG_DATA[19] = 0;  // _pad (new)
+  // Match BgUniforms in background.wgsl: opacity fields directly follow angularVel.
+  BG_DATA[15] = params.blurOpacityMin ?? 0.1;
+  BG_DATA[16] = params.blurOpacityMax ?? 0.8;
+  BG_DATA[17] = params.blurOpacityCurve ?? 2.0;
+  BG_DATA[18] = 0; // _pad
+  BG_DATA[19] = 0; // buffer alignment
 
   // ---- Camera uniforms (arrows + particles + smoke render) ----
   CAM_DATA[0] = zoom;
   CAM_DATA[1] = ppm;
   CAM_DATA[2] = canvasWidth;
   CAM_DATA[3] = canvasHeight;
-  CAM_DATA[4] = camera.x;   // World-space camera X — used by smoke.wgsl for particle offset
-  CAM_DATA[5] = camera.y;   // World-space camera Y
+  CAM_DATA[4] = view.x;   // Shared world-space camera, including screen shake
+  CAM_DATA[5] = view.y;
 
   // ---- Composite uniforms (UV scale + centre for skid texture sampling) ----
   // uvCenter = world position of camera in UV [0,1] space (UV = worldPos / mapSize).
   // uvScale  = half-extent of the visible canvas in UV space, accounting for zoom.
-  COMP_DATA[0] = camera.x / MAP_W;                      // uvCenterX
-  COMP_DATA[1] = camera.y / MAP_H;                      // uvCenterY
+  COMP_DATA[0] = view.x / MAP_W;                      // uvCenterX
+  COMP_DATA[1] = view.y / MAP_H;                      // uvCenterY
   COMP_DATA[2] = canvasWidth  / (2 * eff * MAP_W);      // uvScaleX
   COMP_DATA[3] = canvasHeight / (2 * eff * MAP_H);      // uvScaleY
 
@@ -734,14 +735,12 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     const alpha   = Math.pow(1.0 - normAge, arrowFade);
     if (alpha < 0.01) continue;
 
-    const speedRatio = arrow.speed / TRAIL_REFERENCE_SPEED;
-    const length     = (TRAIL_ARROW_BASE_LENGTH_PX / ppm) * Math.max(0.4, speedRatio);
-    const lineWidth  = Math.max(0.1, 0.2 * Math.min(speedRatio, 2.0));
+    const { length, lineWidth } = getTrailArrowGeometry(arrow.speed);
     const [r, g, b]  = speedToRgb(arrow.speed);
 
     const base = arrowCount * 9;
-    arrowData[base + 0] = arrow.x - camera.x;
-    arrowData[base + 1] = arrow.y - camera.y;
+    arrowData[base + 0] = arrow.x - view.x;
+    arrowData[base + 1] = arrow.y - view.y;
     arrowData[base + 2] = arrow.angle;
     arrowData[base + 3] = length;
     arrowData[base + 4] = lineWidth;
@@ -768,8 +767,8 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     const rgb       = SPARK_RGB[p.hdrIndex % SPARK_RGB.length];
 
     const base = sparkCount * 7;
-    sparkData[base + 0] = p.x - camera.x;
-    sparkData[base + 1] = p.y - camera.y;
+    sparkData[base + 0] = p.x - view.x;
+    sparkData[base + 1] = p.y - view.y;
     sparkData[base + 2] = size;
     sparkData[base + 3] = rgb[0];  // raw RGB — shader premultiplies
     sparkData[base + 4] = rgb[1];
@@ -788,8 +787,8 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     const [r, g, b] = hslToRgb(p.hue, 80, 40);
 
     const base = splatCount * 7;
-    splatData[base + 0] = p.x - camera.x;
-    splatData[base + 1] = p.y - camera.y;
+    splatData[base + 0] = p.x - view.x;
+    splatData[base + 1] = p.y - view.y;
     splatData[base + 2] = p.radius * 2;  // diameter → shader uses as world-space size
     splatData[base + 3] = r;
     splatData[base + 4] = g;
@@ -843,8 +842,6 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
   const doFullRedraw = (skidRedrawCounter >= redrawInterval);
   if (doFullRedraw) skidRedrawCounter = 0;
 
-  const gpuSkidResolution = params.gpuSkidResolution ?? 1.0;
-
   function packSeg(seg, idx) {
     let r, g, b;
     if (seg.hue >= 0) {
@@ -860,7 +857,7 @@ export function renderFrameGPU(canvasWidth, canvasHeight) {
     skidData[base + 1] = seg.y1 - MAP_CY;
     skidData[base + 2] = seg.x2 - MAP_CX;
     skidData[base + 3] = seg.y2 - MAP_CY;
-    skidData[base + 4] = seg.width * gpuSkidResolution;
+    skidData[base + 4] = getSkidRenderWidth(seg.width, params);
     skidData[base + 5] = r;
     skidData[base + 6] = g;
     skidData[base + 7] = b;

@@ -8,8 +8,8 @@ struct BgUniforms {
   camY:        f32,  // camera world-space Y
   zoom:        f32,  // camera zoom multiplier
   ppm:         f32,  // pixels per metre
-  viewportW:   f32,  // canvas physical pixel width
-  viewportH:   f32,  // canvas physical pixel height
+  viewportW:   f32,  // logical CSS pixel width (raster density is independent)
+  viewportH:   f32,  // logical CSS pixel height
   tileSize:    f32,  // checkerboard tile size in world-space metres
   blurAmount:  f32,  // effective blur accumulator * intensity [0, 1]
   blurVelX:    f32,  // normalised velocity direction X

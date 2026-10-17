@@ -14,7 +14,7 @@ async function waitForSprites(page) {
   })).toBe(true);
 }
 
-test('sprites offset live anchors into wheel arches, preserve steering, camera transform and state', async ({ page }) => {
+test('sprites align with physical anchors and preserve steering, camera transform and state', async ({ page }) => {
   await start(page);
   await waitForSprites(page);
   const result = await page.evaluate(async () => {
@@ -56,23 +56,19 @@ test('sprites offset live anchors into wheel arches, preserve steering, camera t
   ]);
   // Chromium Canvas transforms round to float precision, including world coordinates.
   const synthetic = [[-.4, .2, .95], [2, .8, .95], [-1, 3, .7], [1.5, 3.7, .7], [1, 2, .7]];
-  const offsets = [[.1, .6], [-.1, .6], [.1, -.54], [-.1, -.54], [0, 0]];
   for (let i = 0; i < 5; i++) {
     const [x, y, angle] = synthetic[i];
-    const [dx, dy] = offsets[i];
     const call = result.spriteCalls[i];
-    expect(call.e).toBeCloseTo(200 + (x + dx * Math.cos(.7) - dy * Math.sin(.7)) * 30, 4);
-    expect(call.f).toBeCloseTo(200 + (y + dx * Math.sin(.7) + dy * Math.cos(.7)) * 30, 4);
+    expect(call.e).toBeCloseTo(200 + x * 30, 4);
+    expect(call.f).toBeCloseTo(200 + y * 30, 4);
     expect(call.a).toBeCloseTo(Math.cos(angle) * 30, 4);
     expect(call.b).toBeCloseTo(Math.sin(angle) * 30, 4);
   }
   expect(result.liveCalls).toHaveLength(5);
   for (const [i, name] of ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'].entries()) {
     const call = result.liveCalls[i];
-    const [dx, dy] = offsets[i];
-    const cos = Math.cos(result.liveBody.heading), sin = Math.sin(result.liveBody.heading);
-    expect(call.e).toBeCloseTo(200 + (result.liveWheels[name].x + dx * cos - dy * sin) * 30, 3);
-    expect(call.f).toBeCloseTo(200 + (result.liveWheels[name].y + dx * sin + dy * cos) * 30, 3);
+    expect(call.e).toBeCloseTo(200 + result.liveWheels[name].x * 30, 3);
+    expect(call.f).toBeCloseTo(200 + result.liveWheels[name].y * 30, 3);
     const angle = result.liveBody.heading + (i < 2 ? result.steer : 0);
     expect(call.a).toBeCloseTo(Math.cos(angle) * 30, 4);
     expect(call.b).toBeCloseTo(Math.sin(angle) * 30, 4);

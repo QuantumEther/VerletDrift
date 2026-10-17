@@ -8,6 +8,8 @@
 import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
 import { drawVehicleSprites } from './vehicle-sprites.js';
+import { getSkidRenderWidth } from './vehicle-geometry.js';
+import { getViewCamera, getCheckerTileMetres } from './view.js';
 import {
   CAR_HALF_WIDTH,
   CAR_HALF_LENGTH,
@@ -110,13 +112,8 @@ export function applyCameraTransform(ctx, viewportWidth, viewportHeight) {
   ctx.translate(viewportWidth * 0.5, viewportHeight * 0.5);
   ctx.scale(state.camera.zoom, state.camera.zoom);
   ctx.scale(ppm, ppm);
-  ctx.translate(-state.camera.x, -state.camera.y);
-
-  // Screen shake: apply world-space offset on top of camera position.
-  // Because we're already in scaled world space, shakeX/Y in metres map directly.
-  if (state.screenShake.magnitude > 0.001) {
-    ctx.translate(state.screenShake.shakeX, state.screenShake.shakeY);
-  }
+  const view = getViewCamera(state.camera, state.screenShake);
+  ctx.translate(-view.x, -view.y);
 }
 
 // Restores the context to the state before applyCameraTransform.
@@ -138,8 +135,7 @@ export function drawCheckerboard(ctx, viewportWidth, viewportHeight) {
   const body   = state.body;
   const params = state.params;
   const ppm    = params.pixelsPerMeter || PIXELS_PER_METER;
-  // Tile size in metres: the slider stores the visual px size; divide by scale to get world size.
-  const tile   = params.checkerboardTileSize / ppm;
+  const tile = getCheckerTileMetres(params.checkerboardTileSize);
 
   // Effective pixels-per-metre including zoom; used to convert viewport px → metres.
   const effectiveScale = camera.zoom * ppm;
@@ -244,10 +240,12 @@ export function drawCheckerboard(ctx, viewportWidth, viewportHeight) {
 // Draws a dashed rectangle marking the edge of the driveable area.
 export function drawMapBoundary(ctx) {
   const params = state.params;
+  // This is a debug outline, deliberately sized in CSS pixels rather than metres.
+  const scale = state.camera.zoom * (params.pixelsPerMeter || PIXELS_PER_METER);
   ctx.save();
   ctx.strokeStyle = 'rgba(80, 80, 80, 0.6)';
-  ctx.lineWidth   = 3;
-  ctx.setLineDash([20, 12]);
+  ctx.lineWidth = 3 / scale;
+  ctx.setLineDash([20 / scale, 12 / scale]);
   ctx.strokeRect(0, 0, params.mapWidth, params.mapHeight);
   ctx.setLineDash([]);
   ctx.restore();
@@ -281,7 +279,7 @@ export function drawCarGhosts(ctx) {
     ctx.save();
     ctx.globalAlpha = ghostAlpha;
 
-    if (drawVehicleSprites(ctx, pose)) {
+    if (drawVehicleSprites(ctx, { ...pose, wheelRadius: state.params.wheelRadius })) {
       ctx.restore();
       continue;
     }
@@ -340,6 +338,7 @@ export function drawCar(ctx) {
   if (drawVehicleSprites(ctx, {
     cx: body.centerX, cy: body.centerY, heading: body.heading,
     wheels, steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
+    wheelRadius: state.params.wheelRadius,
   })) return;
 
   // Tire proportions (top-down view):
@@ -822,7 +821,7 @@ export function drawSkidMarks(ctx) {
     }
 
     // Use per-segment width (from grip-based recording), fallback for legacy.
-    ctx.lineWidth = segment.width !== undefined ? segment.width : 0.28;
+    ctx.lineWidth = getSkidRenderWidth(segment.width ?? 0.28, state.params);
     ctx.stroke();
   }
 

@@ -96,9 +96,7 @@ export function drawTrailArrows(ctx) {
 
     // Size: length and lineWidth scale with speed.
     // Arrow length converted to metres (base length is authored in pixels).
-    const speedRatio  = arrow.speed / TRAIL_REFERENCE_SPEED;
-    const arrowLength = (TRAIL_ARROW_BASE_LENGTH_PX / PIXELS_PER_METER) * Math.max(0.4, speedRatio);
-    const lineWidth   = Math.max(0.1, 0.2 * Math.min(speedRatio, 2.0)); // metres
+    const { length: arrowLength, lineWidth } = getTrailArrowGeometry(arrow.speed);
 
     // Colour: green (slow) → yellow (reference speed) → red (fast).
     const arrowColor  = speedToColor(arrow.speed, opacity);
@@ -131,6 +129,14 @@ export function drawTrailArrows(ctx) {
   }
 }
 
+// Authored at the default pixel scale, then fixed in world metres for BOTH paths.
+export function getTrailArrowGeometry(speed) {
+  const speedRatio = speed / TRAIL_REFERENCE_SPEED;
+  return {
+    length: (TRAIL_ARROW_BASE_LENGTH_PX / PIXELS_PER_METER) * Math.max(0.4, speedRatio),
+    lineWidth: Math.max(0.1, 0.2 * Math.min(speedRatio, 2.0)),
+  };
+}
 
 // =============================================================
 // COLOUR HELPER
