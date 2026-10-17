@@ -18,9 +18,14 @@ const BODY_CROP = [284, 26, 687, 1203];
 const WHEEL_CROP = [411, 119, 431, 1015];
 const WHEEL_LENGTH = WHEEL_RADIUS * 0.85 * 2;
 const WHEEL_WIDTH = WHEEL_LENGTH * WHEEL_CROP[2] / WHEEL_CROP[3];
+// Artwork calibration only: tuck tires under the fenders, away from the bumpers.
+// Offsets are from the original corner anchors, in chassis-local metres.
+const WHEEL_INSET_X = CAR_HALF_WIDTH * 0.125;
+const FRONT_WHEEL_INSET_Y = CAR_HALF_LENGTH * 0.4;
+const REAR_WHEEL_INSET_Y = CAR_HALF_LENGTH * 0.36;
 const WHEELS = [
-  ['frontLeft', true], ['frontRight', true],
-  ['rearLeft', false], ['rearRight', false],
+  ['frontLeft', true, 1], ['frontRight', true, -1],
+  ['rearLeft', false, 1], ['rearRight', false, -1],
 ];
 
 const ready = image => image?.complete && image.naturalWidth > 0;
@@ -35,11 +40,16 @@ function selectWheelImage(_name, _angularSpeed) {
 export function drawVehicleSprites(ctx, pose) {
   if (!vehicleSpriteSettings.enabled || !ready(bodyImage) || !ready(wheelImage)) return false;
 
-  for (const [name, isFront] of WHEELS) {
+  const cos = Math.cos(pose.heading);
+  const sin = Math.sin(pose.heading);
+  for (const [name, isFront, inwardSign] of WHEELS) {
     const wheel = pose.wheels[name];
+    const dx = inwardSign * WHEEL_INSET_X;
+    const dy = isFront ? FRONT_WHEEL_INSET_Y : -REAR_WHEEL_INSET_Y;
     const image = selectWheelImage(name, pose.wheelOmega?.[name] ?? 0);
     ctx.save();
-    ctx.translate(wheel.x, wheel.y);
+    // Rotate the visual offset with the chassis, never with steering.
+    ctx.translate(wheel.x + dx * cos - dy * sin, wheel.y + dx * sin + dy * cos);
     ctx.rotate(pose.heading + (isFront ? pose.steerAngle : 0));
     ctx.drawImage(image, ...WHEEL_CROP, -WHEEL_WIDTH / 2, -WHEEL_LENGTH / 2,
       WHEEL_WIDTH, WHEEL_LENGTH);
