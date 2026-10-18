@@ -5,18 +5,35 @@
 <header><div class="eyebrow">VERLETDRIFT / EXPERIMENT 01</div><h1>Splash Laboratory<span>Procedural liquid. No fluid solver.</span></h1><a href="../../">Back to simulator ↗</a></header>
 <main>
 <section class="stage" aria-label="Procedural liquid splash preview"><canvas id="splash" aria-label="A DeLorean striking a crimson dye balloon"></canvas><div class="stage-caption"><span id="phase">APPROACH</span><span id="seed-label">SEED 1337</span></div><div id="failure" role="alert" hidden></div><div id="loading">Preparing liquid shaders…</div></section>
-<aside class="controls"><div class="eyebrow">IMPACT STUDY</div><h2>Crimson / 01</h2><p class="intro">Momentum-driven sheets, branching spray, and persistent pools of crimson dye. Replay or scrub any instant.</p>
+<aside class="controls"><div class="eyebrow">IMPACT STUDY</div><h2>Crimson / 01</h2><p class="intro">Momentum-driven sheets, branching spray, and crimson pools that settle and dry. Replay or scrub any instant.</p>
 <label for="speed">Impact speed <output id="speed-value">22 m/s</output></label><input id="speed" type="range" min="5" max="45" step="1" value="22">
 <label for="volume">Liquid volume <output id="volume-value">18 L</output></label><input id="volume" type="range" min="3" max="40" step="1" value="18">
 <label for="breakup">Stretch &amp; breakup <output id="breakup-value">1.10×</output></label><input id="breakup" type="range" min="0.25" max="2" step="0.05" value="1.1">
 <label for="concentration">Dye concentration <output id="concentration-value">1.35×</output></label><input id="concentration" type="range" min="0.2" max="2.5" step="0.05" value="1.35">
 <div class="actions"><button id="replay" class="primary">Replay impact</button><button id="pause">Pause</button></div>
-<div class="row"><label for="rate">Playback</label><select id="rate"><option value="0.25">¼ speed</option><option value="0.5">½ speed</option><option value="1" selected>Real time</option></select></div>
+<div class="row"><label for="rate">Playback</label><select id="rate"><option value="0.25">¼ speed</option><option value="0.5">½ speed</option><option value="1" selected>Real time</option><option value="2">2× speed</option><option value="4">4× speed</option><option value="8">8× speed</option></select></div>
 <div class="row"><label for="quality">Quality</label><select id="quality"><option value="performance">Performance</option><option value="balanced" selected>Balanced</option><option value="high">High</option></select></div>
 <div class="seed-row"><label for="seed">Seed</label><input id="seed" type="number" min="0" max="999999" value="1337"><button id="new-seed" aria-label="Choose a new deterministic seed">New</button></div>
+<details class="control-group"><summary>Liquid appearance</summary><div class="group-content">
+<div class="row"><label for="preset">Material preset</label><select id="preset"><option value="reference" selected>Reference crimson</option><option value="thin-film">Thin film</option><option value="deep-pool">Deep reflective pools</option><option value="custom" disabled>Custom</option></select></div>
+<label for="membrane-thickness">Membrane thickness <output id="membrane-thickness-value">1.00×</output></label><input id="membrane-thickness" type="range" min="0.45" max="1.8" step="0.05" value="1">
+<label for="filament-length">Filament length <output id="filament-length-value">1.00×</output></label><input id="filament-length" type="range" min="0.45" max="1.8" step="0.05" value="1">
+<label for="drop-scale">Droplet size <output id="drop-scale-value">1.00×</output></label><input id="drop-scale" type="range" min="0.45" max="1.8" step="0.05" value="1">
+<label for="roughness">Surface roughness <output id="roughness-value">1.00×</output></label><input id="roughness" type="range" min="0.45" max="1.8" step="0.05" value="1">
+<label for="reflections">Specular reflections <output id="reflections-value">1.00×</output></label><input id="reflections" type="range" min="0" max="1.8" step="0.05" value="1">
+<label for="puddle-depth">Puddle depth <output id="puddle-depth-value">1.00×</output></label><input id="puddle-depth" type="range" min="0.45" max="1.8" step="0.05" value="1">
+</div></details>
+<details class="control-group"><summary>Puddle drying</summary><div class="group-content">
+<label class="check-row" for="drying-enabled"><input id="drying-enabled" type="checkbox" checked> Enable drying</label>
+<label for="drying-duration">Drying duration <output id="drying-duration-value">18 s</output></label><input id="drying-duration" type="range" min="8" max="24" step="1" value="18">
+<label for="drying-irregularity">Drying irregularity <output id="drying-irregularity-value">0.42</output></label><input id="drying-irregularity" type="range" min="0" max="1" step="0.01" value="0.42">
+<label for="surface-absorption">Surface absorption <output id="surface-absorption-value">0.55</output></label><input id="surface-absorption" type="range" min="0" max="1" step="0.01" value="0.55">
+<label for="dye-residue">Residual dye staining <output id="dye-residue-value">0.38</output></label><input id="dye-residue" type="range" min="0" max="1" step="0.01" value="0.38">
+</div></details>
+<button id="reset-controls" class="reset-button">Reset controls to defaults</button>
 <div class="technical"><span class="eyebrow">RENDERER</span><p id="backend">Requesting WebGPU…</p><p id="timing">GPU timestamps pending.</p><small>GPU times cover deposition, scene and airborne passes. They exclude browser presentation. Volume and motion are artistic approximations.</small></div>
 </aside>
 </main>
-<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="8" step="0.005" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · GPU analytical animation</span></footer>
+<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="72" step="0.01" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · collision → drying → residue</span></footer>
 <script type="module" src="lab.js"></script>
 </body></html>

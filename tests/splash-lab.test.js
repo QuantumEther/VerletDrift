@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LabClock, settingsFrom, makeSheetMesh, makeStrandMesh, DURATION, QUALITY } from '../experiments/splash-lab/scene.js';
+import { LabClock, settingsFrom, makeSheetMesh, makeStrandMesh, DURATION, QUALITY, DEFAULTS, MATERIAL_PRESETS } from '../experiments/splash-lab/scene.js';
 describe('isolated splash laboratory',()=>{
  it('replays on elapsed time independently of frame subdivision and pauses without time jumps',()=>{
   const fine=new LabClock(),coarse=new LabClock();fine.tick(0);coarse.tick(0);
@@ -15,10 +15,21 @@ describe('isolated splash laboratory',()=>{
   clock.seek(Infinity);expect(clock.time).toBe(0);clock.seek(99);expect(clock.time).toBe(DURATION);
   clock.toggle();expect(clock.time).toBe(0);expect(clock.playing).toBe(true);
  });
+ it('plays an accelerated lifecycle through the extended timeline',()=>{
+  const clock=new LabClock();clock.rate=8;clock.tick(0);clock.tick(1000);expect(clock.time).toBe(8);
+  clock.seek(DURATION);expect(clock.time).toBe(72);
+ });
  it('clamps untrusted URL/control values without introducing random state',()=>{
   const a=settingsFrom({speed:'100',volume:-8,breakup:NaN,concentration:'bad',seed:1337.8,quality:'unknown'});
-  expect(a).toEqual({speed:45,volume:3,breakup:1.1,concentration:1.35,seed:1338,quality:'balanced'});
+  expect(a).toMatchObject({speed:45,volume:3,breakup:1.1,concentration:1.35,seed:1338,quality:'balanced',membraneThickness:1,roughness:1,dryingEnabled:true});
   expect(settingsFrom({seed:7})).toEqual(settingsFrom({seed:7}));
+ });
+ it('keeps the reference look as the default and clamps drying controls deterministically',()=>{
+  expect(DEFAULTS).toMatchObject({membraneThickness:1,filamentLength:1,dropScale:1,roughness:1,reflections:1,puddleDepth:1,dryingEnabled:true});
+  expect(settingsFrom({dryingEnabled:'false',dryingDuration:99,dryingIrregularity:-1,surfaceAbsorption:2,dyeResidue:.4})).toMatchObject({dryingEnabled:false,dryingDuration:24,dryingIrregularity:0,surfaceAbsorption:1,dyeResidue:.4});
+  expect(settingsFrom({preset:'deep-pool'})).toEqual(settingsFrom({preset:'deep-pool'}));
+  expect(Object.keys(MATERIAL_PRESETS)).toEqual(['reference','thin-film','deep-pool']);
+  expect(DURATION).toBeGreaterThan(6+DEFAULTS.dryingDuration*1.8);
  });
  it('builds closed parameterized sheets and indexed strips within allocated geometry',()=>{
   const sheet=makeSheetMesh(24,8),strand=makeStrandMesh(12);

@@ -4,8 +4,11 @@ struct Uniforms {
   event: vec4<f32>, // origin x/y, age since impact, deterministic seed
   car: vec4<f32>, // x/y, artwork width/length (laboratory only)
   options: vec4<f32>, // impact direction x/y, shader detail, car texture available
-  counts: vec4<f32>, // filament roots, drops, membrane layers, reserved
+  counts: vec4<f32>, // filament roots, drops, membrane layers, drying enabled
   ground: vec4<f32>, // atlas half extent, atlas texels, camera center x/y
+  material: vec4<f32>, // membrane thickness, filament length, droplet size, roughness
+  optics: vec4<f32>, // specular strength, puddle depth, drying start age, reserved
+  drying: vec4<f32>, // nominal duration, irregularity, absorption, dye residue
 }
 @group(0) @binding(0) var<uniform> u: Uniforms;
 const PI=3.14159265359;

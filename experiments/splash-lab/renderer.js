@@ -1,13 +1,13 @@
 import { BODY_CROP } from '../../js/renderer/vehicle-geometry.js';
 import { GPUTiming } from '../../js/renderer/gpu-timing.js';
-import { IMPACT_TIME, QUALITY, makeSheetMesh, makeStrandMesh } from './scene.js';
+import { IMPACT_TIME, DRYING_START_AGE, QUALITY, makeSheetMesh, makeStrandMesh } from './scene.js';
 const PREMUL={color:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}};
 const ADDITIVE={color:{srcFactor:'one',dstFactor:'one',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one',operation:'add'}};
 const VERTICES=[{arrayStride:8,attributes:[{shaderLocation:0,offset:0,format:'float32x2'}]}];
 export class SplashRenderer {
   constructor(canvas,onFailure=()=>{}) {
     this.canvas=canvas;this.onFailure=onFailure;this.ready=false;this.closed=false;this.resources=[];
-    this.uniforms=new Float32Array(28);this.depositionKey=null;
+    this.uniforms=new Float32Array(40);this.depositionKey=null;
     this.stats={backend:'uninitialized',drawCalls:0,frames:0,resourceAllocations:0,resourceBytes:0,cpuEncodeMs:0,sceneGpuMs:null,splashGpuMs:null};
   }
   track(resource,bytes=0) {this.resources.push(resource);this.stats.resourceAllocations++;this.stats.resourceBytes+=bytes;return resource;}
@@ -127,7 +127,11 @@ export class SplashRenderer {
       const carY=-.8+carLength*.5+(age<0?-age*settings.speed:-settings.speed*.10*(1.-Math.exp(-age*1.8)));
       this.uniforms.set([this.canvas.width,this.canvas.height,Math.min(this.canvas.width/18,this.canvas.height/14.5)/framing,time,
         settings.speed,settings.volume,settings.breakup,settings.concentration,0,-.8,age,settings.seed,
-        0,carY,carWidth,carLength,0,-1,q.detail,this.hasCar?1:0,q.strands/3,q.drops,q.sheets,0,16,q.atlas,0,-.8-settings.speed*.18*.22]);
+        0,carY,carWidth,carLength,0,-1,q.detail,this.hasCar?1:0,q.strands/3,q.drops,q.sheets,settings.dryingEnabled?1:0,
+        16,q.atlas,0,-.8-settings.speed*.18*.22,
+        settings.membraneThickness,settings.filamentLength,settings.dropScale,settings.roughness,
+        settings.reflections,settings.puddleDepth,DRYING_START_AGE,0,
+        settings.dryingDuration,settings.dryingIrregularity,settings.surfaceAbsorption,settings.dyeResidue]);
       this.device.queue.writeBuffer(this.uniformBuffer,0,this.uniforms);
       this.sceneTimer?.startFrame();this.liquidTimer?.startFrame();
       // Reconstruct only when contact history changes. Seeking backwards clears

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics, puddleOptics, dryGroundPixels, airborneOptics } from './helpers/splash-gpu.js';
+import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics, puddleOptics, dryGroundPixels, airborneOptics, puddleDryingOptics } from './helpers/splash-gpu.js';
 async function start(page,query='time=.3&paused=1') {
  await offscreenSplash(page);await page.goto(`/experiments/splash-lab/?${query}`);
  const available=await page.evaluate(async()=>!!(await navigator.gpu?.requestAdapter()));
@@ -176,7 +176,7 @@ test('puddle optics retain transmission, water Fresnel, directional reflections 
 
 test('settled reflected ground stays still and concentration changes only optics',async({page})=>{
  await start(page,'time=5&paused=1');const first=await splashPixels(page),atlas=await groundPixels(page);
- await seekSplash(page,8);expect((await splashPixels(page)).groundHash).toBe(first.groundHash);
+ await seekSplash(page,8);expect((await splashPixels(page)).groundHash).not.toBe(first.groundHash);
  await seekSplash(page,1.6);await seekSplash(page,5);
  expect((await splashPixels(page)).hash).toBe(first.hash);
  const rebuilds=await page.evaluate(()=>window.splashLab.renderer.stats.depositionRebuilds);
@@ -205,4 +205,62 @@ test('airborne water shares puddle absorption, thins at edges and absorbs overla
  expect(values[10][0]).toBeLessThan(.18);expect(values[10][1]).toBeLessThan(.01);
  expect(values[11][0]).toBeGreaterThan(values[5][0]);
  expect(values[11][1]).toBeGreaterThan(values[5][1]);
+});
+
+test('appearance controls act independently and presets reproduce the reference look',async({page})=>{
+ await start(page,'time=1.25&paused=1');await page.locator('.control-group').first().evaluate(node=>node.open=true);const defaults=await splashPixels(page);
+ const setRange=async(id,value)=>page.locator(`#${id}`).evaluate((node,value)=>{node.value=String(value);node.dispatchEvent(new Event('input',{bubbles:true}));},value);
+ for(const [id,key,value,time] of [
+  ['membrane-thickness','membraneThickness',1.7,1.25],['filament-length','filamentLength',1.7,1.25],
+  ['drop-scale','dropScale',1.7,1.25],['roughness','roughness',1.7,1.25],['reflections','reflections',0,1.25],
+  ['puddle-depth','puddleDepth',1.7,5],
+ ]){
+  await seekSplash(page,time);const before=await splashPixels(page);
+  await setRange(id,value);await seekSplash(page,time);expect((await splashPixels(page)).hash,`${key} must change the rendered material`).not.toBe(before.hash);
+  await setRange(id,1);await seekSplash(page,time);expect((await splashPixels(page)).hash,`${key} reset must restore its base appearance`).toBe(before.hash);
+ }
+ await seekSplash(page,1.25);const reference=await splashPixels(page);
+ await page.selectOption('#preset','thin-film');await seekSplash(page,1.25);expect((await splashPixels(page)).hash).not.toBe(reference.hash);
+ await page.selectOption('#preset','deep-pool');await seekSplash(page,1.25);const deep=await splashPixels(page);
+ await page.selectOption('#preset','reference');await page.selectOption('#preset','deep-pool');await seekSplash(page,1.25);expect((await splashPixels(page)).hash).toBe(deep.hash);
+ await page.selectOption('#preset','reference');await seekSplash(page,1.25);expect((await splashPixels(page)).hash).toBe(reference.hash);
+ await page.locator('#reset-controls').click();await seekSplash(page,1.25);expect((await splashPixels(page)).hash).toBe(reference.hash);
+ expect(await page.evaluate(()=>window.splashLab.getSettings())).toMatchObject({preset:'reference',membraneThickness:1,filamentLength:1,dropScale:1,roughness:1,reflections:1,puddleDepth:1,dryingEnabled:true});
+});
+
+test('puddles retreat into damp asphalt and residue deterministically under time scrubbing',async({page})=>{
+ await start(page,'time=8&paused=1');await page.locator('.control-group').nth(1).evaluate(node=>node.open=true);
+ const atlas=await groundPixels(page),early=await splashPixels(page);
+ await seekSplash(page,18);const middle=await splashPixels(page);
+ await seekSplash(page,26);const damp=await splashPixels(page);
+ await seekSplash(page,58);const dry=await splashPixels(page);
+ expect(middle.groundHash).not.toBe(early.groundHash);expect(damp.groundHash).not.toBe(middle.groundHash);expect(dry.groundHash).not.toBe(damp.groundHash);
+ expect((await groundPixels(page)).hash).toBe(atlas.hash);
+ await seekSplash(page,18);expect((await splashPixels(page)).hash).toBe(middle.hash);
+ await seekSplash(page,58);expect((await splashPixels(page)).hash).toBe(dry.hash);
+ await page.locator('#drying-enabled').uncheck();await seekSplash(page,58);const persistent=await splashPixels(page);
+ expect(persistent.groundHash).not.toBe(dry.groundHash);
+ expect((await groundPixels(page)).hash).toBe(atlas.hash);
+ await page.locator('#drying-enabled').check();await seekSplash(page,58);expect((await splashPixels(page)).hash).toBe(dry.hash);
+ const setRange=async(id,value)=>page.locator(`#${id}`).evaluate((node,value)=>{node.value=String(value);node.dispatchEvent(new Event('input',{bubbles:true}));},value);
+ for(const [id,value,time,baseline,reset] of [
+  ['drying-duration',8,18,middle.hash,18],['drying-irregularity',1,18,middle.hash,.42],
+  ['surface-absorption',0,18,middle.hash,.55],['dye-residue',0,58,dry.hash,.38],
+ ]){
+  await setRange(id,value);await seekSplash(page,time);expect((await splashPixels(page)).hash,`${id} must affect the drying transition`).not.toBe(baseline);
+  await setRange(id,reset);await seekSplash(page,time);expect((await splashPixels(page)).hash,`${id} reset must reproduce the default drying appearance`).toBe(baseline);
+ }
+ const optics=await puddleDryingOptics(page);
+ expect(optics.flat().every(Number.isFinite)).toBe(true);
+ expect(optics[0][0]).toBeGreaterThan(.1);
+ expect(optics[1][0]).toBeGreaterThan(optics[2][0]); // Deep pools outlast shallow margins.
+ expect(optics[3][0]).toBeLessThan(.002);expect(optics[3][2]).toBeGreaterThan(0); // Standing water leaves damp pores.
+ expect(optics[4][0]).toBeLessThan(.002);expect(optics[4][1]).toBe(0);expect(optics[4][2]).toBe(0);expect(optics[4][3]).toBeGreaterThan(0);
+ expect(Math.abs(optics[5][0]-optics[5][3])).toBeGreaterThan(.0001); // Stable spatial drying patches.
+ await page.selectOption('#rate','8');expect(await page.evaluate(()=>window.splashLab.clock.rate)).toBe(8);
+ expect(await page.locator('#timeline').getAttribute('max')).toBe('72');
+ await setRange('drying-duration',24);await setRange('drying-irregularity',1);await setRange('surface-absorption',0);
+ await seekSplash(page,72);const finalState=await puddleDryingOptics(page);
+ expect(finalState[6][0]).toBeLessThan(.002);expect(finalState[6][1]).toBe(0);expect(finalState[6][2]).toBe(0);
+ expect(finalState[6][3]).toBeGreaterThan(0); // Even the slowest drying controls finish on the timeline.
 });

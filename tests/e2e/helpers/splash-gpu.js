@@ -195,3 +195,43 @@ export async function airborneOptics(page) {
   } finally {read.unmap();read.destroy();output.destroy();}
  });
 }
+
+// Probe the production puddle drying function at fixed world points and times.
+// The world-space atlas is unchanged; only analytic shader state varies.
+export async function puddleDryingOptics(page) {
+ return page.evaluate(async()=>{
+  const {device}=window.splashLab.renderer;
+  const sources=await Promise.all(['common','material','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
+  const module=device.createShaderModule({code:sources.join('\n')+`
+   @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
+   @group(0) @binding(2) var linearSampler:sampler;
+   @group(0) @binding(3) var groundTexture:texture_2d<f32>;
+   @compute @workgroup_size(1) fn probe() {
+    let pool=puddleMaterial(vec2(.38,.72),.42,.0005);
+    let shallow=puddleMaterial(vec2(.095,.52),.42,.0005);
+    result[0]=vec4(dryPuddle(pool,.42,.5,u.optics.z,.0005).standing,dryPuddle(pool,.42,.5,u.optics.z,.0005).water,dryPuddle(pool,.42,.5,u.optics.z,.0005).wet,dryPuddle(pool,.42,.5,u.optics.z,.0005).residue);
+    let deepMid=dryPuddle(pool,.42,.5,u.optics.z+u.drying.x*.55,.0005);
+    let shallowMid=dryPuddle(shallow,.42,.5,u.optics.z+u.drying.x*.55,.0005);
+    result[1]=vec4(deepMid.standing,deepMid.water,deepMid.wet,deepMid.progress);
+    result[2]=vec4(shallowMid.standing,shallowMid.water,shallowMid.wet,shallowMid.progress);
+    let damp=dryPuddle(pool,.42,.5,u.optics.z+u.drying.x*1.4,.0005);
+    let residue=dryPuddle(pool,.42,.5,u.optics.z+u.drying.x*2.8,.0005);
+    result[3]=vec4(damp.standing,damp.water,damp.wet,damp.progress);
+    result[4]=vec4(residue.standing,residue.water,residue.wet,residue.residue);
+    let patchA=dryPuddle(pool,.42,0.,u.optics.z+u.drying.x*.65,.0005);
+    let patchB=dryPuddle(pool,.42,1.,u.optics.z+u.drying.x*.65,.0005);
+    result[5]=vec4(patchA.standing,patchA.water,patchA.progress,patchB.standing);
+    let atTimelineEnd=dryPuddle(pool,.42,.5,u.event.z,.0005);
+    result[6]=vec4(atTimelineEnd.standing,atTimelineEnd.water,atTimelineEnd.wet,atTimelineEnd.residue);
+   }`});
+  const pipeline=await device.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'probe'}});
+  const size=7*16,output=device.createBuffer({size,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
+  const read=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+  try {
+   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:window.splashLab.renderer.uniformBuffer}},{binding:1,resource:{buffer:output}}]});
+   const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
+   encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
+   const data=new Float32Array(read.getMappedRange());return Array.from({length:7},(_,i)=>[...data.slice(i*4,i*4+4)]);
+  } finally {read.unmap();read.destroy();output.destroy();}
+ });
+}

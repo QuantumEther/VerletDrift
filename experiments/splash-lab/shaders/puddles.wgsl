@@ -17,6 +17,31 @@ fn puddleMaterial(field:vec2<f32>,terrain:f32,depthAA:f32)->PuddleMaterial {
  let standing=max(0.,field.x-capacity);
  return PuddleMaterial(standing,smoothstep(0.,max(.002,depthAA*.5),standing),1.-exp(-field.y*3.),porosity,capacity);
 }
+struct DryPuddle { standing:f32,water:f32,wet:f32,progress:f32,residue:f32 }
+fn dryPuddle(material:PuddleMaterial,terrain:f32,micro:f32,age:f32,depthAA:f32)->DryPuddle {
+ let initial=material.standing*u.optics.y;
+ var standing=initial;
+ var water=material.water;
+ if(u.optics.y!=1.){water=smoothstep(0.,max(.002,depthAA*.5),standing);}
+ var wet=material.wet;var progress=0.;
+ if(u.counts.w>.5&&age>u.optics.z){
+  let depthHold=smoothstep(.002,.075,initial);
+  // Basins retain deeper water; porous and slightly higher surface patches dry sooner.
+  let retention=mix(.72,1.28,depthHold)*mix(.94,1.08,material.porosity)*mix(1.05,.95,terrain)
+   *mix(1.10,.82,u.drying.z)*mix(1.,.82+micro*.36,u.drying.y);
+  let duration=max(1.,u.drying.x)*retention;
+  progress=clamp((age-u.optics.z)/duration,0.,1.);
+  standing=initial*pow(1.-progress,1.7);
+  water=smoothstep(0.,max(.002,depthAA*.5),standing);
+  // Evaporating water first leaves a slower-drying damp film in the asphalt pores.
+  // Keep a perceptible damp-asphalt phase after the standing pool has gone;
+  // even the longest preset still dries before the lab's 72-second endpoint.
+  let dampProgress=clamp((age-u.optics.z)/(duration*(1.40+.15*u.drying.z)),0.,1.);
+  wet=material.wet*(1.-smoothstep(.55,1.,dampProgress));
+ }
+ let residue=material.wet*u.drying.w*progress*.18;
+ return DryPuddle(standing,water,wet,progress,residue);
+}
 fn waterRoughness(standing:f32,water:f32)->f32 {
  return mix(.58,mix(.085,.035,smoothstep(.003,.05,standing)),water);
 }
@@ -34,18 +59,23 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let texel=1./u.ground.y;
  let dx=textureSampleLevel(groundTexture,linearSampler,uv+vec2(texel,0.),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(texel,0.),0.).r;
  let dy=textureSampleLevel(groundTexture,linearSampler,uv+vec2(0.,texel),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(0.,texel),0.).r;
- let gradient=vec2(dx,dy)*u.ground.y/(u.ground.x*4.);
+ let gradient=vec2(dx,dy)*u.ground.y/(u.ground.x*4.)*u.optics.y;
  let terrainA=noiseSlope(world*.55);let terrainB=noiseSlope(world*1.7+vec2(19.2,6.3));
  let terrain=terrainA.x*.72+terrainB.x*.28;
  // Pore filling and contact pinning leave wet grains between standing pools.
  // Isolated drops bead before they fully soak into the asphalt.
  let material=puddleMaterial(field.rg,terrain,depthAA);
- let standing=material.standing;let water=material.water;let wet=material.wet;
- let porosity=material.porosity;let stain=min(field.r,material.capacity);
+ let micro=mix(noise(world*.72),noise(world*2.1+vec2(3.7,8.1)),.35);
+ let dry=dryPuddle(material,terrain,micro,u.event.z,depthAA);
+ let standing=dry.standing;let water=dry.water;let wet=dry.wet;
+ let porosity=material.porosity;
+ let stain=min(field.r,material.capacity)*mix(1.,u.drying.w,dry.progress)+dry.residue;
  let physicalDepth=standing*.035; // artistic proxy -> shallow millimetre layer
  let view=normalize(vec3(0.,.48,1.)); // same oblique height projection as clip()
  let grain=noiseSlope(world*24.);
- let contactGradient=gradient-.085*porosity*(terrainA.yz*.55*.72+terrainB.yz*1.7*.28);
+ let initialStanding=material.standing*u.optics.y;
+ let standingScale=select(1.,standing/max(initialStanding,.00001),initialStanding>.00001);
+ let contactGradient=gradient*standingScale-.085*porosity*(terrainA.yz*.55*.72+terrainB.yz*1.7*.28)*standingScale;
  let meniscus=contactGradient/(length(contactGradient)+.03)*exp(-standing/.012)*.015;
  let fineSlope=grain.yz*.022*(1.-water*.98);
  let capillary=(terrainA.yz*.004+terrainB.yz*.003)*water;
@@ -53,7 +83,7 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let beading=beadWeight(field.g,u.counts.z)*water;
  let beadSlope=gradient/(length(gradient)+.001)*min(length(gradient)*1.2,.28)*beading;
  let n=normalize(vec3(-gradient*mix(.028,.004,porosity)-meniscus-beadSlope+fineSlope+capillary+ripple,1.));
- let roughness=waterRoughness(standing,water);
+ let roughness=clamp(waterRoughness(standing,water)*u.material.w,.025,.82);
  let reflected=reflect(-view,n);
  let environment=reflectedEnvironment(world,reflected,roughness);
  let fresnel=fresnelWater(dot(n,view));
@@ -62,10 +92,10 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let variance=clamp(depthAA/max(field.r,.005),0.,1.)*beading*.06;
  let highlightRoughness=sqrt(max(.085,roughness)*max(.085,roughness)+variance);
  let direct=ggxReflection(n,view,light,highlightRoughness)*vec3(.45,.42,.38);
- let reflection=environment*fresnel+direct;
+ let reflection=(environment*fresnel+direct)*u.optics.x;
  // Millimetre-scale transmission retains the local road texture without blur.
  let substrate=toLinear(asphalt)*(1.-wet*.48);
- let poreTransmission=exp(-vec3(.4,4.5,7.)*stain*u.effect.w*2.5);
+ let poreTransmission=exp(-vec3(.4,4.5,7.)*(stain+dry.residue)*u.effect.w*2.5);
  let transmission=waterTransmission(physicalDepth,dot(n,view),u.effect.w);
  let medium=waterMedium(standing*u.effect.w*12.);
  let transmitted=substrate*poreTransmission*transmission+medium;

@@ -19,7 +19,7 @@ fn rootCurve(root:u32,s:f32)->vec3<f32>{
  let b=sheetPoint(angle+(hash(root+6u)-.5)*.18,1.,u.event.z,0.);
  let outward=normalize(radialVelocity(angle)+vec2(.0001));
  let side=vec2(-outward.y,outward.x);let t=max(u.event.z,0.);
- let end=b.xy+outward*(.5+hash(root+3u)*1.4)*(1.-exp(-t*2.));
+ let end=b.xy+outward*(.5+hash(root+3u)*1.4)*u.material.y*(1.-exp(-t*2.));
  let curve=sin(s*PI)*((hash(root+8u)-.5)*.9+.12*sin(s*TAU+t));
  return vec3(mix(a.xy,end,s)+side*curve,
   max(0.,mix(a.z,b.z,s)+sin(s*PI)*(.3+hash(root+7u)*.7)*exp(-t*.7)));
@@ -43,7 +43,7 @@ fn strandPoint(root:u32,branch:u32,s:f32)->vec3<f32>{
 }
 fn dropSurface(vertex:u32,id:u32,d:Drop)->Surface{let uv=corners(vertex);
  let dir=normalize(d.velocity+vec2(.0001));let side=vec2(-dir.y,dir.x);
- let stretch=mix(1.4+hash(id+84u)*1.5,1.,d.landed);let point=d.position+vec3((dir*uv.x*stretch+side*uv.y)*d.radius,0.);
+ let stretch=mix(1.4+hash(id+84u)*1.5,1.,d.landed);let point=d.position+vec3((dir*uv.x*stretch+side*uv.y)*d.radius*u.material.z,0.);
  var position=clip(point);if(d.alive<=0.){position=vec4(2.,2.,0.,1.);}
  return Surface(position,d.position,uv,f32(id),vec2(d.alive,d.landed),vec3(dir,0.));
 }
@@ -90,10 +90,11 @@ fn liquid(pixel:vec2<f32>,world:vec3<f32>,normal:vec3<f32>,thickness:f32,coverag
  // Same fixed luminaire and water IOR as puddles; finite normal footprint
  // broadens subpixel highlights instead of making luminous red rims.
  let dx=dpdx(n);let dy=dpdy(n);
- let roughness=sqrt(.085*.085+min(.18,(dot(dx,dx)+dot(dy,dy))*.35));
+ let materialRoughness=clamp(.085*u.material.w,.025,.82);
+ let roughness=sqrt(materialRoughness*materialRoughness+min(.18,(dot(dx,dx)+dot(dy,dy))*.35));
  let reflected=reflect(-view,n);
- let reflection=reflectedEnvironment(world.xy+reflected.xy*(-world.z/max(reflected.z,.08)),reflected,roughness)*fresnel
-  +ggxReflection(n,view,normalize(vec3(.3,-.6,1.)),roughness)*vec3(.45,.42,.38);
+ let reflection=(reflectedEnvironment(world.xy+reflected.xy*(-world.z/max(reflected.z,.08)),reflected,roughness)*fresnel
+  +ggxReflection(n,view,normalize(vec3(.3,-.6,1.)),roughness)*vec3(.45,.42,.38))*u.optics.x;
  let depth=max(thickness,0.)*.012;
  let offset=n.xy*(depth*u.view.z*.30)/u.view.xy;
  let behind=textureSampleLevel(sceneTexture,linearSampler,clamp(pixel/u.view.xy+offset,vec2(0.),vec2(1.)),0.).rgb;
@@ -108,7 +109,7 @@ fn membrane(in:Surface)->vec3<f32>{
  let radial=in.shape.y;
  let edges=smoothstep(0.,.045,radial)*(1.-smoothstep(.985,1.,radial));
  let rim=1.-smoothstep(aa,aa*3.,abs(field-rupture));
- let thickness=(.15+.32*(1.-radial))*(.7+field*.7)/(1.+max(age,0.)*.9);
+ let thickness=(.15+.32*(1.-radial))*(.7+field*.7)*u.material.x/(1.+max(age,0.)*.9);
  let outerRim=exp(-pow((radial-.967)/.012,2.));
  let angle=atan2(in.material.y,in.material.x);
  let contact=sheetLanding(angle,radial,in.id);

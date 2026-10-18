@@ -1,7 +1,20 @@
 // Laboratory clock and artistic settings only. No simulator imports or RNG.
 export const IMPACT_TIME = .55;
-export const DURATION = 8;
-export const DEFAULTS = Object.freeze({ speed: 22, volume: 18, breakup: 1.1, concentration: 1.35, seed: 1337, quality: 'balanced' });
+// The longest supported dry interval (24 s) plus the absorption and residue tail.
+export const DURATION = 72;
+export const DRYING_START_AGE = 6;
+export const DEFAULTS = Object.freeze({
+  speed: 22, volume: 18, breakup: 1.1, concentration: 1.35, seed: 1337, quality: 'balanced',
+  preset: 'reference', membraneThickness: 1, filamentLength: 1, dropScale: 1,
+  roughness: 1, reflections: 1, puddleDepth: 1,
+  dryingEnabled: true, dryingDuration: 18, dryingIrregularity: .42,
+  surfaceAbsorption: .55, dyeResidue: .38,
+});
+export const MATERIAL_PRESETS = Object.freeze({
+  reference: Object.freeze({ membraneThickness: 1, filamentLength: 1, dropScale: 1, roughness: 1, reflections: 1, puddleDepth: 1, concentration: 1.35 }),
+  'thin-film': Object.freeze({ membraneThickness: .72, filamentLength: 1.18, dropScale: .78, roughness: 1.38, reflections: .72, puddleDepth: .72, concentration: 1.05 }),
+  'deep-pool': Object.freeze({ membraneThickness: 1.28, filamentLength: .88, dropScale: 1.18, roughness: .72, reflections: 1.28, puddleDepth: 1.36, concentration: 1.65 }),
+});
 const clamp = (v,lo,hi,fallback) => Number.isFinite(Number(v)) ? Math.min(hi,Math.max(lo,Number(v))) : fallback;
 export function settingsFrom(values = {}) {
   return {
@@ -11,6 +24,18 @@ export function settingsFrom(values = {}) {
     concentration: clamp(values.concentration ?? DEFAULTS.concentration,.2,2.5,DEFAULTS.concentration),
     seed: Math.round(clamp(values.seed ?? DEFAULTS.seed,0,999999,DEFAULTS.seed)),
     quality: ['performance','balanced','high'].includes(values.quality) ? values.quality : DEFAULTS.quality,
+    preset: ['reference','thin-film','deep-pool','custom'].includes(values.preset) ? values.preset : DEFAULTS.preset,
+    membraneThickness: clamp(values.membraneThickness ?? DEFAULTS.membraneThickness,.45,1.8,DEFAULTS.membraneThickness),
+    filamentLength: clamp(values.filamentLength ?? DEFAULTS.filamentLength,.45,1.8,DEFAULTS.filamentLength),
+    dropScale: clamp(values.dropScale ?? DEFAULTS.dropScale,.45,1.8,DEFAULTS.dropScale),
+    roughness: clamp(values.roughness ?? DEFAULTS.roughness,.45,1.8,DEFAULTS.roughness),
+    reflections: clamp(values.reflections ?? DEFAULTS.reflections,0,1.8,DEFAULTS.reflections),
+    puddleDepth: clamp(values.puddleDepth ?? DEFAULTS.puddleDepth,.45,1.8,DEFAULTS.puddleDepth),
+    dryingEnabled: values.dryingEnabled === undefined ? DEFAULTS.dryingEnabled : [true,1,'1','true','on'].includes(values.dryingEnabled),
+    dryingDuration: clamp(values.dryingDuration ?? DEFAULTS.dryingDuration,8,24,DEFAULTS.dryingDuration),
+    dryingIrregularity: clamp(values.dryingIrregularity ?? DEFAULTS.dryingIrregularity,0,1,.42),
+    surfaceAbsorption: clamp(values.surfaceAbsorption ?? DEFAULTS.surfaceAbsorption,0,1,.55),
+    dyeResidue: clamp(values.dyeResidue ?? DEFAULTS.dyeResidue,0,1,.38),
   };
 }
 export class LabClock {
