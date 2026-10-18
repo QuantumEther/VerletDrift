@@ -1,8 +1,10 @@
 # Splash Laboratory
 
 A standalone WebGPU/WGSL experiment for a large, translucent crimson balloon
-splash. It uses analytical GPU animation, not fluid simulation. It does not run
-or modify the vehicle simulator.
+splash and persistent wet ground. It uses shared launch momentum and analytical
+GPU contact/deposition, not fluid simulation. It does not run or modify the
+vehicle simulator. The original version is preserved on
+`verlet_gpt_v23_splash_backup_c279110` (commit `c279110`).
 
 From the repository root:
 
@@ -18,13 +20,14 @@ explicit adapter hint, but may select integrated graphics.
 
 ## Controls
 
-- Impact speed: approach speed and outward throw/extent.
+- Impact speed: approach speed, outward pressure and transferred forward momentum.
 - Liquid volume: visual extent and droplet size; nominal artistic litres,
   not a conserved fluid volume.
 - Stretch & breakup: membrane perforation and filament fragmentation.
 - Dye concentration: wavelength-inspired absorption/transmission and opacity.
 - Replay impact / Pause / Play: replay the same seed or hold a precise instant.
-- Timeline: scrub the full 4.8-second scene; impact is at 0.55 seconds.
+- Timeline: scrub the full 8-second scene; impact is at 0.55 seconds. At 5–8
+  seconds the airborne liquid has settled and the puddles remain.
 - Playback: real time, half speed or quarter speed.
 - Seed / New: deterministic surface, strand and droplet variation.
 - Quality: fixed counts/resolution/detail budgets; no changes to animation time.
@@ -42,11 +45,13 @@ scrubbing or resizing requests a redraw. Hidden tabs suspend the visual clock.
 ## Architecture and assets
 
 - `scene.js`: pure settings/clock and immutable parameter meshes.
-- `renderer.js`: resource ownership, pipelines, image upload, targets, submission.
+- `renderer.js`: resource ownership, pipelines, image upload, scene/deposition
+  targets, cache and submission.
 - `lab.js`: isolated controls/clock/diagnostics. No simulation state imports.
-- `shaders/common.wgsl`: seeded noise, camera projection and shared rim motion.
-- `shaders/scene.wgsl`: asphalt, simplified car presentation and balloon.
-- `shaders/liquid.wgsl`: membrane, filament, droplet, shadow and composite stages.
+- `shaders/common.wgsl`: seeded noise, camera projection, shared launch/contact
+  motion and secondary landing spray.
+- `shaders/scene.wgsl`: asphalt, pooled dye/wet highlights, simplified car and balloon.
+- `shaders/liquid.wgsl`: airborne stages and additive world-space deposition.
 
 The car uses a GPU copy cropped from the unchanged existing DeLorean artwork
 using the existing crop metadata. Its display scale is for this laboratory;
@@ -59,10 +64,18 @@ Existing reusable infrastructure: WebGPU resource/timing conventions, optional
 The experiment has its own device and targets. It does not import `main.js`,
 `state.js`, `balloon.js`, seeded physics RNG, inputs, audio or simulation systems.
 
-The live timing readout separates CPU command encoding from GPU scene and liquid
-pass timestamps when supported. GPU values are unavailable until enough frames
+The live timing readout separates CPU command encoding from GPU deposition,
+scene and airborne pass timestamps when supported. GPU values are unavailable until enough frames
 have rendered; pausing early may leave them blank. They exclude presentation and
 are not estimates derived from JavaScript time.
 
-Full technique notes, visual comparisons, measurements and integration outline:
-[procedural splash report](../../docs/rendering/PROCEDURAL_SPLASH_LAB.md).
+Deposition is reconstructed from elapsed time into a fixed-size two-channel GPU
+atlas: overlapping depth and wetness footprints accumulate spatially. It is
+independent of frame history, so replay and backward seeks restore the correct
+ground. After settlement the atlas is cached; no drying/fading removes the dye.
+It is isolated from gameplay paint and does not alter grip.
+
+Current technique notes, visual comparisons, measurements and limitations:
+[momentum and deposition report](../../docs/rendering/SPLASH_MOMENTUM_AND_DEPOSITION.md).
+The [original report](../../docs/rendering/PROCEDURAL_SPLASH_LAB.md) preserves the
+first prototype's results and future integration outline.

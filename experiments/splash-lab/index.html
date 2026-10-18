@@ -5,7 +5,7 @@
 <header><div class="eyebrow">VERLETDRIFT / EXPERIMENT 01</div><h1>Splash Laboratory<span>Procedural liquid. No fluid solver.</span></h1><a href="../../">Back to simulator ↗</a></header>
 <main>
 <section class="stage" aria-label="Procedural liquid splash preview"><canvas id="splash" aria-label="A DeLorean striking a crimson dye balloon"></canvas><div class="stage-caption"><span id="phase">APPROACH</span><span id="seed-label">SEED 1337</span></div><div id="failure" role="alert" hidden></div><div id="loading">Preparing liquid shaders…</div></section>
-<aside class="controls"><div class="eyebrow">IMPACT STUDY</div><h2>Crimson / 01</h2><p class="intro">An expanding film, stretched into strands and droplets. Replay the same instant. Change its character.</p>
+<aside class="controls"><div class="eyebrow">IMPACT STUDY</div><h2>Crimson / 01</h2><p class="intro">Momentum-driven sheets, branching spray, and persistent pools of crimson dye. Replay or scrub any instant.</p>
 <label for="speed">Impact speed <output id="speed-value">22 m/s</output></label><input id="speed" type="range" min="5" max="45" step="1" value="22">
 <label for="volume">Liquid volume <output id="volume-value">18 L</output></label><input id="volume" type="range" min="3" max="40" step="1" value="18">
 <label for="breakup">Stretch &amp; breakup <output id="breakup-value">1.10×</output></label><input id="breakup" type="range" min="0.25" max="2" step="0.05" value="1.1">
@@ -14,9 +14,9 @@
 <div class="row"><label for="rate">Playback</label><select id="rate"><option value="0.25">¼ speed</option><option value="0.5">½ speed</option><option value="1" selected>Real time</option></select></div>
 <div class="row"><label for="quality">Quality</label><select id="quality"><option value="performance">Performance</option><option value="balanced" selected>Balanced</option><option value="high">High</option></select></div>
 <div class="seed-row"><label for="seed">Seed</label><input id="seed" type="number" min="0" max="999999" value="1337"><button id="new-seed" aria-label="Choose a new deterministic seed">New</button></div>
-<div class="technical"><span class="eyebrow">RENDERER</span><p id="backend">Requesting WebGPU…</p><p id="timing">GPU timestamps pending.</p><small>GPU times cover scene and splash passes. They exclude browser presentation. Volume and motion are artistic approximations.</small></div>
+<div class="technical"><span class="eyebrow">RENDERER</span><p id="backend">Requesting WebGPU…</p><p id="timing">GPU timestamps pending.</p><small>GPU times cover deposition, scene and airborne passes. They exclude browser presentation. Volume and motion are artistic approximations.</small></div>
 </aside>
 </main>
-<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="4.8" step="0.005" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · GPU analytical animation</span></footer>
+<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="8" step="0.005" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · GPU analytical animation</span></footer>
 <script type="module" src="lab.js"></script>
 </body></html>

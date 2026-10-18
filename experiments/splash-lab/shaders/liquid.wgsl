@@ -17,7 +17,7 @@ fn rootCurve(root:u32,s:f32)->vec3<f32>{
  let angle=rootAngle(root);
  let a=sheetPoint(angle,.58,u.event.z,0.);
  let b=sheetPoint(angle+(hash(root+6u)-.5)*.18,1.,u.event.z,0.);
- let outward=normalize(b.xy-u.event.xy+vec2(.0001));
+ let outward=normalize(radialVelocity(angle)+vec2(.0001));
  let side=vec2(-outward.y,outward.x);let t=max(u.event.z,0.);
  let end=b.xy+outward*(.5+hash(root+3u)*1.4)*(1.-exp(-t*2.));
  let curve=sin(s*PI)*((hash(root+8u)-.5)*.9+.12*sin(s*TAU+t));
@@ -41,34 +41,17 @@ fn strandPoint(root:u32,branch:u32,s:f32)->vec3<f32>{
  let shifted=p+vec3(vec2(-direction.y,direction.x)*param.y*thickness,0.);
  return Surface(clip(shifted),p,vec2(s,param.y),f32(id),vec2(s,param.y),vec3(-direction.y,direction.x,0.));
 }
-struct Drop {position:vec3<f32>, radius:f32, velocity:vec2<f32>, landed:f32, alive:f32}
-fn drop(id:u32)->Drop {
- let root=id%u32(u.counts.x);
- let angle=rootAngle(root)+(hash(id+120u)-.5)*.20;
- let birth=.10+pow(hash(id+23u),1.5)*.48;
- let time=u.event.z-birth;
- let start=sheetPoint(angle,.78+hash(id+4u)*.22,birth,0.);
- let dir=vec2(cos(angle),sin(angle));
- let velocity=dir*(2.5+hash(id+11u)*7.)*(.65+u.effect.x*.022)+u.options.xy*u.effect.x*.035;
- let vz=1.4+hash(id+61u)*3.;let gravity=8.5;
- let flight=(vz+sqrt(vz*vz+2.*gravity*start.z))/gravity;
- let airborne=min(max(0.,time),flight);
- let travel=(1.-exp(-airborne*1.4))/1.4;
- let xy=start.xy+velocity*travel;
- let z=max(0.,start.z+vz*airborne-.5*gravity*airborne*airborne);
- let landed=smoothstep(flight-.04,flight+.06,time);
- let size=(.009+pow(hash(id+700u),6.)*.090)*pow(u.effect.y/18.,.25);
- let radius=size*mix(1.,1.8+min(max(time-flight,0.),1.)*.6,landed);
- let alive=smoothstep(0.,.035,time)*(1.-smoothstep(2.5,4.2,time));
- return Drop(vec3(xy,z),radius,velocity,landed,alive);
-}
-fn corners(id:u32)->vec2<f32>{let p=array<vec2<f32>,6>(vec2(-1.,-1.),vec2(1.,-1.),vec2(1.,1.),vec2(-1.,-1.),vec2(1.,1.),vec2(-1.,1.));return p[id];}
-@vertex fn vs_drop(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface{
- let d=drop(id);let uv=corners(vertex);
+fn dropSurface(vertex:u32,id:u32,d:Drop)->Surface{let uv=corners(vertex);
  let dir=normalize(d.velocity+vec2(.0001));let side=vec2(-dir.y,dir.x);
  let stretch=mix(1.4+hash(id+84u)*1.5,1.,d.landed);let point=d.position+vec3((dir*uv.x*stretch+side*uv.y)*d.radius,0.);
  var position=clip(point);if(d.alive<=0.){position=vec4(2.,2.,0.,1.);}
  return Surface(position,d.position,uv,f32(id),vec2(d.alive,d.landed),vec3(dir,0.));
+}
+@vertex fn vs_drop(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface {
+ return dropSurface(vertex,id,drop(id));
+}
+@vertex fn vs_splashlet(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface {
+ return dropSurface(vertex,id,splashlet(id));
 }
 @vertex fn vs_drop_shadow(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface{
  let d=drop(id);let uv=corners(vertex);let point=vec3(d.position.xy+vec2(.22,.35)*d.position.z+uv*d.radius*1.5,0.);
@@ -107,7 +90,10 @@ fn membrane(in:Surface)->vec3<f32>{
  let rim=1.-smoothstep(aa,aa*3.,abs(field-rupture));
  let thickness=(.15+.32*(1.-radial))*(.7+field*.7)/(1.+max(age,0.)*.9);
  let outerRim=exp(-pow((radial-.967)/.012,2.));
- return vec3(holes*edges*lifeFade(),thickness*(1.+rim*.65+outerRim*.9),rim);
+ let angle=atan2(in.material.y,in.material.x);
+ let contact=sheetLanding(angle,radial,in.id);
+ let airborne=1.-smoothstep(0.,.18,age-contact);
+ return vec3(holes*edges*lifeFade()*airborne,thickness*(1.+rim*.65+outerRim*.9),rim);
 }
 @fragment fn fs_sheet(in:Surface)->@location(0) vec4<f32>{
  let data=membrane(in);
@@ -122,7 +108,8 @@ fn membrane(in:Surface)->vec3<f32>{
  let edge=1.-smoothstep(1.-aa,1.,abs(side));
  let age=u.event.z;let breakup=smoothstep(.6,2.,age)*u.effect.z;
  let neck=.55+.45*sin(in.material.x*33.+in.id*3.7);
- let coverage=edge*(1.-smoothstep(neck,neck+.15,breakup))*lifeFade();
+ let contact=sheetLanding(rootAngle(u32(in.id)/3u),.85,0.);
+ let coverage=edge*(1.-smoothstep(neck,neck+.15,breakup))*lifeFade()*(1.-smoothstep(0.,.22,age-contact));
  let normal=normalize(vec3(in.normal.xy*side,sqrt(max(.01,1.-side*side))));
  return liquid(in.position.xy,normal,.65,coverage*carVisibility(in.world));
 }
@@ -147,4 +134,53 @@ fn membrane(in:Surface)->vec3<f32>{
 }
 @fragment fn fs_blit(in:Surface)->@location(0) vec4<f32>{
  return vec4(textureSampleLevel(sceneTexture,linearSampler,in.material,0.).rgb,1.);
+}
+
+// The atlas is rebuilt from contact events at the requested time, never from
+// previous rendered frames. Additive optical depth makes overlap accumulate.
+struct Deposit {
+ @builtin(position) position:vec4<f32>, @location(0) local:vec2<f32>,
+ @location(1) @interpolate(flat) data:vec4<f32>,
+ @location(2) @interpolate(flat) id:f32,
+}
+@vertex fn vs_deposit_sheet(@location(0) param:vec2<f32>,@builtin(instance_index) layer:u32)->Surface {
+ let angle=param.x*TAU;let contact=sheetLanding(angle,param.y,f32(layer));
+ let p=sheetPoint(angle,param.y,contact,f32(layer));
+ return Surface(atlasClip(p.xy),vec3(p.xy,contact),vec2(cos(angle),sin(angle))*param.y,f32(layer),param,vec3(0.,0.,1.));
+}
+@fragment fn fs_deposit_sheet(in:Surface)->@location(0) vec4<f32> {
+ let since=min(u.event.z,3.)-in.world.z;let settled=smoothstep(0.,.20,since);
+ let field=fbm(in.material*9.5+vec2(0.,2.3));
+ let edge=(1.-smoothstep(.975,1.,in.shape.y))*smoothstep(0.,.035,in.shape.y);
+ // Fine folds feed irregular patches; a thin wet film connects the pools.
+ let pool=smoothstep(.23+u.effect.z*.025,.46+u.effect.z*.035,field);let volume=pow(u.effect.y/18.,.33333);
+ let thickness=(.020+pool*.12)*(1.-in.shape.y*.45)*volume/u.counts.z;
+ let wet=edge*settled;
+ return vec4(thickness*wet,wet*.22,0.,0.);
+}
+fn deposition(vertex:u32,id:u32,d:Drop,enabled:f32)->Deposit {
+ let since=min(u.event.z,3.)-d.arrival;
+ let spread=1.-exp(-max(since,0.)*15.);
+ let footprint=max(.024+d.size*2.4,u.ground.x*2./u.ground.y*1.2);
+ let size=footprint*mix(.34,1.,spread);
+ let dir=normalize(d.velocity+vec2(.0001));let side=vec2(-dir.y,dir.x);
+ let uv=corners(vertex);
+ let world=d.ground+(dir*uv.x*(1.+min(length(d.velocity)*.035,.35))+side*uv.y)*size;
+ var position=atlasClip(world);if(since<=0.||enabled<.5){position=vec4(2.,2.,0.,1.);}
+ return Deposit(position,uv,vec4(since,d.size,spread,enabled),f32(id));
+}
+@vertex fn vs_deposit_drop(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Deposit {
+ return deposition(vertex,id,drop(id),1.);
+}
+@vertex fn vs_deposit_secondary(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Deposit {
+ let d=splashlet(id);return deposition(vertex,id+9000u,d,step(.033,drop(id/2u).size));
+}
+@fragment fn fs_deposit_drop(in:Deposit)->@location(0) vec4<f32> {
+ let uv=in.local;let n=noise(uv*4.+vec2(in.id*.173,in.id*.321));
+ let r=length(uv)+(.5-n)*.22;let aa=max(fwidth(r),.008);
+ let body=1.-smoothstep(.70-aa,.91+aa,r);
+ let wet=1.-smoothstep(.86,1.08,r);
+ let gate=smoothstep(0.,.07,in.data.x)*in.data.w;
+ let thickness=(.004+in.data.y*.55)*body*(.55+.45*(1.-clamp(r,0.,1.)));
+ return vec4(thickness*gate,wet*gate*.12,0.,0.);
 }

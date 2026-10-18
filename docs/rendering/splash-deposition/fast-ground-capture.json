@@ -1,0 +1,25 @@
+{
+  "requestedBackend": "software",
+  "phases": [
+    {
+      "time": 3.8,
+      "requestedTime": 3.8,
+      "hash": 2306591387,
+      "red": 120720,
+      "bright": 3217,
+      "width": 1143,
+      "height": 794,
+      "ground": {
+        "hash": 2154187143,
+        "mass": 3457.2674955129623,
+        "wet": 20820.60778039694,
+        "touched": 58428,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { offscreenSplash, splashPixels, seekSplash } from './helpers/splash-gpu.js';
+import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics } from './helpers/splash-gpu.js';
 async function start(page,query='time=.3&paused=1') {
  await offscreenSplash(page);await page.goto(`/experiments/splash-lab/?${query}`);
  const available=await page.evaluate(async()=>!!(await navigator.gpu?.requestAdapter()));
@@ -74,4 +74,81 @@ test('partial GPU allocation failure releases the experiment resources',async({p
  test.skip(!available,'No GPU adapter for allocation-failure coverage');
  await expect(page.locator('#failure')).toContainText('Injected allocation failure');
  expect(await page.evaluate(()=>window.splashLab.renderer.getStats().ownedResourceCount)).toBe(0);
+});
+
+test('world deposition accumulates, persists and reconstructs exactly after backward seeks',async({page})=>{
+ await start(page);expect((await groundPixels(page)).mass).toBe(0);
+ await seekSplash(page,1.25);const first=await groundPixels(page);expect(first.mass).toBeGreaterThan(0);
+ await seekSplash(page,1.85);const growing=await groundPixels(page);expect(growing.mass).toBeGreaterThan(first.mass);
+ await seekSplash(page,3.8);const settled=await groundPixels(page);
+ expect(settled.mass).toBeGreaterThan(growing.mass);expect(settled.touched).toBeGreaterThan(1000);
+ const visible=await splashPixels(page);expect(visible.red).toBeGreaterThan(10000);
+ await seekSplash(page,8);expect((await groundPixels(page)).hash).toBe(settled.hash);
+ await seekSplash(page,1.25);expect((await groundPixels(page)).hash).toBe(first.hash);
+ await seekSplash(page,.3);expect((await groundPixels(page)).mass).toBe(0);
+ await seekSplash(page,8);expect((await groundPixels(page)).hash).toBe(settled.hash);
+ expect(await page.evaluate(()=>window.splashLab.renderer.stats.error)).toBeUndefined();
+});
+
+test('settled ground is cached, world anchored and independent of frame history',async({page})=>{
+ await start(page,'time=8&paused=1');const direct=await groundPixels(page);
+ const reuse=await page.evaluate(()=>{
+  const r=window.splashLab.renderer,before=r.getStats();
+  for(const time of [4,5,6,7,8])r.render(time,window.splashLab.getSettings());
+  return {before,after:r.getStats()};
+ });
+ expect(reuse.after.depositionRebuilds).toBe(reuse.before.depositionRebuilds);
+ expect(reuse.after.resourceAllocations).toBe(reuse.before.resourceAllocations);
+ expect(reuse.after.drawCalls).toBe(2);
+ await page.setViewportSize({width:900,height:800});await seekSplash(page,8);
+ expect((await groundPixels(page)).hash).toBe(direct.hash);
+ for(const time of [.3,.7,1.1,1.8,2.6,8])await seekSplash(page,time);
+ expect((await groundPixels(page)).hash).toBe(direct.hash);
+ await page.selectOption('#quality','performance');await seekSplash(page,8);
+ expect((await groundPixels(page)).width).toBe(512);
+ await page.selectOption('#quality','balanced');await seekSplash(page,8);
+ expect((await groundPixels(page)).hash).toBe(direct.hash);
+ expect(await page.evaluate(()=>window.splashLab.renderer.getStats().ownedResourceCount)).toBe(reuse.before.ownedResourceCount);
+});
+
+test('speed adds forward momentum while retaining outward spread without axis stretching',async({page})=>{
+ await start(page,'time=1.05&paused=1&speed=5');const low=await splashKinematics(page);
+ await page.locator('#speed').focus();await page.locator('#speed').press('End');await seekSplash(page,1.05);
+ const high=await splashKinematics(page);
+ const moments=rows=>{
+  const x=rows.map(r=>r.sheet[0]),y=rows.map(r=>r.sheet[1]+.8);
+  const mean=a=>a.reduce((s,n)=>s+n,0)/a.length,mx=mean(x),my=mean(y);
+  return {forward:-my,vx:mean(x.map(n=>(n-mx)**2)),vy:mean(y.map(n=>(n-my)**2)),minY:Math.min(...y),maxY:Math.max(...y)};
+ };
+ const a=moments(low),b=moments(high);
+ expect(b.forward).toBeGreaterThan(a.forward+1.5);
+ expect(b.vx/b.vy).toBeCloseTo(a.vx/a.vy,4);
+ expect(Math.sqrt(b.vx/a.vx)).toBeLessThan(1.25);
+ expect(b.minY).toBeLessThan(0);expect(b.maxY).toBeGreaterThan(0);
+ expect(high[0].momentum).toBeLessThan(low[0].momentum);
+ // The closed polar mesh must stay joined after contact as well as in flight.
+ await seekSplash(page,1.8);
+ const joined=await splashKinematics(page);
+ for(let axis=0;axis<3;axis++)expect(joined[0].sheet[axis]).toBeCloseTo(joined[256].sheet[axis],5);
+ for(const point of joined)for(let axis=0;axis<2;axis++)expect(point.center[axis]).toBeCloseTo(joined[0].center[axis],5);
+});
+
+test('droplet touchdown feeds a lasting footprint and secondary landing uses the same geometry',async({page})=>{
+ await start(page,'time=1.05&paused=1');const initial=await splashKinematics(page);
+ const id=initial.findIndex((r,i)=>i<128&&r.landing[3]>.05);
+ expect(id).toBeGreaterThanOrEqual(0);
+ const [x,y,arrival]=initial[id].landing;
+ await seekSplash(page,.55+arrival-.015);let rows=await splashKinematics(page);
+ expect(rows[id].drop[2]).toBeGreaterThan(0);expect(rows[id].drop[3]).toBeGreaterThan(0);
+ await seekSplash(page,.55+arrival+.07);rows=await splashKinematics(page);
+ expect(rows[id].drop[0]).toBeCloseTo(x,5);expect(rows[id].drop[1]).toBeCloseTo(y,5);
+ expect(rows[id].drop[2]).toBe(0);expect((await groundPixels(page,[[x,y]])).samples[0]).toBeGreaterThan(0);
+ expect(rows[id*2].secondary[2]).toBeGreaterThan(0);expect(rows[id*2].secondary[3]).toBeGreaterThan(0);
+ const [sx,sy,secondaryArrival]=rows[id*2].secondaryLanding;
+ await seekSplash(page,.55+secondaryArrival+.1);rows=await splashKinematics(page);
+ expect(rows[id].drop[3]).toBe(0);
+ expect(rows[id*2].secondary[0]).toBeCloseTo(sx,5);expect(rows[id*2].secondary[1]).toBeCloseTo(sy,5);
+ expect(rows[id*2].secondary[2]).toBe(0);
+ await seekSplash(page,8);const residue=await groundPixels(page,[[x,y],[sx,sy]]);
+ expect(residue.samples.every(n=>n>0)).toBe(true);
 });

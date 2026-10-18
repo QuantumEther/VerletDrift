@@ -1,0 +1,92 @@
+{
+  "requestedBackend": "software",
+  "phases": [
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 3733902564,
+      "red": 212949,
+      "bright": 3682,
+      "width": 1143,
+      "height": 794,
+      "ground": null
+    },
+    {
+      "time": 4.8,
+      "requestedTime": 4.8,
+      "hash": 1832719682,
+      "red": 504,
+      "bright": 5387,
+      "width": 1143,
+      "height": 794,
+      "ground": null
+    }
+  ],
+  "benchmark": {
+    "settled": false,
+    "scope": "Offscreen real WGSL. CPU encode excludes GPU completion; completed-frame latency includes an explicit benchmark-only fence. GPU timestamps cover separate deposition (when available), scene and airborne passes, excluding browser presentation. No native speedup or display-FPS claim.",
+    "settings": {
+      "speed": 22,
+      "volume": 18,
+      "breakup": 1.1,
+      "concentration": 1.35,
+      "seed": 1337,
+      "quality": "balanced"
+    },
+    "stats": {
+      "backend": "webgpu",
+      "drawCalls": 6,
+      "frames": 67,
+      "resourceAllocations": 13,
+      "resourceBytes": 923624,
+      "cpuEncodeMs": 0.10000000149011612,
+      "sceneGpuMs": 117.113458,
+      "splashGpuMs": 196.990361,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true,
+        "powerPreference": "high-performance"
+      },
+      "gpuTimingSupported": true,
+      "sceneTextureBytes": 3630168,
+      "width": 1143,
+      "height": 794,
+      "quality": "balanced",
+      "triangles": 20210,
+      "gpuTimestampSamples": 2,
+      "ownedResourceCount": 13
+    },
+    "cpuEncodeMs": {
+      "samples": 58,
+      "median": 0.19999999925494194,
+      "p95": 0.3999999985098839,
+      "mean": 0.19310344845570368
+    },
+    "completedFrameMs": {
+      "samples": 58,
+      "median": 350.79999999701977,
+      "p95": 403.8999999985099,
+      "mean": 345.4155172412765
+    },
+    "gpuSceneMs": {
+      "samples": 2,
+      "median": 117.113458,
+      "p95": 117.113458,
+      "mean": 116.5591635
+    },
+    "gpuLiquidMs": {
+      "samples": 2,
+      "median": 201.569324,
+      "p95": 201.569324,
+      "mean": 199.2798425
+    },
+    "gpuDepositionMs": null,
+    "allocationsBefore": 13,
+    "allocationsAfter": 13,
+    "depositionRebuildsBefore": null,
+    "depositionRebuildsAfter": null
+  },
+  "errors": []
+}

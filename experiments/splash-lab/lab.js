@@ -20,11 +20,11 @@ function updateControls(){
 function updateUi(now=0){
   get('pause').textContent=clock.playing?'Pause':'Play';get('timeline').value=clock.time;get('time-value').textContent=`${clock.time.toFixed(2)} s`;
   const age=clock.time-IMPACT_TIME;
-  get('phase').textContent=age<0?'APPROACH':age<.18?'RUPTURE':age<.8?'MEMBRANE EXPANSION':age<1.8?'FILAMENT BREAKUP':'DROPLET SETTLEMENT';
+  get('phase').textContent=age<0?'APPROACH':age<.18?'RUPTURE':age<.8?'MEMBRANE EXPANSION':age<1.8?'FILAMENT BREAKUP':age<2.8?'DROPLET SETTLEMENT':'PERSISTENT PUDDLES';
   if(now-lastUi>250){
     const s=renderer.getStats();const ms=value=>value===null?'—':value.toFixed(2);
     get('backend').textContent=`${s.adapter?.vendor||'WebGPU'} ${s.adapter?.architecture||''} · ${s.quality||settings.quality}${s.adapter?.isFallbackAdapter?' · SOFTWARE ADAPTER':''}`;
-    get('timing').textContent=`CPU encode ${ms(s.cpuEncodeMs)} ms · ${s.gpuTimingSupported?`GPU scene ${ms(s.sceneGpuMs)} / splash ${ms(s.splashGpuMs)} ms`:'GPU timestamps unavailable'}`;
+    get('timing').textContent=`CPU encode ${ms(s.cpuEncodeMs)} ms · ${s.gpuTimingSupported?`GPU ground ${ms(s.depositionGpuMs)} / scene ${ms(s.sceneGpuMs)} / air ${ms(s.splashGpuMs)} ms`:'GPU timestamps unavailable'}`;
     lastUi=now;
   }
 }
@@ -45,7 +45,7 @@ function frame(now){
   updateUi(now);raf=requestAnimationFrame(frame);
 }
 updateControls();updateUi();
-const ready=renderer.init().then(ok=>{get('loading').hidden=true;if(ok)raf=requestAnimationFrame(frame);return ok;});
+const ready=renderer.init(settings).then(ok=>{get('loading').hidden=true;if(ok)raf=requestAnimationFrame(frame);return ok;});
 // Deliberately public inspection/replay API for this isolated experiment.
 window.splashLab=Object.freeze({ready,renderer,clock,getSettings:()=>({...settings}),seek:time=>{clock.seek(time);dirty=true;updateUi();},replay:()=>{clock.replay();dirty=true;},duration:DURATION});
 window.addEventListener('pagehide',()=>{cancelAnimationFrame(raf);renderer.dispose();});

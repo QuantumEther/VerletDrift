@@ -1,6 +1,6 @@
 // Laboratory clock and artistic settings only. No simulator imports or RNG.
 export const IMPACT_TIME = .55;
-export const DURATION = 4.8;
+export const DURATION = 8;
 export const DEFAULTS = Object.freeze({ speed: 22, volume: 18, breakup: 1.1, concentration: 1.35, seed: 1337, quality: 'balanced' });
 const clamp = (v,lo,hi,fallback) => Number.isFinite(Number(v)) ? Math.min(hi,Math.max(lo,Number(v))) : fallback;
 export function settingsFrom(values = {}) {
@@ -43,7 +43,7 @@ export function makeStrandMesh(segments=36) {
   return {vertices,indices};
 }
 export const QUALITY = Object.freeze({
-  performance: {resolution:.8,maxPixels:1400000,sheets:1,strands:36,drops:650,detail:2},
-  balanced: {resolution:1,maxPixels:2400000,sheets:2,strands:54,drops:1200,detail:3},
-  high: {resolution:1.2,maxPixels:4000000,sheets:3,strands:72,drops:2000,detail:4},
+  performance: {resolution:.8,maxPixels:1400000,sheets:1,strands:36,drops:650,detail:2,atlas:512},
+  balanced: {resolution:1,maxPixels:2400000,sheets:2,strands:54,drops:1200,detail:3,atlas:768},
+  high: {resolution:1.2,maxPixels:4000000,sheets:3,strands:72,drops:2000,detail:4,atlas:1024},
 });

@@ -1,0 +1,105 @@
+
+Running 59 tests using 1 worker
+
+(node:46508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:46508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/59] [chromium] › tests/e2e/console-guard.spec.js:17:3 › Console Guard - Quiet Mode › quiet mode produces zero console spam
+[2/59] [chromium] › tests/e2e/console-guard.spec.js:75:3 › Console Guard - Quiet Mode › quiet mode allows error and warn logs
+[3/59] [chromium] › tests/e2e/console-guard.spec.js:109:3 › Console Guard - Quiet Mode › tuning mode shows sampled logs
+[4/59] [chromium] › tests/e2e/console-guard.spec.js:150:3 › Console Guard - Quiet Mode › trace mode with traceChannel shows high-frequency logs
+[5/59] [chromium] › tests/e2e/console-guard.spec.js:191:3 › Console Guard - Quiet Mode › keyboard toggles respect quiet mode gating
+[6/59] [chromium] › tests/e2e/console-guard.spec.js:231:3 › Console Guard - Quiet Mode › URL parameter logChannels allowlist works
+[7/59] [chromium] › tests/e2e/fault-detection.spec.js:9:3 › Fault Detection & Event Recording › non-finite fault is detected and recorded
+[8/59] [chromium] › tests/e2e/fault-detection.spec.js:44:3 › Fault Detection & Event Recording › wheel omega runaway is detected
+[9/59] [chromium] › tests/e2e/fault-detection.spec.js:76:3 › Fault Detection & Event Recording › constraint spike is detected and logged
+[10/59] [chromium] › tests/e2e/fault-detection.spec.js:106:3 › Fault Detection & Event Recording › slip anomaly triggers warning
+[11/59] [chromium] › tests/e2e/fault-detection.spec.js:135:3 › Fault Detection & Event Recording › timing anomaly (frame drop) is detected
+[12/59] [chromium] › tests/e2e/fault-detection.spec.js:163:3 › Fault Detection & Event Recording › freeze on error mode pauses simulation
+[13/59] [chromium] › tests/e2e/fault-detection.spec.js:217:3 › Fault Detection & Event Recording › event buffer records fault events with metadata
+  1) [chromium] › tests/e2e/fault-detection.spec.js:217:3 › Fault Detection & Event Recording › event buffer records fault events with metadata
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      229 |     });
+      230 |
+    > 231 |     expect(hasEventBuffer).toBe(true);
+          |                            ^
+      232 |
+      233 |     // Inject a fault
+      234 |     await page.evaluate(() => {
+        at /workspace/VerletDrift-tools/tests/e2e/fault-detection.spec.js:231:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/fault-detection-Fault-Dete-92206--fault-events-with-metadata-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/fault-detection-Fault-Dete-92206--fault-events-with-metadata-chromium/error-context.md
+
+
+(node:49179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:49179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[14/59] [chromium] › tests/e2e/fault-detection.spec.js:263:3 › Fault Detection & Event Recording › deduplication prevents fault spam
+[15/59] [chromium] › tests/e2e/fault-detection.spec.js:300:3 › Fault Detection & Event Recording › overlay displays fault status indicator
+[16/59] [chromium] › tests/e2e/fault-detection.spec.js:345:3 › Fault Detection & Event Recording › trace mode records high-frequency fault diagnostics
+[17/59] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[18/59] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[19/59] [chromium] › tests/e2e/gpu-diagnostics.spec.js:48:1 › opt-in performance recorder downloads bounded CPU/GPU scope data
+[20/59] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[21/59] [chromium] › tests/e2e/gpu-world.spec.js:224:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[22/59] [chromium] › tests/e2e/gpu-world.spec.js:280:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[23/59] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU performance/checker respects logical units and reuses resized targets
+[24/59] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[25/59] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU high/studio respects logical units and reuses resized targets
+[26/59] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[27/59] [chromium] › tests/e2e/gpu-world.spec.js:394:1 › initialization failure leaves the simulator running in Canvas
+[28/59] [chromium] › tests/e2e/gpu-world.spec.js:422:1 › software adapters automatically select usable Canvas without allocating a device
+[29/59] [chromium] › tests/e2e/gpu-world.spec.js:453:1 › smoke billboards are neutral, translucent and irregular in both backends
+[30/59] [chromium] › tests/e2e/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+[31/59] [chromium] › tests/e2e/splash-lab.spec.js:10:1 › real liquid shaders evolve and replay deterministically without importing the simulator
+[32/59] [chromium] › tests/e2e/splash-lab.spec.js:21:1 › controls, pause, seed, resize and quality changes retain bounded resources
+[33/59] [chromium] › tests/e2e/splash-lab.spec.js:41:1 › device loss stops the laboratory cleanly; failed artwork has a visible fallback
+[34/59] [chromium] › tests/e2e/splash-lab.spec.js:50:1 › absence of WebGPU is explained without crashing or starting the simulator
+[35/59] [chromium] › tests/e2e/splash-lab.spec.js:57:1 › partial GPU allocation failure releases the experiment resources
+[36/59] [chromium] › tests/e2e/splash-lab.spec.js:79:1 › world deposition accumulates, persists and reconstructs exactly after backward seeks
+[37/59] [chromium] › tests/e2e/splash-lab.spec.js:93:1 › settled ground is cached, world anchored and independent of frame history
+[38/59] [chromium] › tests/e2e/splash-lab.spec.js:114:1 › speed adds forward momentum while retaining outward spread without axis stretching
+[39/59] [chromium] › tests/e2e/splash-lab.spec.js:135:1 › droplet touchdown feeds a lasting footprint and secondary landing uses the same geometry
+[40/59] [chromium] › tests/e2e/suspension.spec.js:3:1 › suspension controls change physics and survive preset export/import
+[41/59] [chromium] › tests/e2e/ui-integration.spec.js:8:1 › every control writes to its authoritative state field
+[42/59] [chromium] › tests/e2e/ui-integration.spec.js:36:1 › presets, converted controls, and import/export share the same bindings
+[43/59] [chromium] › tests/e2e/ui-integration.spec.js:79:1 › engine, sound and cross-window sound controls update once and stay synchronized
+[44/59] [chromium] › tests/e2e/ui-integration.spec.js:106:1 › typing does not drive the car; driving input and instruments use real physics
+[45/59] [chromium] › tests/e2e/ui-integration.spec.js:132:1 › live warnings follow settings and folded layouts persist without affecting controls
+[46/59] [chromium] › tests/e2e/ui-integration.spec.js:158:1 › storage failure does not prevent startup, driving, sound or layout changes
+[47/59] [chromium] › tests/e2e/vehicle-sprites.spec.js:17:1 › sprites align with physical anchors and preserve steering, camera transform and state
+[48/59] [chromium] › tests/e2e/vehicle-sprites.spec.js:78:1 › motion ghosts share the artwork and disabling sprites restores the old renderer
+[49/59] [chromium] › tests/e2e/vehicle-sprites.spec.js:115:3 › a failed DeLorean.png keeps the simulator and original renderer working
+[50/59] [chromium] › tests/e2e/vehicle-sprites.spec.js:115:3 › a failed DeLorean_Wheel.png keeps the simulator and original renderer working
+[51/59] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 1
+[52/59] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 2
+[53/59] [chromium] › tests/e2e/visual-scale.spec.js:48:1 › drifting marks originate at physical wheel centres and stay within tire width
+[54/59] [chromium] › tests/e2e/visual-scale.spec.js:94:1 › tire and mark centres agree through turns, zoom, view scale and shake
+[55/59] [chromium] › tests/e2e/visual-scale.spec.js:153:1 › GPU upload contract keeps raster density separate from geometry and shares the view camera
+[56/59] [chromium] › tests/e2e/wheel-braking.spec.js:3:1 › held throttle launches the vehicle and front brakes stop it in neutral
+[57/59] [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy
+[58/59] [chromium] › tests/e2e/wheel-braking.spec.js:71:1 › clutch shifts to second and reverse drives in the selected direction
+[59/59] [chromium] › tests/e2e/wheel-braking.spec.js:119:1 › low-traction wheelspin respects engine redline and service brakes stop the rear wheels
+  1 failed
+    [chromium] › tests/e2e/fault-detection.spec.js:217:3 › Fault Detection & Event Recording › event buffer records fault events with metadata
+  15 skipped
+  43 passed (2.7m)

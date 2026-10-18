@@ -1,0 +1,67 @@
+{
+  "baseline": "c279110ae2aaddf619155f3fe131934d7adfd804",
+  "featureBranch": "verlet_gpt_v23_liquid_splash",
+  "backupBranch": "verlet_gpt_v23_splash_backup_c279110",
+  "unit": {
+    "passed": 159,
+    "failed": 0,
+    "files": 17
+  },
+  "browserSerial": {
+    "passed": 44,
+    "skipped": 15,
+    "failed": 0,
+    "skipReason": "No WebGPU adapter in ordinary headless configuration; GPU paths execute in focused software-WebGPU run."
+  },
+  "gpuFocused": {
+    "passed": 22,
+    "skipped": 0,
+    "failed": 0,
+    "labTests": 9,
+    "backend": "SwiftShader real WGSL and offscreen target"
+  },
+  "initialOverlappedBrowserRun": {
+    "passed": 43,
+    "skipped": 15,
+    "failed": 1,
+    "failure": "Existing fault-detection event-buffer test found DOM canvas before window.eventBuffer existed. Not reproduced in serial full-suite run; no fixture or production change."
+  },
+  "productionFilesChanged": [],
+  "nativeGpuPresentationVerified": false,
+  "rtx5090Measured": false,
+  "checks": [
+    "bitwise same-adapter atlas replay and backward seeks",
+    "persistent atlas at 3.8 and 8 seconds",
+    "direct seek vs intermediate frame history",
+    "world anchoring through viewport resize",
+    "quality round trip and bounded ownership",
+    "settled atlas cache and two-draw scene",
+    "WGSL momentum without centered covariance anisotropy",
+    "closed outer seam and coincident polar center",
+    "primary/secondary contact positions and lasting footprints"
+  ],
+  "captures": {
+    "seed": 1337,
+    "viewport": [
+      1440,
+      1000
+    ],
+    "worldAtlasEndpointHash": 2201771522,
+    "endpointAtlasEqualAtSeconds": [
+      5,
+      8
+    ],
+    "ownedResourcesAcrossActiveBenchmark": [
+      17,
+      17
+    ],
+    "ownedResourcesAcrossSettledBenchmark": [
+      17,
+      17
+    ],
+    "settledDepositionRebuildCountBeforeAfter": [
+      2,
+      2
+    ]
+  }
+}
