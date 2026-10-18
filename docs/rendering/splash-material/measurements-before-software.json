@@ -1,0 +1,146 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 3825117727,
+      "groundHash": 1235848437,
+      "red": 119243,
+      "bright": 2101,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": null,
+      "ground": {
+        "hash": 2280113489,
+        "mass": 24.566855013370514,
+        "wet": 178.657874584198,
+        "touched": 1918,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 1776815284,
+      "groundHash": 2834289742,
+      "red": 197,
+      "bright": 4313,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 6.885078229620961,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 8,
+      "requestedTime": 8,
+      "hash": 1822460268,
+      "groundHash": 2834289742,
+      "red": 192,
+      "bright": 4300,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 0.01815967378552912,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    }
+  ],
+  "benchmark": {
+    "settled": false,
+    "scope": "Offscreen real WGSL. CPU encode excludes GPU completion; completed-frame latency includes an explicit benchmark-only fence. GPU timestamps cover separate deposition (when available), scene and airborne passes, excluding browser presentation. No native speedup or display-FPS claim.",
+    "settings": {
+      "speed": 22,
+      "volume": 18,
+      "breakup": 1.1,
+      "concentration": 1.35,
+      "seed": 1337,
+      "quality": "balanced"
+    },
+    "stats": {
+      "backend": "webgpu",
+      "drawCalls": 10,
+      "frames": 68,
+      "resourceAllocations": 17,
+      "resourceBytes": 923704,
+      "cpuEncodeMs": 0.09999999776482582,
+      "sceneGpuMs": 196.510544,
+      "splashGpuMs": 201.881391,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true,
+        "powerPreference": "high-performance"
+      },
+      "gpuTimingSupported": true,
+      "groundTextureBytes": 2359296,
+      "sceneTextureBytes": 3630168,
+      "width": 1143,
+      "height": 794,
+      "depositionRebuilds": 67,
+      "quality": "balanced",
+      "triangles": 43730,
+      "depositionGpuMs": 214.372015,
+      "depositionTimestampSamples": 2,
+      "gpuTimestampSamples": 2,
+      "ownedResourceCount": 17
+    },
+    "cpuEncodeMs": {
+      "samples": 58,
+      "median": 0.19999999925494194,
+      "p95": 0.3999999985098839,
+      "mean": 0.3482758620561197
+    },
+    "completedFrameMs": {
+      "samples": 58,
+      "median": 630.1999999992549,
+      "p95": 700.1999999992549,
+      "mean": 626.6724137931035
+    },
+    "gpuSceneMs": {
+      "samples": 2,
+      "median": 231.653721,
+      "p95": 231.653721,
+      "mean": 214.0821325
+    },
+    "gpuLiquidMs": {
+      "samples": 2,
+      "median": 233.715527,
+      "p95": 233.715527,
+      "mean": 217.798459
+    },
+    "gpuDepositionMs": {
+      "samples": 2,
+      "median": 214.372015,
+      "p95": 214.372015,
+      "mean": 185.01573150000002
+    },
+    "allocationsBefore": 17,
+    "allocationsAfter": 17,
+    "depositionRebuildsBefore": 3,
+    "depositionRebuildsAfter": 67
+  },
+  "errors": []
+}

@@ -1,0 +1,52 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 323105803,
+      "groundHash": 2528544207,
+      "red": 84189,
+      "bright": 1134,
+      "width": 1372,
+      "height": 953,
+      "differenceMean": null,
+      "ground": {
+        "hash": 2387778567,
+        "mass": 86.49975341558456,
+        "wet": 605.9969170689583,
+        "touched": 6220,
+        "samples": [],
+        "width": 1024,
+        "height": 1024
+      }
+    },
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 501160283,
+      "groundHash": 407926809,
+      "red": 584,
+      "bright": 6351,
+      "width": 1372,
+      "height": 953,
+      "differenceMean": 5.046891459326948,
+      "ground": {
+        "hash": 846473823,
+        "mass": 5504.0760197639465,
+        "wet": 43698.904823839664,
+        "touched": 92837,
+        "samples": [],
+        "width": 1024,
+        "height": 1024
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

@@ -123,8 +123,8 @@ export async function splashKinematics(page) {
 export async function puddleOptics(page) {
  return page.evaluate(async()=>{
   const r=window.splashLab.renderer,{device}=r;
-  const [common,puddles]=await Promise.all(['common','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
-  const module=device.createShaderModule({code:common+'\n'+puddles+`
+  const [common,material,puddles]=await Promise.all(['common','material','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
+  const module=device.createShaderModule({code:common+'\n'+material+'\n'+puddles+`
    @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
    @group(0) @binding(2) var linearSampler:sampler;
    @group(0) @binding(3) var groundTexture:texture_2d<f32>;
@@ -156,6 +156,42 @@ export async function puddleOptics(page) {
    const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
    encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
    const data=new Float32Array(read.getMappedRange());return Array.from({length:14},(_,i)=>[...data.slice(i*4,i*4+4)]);
+  } finally {read.unmap();read.destroy();output.destroy();}
+ });
+}
+
+// Evaluate the actual airborne material functions, including layer compositing.
+export async function airborneOptics(page) {
+ return page.evaluate(async()=>{
+  const {device}=window.splashLab.renderer;
+  const sources=await Promise.all(['common','material','liquid'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
+  const module=device.createShaderModule({code:sources.join('\n')+`
+   @group(0) @binding(4) var<storage,read_write> result:array<vec4<f32>>;
+   @compute @workgroup_size(1) fn probe() {
+    result[0]=vec4(airborneTransmission(.08,.9,1.35),0.);
+    result[1]=vec4(waterTransmission(.08*.012,.9,1.35),0.);
+    result[2]=vec4(airborneTransmission(.8,.9,1.35),0.);
+    result[3]=vec4(airborneTransmission(.8,.9,2.5),0.);
+    let behind=vec3(.2);let reflection=vec3(.001);
+    result[4]=airborneLayer(behind,.08,.9,reflection,1.,1.35);
+    let layer=airborneLayer(behind,.8,.9,reflection,1.,1.35);
+    result[5]=layer;
+    result[6]=airborneLayer(behind,.8,.9,reflection,0.,1.35);
+    result[7]=airborneLayer(behind,0.,.9,reflection,1.,1.35);
+    let single=layer.rgb+behind*(1.-layer.a);
+    result[8]=vec4(single,1.);
+    result[9]=vec4(layer.rgb+single*(1.-layer.a),1.);
+    result[10]=airborneLayer(vec3(0.),.8,.9,vec3(0.),1.,1.35);
+    result[11]=airborneLayer(behind,.8,.9,vec3(.1),1.,1.35);
+   }`});
+  const pipeline=await device.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'probe'}});
+  const size=12*16,output=device.createBuffer({size,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
+  const read=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+  try {
+   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:4,resource:{buffer:output}}]});
+   const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
+   encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
+   const data=new Float32Array(read.getMappedRange());return Array.from({length:12},(_,i)=>[...data.slice(i*4,i*4+4)]);
   } finally {read.unmap();read.destroy();output.destroy();}
  });
 }

@@ -1,0 +1,60 @@
+{
+  "baseline": "647dff73e32f03d71af09314824d13594a41717a",
+  "comparisons": [
+    {
+      "time": 0.95,
+      "beforePixels": 3266057349,
+      "afterPixels": 101652819,
+      "depositionHash": 247766469,
+      "settledPixelsIdentical": null
+    },
+    {
+      "time": 1.25,
+      "beforePixels": 3825117727,
+      "afterPixels": 606630827,
+      "depositionHash": 2280113489,
+      "settledPixelsIdentical": null
+    },
+    {
+      "time": 1.6,
+      "beforePixels": 3321879235,
+      "afterPixels": 1793526322,
+      "depositionHash": 1690667298,
+      "settledPixelsIdentical": null
+    },
+    {
+      "time": 5,
+      "beforePixels": 1776815284,
+      "afterPixels": 1776815284,
+      "depositionHash": 2201771522,
+      "settledPixelsIdentical": true
+    },
+    {
+      "time": 8,
+      "beforePixels": 1822460268,
+      "afterPixels": 1822460268,
+      "depositionHash": 2201771522,
+      "settledPixelsIdentical": true
+    }
+  ],
+  "tests": {
+    "unit": {
+      "passed": 159,
+      "files": 17
+    },
+    "ordinaryBrowser": {
+      "passed": 44,
+      "skipped": 18,
+      "failed": 0
+    },
+    "gpuEnabled": {
+      "passed": 25,
+      "skipped": 0,
+      "failed": 0
+    },
+    "focusedLab": {
+      "passed": 12,
+      "failed": 0
+    }
+  }
+}

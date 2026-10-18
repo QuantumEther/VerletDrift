@@ -44,8 +44,8 @@ export class SplashRenderer {
       const depositionLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
       const depositionPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[depositionLayout]});
       const read=async name=>{const response=await fetch(new URL(`shaders/${name}.wgsl`,import.meta.url),{cache:'no-cache'});if(!response.ok)throw Error(`Shader ${name}: HTTP ${response.status}`);return response.text();};
-      const [common,puddles,scene,liquid]=await Promise.all(['common','puddles','scene','liquid'].map(read));
-      const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+liquid})];
+      const [common,material,puddles,scene,liquid]=await Promise.all(['common','material','puddles','scene','liquid'].map(read));
+      const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+material+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+material+'\n'+liquid})];
       if(this.closed)throw Error('Renderer closed during shader loading');
       for(const module of modules){const info=await module.getCompilationInfo();const errors=info.messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(m=>`${m.lineNum}: ${m.message}`).join('\n'));}
       const make=(label,module,vs,fs,format,mesh=false,blend=false,pipelineLayout=layout)=>device.createRenderPipelineAsync({label,layout:pipelineLayout,

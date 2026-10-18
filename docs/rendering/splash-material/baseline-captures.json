@@ -1,0 +1,112 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 0.95,
+      "requestedTime": 0.95,
+      "hash": 3266057349,
+      "groundHash": 1746388717,
+      "red": 71871,
+      "bright": 1190,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": null,
+      "ground": {
+        "hash": 247766469,
+        "mass": 0,
+        "wet": 0,
+        "touched": 0,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 3825117727,
+      "groundHash": 1235848437,
+      "red": 119243,
+      "bright": 2101,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 5.009457780833651,
+      "ground": {
+        "hash": 2280113489,
+        "mass": 24.566855013370514,
+        "wet": 178.657874584198,
+        "touched": 1918,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 1.6,
+      "requestedTime": 1.6,
+      "hash": 3321879235,
+      "groundHash": 920799961,
+      "red": 85356,
+      "bright": 4330,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 5.885908677872025,
+      "ground": {
+        "hash": 1690667298,
+        "mass": 278.10834777355194,
+        "wet": 1812.0469798445702,
+        "touched": 21870,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 1776815284,
+      "groundHash": 2834289742,
+      "red": 197,
+      "bright": 4313,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 5.5378186353909795,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 8,
+      "requestedTime": 8,
+      "hash": 1822460268,
+      "groundHash": 2834289742,
+      "red": 192,
+      "bright": 4300,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 0.01815967378552912,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

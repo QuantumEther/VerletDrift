@@ -1,0 +1,37 @@
+
+Running 25 tests using 1 worker
+
+(node:88862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:88862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/25] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[2/25] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[3/25] [chromium] › tests/e2e/gpu-diagnostics.spec.js:48:1 › opt-in performance recorder downloads bounded CPU/GPU scope data
+[4/25] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[5/25] [chromium] › tests/e2e/gpu-world.spec.js:224:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[6/25] [chromium] › tests/e2e/gpu-world.spec.js:280:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[7/25] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU performance/checker respects logical units and reuses resized targets
+[8/25] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[9/25] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU high/studio respects logical units and reuses resized targets
+[10/25] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[11/25] [chromium] › tests/e2e/gpu-world.spec.js:394:1 › initialization failure leaves the simulator running in Canvas
+[12/25] [chromium] › tests/e2e/gpu-world.spec.js:422:1 › software adapters automatically select usable Canvas without allocating a device
+[13/25] [chromium] › tests/e2e/gpu-world.spec.js:453:1 › smoke billboards are neutral, translucent and irregular in both backends
+[14/25] [chromium] › tests/e2e/splash-lab.spec.js:10:1 › real liquid shaders evolve and replay deterministically without importing the simulator
+[15/25] [chromium] › tests/e2e/splash-lab.spec.js:21:1 › controls, pause, seed, resize and quality changes retain bounded resources
+[16/25] [chromium] › tests/e2e/splash-lab.spec.js:41:1 › device loss stops the laboratory cleanly; failed artwork has a visible fallback
+[17/25] [chromium] › tests/e2e/splash-lab.spec.js:50:1 › absence of WebGPU is explained without crashing or starting the simulator
+[18/25] [chromium] › tests/e2e/splash-lab.spec.js:57:1 › partial GPU allocation failure releases the experiment resources
+[19/25] [chromium] › tests/e2e/splash-lab.spec.js:79:1 › world deposition accumulates, persists and reconstructs exactly after backward seeks
+[20/25] [chromium] › tests/e2e/splash-lab.spec.js:95:1 › settled ground is cached, world anchored and independent of frame history
+[21/25] [chromium] › tests/e2e/splash-lab.spec.js:116:1 › speed adds forward momentum while retaining outward spread without axis stretching
+[22/25] [chromium] › tests/e2e/splash-lab.spec.js:138:1 › droplet touchdown feeds a lasting footprint and secondary landing uses the same geometry
+[23/25] [chromium] › tests/e2e/splash-lab.spec.js:158:1 › puddle optics retain transmission, water Fresnel, directional reflections and settling
+[24/25] [chromium] › tests/e2e/splash-lab.spec.js:177:1 › settled reflected ground stays still and concentration changes only optics
+[25/25] [chromium] › tests/e2e/splash-lab.spec.js:190:1 › airborne water shares puddle absorption, thins at edges and absorbs overlapping layers
+  25 passed (1.0m)

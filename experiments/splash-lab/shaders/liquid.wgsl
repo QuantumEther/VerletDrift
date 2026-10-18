@@ -65,19 +65,39 @@ fn carVisibility(world:vec3<f32>)->f32 {
  let silhouette=(1.-smoothstep(.35,.46,local.x))*(1.-smoothstep(.40,.50,local.y));
  return 1.-silhouette*(1.-smoothstep(.40,.68,world.z));
 }
-fn liquid(pixel:vec2<f32>,normal:vec3<f32>,thickness:f32,coverage:f32)->vec4<f32>{
- let n=normalize(normal);let light=normalize(vec3(-.45,-.6,1.));
- let dense=max(.001,thickness*u.effect.w);
- let refractOffset=n.xy*(3.+dense*8.)/u.view.xy;
- let behind=textureSampleLevel(sceneTexture,linearSampler,clamp(pixel/u.view.xy+refractOffset,vec2(0.),vec2(1.)),0.).rgb;
- let transmission=exp(-vec3(.16,3.8,5.5)*dense);
- let scattering=vec3(1.05,.008,.020)*(1.-exp(-dense*1.8))*(.55+.40*max(0.,dot(n,light)));
- let halfVector=normalize(light+vec3(0.,0.,1.));
- let spec=pow(max(0.,dot(n,halfVector)),95.)*.72;
- let fresnel=.025+.24*pow(1.-abs(n.z),5.);
- let color=behind*transmission+scattering+vec3(spec+fresnel*.30);
- let alpha=coverage*clamp(.22+1.-exp(-dense*1.5),0.,.94);
- return vec4(color*alpha,alpha);
+// Thickness is an optical proxy only; motion and mesh dimensions are unchanged.
+fn airborneTransmission(thickness:f32,viewCosine:f32,concentration:f32)->vec3<f32>{
+ return waterTransmission(max(thickness,0.)*.012,viewCosine,concentration);
+}
+fn airborneLayer(behind:vec3<f32>,thickness:f32,viewCosine:f32,reflection:vec3<f32>,coverage:f32,concentration:f32)->vec4<f32>{
+ let transmission=airborneTransmission(thickness,viewCosine,concentration);
+ let fresnel=fresnelWater(viewCosine);
+ let depth=max(thickness,0.)*.012;
+ let medium=waterMedium(depth*concentration*(12./.035));
+ let color=toDisplay((toLinear(behind)*transmission+medium)*(1.-fresnel)+reflection);
+ // Retain a neutral transmitted fraction in the framebuffer. Existing layers
+ // then absorb one another rather than each restoring the dry scene beneath.
+ // RGB transmission/refraction remains an approximation in one RGBA pass.
+ let retained=pow(min(transmission.x,min(transmission.y,transmission.z))*(1.-fresnel),1./2.4);
+ let alpha=clamp(coverage,0.,1.)*(1.-retained);
+ return vec4(max(color-behind*retained,vec3(0.))*clamp(coverage,0.,1.),alpha);
+}
+fn liquid(pixel:vec2<f32>,world:vec3<f32>,normal:vec3<f32>,thickness:f32,coverage:f32)->vec4<f32>{
+ let view=normalize(vec3(0.,.48,1.));
+ var n=normalize(normal);if(dot(n,view)<0.){n=-n;}
+ let nv=max(dot(n,view),.001);
+ let fresnel=fresnelWater(nv);
+ // Same fixed luminaire and water IOR as puddles; finite normal footprint
+ // broadens subpixel highlights instead of making luminous red rims.
+ let dx=dpdx(n);let dy=dpdy(n);
+ let roughness=sqrt(.085*.085+min(.18,(dot(dx,dx)+dot(dy,dy))*.35));
+ let reflected=reflect(-view,n);
+ let reflection=reflectedEnvironment(world.xy+reflected.xy*(-world.z/max(reflected.z,.08)),reflected,roughness)*fresnel
+  +ggxReflection(n,view,normalize(vec3(.3,-.6,1.)),roughness)*vec3(.45,.42,.38);
+ let depth=max(thickness,0.)*.012;
+ let offset=n.xy*(depth*u.view.z*.30)/u.view.xy;
+ let behind=textureSampleLevel(sceneTexture,linearSampler,clamp(pixel/u.view.xy+offset,vec2(0.),vec2(1.)),0.).rgb;
+ return airborneLayer(behind,thickness,nv,reflection,coverage,u.effect.w);
 }
 fn membrane(in:Surface)->vec3<f32>{
  let age=u.event.z;
@@ -101,7 +121,7 @@ fn membrane(in:Surface)->vec3<f32>{
  if(normal.z<0.){normal=-normal;}
  let ripple=sin(in.material.x*24.+in.material.y*11.+u.event.z*2.)*.055;
  normal=normalize(normal+vec3(ripple,-ripple*.6,0.));
- return liquid(in.position.xy,normal,data.y,data.x*carVisibility(in.world));
+ return liquid(in.position.xy,in.world,normal,data.y,data.x*carVisibility(in.world));
 }
 @fragment fn fs_strand(in:Surface)->@location(0) vec4<f32>{
  let side=in.material.y;let aa=max(fwidth(side),.01);
@@ -111,7 +131,7 @@ fn membrane(in:Surface)->vec3<f32>{
  let contact=sheetLanding(rootAngle(u32(in.id)/3u),.85,0.);
  let coverage=edge*(1.-smoothstep(neck,neck+.15,breakup))*lifeFade()*(1.-smoothstep(0.,.22,age-contact));
  let normal=normalize(vec3(in.normal.xy*side,sqrt(max(.01,1.-side*side))));
- return liquid(in.position.xy,normal,.65,coverage*carVisibility(in.world));
+ return liquid(in.position.xy,in.world,normal,.65*sqrt(max(0.,1.-side*side)),coverage*carVisibility(in.world));
 }
 @fragment fn fs_drop(in:Surface)->@location(0) vec4<f32>{
  let uv=in.material;
@@ -121,8 +141,9 @@ fn membrane(in:Surface)->vec3<f32>{
  let dir=in.normal.xy;let side=vec2(-dir.y,dir.x);
  let curved=vec3((dir*uv.x+side*uv.y)*.8,sqrt(max(.001,1.-r*r)));
  let normal=normalize(mix(curved,vec3(uv*.12,1.),in.shape.y));
- let thickness=mix(.38+max(0.,1.-r*r)*.7,.12+max(0.,1.-r*r)*.24,in.shape.y);
- return liquid(in.position.xy,normal,thickness,coverage*carVisibility(in.world));
+ // Curved chord thins continuously at the silhouette; no opaque capsule rim.
+ let thickness=mix(1.08,.36,in.shape.y)*sqrt(max(0.,1.-r*r));
+ return liquid(in.position.xy,in.world,normal,thickness,coverage*carVisibility(in.world));
 }
 @fragment fn fs_shadow(in:Surface)->@location(0) vec4<f32>{
  let alpha=exp(-dot(in.material,in.material)*3.)*.16*in.shape.x/(1.+in.world.z);

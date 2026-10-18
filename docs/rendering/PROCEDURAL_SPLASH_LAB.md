@@ -4,7 +4,8 @@ This is the historical report for the original `c279110` prototype, preserved on
 `verlet_gpt_v23_splash_backup_c279110`. The current laboratory adds shared launch
 momentum and persistent ground liquid; see the
 [momentum/deposition follow-up](SPLASH_MOMENTUM_AND_DEPOSITION.md). Counts and
-measurements below describe the original version.
+measurements below describe the original version. The latest optical refinement
+is documented in [Unified splash and puddle material](SPLASH_MATERIAL.md).
 
 Feature branch: `verlet_gpt_v23_liquid_splash`, based on `4b842b1`. The simulator
 branch remains preserved; this experiment is not merged into main or connected

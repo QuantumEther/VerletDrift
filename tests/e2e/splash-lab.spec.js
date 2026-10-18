@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics, puddleOptics, dryGroundPixels } from './helpers/splash-gpu.js';
+import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics, puddleOptics, dryGroundPixels, airborneOptics } from './helpers/splash-gpu.js';
 async function start(page,query='time=.3&paused=1') {
  await offscreenSplash(page);await page.goto(`/experiments/splash-lab/?${query}`);
  const available=await page.evaluate(async()=>!!(await navigator.gpu?.requestAdapter()));
@@ -184,4 +184,25 @@ test('settled reflected ground stays still and concentration changes only optics
  expect((await groundPixels(page)).hash).toBe(atlas.hash);
  expect(await page.evaluate(()=>window.splashLab.renderer.stats.depositionRebuilds)).toBe(rebuilds);
  expect((await splashPixels(page)).groundHash).not.toBe(first.groundHash);
+});
+
+
+test('airborne water shares puddle absorption, thins at edges and absorbs overlapping layers',async({page})=>{
+ await start(page,'time=1.25&paused=1');const values=await airborneOptics(page);
+ expect(values.flat().every(Number.isFinite)).toBe(true);
+ expect(values[0]).toEqual(values[1]); // Same dye, path model and concentration.
+ for(let channel=0;channel<3;channel++){
+  expect(values[0][channel]).toBeGreaterThan(values[2][channel]);
+  expect(values[2][channel]).toBeGreaterThan(values[3][channel]);
+ }
+ expect(values[2][0]).toBeGreaterThan(values[2][1]);expect(values[2][1]).toBeGreaterThan(values[2][2]);
+ expect(values[4][3]).toBeLessThan(values[5][3]);
+ expect(values[6]).toEqual([0,0,0,0]);expect(values[7][3]).toBeLessThan(.02);
+ // Layers reduce transmitted luminance instead of replacing prior liquid
+ // with a fresh dry scene sample. White highlights remain lighting-driven.
+ const luminance=v=>v[0]*.2126+v[1]*.7152+v[2]*.0722;
+ expect(luminance(values[9])).toBeLessThan(luminance(values[8]));
+ expect(values[10][0]).toBeLessThan(.18);expect(values[10][1]).toBeLessThan(.01);
+ expect(values[11][0]).toBeGreaterThan(values[5][0]);
+ expect(values[11][1]).toBeGreaterThan(values[5][1]);
 });

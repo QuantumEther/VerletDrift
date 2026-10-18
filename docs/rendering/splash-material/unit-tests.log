@@ -1,0 +1,48 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift-tools
+
+stderr | tests/faults.test.js > Fault timer independence > omega runaway should not suppress a simultaneous constraint spike
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Fault timer independence > constraint spike should not suppress a simultaneous omega runaway
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Wheel rearLeft omega runaway: 2000.0 rad/s
+
+stderr | tests/faults.test.js > Fault timer independence > omega timer deduplicates its own events but does not affect constraint timer
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Constraint spike startup guard > should fire when prev >= 0.001m AND current > 5× prev
+[FAULT] Constraint spike: 0.0600m
+
+stderr | tests/faults.test.js > resetFaultState > should clear omega timer so next call fires immediately
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+
+ ✓ tests/faults.test.js  (12 tests) 8ms
+stderr | tests/faults.test.js > resetFaultState > should clear constraint timer so next call fires immediately
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Constraint spike: 0.1000m
+
+ ✓ tests/events.test.js  (24 tests) 173ms
+ ✓ tests/suspension.test.js  (13 tests) 360ms
+ ✓ tests/logger.test.js  (14 tests) 18ms
+ ✓ tests/tire-unloading.test.js  (11 tests) 297ms
+ ✓ tests/wheels.test.js  (14 tests) 1913ms
+ ✓ tests/engine-inertia.test.js  (6 tests) 7ms
+ ✓ tests/gpu-skid-cache.test.js  (6 tests) 10ms
+ ✓ tests/wheel-solver.test.js  (9 tests) 30ms
+ ✓ tests/wheel-omega-audit.test.js  (23 tests) 1046ms
+ ✓ tests/weight-transfer.test.js  (5 tests) 7ms
+ ✓ tests/visual-geometry.test.js  (3 tests) 5ms
+ ✓ tests/handbrake-handling.test.js  (4 tests) 2054ms
+ ✓ tests/splash-lab.test.js  (4 tests) 5ms
+ ✓ tests/performance-summary.test.js  (1 test) 2ms
+ ✓ tests/suspension-handling.test.js  (9 tests) 8777ms
+ ✓ tests/render-culling.test.js  (1 test) 2ms
+
+ Test Files  17 passed (17)
+      Tests  159 passed (159)
+   Start at  18:33:54
+   Duration  15.81s (transform 1.43s, setup 2ms, collect 2.46s, tests 14.71s, environment 4ms, prepare 2.31s)

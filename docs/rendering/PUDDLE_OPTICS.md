@@ -1,5 +1,9 @@
 # Puddle optics: translucent water on wet asphalt
 
+This report describes `647dff7`. The subsequent
+[shared airborne/puddle material update](SPLASH_MATERIAL.md) preserves this
+puddle appearance while bringing airborne liquid into the same material model.
+
 Feature branch: `verlet_gpt_v23_liquid_splash`. Baseline `d9e3be5` is preserved on
 `verlet_gpt_v23_puddles_backup_d9e3be5`. This update changes laboratory ground
 shading only. The airborne shaders, launch/contact geometry, deposition atlas,
