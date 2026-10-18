@@ -30,6 +30,14 @@
 <label for="surface-absorption">Surface absorption <output id="surface-absorption-value">0.55</output></label><input id="surface-absorption" type="range" min="0" max="1" step="0.01" value="0.55">
 <label for="dye-residue">Residual dye staining <output id="dye-residue-value">0.38</output></label><input id="dye-residue" type="range" min="0" max="1" step="0.01" value="0.38">
 </div></details>
+<details class="control-group" id="vehicle-controls"><summary>Vehicle–liquid interaction</summary><div class="group-content">
+<label class="check-row" for="vehicle-interaction"><input id="vehicle-interaction" type="checkbox" checked> Enable vehicle interaction</label>
+<label for="body-wetness">Body wetness <output id="body-wetness-value">1.00×</output></label><input id="body-wetness" type="range" min="0" max="2" step="0.05" value="1">
+<label for="body-runoff">Streaking / runoff <output id="body-runoff-value">1.00×</output></label><input id="body-runoff" type="range" min="0" max="2" step="0.05" value="1">
+<label for="hood-deflection">Hood deflection <output id="hood-deflection-value">1.00×</output></label><input id="hood-deflection" type="range" min="0" max="2" step="0.05" value="1">
+<label for="body-drying-duration">Body drying duration <output id="body-drying-duration-value">22 s</output></label><input id="body-drying-duration" type="range" min="8" max="30" step="1" value="22">
+<label for="body-residue">Body dye residue <output id="body-residue-value">0.18×</output></label><input id="body-residue" type="range" min="0" max="1" step="0.01" value="0.18">
+</div></details>
 <button id="reset-controls" class="reset-button">Reset controls to defaults</button>
 <div class="technical"><span class="eyebrow">RENDERER</span><p id="backend">Requesting WebGPU…</p><p id="timing">GPU timestamps pending.</p><small>GPU times cover deposition, scene and airborne passes. They exclude browser presentation. Volume and motion are artistic approximations.</small></div>
 </aside>

@@ -6,9 +6,9 @@ struct Surface {
  @location(3) shape:vec2<f32>, @location(4) normal:vec3<f32>,
 }
 @vertex fn vs_sheet(@location(0) param:vec2<f32>,@builtin(instance_index) layer:u32)->Surface{
- let angle=param.x*TAU;let p=sheetPoint(angle,param.y,u.event.z,f32(layer));
- let around=sheetPoint(angle+.003,param.y,u.event.z,f32(layer))-p;
- let along=sheetPoint(angle,min(.9999,param.y+.003),u.event.z,f32(layer))-p;
+ let angle=param.x*TAU;let p=vehicleDeflect(sheetPoint(angle,param.y,u.event.z,f32(layer)));
+ let around=vehicleDeflect(sheetPoint(angle+.003,param.y,u.event.z,f32(layer)))-p;
+ let along=vehicleDeflect(sheetPoint(angle,min(.9999,param.y+.003),u.event.z,f32(layer)))-p;
  var normal=normalize(cross(around,along)+vec3(0.,0.,.000001));
  if(normal.z<0.){normal=-normal;}
  return Surface(clip(p),p,vec2(cos(angle),sin(angle))*param.y,f32(layer),param,normal);
@@ -35,17 +35,18 @@ fn strandPoint(root:u32,branch:u32,s:f32)->vec3<f32>{
 }
 @vertex fn vs_strand(@location(0) param:vec2<f32>,@builtin(instance_index) id:u32)->Surface{
  let root=id/3u;let branch=id%3u;let s=param.x;
- let p=strandPoint(root,branch,s);let next=strandPoint(root,branch,min(1.,s+.015));
+ let p=vehicleDeflect(strandPoint(root,branch,s));let next=vehicleDeflect(strandPoint(root,branch,min(1.,s+.015)));
  let direction=normalize(next.xy-p.xy+vec2(.00001));
  let thickness=(.018+.038*hash(root+14u))*select(.65,1.,branch==1u)*pow(max(.05,1.-s),.65)*(1.+.25*sin(s*30.-u.event.z*8.));
  let shifted=p+vec3(vec2(-direction.y,direction.x)*param.y*thickness,0.);
  return Surface(clip(shifted),p,vec2(s,param.y),f32(id),vec2(s,param.y),vec3(-direction.y,direction.x,0.));
 }
 fn dropSurface(vertex:u32,id:u32,d:Drop)->Surface{let uv=corners(vertex);
- let dir=normalize(d.velocity+vec2(.0001));let side=vec2(-dir.y,dir.x);
- let stretch=mix(1.4+hash(id+84u)*1.5,1.,d.landed);let point=d.position+vec3((dir*uv.x*stretch+side*uv.y)*d.radius*u.material.z,0.);
+ let center=vehicleDeflect(d.position);
+ let dir=normalize(d.velocity+(center.xy-d.position.xy)*3.+vec2(.0001));let side=vec2(-dir.y,dir.x);
+ let stretch=mix(1.4+hash(id+84u)*1.5,1.,d.landed);let point=center+vec3((dir*uv.x*stretch+side*uv.y)*d.radius*u.material.z,0.);
  var position=clip(point);if(d.alive<=0.){position=vec4(2.,2.,0.,1.);}
- return Surface(position,d.position,uv,f32(id),vec2(d.alive,d.landed),vec3(dir,0.));
+ return Surface(position,center,uv,f32(id),vec2(d.alive,d.landed),vec3(dir,0.));
 }
 @vertex fn vs_drop(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface {
  return dropSurface(vertex,id,drop(id));
@@ -54,12 +55,13 @@ fn dropSurface(vertex:u32,id:u32,d:Drop)->Surface{let uv=corners(vertex);
  return dropSurface(vertex,id,splashlet(id));
 }
 @vertex fn vs_drop_shadow(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->Surface{
- let d=drop(id);let uv=corners(vertex);let point=vec3(d.position.xy+vec2(.22,.35)*d.position.z+uv*d.radius*1.5,0.);
+ let d=drop(id);let centre=vehicleDeflect(d.position);let uv=corners(vertex);let point=vec3(centre.xy+vec2(.22,.35)*centre.z+uv*d.radius*1.5,0.);
  var position=clip(point);if(d.alive<=0.){position=vec4(2.,2.,0.,1.);}
- return Surface(position,d.position,uv,f32(id),vec2(d.alive,d.landed),vec3(0.,0.,1.));
+ return Surface(position,centre,uv,f32(id),vec2(d.alive,d.landed),vec3(0.,0.,1.));
 }
 fn carVisibility(world:vec3<f32>)->f32 {
- // A soft laboratory roof-height mask, not a collision or fluid boundary.
+ if(u.bodyDrying.z>.5){return vehicleTransmission(world);}
+ // The prior laboratory visibility mask remains available with interaction off.
  let projected=vec2(world.x,world.y-world.z*.48);
  let local=abs((projected-u.car.xy)/u.car.zw);
  let silhouette=(1.-smoothstep(.35,.46,local.x))*(1.-smoothstep(.40,.50,local.y));

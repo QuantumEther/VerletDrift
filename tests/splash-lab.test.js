@@ -31,6 +31,10 @@ describe('isolated splash laboratory',()=>{
   expect(Object.keys(MATERIAL_PRESETS)).toEqual(['reference','thin-film','deep-pool']);
   expect(DURATION).toBeGreaterThan(6+DEFAULTS.dryingDuration*1.8);
  });
+ it('clamps vehicle-local interaction controls and preserves default references',()=>{
+  expect(settingsFrom({vehicleInteraction:'false',bodyWetness:99,bodyRunoff:-3,hoodDeflection:NaN,bodyDryingDuration:99,bodyResidue:-1})).toMatchObject({vehicleInteraction:false,bodyWetness:2,bodyRunoff:0,hoodDeflection:1,bodyDryingDuration:30,bodyResidue:0});
+  expect(settingsFrom()).toMatchObject({vehicleInteraction:true,bodyWetness:1,bodyRunoff:1,hoodDeflection:1,bodyDryingDuration:22,bodyResidue:.18});
+ });
  it('builds closed parameterized sheets and indexed strips within allocated geometry',()=>{
   const sheet=makeSheetMesh(24,8),strand=makeStrandMesh(12);
   expect(sheet.indices.length).toBe(24*8*6);expect(strand.indices.length).toBe(12*6);

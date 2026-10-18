@@ -9,6 +9,8 @@ struct Uniforms {
   material: vec4<f32>, // membrane thickness, filament length, droplet size, roughness
   optics: vec4<f32>, // specular strength, puddle depth, drying start age, reserved
   drying: vec4<f32>, // nominal duration, irregularity, absorption, dye residue
+  vehicle: vec4<f32>, // body wetness, runoff, hood deflection, reserved
+  bodyDrying: vec4<f32>, // body drying duration, dye residue, interaction enabled, reserved
 }
 @group(0) @binding(0) var<uniform> u: Uniforms;
 const PI=3.14159265359;

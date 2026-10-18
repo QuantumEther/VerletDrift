@@ -36,6 +36,10 @@ explicit adapter hint, but may select integrated graphics.
   deep-pool presets, or tune membrane thickness, filament length, droplet size,
   surface roughness, specular strength and puddle depth. Reset controls restores
   the original material defaults.
+- Vehicle–liquid interaction: expand the section to compare the original dry-car
+  path with the prototype, or tune body wetness, streaking/runoff, hood deflection,
+  body drying duration and optional body dye residue. Desktop controls scroll
+  independently so the timeline stays accessible.
 - Puddle drying: disable drying or tune its duration, stable spatial irregularity,
   asphalt absorption and optional crimson dye residue. The 72-second clock
   includes the supported drying range through the final moisture-free stained
@@ -64,6 +68,8 @@ scrubbing or resizing requests a redraw. Hidden tabs suspend the visual clock.
 - `shaders/puddles.wgsl`: layered wet asphalt/water, Beer–Lambert transmission,
   Fresnel/GGX lighting, roughness-filtered emitter reflections, finite ripples
   and time-derived drying/absorption/residue.
+- `shaders/vehicle.wgsl`: shared hood/windshield contact wave, local splash
+  deflection, analytic body film/beads/rivulets, optical shading and drying.
 - `shaders/material.wgsl`: shared linear-light water transmission, Fresnel,
   reflections and dyed-medium response.
 - `shaders/liquid.wgsl`: airborne stages, material controls and additive
@@ -113,3 +119,8 @@ does not continuously boil. Appearance and drying controls adjust existing unifo
 data only. Drying is evaluated per fragment from pooled thickness, asphalt capacity,
 and fixed world-space noise; it does not allocate another texture or update
 particles on the CPU. No solver or vehicle/gameplay state is involved.
+
+The [vehicle–liquid interaction report](../../docs/rendering/VEHICLE_LIQUID.md)
+describes the car-local prototype, comparisons, validation and limitations.
+The original drying version is preserved at `7a4838a` on
+`verlet_gpt_v23_liquid_splash`; this work uses `verlet_gpt_v24_vehicle_liquid`.

@@ -9,6 +9,8 @@ export const DEFAULTS = Object.freeze({
   roughness: 1, reflections: 1, puddleDepth: 1,
   dryingEnabled: true, dryingDuration: 18, dryingIrregularity: .42,
   surfaceAbsorption: .55, dyeResidue: .38,
+  vehicleInteraction: true, bodyWetness: 1, bodyRunoff: 1, hoodDeflection: 1,
+  bodyDryingDuration: 22, bodyResidue: .18,
 });
 export const MATERIAL_PRESETS = Object.freeze({
   reference: Object.freeze({ membraneThickness: 1, filamentLength: 1, dropScale: 1, roughness: 1, reflections: 1, puddleDepth: 1, concentration: 1.35 }),
@@ -36,6 +38,12 @@ export function settingsFrom(values = {}) {
     dryingIrregularity: clamp(values.dryingIrregularity ?? DEFAULTS.dryingIrregularity,0,1,.42),
     surfaceAbsorption: clamp(values.surfaceAbsorption ?? DEFAULTS.surfaceAbsorption,0,1,.55),
     dyeResidue: clamp(values.dyeResidue ?? DEFAULTS.dyeResidue,0,1,.38),
+    vehicleInteraction: values.vehicleInteraction === undefined ? DEFAULTS.vehicleInteraction : [true,1,'1','true','on'].includes(values.vehicleInteraction),
+    bodyWetness: clamp(values.bodyWetness ?? DEFAULTS.bodyWetness,0,2,1),
+    bodyRunoff: clamp(values.bodyRunoff ?? DEFAULTS.bodyRunoff,0,2,1),
+    hoodDeflection: clamp(values.hoodDeflection ?? DEFAULTS.hoodDeflection,0,2,1),
+    bodyDryingDuration: clamp(values.bodyDryingDuration ?? DEFAULTS.bodyDryingDuration,8,30,22),
+    bodyResidue: clamp(values.bodyResidue ?? DEFAULTS.bodyResidue,0,1,.18),
   };
 }
 export class LabClock {

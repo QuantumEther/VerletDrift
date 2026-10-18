@@ -2,6 +2,7 @@ import { LabClock, settingsFrom, MATERIAL_PRESETS, DEFAULTS, DRYING_START_AGE, I
 import { SplashRenderer } from './renderer.js';
 const get=id=>document.getElementById(id);
 const query=new URLSearchParams(location.search);
+const vehicleControls=[['body-wetness','bodyWetness'],['body-runoff','bodyRunoff'],['hood-deflection','hoodDeflection'],['body-drying-duration','bodyDryingDuration'],['body-residue','bodyResidue']];
 let settings=settingsFrom(Object.fromEntries(query));
 const clock=new LabClock();
 if(query.has('time'))clock.seek(Number(query.get('time')));
@@ -13,7 +14,8 @@ const renderer=new SplashRenderer(get('splash'),message=>{
 });
 function updateControls(){
   for(const key of ['speed','volume','breakup','concentration','seed','quality'])get(key).value=settings[key];
-  get('preset').value=settings.preset;get('drying-enabled').checked=settings.dryingEnabled;
+  get('preset').value=settings.preset;get('drying-enabled').checked=settings.dryingEnabled;get('vehicle-interaction').checked=settings.vehicleInteraction;
+  for(const [id,key] of vehicleControls){get(id).value=settings[key];get(`${id}-value`).textContent=key==='bodyDryingDuration'?`${settings[key]} s`:`${settings[key].toFixed(2)}×`;}
   for(const [id,key] of [['membrane-thickness','membraneThickness'],['filament-length','filamentLength'],['drop-scale','dropScale'],['roughness','roughness'],['reflections','reflections'],['puddle-depth','puddleDepth'],['drying-duration','dryingDuration'],['drying-irregularity','dryingIrregularity'],['surface-absorption','surfaceAbsorption'],['dye-residue','dyeResidue']])get(id).value=settings[key];
   get('speed-value').textContent=`${settings.speed} m/s`;get('volume-value').textContent=`${settings.volume} L`;
   get('breakup-value').textContent=`${settings.breakup.toFixed(2)}×`;get('concentration-value').textContent=`${settings.concentration.toFixed(2)}×`;
@@ -39,10 +41,11 @@ for(const key of ['speed','volume','breakup','concentration','seed','quality'])g
 });
 const appearanceControls=[['membrane-thickness','membraneThickness'],['filament-length','filamentLength'],['drop-scale','dropScale'],['roughness','roughness'],['reflections','reflections'],['puddle-depth','puddleDepth']];
 const dryingControls=[['drying-duration','dryingDuration'],['drying-irregularity','dryingIrregularity'],['surface-absorption','surfaceAbsorption'],['dye-residue','dyeResidue']];
-for(const [id,key] of [...appearanceControls,...dryingControls])get(id).addEventListener('input',()=>{
+for(const [id,key] of [...appearanceControls,...dryingControls,...vehicleControls])get(id).addEventListener('input',()=>{
   settings=settingsFrom({...settings,[key]:get(id).value,...(appearanceControls.some(item=>item[1]===key)?{preset:'custom'}:{})});updateControls();dirty=true;
 });
 get('preset').onchange=()=>{const preset=get('preset').value;if(MATERIAL_PRESETS[preset])settings=settingsFrom({...settings,...MATERIAL_PRESETS[preset],preset});updateControls();dirty=true;};
+get('vehicle-interaction').onchange=()=>{settings=settingsFrom({...settings,vehicleInteraction:get('vehicle-interaction').checked});dirty=true;};
 get('drying-enabled').onchange=()=>{settings=settingsFrom({...settings,dryingEnabled:get('drying-enabled').checked});dirty=true;};
 get('reset-controls').onclick=()=>{settings=settingsFrom(DEFAULTS);clock.rate=1;get('rate').value='1';updateControls();clock.replay();dirty=true;};
 get('replay').onclick=()=>{clock.replay();dirty=true;};

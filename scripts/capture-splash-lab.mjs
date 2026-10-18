@@ -12,7 +12,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',error=>errors.push(error.message));await offscreenSplash(page);
  const query=new URLSearchParams({time:'.3',paused:'1',quality:option('--quality','balanced')});
- for(const key of ['speed','volume','breakup','concentration','seed'])if(option(`--${key}`,null)!==null)query.set(key,option(`--${key}`,null));
+ for(const key of ['speed','volume','breakup','concentration','seed','vehicleInteraction','bodyWetness','bodyRunoff','hoodDeflection','bodyDryingDuration','bodyResidue'])if(option(`--${key}`,null)!==null)query.set(key,option(`--${key}`,null));
  await page.goto(`${option('--url','http://localhost:8000')}/experiments/splash-lab/?${query}`);
  if(!await page.evaluate(()=>window.splashLab.ready))throw Error(await page.locator('#failure').textContent());
  await page.waitForFunction(()=>window.splashLab.renderer.stats.frames>0);

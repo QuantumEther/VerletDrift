@@ -40,9 +40,16 @@ export async function splashPixels(page,paint=false) {
   },paint);
 }
 export async function seekSplash(page,time) {
-  const before=await page.evaluate(()=>window.splashLab.renderer.stats.frames);
-  await page.evaluate(time=>window.splashLab.seek(time),time);
-  await page.waitForFunction(before=>window.splashLab.renderer.stats.frames>before,before);
+  // Reset/replay can render between separate page.evaluate calls. Pause and
+  // seek atomically, then wait for the requested frame, not merely any frame.
+  const target=await page.evaluate(time=>{
+    const lab=window.splashLab,before=lab.renderer.stats.frames;lab.seek(time);
+    return {before,time:lab.clock.time};
+  },time);
+  await page.waitForFunction(({before,time})=>{
+    const r=window.splashLab.renderer;
+    return r.stats.frames>before&&r.uniforms[3]===Math.fround(time);
+  },target);
 }
 
 export async function dryGroundPixels(page) {
@@ -164,7 +171,7 @@ export async function puddleOptics(page) {
 export async function airborneOptics(page) {
  return page.evaluate(async()=>{
   const {device}=window.splashLab.renderer;
-  const sources=await Promise.all(['common','material','liquid'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
+  const sources=await Promise.all(['common','material','vehicle','liquid'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
   const module=device.createShaderModule({code:sources.join('\n')+`
    @group(0) @binding(4) var<storage,read_write> result:array<vec4<f32>>;
    @compute @workgroup_size(1) fn probe() {
@@ -232,6 +239,39 @@ export async function puddleDryingOptics(page) {
    const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
    encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
    const data=new Float32Array(read.getMappedRange());return Array.from({length:7},(_,i)=>[...data.slice(i*4,i*4+4)]);
+  } finally {read.unmap();read.destroy();output.destroy();}
+ });
+}
+
+// Production analytic vehicle field and local collision response, evaluated on GPU.
+export async function vehicleLiquidProbe(page) {
+ return page.evaluate(async()=>{
+  const r=window.splashLab.renderer,{device}=r;
+  const sources=await Promise.all(['common','material','vehicle'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
+  const module=device.createShaderModule({code:sources.join('\n')+`
+   @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
+   fn pack(f:BodyFilm)->vec4<f32>{return vec4(f.depth,f.wet,f.residue,f.caught);}
+   @compute @workgroup_size(64) fn probe(@builtin(global_invocation_id) gid:vec3<u32>) {
+    let id=gid.x;let q=vec2((f32(id%8u)+.5)/8.-.5,(f32(id/8u)+.5)/8.-.5);
+    result[id*4u]=pack(bodyFilm(q,1.));result[id*4u+1u]=pack(bodyFilm(q,5.));
+    result[id*4u+2u]=pack(bodyFilm(q,18.));result[id*4u+3u]=pack(bodyFilm(q,72.));
+    if(id==0u){
+     let left=vec3(u.car.xy+vec2(-.12,-.30)*u.car.zw+vec2(0.,.30*.48),.30);
+     let right=vec3(u.car.xy+vec2(.12,-.30)*u.car.zw+vec2(0.,.30*.48),.30);
+     let far=vec3(u.car.xy+vec2(8.,0.),.30);
+     result[256]=vec4(vehicleDeflect(left)-left,vehicleTransmission(left));
+     result[257]=vec4(vehicleDeflect(right)-right,vehicleTransmission(right));
+     result[258]=vec4(vehicleDeflect(far)-far,vehicleTransmission(far));
+    }
+   }`});
+  const pipeline=await device.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'probe'}});
+  const size=259*16,output=device.createBuffer({size,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
+  const read=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+  try {
+   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:r.uniformBuffer}},{binding:1,resource:{buffer:output}}]});
+   const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
+   encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
+   const data=new Float32Array(read.getMappedRange());return {fields:Array.from({length:64},(_,i)=>Array.from({length:4},(_,t)=>[...data.slice(i*16+t*4,i*16+t*4+4)])),response:Array.from({length:3},(_,i)=>[...data.slice(1024+i*4,1028+i*4)])};
   } finally {read.unmap();read.destroy();output.destroy();}
  });
 }

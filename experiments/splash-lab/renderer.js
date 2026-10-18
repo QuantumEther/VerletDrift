@@ -7,7 +7,7 @@ const VERTICES=[{arrayStride:8,attributes:[{shaderLocation:0,offset:0,format:'fl
 export class SplashRenderer {
   constructor(canvas,onFailure=()=>{}) {
     this.canvas=canvas;this.onFailure=onFailure;this.ready=false;this.closed=false;this.resources=[];
-    this.uniforms=new Float32Array(40);this.depositionKey=null;
+    this.uniforms=new Float32Array(48);this.depositionKey=null;
     this.stats={backend:'uninitialized',drawCalls:0,frames:0,resourceAllocations:0,resourceBytes:0,cpuEncodeMs:0,sceneGpuMs:null,splashGpuMs:null};
   }
   track(resource,bytes=0) {this.resources.push(resource);this.stats.resourceAllocations++;this.stats.resourceBytes+=bytes;return resource;}
@@ -44,8 +44,8 @@ export class SplashRenderer {
       const depositionLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
       const depositionPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[depositionLayout]});
       const read=async name=>{const response=await fetch(new URL(`shaders/${name}.wgsl`,import.meta.url),{cache:'no-cache'});if(!response.ok)throw Error(`Shader ${name}: HTTP ${response.status}`);return response.text();};
-      const [common,material,puddles,scene,liquid]=await Promise.all(['common','material','puddles','scene','liquid'].map(read));
-      const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+material+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+material+'\n'+liquid})];
+      const [common,material,vehicle,puddles,scene,liquid]=await Promise.all(['common','material','vehicle','puddles','scene','liquid'].map(read));
+      const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+material+'\n'+vehicle+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+material+'\n'+vehicle+'\n'+liquid})];
       if(this.closed)throw Error('Renderer closed during shader loading');
       for(const module of modules){const info=await module.getCompilationInfo();const errors=info.messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(m=>`${m.lineNum}: ${m.message}`).join('\n'));}
       const make=(label,module,vs,fs,format,mesh=false,blend=false,pipelineLayout=layout)=>device.createRenderPipelineAsync({label,layout:pipelineLayout,
@@ -131,7 +131,9 @@ export class SplashRenderer {
         16,q.atlas,0,-.8-settings.speed*.18*.22,
         settings.membraneThickness,settings.filamentLength,settings.dropScale,settings.roughness,
         settings.reflections,settings.puddleDepth,DRYING_START_AGE,0,
-        settings.dryingDuration,settings.dryingIrregularity,settings.surfaceAbsorption,settings.dyeResidue]);
+        settings.dryingDuration,settings.dryingIrregularity,settings.surfaceAbsorption,settings.dyeResidue,
+        settings.bodyWetness,settings.bodyRunoff,settings.hoodDeflection,0,
+        settings.bodyDryingDuration,settings.bodyResidue,settings.vehicleInteraction?1:0,0]);
       this.device.queue.writeBuffer(this.uniformBuffer,0,this.uniforms);
       this.sceneTimer?.startFrame();this.liquidTimer?.startFrame();
       // Reconstruct only when contact history changes. Seeking backwards clears

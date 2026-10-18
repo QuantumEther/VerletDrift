@@ -1,0 +1,250 @@
+{
+  "scope": "Real WGSL rendered through software SwiftShader offscreen targets; no RTX hardware performance claim. Camera zoom for close-up figures is capture-only.",
+  "current": {
+    "requestedBackend": "software",
+    "captureCamera": {
+      "zoom": 1,
+      "x": null,
+      "y": null
+    },
+    "phases": [
+      {
+        "time": 0.3,
+        "requestedTime": 0.3,
+        "hash": 283445112,
+        "groundHash": 3771522119,
+        "red": 1250,
+        "bright": 2623,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": null,
+        "ground": {
+          "hash": 247766469,
+          "mass": 0,
+          "wet": 0,
+          "touched": 0,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 0.75,
+        "requestedTime": 0.75,
+        "hash": 1967262820,
+        "groundHash": 1246970947,
+        "red": 6870,
+        "bright": 3254,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 2.4262913819231873,
+        "ground": {
+          "hash": 247766469,
+          "mass": 0,
+          "wet": 0,
+          "touched": 0,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 1.25,
+        "requestedTime": 1.25,
+        "hash": 305927888,
+        "groundHash": 2113443122,
+        "red": 32364,
+        "bright": 2375,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 4.038208699983031,
+        "ground": {
+          "hash": 2280113489,
+          "mass": 24.566855013370514,
+          "wet": 178.657874584198,
+          "touched": 1918,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 5,
+        "requestedTime": 5,
+        "hash": 712964648,
+        "groundHash": 2834289742,
+        "red": 2610,
+        "bright": 3014,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 4.425201257903216,
+        "ground": {
+          "hash": 2201771522,
+          "mass": 2729.322811424732,
+          "wet": 16585.474304437637,
+          "touched": 46994,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 18,
+        "requestedTime": 18,
+        "hash": 803160530,
+        "groundHash": 2560827440,
+        "red": 2110,
+        "bright": 3248,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 1.5474582259921121,
+        "ground": {
+          "hash": 2201771522,
+          "mass": 2729.322811424732,
+          "wet": 16585.474304437637,
+          "touched": 46994,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 45,
+        "requestedTime": 45,
+        "hash": 1102133002,
+        "groundHash": 1204148132,
+        "red": 191,
+        "bright": 4226,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 1.337217818385632,
+        "ground": {
+          "hash": 2201771522,
+          "mass": 2729.322811424732,
+          "wet": 16585.474304437637,
+          "touched": 46994,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 72,
+        "requestedTime": 72,
+        "hash": 1102133002,
+        "groundHash": 1204148132,
+        "red": 191,
+        "bright": 4226,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 0,
+        "ground": {
+          "hash": 2201771522,
+          "mass": 2729.322811424732,
+          "wet": 16585.474304437637,
+          "touched": 46994,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      }
+    ],
+    "benchmark": null,
+    "errors": []
+  },
+  "reference": {
+    "requestedBackend": "software",
+    "captureCamera": {
+      "zoom": 1,
+      "x": null,
+      "y": null
+    },
+    "phases": [
+      {
+        "time": 0.3,
+        "requestedTime": 0.3,
+        "hash": 283445112,
+        "groundHash": 3771522119,
+        "red": 1250,
+        "bright": 2623,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": null,
+        "ground": {
+          "hash": 247766469,
+          "mass": 0,
+          "wet": 0,
+          "touched": 0,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 1.25,
+        "requestedTime": 1.25,
+        "hash": 606630827,
+        "groundHash": 2113443122,
+        "red": 35277,
+        "bright": 1657,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 4.010009821400368,
+        "ground": {
+          "hash": 2280113489,
+          "mass": 24.566855013370514,
+          "wet": 178.657874584198,
+          "touched": 1918,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      },
+      {
+        "time": 5,
+        "requestedTime": 5,
+        "hash": 1776815284,
+        "groundHash": 2834289742,
+        "red": 197,
+        "bright": 4313,
+        "width": 1143,
+        "height": 794,
+        "differenceMean": 4.564130732608886,
+        "ground": {
+          "hash": 2201771522,
+          "mass": 2729.322811424732,
+          "wet": 16585.474304437637,
+          "touched": 46994,
+          "samples": [],
+          "width": 768,
+          "height": 768
+        }
+      }
+    ],
+    "benchmark": null,
+    "errors": []
+  },
+  "comparisons": [
+    {
+      "time": 0.3,
+      "interactionHash": 283445112,
+      "referenceHash": 283445112,
+      "sameImage": true,
+      "sameGroundAtlas": true
+    },
+    {
+      "time": 1.25,
+      "interactionHash": 305927888,
+      "referenceHash": 606630827,
+      "sameImage": false,
+      "sameGroundAtlas": true
+    },
+    {
+      "time": 5,
+      "interactionHash": 712964648,
+      "referenceHash": 1776815284,
+      "sameImage": false,
+      "sameGroundAtlas": true
+    }
+  ]
+}

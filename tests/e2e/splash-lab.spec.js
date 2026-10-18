@@ -7,9 +7,11 @@ async function start(page,query='time=.3&paused=1') {
  expect(await page.evaluate(()=>window.splashLab.ready),await page.locator('#failure').textContent()).toBe(true);
  await page.waitForFunction(()=>window.splashLab.renderer.stats.frames>0);
 }
-test('real liquid shaders evolve and replay deterministically without importing the simulator',async({page})=>{
+test('reference liquid shaders evolve and replay deterministically without importing the simulator',async({page})=>{
  const errors=[],requests=[];page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push(request.url()));
- await start(page);const before=await splashPixels(page);
+ // Preserve the original red-area guard on the reference path: vehicle contact
+ // intentionally intercepts part of that projected splash, tested separately.
+ await start(page,'time=.3&paused=1&vehicleInteraction=false');const before=await splashPixels(page);
  await seekSplash(page,.95);const film=await splashPixels(page);
  await seekSplash(page,1.85);const breakup=await splashPixels(page);
  await seekSplash(page,.95);const replay=await splashPixels(page);

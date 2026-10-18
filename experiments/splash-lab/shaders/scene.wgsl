@@ -24,8 +24,8 @@ struct Fullscreen { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<
  // A cropped, uniformly scaled copy of the existing body art. No simulator state.
  if(all(abs(local)<vec2(.5))){
   let pixel=textureSampleLevel(carTexture,linearSampler,local+.5,0.);
-  if(u.options.w>.5){ground=mix(ground,pixel.rgb,pixel.a);}
-  else {let body=1.-smoothstep(.43,.49,max(abs(local.x),abs(local.y)));ground=mix(ground,vec3(.58,.62,.64),body);if(abs(local.x)<.36 && abs(local.y+.04)<.16){ground=vec3(.075,.12,.14);}}
+  if(u.options.w>.5){ground=mix(ground,bodyLiquid(local,world,pixel.rgb),pixel.a);}
+  else {let body=1.-smoothstep(.43,.49,max(abs(local.x),abs(local.y)));ground=mix(ground,vec3(.58,.62,.64),body);if(abs(local.x)<.36 && abs(local.y+.04)<.16){ground=vec3(.075,.12,.14);}ground=mix(ground,bodyLiquid(local,world,ground),body);}
  }
  // Balloon compresses immediately before rupture, then disappears at impact.
  if(u.event.z<0.){
