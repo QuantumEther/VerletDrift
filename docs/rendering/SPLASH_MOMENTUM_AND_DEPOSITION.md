@@ -1,5 +1,9 @@
 # Splash Laboratory: momentum and persistent ground liquid
 
+This report records the `d9e3be5` deposition implementation, retained on
+`verlet_gpt_v23_puddles_backup_d9e3be5`. Its optical shading has since been refined;
+see [puddle optics](PUDDLE_OPTICS.md) for the current material and validation.
+
 Work remains on `verlet_gpt_v23_liquid_splash`. The complete original `c279110`
 state is preserved on `verlet_gpt_v23_splash_backup_c279110`; an additional archive
 of its laboratory directory is saved outside the checkout. No merge into a stable

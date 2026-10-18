@@ -1,0 +1,32 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 501160283,
+      "groundHash": 407926809,
+      "red": 584,
+      "bright": 6351,
+      "width": 1372,
+      "height": 953,
+      "differenceMean": null,
+      "ground": {
+        "hash": 846473823,
+        "mass": 5504.0760197639465,
+        "wet": 43698.904823839664,
+        "touched": 92837,
+        "samples": [],
+        "width": 1024,
+        "height": 1024
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

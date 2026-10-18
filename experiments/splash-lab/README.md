@@ -51,6 +51,8 @@ scrubbing or resizing requests a redraw. Hidden tabs suspend the visual clock.
 - `shaders/common.wgsl`: seeded noise, camera projection, shared launch/contact
   motion and secondary landing spray.
 - `shaders/scene.wgsl`: asphalt, pooled dye/wet highlights, simplified car and balloon.
+- `shaders/puddles.wgsl`: layered wet asphalt/water, Beer–Lambert transmission,
+  Fresnel/GGX lighting, roughness-filtered emitter reflections and finite ripples.
 - `shaders/liquid.wgsl`: airborne stages and additive world-space deposition.
 
 The car uses a GPU copy cropped from the unchanged existing DeLorean artwork
@@ -76,6 +78,14 @@ ground. After settlement the atlas is cached; no drying/fading removes the dye.
 It is isolated from gameplay paint and does not alter grip.
 
 Current technique notes, visual comparisons, measurements and limitations:
+[puddle optics report](../../docs/rendering/PUDDLE_OPTICS.md) and
 [momentum and deposition report](../../docs/rendering/SPLASH_MOMENTUM_AND_DEPOSITION.md).
 The [original report](../../docs/rendering/PROCEDURAL_SPLASH_LAB.md) preserves the
 first prototype's results and future integration outline.
+
+Standing water is optically smoother than wetted asphalt. Thin films transmit
+road markings and aggregate; deeper pools absorb more green/blue light. Pools
+reflect a defined overhead rectangular light and a small distant source, rather
+than a screen-space glow. Small pinned drops have curved contact normals. All
+settling ripple motion is exactly zero three seconds after impact; settled water
+does not continuously boil. The original airborne/deposition WGSL is unchanged.

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics } from './helpers/splash-gpu.js';
+import { offscreenSplash, splashPixels, seekSplash, groundPixels, splashKinematics, puddleOptics, dryGroundPixels } from './helpers/splash-gpu.js';
 async function start(page,query='time=.3&paused=1') {
  await offscreenSplash(page);await page.goto(`/experiments/splash-lab/?${query}`);
  const available=await page.evaluate(async()=>!!(await navigator.gpu?.requestAdapter()));
@@ -82,7 +82,9 @@ test('world deposition accumulates, persists and reconstructs exactly after back
  await seekSplash(page,1.85);const growing=await groundPixels(page);expect(growing.mass).toBeGreaterThan(first.mass);
  await seekSplash(page,3.8);const settled=await groundPixels(page);
  expect(settled.mass).toBeGreaterThan(growing.mass);expect(settled.touched).toBeGreaterThan(1000);
- const visible=await splashPixels(page);expect(visible.red).toBeGreaterThan(10000);
+ const visible=await splashPixels(page),dry=await dryGroundPixels(page);
+ // Visibility is a wet/dry comparison, not a bright-red paint pixel threshold.
+ expect(dry.hash).not.toBe(visible.hash);expect(dry.differenceMean).toBeGreaterThan(1);
  await seekSplash(page,8);expect((await groundPixels(page)).hash).toBe(settled.hash);
  await seekSplash(page,1.25);expect((await groundPixels(page)).hash).toBe(first.hash);
  await seekSplash(page,.3);expect((await groundPixels(page)).mass).toBe(0);
@@ -151,4 +153,35 @@ test('droplet touchdown feeds a lasting footprint and secondary landing uses the
  expect(rows[id*2].secondary[2]).toBe(0);
  await seekSplash(page,8);const residue=await groundPixels(page,[[x,y],[sx,sy]]);
  expect(residue.samples.every(n=>n>0)).toBe(true);
+});
+
+test('puddle optics retain transmission, water Fresnel, directional reflections and settling',async({page})=>{
+ await start(page,'time=5&paused=1');const values=await puddleOptics(page);
+ expect(values.flat().every(Number.isFinite)).toBe(true);
+ for(let channel=0;channel<3;channel++){
+  expect(values[0][channel]).toBeGreaterThan(values[1][channel]);
+  expect(values[1][channel]).toBeGreaterThan(values[2][channel]);
+ }
+ expect(values[1][0]).toBeGreaterThan(values[1][1]);expect(values[1][1]).toBeGreaterThan(values[1][2]);
+ expect(values[3][0]).toBeCloseTo(.0204,5);expect(values[3][1]).toBeGreaterThan(values[3][0]);
+ expect(values[3][2]).toBeLessThan(values[3][3]);
+ expect(values[4][0]).toBeGreaterThan(values[5][0]*2);
+ expect(values[6][0]).toBe(0);expect(values[6][1]).toBe(0);expect(values[6][2]).toBeGreaterThan(0);
+ expect(values[7][0]).toBeGreaterThan(0);expect(values[8][0]).toBeGreaterThan(values[7][0]);
+ expect(Math.hypot(...values[9].slice(0,2))).toBeGreaterThan(0);
+ expect(values[10].slice(0,2)).toEqual([0,0]);expect(values[11].slice(0,2)).toEqual([0,0]);
+ expect(values[12][0]).toBeGreaterThan(values[12][1]*100);
+ expect(values[13].slice(0,3)).toEqual([0,0,0]);expect(values[13][3]).toBeGreaterThan(0);
+});
+
+test('settled reflected ground stays still and concentration changes only optics',async({page})=>{
+ await start(page,'time=5&paused=1');const first=await splashPixels(page),atlas=await groundPixels(page);
+ await seekSplash(page,8);expect((await splashPixels(page)).groundHash).toBe(first.groundHash);
+ await seekSplash(page,1.6);await seekSplash(page,5);
+ expect((await splashPixels(page)).hash).toBe(first.hash);
+ const rebuilds=await page.evaluate(()=>window.splashLab.renderer.stats.depositionRebuilds);
+ await page.locator('#concentration').focus();await page.locator('#concentration').press('End');await seekSplash(page,5);
+ expect((await groundPixels(page)).hash).toBe(atlas.hash);
+ expect(await page.evaluate(()=>window.splashLab.renderer.stats.depositionRebuilds)).toBe(rebuilds);
+ expect((await splashPixels(page)).groundHash).not.toBe(first.groundHash);
 });

@@ -16,6 +16,19 @@ try{
  await page.goto(`${option('--url','http://localhost:8000')}/experiments/splash-lab/?${query}`);
  if(!await page.evaluate(()=>window.splashLab.ready))throw Error(await page.locator('#failure').textContent());
  await page.waitForFunction(()=>window.splashLab.renderer.stats.frames>0);
+ const camera={zoom:Number(option('--zoom','1')),x:option('--focus-x',null),y:option('--focus-y',null)};
+ if(camera.zoom!==1||camera.x!==null||camera.y!==null)await page.evaluate(camera=>{
+  // Capture-only camera framing; no change to motion, deposition or app controls.
+  const renderer=window.splashLab.renderer,write=renderer.device.queue.writeBuffer.bind(renderer.device.queue);
+  renderer.device.queue.writeBuffer=(buffer,offset,data,...rest)=>{
+   if(buffer===renderer.uniformBuffer){
+    const view=new Float32Array(data);view[2]*=camera.zoom;
+    if(camera.x!==null)view[26]=Number(camera.x);if(camera.y!==null)view[27]=Number(camera.y);
+    return write(buffer,offset,view,...rest);
+   }
+   return write(buffer,offset,data,...rest);
+  };
+ },camera);
  const phases=[];
  for(const time of option('--times','.3,.70,.95,1.25,1.85,2.9,5,8').split(',').map(Number)){
   await seekSplash(page,time);const pixels=await splashPixels(page,true);
@@ -41,6 +54,6 @@ try{
   };
   return {settled,scope:'Offscreen real WGSL. CPU encode excludes GPU completion; completed-frame latency includes an explicit benchmark-only fence. GPU timestamps cover separate deposition (when available), scene and airborne passes, excluding browser presentation. No native speedup or display-FPS claim.',settings,stats:renderer.getStats(),cpuEncodeMs:summarize(cpu),completedFrameMs:summarize(completed),gpuSceneMs:summarize(scene),gpuLiquidMs:summarize(liquid),gpuDepositionMs:summarize(deposition),allocationsBefore:allocations,allocationsAfter:renderer.stats.resourceAllocations,depositionRebuildsBefore:rebuilds,depositionRebuildsAfter:renderer.stats.depositionRebuilds??null};
  },{frames:Math.max(12,Number(option('--frames','60'))),settled:process.argv.includes('--settled')});
- writeFileSync(resolve(root,'measurements.json'),JSON.stringify({requestedBackend:backend,phases,benchmark,errors},null,2));
+ writeFileSync(resolve(root,'measurements.json'),JSON.stringify({requestedBackend:backend,captureCamera:camera,phases,benchmark,errors},null,2));
  console.log(JSON.stringify({benchmark,errors},null,2));
 }finally{await browser.close();}

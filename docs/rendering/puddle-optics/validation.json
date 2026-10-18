@@ -1,0 +1,76 @@
+{
+  "baseline": "d9e3be5228bd587e78cbe67bf7a70630c305c129",
+  "featureBranch": "verlet_gpt_v23_liquid_splash",
+  "backupBranch": "verlet_gpt_v23_puddles_backup_d9e3be5",
+  "unit": {
+    "passed": 159,
+    "failed": 0
+  },
+  "browser": {
+    "passed": 44,
+    "skipped": 17,
+    "failed": 0,
+    "skipReason": "No WebGPU adapter in ordinary headless configuration; GPU-focused run executes real WGSL."
+  },
+  "gpuFocused": {
+    "passed": 24,
+    "skipped": 0,
+    "failed": 0,
+    "labTests": 11,
+    "backend": "SwiftShader, real WGSL into offscreen target"
+  },
+  "unchangedProductionAndMotionPaths": [
+    "js",
+    "assets",
+    "css",
+    "index.html",
+    "package.json",
+    "package-lock.json",
+    "experiments/splash-lab/shaders/common.wgsl",
+    "experiments/splash-lab/shaders/liquid.wgsl",
+    "experiments/splash-lab/scene.js",
+    "experiments/splash-lab/lab.js"
+  ],
+  "newUiControls": 0,
+  "newRenderTargets": 0,
+  "nativeRtx5090Measured": false,
+  "opticsChecks": [
+    "Beer-Lambert depth and concentration monotonicity",
+    "selective RGB absorption",
+    "water Fresnel and roughness",
+    "reflection follows normal orientation",
+    "wet stain vs film vs pool",
+    "finite low-roughness GGX response",
+    "ripples reach and stay at zero",
+    "settled ground pixel replay and no late animation",
+    "optical controls preserve atlas and its cache",
+    "bead/pool classification is normalized for membrane quality layers"
+  ],
+  "captures": {
+    "settledTimes": [
+      5,
+      8
+    ],
+    "sameAtlasHashBeforeAfter": 2201771522,
+    "sameSettledGroundPixelHash": 2834289742,
+    "ownedResourcesBeforeAfterBenchmark": [
+      17,
+      17
+    ],
+    "depositionRebuildsBeforeAfterBenchmark": [
+      4,
+      4
+    ],
+    "inspectedQualities": [
+      "performance",
+      "balanced",
+      "high"
+    ],
+    "inspectedConcentrations": [
+      0.2,
+      1.35,
+      2.5
+    ],
+    "closeUpZoom": 2.4
+  }
+}

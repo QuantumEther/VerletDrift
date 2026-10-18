@@ -30,16 +30,34 @@ export async function splashPixels(page,paint=false) {
     const source=new Uint8Array(read.getMappedRange()),pixels=new Uint8ClampedArray(width*height*4);
     for(let y=0;y<height;y++)pixels.set(source.subarray(y*stride,y*stride+width*4),y*width*4);
     if(texture.format==='bgra8unorm')for(let i=0;i<pixels.length;i+=4){const r=pixels[i];pixels[i]=pixels[i+2];pixels[i+2]=r;}
-    read.unmap();read.destroy();let hash=2166136261,red=0,bright=0;
-    for(let i=0;i<pixels.length;i++){hash=Math.imul(hash^pixels[i],16777619)>>>0;if(i%4===0){if(pixels[i]>pixels[i+1]*1.6&&pixels[i]>pixels[i+2]*1.5&&pixels[i]>48)red++;if(pixels[i]>180&&pixels[i+1]>140)bright++;}}
+    read.unmap();read.destroy();let hash=2166136261,groundHash=2166136261,red=0,bright=0,difference=0;
+    const previous=window.__splashLastPixels;
+    // A fixed left-side region excludes the car/shadow when checking settled optics.
+    for(let i=0;i<pixels.length;i++){if(previous?.length===pixels.length)difference+=Math.abs(pixels[i]-previous[i]);hash=Math.imul(hash^pixels[i],16777619)>>>0;if((i>>2)%width<width*.42)groundHash=Math.imul(groundHash^pixels[i],16777619)>>>0;if(i%4===0){if(pixels[i]>pixels[i+1]*1.6&&pixels[i]>pixels[i+2]*1.5&&pixels[i]>48)red++;if(pixels[i]>180&&pixels[i+1]>140)bright++;}}
     if(paint){const ctx=document.getElementById('splash').getContext('2d');ctx.putImageData(new ImageData(pixels,width,height),0,0);}
-    return {hash,red,bright,width,height};
+    window.__splashLastPixels=pixels;
+    return {hash,groundHash,red,bright,width,height,differenceMean:previous?.length===pixels.length?difference/(width*height*3):null};
   },paint);
 }
 export async function seekSplash(page,time) {
   const before=await page.evaluate(()=>window.splashLab.renderer.stats.frames);
   await page.evaluate(time=>window.splashLab.seek(time),time);
   await page.waitForFunction(before=>window.splashLab.renderer.stats.frames>before,before);
+}
+
+export async function dryGroundPixels(page) {
+ await page.evaluate(()=>{
+  const r=window.splashLab.renderer;
+  const empty=r.device.createTexture({size:[4,4],format:'rg16float',usage:GPUTextureUsage.TEXTURE_BINDING});
+  window.__splashDryReference={empty,group:r.sceneGroup};
+  r.sceneGroup=r.group(r.carTexture.createView(),empty.createView());
+  r.render(window.splashLab.clock.time,window.splashLab.getSettings());
+ });
+ try {return await splashPixels(page);}
+ finally {await page.evaluate(()=>{
+  const r=window.splashLab.renderer,{empty,group}=window.__splashDryReference;
+  r.sceneGroup=group;r.render(window.splashLab.clock.time,window.splashLab.getSettings());empty.destroy();delete window.__splashDryReference;
+ });}
 }
 
 // Read the actual half-float world atlas; this instrumentation is test-only.
@@ -99,4 +117,45 @@ export async function splashKinematics(page) {
       return Array.from({length:257},(_,i)=>({sheet:[...values.slice(i*24,i*24+4)],landing:[...values.slice(i*24+4,i*24+8)],drop:[...values.slice(i*24+8,i*24+12)],secondaryLanding:[...values.slice(i*24+12,i*24+16)],secondary:[...values.slice(i*24+16,i*24+20)],center:[...values.slice(i*24+20,i*24+22)],pressure:values[i*24+22],momentum:values[i*24+23]}));
     } finally {read.unmap();read.destroy();output.destroy();}
   });
+}
+
+// Optical invariants from the shader used by the actual laboratory scene.
+export async function puddleOptics(page) {
+ return page.evaluate(async()=>{
+  const r=window.splashLab.renderer,{device}=r;
+  const [common,puddles]=await Promise.all(['common','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
+  const module=device.createShaderModule({code:common+'\n'+puddles+`
+   @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
+   @group(0) @binding(2) var linearSampler:sampler;
+   @group(0) @binding(3) var groundTexture:texture_2d<f32>;
+   @compute @workgroup_size(1) fn probe() {
+    result[0]=vec4(waterTransmission(.0002,.9,1.35),0.);
+    result[1]=vec4(waterTransmission(.004,.9,1.35),0.);
+    result[2]=vec4(waterTransmission(.004,.9,2.5),0.);
+    result[3]=vec4(fresnelWater(1.),fresnelWater(.05),waterRoughness(.05,1.),waterRoughness(0.,0.));
+    let view=normalize(vec3(0.,.48,1.));let world=vec2(-1.364,-1.66);
+    result[4]=vec4(reflectedEnvironment(world,reflect(-view,vec3(0.,0.,1.)),.05),0.);
+    result[5]=vec4(reflectedEnvironment(world,reflect(-view,normalize(vec3(.25,0.,1.))),.05),0.);
+    let stain=puddleMaterial(vec2(.025,.44),.5,.0005);
+    let film=puddleMaterial(vec2(.078,.44),.5,.0005);
+    let pool=puddleMaterial(vec2(.14,.44),.5,.0005);
+    result[6]=vec4(stain.standing,stain.water,stain.wet,stain.porosity);
+    result[7]=vec4(film.standing,film.water,film.wet,film.porosity);
+    result[8]=vec4(pool.standing,pool.water,pool.wet,pool.porosity);
+    result[9]=vec4(settlingRipple(vec2(.4,.7),1.25),0.,0.);
+    result[10]=vec4(settlingRipple(vec2(.4,.7),3.),0.,0.);
+    result[11]=vec4(settlingRipple(vec2(.4,.7),7.45),0.,0.);
+    result[13]=vec4(beadWeight(.22,1.),beadWeight(.44,2.),beadWeight(.66,3.),beadWeight(.12,2.));
+    result[12]=vec4(ggxReflection(vec3(0.,0.,1.),vec3(0.,0.,1.),vec3(0.,0.,1.),.1),ggxReflection(vec3(0.,0.,1.),vec3(0.,0.,1.),vec3(0.,0.,1.),.6),0.,0.);
+   }`});
+  const pipeline=await device.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'probe'}});
+  const size=14*16,output=device.createBuffer({size,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
+  const read=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+  try {
+   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:r.uniformBuffer}},{binding:1,resource:{buffer:output}}]});
+   const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
+   encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
+   const data=new Float32Array(read.getMappedRange());return Array.from({length:14},(_,i)=>[...data.slice(i*4,i*4+4)]);
+  } finally {read.unmap();read.destroy();output.destroy();}
+ });
 }
