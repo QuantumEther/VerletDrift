@@ -1,0 +1,116 @@
+{
+  "requestedBackend": "software",
+  "phases": [
+    {
+      "time": 0.3,
+      "hash": 955093182,
+      "red": 1557,
+      "bright": 4124,
+      "width": 1143,
+      "height": 794
+    },
+    {
+      "time": 0.7,
+      "hash": 519048333,
+      "red": 34775,
+      "bright": 4872,
+      "width": 1143,
+      "height": 794
+    },
+    {
+      "time": 0.95,
+      "hash": 1664799812,
+      "red": 147047,
+      "bright": 2972,
+      "width": 1143,
+      "height": 794
+    },
+    {
+      "time": 1.25,
+      "hash": 3733902564,
+      "red": 212949,
+      "bright": 3682,
+      "width": 1143,
+      "height": 794
+    },
+    {
+      "time": 1.85,
+      "hash": 4283023223,
+      "red": 115155,
+      "bright": 5536,
+      "width": 1143,
+      "height": 794
+    },
+    {
+      "time": 2.9,
+      "hash": 3298511798,
+      "red": 51441,
+      "bright": 5458,
+      "width": 1143,
+      "height": 794
+    }
+  ],
+  "benchmark": {
+    "scope": "Offscreen real WGSL. CPU encode excludes GPU completion; completed-frame latency includes an explicit benchmark-only fence. GPU timestamps cover separate scene/liquid passes, excluding browser presentation. No native speedup or display-FPS claim.",
+    "settings": {
+      "speed": 22,
+      "volume": 18,
+      "breakup": 1.1,
+      "concentration": 1.35,
+      "seed": 1337,
+      "quality": "balanced"
+    },
+    "stats": {
+      "backend": "webgpu",
+      "drawCalls": 6,
+      "frames": 71,
+      "resourceAllocations": 13,
+      "resourceBytes": 923624,
+      "cpuEncodeMs": 0.10000000149011612,
+      "sceneGpuMs": 154.718975,
+      "splashGpuMs": 217.777212,
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "description": "",
+        "isFallbackAdapter": true,
+        "powerPreference": "high-performance"
+      },
+      "gpuTimingSupported": true,
+      "sceneTextureBytes": 3630168,
+      "width": 1143,
+      "height": 794,
+      "quality": "balanced",
+      "triangles": 20210,
+      "gpuTimestampSamples": 2,
+      "ownedResourceCount": 13
+    },
+    "cpuEncodeMs": {
+      "samples": 58,
+      "median": 0.19999999925494194,
+      "p95": 0.30000000074505806,
+      "mean": 0.17758620710208498
+    },
+    "completedFrameMs": {
+      "samples": 58,
+      "median": 337,
+      "p95": 397.19999999925494,
+      "mean": 335.47758620694793
+    },
+    "gpuSceneMs": {
+      "samples": 2,
+      "median": 154.718975,
+      "p95": 154.718975,
+      "mean": 128.608532
+    },
+    "gpuLiquidMs": {
+      "samples": 2,
+      "median": 217.777212,
+      "p95": 217.777212,
+      "mean": 201.8625485
+    },
+    "allocationsBefore": 13,
+    "allocationsAfter": 13
+  },
+  "errors": []
+}

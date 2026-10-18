@@ -1,0 +1,30 @@
+
+Running 18 tests using 1 worker
+
+(node:29654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:29654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/18] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[2/18] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[3/18] [chromium] › tests/e2e/gpu-diagnostics.spec.js:48:1 › opt-in performance recorder downloads bounded CPU/GPU scope data
+[4/18] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[5/18] [chromium] › tests/e2e/gpu-world.spec.js:224:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[6/18] [chromium] › tests/e2e/gpu-world.spec.js:280:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[7/18] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU performance/checker respects logical units and reuses resized targets
+[8/18] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[9/18] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU high/studio respects logical units and reuses resized targets
+[10/18] [chromium] › tests/e2e/gpu-world.spec.js:321:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[11/18] [chromium] › tests/e2e/gpu-world.spec.js:394:1 › initialization failure leaves the simulator running in Canvas
+[12/18] [chromium] › tests/e2e/gpu-world.spec.js:422:1 › software adapters automatically select usable Canvas without allocating a device
+[13/18] [chromium] › tests/e2e/gpu-world.spec.js:453:1 › smoke billboards are neutral, translucent and irregular in both backends
+[14/18] [chromium] › tests/e2e/splash-lab.spec.js:10:1 › real liquid shaders evolve and replay deterministically without importing the simulator
+[15/18] [chromium] › tests/e2e/splash-lab.spec.js:21:1 › controls, pause, seed, resize and quality changes retain bounded resources
+[16/18] [chromium] › tests/e2e/splash-lab.spec.js:41:1 › device loss stops the laboratory cleanly; failed artwork has a visible fallback
+[17/18] [chromium] › tests/e2e/splash-lab.spec.js:50:1 › absence of WebGPU is explained without crashing or starting the simulator
+[18/18] [chromium] › tests/e2e/splash-lab.spec.js:57:1 › partial GPU allocation failure releases the experiment resources
+  18 passed (50.3s)

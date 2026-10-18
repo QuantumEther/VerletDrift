@@ -22,9 +22,9 @@ function updateUi(now=0){
   const age=clock.time-IMPACT_TIME;
   get('phase').textContent=age<0?'APPROACH':age<.18?'RUPTURE':age<.8?'MEMBRANE EXPANSION':age<1.8?'FILAMENT BREAKUP':'DROPLET SETTLEMENT';
   if(now-lastUi>250){
-    const s=renderer.stats;const ms=value=>value===null?'—':value.toFixed(2);
+    const s=renderer.getStats();const ms=value=>value===null?'—':value.toFixed(2);
     get('backend').textContent=`${s.adapter?.vendor||'WebGPU'} ${s.adapter?.architecture||''} · ${s.quality||settings.quality}${s.adapter?.isFallbackAdapter?' · SOFTWARE ADAPTER':''}`;
-    get('timing').textContent=`CPU encode ${ms(s.cpuEncodeMs)} ms · GPU scene ${ms(s.sceneGpuMs)} / splash ${ms(s.splashGpuMs)} ms`;
+    get('timing').textContent=`CPU encode ${ms(s.cpuEncodeMs)} ms · ${s.gpuTimingSupported?`GPU scene ${ms(s.sceneGpuMs)} / splash ${ms(s.splashGpuMs)} ms`:'GPU timestamps unavailable'}`;
     lastUi=now;
   }
 }

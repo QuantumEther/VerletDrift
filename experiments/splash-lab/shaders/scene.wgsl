@@ -16,6 +16,8 @@ struct Fullscreen { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<
  let local=(world-u.car.xy)/u.car.zw;
  let shadow=exp(-dot((local-vec2(.04,.025))*vec2(1.6,1.7),(local-vec2(.04,.025))*vec2(1.6,1.7))*3.);
  ground*=1.-shadow*.42;
+ let wheel=(1.-smoothstep(.045,.06,abs(abs(local.x)-.45)))*(1.-smoothstep(.085,.10,abs(abs(local.y)-.31)));
+ ground=mix(ground,vec3(.018,.022,.024),wheel);
  // A cropped, uniformly scaled copy of the existing body art. No simulator state.
  if(all(abs(local)<vec2(.5))){
   let pixel=textureSampleLevel(carTexture,linearSampler,local+.5,0.);

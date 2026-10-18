@@ -27,7 +27,7 @@ export class SplashRenderer {
       const device=this.device;
       device.addEventListener('uncapturederror',event=>{event.preventDefault();this.fail(event.error.message);});
       device.lost.then(info=>{if(!this.closed)this.fail(`Device lost: ${info.message||info.reason}`);});
-      if(timestamp){this.sceneTimer=new GPUTiming(device);this.liquidTimer=new GPUTiming(device);}
+      if(timestamp){this.sceneTimer=new GPUTiming(device);this.liquidTimer=new GPUTiming(device);this.stats.resourceAllocations+=6;this.stats.resourceBytes+=128;}
       this.stats.gpuTimingSupported=timestamp;
       this.context=this.canvas.getContext('webgpu');
       if(!this.context)throw Error('A WebGPU canvas context could not be created.');
@@ -127,6 +127,12 @@ export class SplashRenderer {
       this.stats.quality=settings.quality;this.stats.triangles=age>0?this.sheetIndexCount/3*q.sheets+this.strandIndexCount/3*q.strands+q.drops*4+2:2;
     }catch(error){this.fail(error.message);}
     this.stats.cpuEncodeMs=performance.now()-start;
+  }
+  getStats() {
+    return {...this.stats,sceneGpuMs:this.sceneTimer?.milliseconds??null,
+      splashGpuMs:this.liquidTimer?.milliseconds??null,
+      gpuTimestampSamples:Math.min(this.sceneTimer?.sampleCount??0,this.liquidTimer?.sampleCount??0),
+      ownedResourceCount:this.closed?0:this.resources.length+(this.sceneTexture?1:0)+(this.sceneTimer?6:0)};
   }
   fail(message) {if(this.closed)return;this.stats.error=message;this.dispose();this.onFailure(message);}
   dispose() {

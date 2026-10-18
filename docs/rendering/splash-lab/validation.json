@@ -1,0 +1,42 @@
+{
+  "baseline": "4b842b141fd084d31763766a75d858ef5c546cd5",
+  "featureBranch": "verlet_gpt_v23_liquid_splash",
+  "checkpoint": "1a0bc43",
+  "existingTrackedFilesChanged": [],
+  "preservedBranches": {
+    "verlet_gpt_v19_ui": "09a3e3605c4d1890e8c4723df28d7b864dc03fc6",
+    "verlet_gpt_v20_delorean_geometry": "f4c9440d26b04909b53dab165f6bd5d979b9fa5a",
+    "verlet_gpt_v21_gpu_rendering": "4b842b141fd084d31763766a75d858ef5c546cd5"
+  },
+  "unit": {
+    "passed": 159,
+    "failed": 0,
+    "files": 17
+  },
+  "browserDefault": {
+    "passed": 44,
+    "skipped": 11,
+    "failed": 0,
+    "skipReason": "No WebGPU adapter in ordinary headless configuration; GPU-focused run covers those GPU paths."
+  },
+  "browserGpuFocused": {
+    "passed": 18,
+    "skipped": 0,
+    "failed": 0,
+    "backend": "SwiftShader real WGSL, offscreen presentation target"
+  },
+  "mobile": {
+    "viewportWidth": 390,
+    "documentScrollWidth": 390,
+    "ownedGpuResources": 13,
+    "screenshot": "mobile.png"
+  },
+  "capture": {
+    "phases": 6,
+    "completedBenchmarkFrames": 64,
+    "allocationCountBefore": 13,
+    "allocationCountAfter": 13
+  },
+  "nativePresentationVerified": false,
+  "rtx5090PerformanceMeasured": false
+}

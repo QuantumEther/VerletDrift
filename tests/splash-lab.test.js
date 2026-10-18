@@ -1,0 +1,31 @@
+import { describe, it, expect } from 'vitest';
+import { LabClock, settingsFrom, makeSheetMesh, makeStrandMesh, DURATION, QUALITY } from '../experiments/splash-lab/scene.js';
+describe('isolated splash laboratory',()=>{
+ it('replays on elapsed time independently of frame subdivision and pauses without time jumps',()=>{
+  const fine=new LabClock(),coarse=new LabClock();fine.tick(0);coarse.tick(0);
+  for(let i=1;i<=60;i++)fine.tick(i*1000/60);
+  coarse.tick(1000);expect(fine.time).toBeCloseTo(coarse.time,10);
+  fine.toggle();fine.tick(6000);expect(fine.time).toBeCloseTo(1,10);
+  fine.toggle();fine.tick(10000);fine.tick(10100);expect(fine.time).toBeCloseTo(1.1,10);
+  fine.replay();fine.tick(0);fine.tick(1000);expect(fine.time).toBeCloseTo(1,10);
+ });
+ it('supports reproducible seeking, slow motion, bounds and endpoint playback',()=>{
+  const clock=new LabClock();clock.rate=.25;clock.tick(0);clock.tick(1000);expect(clock.time).toBe(.25);
+  clock.seek(2.25);expect(clock.playing).toBe(false);clock.tick(3000);expect(clock.time).toBe(2.25);
+  clock.seek(Infinity);expect(clock.time).toBe(0);clock.seek(99);expect(clock.time).toBe(DURATION);
+  clock.toggle();expect(clock.time).toBe(0);expect(clock.playing).toBe(true);
+ });
+ it('clamps untrusted URL/control values without introducing random state',()=>{
+  const a=settingsFrom({speed:'100',volume:-8,breakup:NaN,concentration:'bad',seed:1337.8,quality:'unknown'});
+  expect(a).toEqual({speed:45,volume:3,breakup:1.1,concentration:1.35,seed:1338,quality:'balanced'});
+  expect(settingsFrom({seed:7})).toEqual(settingsFrom({seed:7}));
+ });
+ it('builds closed parameterized sheets and indexed strips within allocated geometry',()=>{
+  const sheet=makeSheetMesh(24,8),strand=makeStrandMesh(12);
+  expect(sheet.indices.length).toBe(24*8*6);expect(strand.indices.length).toBe(12*6);
+  for(const mesh of [sheet,strand])expect(Math.max(...mesh.indices)).toBeLessThan(mesh.vertices.length/2);
+  expect([...sheet.vertices.slice(0,2)]).toEqual([0,0]);
+  expect([...sheet.vertices.slice(-2)]).toEqual([1,1]);
+  for(const q of Object.values(QUALITY)){expect(q.strands%3).toBe(0);expect(q.maxPixels).toBeLessThanOrEqual(4000000);}
+ });
+});
