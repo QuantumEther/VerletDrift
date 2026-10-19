@@ -1,6 +1,7 @@
 // Real offscreen WGSL captures + bounded completed-frame benchmark, not native
 // presentation/FPS qualification. Serve the repo first, then run this script.
 import { chromium } from '@playwright/test';
+import { DEFAULTS } from '../experiments/splash-lab/scene.js';
 import { mkdirSync,writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { offscreenSplash,splashPixels,seekSplash,groundPixels } from '../tests/e2e/helpers/splash-gpu.js';
@@ -12,14 +13,14 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',error=>errors.push(error.message));await offscreenSplash(page);
  const query=new URLSearchParams({time:'.3',paused:'1',quality:option('--quality','balanced')});
- for(const key of ['speed','volume','breakup','concentration','seed','vehicleInteraction','bodyWetness','bodyRunoff','hoodDeflection','bodyDryingDuration','bodyResidue'])if(option(`--${key}`,null)!==null)query.set(key,option(`--${key}`,null));
+ for(const key of Object.keys(DEFAULTS))if(option(`--${key}`,null)!==null)query.set(key,option(`--${key}`,null));
  await page.goto(`${option('--url','http://localhost:8000')}/experiments/splash-lab/?${query}`);
  if(!await page.evaluate(()=>window.splashLab.ready))throw Error(await page.locator('#failure').textContent());
  await page.waitForFunction(()=>window.splashLab.renderer.stats.frames>0);
  const camera={zoom:Number(option('--zoom','1')),x:option('--focus-x',null),y:option('--focus-y',null)};
  if(camera.zoom!==1||camera.x!==null||camera.y!==null)await page.evaluate(camera=>{
   // Capture-only camera framing; no change to motion, deposition or app controls.
-  const renderer=window.splashLab.renderer,write=renderer.device.queue.writeBuffer.bind(renderer.device.queue);
+  const renderer=window.splashLab.renderer;renderer.terrainKey=null;const write=renderer.device.queue.writeBuffer.bind(renderer.device.queue);
   renderer.device.queue.writeBuffer=(buffer,offset,data,...rest)=>{
    if(buffer===renderer.uniformBuffer){
     const view=new Float32Array(data);view[2]*=camera.zoom;

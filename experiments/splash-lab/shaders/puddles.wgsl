@@ -56,10 +56,6 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let field=textureSampleLevel(groundTexture,linearSampler,uv,0.);
  let depthAA=max(fwidth(field.r),.0005);
  if(field.g<.0001){return asphalt;}
- let texel=1./u.ground.y;
- let dx=textureSampleLevel(groundTexture,linearSampler,uv+vec2(texel,0.),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(texel,0.),0.).r;
- let dy=textureSampleLevel(groundTexture,linearSampler,uv+vec2(0.,texel),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(0.,texel),0.).r;
- let gradient=vec2(dx,dy)*u.ground.y/(u.ground.x*4.)*u.optics.y;
  let terrainA=noiseSlope(world*.55);let terrainB=noiseSlope(world*1.7+vec2(19.2,6.3));
  let terrain=terrainA.x*.72+terrainB.x*.28;
  // Pore filling and contact pinning leave wet grains between standing pools.
@@ -70,6 +66,14 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let standing=dry.standing;let water=dry.water;let wet=dry.wet;
  let porosity=material.porosity;
  let stain=min(field.r,material.capacity)*mix(1.,u.drying.w,dry.progress)+dry.residue;
+ let poreTransmission=exp(-vec3(.4,4.5,7.)*(stain+dry.residue)*u.effect.w*2.5);
+ // With no water left there is no water/air interface: retain only dye in
+ // the substrate. This also avoids four atlas reads and the full wet BRDF.
+ if(wet<=0.&&standing<=0.){return toDisplay(toLinear(asphalt)*poreTransmission);}
+ let texel=1./u.ground.y;
+ let dx=textureSampleLevel(groundTexture,linearSampler,uv+vec2(texel,0.),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(texel,0.),0.).r;
+ let dy=textureSampleLevel(groundTexture,linearSampler,uv+vec2(0.,texel),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(0.,texel),0.).r;
+ let gradient=vec2(dx,dy)*u.ground.y/(u.ground.x*4.)*u.optics.y;
  let physicalDepth=standing*.035; // artistic proxy -> shallow millimetre layer
  let view=normalize(vec3(0.,.48,1.)); // same oblique height projection as clip()
  let grain=noiseSlope(world*24.);
@@ -95,11 +99,10 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let reflection=(environment*fresnel+direct)*u.optics.x;
  // Millimetre-scale transmission retains the local road texture without blur.
  let substrate=toLinear(asphalt)*(1.-wet*.48);
- let poreTransmission=exp(-vec3(.4,4.5,7.)*(stain+dry.residue)*u.effect.w*2.5);
  let transmission=waterTransmission(physicalDepth,dot(n,view),u.effect.w);
  let medium=waterMedium(standing*u.effect.w*12.);
  let transmitted=substrate*poreTransmission*transmission+medium;
  let filmReflection=reflection*mix(.28,1.,water);
- let color=transmitted*(1.-fresnel)+filmReflection*wet;
+ let color=transmitted*(1.-fresnel*wet)+filmReflection*wet;
  return toDisplay(color);
 }

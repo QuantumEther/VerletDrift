@@ -103,7 +103,7 @@ test('settled ground is cached, world anchored and independent of frame history'
  });
  expect(reuse.after.depositionRebuilds).toBe(reuse.before.depositionRebuilds);
  expect(reuse.after.resourceAllocations).toBe(reuse.before.resourceAllocations);
- expect(reuse.after.drawCalls).toBe(2);
+ expect(reuse.after.drawCalls).toBe(2); // Ground + bounded car, with no refraction blit.
  await page.setViewportSize({width:900,height:800});await seekSplash(page,8);
  expect((await groundPixels(page)).hash).toBe(direct.hash);
  for(const time of [.3,.7,1.1,1.8,2.6,8])await seekSplash(page,time);

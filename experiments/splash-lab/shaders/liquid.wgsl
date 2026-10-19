@@ -92,6 +92,9 @@ fn liquid(pixel:vec2<f32>,world:vec3<f32>,normal:vec3<f32>,thickness:f32,coverag
  // Same fixed luminaire and water IOR as puddles; finite normal footprint
  // broadens subpixel highlights instead of making luminous red rims.
  let dx=dpdx(n);let dy=dpdy(n);
+ // Derivatives stay outside divergent flow; empty perforations and billboard
+ // corners need neither environment/BRDF evaluation nor refraction sampling.
+ if(coverage<=0.){return vec4(0.);}
  let materialRoughness=clamp(.085*u.material.w,.025,.82);
  let roughness=sqrt(materialRoughness*materialRoughness+min(.18,(dot(dx,dx)+dot(dy,dy))*.35));
  let reflected=reflect(-view,n);

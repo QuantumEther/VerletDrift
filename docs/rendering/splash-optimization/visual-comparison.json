@@ -1,0 +1,58 @@
+[
+  {
+    "view": "baseline",
+    "time": 0.75,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.0003594938473361689,
+    "atlasIdentical": true
+  },
+  {
+    "view": "baseline",
+    "time": 1.25,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.0033161473264479257,
+    "atlasIdentical": true
+  },
+  {
+    "view": "baseline",
+    "time": 1.85,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.03352316809455422,
+    "atlasIdentical": true
+  },
+  {
+    "view": "baseline",
+    "time": 5,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.028535374377993108,
+    "atlasIdentical": true
+  },
+  {
+    "view": "baseline",
+    "time": 18,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.02459378112327154,
+    "atlasIdentical": true
+  },
+  {
+    "view": "baseline",
+    "time": 45,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.05545596108662518,
+    "atlasIdentical": true
+  },
+  {
+    "view": "zoom-before",
+    "time": 1.25,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.00546247232722744,
+    "atlasIdentical": true
+  },
+  {
+    "view": "zoom-before",
+    "time": 5,
+    "maxChannelDifference": 1,
+    "meanChannelDifference": 0.04072588410725389,
+    "atlasIdentical": true
+  }
+]

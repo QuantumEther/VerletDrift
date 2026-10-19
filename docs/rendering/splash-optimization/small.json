@@ -1,0 +1,72 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 2120466415,
+      "groundHash": 1223199475,
+      "red": 2503,
+      "bright": 1700,
+      "width": 914,
+      "height": 635,
+      "differenceMean": null,
+      "ground": {
+        "hash": 2783471941,
+        "mass": 2.158982217311859,
+        "wet": 34.40207785367966,
+        "touched": 389,
+        "samples": [],
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 2903381761,
+      "groundHash": 512314101,
+      "red": 1363,
+      "bright": 1699,
+      "width": 914,
+      "height": 635,
+      "differenceMean": 1.3451185122647416,
+      "ground": {
+        "hash": 3108858839,
+        "mass": 185.18786764144897,
+        "wet": 1431.5456049442291,
+        "touched": 6540,
+        "samples": [],
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "time": 45,
+      "requestedTime": 45,
+      "hash": 4203175973,
+      "groundHash": 1610042179,
+      "red": 128,
+      "bright": 2722,
+      "width": 914,
+      "height": 635,
+      "differenceMean": 0.8503948494403188,
+      "ground": {
+        "hash": 3108858839,
+        "mass": 185.18786764144897,
+        "wet": 1431.5456049442291,
+        "touched": 6540,
+        "samples": [],
+        "width": 512,
+        "height": 512
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

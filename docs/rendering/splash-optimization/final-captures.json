@@ -1,0 +1,132 @@
+{
+  "requestedBackend": "software",
+  "captureCamera": {
+    "zoom": 1,
+    "x": null,
+    "y": null
+  },
+  "phases": [
+    {
+      "time": 0.75,
+      "requestedTime": 0.75,
+      "hash": 236244025,
+      "groundHash": 918998622,
+      "red": 6870,
+      "bright": 3255,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": null,
+      "ground": {
+        "hash": 247766469,
+        "mass": 0,
+        "wet": 0,
+        "touched": 0,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 1.25,
+      "requestedTime": 1.25,
+      "hash": 391638541,
+      "groundHash": 1427135791,
+      "red": 32388,
+      "bright": 2375,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 4.036389133138375,
+      "ground": {
+        "hash": 2280113489,
+        "mass": 24.566855013370514,
+        "wet": 178.657874584198,
+        "touched": 1918,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 1.85,
+      "requestedTime": 1.85,
+      "hash": 3625599298,
+      "groundHash": 886668483,
+      "red": 5887,
+      "bright": 2742,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 3.838568720051891,
+      "ground": {
+        "hash": 2622506081,
+        "mass": 2010.5936960577965,
+        "wet": 11935.81261074543,
+        "touched": 44188,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 5,
+      "requestedTime": 5,
+      "hash": 3814383149,
+      "groundHash": 239742233,
+      "red": 2610,
+      "bright": 3014,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 1.894420680622311,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 18,
+      "requestedTime": 18,
+      "hash": 1032627804,
+      "groundHash": 721391767,
+      "red": 2110,
+      "bright": 3248,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 1.5513563008654145,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "time": 45,
+      "requestedTime": 45,
+      "hash": 494846000,
+      "groundHash": 3710612559,
+      "red": 192,
+      "bright": 4226,
+      "width": 1143,
+      "height": 794,
+      "differenceMean": 1.337290542292625,
+      "ground": {
+        "hash": 2201771522,
+        "mass": 2729.322811424732,
+        "wet": 16585.474304437637,
+        "touched": 46994,
+        "samples": [],
+        "width": 768,
+        "height": 768
+      }
+    }
+  ],
+  "benchmark": null,
+  "errors": []
+}

@@ -1,0 +1,419 @@
+{
+  "backend": "software",
+  "scope": "Offscreen WGSL. Dense asynchronous GPU timestamps per pass; CPU encoding and fenced completion measured separately. Excludes presentation. Software GPU results do not predict hardware speedups.",
+  "settings": {
+    "speed": 22,
+    "volume": 18,
+    "breakup": 1.1,
+    "concentration": 1.35,
+    "seed": 1337,
+    "quality": "balanced",
+    "preset": "reference",
+    "membraneThickness": 1,
+    "filamentLength": 1,
+    "dropScale": 1,
+    "roughness": 1,
+    "reflections": 1,
+    "puddleDepth": 1,
+    "dryingEnabled": true,
+    "dryingDuration": 18,
+    "dryingIrregularity": 0.42,
+    "surfaceAbsorption": 0.55,
+    "dyeResidue": 0.38,
+    "vehicleInteraction": true,
+    "bodyWetness": 1,
+    "bodyRunoff": 1,
+    "hoodDeflection": 1,
+    "bodyDryingDuration": 22,
+    "bodyResidue": 0.18
+  },
+  "phases": [
+    {
+      "name": "approach",
+      "time": 0.3,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 2,
+        "frames": 12,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.19999999552965164,
+        "sceneGpuMs": 178.954593,
+        "splashGpuMs": null,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": false,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 1,
+        "quality": "balanced",
+        "triangles": 3,
+        "depositionGpuMs": null,
+        "depositionTimestampSamples": 0,
+        "gpuTimestampSamples": 0,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.3999999985098839,
+          "p95": 5.899999998509884,
+          "mean": 1.2555555535687342
+        },
+        "completed": {
+          "samples": 9,
+          "median": 209.69999999552965,
+          "p95": 319.1000000014901,
+          "mean": 225.4333333323399
+        },
+        "scene": {
+          "samples": 9,
+          "median": 181.523018,
+          "p95": 303.054486,
+          "mean": 209.9852161111111
+        },
+        "air": null,
+        "deposition": null
+      }
+    },
+    {
+      "name": "peak",
+      "time": 1.25,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 11,
+        "frames": 23,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.30000000447034836,
+        "sceneGpuMs": 229.171121,
+        "splashGpuMs": 225.193188,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": true,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 12,
+        "quality": "balanced",
+        "triangles": 43732,
+        "depositionGpuMs": 102.589524,
+        "depositionTimestampSamples": 11,
+        "gpuTimestampSamples": 11,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.20000000298023224,
+          "p95": 0.3999999985098839,
+          "mean": 0.25555555439657635
+        },
+        "completed": {
+          "samples": 9,
+          "median": 577.2000000029802,
+          "p95": 669.8999999985099,
+          "mean": 586.6777777771155
+        },
+        "scene": {
+          "samples": 9,
+          "median": 229.171121,
+          "p95": 330.153541,
+          "mean": 245.73886322222222
+        },
+        "air": {
+          "samples": 9,
+          "median": 224.853714,
+          "p95": 269.498253,
+          "mean": 228.339284
+        },
+        "deposition": {
+          "samples": 9,
+          "median": 102.589524,
+          "p95": 111.272572,
+          "mean": 103.6779851111111
+        }
+      }
+    },
+    {
+      "name": "landing",
+      "time": 1.85,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 11,
+        "frames": 34,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.19999999552965164,
+        "sceneGpuMs": 251.696432,
+        "splashGpuMs": 228.258546,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": true,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 23,
+        "quality": "balanced",
+        "triangles": 43732,
+        "depositionGpuMs": 118.396127,
+        "depositionTimestampSamples": 22,
+        "gpuTimestampSamples": 22,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.20000000298023224,
+          "p95": 0.29999999701976776,
+          "mean": 0.1999999996688631
+        },
+        "completed": {
+          "samples": 9,
+          "median": 597.6000000014901,
+          "p95": 603.2000000029802,
+          "mean": 592.8555555550588
+        },
+        "scene": {
+          "samples": 9,
+          "median": 225.241266,
+          "p95": 251.696432,
+          "mean": 227.53330655555555
+        },
+        "air": {
+          "samples": 9,
+          "median": 225.60352,
+          "p95": 233.760115,
+          "mean": 224.5698336666667
+        },
+        "deposition": {
+          "samples": 9,
+          "median": 142.296839,
+          "p95": 149.384612,
+          "mean": 135.8992028888889
+        }
+      }
+    },
+    {
+      "name": "wet",
+      "time": 5,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 2,
+        "frames": 45,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.19999999552965164,
+        "sceneGpuMs": 171.683467,
+        "splashGpuMs": null,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": false,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 24,
+        "quality": "balanced",
+        "triangles": 3,
+        "depositionGpuMs": 121.912254,
+        "depositionTimestampSamples": 23,
+        "gpuTimestampSamples": 22,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.19999999552965164,
+          "p95": 0.29999999701976776,
+          "mean": 0.18888888590865666
+        },
+        "completed": {
+          "samples": 9,
+          "median": 208.5,
+          "p95": 223.79999999701977,
+          "mean": 208.34444444378218
+        },
+        "scene": {
+          "samples": 9,
+          "median": 193.079913,
+          "p95": 208.733196,
+          "mean": 192.35793233333334
+        },
+        "air": null,
+        "deposition": null
+      }
+    },
+    {
+      "name": "drying",
+      "time": 18,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 2,
+        "frames": 56,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.30000000447034836,
+        "sceneGpuMs": 225.995666,
+        "splashGpuMs": null,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": false,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 24,
+        "quality": "balanced",
+        "triangles": 3,
+        "depositionGpuMs": 121.912254,
+        "depositionTimestampSamples": 23,
+        "gpuTimestampSamples": 22,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.29999999701976776,
+          "p95": 0.30000000447034836,
+          "mean": 0.25555555605226093
+        },
+        "completed": {
+          "samples": 9,
+          "median": 211,
+          "p95": 239.5,
+          "mean": 213.6222222223878
+        },
+        "scene": {
+          "samples": 9,
+          "median": 192.178919,
+          "p95": 225.995666,
+          "mean": 195.8711913333333
+        },
+        "air": null,
+        "deposition": null
+      }
+    },
+    {
+      "name": "dry",
+      "time": 45,
+      "stats": {
+        "backend": "webgpu",
+        "drawCalls": 2,
+        "frames": 67,
+        "resourceAllocations": 18,
+        "resourceBytes": 923784,
+        "cpuEncodeMs": 0.29999999701976776,
+        "sceneGpuMs": 154.912812,
+        "splashGpuMs": null,
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "description": "",
+          "isFallbackAdapter": true,
+          "powerPreference": "high-performance"
+        },
+        "gpuTimingSupported": true,
+        "groundTextureBytes": 2359296,
+        "sceneTextureBytes": 3630168,
+        "asphaltTextureBytes": 1815084,
+        "width": 1143,
+        "height": 794,
+        "airborne": false,
+        "computeDispatches": 0,
+        "terrainRebuilds": 1,
+        "depositionRebuilds": 24,
+        "quality": "balanced",
+        "triangles": 3,
+        "depositionGpuMs": 121.912254,
+        "depositionTimestampSamples": 23,
+        "gpuTimestampSamples": 22,
+        "ownedResourceBytes": 8728332,
+        "ownedResourceCount": 18
+      },
+      "allocationsAdded": 0,
+      "measurements": {
+        "cpu": {
+          "samples": 9,
+          "median": 0.20000000298023224,
+          "p95": 0.29999999701976776,
+          "mean": 0.2444444422920545
+        },
+        "completed": {
+          "samples": 9,
+          "median": 196.70000000298023,
+          "p95": 231.79999999701977,
+          "mean": 198.47777777744665
+        },
+        "scene": {
+          "samples": 9,
+          "median": 157.906099,
+          "p95": 200.456456,
+          "mean": 168.9444184444445
+        },
+        "air": null,
+        "deposition": null
+      }
+    }
+  ],
+  "errors": []
+}

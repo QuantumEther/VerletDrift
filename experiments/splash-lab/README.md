@@ -124,3 +124,7 @@ The [vehicle–liquid interaction report](../../docs/rendering/VEHICLE_LIQUID.md
 describes the car-local prototype, comparisons, validation and limitations.
 The original drying version is preserved at `7a4838a` on
 `verlet_gpt_v23_liquid_splash`; this work uses `verlet_gpt_v24_vehicle_liquid`.
+
+The [optimization audit](../../docs/rendering/SPLASH_OPTIMIZATION.md) documents
+the bounded car pass, compact asphalt cache, corrected final drying, controlled
+comparisons and software-GPU measurements on `verlet_gpt_v25_splash_optimization`.

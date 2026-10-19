@@ -39,10 +39,13 @@ export class SplashRenderer {
         {binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},
         {binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},
         {binding:3,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},
+        {binding:6,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},
       ]});
       const layout=device.createPipelineLayout({bindGroupLayouts:[this.layout]});
       const depositionLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
       const depositionPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[depositionLayout]});
+      const asphaltLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
+      const asphaltPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[asphaltLayout]});
       const read=async name=>{const response=await fetch(new URL(`shaders/${name}.wgsl`,import.meta.url),{cache:'no-cache'});if(!response.ok)throw Error(`Shader ${name}: HTTP ${response.status}`);return response.text();};
       const [common,material,vehicle,puddles,scene,liquid]=await Promise.all(['common','material','vehicle','puddles','scene','liquid'].map(read));
       const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+material+'\n'+vehicle+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+material+'\n'+vehicle+'\n'+liquid})];
@@ -50,8 +53,14 @@ export class SplashRenderer {
       for(const module of modules){const info=await module.getCompilationInfo();const errors=info.messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(m=>`${m.lineNum}: ${m.message}`).join('\n'));}
       const make=(label,module,vs,fs,format,mesh=false,blend=false,pipelineLayout=layout)=>device.createRenderPipelineAsync({label,layout:pipelineLayout,
         vertex:{module,entryPoint:vs,...(mesh?{buffers:VERTICES}:{})},fragment:{module,entryPoint:fs,targets:[{format,...(blend?{blend:blend===true?PREMUL:blend}:{})}]},primitive:{topology:'triangle-list',cullMode:'none'}});
-      const [scenePipeline,blit,sheet,strand,drop,shadow,splashlet,depositSheet,depositDrop,depositSecondary]=await Promise.all([
+      const [asphalt,scenePipeline,directScene,groundScene,directGround,car,directCar,blit,sheet,strand,drop,shadow,splashlet,depositSheet,depositDrop,depositSecondary]=await Promise.all([
+        make('lab-asphalt-cache',modules[0],'vs_fullscreen','fs_asphalt','r16float',false,false,asphaltPipelineLayout),
         make('lab-scene',modules[0],'vs_fullscreen','fs_scene','rgba8unorm'),
+        make('lab-direct-scene',modules[0],'vs_fullscreen','fs_scene',this.format),
+        make('lab-ground',modules[0],'vs_fullscreen','fs_ground','rgba8unorm'),
+        make('lab-direct-ground',modules[0],'vs_fullscreen','fs_ground',this.format),
+        make('lab-car',modules[0],'vs_car','fs_car','rgba8unorm'),
+        make('lab-direct-car',modules[0],'vs_car','fs_car',this.format),
         make('lab-blit',modules[1],'vs_blit','fs_blit',this.format),
         make('liquid-membrane',modules[1],'vs_sheet','fs_sheet',this.format,true,true),
         make('liquid-filaments',modules[1],'vs_strand','fs_strand',this.format,true,true),
@@ -63,8 +72,9 @@ export class SplashRenderer {
         make('deposit-secondary',modules[1],'vs_deposit_secondary','fs_deposit_drop','rg16float',false,ADDITIVE,depositionPipelineLayout),
       ]);
       if(this.closed)throw Error('Renderer closed during pipeline creation');
-      this.pipelines={scene:scenePipeline,blit,sheet,strand,drop,shadow,splashlet,depositSheet,depositDrop,depositSecondary};
+      this.pipelines={asphalt,directScene,groundScene,directGround,car,directCar,scene:scenePipeline,blit,sheet,strand,drop,shadow,splashlet,depositSheet,depositDrop,depositSecondary};
       this.uniformBuffer=this.buffer('lab-uniforms',this.uniforms,GPUBufferUsage.UNIFORM);
+      this.asphaltGroup=device.createBindGroup({layout:asphaltLayout,entries:[{binding:0,resource:{buffer:this.uniformBuffer}}]});
       this.depositionGroup=device.createBindGroup({layout:depositionLayout,entries:[{binding:0,resource:{buffer:this.uniformBuffer}}]});
       const mesh=makeSheetMesh(),strands=makeStrandMesh();
       this.sheetVertices=this.buffer('membrane-parameters',mesh.vertices,GPUBufferUsage.VERTEX);
@@ -92,15 +102,15 @@ export class SplashRenderer {
     if(bitmap){this.device.queue.copyExternalImageToTexture({source:bitmap},{texture:this.carTexture},[width,height]);bitmap.close();}
     else this.device.queue.writeTexture({texture:this.carTexture},new Uint8Array([0,0,0,0]),{bytesPerRow:4},[1,1]);
   }
-  group(view,groundView=this.groundView) {return this.device.createBindGroup({layout:this.layout,entries:[{binding:0,resource:{buffer:this.uniformBuffer}},{binding:1,resource:view},{binding:2,resource:this.sampler},{binding:3,resource:groundView}]});}
+  group(view,groundView=this.groundView) {return this.device.createBindGroup({layout:this.layout,entries:[{binding:0,resource:{buffer:this.uniformBuffer}},{binding:1,resource:view},{binding:2,resource:this.sampler},{binding:3,resource:groundView},{binding:6,resource:this.asphaltView}]});}
   ensureGround(size) {
     if(this.groundTexture?.width===size)return;
     const texture=this.device.createTexture({label:'world-space-liquid-deposition',size:[size,size],format:'rg16float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_SRC});
     try{
-      const view=texture.createView(),sceneGroup=this.group(this.carTexture.createView(),view);
+      const view=texture.createView(),sceneGroup=this.asphaltView?this.group(this.carTexture.createView(),view):null;
       const liquidGroup=this.sceneTexture?this.group(this.sceneView,view):null;
       this.groundTexture?.destroy();this.groundTexture=texture;this.groundView=view;
-      this.sceneGroup=sceneGroup;if(liquidGroup)this.liquidGroup=liquidGroup;
+      if(sceneGroup)this.sceneGroup=sceneGroup;if(liquidGroup)this.liquidGroup=liquidGroup;
     }catch(error){texture.destroy();throw error;}
     this.depositionKey=null;this.stats.resourceAllocations++;this.stats.groundTextureBytes=size*size*4;
   }
@@ -112,9 +122,17 @@ export class SplashRenderer {
     const width=Math.max(1,Math.floor(w*scale)),height=Math.max(1,Math.floor(h*scale));
     if(this.sceneTexture&&this.canvas.width===width&&this.canvas.height===height)return;
     const next=this.device.createTexture({label:'lab-scene-refraction-source',size:[width,height],format:'rgba8unorm',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
-    try{const view=next.createView(),group=this.group(view);this.sceneTexture?.destroy();this.sceneTexture=next;this.sceneView=view;this.liquidGroup=group;}catch(error){next.destroy();throw error;}
+    let asphalt;
+    try{
+      asphalt=this.device.createTexture({label:'lab-static-asphalt',size:[width,height],format:'r16float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
+      const view=next.createView();this.asphaltView=asphalt.createView();
+      const liquidGroup=this.group(view),sceneGroup=this.group(this.carTexture.createView());
+      this.sceneTexture?.destroy();this.asphaltTexture?.destroy();
+      this.sceneTexture=next;this.sceneView=view;this.asphaltTexture=asphalt;this.liquidGroup=liquidGroup;this.sceneGroup=sceneGroup;
+    }catch(error){next.destroy();asphalt?.destroy();throw error;}
+    this.terrainKey=null;
     this.canvas.width=width;this.canvas.height=height;
-    this.stats.resourceAllocations++;this.stats.sceneTextureBytes=width*height*4;
+    this.stats.resourceAllocations+=2;this.stats.sceneTextureBytes=width*height*4;this.stats.asphaltTextureBytes=width*height*2;
     this.stats.width=width;this.stats.height=height;
   }
   render(time,settings) {
@@ -135,14 +153,22 @@ export class SplashRenderer {
         settings.bodyWetness,settings.bodyRunoff,settings.hoodDeflection,0,
         settings.bodyDryingDuration,settings.bodyResidue,settings.vehicleInteraction?1:0,0]);
       this.device.queue.writeBuffer(this.uniformBuffer,0,this.uniforms);
-      this.sceneTimer?.startFrame();this.liquidTimer?.startFrame();
+      const airborne=age>0&&age<2.8;
+      this.stats.airborne=airborne;this.sceneTimer?.startFrame();if(airborne)this.liquidTimer?.startFrame();
       // Reconstruct only when contact history changes. Seeking backwards clears
       // future deposits; settled ground stays cached across later frames.
       const key=[Math.min(3,Math.max(0,age)),settings.speed,settings.volume,settings.breakup,settings.seed,settings.quality].join(':');
       const deposit=key!==this.depositionKey;
       if(deposit)this.groundTimer?.startFrame();
       const encoder=this.device.createCommandEncoder({label:'splash-laboratory'});
-      this.stats.drawCalls=0;
+      this.stats.drawCalls=0;this.stats.computeDispatches=0;
+      const terrainKey=[...this.uniforms.slice(0,3),this.uniforms[11],...this.uniforms.slice(26,28)].join(':');
+      const rebuildTerrain=terrainKey!==this.terrainKey;
+      if(rebuildTerrain){
+        const terrain=encoder.beginRenderPass({label:'static-asphalt-cache',colorAttachments:[{view:this.asphaltView,loadOp:'clear',storeOp:'store'}]});
+        terrain.setPipeline(this.pipelines.asphalt);terrain.setBindGroup(0,this.asphaltGroup);terrain.draw(3);terrain.end();
+        this.stats.drawCalls++;this.stats.terrainRebuilds=(this.stats.terrainRebuilds??0)+1;this.terrainKey=terrainKey;
+      }
       if(deposit){
         const ground=encoder.beginRenderPass({label:'liquid-deposition',timestampWrites:this.groundTimer?.begin(),colorAttachments:[{view:this.groundView,loadOp:'clear',storeOp:'store',clearValue:[0,0,0,0]}]});
         ground.setBindGroup(0,this.depositionGroup);
@@ -153,37 +179,42 @@ export class SplashRenderer {
         }
         ground.end();this.stats.depositionRebuilds=(this.stats.depositionRebuilds??0)+1;
       }
-      const scene=encoder.beginRenderPass({label:'ground-and-car',timestampWrites:this.sceneTimer?.begin(),colorAttachments:[{view:this.sceneView,loadOp:'clear',storeOp:'store',clearValue:[0,0,0,1]}]});
-      scene.setPipeline(this.pipelines.scene);scene.setBindGroup(0,this.sceneGroup);scene.draw(3);
+      // Without airborne refraction, shade directly into the output target.
+      const output=this.context.getCurrentTexture().createView();
+      const scene=encoder.beginRenderPass({label:'ground-and-car',timestampWrites:this.sceneTimer?.begin(),colorAttachments:[{view:airborne?this.sceneView:output,loadOp:'clear',storeOp:'store',clearValue:[0,0,0,1]}]});
+      scene.setPipeline(this.hasCar?(airborne?this.pipelines.groundScene:this.pipelines.directGround):(airborne?this.pipelines.scene:this.pipelines.directScene));scene.setBindGroup(0,this.sceneGroup);scene.draw(3);
       this.stats.drawCalls++;
-      if(age>0&&age<2.8){scene.setPipeline(this.pipelines.shadow);scene.draw(6,q.drops);this.stats.drawCalls++;}
+      if(this.hasCar){scene.setPipeline(airborne?this.pipelines.car:this.pipelines.directCar);scene.draw(6);this.stats.drawCalls++;}
+      if(airborne){scene.setPipeline(this.pipelines.shadow);scene.draw(6,q.drops);this.stats.drawCalls++;}
       scene.end();
-      const pass=encoder.beginRenderPass({label:'procedural-liquid',timestampWrites:this.liquidTimer?.begin(),colorAttachments:[{view:this.context.getCurrentTexture().createView(),loadOp:'clear',storeOp:'store',clearValue:[0,0,0,1]}]});
-      pass.setBindGroup(0,this.liquidGroup);pass.setPipeline(this.pipelines.blit);pass.draw(3);this.stats.drawCalls++;
-      if(age>0&&age<2.8){
+      if(airborne){
+        const pass=encoder.beginRenderPass({label:'procedural-liquid',timestampWrites:this.liquidTimer?.begin(),colorAttachments:[{view:output,loadOp:'clear',storeOp:'store',clearValue:[0,0,0,1]}]});
+        pass.setBindGroup(0,this.liquidGroup);pass.setPipeline(this.pipelines.blit);pass.draw(3);this.stats.drawCalls++;
         pass.setPipeline(this.pipelines.sheet);pass.setVertexBuffer(0,this.sheetVertices);pass.setIndexBuffer(this.sheetIndices,'uint32');pass.drawIndexed(this.sheetIndexCount,q.sheets);
         pass.setPipeline(this.pipelines.strand);pass.setVertexBuffer(0,this.strandVertices);pass.setIndexBuffer(this.strandIndices,'uint32');pass.drawIndexed(this.strandIndexCount,q.strands);
         pass.setPipeline(this.pipelines.drop);pass.draw(6,q.drops);
         pass.setPipeline(this.pipelines.splashlet);pass.draw(6,q.drops*2);this.stats.drawCalls+=4;
+        pass.end();
       }
-      pass.end();this.sceneTimer?.encode(encoder);this.liquidTimer?.encode(encoder);if(deposit)this.groundTimer?.encode(encoder);
-      this.device.queue.submit([encoder.finish()]);this.sceneTimer?.submitted();this.liquidTimer?.submitted();if(deposit){this.groundTimer?.submitted();this.depositionKey=key;}
+      this.sceneTimer?.encode(encoder);if(airborne)this.liquidTimer?.encode(encoder);if(deposit)this.groundTimer?.encode(encoder);
+      this.device.queue.submit([encoder.finish()]);this.sceneTimer?.submitted();if(airborne)this.liquidTimer?.submitted();if(deposit){this.groundTimer?.submitted();this.depositionKey=key;}
       this.stats.frames++;this.stats.sceneGpuMs=this.sceneTimer?.milliseconds??null;this.stats.splashGpuMs=this.liquidTimer?.milliseconds??null;
-      this.stats.quality=settings.quality;this.stats.triangles=2+(age>0&&age<2.8?this.sheetIndexCount/3*q.sheets+this.strandIndexCount/3*q.strands+q.drops*8:0)+(deposit&&age>0?this.sheetIndexCount/3*q.sheets+q.drops*6:0);
+      this.stats.quality=settings.quality;this.stats.triangles=(airborne?2:1)+(this.hasCar?2:0)+(rebuildTerrain?1:0)+(airborne?this.sheetIndexCount/3*q.sheets+this.strandIndexCount/3*q.strands+q.drops*8:0)+(deposit&&age>0?this.sheetIndexCount/3*q.sheets+q.drops*6:0);
     }catch(error){this.fail(error.message);}
     this.stats.cpuEncodeMs=performance.now()-start;
   }
   getStats() {
     return {...this.stats,depositionGpuMs:this.groundTimer?.milliseconds??null,depositionTimestampSamples:this.groundTimer?.sampleCount??0,sceneGpuMs:this.sceneTimer?.milliseconds??null,
-      splashGpuMs:this.liquidTimer?.milliseconds??null,
+      splashGpuMs:this.stats.airborne?(this.liquidTimer?.milliseconds??null):null,
       gpuTimestampSamples:Math.min(this.sceneTimer?.sampleCount??0,this.liquidTimer?.sampleCount??0),
-      ownedResourceCount:this.closed?0:this.resources.length+(this.sceneTexture?1:0)+(this.groundTexture?1:0)+(this.sceneTimer?9:0)};
+      ownedResourceBytes:this.closed?0:this.stats.resourceBytes+(this.stats.sceneTextureBytes??0)+(this.stats.asphaltTextureBytes??0)+(this.stats.groundTextureBytes??0),
+      ownedResourceCount:this.closed?0:this.resources.length+(this.sceneTexture?1:0)+(this.groundTexture?1:0)+(this.asphaltTexture?1:0)+(this.sceneTimer?9:0)};
   }
   fail(message) {if(this.closed)return;this.stats.error=message;this.dispose();this.onFailure(message);}
   dispose() {
     if(this.closed)return;this.closed=true;this.ready=false;this.stats.backend='unavailable';
     try{this.context?.unconfigure();}catch{}
-    this.sceneTimer?.destroy();this.liquidTimer?.destroy();this.groundTimer?.destroy();this.sceneTexture?.destroy();this.groundTexture?.destroy();
+    this.sceneTimer?.destroy();this.liquidTimer?.destroy();this.groundTimer?.destroy();this.sceneTexture?.destroy();this.asphaltTexture?.destroy();this.groundTexture?.destroy();
     for(const resource of this.resources)resource.destroy?.();this.resources.length=0;
     this.device?.destroy();
   }
