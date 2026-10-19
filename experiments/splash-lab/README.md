@@ -128,3 +128,7 @@ The original drying version is preserved at `7a4838a` on
 The [optimization audit](../../docs/rendering/SPLASH_OPTIMIZATION.md) documents
 the bounded car pass, compact asphalt cache, corrected final drying, controlled
 comparisons and software-GPU measurements on `verlet_gpt_v25_splash_optimization`.
+
+The [live simulator integration](../../docs/rendering/SIMULATOR_LIQUID.md) now
+shares the liquid shaders and topology with this laboratory. The experiment
+remains a standalone material/timeline reference.

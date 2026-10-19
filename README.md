@@ -132,6 +132,14 @@ Enable debug overlays to visualize internal simulation state, including tyre for
 
 ---
 
+### WebGPU balloon liquid
+
+The live simulator now supports procedural balloon splashes, glossy puddles,
+drying and vehicle wetness on WebGPU. See the
+[live liquid integration notes](docs/rendering/SIMULATOR_LIQUID.md) for captures,
+quality budgets and limitations. Use `?liquid=0` to compare with the previous
+rendering, or `?renderer=canvas` for the existing Canvas fallback.
+
 ## How It Works
 
 At a high level, each frame is split into:

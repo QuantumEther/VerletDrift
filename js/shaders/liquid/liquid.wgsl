@@ -63,7 +63,7 @@ fn carVisibility(world:vec3<f32>)->f32 {
  if(u.bodyDrying.z>.5){return vehicleTransmission(world);}
  // The prior laboratory visibility mask remains available with interaction off.
  let projected=vec2(world.x,world.y-world.z*.48);
- let local=abs((projected-u.car.xy)/u.car.zw);
+ let local=abs(vehicleUnrotate(projected-u.car.xy)/u.car.zw);
  let silhouette=(1.-smoothstep(.35,.46,local.x))*(1.-smoothstep(.40,.50,local.y));
  return 1.-silhouette*(1.-smoothstep(.40,.68,world.z));
 }

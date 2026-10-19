@@ -41,6 +41,7 @@ import {
   CAR_HALF_LENGTH,
 } from './constants.js';
 import { physicsRandom } from './random.js';
+import { recordLiquidImpact, resetLiquidImpacts } from './renderer/liquid-events.js';
 
 
 // =============================================================
@@ -67,6 +68,7 @@ function randomInt(count) {
 // and a random hue so they each have a distinct colour.
 // Called once at game start from main.js after initializeCarBody().
 export function spawnBalloons() {
+  resetLiquidImpacts();
   state.balloons = [];
 
   const mapWidth  = state.params.mapWidth;
@@ -223,6 +225,7 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
     }
     // --- Pop this balloon ---
     balloon.isPopped = true;
+    recordLiquidImpact(balloon, hitSpeed, body, currentTimeSeconds);
 
     // Splat factor [0, 1]: 0 = barely touching, 1 = full-speed impact.
     const splatFactor = Math.min(hitSpeed / SPLAT_MAX_REFERENCE_SPEED, 1.0);

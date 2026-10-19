@@ -45,7 +45,7 @@ import {
 } from './constants.js';
 
 import { initInput } from './input.js';
-import { initGPU, isGPUReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
+import { initGPU, isGPUReady, isGPUVehicleReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
 import { getSkidWidth } from './renderer/vehicle-geometry.js';
 import { drawFallbackSmoke } from './renderer/smoke-fallback.js';
 
@@ -797,8 +797,8 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   applyCameraTransform(simCtx, canvasWidth, canvasHeight);
 
   if (isGPUReady()) {
-    // GPU owns ground, paint, marks, balloons and particles. Canvas retains
-    // the unchanged vehicle, boundary, diagnostics and HUD above the GPU layer.
+    // GPU owns world effects and the wet vehicle when liquid is active.
+    // Canvas retains the fallback vehicle, boundary, diagnostics and HUD.
     drawMapBoundary(simCtx);
     if (state.params.showKinematicArrows) {
       drawKinematicArrows(simCtx);
@@ -850,8 +850,10 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
   });
   while (history.length > maxGhosts + 1) history.shift();
 
-  drawCarGhosts(simCtx);
-  drawCar(simCtx);
+  if (!isGPUVehicleReady()) {
+    drawCarGhosts(simCtx);
+    drawCar(simCtx);
+  }
   removeCameraTransform(simCtx);
 
   // --- GPU world render (background + skid + arrows + particles) ---

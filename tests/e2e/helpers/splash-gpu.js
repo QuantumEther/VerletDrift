@@ -98,7 +98,7 @@ export async function groundPixels(page,points=[]) {
 export async function splashKinematics(page) {
   return page.evaluate(async()=>{
     const renderer=window.splashLab.renderer,{device}=renderer;
-    const common=await fetch('/experiments/splash-lab/shaders/common.wgsl').then(r=>r.text());
+    const common=await fetch('/js/shaders/liquid/common.wgsl').then(r=>r.text());
     const module=device.createShaderModule({code:common+`
       @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
       @compute @workgroup_size(64) fn probe(@builtin(global_invocation_id) gid:vec3<u32>) {
@@ -130,7 +130,7 @@ export async function splashKinematics(page) {
 export async function puddleOptics(page) {
  return page.evaluate(async()=>{
   const r=window.splashLab.renderer,{device}=r;
-  const [common,material,puddles]=await Promise.all(['common','material','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
+  const [common,material,puddles]=await Promise.all(['common','material','puddles'].map(name=>fetch(`/js/shaders/liquid/${name}.wgsl`).then(response=>response.text())));
   const module=device.createShaderModule({code:common+'\n'+material+'\n'+puddles+`
    @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
    @group(0) @binding(2) var linearSampler:sampler;
@@ -171,7 +171,7 @@ export async function puddleOptics(page) {
 export async function airborneOptics(page) {
  return page.evaluate(async()=>{
   const {device}=window.splashLab.renderer;
-  const sources=await Promise.all(['common','material','vehicle','liquid'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
+  const sources=await Promise.all(['common','material','vehicle','liquid'].map(name=>fetch(`/js/shaders/liquid/${name}.wgsl`).then(r=>r.text())));
   const module=device.createShaderModule({code:sources.join('\n')+`
    @group(0) @binding(4) var<storage,read_write> result:array<vec4<f32>>;
    @compute @workgroup_size(1) fn probe() {
@@ -195,7 +195,7 @@ export async function airborneOptics(page) {
   const size=12*16,output=device.createBuffer({size,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
   const read=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
   try {
-   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:4,resource:{buffer:output}}]});
+   const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:window.splashLab.renderer.uniformBuffer}},{binding:4,resource:{buffer:output}}]});
    const encoder=device.createCommandEncoder(),pass=encoder.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
    encoder.copyBufferToBuffer(output,0,read,0,size);device.queue.submit([encoder.finish()]);await read.mapAsync(GPUMapMode.READ);
    const data=new Float32Array(read.getMappedRange());return Array.from({length:12},(_,i)=>[...data.slice(i*4,i*4+4)]);
@@ -208,7 +208,7 @@ export async function airborneOptics(page) {
 export async function puddleDryingOptics(page) {
  return page.evaluate(async()=>{
   const {device}=window.splashLab.renderer;
-  const sources=await Promise.all(['common','material','puddles'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(r=>r.text())));
+  const sources=await Promise.all(['common','material','puddles'].map(name=>fetch(`/js/shaders/liquid/${name}.wgsl`).then(r=>r.text())));
   const module=device.createShaderModule({code:sources.join('\n')+`
    @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
    @group(0) @binding(2) var linearSampler:sampler;
@@ -247,7 +247,7 @@ export async function puddleDryingOptics(page) {
 export async function vehicleLiquidProbe(page) {
  return page.evaluate(async()=>{
   const r=window.splashLab.renderer,{device}=r;
-  const sources=await Promise.all(['common','material','vehicle'].map(name=>fetch(`/experiments/splash-lab/shaders/${name}.wgsl`).then(response=>response.text())));
+  const sources=await Promise.all(['common','material','vehicle'].map(name=>fetch(`/js/shaders/liquid/${name}.wgsl`).then(response=>response.text())));
   const module=device.createShaderModule({code:sources.join('\n')+`
    @group(0) @binding(1) var<storage,read_write> result:array<vec4<f32>>;
    fn pack(f:BodyFilm)->vec4<f32>{return vec4(f.depth,f.wet,f.residue,f.caught);}

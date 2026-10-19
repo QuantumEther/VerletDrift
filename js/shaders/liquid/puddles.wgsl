@@ -1,5 +1,9 @@
 // Optical reconstruction of the existing R=deposit / G=wet-coverage atlas.
 // Shared water optics are provided by material.wgsl.
+// One accessor lets the simulator select an atlas layer without duplicating optics.
+fn sampleDepositedGround(uv:vec2<f32>)->vec2<f32>{
+ return textureSampleLevel(groundTexture,linearSampler,uv,0.).rg;
+}
 // Value and analytical slope of the same smooth, seeded world-space noise.
 fn noiseSlope(p:vec2<f32>)->vec3<f32> {
  let cell=vec2<i32>(floor(p));let f=fract(p);let v=f*f*(3.-2.*f);let dv=6.*f*(1.-f);
@@ -53,7 +57,7 @@ fn settlingRipple(world:vec2<f32>,age:f32)->vec2<f32> {
 }
 fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let uv=(world-u.event.xy)/(u.ground.x*2.)+.5;
- let field=textureSampleLevel(groundTexture,linearSampler,uv,0.);
+ let field=sampleDepositedGround(uv);
  let depthAA=max(fwidth(field.r),.0005);
  if(field.g<.0001){return asphalt;}
  let terrainA=noiseSlope(world*.55);let terrainB=noiseSlope(world*1.7+vec2(19.2,6.3));
@@ -66,13 +70,13 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let standing=dry.standing;let water=dry.water;let wet=dry.wet;
  let porosity=material.porosity;
  let stain=min(field.r,material.capacity)*mix(1.,u.drying.w,dry.progress)+dry.residue;
- let poreTransmission=exp(-vec3(.4,4.5,7.)*(stain+dry.residue)*u.effect.w*2.5);
+ let poreTransmission=exp(-select(vec3(.4,4.5,7.),u.dye.xyz*.018,u.dye.w>.5)*(stain+dry.residue)*u.effect.w*2.5);
  // With no water left there is no water/air interface: retain only dye in
  // the substrate. This also avoids four atlas reads and the full wet BRDF.
  if(wet<=0.&&standing<=0.){return toDisplay(toLinear(asphalt)*poreTransmission);}
  let texel=1./u.ground.y;
- let dx=textureSampleLevel(groundTexture,linearSampler,uv+vec2(texel,0.),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(texel,0.),0.).r;
- let dy=textureSampleLevel(groundTexture,linearSampler,uv+vec2(0.,texel),0.).r-textureSampleLevel(groundTexture,linearSampler,uv-vec2(0.,texel),0.).r;
+ let dx=sampleDepositedGround(uv+vec2(texel,0.)).r-sampleDepositedGround(uv-vec2(texel,0.)).r;
+ let dy=sampleDepositedGround(uv+vec2(0.,texel)).r-sampleDepositedGround(uv-vec2(0.,texel)).r;
  let gradient=vec2(dx,dy)*u.ground.y/(u.ground.x*4.)*u.optics.y;
  let physicalDepth=standing*.035; // artistic proxy -> shallow millimetre layer
  let view=normalize(vec3(0.,.48,1.)); // same oblique height projection as clip()

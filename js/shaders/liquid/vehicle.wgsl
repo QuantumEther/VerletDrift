@@ -1,6 +1,6 @@
 // Analytic car-local liquid field. Reconstruct from event age, never frame history.
 // Sprite coordinates: nose y=-.5, hood [-.48,-.26], windshield [-.26,-.05].
-fn vehicleLocal(projected:vec2<f32>)->vec2<f32> {return (projected-u.car.xy)/u.car.zw;}
+fn vehicleLocal(projected:vec2<f32>)->vec2<f32> {return vehicleUnrotate(projected-u.car.xy)/u.car.zw;}
 fn vehicleFootprint(q:vec2<f32>)->f32 {
  return (1.-smoothstep(.39,.47,abs(q.x)))*(1.-smoothstep(.46,.50,abs(q.y)));
 }
@@ -26,7 +26,7 @@ fn vehicleDeflect(point:vec3<f32>)->vec3<f32> {
  let windshield=smoothstep(-.34,-.20,q.y)*(1.-smoothstep(-.08,.12,q.y));
  let lift=(.10+.34*windshield)*(1.-smoothstep(.22,.46,abs(q.x)))*strength;
  // Tangent response at the body, not scaling of the radial splash silhouette.
- return point+vec3(sideways,.48*lift+.20*front*strength,lift);
+ return point+vec3(vehicleRotate(vec2(sideways,.20*front*strength))+vec2(0.,.48*lift),lift);
 }
 fn vehicleTransmission(point:vec3<f32>)->f32 {
  let q=vehicleLocal(vec2(point.x,point.y-point.z*.48));
@@ -92,8 +92,8 @@ fn bodyLiquid(q:vec2<f32>,world:vec2<f32>,art:vec3<f32>)->vec3<f32> {
  let film=bodyFilm(q,u.event.z);
  if(film.wet<=0.&&film.residue<=0.){return art;}
  let glass=smoothstep(-.30,-.22,q.y)*(1.-smoothstep(-.08,.02,q.y));
- let slope=film.slope/u.car.zw;
- let n=normalize(vec3(-slope*.25+vec2(q.x*.38,-.025-glass*.25),1.));
+ let slope=vehicleRotate(film.slope/u.car.zw);
+ let n=normalize(vec3(-slope*.25+vehicleRotate(vec2(q.x*.38,-.025-glass*.25)),1.));
  let view=normalize(vec3(0.,.48,1.));let nv=max(dot(n,view),.001);
  let roughness=clamp(mix(.24,.06,film.wet)*u.material.w,.04,.75);
  let ray=reflect(-view,n);let fresnel=fresnelWater(nv);

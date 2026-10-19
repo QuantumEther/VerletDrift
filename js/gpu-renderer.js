@@ -1,5 +1,5 @@
-// GPU world layers. CPU vehicle/gameplay state is read-only here. The car, debug
-// overlays and HUD retain their existing Canvas path above this canvas.
+// GPU world layers and optional procedural liquid. Vehicle/gameplay state is
+// read-only. Canvas retains HUD, diagnostics and the fallback vehicle path.
 import { renderState as state } from "./state.js";
 import { PIXELS_PER_METER, TRAIL_REFERENCE_SPEED } from "./constants.js";
 import { getSparkPool } from "./renderer/sparks.js";
@@ -11,7 +11,13 @@ import {
   MAX_SMOKE,
 } from "./renderer/smoke-system.js";
 import { getTrailArrowGeometry } from "./trail.js";
-import { getViewCamera, getCheckerTileMetres, isInView } from "./renderer/view.js";
+import {
+  getViewCamera,
+  getCheckerTileMetres,
+  isInView,
+} from "./renderer/view.js";
+import { WorldLiquid } from "./renderer/liquid-world.js";
+import { vehicleSpriteSettings } from "./renderer/vehicle-sprites.js";
 import { BODY_RECT } from "./renderer/vehicle-geometry.js";
 import { GPUSkidCache } from "./renderer/gpu-skid-cache.js";
 import { GPUTiming } from "./renderer/gpu-timing.js";
@@ -59,6 +65,7 @@ let pipelines = {},
   groups = {},
   skidCache,
   timing;
+let liquidWorld;
 let rendererGeneration = 0;
 const resources = [];
 const camera = new Float32Array(6),
@@ -92,7 +99,8 @@ let renderStats = {
   drawCalls: 0,
   computeWorkgroups: 0,
   gpuRenderMs: null,
-  gpuTimingScope: "world render pass; separate smoke compute; excludes Canvas and presentation",
+  gpuTimingScope:
+    "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
   residentBytes: 0,
   skidTextureBytes: 0,
   omittedSkids: 0,
@@ -105,6 +113,19 @@ let renderStats = {
 export function getGPURenderStats() {
   return {
     ...renderStats,
+    liquid: liquidWorld
+      ? liquidWorld.getStats(state.loop.simulationTime)
+      : null,
+    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0),
+    resourceCount:
+      renderStats.resourceCount +
+      (liquidWorld
+        ? liquidWorld.resources.length + (liquidWorld.world ? 2 : 0)
+        : 0),
+    liquidResidentBytes: liquidWorld?.ownedBytes ?? 0,
+    liquidResourceCount: liquidWorld
+      ? liquidWorld.resources.length + (liquidWorld.world ? 2 : 0)
+      : 0,
     gpuRenderMs: timing?.milliseconds ?? renderStats.gpuRenderMs,
     gpuComputeMs: timing?.computeMilliseconds ?? null,
     gpuTimestampSamples: timing?.sampleCount ?? 0,
@@ -159,6 +180,8 @@ function release(reason) {
   } catch {}
   for (const resource of resources) resource.destroy?.();
   resources.length = 0;
+  liquidWorld?.destroy();
+  liquidWorld = null;
   skidCache?.destroy();
   skidCache = null;
   timing?.destroy();
@@ -176,7 +199,9 @@ function release(reason) {
   }
 }
 async function shader(name) {
-  const r = await fetch(new URL(`./shaders/${name}.wgsl`, import.meta.url), { cache: "no-cache" });
+  const r = await fetch(new URL(`./shaders/${name}.wgsl`, import.meta.url), {
+    cache: "no-cache",
+  });
   if (!r.ok) throw Error(`Shader ${name}: ${r.status}`);
   return device.createShaderModule({ label: name, code: await r.text() });
 }
@@ -319,6 +344,31 @@ export async function initGPU(target) {
       1,
     );
     skidCache = new GPUSkidCache(device, buffers.camera, skid);
+    if (
+      new URLSearchParams(globalThis.location?.search || "").get("liquid") !==
+      "0"
+    ) {
+      liquidWorld = new WorldLiquid(device, format, renderingOptions.quality);
+      delete renderStats.liquidError;
+      try {
+        device.pushErrorScope("validation");
+        try {
+          await liquidWorld.init();
+        } finally {
+          const error = await device.popErrorScope();
+          if (error) throw Error(error.message);
+        }
+      } catch (error) {
+        liquidWorld?.destroy();
+        liquidWorld = null;
+        renderStats.liquidError = error.message;
+        logger.warn(
+          "gpu",
+          "Liquid effects unavailable; retaining the existing world renderer.",
+          { error: error.message },
+        );
+      }
+    }
     smokeFlags.fill(0);
     device.queue.writeBuffer(buffers.flags, 0, smokeFlags);
     lastSkidTime = NaN;
@@ -351,6 +401,15 @@ export async function initGPU(target) {
   } finally {
     initializing = false;
   }
+}
+export function isGPUVehicleReady() {
+  return (
+    ready &&
+    !!liquidWorld?.hasArt &&
+    liquidWorld.active(state.loop.simulationTime) &&
+    vehicleSpriteSettings.enabled &&
+    !vehicleSpriteSettings.calibration
+  );
 }
 export function isGPUReady() {
   return ready;
@@ -430,7 +489,8 @@ export function renderFrameGPU(width, height) {
       ppm = p.pixelsPerMeter || PIXELS_PER_METER;
     const halfWidth = width / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
     const halfHeight = height / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
-    const visible = (x, y, rx, ry = rx) => isInView(x, y, rx, ry, view, halfWidth, halfHeight);
+    const visible = (x, y, rx, ry = rx) =>
+      isInView(x, y, rx, ry, view, halfWidth, halfHeight);
     let culledInstances = 0;
     const elapsed = Math.max(
       0,
@@ -486,7 +546,8 @@ export function renderFrameGPU(width, height) {
       0,
     ]);
     write(buffers.bg, background);
-    let arrowCount = 0, arrowCandidates = 0;
+    let arrowCount = 0,
+      arrowCandidates = 0;
     for (const a of state.trail.arrows) {
       const alpha = Math.pow(
         Math.max(0, 1 - a.age / a.lifespan),
@@ -496,7 +557,10 @@ export function renderFrameGPU(width, height) {
       if (arrowCandidates++ === MAX_ARROWS) break;
       const g = getTrailArrowGeometry(a.speed);
       const radius = g.length + 1.1 * g.lineWidth;
-      if (!visible(a.x, a.y, radius)) { culledInstances++; continue; }
+      if (!visible(a.x, a.y, radius)) {
+        culledInstances++;
+        continue;
+      }
       const b = arrowCount++ * 9;
       arrows[b] = a.x - view.x;
       arrows[b + 1] = a.y - view.y;
@@ -525,16 +589,25 @@ export function renderFrameGPU(width, height) {
           b = sparkCount++ * 7,
           c = SPARK_PALETTE[s.hdrIndex % 5];
         sparks[b] = s.x - view.x;
-        sparks[b+1] = s.y - view.y;
-        sparks[b+2] = s.size * (1 - t * .5);
-        sparks[b+3] = c[0]; sparks[b+4] = c[1]; sparks[b+5] = c[2];
-        sparks[b+6] = (1 - t) ** 2;
+        sparks[b + 1] = s.y - view.y;
+        sparks[b + 2] = s.size * (1 - t * 0.5);
+        sparks[b + 3] = c[0];
+        sparks[b + 4] = c[1];
+        sparks[b + 5] = c[2];
+        sparks[b + 6] = (1 - t) ** 2;
       }
     write(buffers.sparks, sparks, sparkCount * 7);
     let splatCount = 0;
-    for (let index = 0; index < Math.min(state.splatParticles.length, MAX_PARTICLES); index++) {
+    for (
+      let index = 0;
+      index < Math.min(state.splatParticles.length, MAX_PARTICLES);
+      index++
+    ) {
       const s = state.splatParticles[index];
-      if (!visible(s.x, s.y, s.radius)) { culledInstances++; continue; }
+      if (!visible(s.x, s.y, s.radius)) {
+        culledInstances++;
+        continue;
+      }
       const b = splatCount++ * 7;
       splats[b] = s.x - view.x;
       splats[b + 1] = s.y - view.y;
@@ -554,7 +627,10 @@ export function renderFrameGPU(width, height) {
     for (const d of state.splatDecals) {
       if (d.alpha <= 0.005) continue;
       if (decalCandidates++ === MAX_SURFACE) break;
-      if (!visible(d.x, d.y, d.radius)) { culledInstances++; continue; }
+      if (!visible(d.x, d.y, d.radius)) {
+        culledInstances++;
+        continue;
+      }
       surface(
         decals,
         decalCount++,
@@ -591,8 +667,9 @@ export function renderFrameGPU(width, height) {
       if (b.isPopped) continue;
       if (balloonCandidates++ === MAX_SURFACE - 3) break;
       // Include the string and displaced contact shadow in the union bound.
-      if (!visible(b.x, b.y, b.radius * 1.2 + .12, b.radius * 2 + .18)) {
-        culledInstances += 2; continue;
+      if (!visible(b.x, b.y, b.radius * 1.2 + 0.12, b.radius * 2 + 0.18)) {
+        culledInstances += 2;
+        continue;
       }
       surface(
         sh,
@@ -621,8 +698,14 @@ export function renderFrameGPU(width, height) {
     write(buffers.balloons, balloons, balloonCount * 9);
     write(buffers.shadows, sh, shadowCount * 9);
     renderStats.culledInstances = culledInstances;
-    renderStats.instances = { decals: decalCount, balloons: balloonCount,
-      shadows: shadowCount, arrows: arrowCount, splats: splatCount, sparks: sparkCount };
+    renderStats.instances = {
+      decals: decalCount,
+      balloons: balloonCount,
+      shadows: shadowCount,
+      arrows: arrowCount,
+      splats: splatCount,
+      sparks: sparkCount,
+    };
     const skidEvents = p.showSkidMarks ? state.skidMarks : EMPTY_EVENTS,
       skidWidth = p.gpuSkidResolution ?? 1;
     if (
@@ -648,12 +731,18 @@ export function renderFrameGPU(width, height) {
       if (!s?.alive) return;
       const b = i * 12;
       // Spawn bursts reuse the staging array without allocating JS tuples.
-      smokeData[b] = s.pos.x; smokeData[b+1] = s.pos.y;
-      smokeData[b+2] = s.vel.x; smokeData[b+3] = s.vel.y;
-      smokeData[b+4] = s.life; smokeData[b+5] = s.maxLife;
-      smokeData[b+6] = s.size; smokeData[b+7] = s.sizeBase;
-      smokeData[b+8] = s.r; smokeData[b+9] = s.g;
-      smokeData[b+10] = s.b; smokeData[b+11] = s.alpha;
+      smokeData[b] = s.pos.x;
+      smokeData[b + 1] = s.pos.y;
+      smokeData[b + 2] = s.vel.x;
+      smokeData[b + 3] = s.vel.y;
+      smokeData[b + 4] = s.life;
+      smokeData[b + 5] = s.maxLife;
+      smokeData[b + 6] = s.size;
+      smokeData[b + 7] = s.sizeBase;
+      smokeData[b + 8] = s.r;
+      smokeData[b + 9] = s.g;
+      smokeData[b + 10] = s.b;
+      smokeData[b + 11] = s.alpha;
       smokeFlags[i] = 1;
       smokeDirty[i] = 1;
       lo = Math.min(lo, i);
@@ -666,7 +755,7 @@ export function renderFrameGPU(width, height) {
     // Dirty spans can contain living slots between spawns. Upload runs separately
     // so stale CPU positions never overwrite GPU-integrated neighbors.
     if (hi >= lo) {
-      for (let i = lo; i <= hi; ) {
+      for (let i = lo; i <= hi;) {
         if (!smokeDirty[i]) {
           i++;
           continue;
@@ -705,10 +794,25 @@ export function renderFrameGPU(width, height) {
     smokeUniform[6] = renderQuality.smokeDetail;
     smokeUniform[7] = 0;
     write(buffers.smokeUniform, smokeUniform);
+    const useLiquid = !!liquidWorld?.active(state.loop.simulationTime);
+    if (useLiquid) {
+      liquidWorld.prepare(
+        state,
+        canvas.width,
+        canvas.height,
+        view,
+        (cam.zoom * ppm * canvas.width) / width,
+        isGPUVehicleReady(),
+      );
+      renderStats.uploadBytes += liquidWorld.stats.uploadBytes;
+    }
     const encoder = device.createCommandEncoder({ label: "worldFrame" });
     timing?.startFrame();
     if (smokeSlots > 0 && elapsed > 0) {
-      const pass = encoder.beginComputePass({ label: "smokeCompute", timestampWrites: timing?.begin("compute") });
+      const pass = encoder.beginComputePass({
+        label: "smokeCompute",
+        timestampWrites: timing?.begin("compute"),
+      });
       pass.setPipeline(pipelines.compute);
       pass.setBindGroup(0, groups.compute);
       const n = Math.ceil(smokeSlots / 256);
@@ -721,7 +825,9 @@ export function renderFrameGPU(width, height) {
       timestampWrites: timing?.begin(),
       colorAttachments: [
         {
-          view: context.getCurrentTexture().createView(),
+          view: useLiquid
+            ? liquidWorld.worldView
+            : context.getCurrentTexture().createView(),
           loadOp: "clear",
           storeOp: "store",
           clearValue: { r: 0, g: 0, b: 0, a: 0 },
@@ -747,24 +853,37 @@ export function renderFrameGPU(width, height) {
       shadowCount,
       buffers.shadows,
     );
-    draw(
-      pass,
-      pipelines.surface,
-      groups.surface,
-      6,
-      balloonCount,
-      buffers.balloons,
-    );
-    if (smokeSlots > 0 && p.smokeEnabled) {
-      pass.setPipeline(pipelines.smoke);
-      pass.setBindGroup(0, groups.smokeCamera);
-      pass.setBindGroup(1, groups.smokeParticles);
-      pass.draw(6, smokeSlots);
-      renderStats.drawCalls++;
-    }
-    draw(pass, pipelines.part, groups.part, 6, sparkCount, buffers.sparks);
-    draw(pass, pipelines.part, groups.part, 6, splatCount, buffers.splats);
+    // Upper world objects must not be treated as asphalt by puddle optics.
+    const drawUpperWorld = (pass) => {
+      draw(
+        pass,
+        pipelines.surface,
+        groups.surface,
+        6,
+        balloonCount,
+        buffers.balloons,
+      );
+      if (smokeSlots > 0 && p.smokeEnabled) {
+        pass.setPipeline(pipelines.smoke);
+        pass.setBindGroup(0, groups.smokeCamera);
+        pass.setBindGroup(1, groups.smokeParticles);
+        pass.draw(6, smokeSlots);
+        renderStats.drawCalls++;
+      }
+      draw(pass, pipelines.part, groups.part, 6, sparkCount, buffers.sparks);
+      if (!useLiquid)
+        draw(pass, pipelines.part, groups.part, 6, splatCount, buffers.splats);
+    };
+    if (!useLiquid) drawUpperWorld(pass);
     pass.end();
+    if (useLiquid) {
+      liquidWorld.encode(
+        encoder,
+        context.getCurrentTexture().createView(),
+        drawUpperWorld,
+      );
+      renderStats.drawCalls += liquidWorld.stats.drawCalls;
+    }
     timing?.encode(encoder);
     const readback =
       smokeSlots > 0 && !readbackPending && ++readbackFrames >= 12;

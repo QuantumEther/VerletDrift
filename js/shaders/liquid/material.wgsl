@@ -26,7 +26,10 @@ fn rectangleDistance(p:vec2<f32>,halfSize:vec2<f32>)->f32 {
 fn reflectedEnvironment(world:vec2<f32>,ray:vec3<f32>,roughness:f32)->vec3<f32> {
  // Reflect a fixed overhead rectangular luminaire, not a painted screen patch.
  // Roughness approximates convolution by widening the emitter's angular edge.
- let hit=world+ray.xy*(8./max(ray.z,.08));let offset=hit-vec2(-1.8,-6.4);
+ // A distant environment is translation invariant across the live map. The
+ // laboratory retains its finite local luminaire when pose.z is zero.
+ let origin=select(world,vec2(0.),u.pose.z>.5);
+ let hit=origin+ray.xy*(8./max(ray.z,.08));let offset=hit-vec2(-1.8,-6.4);
  let local=vec2(offset.x*.90-offset.y*.436,offset.x*.436+offset.y*.90);
  let blur=.055+roughness*roughness*18.;
  let box=1.-smoothstep(-blur,blur,rectangleDistance(local,vec2(.42,3.3)));
@@ -37,9 +40,10 @@ fn reflectedEnvironment(world:vec2<f32>,ray:vec3<f32>,roughness:f32)->vec3<f32> 
 }
 fn waterTransmission(depth:f32,viewCosine:f32,concentration:f32)->vec3<f32> {
  let path=depth*(1.+1./max(viewCosine,.35));
- return exp(-vec3(18.,260.,420.)*path*concentration);
+ return exp(-select(vec3(18.,260.,420.),u.dye.xyz,u.dye.w>.5)*path*concentration);
 }
 // Weak ambient return from dyed water, shared with the reference puddle.
 fn waterMedium(opticalMass:f32)->vec3<f32> {
- return vec3(.022,.00008,.00022)*(1.-exp(-opticalMass));
+ let tint=select(vec3(.022,.00008,.00022),exp(-u.dye.xyz*.025)*.035,u.dye.w>.5);
+ return tint*(1.-exp(-opticalMass));
 }

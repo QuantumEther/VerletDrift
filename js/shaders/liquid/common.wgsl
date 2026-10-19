@@ -11,6 +11,8 @@ struct Uniforms {
   drying: vec4<f32>, // nominal duration, irregularity, absorption, dye residue
   vehicle: vec4<f32>, // body wetness, runoff, hood deflection, reserved
   bodyDrying: vec4<f32>, // body drying duration, dye residue, interaction enabled, reserved
+  pose: vec4<f32>, // heading cos/sin, distant environment flag, reserved; lab defaults zero
+  dye: vec4<f32>, // absorption RGB, enabled
 }
 @group(0) @binding(0) var<uniform> u: Uniforms;
 const PI=3.14159265359;
@@ -94,4 +96,13 @@ fn splashlet(id:u32)->Drop {
  let alive=smoothstep(0.,.015,t)*(1.-smoothstep(0.,.08,t-flight))*step(.033,parent.size);
  return Drop(vec3(parent.ground+velocity*airborne,max(0.,vz*airborne-4.905*airborne*airborne)),size,
   velocity,smoothstep(0.,.08,t-flight),alive,parent.ground+velocity*flight,parent.arrival+flight,size);
+}
+
+fn vehicleRotate(v:vec2<f32>)->vec2<f32>{
+ if(dot(u.pose.xy,u.pose.xy)<.5){return v;}
+ return vec2(v.x*u.pose.x-v.y*u.pose.y,v.x*u.pose.y+v.y*u.pose.x);
+}
+fn vehicleUnrotate(v:vec2<f32>)->vec2<f32>{
+ if(dot(u.pose.xy,u.pose.xy)<.5){return v;}
+ return vec2(v.x*u.pose.x+v.y*u.pose.y,-v.x*u.pose.y+v.y*u.pose.x);
 }

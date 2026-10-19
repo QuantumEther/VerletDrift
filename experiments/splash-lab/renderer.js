@@ -7,7 +7,7 @@ const VERTICES=[{arrayStride:8,attributes:[{shaderLocation:0,offset:0,format:'fl
 export class SplashRenderer {
   constructor(canvas,onFailure=()=>{}) {
     this.canvas=canvas;this.onFailure=onFailure;this.ready=false;this.closed=false;this.resources=[];
-    this.uniforms=new Float32Array(48);this.depositionKey=null;
+    this.uniforms=new Float32Array(56);this.depositionKey=null;
     this.stats={backend:'uninitialized',drawCalls:0,frames:0,resourceAllocations:0,resourceBytes:0,cpuEncodeMs:0,sceneGpuMs:null,splashGpuMs:null};
   }
   track(resource,bytes=0) {this.resources.push(resource);this.stats.resourceAllocations++;this.stats.resourceBytes+=bytes;return resource;}
@@ -46,7 +46,7 @@ export class SplashRenderer {
       const depositionPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[depositionLayout]});
       const asphaltLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}}]});
       const asphaltPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[asphaltLayout]});
-      const read=async name=>{const response=await fetch(new URL(`shaders/${name}.wgsl`,import.meta.url),{cache:'no-cache'});if(!response.ok)throw Error(`Shader ${name}: HTTP ${response.status}`);return response.text();};
+      const read=async name=>{const response=await fetch(new URL(name==='scene'?`shaders/${name}.wgsl`:`../../js/shaders/liquid/${name}.wgsl`,import.meta.url),{cache:'no-cache'});if(!response.ok)throw Error(`Shader ${name}: HTTP ${response.status}`);return response.text();};
       const [common,material,vehicle,puddles,scene,liquid]=await Promise.all(['common','material','vehicle','puddles','scene','liquid'].map(read));
       const modules=[device.createShaderModule({label:'splash-scene',code:common+'\n'+material+'\n'+vehicle+'\n'+puddles+'\n'+scene}),device.createShaderModule({label:'splash-liquid',code:common+'\n'+material+'\n'+vehicle+'\n'+liquid})];
       if(this.closed)throw Error('Renderer closed during shader loading');
