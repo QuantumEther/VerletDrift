@@ -136,8 +136,9 @@ Enable debug overlays to visualize internal simulation state, including tyre for
 
 The live simulator now supports procedural balloon splashes, glossy puddles,
 drying and vehicle wetness on WebGPU. See the
-[live liquid integration notes](docs/rendering/SIMULATOR_LIQUID.md) for captures,
-quality budgets and limitations. Use `?liquid=0` to compare with the previous
+[complete live liquid integration notes](docs/rendering/COMPLETE_LIQUID_INTEGRATION.md) for captures,
+quality budgets, controls and limitations. Expand the liquid cards under Rendering
+to tune splashes, wet car, puddle drying and dye degradation. Use `?liquid=0` to compare with the previous
 rendering, or `?renderer=canvas` for the existing Canvas fallback.
 
 ## How It Works

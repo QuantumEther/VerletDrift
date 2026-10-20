@@ -136,3 +136,7 @@ remains a standalone material/timeline reference.
 
 The [residue weathering report](../../docs/rendering/RESIDUE_WEATHERING.md)
 describes the lab-only dry dye lifecycle and its validation.
+
+The [complete live integration](../../docs/rendering/COMPLETE_LIQUID_INTEGRATION.md)
+now exposes the laboratory material/drying controls and ground dye weathering in
+the main simulator. This laboratory remains the independent timeline reference.

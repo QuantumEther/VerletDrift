@@ -3,6 +3,7 @@ import state from '../state.js';
 import { logger } from '../debug/logger.js';
 import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
+import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
 
 export const controlBindings = new Map();
@@ -34,6 +35,7 @@ export function encodeControl(control, value) {
 }
 export function formatControl(control,value) {
  if(control.type==='checkbox') return value?'ON':'OFF';
+ if(control.labels) return control.labels[value] ?? String(value);
  if(control.scale==='log') return value.toFixed(3)+' s';
  // Values are already converted to simulator units. Percentage is display-only.
  if(control.id==='tireSlidingFrictionRatio') return (value*100).toFixed(0)+'%';
@@ -60,6 +62,7 @@ function writeBinding(binding,value,persist=true) {
   writingSound=true;
   try {updateSoundParam(key,canonical);} finally {writingSound=false;}
  } else scope[key]=canonical;
+ if(persist && Object.hasOwn(LIQUID_DEFAULTS,key)) {try{localStorage.setItem('liquidParam_'+key,String(canonical));}catch{/* Storage may be disabled. */}}
  syncBinding(binding);
 }
 function validateValue(binding,value) {
@@ -76,7 +79,11 @@ function enforcePair(id) {
   if(low.scope[low.key]>high.scope[high.key])writeBinding(id===lowId?high:low,(id===lowId?low:high).scope[(id===lowId?low:high).key]);
  }
 }
-export function refreshControls() {controlBindings.forEach(syncBinding);changed();}
+function syncLiquidPreset(){
+ const select=document.getElementById('liquidMaterialPreset');if(!select)return;
+ select.value=['reference','thin-film','deep-pool'].find(name=>Object.entries(liquidPreset(name)).every(([key,value])=>Math.abs(state.params[key]-value)<1e-7))??'custom';
+}
+export function refreshControls() {controlBindings.forEach(syncBinding);syncLiquidPreset();changed();}
 export function resetControls() {
  controlBindings.forEach(binding=>writeBinding(binding,defaults.get(binding.control.id)));
  clearSelection();refreshControls();status('All controls restored to startup defaults.');
@@ -142,15 +149,23 @@ export function initControls() {
   const initial=decodeControl(control,control.type==='checkbox'?input.checked:input.value);
   defaults.set(control.id,initial);
   let value=initial;
-  if(scope===state.soundParams) {
-   try {const stored=localStorage.getItem('soundParam_'+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
+  if(scope===state.soundParams || Object.hasOwn(LIQUID_DEFAULTS,key)) {
+   try {const stored=localStorage.getItem((scope===state.soundParams?'soundParam_':'liquidParam_')+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
   }
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
-   enforcePair(control.id);clearSelection();changed();
+   enforcePair(control.id);clearSelection();if(Object.hasOwn(LIQUID_DEFAULTS,key))syncLiquidPreset();changed();
   });
  }
+ document.getElementById('liquidMaterialPreset').addEventListener('change',event=>{
+  for(const [key,value] of Object.entries(liquidPreset(event.target.value)))writeBinding(controlBindings.get(key),value);
+  refreshControls();status('Liquid material preset applied to running effects.');
+ });
+ document.getElementById('resetLiquidControls').addEventListener('click',()=>{
+  for(const [key,value] of Object.entries(LIQUID_DEFAULTS))writeBinding(controlBindings.get(key),value);
+  document.getElementById('liquidMaterialPreset').value='reference';refreshControls();status('Liquid controls restored to laboratory defaults.');
+ });
  document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset,button)));
  document.getElementById('engineToggle').addEventListener('click',()=>{
   state.engine.isRunning=!state.engine.isRunning;

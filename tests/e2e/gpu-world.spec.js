@@ -17,7 +17,9 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   page,
 }) => {
   await adapterPage(page);
-  await page.goto("/gauge-guide.html?renderer=gpu&gpuPower=low-power&gpuAlpha=opaque&gpuProfile=1");
+  // This fixture injects legacy decals directly, so exercise their retained
+  // comparison path. Live collision/deposition replacement is tested separately.
+  await page.goto("/gauge-guide.html?renderer=gpu&gpuPower=low-power&gpuAlpha=opaque&gpuProfile=1&liquid=0");
   const result = await page.evaluate(async () => {
     const errors = [];
     const original = navigator.gpu.requestAdapter.bind(navigator.gpu);

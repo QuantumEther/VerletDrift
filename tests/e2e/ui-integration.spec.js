@@ -28,9 +28,9 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 176, failures: [], finiteSound: true });
-  await expect(page.locator('input[type=range]')).toHaveCount(162);
-  await expect(page.locator('input[type=checkbox]')).toHaveCount(14);
+  expect(result).toEqual({ count: 203, failures: [], finiteSound: true });
+  await expect(page.locator('input[type=range]')).toHaveCount(185);
+  await expect(page.locator('input[type=checkbox]')).toHaveCount(18);
 });
 
 test('presets, converted controls, and import/export share the same bindings', async ({ page }) => {
@@ -173,4 +173,19 @@ test('storage failure does not prevent startup, driving, sound or layout changes
   await page.locator('#soundToggle').click();
   expect(errors).toEqual([]);
   await context.close();
+});
+
+test('liquid presets, local persistence, reset and settings import operate in the simulator UI',async({page})=>{
+ await page.evaluate(()=>{state.debug.faults.isFrozen=true;});
+ await page.locator('#liquidMaterialPreset').selectOption('deep-pool');
+ expect(await page.evaluate(()=>[state.params.liquidPuddleDepth,state.params.liquidConcentration])).toEqual([1.36,1.65]);
+ await page.locator('#liquidResidueLifetime').evaluate(n=>{n.value='90';n.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.reload();await page.waitForFunction(()=>window.state?.loop.previousTimestamp>0);
+ expect(await page.evaluate(()=>state.params.liquidResidueLifetime)).toBe(90);
+ await page.locator('#resetLiquidControls').evaluate(n=>n.click());
+ expect(await page.evaluate(()=>[state.params.liquidResidueLifetime,state.params.liquidPuddleDepth])).toEqual([60,1]);
+ const imported=await page.evaluate(async()=>{
+  const ui=await import('/js/ui/controls.js'),data=ui.exportSettings();data.params.liquidEnabled=false;data.params.liquidBodyRunoff=1.5;ui.importSettings(data);
+  return [state.params.liquidEnabled,document.getElementById('liquidEnabled').checked,state.params.liquidBodyRunoff,ui.exportSettings().params.liquidBodyRunoff];
+ });expect(imported).toEqual([false,false,1.5,1.5]);
 });

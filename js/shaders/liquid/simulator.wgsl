@@ -22,8 +22,9 @@ fn loadEvent(i:u32) {
  let world=(uv-.5)*frame.view.xy/frame.view.z+frame.ground.zw;
  var color=textureSampleLevel(sceneTexture,linearSampler,uv,0.).rgb;
  for(var i=0u;i<u32(frame.counts.x);i++){
+  if(events[i].padding[0].x<.5){continue;}
   loadEvent(i);eventLayer=i;
-  if(u.event.z>=0.&&all(abs(world-u.event.xy)<vec2(u.ground.x))){color=groundLiquid(world,color);}
+  if(u.padding[0].x>.5&&u.event.z>=0.&&all(abs(world-u.event.xy)<vec2(u.ground.x))){color=groundLiquid(world,color);}
  }
  return vec4(color,1.);
 }

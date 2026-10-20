@@ -1,3 +1,5 @@
+import { liquidSettings, liquidExtent, GROUND_LIFETIME } from './liquid-controls.js';
+import { QUALITY } from './liquid-settings.js';
 import {
   BODY_CROP,
   WHEEL_CROP,
@@ -54,6 +56,7 @@ function absorption(hue) {
 }
 export class WorldLiquid {
   constructor(device, format, quality = "balanced") {
+    this.baseQuality = quality;
     this.q = BUDGETS[quality] ?? BUDGETS.high;
     this.device = device;
     this.format = format;
@@ -83,19 +86,33 @@ export class WorldLiquid {
       (this.width ?? 0) * (this.height ?? 0) * 8
     );
   }
-  getStats(time) {
+  getStats(time,params=this.params) {
     const { events, evictions } = getLiquidImpacts();
+    const active=this.active(time,params);
     return {
       ...this.stats,
       events: events.length,
       evictions,
-      active: this.active(time),
-      airborne: events.filter((e) => time > e.time && time - e.time < 2.8)
-        .length,
+      active,
+      drawCalls:active?this.stats.drawCalls:0,
+      groundLayers:active?this.stats.groundLayers:0,
+      retainedEvents: events.length,
+      airborne: active?events.filter((e) => time > e.time && time - e.time < 2.8).length:0,
     };
   }
-  active(time) {
-    return getLiquidImpacts().events.some((e) => e.time <= time);
+  active(time, params = this.params) {
+    if(params?.liquidEnabled===false)return false;
+    const s=liquidSettings(params??{});
+    return getLiquidImpacts().events.some(e=>this.contributes(e,time,s));
+  }
+  contributes(e,time,s){
+    const age=time-e.time;
+    return age>=0 && (this.groundAlive(age,s) ||
+      (s.vehicleInteraction&&e.bodyContact&&s.bodyWetness>0&&
+        (s.bodyResidue>0||age<s.bodyDryingDuration*3+6)));
+  }
+  groundAlive(age,s){
+    return !s.dryingEnabled || (s.dyeResidue>0&&!s.residueAging) || age<GROUND_LIFETIME;
   }
   track(r) {
     this.resources.push(r);
@@ -424,7 +441,7 @@ export class WorldLiquid {
         ],
       }),
     );
-    const mesh = makeSheetMesh(this.q.detail === 2 ? 96 : 128, 16),
+    const mesh = makeSheetMesh(128, 16),
       strand = makeStrandMesh(28);
     this.sheetVertices = this.buffer(
       "liquid-membrane-mesh",
@@ -589,6 +606,10 @@ export class WorldLiquid {
     }
   }
   prepare(state, width, height, view, ppm, drawCar) {
+    this.params=state.params;
+    const settings=liquidSettings(state.params);
+    const quality=['', 'performance','balanced','high'][state.params.liquidQuality??0]||this.baseQuality;
+    this.q=state.params.liquidQuality>0?QUALITY[quality]:(BUDGETS[quality]??BUDGETS.high);
     this.resize(width, height);
     this.drawCar = drawCar && this.hasArt;
     const { events, generation, evictions } = getLiquidImpacts(),
@@ -607,7 +628,7 @@ export class WorldLiquid {
     frame[20] = events.length;
     frame[26] = view.x;
     frame[27] = view.y;
-    frame.set([c, s, 1, 0], 48);
+    frame.set([c, s, 1, settings.residueAging?1:0], 48);
     this.device.queue.writeBuffer(this.frame, 0, frame);
     this.events = events;
     this.rebuild = [];
@@ -617,16 +638,19 @@ export class WorldLiquid {
         age = time - e.time,
         u = this.eventData.subarray(i * 64, (i + 1) * 64);
       u.fill(0);
+      const speed=Math.min(120,e.speed*state.params.liquidIntensity);
+      const volume=Math.min(80,e.volume*state.params.liquidVolume);
+      const extent=liquidExtent(speed,volume);
       // Original lab uniform order, followed by live heading and dye absorption.
       u.set([
         width,
         height,
         ppm,
         time,
-        e.speed,
-        e.volume,
-        1.1,
-        1.35,
+        speed,
+        volume,
+        settings.breakup,
+        settings.concentration,
         e.x,
         e.y,
         age,
@@ -642,41 +666,47 @@ export class WorldLiquid {
         this.q.strands / 3,
         this.q.drops,
         this.q.sheets,
-        1,
-        16,
+        settings.dryingEnabled?1:0,
+        extent,
         this.atlasSize,
         view.x,
         view.y,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
+        settings.membraneThickness,
+        settings.filamentLength,
+        settings.dropScale,
+        settings.roughness,
+        settings.reflections,
+        settings.puddleDepth,
         6,
-        0,
-        18,
-        0.42,
-        0.55,
-        0.38,
-        1,
-        1,
-        1,
-        0,
-        22,
-        0.18,
-        this.drawCar && e.bodyContact ? 1 : 0,
-        0,
+        settings.residueLifetime,
+        settings.dryingDuration,
+        settings.dryingIrregularity,
+        settings.surfaceAbsorption,
+        settings.dyeResidue,
+        settings.bodyWetness,
+        settings.bodyRunoff,
+        settings.hoodDeflection,
+        settings.residueIrregularity,
+        settings.bodyDryingDuration,
+        settings.bodyResidue,
+        this.drawCar && e.bodyContact && settings.vehicleInteraction ? 1 : 0,
+        settings.residuePersistence,
         c,
         s,
         1,
-        0,
+        settings.residueAging?1:0,
         ...absorption(e.hue),
         1,
       ]);
-      const key = `${generation}:${e.id}:${Math.min(3, Math.max(0, age))}`;
+      // Only deposition-shape controls invalidate the cached settled atlas.
+      const shape=[u[4],u[5],u[6],u[18],u[20],u[21],u[22],u[24]].join(':');
+      const key = `${generation}:${e.id}:${Math.min(3, Math.max(0, age))}:${shape}`;
+      // Simulator-only metadata in the existing stride padding: dead/offscreen
+      // ground layers are skipped without losing the retained replay snapshot.
+      const inView=Math.abs(e.x-view.x)<extent+width/ppm*.5&&Math.abs(e.y-view.y)<extent+height/ppm*.5;
+      u[56]=age>=0&&this.groundAlive(age,settings)&&inView?1:0;
       if (key !== this.keys[i]) this.rebuild.push({ i, key, age });
-      if (age > 0 && age < 2.8) this.airborne.push(i);
+      if (age > 0 && age < 2.8 && inView) this.airborne.push(i);
     }
     this.device.queue.writeBuffer(
       this.eventBuffer,
@@ -760,7 +790,9 @@ export class WorldLiquid {
       atlasBytes: this.atlasSize ** 2 * MAX_LIQUID_EVENTS * 4,
       targetBytes: width * height * 8,
       hasArt: this.hasArt,
-      budget: { ...this.q },
+      budget: { ...this.q, atlas:this.atlasSize },
+      quality,
+      groundLayers: events.filter((e,i)=>this.eventData[i*64+56]>.5).length,
     });
   }
   encode(encoder, output, drawUpperWorld = () => {}) {

@@ -1,0 +1,322 @@
+[
+  {
+    "time": 0.7,
+    "stats": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 28,
+      "fallbackReason": null,
+      "cpuEncodeMs": 2.600000001490116,
+      "uploadBytes": 1844,
+      "drawCalls": 14,
+      "computeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 45980376,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 3,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "liquid": {
+        "events": 1,
+        "airborne": 1,
+        "depositionRebuilds": 1,
+        "drawCalls": 12,
+        "evictions": 0,
+        "uploadBytes": 1600,
+        "ghostSprites": 30,
+        "atlasBytes": 25165824,
+        "targetBytes": 11201200,
+        "hasArt": true,
+        "budget": {
+          "sheets": 2,
+          "strands": 36,
+          "drops": 650,
+          "detail": 3,
+          "atlas": 512
+        },
+        "quality": "balanced",
+        "groundLayers": 1,
+        "active": true,
+        "retainedEvents": 1
+      },
+      "liquidResidentBytes": 41499648,
+      "liquidResourceCount": 13,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 1366,
+      "backingHeight": 1025
+    },
+    "score": {
+      "totalScore": 233,
+      "combo": {
+        "count": 1,
+        "multiplier": 1,
+        "lastPopTime": 0,
+        "flashTimer": 0.5
+      }
+    }
+  },
+  {
+    "time": 5,
+    "stats": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 28,
+      "fallbackReason": null,
+      "cpuEncodeMs": 0.5,
+      "uploadBytes": 1844,
+      "drawCalls": 9,
+      "computeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 45980376,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 3,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "liquid": {
+        "events": 1,
+        "airborne": 0,
+        "depositionRebuilds": 2,
+        "drawCalls": 7,
+        "evictions": 0,
+        "uploadBytes": 1600,
+        "ghostSprites": 30,
+        "atlasBytes": 25165824,
+        "targetBytes": 11201200,
+        "hasArt": true,
+        "budget": {
+          "sheets": 2,
+          "strands": 36,
+          "drops": 650,
+          "detail": 3,
+          "atlas": 512
+        },
+        "quality": "balanced",
+        "groundLayers": 1,
+        "active": true,
+        "retainedEvents": 1
+      },
+      "liquidResidentBytes": 41499648,
+      "liquidResourceCount": 13,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 1366,
+      "backingHeight": 1025
+    },
+    "score": {
+      "totalScore": 233,
+      "combo": {
+        "count": 1,
+        "multiplier": 1,
+        "lastPopTime": 0,
+        "flashTimer": 0.5
+      }
+    }
+  },
+  {
+    "time": 70,
+    "stats": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 28,
+      "fallbackReason": null,
+      "cpuEncodeMs": 0.7000000029802322,
+      "uploadBytes": 1844,
+      "drawCalls": 6,
+      "computeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 45980376,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 3,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "liquid": {
+        "events": 1,
+        "airborne": 0,
+        "depositionRebuilds": 2,
+        "drawCalls": 4,
+        "evictions": 0,
+        "uploadBytes": 1600,
+        "ghostSprites": 30,
+        "atlasBytes": 25165824,
+        "targetBytes": 11201200,
+        "hasArt": true,
+        "budget": {
+          "sheets": 2,
+          "strands": 36,
+          "drops": 650,
+          "detail": 3,
+          "atlas": 512
+        },
+        "quality": "balanced",
+        "groundLayers": 1,
+        "active": true,
+        "retainedEvents": 1
+      },
+      "liquidResidentBytes": 41499648,
+      "liquidResourceCount": 13,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 1366,
+      "backingHeight": 1025
+    },
+    "score": {
+      "totalScore": 233,
+      "combo": {
+        "count": 1,
+        "multiplier": 1,
+        "lastPopTime": 0,
+        "flashTimer": 0.5
+      }
+    }
+  },
+  {
+    "time": 300,
+    "stats": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 28,
+      "fallbackReason": null,
+      "cpuEncodeMs": 0.5,
+      "uploadBytes": 1844,
+      "drawCalls": 6,
+      "computeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 45980376,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 3,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "liquid": {
+        "events": 1,
+        "airborne": 0,
+        "depositionRebuilds": 2,
+        "drawCalls": 4,
+        "evictions": 0,
+        "uploadBytes": 1600,
+        "ghostSprites": 30,
+        "atlasBytes": 25165824,
+        "targetBytes": 11201200,
+        "hasArt": true,
+        "budget": {
+          "sheets": 2,
+          "strands": 36,
+          "drops": 650,
+          "detail": 3,
+          "atlas": 512
+        },
+        "quality": "balanced",
+        "groundLayers": 0,
+        "active": true,
+        "retainedEvents": 1
+      },
+      "liquidResidentBytes": 41499648,
+      "liquidResourceCount": 13,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 1366,
+      "backingHeight": 1025
+    },
+    "score": {
+      "totalScore": 233,
+      "combo": {
+        "count": 1,
+        "multiplier": 1,
+        "lastPopTime": 0,
+        "flashTimer": 0.5
+      }
+    }
+  }
+]

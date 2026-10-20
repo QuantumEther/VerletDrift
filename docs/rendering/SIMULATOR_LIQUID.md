@@ -1,5 +1,9 @@
 # Live simulator liquid integration
 
+This report describes the initial v26 checkpoint. For the completed controls,
+residue weathering and legacy visual replacement, see
+[the v28 integration report](COMPLETE_LIQUID_INTEGRATION.md).
+
 Development branch: `verlet_gpt_v26_simulator_liquid`. Reference branch
 `verlet_gpt_v25_splash_optimization` remains at `5c94e73`. No merge into the
 original simulator/UI branches is part of this change.

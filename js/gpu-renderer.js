@@ -114,7 +114,7 @@ export function getGPURenderStats() {
   return {
     ...renderStats,
     liquid: liquidWorld
-      ? liquidWorld.getStats(state.loop.simulationTime)
+      ? liquidWorld.getStats(state.loop.simulationTime,state.params)
       : null,
     residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0),
     resourceCount:
@@ -406,7 +406,7 @@ export function isGPUVehicleReady() {
   return (
     ready &&
     !!liquidWorld?.hasArt &&
-    liquidWorld.active(state.loop.simulationTime) &&
+    liquidWorld.active(state.loop.simulationTime,state.params) &&
     vehicleSpriteSettings.enabled &&
     !vehicleSpriteSettings.calibration
   );
@@ -487,6 +487,7 @@ export function renderFrameGPU(width, height) {
       cam = state.camera,
       view = getViewCamera(cam, state.screenShake),
       ppm = p.pixelsPerMeter || PIXELS_PER_METER;
+    const proceduralVisuals=!!liquidWorld && p.liquidEnabled!==false;
     const halfWidth = width / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
     const halfHeight = height / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
     const visible = (x, y, rx, ry = rx) =>
@@ -600,7 +601,7 @@ export function renderFrameGPU(width, height) {
     let splatCount = 0;
     for (
       let index = 0;
-      index < Math.min(state.splatParticles.length, MAX_PARTICLES);
+      index < (proceduralVisuals?0:Math.min(state.splatParticles.length, MAX_PARTICLES));
       index++
     ) {
       const s = state.splatParticles[index];
@@ -624,7 +625,7 @@ export function renderFrameGPU(width, height) {
       balloonCount = 0,
       shadowCount = 0;
     let decalCandidates = 0;
-    for (const d of state.splatDecals) {
+    for (const d of proceduralVisuals?EMPTY_EVENTS:state.splatDecals) {
       if (d.alpha <= 0.005) continue;
       if (decalCandidates++ === MAX_SURFACE) break;
       if (!visible(d.x, d.y, d.radius)) {
@@ -794,7 +795,7 @@ export function renderFrameGPU(width, height) {
     smokeUniform[6] = renderQuality.smokeDetail;
     smokeUniform[7] = 0;
     write(buffers.smokeUniform, smokeUniform);
-    const useLiquid = !!liquidWorld?.active(state.loop.simulationTime);
+    const useLiquid = !!liquidWorld?.active(state.loop.simulationTime,state.params);
     if (useLiquid) {
       liquidWorld.prepare(
         state,
@@ -871,7 +872,7 @@ export function renderFrameGPU(width, height) {
         renderStats.drawCalls++;
       }
       draw(pass, pipelines.part, groups.part, 6, sparkCount, buffers.sparks);
-      if (!useLiquid)
+      if (!proceduralVisuals)
         draw(pass, pipelines.part, groups.part, 6, splatCount, buffers.splats);
     };
     if (!useLiquid) drawUpperWorld(pass);
