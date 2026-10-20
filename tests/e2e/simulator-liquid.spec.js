@@ -311,7 +311,7 @@ for (const [quality, atlas] of [
 test("a missing liquid shader preserves the existing GPU world", async ({
   page,
 }) => {
-  await page.route("**/js/shaders/liquid/material.wgsl", (route) =>
+  await page.route("**/js/shaders/liquid/material.wgsl*", (route) =>
     route.fulfill({ status: 404, body: "not found" }),
   );
   await boot(page);

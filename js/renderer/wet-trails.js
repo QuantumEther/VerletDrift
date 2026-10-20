@@ -1,5 +1,6 @@
 import {getWetTireTransfers,MAX_WET_TRANSFERS} from './wet-trail-events.js';
 import {dyeAbsorption} from './liquid-settings.js';
+import {liquidShaderSource} from './liquid-shader-source.js';
 // Conservative envelope of the shader's maximum local retention, not a fade clock.
 function lifetime(s,e){
  const duration=s.dryingDuration*.78*1.35*(1.-s.surfaceAbsorption*.25);
@@ -9,9 +10,8 @@ function lifetime(s,e){
 export class WetTrails {
  constructor(device,frame){this.device=device;this.frame=frame;this.count=0;this.serial=-1;this.generation=-1;}
  async init(common){
-  const d=this.device,r=await fetch(new URL('../shaders/liquid/wet-trails.wgsl',import.meta.url));
-  if(!r.ok)throw Error('Wet trail shader unavailable');
-  const module=d.createShaderModule({label:'wet-tire-deposition',code:common+await r.text()});
+  const d=this.device;
+  const module=d.createShaderModule({label:'wet-tire-deposition',code:common+await liquidShaderSource('wet-trails')});
   const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');
   if(errors.length)throw Error(errors.map(e=>e.message).join('\n'));
   this.pipeline=await d.createRenderPipelineAsync({label:'wet-tire-field',layout:'auto',vertex:{module,entryPoint:'vs_transfer'},fragment:{module,entryPoint:'fs_transfer',targets:[{format:'rgba16float',blend:{color:{srcFactor:'one',dstFactor:'one',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one',operation:'add'}}}]},primitive:{topology:'triangle-list'}});

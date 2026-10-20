@@ -1,6 +1,7 @@
 import { lighting } from './environment.js';
 import { liquidSettings, liquidExtent, GROUND_LIFETIME } from './liquid-controls.js';
 import { WetTrails } from "./wet-trails.js";
+import { liquidShaderSource } from './liquid-shader-source.js';
 import { dyeAbsorption, QUALITY } from './liquid-settings.js';
 import {
   BODY_CROP,
@@ -116,16 +117,9 @@ export class WorldLiquid {
   }
   async init() {
     const d = this.device;
-    const text = async (name) => {
-      const r = await fetch(
-        new URL(`../shaders/liquid/${name}.wgsl`, import.meta.url),
-      );
-      if (!r.ok) throw Error(`Liquid ${name}: HTTP ${r.status}`);
-      return r.text();
-    };
     const [raw, material, vehicle, puddles, liquid, scene, trailMaterial] = await Promise.all(
       ["common", "material", "vehicle", "puddles", "liquid", "simulator", "trail-material"].map(
-        text,
+        liquidShaderSource,
       ),
     );
     // A 256-byte stride serves both aligned per-event uniforms and storage reads.

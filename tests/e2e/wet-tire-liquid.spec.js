@@ -2,6 +2,27 @@ import {test,expect} from '@playwright/test';
 import {installLiveGPUTarget,startDyedDrift,collideDyedBalloon} from './helpers/live-gpu.js';
 import {bootSimulatorLiquid,renderSimulatorLiquid} from './helpers/simulator-liquid.js';
 const distance=(a,b)=>Math.abs(((a-b+540)%360)-180);
+test('liquid shader bundle bypasses obsolete unversioned material and compiles together',async({page})=>{
+ const requests=[];
+ await page.route('**/js/shaders/liquid/*.wgsl*',async route=>{
+  const url=new URL(route.request().url());requests.push(url);
+  if(url.pathname.endsWith('/material.wgsl')&&!url.searchParams.has('v')){
+   // Emulate the old cached material API that triggered the reported compiler error.
+   const response=await route.fetch();
+   const body=(await response.text())
+    .replace(/return opticalTransmission\((.*)\*depth,viewCosine,concentration\);/,'return exp(-$1*(1.+1./max(viewCosine,.35))*depth*concentration);')
+    .replace(/fn opticalTransmission\([^]*?\n\}/,'');
+   await route.fulfill({response,body});
+  }else await route.continue();
+ });
+ await trails(page);
+ const result=await renderSimulatorLiquid(page,2,true);
+ expect(result.stats.liquidError).toBeUndefined();expect(result.errors).toEqual([]);
+ expect(result.stats.liquid.wetTransfers).toBe(150);
+ const revisions=new Set(requests.map(url=>url.searchParams.get('v')));
+ expect(revisions.size).toBe(1);expect(revisions.has(null)).toBe(false);
+ expect(new Set(requests.map(url=>url.pathname)).size).toBe(8);
+});
 test('Crimson collisions resolve one dye identity for splash, fresh tires and retained transfers',async({page})=>{
  test.setTimeout(120000);await page.setViewportSize({width:800,height:600});await installLiveGPUTarget(page);await startDyedDrift(page);
  await page.locator('#balloonAppearance').evaluate(n=>{n.value=1;n.dispatchEvent(new Event('input',{bubbles:true}));});

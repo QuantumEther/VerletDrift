@@ -170,6 +170,28 @@ rather than an invented current age. Already contaminated live tires from a prev
 buggy session are not retroactively recolored: reset that session to compare cleanly.
 Canvas users receive corrected dye identity but not this WebGPU liquid-film material.
 
+## Shader-cache compatibility correction
+
+A reported `unresolved call target opticalTransmission` error was reproduced by
+serving v30's unversioned `material.wgsl` alongside the new trail shader. The base
+world renderer stayed available, but advanced liquid initialization failed. This
+establishes a mixed-source failure mode; the user's actual browser/CDN cache has
+not been inspected directly.
+
+The simulator now loads all eight liquid shader fragments through
+`liquid-shader-source.js`, using one shared interface revision in their URLs and
+`cache: no-cache` to require revalidation. Bump the revision whenever shader interfaces
+change. The same deliberately stale unversioned response no longer prevents liquid
+initialization. A browser regression checks the stale-source case, shared revision
+across all eight fragments, compilation and actual wet-film rendering.
+Validation after this correction: all 172 unit tests and all 16 simulator-liquid /
+wet-tire browser tests passed, including the preserved HTTP-404 fallback check.
+
+This correction changes resource loading only; liquid optics, physics and geometry
+are unchanged. After deploying it, a hard refresh may still be needed once to replace
+the previously cached JavaScript loader. This is version separation and revalidation,
+not an atomic deployment protocol: a partially published site can still fail safely.
+
 ## Files and reproduction
 
 Color propagation: `js/balloon.js`. Native observation/reset: `js/main.js`,
