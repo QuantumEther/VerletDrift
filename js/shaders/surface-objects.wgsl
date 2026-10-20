@@ -1,5 +1,5 @@
 // Nine floats/instance: x,y,radius,seed,r,g,b,alpha,kind.
-// kind 0 = deposited pigment; 1 = balloon; 2 = grounding shadow.
+// kind 0 = pigment; 1 = balloon; 2/4 = contact/cast ellipse; 5/6 = cast/contact body.
 struct Camera { zoom:f32, ppm:f32, width:f32, height:f32, x:f32, y:f32 }
 @group(0) @binding(0) var<uniform> cam:Camera;
 struct Instance {
@@ -17,7 +17,9 @@ struct Out {
  let uv=corners[vi]; var extent=vec2(inst.radius);
  if(inst.kind>1.5){ extent=vec2(inst.radius,inst.seed); }
  if(inst.kind>.5 && inst.kind<1.5){ extent.y*=2.; }
- let world=vec2(inst.x,inst.y)+uv*extent;
+ var offset=uv*extent;
+ if(inst.kind>4.5){offset=vec2(offset.x*inst.r-offset.y*inst.g,offset.x*inst.g+offset.y*inst.r);}
+ let world=vec2(inst.x,inst.y)+offset;
  let p=(world-vec2(cam.x,cam.y))*cam.zoom*cam.ppm/vec2(cam.width,cam.height)*vec2(2.,-2.);
  return Out(vec4(p,0.,1.),uv,vec4(inst.r,inst.g,inst.b,inst.alpha),inst.kind,inst.seed);
 }
@@ -28,7 +30,16 @@ struct Out {
    let falloff=select(4.,mix(6.,2.8,env.settings.y),env.settings.w>.5);
    var shadowStrength=1.;
    if(env.settings.w>.5){shadowStrength=select(.85,env.light.w/(env.settings.x+env.light.w+.001),in.kind>3.5);}
+   if(in.kind>4.5){
+    let q=abs(uv)-vec2(.62,.78);
+    let distance=length(max(q,vec2(0.)))+min(max(q.x,q.y),0.)-.15;
+    let penumbra=select(.10+env.settings.y*.10,.18,in.kind>5.5);
+    let strength=select(env.light.w/(env.settings.x+env.light.w+.001),.85,in.kind>5.5);
+    alpha=(1.-smoothstep(-penumbra,penumbra,distance))*in.color.a*strength;
+    rgb=vec3(.008,.010,.012);
+   }else{
    alpha=exp(-dot(uv,uv)*falloff)*(1.-smoothstep(.65,1.,length(uv)))*in.color.a*shadowStrength;
+   }
  }else if(in.kind>.5){
    uv.y*=2.;
    let r=length(uv);let aa=max(length(uvWidth)*2.,.001);

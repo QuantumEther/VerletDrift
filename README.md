@@ -148,6 +148,9 @@ lighting presets, or tune direction, elevation, intensity, ambient, softness and
 temperature. **Balloon Appearance** selects Colorful, Crimson or a mixed palette.
 Disable **Coherent lighting** to compare the preserved earlier shading.
 [Visual comparisons and technical notes](docs/rendering/VISUAL_COHERENCE.md).
+The subsequent [reference-guided materials pass](docs/rendering/REFERENCE_RENDERING.md)
+adds mineral asphalt, textured tire coverage, wet-track reflections and body-aligned
+shadows, with matched v29/v30 captures.
 
 ## How It Works
 

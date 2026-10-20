@@ -1,5 +1,5 @@
 // =============================================================
-// BACKGROUND SHADER — Procedural checkerboard + motion blur
+// BACKGROUND SHADER — World-space ground materials + motion blur
 // Replaces the Canvas 2D drawCheckerboard() loop (12,000 fillRects → 1 draw call).
 // =============================================================
 
@@ -75,17 +75,21 @@ fn material(world:vec2<f32>)->vec3<f32>{
  if(u.surface<.5){return mix(vec3(.0667,.0784,.0863),vec3(.1333,.1255,.1490),check);}
  if(u.surface<1.5 && env.settings.w>.5){
   let footprint=length(fwidth(world));
-  let broadGrain=envGrain(world*1.3).x-.5;
-  let aggregate=envGrain(world*42.);
-  let fade=1.-smoothstep(.25,1.2,footprint*42.);
-  let grain=(aggregate.x-.5)*fade;
-  let fineFade=1.-smoothstep(.25,1.2,footprint*115.);
-  var fine=0.;if(u.detail>1.&&fineFade>0.){fine=(envGrain(world*115.).x-.5)*fineFade;}
-  // Embedded aggregate with sparse mineral facets, rather than animated static.
-  let mineral=smoothstep(.64,.90,aggregate.x)*fade;
-  let base=vec3(.155,.160,.166)+vec3(broadGrain*.022+grain*.052+fine*.026+mineral*.014);
-  let normal=normalize(vec3(-aggregate.yz*.12*fade,1.));
-  return envDisplay(envLinear(base)*envDiffuse(normal));
+  // Aggregate must remain resolvable at gameplay zoom; finer octaves fade out.
+  let wear=envGrain(world*.65);
+  let coarse=envAggregate(world*8.,footprint*8.);
+  let stone=envAggregate(world*23.,footprint*23.);
+  let grainFade=1.-smoothstep(.35,1.5,footprint*67.);
+  var fine=0.;
+  if(u.detail>0.&&grainFade>0.){fine=(envGrain(world*67.).x-.5)*grainFade;}
+  // Pale angular mineral chips embedded in a darker, slightly warm binder.
+  let base=vec3(.195,.193,.187)+vec3((wear.x-.5)*.018+(coarse.x-.32)*.018+stone.x*.043+fine*.035)
+    +vec3(.006,.002,-.004)*stone.x;
+  let normal=normalize(vec3(-coarse.yz*.09-stone.yz*.24,1.));
+  let dry=envLinear(base)*envDiffuse(normal);
+  // Rough asphalt receives a weak, broad dielectric reflection; water is separate.
+  return envDisplay(dry+envSpecular(normal,.72)*.16);
+
  }
  if(u.surface<1.5){
   let coarse=noise(world*1.7)-.5;

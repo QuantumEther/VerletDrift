@@ -1,5 +1,9 @@
 # v30 reference audit — regression investigation checkpoint
 
+Historical checkpoint at `546eb61`. The user subsequently authorized continuing
+the visual upgrade without identifying the trigger. See
+[the implementation report](REFERENCE_RENDERING.md) for the subsequent work.
+
 Branch: `verlet_gpt_v30_reference_rendering`.
 Starting commit: `745ca62630eb1b2446e881fc774e5a0995709ce8` (v29).
 The v28 and v29 branches remain unchanged. No production code, physics,

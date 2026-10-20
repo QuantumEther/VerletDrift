@@ -664,13 +664,15 @@ export function renderFrameGPU(width, height) {
     if(p.sceneLightingEnabled!==false){
       const soft=environmentData[5],sun=environmentData;
       const dx=-sun[0]/Math.max(.25,sun[2])*.65,dy=-sun[1]/Math.max(.25,sun[2])*.65;
-      for(let i=0;i<3;i++){
-        const along=(i-1)*BODY_RECT.length*.25;
-        const x=body.centerX-sb*along,y=body.centerY+cb*along;
-        surface(sh,shadowCount++,x+dx,y+dy,BODY_RECT.width*(.48+soft*.15),BODY_RECT.width*(.48+soft*.15),0,.24,4);
-        surface(sh,shadowCount++,x,y,BODY_RECT.width*.48,BODY_RECT.width*.48,0,.23,2);
-      }
-      for(const w of Object.values(state.wheels))surface(sh,shadowCount++,w.x,w.y,.20,.27,0,.45,2);
+      const ox=BODY_RECT.x+BODY_RECT.width*.5,oy=BODY_RECT.y+BODY_RECT.length*.5;
+      const x=body.centerX+cb*ox-sb*oy,y=body.centerY+sb*ox+cb*oy;
+      // Rounded body shadows use the artwork envelope and heading, not three
+      // circular blobs. RGB slots carry rotation for these shadow-only instances.
+      surface(sh,shadowCount++,x+dx,y+dy,BODY_RECT.width*(.58+soft*.09),BODY_RECT.length*(.55+soft*.05),0,.38,5);
+      sh[(shadowCount-1)*9+4]=cb;sh[(shadowCount-1)*9+5]=sb;
+      surface(sh,shadowCount++,x,y,BODY_RECT.width*.54,BODY_RECT.length*.51,0,.38,6);
+      sh[(shadowCount-1)*9+4]=cb;sh[(shadowCount-1)*9+5]=sb;
+      for(const w of Object.values(state.wheels))surface(sh,shadowCount++,w.x,w.y,.14,.25,0,.52,2);
     }else{
     for (let i = 0; i < 3; i++) {
       const along = (i - 1) * BODY_RECT.length * 0.25;
@@ -690,7 +692,7 @@ export function renderFrameGPU(width, height) {
     let balloonCandidates = 0;
     for (const b of state.balloons) {
       if (b.isPopped) continue;
-      if (balloonCandidates++ === MAX_SURFACE - (p.sceneLightingEnabled===false?3:10)) break;
+      if (balloonCandidates++ === MAX_SURFACE - (p.sceneLightingEnabled===false?3:6)) break;
       const shadowX=p.sceneLightingEnabled===false?.12:-environmentData[0]/Math.max(.25,environmentData[2])*.7;
       const shadowY=p.sceneLightingEnabled===false?.18:-environmentData[1]/Math.max(.25,environmentData[2])*.7;
       // Include long low-elevation shadows as well as the balloon/string.
