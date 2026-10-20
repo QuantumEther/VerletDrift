@@ -14,6 +14,7 @@ import {
 
 import { eventBuffer } from '../debug/events.js';
 
+const VALID_GEARS = new Set(['N', 'R', '1', '2', '3', '4', '5', '6']);
 
 // =============================================================
 // HELPERS
@@ -228,6 +229,10 @@ export function synchronizeEngineWithWheels() {
 // On any shift, clutch engagement is unaffected — the driver still
 // controls the clutch pedal independently.
 export function handleGearChange(newGear) {
+  // Keep the transmission state canonical. An unknown request must not produce
+  // a gear label with a zero/undefined ratio in the engine and tire solvers.
+  if (!VALID_GEARS.has(newGear)) return false;
+
   const engine = state.engine;
   const body   = state.body;
   const params = state.params;
@@ -291,6 +296,7 @@ export function handleGearChange(newGear) {
   // Gear change: camera target jumps rearward (driveline unloading).
   state.camera.jerkOffsetX = -forwardX * jerkMagnitude;
   state.camera.jerkOffsetY = -forwardY * jerkMagnitude;
+  return true;
 }
 
 

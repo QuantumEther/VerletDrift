@@ -14,6 +14,7 @@
 //   Shift+left-click: also steering (alternative for one-button mice)
 //
 //   Gear changes (while A is held or at any time):
+//     Digit 1–6 → 1st–6th gear; Digit 7 → Reverse
 //     Numpad 7 → 1st gear
 //     Numpad 1 → 2nd gear
 //     Numpad 8 → 3rd gear
@@ -41,6 +42,13 @@ const KEYS_TO_SUPPRESS_DEFAULT = new Set([
   'Numpad7', 'Numpad8', 'Numpad9',
   'Space',
 ]);
+
+// Physical top-row key codes are stable regardless of Num Lock and keyboard
+// layout. The numpad keeps its established mapping below.
+const NUMBER_ROW_GEARS = Object.freeze({
+  Digit1: '1', Digit2: '2', Digit3: '3', Digit4: '4',
+  Digit5: '5', Digit6: '6', Digit7: 'R',
+});
 
 // Maximum vertical drag distance for full throttle (pixels).
 // Dragging the mouse this many pixels upward from the drag start = 100% throttle.
@@ -93,6 +101,13 @@ function onKeyDown(event) {
   }
 
   state.input.heldKeys[event.code] = true;
+
+  const numberRowGear = NUMBER_ROW_GEARS[event.code];
+  if (numberRowGear && !event.ctrlKey && !event.altKey && !event.metaKey) {
+    event.preventDefault();
+    selectGear(numberRowGear, event);
+    return;
+  }
 
   switch (event.code) {
     case 'KeyD':
