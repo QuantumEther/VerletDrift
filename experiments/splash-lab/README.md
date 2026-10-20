@@ -26,9 +26,9 @@ explicit adapter hint, but may select integrated graphics.
 - Stretch & breakup: membrane perforation and filament fragmentation.
 - Dye concentration: wavelength-inspired absorption/transmission and opacity.
 - Replay impact / Pause / Play: replay the same seed or hold a precise instant.
-- Timeline: scrub the full 72-second scene; impact is at 0.55 seconds. Puddles
+- Timeline: scrub the full 300-second scene; impact is at 0.55 seconds. Puddles
   begin drying six seconds after impact and progress through damp asphalt to
-  dry residue. The final timeline segment shows the finished surface.
+  dry residue, then spatial dye weathering and clean asphalt.
 - Playback: quarter/half speed, real time or 2×, 4× and 8× speed.
 - Seed / New: deterministic surface, strand and droplet variation.
 - Quality: fixed counts/resolution/detail budgets; no changes to animation time.
@@ -41,9 +41,10 @@ explicit adapter hint, but may select integrated graphics.
   body drying duration and optional body dye residue. Desktop controls scroll
   independently so the timeline stays accessible.
 - Puddle drying: disable drying or tune its duration, stable spatial irregularity,
-  asphalt absorption and optional crimson dye residue. The 72-second clock
-  includes the supported drying range through the final moisture-free stained
-  surface.
+  asphalt absorption and optional crimson dye residue.
+- Residue weathering: enable/disable late dye loss; tune lifetime, spatial erosion
+  irregularity and protected pore retention. Reset restores
+  these settings; appearance presets retain the weathering controls. Disabling weathering restores indefinitely retained dye.
 
 Reproducible links can specify `time`, `paused=1`, `seed`, `speed`, `volume`,
 `breakup`, `concentration`, advanced settings by their camelCase names,
@@ -132,3 +133,6 @@ comparisons and software-GPU measurements on `verlet_gpt_v25_splash_optimization
 The [live simulator integration](../../docs/rendering/SIMULATOR_LIQUID.md) now
 shares the liquid shaders and topology with this laboratory. The experiment
 remains a standalone material/timeline reference.
+
+The [residue weathering report](../../docs/rendering/RESIDUE_WEATHERING.md)
+describes the lab-only dry dye lifecycle and its validation.

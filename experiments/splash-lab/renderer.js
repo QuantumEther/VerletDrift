@@ -148,10 +148,11 @@ export class SplashRenderer {
         0,carY,carWidth,carLength,0,-1,q.detail,this.hasCar?1:0,q.strands/3,q.drops,q.sheets,settings.dryingEnabled?1:0,
         16,q.atlas,0,-.8-settings.speed*.18*.22,
         settings.membraneThickness,settings.filamentLength,settings.dropScale,settings.roughness,
-        settings.reflections,settings.puddleDepth,DRYING_START_AGE,0,
+        settings.reflections,settings.puddleDepth,DRYING_START_AGE,settings.residueLifetime,
         settings.dryingDuration,settings.dryingIrregularity,settings.surfaceAbsorption,settings.dyeResidue,
-        settings.bodyWetness,settings.bodyRunoff,settings.hoodDeflection,0,
-        settings.bodyDryingDuration,settings.bodyResidue,settings.vehicleInteraction?1:0,0]);
+        settings.bodyWetness,settings.bodyRunoff,settings.hoodDeflection,settings.residueIrregularity,
+        settings.bodyDryingDuration,settings.bodyResidue,settings.vehicleInteraction?1:0,settings.residuePersistence,
+        0,0,0,settings.residueAging?1:0]);
       this.device.queue.writeBuffer(this.uniformBuffer,0,this.uniforms);
       const airborne=age>0&&age<2.8;
       this.stats.airborne=airborne;this.sceneTimer?.startFrame();if(airborne)this.liquidTimer?.startFrame();

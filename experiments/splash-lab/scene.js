@@ -1,7 +1,7 @@
 // Laboratory clock and artistic settings only. No simulator imports or RNG.
 export const IMPACT_TIME = .55;
-// The longest supported dry interval (24 s) plus the absorption and residue tail.
-export const DURATION = 72;
+// Full drying + the longest supported spatial dye-weathering tail.
+export const DURATION = 300;
 export const DRYING_START_AGE = 6;
 export const DEFAULTS = Object.freeze({
   speed: 22, volume: 18, breakup: 1.1, concentration: 1.35, seed: 1337, quality: 'balanced',
@@ -9,6 +9,7 @@ export const DEFAULTS = Object.freeze({
   roughness: 1, reflections: 1, puddleDepth: 1,
   dryingEnabled: true, dryingDuration: 18, dryingIrregularity: .42,
   surfaceAbsorption: .55, dyeResidue: .38,
+  residueAging: true, residueLifetime: 60, residueIrregularity: .65, residuePersistence: .55,
   vehicleInteraction: true, bodyWetness: 1, bodyRunoff: 1, hoodDeflection: 1,
   bodyDryingDuration: 22, bodyResidue: .18,
 });
@@ -38,6 +39,10 @@ export function settingsFrom(values = {}) {
     dryingIrregularity: clamp(values.dryingIrregularity ?? DEFAULTS.dryingIrregularity,0,1,.42),
     surfaceAbsorption: clamp(values.surfaceAbsorption ?? DEFAULTS.surfaceAbsorption,0,1,.55),
     dyeResidue: clamp(values.dyeResidue ?? DEFAULTS.dyeResidue,0,1,.38),
+    residueAging: values.residueAging === undefined ? DEFAULTS.residueAging : [true,1,'1','true','on'].includes(values.residueAging),
+    residueLifetime: clamp(values.residueLifetime ?? DEFAULTS.residueLifetime,20,100,60),
+    residueIrregularity: clamp(values.residueIrregularity ?? DEFAULTS.residueIrregularity,0,1,.65),
+    residuePersistence: clamp(values.residuePersistence ?? DEFAULTS.residuePersistence,0,1,.55),
     vehicleInteraction: values.vehicleInteraction === undefined ? DEFAULTS.vehicleInteraction : [true,1,'1','true','on'].includes(values.vehicleInteraction),
     bodyWetness: clamp(values.bodyWetness ?? DEFAULTS.bodyWetness,0,2,1),
     bodyRunoff: clamp(values.bodyRunoff ?? DEFAULTS.bodyRunoff,0,2,1),

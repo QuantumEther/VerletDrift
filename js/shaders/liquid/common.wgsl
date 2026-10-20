@@ -7,11 +7,11 @@ struct Uniforms {
   counts: vec4<f32>, // filament roots, drops, membrane layers, drying enabled
   ground: vec4<f32>, // atlas half extent, atlas texels, camera center x/y
   material: vec4<f32>, // membrane thickness, filament length, droplet size, roughness
-  optics: vec4<f32>, // specular strength, puddle depth, drying start age, reserved
+  optics: vec4<f32>, // specular strength, puddle depth, drying start age, lab residue lifetime
   drying: vec4<f32>, // nominal duration, irregularity, absorption, dye residue
-  vehicle: vec4<f32>, // body wetness, runoff, hood deflection, reserved
-  bodyDrying: vec4<f32>, // body drying duration, dye residue, interaction enabled, reserved
-  pose: vec4<f32>, // heading cos/sin, distant environment flag, reserved; lab defaults zero
+  vehicle: vec4<f32>, // body wetness, runoff, hood deflection, lab residue irregularity
+  bodyDrying: vec4<f32>, // body drying duration, dye residue, interaction enabled, lab pore retention
+  pose: vec4<f32>, // heading cos/sin, distant environment flag, lab residue aging enabled
   dye: vec4<f32>, // absorption RGB, enabled
 }
 @group(0) @binding(0) var<uniform> u: Uniforms;

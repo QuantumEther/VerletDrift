@@ -260,7 +260,7 @@ test('puddles retreat into damp asphalt and residue deterministically under time
  expect(optics[4][0]).toBeLessThan(.002);expect(optics[4][1]).toBe(0);expect(optics[4][2]).toBe(0);expect(optics[4][3]).toBeGreaterThan(0);
  expect(Math.abs(optics[5][0]-optics[5][3])).toBeGreaterThan(.0001); // Stable spatial drying patches.
  await page.selectOption('#rate','8');expect(await page.evaluate(()=>window.splashLab.clock.rate)).toBe(8);
- expect(await page.locator('#timeline').getAttribute('max')).toBe('72');
+ expect(await page.locator('#timeline').getAttribute('max')).toBe('300');
  await setRange('drying-duration',24);await setRange('drying-irregularity',1);await setRange('surface-absorption',0);
  await seekSplash(page,72);const finalState=await puddleDryingOptics(page);
  expect(finalState[6][0]).toBeLessThan(.002);expect(finalState[6][1]).toBe(0);expect(finalState[6][2]).toBe(0);

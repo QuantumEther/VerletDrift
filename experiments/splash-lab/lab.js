@@ -2,6 +2,7 @@ import { LabClock, settingsFrom, MATERIAL_PRESETS, DEFAULTS, DRYING_START_AGE, I
 import { SplashRenderer } from './renderer.js';
 const get=id=>document.getElementById(id);
 const query=new URLSearchParams(location.search);
+const residueControls=[['residue-lifetime','residueLifetime'],['residue-irregularity','residueIrregularity'],['residue-persistence','residuePersistence']];
 const vehicleControls=[['body-wetness','bodyWetness'],['body-runoff','bodyRunoff'],['hood-deflection','hoodDeflection'],['body-drying-duration','bodyDryingDuration'],['body-residue','bodyResidue']];
 let settings=settingsFrom(Object.fromEntries(query));
 const clock=new LabClock();
@@ -14,6 +15,8 @@ const renderer=new SplashRenderer(get('splash'),message=>{
 });
 function updateControls(){
   for(const key of ['speed','volume','breakup','concentration','seed','quality'])get(key).value=settings[key];
+  get('residue-aging').checked=settings.residueAging;
+  for(const [id,key] of residueControls){get(id).value=settings[key];get(`${id}-value`).textContent=key==='residueLifetime'?`${settings[key]} s`:settings[key].toFixed(2);}
   get('preset').value=settings.preset;get('drying-enabled').checked=settings.dryingEnabled;get('vehicle-interaction').checked=settings.vehicleInteraction;
   for(const [id,key] of vehicleControls){get(id).value=settings[key];get(`${id}-value`).textContent=key==='bodyDryingDuration'?`${settings[key]} s`:`${settings[key].toFixed(2)}×`;}
   for(const [id,key] of [['membrane-thickness','membraneThickness'],['filament-length','filamentLength'],['drop-scale','dropScale'],['roughness','roughness'],['reflections','reflections'],['puddle-depth','puddleDepth'],['drying-duration','dryingDuration'],['drying-irregularity','dryingIrregularity'],['surface-absorption','surfaceAbsorption'],['dye-residue','dyeResidue']])get(id).value=settings[key];
@@ -29,6 +32,10 @@ function updateUi(now=0){
   const age=clock.time-IMPACT_TIME;
   const dryProgress=(age-DRYING_START_AGE)/settings.dryingDuration;
   get('phase').textContent=age<0?'APPROACH':age<.18?'RUPTURE':age<.8?'MEMBRANE EXPANSION':age<1.8?'FILAMENT BREAKUP':age<2.8?'DROPLET SETTLEMENT':!settings.dryingEnabled||age<DRYING_START_AGE?'PERSISTENT PUDDLES':dryProgress<1?'SHALLOW EDGES RECEDING':dryProgress<2.6?'DAMP ASPHALT · DEEPER POOLS':'DRY DYE RESIDUE';
+  if(settings.dryingEnabled&&dryProgress>=2.6&&settings.residueAging){
+    const weather=(age-DRYING_START_AGE-settings.dryingDuration*1.6)/settings.residueLifetime;
+    get('phase').textContent=weather<.35?'FRESH DYE · PORE ABSORPTION':weather<.9?'PATCHY DYE WEATHERING':weather<1.9?'FAINT EMBEDDED TRACES':'GROUND DYE CLEARED';
+  }
   if(now-lastUi>250){
     const s=renderer.getStats();const ms=value=>value===null?'—':value.toFixed(2);
     get('backend').textContent=`${s.adapter?.vendor||'WebGPU'} ${s.adapter?.architecture||''} · ${s.quality||settings.quality}${s.adapter?.isFallbackAdapter?' · SOFTWARE ADAPTER':''}`;
@@ -41,11 +48,12 @@ for(const key of ['speed','volume','breakup','concentration','seed','quality'])g
 });
 const appearanceControls=[['membrane-thickness','membraneThickness'],['filament-length','filamentLength'],['drop-scale','dropScale'],['roughness','roughness'],['reflections','reflections'],['puddle-depth','puddleDepth']];
 const dryingControls=[['drying-duration','dryingDuration'],['drying-irregularity','dryingIrregularity'],['surface-absorption','surfaceAbsorption'],['dye-residue','dyeResidue']];
-for(const [id,key] of [...appearanceControls,...dryingControls,...vehicleControls])get(id).addEventListener('input',()=>{
+for(const [id,key] of [...appearanceControls,...dryingControls,...residueControls,...vehicleControls])get(id).addEventListener('input',()=>{
   settings=settingsFrom({...settings,[key]:get(id).value,...(appearanceControls.some(item=>item[1]===key)?{preset:'custom'}:{})});updateControls();dirty=true;
 });
 get('preset').onchange=()=>{const preset=get('preset').value;if(MATERIAL_PRESETS[preset])settings=settingsFrom({...settings,...MATERIAL_PRESETS[preset],preset});updateControls();dirty=true;};
 get('vehicle-interaction').onchange=()=>{settings=settingsFrom({...settings,vehicleInteraction:get('vehicle-interaction').checked});dirty=true;};
+get('residue-aging').onchange=()=>{settings=settingsFrom({...settings,residueAging:get('residue-aging').checked});dirty=true;};
 get('drying-enabled').onchange=()=>{settings=settingsFrom({...settings,dryingEnabled:get('drying-enabled').checked});dirty=true;};
 get('reset-controls').onclick=()=>{settings=settingsFrom(DEFAULTS);clock.rate=1;get('rate').value='1';updateControls();clock.replay();dirty=true;};
 get('replay').onclick=()=>{clock.replay();dirty=true;};

@@ -12,12 +12,12 @@ describe('isolated splash laboratory',()=>{
  it('supports reproducible seeking, slow motion, bounds and endpoint playback',()=>{
   const clock=new LabClock();clock.rate=.25;clock.tick(0);clock.tick(1000);expect(clock.time).toBe(.25);
   clock.seek(2.25);expect(clock.playing).toBe(false);clock.tick(3000);expect(clock.time).toBe(2.25);
-  clock.seek(Infinity);expect(clock.time).toBe(0);clock.seek(99);expect(clock.time).toBe(DURATION);
+  clock.seek(Infinity);expect(clock.time).toBe(0);clock.seek(DURATION+1);expect(clock.time).toBe(DURATION);
   clock.toggle();expect(clock.time).toBe(0);expect(clock.playing).toBe(true);
  });
  it('plays an accelerated lifecycle through the extended timeline',()=>{
   const clock=new LabClock();clock.rate=8;clock.tick(0);clock.tick(1000);expect(clock.time).toBe(8);
-  clock.seek(DURATION);expect(clock.time).toBe(72);
+  clock.seek(DURATION);expect(clock.time).toBe(DURATION);
  });
  it('clamps untrusted URL/control values without introducing random state',()=>{
   const a=settingsFrom({speed:'100',volume:-8,breakup:NaN,concentration:'bad',seed:1337.8,quality:'unknown'});
@@ -43,4 +43,10 @@ describe('isolated splash laboratory',()=>{
   expect([...sheet.vertices.slice(-2)]).toEqual([1,1]);
   for(const q of Object.values(QUALITY)){expect(q.strands%3).toBe(0);expect(q.maxPixels).toBeLessThanOrEqual(4000000);}
  });
+});
+
+it('bounds residue controls and covers the complete weathering endpoint',()=>{
+ expect(settingsFrom()).toMatchObject({residueAging:true,residueLifetime:60,residueIrregularity:.65,residuePersistence:.55});
+ expect(settingsFrom({residueAging:'false',residueLifetime:999,residueIrregularity:-1,residuePersistence:2})).toMatchObject({residueAging:false,residueLifetime:100,residueIrregularity:0,residuePersistence:1});
+ expect(DURATION).toBeGreaterThan(270);
 });

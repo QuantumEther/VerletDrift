@@ -30,6 +30,13 @@
 <label for="surface-absorption">Surface absorption <output id="surface-absorption-value">0.55</output></label><input id="surface-absorption" type="range" min="0" max="1" step="0.01" value="0.55">
 <label for="dye-residue">Residual dye staining <output id="dye-residue-value">0.38</output></label><input id="dye-residue" type="range" min="0" max="1" step="0.01" value="0.38">
 </div></details>
+<details class="control-group"><summary>Residue weathering</summary><div class="group-content">
+<label class="check-row" for="residue-aging"><input id="residue-aging" type="checkbox" checked> Weather dry ground dye</label>
+<label for="residue-lifetime">Residue lifetime <output id="residue-lifetime-value">60 s</output></label><input id="residue-lifetime" type="range" min="20" max="100" step="1" value="60">
+<label for="residue-irregularity">Erosion irregularity <output id="residue-irregularity-value">0.65</output></label><input id="residue-irregularity" type="range" min="0" max="1" step="0.01" value="0.65">
+<label for="residue-persistence">Protected dye retention <output id="residue-persistence-value">0.55</output></label><input id="residue-persistence" type="range" min="0" max="1" step="0.01" value="0.55">
+<p class="hint">Weak stains erode first; dye in pores and deeper deposits lasts longer.</p>
+</div></details>
 <details class="control-group" id="vehicle-controls"><summary>Vehicle–liquid interaction</summary><div class="group-content">
 <label class="check-row" for="vehicle-interaction"><input id="vehicle-interaction" type="checkbox" checked> Enable vehicle interaction</label>
 <label for="body-wetness">Body wetness <output id="body-wetness-value">1.00×</output></label><input id="body-wetness" type="range" min="0" max="2" step="0.05" value="1">
@@ -42,6 +49,6 @@
 <div class="technical"><span class="eyebrow">RENDERER</span><p id="backend">Requesting WebGPU…</p><p id="timing">GPU timestamps pending.</p><small>GPU times cover deposition, scene and airborne passes. They exclude browser presentation. Volume and motion are artistic approximations.</small></div>
 </aside>
 </main>
-<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="72" step="0.01" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · collision → drying → residue</span></footer>
+<footer><label for="timeline">TIME</label><input id="timeline" type="range" min="0" max="300" step="0.01" value="0"><output id="time-value">0.00 s</output><span class="footnote">Deterministic replay · collision → drying → dye weathering</span></footer>
 <script type="module" src="lab.js"></script>
 </body></html>
