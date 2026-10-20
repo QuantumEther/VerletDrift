@@ -226,7 +226,8 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
     }
     // --- Pop this balloon ---
     balloon.isPopped = true;
-    recordLiquidImpact(balloon, hitSpeed, body, currentTimeSeconds,balloonHue(balloon.hue,state.params));
+    const impactHue = balloonHue(balloon.hue, state.params);
+    recordLiquidImpact(balloon, hitSpeed, body, currentTimeSeconds, impactHue);
 
     // Splat factor [0, 1]: 0 = barely touching, 1 = full-speed impact.
     const splatFactor = Math.min(hitSpeed / SPLAT_MAX_REFERENCE_SPEED, 1.0);
@@ -257,7 +258,7 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
     score.totalScore += popScore;
 
     // Spawn splat particles.
-    spawnSplatParticles(balloon, hitSpeed, splatFactor, body);
+    spawnSplatParticles(balloon, hitSpeed, splatFactor, body, impactHue);
 
     // Trigger screen shake — proportional to impact speed, balloon size, and violence setting.
     const sizeNorm         = (balloon.radius - BALLOON_RADIUS_MIN) / (BALLOON_RADIUS_MAX - BALLOON_RADIUS_MIN);
@@ -272,8 +273,8 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
       state.blurAccumulator = blurSpike;
     }
 
-    // Store balloon hue so skid marks left immediately after a pop use that color.
-    state.tractionState.lastBalloonHue = balloon.hue;
+    // Preserve the resolved impact dye for fresh tire contamination as well.
+    state.tractionState.lastBalloonHue = impactHue;
     state.tractionState.lastBalloonHueFrames = 0; // reset frame counter
 
     // Play pop sound.
@@ -294,7 +295,7 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
 // hitSpeed:    wheel speed at contact (m/s)
 // splatFactor: normalized [0, 1] impact intensity
 // body:        state.body (for car velocity direction to bias splatter away from)
-function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
+function spawnSplatParticles(balloon, hitSpeed, splatFactor, body, baseHue) {
   const violence = state.params.splatViolence || 1.5;
 
   // Base particle count scales with violence multiplier.
@@ -316,7 +317,6 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
   // At max: nearly 180° hemisphere of destruction.
   const spreadAngle = (0.4 + splatFactor * 0.6) * (0.6 + violence * 0.4);
 
-  const baseHue = balloonHue(balloon.hue,state.params);
 
   // ═══════════════════════════════════════════════════════════
   // MAIN BLAST — large directional spray
