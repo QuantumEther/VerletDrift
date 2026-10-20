@@ -35,15 +35,23 @@ struct Out {
  let nearest=vec2(clamp(in.local.x,0.,in.shape.x),0.);
  let dist=length(in.local-nearest)-in.shape.y;
  let aa=max(fwidth(dist),.00001);
- let coverage=1.-smoothstep(-aa*.5,aa*.5,dist);
+ var boundary=dist;
+ if(env.settings.w>.5){
+  let edgeFilter=1.-smoothstep(.25,1.2,length(fwidth(in.world))*24.);
+  boundary+=(envGrain(in.world*24.).x-.5)*in.shape.y*.16*edgeFilter;
+ }
+ let coverage=1.-smoothstep(-aa*.5,aa*.5,boundary);
  // Tread grain is attached to the ground and band-limited at a distance.
  let frequency=96.;let attenuation=1.-smoothstep(.2,1.,length(fwidth(in.world))*frequency);
- let grain=.92+.08*sin(dot(in.world,vec2(71.3,129.7)))*attenuation;
+ var grain=.92+.08*sin(dot(in.world,vec2(71.3,129.7)))*attenuation;
+ if(env.settings.w>.5){let road=envGrain(in.world*42.).x;grain=.85+.15*road*attenuation+.035*(envGrain(in.world*5.).x-.5);}
  // Partition rounded-cap coverage along the stroke. Adjacent short events
  // then carry the same optical density as one long event, instead of beads.
  let reach=max(sqrt(max(in.shape.y*in.shape.y-in.local.y*in.local.y,0.)),.00001);
  let weight=clamp((in.local.x+reach)/(2.*reach),0.,1.)
            -clamp((in.local.x-in.shape.x+reach)/(2.*reach),0.,1.);
  let alpha=1.-pow(1.-clamp(in.color.a,0.,.9999),coverage*grain*max(weight,0.));
- return vec4(in.color.rgb*alpha,alpha);
+ var pigment=in.color.rgb;
+ if(env.settings.w>.5){pigment=envDisplay(envLinear(pigment)*envDiffuse(vec3(0.,0.,1.)));}
+ return vec4(pigment*alpha,alpha);
 }

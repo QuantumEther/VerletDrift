@@ -11,7 +11,7 @@ struct Ghost { pose:vec4<f32>, shape:vec4<f32> }
 struct Screen { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<f32>, @location(1) @interpolate(flat) id:u32 }
 fn loadEvent(i:u32) {
  u=events[i];u.view=frame.view;u.ground.zw=frame.ground.zw;
- u.car=frame.car;u.pose=frame.pose;
+ u.car=frame.car;u.pose=frame.pose;u.light=frame.light;u.environment=frame.environment;
 }
 @vertex fn vs_full(@builtin(vertex_index) id:u32)->Screen {
  let p=array<vec2<f32>,3>(vec2(-1.,-1.),vec2(3.,-1.),vec2(-1.,3.))[id];
@@ -22,9 +22,9 @@ fn loadEvent(i:u32) {
  let world=(uv-.5)*frame.view.xy/frame.view.z+frame.ground.zw;
  var color=textureSampleLevel(sceneTexture,linearSampler,uv,0.).rgb;
  for(var i=0u;i<u32(frame.counts.x);i++){
-  if(events[i].padding[0].x<.5){continue;}
+  if(events[i].options.w<.5){continue;}
   loadEvent(i);eventLayer=i;
-  if(u.padding[0].x>.5&&u.event.z>=0.&&all(abs(world-u.event.xy)<vec2(u.ground.x))){color=groundLiquid(world,color);}
+  if(u.options.w>.5&&u.event.z>=0.&&all(abs(world-u.event.xy)<vec2(u.ground.x))){color=groundLiquid(world,color);}
  }
  return vec4(color,1.);
 }
@@ -33,8 +33,9 @@ fn loadEvent(i:u32) {
  return Screen(clip(vec3(world,0.)),q+.5,0u);
 }
 @fragment fn fs_body(in:Screen)->@location(0) vec4<f32> {
+ u=frame;
  let art=textureSampleLevel(bodyTexture,linearSampler,in.uv,0.);
- var color=art.rgb;
+ var color=vehicleEnvironment(in.uv-.5,art.rgb);
  let world=(in.position.xy/frame.view.xy-.5)*frame.view.xy/frame.view.z+frame.ground.zw;
  for(var i=0u;i<u32(frame.counts.x);i++){
   loadEvent(i);
@@ -50,7 +51,9 @@ fn loadEvent(i:u32) {
  return Screen(clip(vec3(world,0.)),q+.5,wheel);
 }
 @fragment fn fs_wheel(in:Screen)->@location(0) vec4<f32> {
- let art=textureSampleLevel(wheelTexture,linearSampler,in.uv,0.);return vec4(art.rgb*art.a,art.a);
+ u=frame;let art=textureSampleLevel(wheelTexture,linearSampler,in.uv,0.);
+ var color=art.rgb;if(u.environment.w>.5){color=toDisplay(toLinear(color)*liquidDiffuse(vec3(0.,0.,1.)));}
+ return vec4(color*art.a,art.a);
 }
 
 // Preserve the existing sprite ghost trail, below the live car and airborne liquid.

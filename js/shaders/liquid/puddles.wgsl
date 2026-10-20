@@ -101,7 +101,10 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let dye=weatherDye(world,footprint,stain+dry.residue,field.r,material,terrain,micro,u.event.z);
  let freshAbsorption=select(vec3(.4,4.5,7.),u.dye.xyz*.018,u.dye.w>.5);
  // Weathered pigment loses chroma and becomes a dull, embedded warm trace.
- let absorption=mix(freshAbsorption,vec3(1.,2.,2.8),dye.aging*.8);
+ // Weather toward a duller trace of the captured dye, never turn blue/green
+ // deposits into the crimson reference's maroon residue.
+ let agedDye=select(vec3(1.,2.,2.8),clamp(freshAbsorption*.35+vec3(.8),vec3(.8),vec3(4.)),u.dye.w>.5&&u.environment.w>.5);
+ let absorption=mix(freshAbsorption,agedDye,dye.aging*.8);
  let poreTransmission=exp(-absorption*dye.mass*u.effect.w*2.5);
  // With no water left there is no water/air interface: retain only dye in
  // the substrate. This also avoids four atlas reads and the full wet BRDF.
@@ -130,12 +133,12 @@ fn groundLiquid(world:vec2<f32>,asphalt:vec3<f32>)->vec3<f32> {
  let reflected=reflect(-view,n);
  let environment=reflectedEnvironment(world,reflected,roughness);
  let fresnel=fresnelWater(dot(n,view));
- let light=normalize(vec3(.3,-.6,1.));
+ let light=liquidSun();
  // Finite emitter width and subpixel normal variation bound tiny-drop glints.
  let variance=clamp(depthAA/max(field.r,.005),0.,1.)*beading*.06;
  let highlightRoughness=sqrt(max(.085,roughness)*max(.085,roughness)+variance);
- let direct=ggxReflection(n,view,light,highlightRoughness)*vec3(.45,.42,.38);
- let reflection=(environment*fresnel+direct)*u.optics.x;
+ let direct=ggxReflection(n,view,light,highlightRoughness)*liquidSunColor();
+ let reflection=(environment*fresnel+direct)*u.optics.x*liquidGroundVisibility(world);
  // Millimetre-scale transmission retains the local road texture without blur.
  let substrate=toLinear(asphalt)*(1.-wet*.48);
  let transmission=waterTransmission(physicalDepth,dot(n,view),u.effect.w);

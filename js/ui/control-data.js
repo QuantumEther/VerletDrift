@@ -1,3 +1,4 @@
+import { SCENE_CONTROLS } from '../renderer/environment.js';
 import { LIQUID_CONTROLS } from '../renderer/liquid-controls.js';
 // Original simulator controls, grouped by category. Values here are HTML defaults.
 // Mass/grip/CoG ranges and precision also accommodate the existing built-in presets.
@@ -2985,5 +2986,6 @@ export const CONTROLS = [
     "unit": "×",
     "top": true
   },
-  ...LIQUID_CONTROLS
+  ...LIQUID_CONTROLS,
+  ...SCENE_CONTROLS
 ];

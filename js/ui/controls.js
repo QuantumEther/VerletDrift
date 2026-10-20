@@ -1,3 +1,4 @@
+import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
 // One bidirectional binding per control. Presets and imports use the same path.
 import state from '../state.js';
 import { logger } from '../debug/logger.js';
@@ -5,6 +6,7 @@ import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
 import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
+const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS};
 
 export const controlBindings = new Map();
 const view = { canvasResolutionScale: 1 };
@@ -62,7 +64,7 @@ function writeBinding(binding,value,persist=true) {
   writingSound=true;
   try {updateSoundParam(key,canonical);} finally {writingSound=false;}
  } else scope[key]=canonical;
- if(persist && Object.hasOwn(LIQUID_DEFAULTS,key)) {try{localStorage.setItem('liquidParam_'+key,String(canonical));}catch{/* Storage may be disabled. */}}
+ if(persist && Object.hasOwn(APPEARANCE_DEFAULTS,key)) {try{localStorage.setItem((Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_')+key,String(canonical));}catch{/* Storage may be disabled. */}}
  syncBinding(binding);
 }
 function validateValue(binding,value) {
@@ -83,7 +85,8 @@ function syncLiquidPreset(){
  const select=document.getElementById('liquidMaterialPreset');if(!select)return;
  select.value=['reference','thin-film','deep-pool'].find(name=>Object.entries(liquidPreset(name)).every(([key,value])=>Math.abs(state.params[key]-value)<1e-7))??'custom';
 }
-export function refreshControls() {controlBindings.forEach(syncBinding);syncLiquidPreset();changed();}
+function syncEnvironmentPreset(){const select=document.getElementById('environmentPreset');if(select)select.value=Object.keys(LIGHT_PRESETS).find(name=>Object.entries(LIGHT_PRESETS[name]).every(([key,v])=>Math.abs(state.params[key]-v)<1e-7))??'custom';}
+export function refreshControls() {controlBindings.forEach(syncBinding);syncLiquidPreset();syncEnvironmentPreset();changed();}
 export function resetControls() {
  controlBindings.forEach(binding=>writeBinding(binding,defaults.get(binding.control.id)));
  clearSelection();refreshControls();status('All controls restored to startup defaults.');
@@ -149,15 +152,23 @@ export function initControls() {
   const initial=decodeControl(control,control.type==='checkbox'?input.checked:input.value);
   defaults.set(control.id,initial);
   let value=initial;
-  if(scope===state.soundParams || Object.hasOwn(LIQUID_DEFAULTS,key)) {
-   try {const stored=localStorage.getItem((scope===state.soundParams?'soundParam_':'liquidParam_')+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
+  if(scope===state.soundParams || Object.hasOwn(APPEARANCE_DEFAULTS,key)) {
+   try {const stored=localStorage.getItem((scope===state.soundParams?'soundParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_')+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
   }
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
-   enforcePair(control.id);clearSelection();if(Object.hasOwn(LIQUID_DEFAULTS,key))syncLiquidPreset();changed();
+   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();changed();
   });
  }
+ document.getElementById('environmentPreset').addEventListener('change',event=>{
+  for(const [key,value] of Object.entries(LIGHT_PRESETS[event.target.value]??{}))writeBinding(controlBindings.get(key),value);
+  writeBinding(controlBindings.get('sceneLightingEnabled'),true);refreshControls();status('Environment lighting applied.');
+ });
+ document.getElementById('resetEnvironment').addEventListener('click',()=>{
+  for(const [key,value] of Object.entries(SCENE_DEFAULTS))writeBinding(controlBindings.get(key),value);
+  document.getElementById('environmentPreset').value='daylight';refreshControls();status('Environment appearance reset.');
+ });
  document.getElementById('liquidMaterialPreset').addEventListener('change',event=>{
   for(const [key,value] of Object.entries(liquidPreset(event.target.value)))writeBinding(controlBindings.get(key),value);
   refreshControls();status('Liquid material preset applied to running effects.');

@@ -101,7 +101,7 @@ fn bodyLiquid(q:vec2<f32>,world:vec2<f32>,art:vec3<f32>)->vec3<f32> {
  // GGX peak would clip broad white patches on these gently curved body panels.
  let lightRoughness=sqrt(roughness*roughness+.06);
  let reflected=(reflectedEnvironment(world,ray,roughness)*fresnel
-  +ggxReflection(n,view,normalize(vec3(.3,-.6,1.)),lightRoughness)*vec3(.45,.42,.38))*u.optics.x;
+  +ggxReflection(n,view,liquidSun(),lightRoughness)*liquidSunColor())*u.optics.x;
  // Residue controls the covered fraction, not the hue of a dilute orange filter.
  let base=toLinear(art);let dyed=base*waterTransmission(.008,nv,u.effect.w);
  let substrate=mix(base,dyed,clamp(film.residue,0.,1.))*(1.-film.wet*.05);

@@ -30,7 +30,7 @@ test('sprites align with physical anchors and preserve steering, camera transfor
     const originalDraw = ctx.drawImage.bind(ctx);
     ctx.drawImage = (image, ...args) => {
       const { a, b, e, f } = ctx.getTransform();
-      calls.push({ src: image.src.split('/').pop(), args, a, b, e, f });
+      if(!image.environmentShadow)calls.push({ src: image.vehicleBodySprite?'relit-body':image.src.split('/').pop(), args, a, b, e, f });
       originalDraw(image, ...args);
     };
     // Nonzero independent wheel positions and steering detect local/world mixups.
@@ -52,7 +52,7 @@ test('sprites align with physical anchors and preserve steering, camera transfor
   });
   expect(result.unchanged && result.transformRestored).toBe(true);
   expect(result.spriteCalls.map(call => call.src)).toEqual([
-    'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'DeLorean.png',
+    'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'DeLorean_Wheel.png', 'relit-body',
   ]);
   // Chromium Canvas transforms round to float precision, including world coordinates.
   const synthetic = [[-.4, .2, .95], [2, .8, .95], [-1, 3, .7], [1.5, 3.7, .7], [1, 2, .7]];

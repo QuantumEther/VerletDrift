@@ -10,7 +10,7 @@ export function resetLiquidImpacts() {
   generation++;
   evictions = 0;
 }
-export function recordLiquidImpact(balloon, speed, body, time) {
+export function recordLiquidImpact(balloon, speed, body, time, hue=balloon.hue) {
   if (![balloon.x, balloon.y, speed, time].every(Number.isFinite)) return;
   const length = Math.hypot(body.velocityX, body.velocityY);
   const dx = length > 0.01 ? body.velocityX / length : Math.sin(body.heading);
@@ -30,7 +30,7 @@ export function recordLiquidImpact(balloon, speed, body, time) {
       time,
       speed: Math.max(0, Math.min(60, speed)),
       volume: Math.max(2, Math.min(40, 18 * Math.pow(balloon.radius / 0.6, 3))),
-      hue: balloon.hue,
+      hue,
       dx,
       dy,
       seed: seed % 1000000,

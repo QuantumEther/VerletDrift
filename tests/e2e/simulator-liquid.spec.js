@@ -88,7 +88,7 @@ test("multiple coloured impacts persist through camera changes, resets and sprit
       compute: { module, entryPoint: "probe" },
     });
     const uniform = d.createBuffer({
-      size: 224,
+      size: 256,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
     const result = d.createBuffer({
@@ -109,7 +109,7 @@ test("multiple coloured impacts persist through camera changes, resets and sprit
     try {
       const output = [];
       for (const distant of [1, 0]) {
-        const data = new Float32Array(56);
+        const data = new Float32Array(64);
         data[50] = distant;
         d.queue.writeBuffer(uniform, 0, data);
         const e = d.createCommandEncoder(),

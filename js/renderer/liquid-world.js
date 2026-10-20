@@ -1,3 +1,4 @@
+import { lighting } from './environment.js';
 import { liquidSettings, liquidExtent, GROUND_LIFETIME } from './liquid-controls.js';
 import { QUALITY } from './liquid-settings.js';
 import {
@@ -144,11 +145,8 @@ export class WorldLiquid {
       ),
     );
     // A 256-byte stride serves both aligned per-event uniforms and storage reads.
-    // The lab uses the same fields without this trailing alignment padding.
-    const common = raw.replace(
-      "  dye: vec4<f32>, // absorption RGB, enabled",
-      "  dye: vec4<f32>, // absorption RGB, enabled\n  padding: array<vec4<f32>,2>,",
-    );
+    // The shared tail now carries scene lighting; the laboratory leaves it disabled.
+    const common = raw;
     const readEvents =
       "@group(0) @binding(4) var<storage,read> events:array<Uniforms>;\n";
     // WGSL has no includes/generics: only the event source and atlas accessor vary.
@@ -629,6 +627,7 @@ export class WorldLiquid {
     frame[26] = view.x;
     frame[27] = view.y;
     frame.set([c, s, 1, settings.residueAging?1:0], 48);
+    lighting(state.params,frame.subarray(56,64));
     this.device.queue.writeBuffer(this.frame, 0, frame);
     this.events = events;
     this.rebuild = [];
@@ -704,7 +703,8 @@ export class WorldLiquid {
       // Simulator-only metadata in the existing stride padding: dead/offscreen
       // ground layers are skipped without losing the retained replay snapshot.
       const inView=Math.abs(e.x-view.x)<extent+width/ppm*.5&&Math.abs(e.y-view.y)<extent+height/ppm*.5;
-      u[56]=age>=0&&this.groundAlive(age,settings)&&inView?1:0;
+      u[19]=age>=0&&this.groundAlive(age,settings)&&inView?1:0;
+      u.set(frame.subarray(56,64),56);
       if (key !== this.keys[i]) this.rebuild.push({ i, key, age });
       if (age > 0 && age < 2.8 && inView) this.airborne.push(i);
     }
@@ -792,7 +792,7 @@ export class WorldLiquid {
       hasArt: this.hasArt,
       budget: { ...this.q, atlas:this.atlasSize },
       quality,
-      groundLayers: events.filter((e,i)=>this.eventData[i*64+56]>.5).length,
+      groundLayers: events.filter((e,i)=>this.eventData[i*64+19]>.5).length,
     });
   }
   encode(encoder, output, drawUpperWorld = () => {}) {

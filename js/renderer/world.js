@@ -1,3 +1,4 @@
+import { balloonHue } from './environment.js';
 // =============================================================
 // RENDERER/WORLD — world-space canvas drawing
 // =============================================================
@@ -330,14 +331,15 @@ export function drawCarGhosts(ctx) {
 //
 // Wheels are now rendered at their actual Verlet particle positions,
 // with front wheels rotated to match their physical steering angle.
-export function drawCar(ctx) {
+export function drawCar(ctx,groundShadow=true) {
+  if(![state.body.centerX,state.body.centerY,state.body.heading].every(Number.isFinite))return;
   const body       = state.body;
   const engine     = state.engine;
   const wheels     = state.wheels;
   const steerAngle = state.steering.frontWheelAngle;
 
   const spritePose = {
-    cx: body.centerX, cy: body.centerY, heading: body.heading,
+    cx: body.centerX, cy: body.centerY, heading: body.heading, groundShadow,
     wheels, steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
     wheelRadius: state.params.wheelRadius,
     viewScale: state.camera.zoom * (state.params.pixelsPerMeter || PIXELS_PER_METER),
@@ -844,7 +846,7 @@ export function drawBalloons(ctx) {
   for (const balloon of state.balloons) {
     if (balloon.isPopped) continue;
 
-    const hue = balloon.hue;
+    const hue = balloonHue(balloon.hue,state.params);
     ctx.save();
     ctx.translate(balloon.x, balloon.y);
 
@@ -852,7 +854,7 @@ export function drawBalloons(ctx) {
     // Performance-first: at gameplay speed these are indistinguishable from shaded spheres.
     ctx.beginPath();
     ctx.arc(0, 0, balloon.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `hsl(${hue}, 85%, 55%)`;
+    ctx.fillStyle = `hsl(${hue}, 85%, ${state.params.sceneLightingEnabled!==false&&hue===350?38:55}%)`;
     ctx.fill();
 
     // Thin darker stroke for definition against checkerboard
@@ -913,7 +915,7 @@ export function drawSplatParticles(ctx) {
       // Slow/landing particles: standard circle with slight glow.
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `hsl(${hue}, 85%, 55%)`;
+      ctx.fillStyle = `hsl(${hue}, 85%, ${state.params.sceneLightingEnabled!==false&&hue===350?38:55}%)`;
       ctx.fill();
     }
 

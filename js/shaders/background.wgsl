@@ -73,6 +73,20 @@ fn grid(p:vec2<f32>,thickness:f32)->f32{
 fn material(world:vec2<f32>)->vec3<f32>{
  let check=filteredChecker(world/u.tileSize);
  if(u.surface<.5){return mix(vec3(.0667,.0784,.0863),vec3(.1333,.1255,.1490),check);}
+ if(u.surface<1.5 && env.settings.w>.5){
+  let footprint=length(fwidth(world));
+  let broadGrain=envGrain(world*1.3).x-.5;
+  let aggregate=envGrain(world*42.);
+  let fade=1.-smoothstep(.25,1.2,footprint*42.);
+  let grain=(aggregate.x-.5)*fade;
+  let fineFade=1.-smoothstep(.25,1.2,footprint*115.);
+  var fine=0.;if(u.detail>1.&&fineFade>0.){fine=(envGrain(world*115.).x-.5)*fineFade;}
+  // Embedded aggregate with sparse mineral facets, rather than animated static.
+  let mineral=smoothstep(.64,.90,aggregate.x)*fade;
+  let base=vec3(.155,.160,.166)+vec3(broadGrain*.022+grain*.052+fine*.026+mineral*.014);
+  let normal=normalize(vec3(-aggregate.yz*.12*fade,1.));
+  return envDisplay(envLinear(base)*envDiffuse(normal));
+ }
  if(u.surface<1.5){
   let coarse=noise(world*1.7)-.5;
   let microScale=55.;let atten=1.-smoothstep(.2,1.,length(fwidth(world))*microScale);
@@ -139,7 +153,8 @@ fn fs_main(in: VertOut) -> @location(0) vec4<f32> {
     let sWorldX = worldX + offX;
     let sWorldY = worldY + offY;
 
-    let tileC = material(vec2(sWorldX,sWorldY));
+    var tileC = material(vec2(sWorldX,sWorldY));
+    if(env.settings.w>.5 && (u.surface<.5||u.surface>1.5)){tileC=envDisplay(envLinear(tileC)*envDiffuse(vec3(0.,0.,1.)));}
 
     colorAcc += tileC * sampleAlpha;
     alphaAcc += sampleAlpha;

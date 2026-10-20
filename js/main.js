@@ -852,7 +852,7 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
 
   if (!isGPUVehicleReady()) {
     drawCarGhosts(simCtx);
-    drawCar(simCtx);
+    drawCar(simCtx, !isGPUReady());
   }
   removeCameraTransform(simCtx);
 

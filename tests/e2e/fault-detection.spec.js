@@ -26,11 +26,12 @@ test.describe('Fault Detection & Event Recording', () => {
 
     // Inject a fault via JavaScript (simulate physics engine producing NaN)
     // This mimics what would happen if physics broke down
-    await page.evaluate(() => {
-      const state = window.getState?.() || window.state;
-      if (state && state.body) {
-        state.body.centerX = NaN;
-      }
+    await page.evaluate(async () => {
+      const {checkNonFinites}=await import('/js/debug/faults.js');
+      const state=window.getState?.()||window.state;
+      // These derived fields can be restored/recomputed by the next normal
+      // frame. Sample the injected fault before that recovery can race us.
+      state.body.centerX=NaN;checkNonFinites();
     });
 
     // Run a few frames to trigger fault detection
@@ -231,11 +232,9 @@ test.describe('Fault Detection & Event Recording', () => {
     expect(hasEventBuffer).toBe(true);
 
     // Inject a fault
-    await page.evaluate(() => {
-      const state = window.state;
-      if (state && state.body) {
-        state.body.angularVelocity = Infinity;
-      }
+    await page.evaluate(async () => {
+      const {checkNonFinites}=await import('/js/debug/faults.js');
+      window.state.body.angularVelocity=Infinity;checkNonFinites();
     });
 
     // Run to trigger detection (fault detection runs each frame)

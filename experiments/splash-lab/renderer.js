@@ -7,7 +7,7 @@ const VERTICES=[{arrayStride:8,attributes:[{shaderLocation:0,offset:0,format:'fl
 export class SplashRenderer {
   constructor(canvas,onFailure=()=>{}) {
     this.canvas=canvas;this.onFailure=onFailure;this.ready=false;this.closed=false;this.resources=[];
-    this.uniforms=new Float32Array(56);this.depositionKey=null;
+    this.uniforms=new Float32Array(64);this.depositionKey=null;
     this.stats={backend:'uninitialized',drawCalls:0,frames:0,resourceAllocations:0,resourceBytes:0,cpuEncodeMs:0,sceneGpuMs:null,splashGpuMs:null};
   }
   track(resource,bytes=0) {this.resources.push(resource);this.stats.resourceAllocations++;this.stats.resourceBytes+=bytes;return resource;}

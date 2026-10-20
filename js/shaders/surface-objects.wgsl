@@ -25,7 +25,10 @@ struct Out {
  let uvWidth=fwidth(in.uv);
  var uv=in.uv;var alpha=0.;var rgb=in.color.rgb;
  if(in.kind>1.5){
-   alpha=exp(-dot(uv,uv)*4.)*(1.-smoothstep(.65,1.,length(uv)))*in.color.a;
+   let falloff=select(4.,mix(6.,2.8,env.settings.y),env.settings.w>.5);
+   var shadowStrength=1.;
+   if(env.settings.w>.5){shadowStrength=select(.85,env.light.w/(env.settings.x+env.light.w+.001),in.kind>3.5);}
+   alpha=exp(-dot(uv,uv)*falloff)*(1.-smoothstep(.65,1.,length(uv)))*in.color.a*shadowStrength;
  }else if(in.kind>.5){
    uv.y*=2.;
    let r=length(uv);let aa=max(length(uvWidth)*2.,.001);
@@ -34,6 +37,12 @@ struct Out {
    let light=.62+.32*z+.10*dot(uv,vec2(-.6,-.8));
    let highlight=pow(max(0.,1.-length((uv-vec2(-.30,-.38))*vec2(2.3,3.5))),3.);
    rgb=rgb*light+vec3(highlight*.42);
+   if(env.settings.w>.5){
+    let normal=normalize(vec3(uv,z+.0001));let view=normalize(vec3(0.,.48,1.));
+    let halfway=normalize(view+env.light.xyz);
+    let specular=pow(max(0.,dot(normal,halfway)),75.);
+    rgb=envDisplay(envLinear(in.color.rgb)*envDiffuse(normal)*(.82+.18*z)+envColor()*specular*env.light.w*.23);
+   }
    let stringX=sin(uv.y*5.+in.seed)*.09;
    let stringAA=max(uvWidth.x,.003);
    let string=(1.-smoothstep(.012,.012+stringAA,abs(uv.x-stringX)))*step(1.,uv.y)*step(uv.y,1.85);

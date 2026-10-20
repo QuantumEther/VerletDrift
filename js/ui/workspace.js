@@ -251,6 +251,11 @@ for (const [index, system] of CARD_GROUPS.entries()) {
     group.querySelector('.card-sliders').append(row);
     rows.set(slider.id, row);
   }
+  if(sliders.some(control=>control.id==='sceneLightAzimuth')){
+    const tools=document.createElement('div');tools.className='suspension-readout';
+    tools.innerHTML='<label for="environmentPreset">Lighting preset </label><select class="toolbar-button" id="environmentPreset"><option value="daylight">Daylight</option><option value="overcast">Overcast</option><option value="sunset">Low warm sun</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" type="button" id="resetEnvironment">Reset environment</button><p>Disable coherent lighting to compare the original materials. Balloon colour choices affect new impacts; existing liquid keeps its captured colour.</p>';
+    group.querySelector('.card-sliders').append(tools);
+  }
   if (sliders.some(control => control.id === 'liquidQuality')) {
     const tools=document.createElement('div');tools.className='suspension-readout';
     tools.innerHTML='<label for="liquidMaterialPreset">Liquid material </label><select class="toolbar-button" id="liquidMaterialPreset"><option value="reference">Reference</option><option value="thin-film">Thin film</option><option value="deep-pool">Deep pool</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" id="resetLiquidControls" type="button">Reset liquid</button><p>GPU liquid only. Canvas keeps legacy visuals. Volume scales balloon volume; intensity scales measured collision speed. Choose a liquid detail preset or follow the renderer quality.</p>';

@@ -1,3 +1,4 @@
+import { balloonHue } from './renderer/environment.js';
 // =============================================================
 // BALLOON — spawn, collision detection, scoring, splat particles
 // =============================================================
@@ -225,7 +226,7 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
     }
     // --- Pop this balloon ---
     balloon.isPopped = true;
-    recordLiquidImpact(balloon, hitSpeed, body, currentTimeSeconds);
+    recordLiquidImpact(balloon, hitSpeed, body, currentTimeSeconds,balloonHue(balloon.hue,state.params));
 
     // Splat factor [0, 1]: 0 = barely touching, 1 = full-speed impact.
     const splatFactor = Math.min(hitSpeed / SPLAT_MAX_REFERENCE_SPEED, 1.0);
@@ -315,7 +316,7 @@ function spawnSplatParticles(balloon, hitSpeed, splatFactor, body) {
   // At max: nearly 180° hemisphere of destruction.
   const spreadAngle = (0.4 + splatFactor * 0.6) * (0.6 + violence * 0.4);
 
-  const baseHue = balloon.hue;
+  const baseHue = balloonHue(balloon.hue,state.params);
 
   // ═══════════════════════════════════════════════════════════
   // MAIN BLAST — large directional spray

@@ -1,3 +1,4 @@
+import { lighting, balloonHue } from './renderer/environment.js';
 // GPU world layers and optional procedural liquid. Vehicle/gameplay state is
 // read-only. Canvas retains HUD, diagnostics and the fallback vehicle path.
 import { renderState as state } from "./state.js";
@@ -66,6 +67,9 @@ let pipelines = {},
   skidCache,
   timing;
 let liquidWorld;
+let environmentSource="";
+let environmentGroups=new Map();
+const environmentData=new Float32Array(8);
 let rendererGeneration = 0;
 const resources = [];
 const camera = new Float32Array(6),
@@ -180,6 +184,7 @@ function release(reason) {
   } catch {}
   for (const resource of resources) resource.destroy?.();
   resources.length = 0;
+  environmentGroups.clear();
   liquidWorld?.destroy();
   liquidWorld = null;
   skidCache?.destroy();
@@ -203,7 +208,7 @@ async function shader(name) {
     cache: "no-cache",
   });
   if (!r.ok) throw Error(`Shader ${name}: ${r.status}`);
-  return device.createShaderModule({ label: name, code: await r.text() });
+  return device.createShaderModule({ label: name, code: (["background","skid-vector","surface-objects"].includes(name)?environmentSource:"")+await r.text() });
 }
 async function pipeline(name, stride = 0, strip = false) {
   const module = await shader(name);
@@ -284,6 +289,9 @@ export async function initGPU(target) {
       release(`Device lost: ${info.message || info.reason}`);
       logger.warn("gpu", "Device lost; using Canvas fallback.");
     });
+    const envResponse=await fetch(new URL('./shaders/environment.wgsl',import.meta.url));
+    if(!envResponse.ok)throw Error('Environment shader unavailable');
+    environmentSource=await envResponse.text();
     const [bg, arrow, part, skid, surface] = await Promise.all([
       pipeline("background", 0, true),
       pipeline("arrows", 9),
@@ -343,6 +351,8 @@ export async function initGPU(target) {
       [binding(0, buffers.smoke), binding(1, buffers.flags)],
       1,
     );
+    buffers.environment=device.createBuffer({label:'sceneEnvironment',size:32,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+    environmentGroups=new Map([bg,skid,surface].map(p=>[p,device.createBindGroup({layout:p.getBindGroupLayout(1),entries:[{binding:0,resource:{buffer:buffers.environment}}]})]));
     skidCache = new GPUSkidCache(device, buffers.camera, skid);
     if (
       new URLSearchParams(globalThis.location?.search || "").get("liquid") !==
@@ -459,17 +469,18 @@ function surface(out, index, x, y, r, seed, hue, alpha, kind) {
   out[b + 1] = y;
   out[b + 2] = r;
   out[b + 3] = seed;
-  if (kind === 2) {
+  if (kind >= 2) {
     out[b + 4] = 0.015;
     out[b + 5] = 0.02;
     out[b + 6] = 0.025;
-  } else rgb(hue, kind === 1 ? 78 : 80, kind === 1 ? 55 : 40, out, b + 4);
+  } else rgb(hue, kind === 1 ? 78 : 80, kind === 1 ? (state.params.sceneLightingEnabled===false?55:hue===350?38:48) : 40, out, b + 4);
   out[b + 7] = alpha;
   out[b + 8] = kind;
 }
 function draw(pass, pipeline, bind, vertices, count, instanceBuffer) {
   if (!count) return;
   pass.setPipeline(pipeline);
+  if(environmentGroups.has(pipeline))pass.setBindGroup(1,environmentGroups.get(pipeline));
   pass.setBindGroup(0, bind);
   if (instanceBuffer) pass.setVertexBuffer(0, instanceBuffer);
   pass.draw(vertices, count);
@@ -487,6 +498,7 @@ export function renderFrameGPU(width, height) {
       cam = state.camera,
       view = getViewCamera(cam, state.screenShake),
       ppm = p.pixelsPerMeter || PIXELS_PER_METER;
+    lighting(p,environmentData);write(buffers.environment,environmentData);
     const proceduralVisuals=!!liquidWorld && p.liquidEnabled!==false;
     const halfWidth = width / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
     const halfHeight = height / (2 * cam.zoom * ppm) + 2 / (cam.zoom * ppm);
@@ -649,6 +661,17 @@ export function renderFrameGPU(width, height) {
     const sh = shadows;
     const cb = Math.cos(body.heading),
       sb = Math.sin(body.heading);
+    if(p.sceneLightingEnabled!==false){
+      const soft=environmentData[5],sun=environmentData;
+      const dx=-sun[0]/Math.max(.25,sun[2])*.65,dy=-sun[1]/Math.max(.25,sun[2])*.65;
+      for(let i=0;i<3;i++){
+        const along=(i-1)*BODY_RECT.length*.25;
+        const x=body.centerX-sb*along,y=body.centerY+cb*along;
+        surface(sh,shadowCount++,x+dx,y+dy,BODY_RECT.width*(.48+soft*.15),BODY_RECT.width*(.48+soft*.15),0,.24,4);
+        surface(sh,shadowCount++,x,y,BODY_RECT.width*.48,BODY_RECT.width*.48,0,.23,2);
+      }
+      for(const w of Object.values(state.wheels))surface(sh,shadowCount++,w.x,w.y,.20,.27,0,.45,2);
+    }else{
     for (let i = 0; i < 3; i++) {
       const along = (i - 1) * BODY_RECT.length * 0.25;
       surface(
@@ -663,25 +686,28 @@ export function renderFrameGPU(width, height) {
         2,
       );
     }
+    }
     let balloonCandidates = 0;
     for (const b of state.balloons) {
       if (b.isPopped) continue;
-      if (balloonCandidates++ === MAX_SURFACE - 3) break;
-      // Include the string and displaced contact shadow in the union bound.
-      if (!visible(b.x, b.y, b.radius * 1.2 + 0.12, b.radius * 2 + 0.18)) {
+      if (balloonCandidates++ === MAX_SURFACE - (p.sceneLightingEnabled===false?3:10)) break;
+      const shadowX=p.sceneLightingEnabled===false?.12:-environmentData[0]/Math.max(.25,environmentData[2])*.7;
+      const shadowY=p.sceneLightingEnabled===false?.18:-environmentData[1]/Math.max(.25,environmentData[2])*.7;
+      // Include long low-elevation shadows as well as the balloon/string.
+      if (!visible(b.x,b.y,b.radius*1.2+Math.abs(shadowX),Math.max(b.radius*2+.18,b.radius*.7+Math.abs(shadowY)))) {
         culledInstances += 2;
         continue;
       }
       surface(
         sh,
         shadowCount++,
-        b.x + 0.12,
-        b.y + 0.18,
+        b.x + shadowX,
+        b.y + shadowY,
         b.radius * 1.2,
         b.radius * 0.7,
         0,
         0.28,
-        2,
+        p.sceneLightingEnabled===false?2:4,
       );
       surface(
         balloons,
@@ -690,7 +716,7 @@ export function renderFrameGPU(width, height) {
         b.y,
         b.radius,
         b.hue * 0.1,
-        b.hue,
+        balloonHue(b.hue,p),
         1,
         1,
       );

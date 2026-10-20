@@ -141,6 +141,14 @@ quality budgets, controls and limitations. Expand the liquid cards under Renderi
 to tune splashes, wet car, puddle drying and dye degradation. Use `?liquid=0` to compare with the previous
 rendering, or `?renderer=canvas` for the existing Canvas fallback.
 
+### Scene lighting and balloon appearance
+
+Expand **Rendering → Environment Lighting** for daylight, overcast and low warm
+lighting presets, or tune direction, elevation, intensity, ambient, softness and
+temperature. **Balloon Appearance** selects Colorful, Crimson or a mixed palette.
+Disable **Coherent lighting** to compare the preserved earlier shading.
+[Visual comparisons and technical notes](docs/rendering/VISUAL_COHERENCE.md).
+
 ## How It Works
 
 At a high level, each frame is split into:

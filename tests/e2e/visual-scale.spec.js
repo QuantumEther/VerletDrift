@@ -6,7 +6,7 @@ for (const dpr of [1, 2]) {
     await context.addInitScript(() => {
       const draw = CanvasRenderingContext2D.prototype.drawImage;
       CanvasRenderingContext2D.prototype.drawImage = function (image, ...args) {
-        if (this.canvas.id === 'simCanvas' && image.src?.endsWith('/DeLorean.png')) {
+        if (this.canvas.id === 'simCanvas' && (image.src?.endsWith('/DeLorean.png')||image.vehicleBodySprite)) {
           const m = this.getTransform();
           const ratioX = this.canvas.width / this.canvas.clientWidth;
           const ratioY = this.canvas.height / this.canvas.clientHeight;
@@ -124,7 +124,7 @@ test('tire and mark centres agree through turns, zoom, view scale and shake', as
         ctx.scale(2, 2); // Also exercise a higher-density backing transform.
         applyCameraTransform(ctx, 800, 600);
         const tireCentres = [], markCentres = [];
-        ctx.drawImage = image => { if (image.src.endsWith('DeLorean_Wheel.png')) {
+        ctx.drawImage = image => { if (image.src?.endsWith('DeLorean_Wheel.png')) {
           const m = ctx.getTransform(); tireCentres.push({ x: m.e, y: m.f });
         } };
         ctx.lineTo = (x, y) => markCentres.push(ctx.getTransform().transformPoint({ x, y }));

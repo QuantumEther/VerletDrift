@@ -13,6 +13,8 @@ struct Uniforms {
   bodyDrying: vec4<f32>, // body drying duration, dye residue, interaction enabled, lab pore retention
   pose: vec4<f32>, // heading cos/sin, distant environment flag, lab residue aging enabled
   dye: vec4<f32>, // absorption RGB, enabled
+  light: vec4<f32>, // world direction toward sun xyz, direct intensity
+  environment: vec4<f32>, // ambient, softness, temperature offset, enabled
 }
 @group(0) @binding(0) var<uniform> u: Uniforms;
 const PI=3.14159265359;

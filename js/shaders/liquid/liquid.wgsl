@@ -99,7 +99,7 @@ fn liquid(pixel:vec2<f32>,world:vec3<f32>,normal:vec3<f32>,thickness:f32,coverag
  let roughness=sqrt(materialRoughness*materialRoughness+min(.18,(dot(dx,dx)+dot(dy,dy))*.35));
  let reflected=reflect(-view,n);
  let reflection=(reflectedEnvironment(world.xy+reflected.xy*(-world.z/max(reflected.z,.08)),reflected,roughness)*fresnel
-  +ggxReflection(n,view,normalize(vec3(.3,-.6,1.)),roughness)*vec3(.45,.42,.38))*u.optics.x;
+  +ggxReflection(n,view,liquidSun(),roughness)*liquidSunColor())*u.optics.x;
  let depth=max(thickness,0.)*.012;
  let offset=n.xy*(depth*u.view.z*.30)/u.view.xy;
  let behind=textureSampleLevel(sceneTexture,linearSampler,clamp(pixel/u.view.xy+offset,vec2(0.),vec2(1.)),0.).rgb;
