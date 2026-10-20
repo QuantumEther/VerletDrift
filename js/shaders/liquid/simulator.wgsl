@@ -21,6 +21,7 @@ fn loadEvent(i:u32) {
  let uv=in.position.xy/frame.view.xy;
  let world=(uv-.5)*frame.view.xy/frame.view.z+frame.ground.zw;
  var color=textureSampleLevel(sceneTexture,linearSampler,uv,0.).rgb;
+ u=frame;color=tireLiquid(world,uv,color);
  for(var i=0u;i<u32(frame.counts.x);i++){
   if(events[i].options.w<.5){continue;}
   loadEvent(i);eventLayer=i;

@@ -1,3 +1,4 @@
+import {recordWetTireTransfer} from './renderer/wet-trail-events.js';
 import { lighting, balloonHue } from './renderer/environment.js';
 // GPU world layers and optional procedural liquid. Vehicle/gameplay state is
 // read-only. Canvas retains HUD, diagnostics and the fallback vehicle path.
@@ -91,6 +92,7 @@ let readbackPending = false,
 let lastSkidTime = NaN,
   lastSkidEvents,
   lastSkidWidth,
+  lastSkidWet,
   cachedSkid;
 const smokeDirty = new Uint8Array(MAX_SMOKE);
 let renderStats = {
@@ -124,11 +126,11 @@ export function getGPURenderStats() {
     resourceCount:
       renderStats.resourceCount +
       (liquidWorld
-        ? liquidWorld.resources.length + (liquidWorld.world ? 2 : 0)
+        ? liquidWorld.resourceCount
         : 0),
     liquidResidentBytes: liquidWorld?.ownedBytes ?? 0,
     liquidResourceCount: liquidWorld
-      ? liquidWorld.resources.length + (liquidWorld.world ? 2 : 0)
+      ? liquidWorld.resourceCount
       : 0,
     gpuRenderMs: timing?.milliseconds ?? renderStats.gpuRenderMs,
     gpuComputeMs: timing?.computeMilliseconds ?? null,
@@ -448,7 +450,7 @@ function rgb(h, s, l, out, offset) {
   }
 }
 function skidColor(seg, out, offset) {
-  if (seg.hue >= 0) {
+  if (seg.hue >= 0 && !(liquidWorld?.trails && state.params.liquidEnabled!==false)) {
     const ps = seg.paintSaturation ?? 1;
     rgb(seg.hue, 30 + ps * 65, 20 + ps * 30, out, offset);
   } else {
@@ -740,13 +742,13 @@ export function renderFrameGPU(width, height) {
     if (
       lastSkidTime !== state.loop.simulationTime ||
       lastSkidEvents !== skidEvents ||
-      lastSkidWidth !== skidWidth
+      lastSkidWidth !== skidWidth || lastSkidWet !== proceduralVisuals
     ) {
-      cachedSkid = skidCache.update(skidEvents, skidWidth, skidColor);
+      cachedSkid = skidCache.update(skidEvents, skidWidth, skidColor, proceduralVisuals,seg=>recordWetTireTransfer(seg,seg.liquidTime??0));
       renderStats.uploadBytes += cachedSkid.uploadedBytes;
       lastSkidTime = state.loop.simulationTime;
       lastSkidEvents = skidEvents;
-      lastSkidWidth = skidWidth;
+      lastSkidWidth = skidWidth;lastSkidWet=proceduralVisuals;
     }
     const skid = cachedSkid;
     renderStats.omittedSkids = skid.omitted;

@@ -151,6 +151,9 @@ Disable **Coherent lighting** to compare the preserved earlier shading.
 The subsequent [reference-guided materials pass](docs/rendering/REFERENCE_RENDERING.md)
 adds mineral asphalt, textured tire coverage, wet-track reflections and body-aligned
 shadows, with matched v29/v30 captures.
+The [wet tire liquid correction](docs/rendering/WET_TIRE_LIQUID.md) fixes Crimson
+balloon contamination colors and renders transferred dye as drying liquid films,
+with matched simulator captures and measured rendering costs.
 
 ## How It Works
 

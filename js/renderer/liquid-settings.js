@@ -55,3 +55,22 @@ export const QUALITY = Object.freeze({
   balanced: {resolution:1,maxPixels:2400000,sheets:2,strands:54,drops:1200,detail:3,atlas:768},
   high: {resolution:1.2,maxPixels:4000000,sheets:3,strands:72,drops:2000,detail:4,atlas:1024},
 });
+
+export function dyeAbsorption(hue) {
+  const h = ((((hue || 0) % 360) + 360) % 360) / 60,
+    c = 1,
+    x = 1 - Math.abs((h % 2) - 1);
+  const rgb =
+    h < 1
+      ? [c, x, 0]
+      : h < 2
+        ? [x, c, 0]
+        : h < 3
+          ? [0, c, x]
+          : h < 4
+            ? [0, x, c]
+            : h < 5
+              ? [x, 0, c]
+              : [c, 0, x];
+  return rgb.map((v) => 18 + 402 * Math.pow(1 - v, 1.5));
+}

@@ -46,7 +46,7 @@ export class GPUSkidCache {
       throw error;
     }
   }
-  update(events, widthScale, color) {
+  update(events, widthScale, color, colorKey, onNew) {
     const generation = ++this.generation;
     const start = Math.max(0, events.length - this.capacity);
     let alphaLo = this.capacity, alphaHi = -1, orderChanged = false;
@@ -80,6 +80,7 @@ export class GPUSkidCache {
         slot = this.free.length ? this.free.pop() : this.count++;
         this.slots.set(seg, slot);
         this.objects[slot] = seg;
+        onNew?.(seg);
       }
       if (this.order[i - start] !== slot) orderChanged = true;
       this.order[i - start] = slot; // Preserve pigment overlap after slot reuse.
@@ -89,7 +90,7 @@ export class GPUSkidCache {
         alphaLo = Math.min(alphaLo, slot);
         alphaHi = Math.max(alphaHi, slot);
       }
-      if (fresh || widthScale !== this.widthScale) {
+      if (fresh || widthScale !== this.widthScale || colorKey !== this.colorKey) {
         const base = slot * 8;
         this.geometry[base] = seg.x1;
         this.geometry[base + 1] = seg.y1;
@@ -101,7 +102,7 @@ export class GPUSkidCache {
         hi = Math.max(hi, slot);
       }
     }
-    this.widthScale = widthScale;
+    this.widthScale = widthScale;this.colorKey=colorKey;
     let uploadedBytes = 0;
     if (hi >= lo) {
       const floats = (hi - lo + 1) * 8;

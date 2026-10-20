@@ -57,8 +57,7 @@ fn reflectedEnvironment(world:vec2<f32>,ray:vec3<f32>,roughness:f32)->vec3<f32> 
  return sky+vec3(3.4,3.3,3.0)*box*mullion*energy;
 }
 fn waterTransmission(depth:f32,viewCosine:f32,concentration:f32)->vec3<f32> {
- let path=depth*(1.+1./max(viewCosine,.35));
- return exp(-select(vec3(18.,260.,420.),u.dye.xyz,u.dye.w>.5)*path*concentration);
+ return opticalTransmission(select(vec3(18.,260.,420.),u.dye.xyz,u.dye.w>.5)*depth,viewCosine,concentration);
 }
 // Weak ambient return from dyed water, shared with the reference puddle.
 fn waterMedium(opticalMass:f32)->vec3<f32> {
@@ -97,4 +96,8 @@ fn liquidGroundVisibility(world:vec2<f32>)->f32{
  let q=abs(vehicleUnrotate(world-centre)/max(u.car.zw,vec2(.01)));
  let cover=1.-smoothstep(.40,.58+u.environment.y*.05,max(q.x,q.y));
  return 1.-cover*.75;
+}
+
+fn opticalTransmission(mass:vec3<f32>,viewCosine:f32,concentration:f32)->vec3<f32>{
+ return exp(-mass*(1.+1./max(viewCosine,.35))*concentration);
 }

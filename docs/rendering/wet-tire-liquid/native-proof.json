@@ -1,0 +1,36 @@
+{
+  "baseline": "88457bf",
+  "simulationTime": 2.6599999999999873,
+  "sameTime": true,
+  "sameChassis": true,
+  "sameWheels": true,
+  "sameSkidGeometryAndDose": true,
+  "nativeSkids": 935,
+  "wetTransfers": 847,
+  "beforeTireMarkHues": [
+    119.96842308933049,
+    119.97636913414357,
+    119.98091318038348,
+    119.99211343177728,
+    120,
+    210,
+    270
+  ],
+  "afterTireMarkHues": [
+    349.9975543353312,
+    349.99825270143015,
+    349.9985886944294,
+    349.9994168563496,
+    350
+  ],
+  "beforeSplashHues": [
+    350,
+    350,
+    350
+  ],
+  "afterSplashHues": [
+    350,
+    350,
+    350
+  ]
+}

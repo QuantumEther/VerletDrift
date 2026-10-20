@@ -1,6 +1,7 @@
 import { lighting } from './environment.js';
 import { liquidSettings, liquidExtent, GROUND_LIFETIME } from './liquid-controls.js';
-import { QUALITY } from './liquid-settings.js';
+import { WetTrails } from "./wet-trails.js";
+import { dyeAbsorption, QUALITY } from './liquid-settings.js';
 import {
   BODY_CROP,
   WHEEL_CROP,
@@ -37,24 +38,6 @@ const BUDGETS = {
   high: { sheets: 2, strands: 54, drops: 1200, detail: 4, atlas: 768 },
 };
 const NAMES = ["frontLeft", "frontRight", "rearLeft", "rearRight"];
-function absorption(hue) {
-  const h = ((((hue || 0) % 360) + 360) % 360) / 60,
-    c = 1,
-    x = 1 - Math.abs((h % 2) - 1);
-  const rgb =
-    h < 1
-      ? [c, x, 0]
-      : h < 2
-        ? [x, c, 0]
-        : h < 3
-          ? [0, c, x]
-          : h < 4
-            ? [0, x, c]
-            : h < 5
-              ? [x, 0, c]
-              : [c, 0, x];
-  return rgb.map((v) => 18 + 402 * Math.pow(1 - v, 1.5));
-}
 export class WorldLiquid {
   constructor(device, format, quality = "balanced") {
     this.baseQuality = quality;
@@ -84,9 +67,10 @@ export class WorldLiquid {
               4),
         0,
       ) +
-      (this.width ?? 0) * (this.height ?? 0) * 8
+      (this.width ?? 0) * (this.height ?? 0) * 8 + (this.trails?.bytes ?? 0)
     );
   }
+  get resourceCount(){return this.resources.length+(this.world?2:0)+(this.trails?.resourceCount??0);}
   getStats(time,params=this.params) {
     const { events, evictions } = getLiquidImpacts();
     const active=this.active(time,params);
@@ -104,7 +88,7 @@ export class WorldLiquid {
   active(time, params = this.params) {
     if(params?.liquidEnabled===false)return false;
     const s=liquidSettings(params??{});
-    return getLiquidImpacts().events.some(e=>this.contributes(e,time,s));
+    return (params?.showSkidMarks!==false&&this.trails?.active(time,s)) || getLiquidImpacts().events.some(e=>this.contributes(e,time,s));
   }
   contributes(e,time,s){
     const age=time-e.time;
@@ -139,8 +123,8 @@ export class WorldLiquid {
       if (!r.ok) throw Error(`Liquid ${name}: HTTP ${r.status}`);
       return r.text();
     };
-    const [raw, material, vehicle, puddles, liquid, scene] = await Promise.all(
-      ["common", "material", "vehicle", "puddles", "liquid", "simulator"].map(
+    const [raw, material, vehicle, puddles, liquid, scene, trailMaterial] = await Promise.all(
+      ["common", "material", "vehicle", "puddles", "liquid", "simulator", "trail-material"].map(
         text,
       ),
     );
@@ -168,7 +152,7 @@ export class WorldLiquid {
         material +
         vehicle +
         scene +
-        arrayPuddles,
+        arrayPuddles + trailMaterial,
     });
     const liquidModule = d.createShaderModule({
       label: "simulator-airborne-liquid",
@@ -218,6 +202,7 @@ export class WorldLiquid {
           visibility: GPUShaderStage.VERTEX,
           buffer: { type: "uniform" },
         },
+        {binding:9,visibility:GPUShaderStage.FRAGMENT,texture:{}},
       ],
     });
     this.airLayout = d.createBindGroupLayout({
@@ -396,6 +381,8 @@ export class WorldLiquid {
       new Float32Array(64),
       GPUBufferUsage.UNIFORM,
     );
+    this.trails=new WetTrails(d,this.frame);
+    await this.trails.init(common);
     this.eventData = new Float32Array(MAX_LIQUID_EVENTS * 64);
     this.eventBuffer = this.buffer(
       "liquid-events",
@@ -538,7 +525,7 @@ export class WorldLiquid {
     }
   }
   resize(width, height) {
-    if (this.width === width && this.height === height) return;
+    if (this.width === width && this.height === height && this.trailView===this.trails.view) return;
     const usage =
       GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING;
     const world = this.device.createTexture({
@@ -565,6 +552,7 @@ export class WorldLiquid {
         { binding: 6, resource: this.wheelArt.createView() },
         { binding: 7, resource: { buffer: this.wheelBuffer } },
         { binding: 8, resource: { buffer: this.ghostBuffer } },
+        { binding: 9, resource: this.trails.view },
       ];
       const sceneGroup = this.device.createBindGroup({
         layout: this.layout,
@@ -595,6 +583,7 @@ export class WorldLiquid {
       this.airGroups = airGroups;
       this.worldView = world.createView();
       this.sceneView = scene.createView();
+      this.trailView=this.trails.view;
       this.width = width;
       this.height = height;
     } catch (e) {
@@ -608,6 +597,8 @@ export class WorldLiquid {
     const settings=liquidSettings(state.params);
     const quality=['', 'performance','balanced','high'][state.params.liquidQuality??0]||this.baseQuality;
     this.q=state.params.liquidQuality>0?QUALITY[quality]:(BUDGETS[quality]??BUDGETS.high);
+    this.trails.prepare(width,height,state.params.gpuSkidResolution??1);
+    this.trails.enabled=state.params.showSkidMarks!==false;
     this.resize(width, height);
     this.drawCar = drawCar && this.hasArt;
     const { events, generation, evictions } = getLiquidImpacts(),
@@ -620,6 +611,14 @@ export class WorldLiquid {
       cy = state.body.centerY + ox * s + oy * c;
     const frame = (this.frameData ??= new Float32Array(64));
     frame.fill(0);
+    frame.set([0,18,settings.breakup,settings.concentration],4);
+    frame[11]=1337;frame[18]=this.q.detail;
+    frame[21]=this.trails.count>0&&state.params.showSkidMarks!==false?1:0;frame[22]=this.trails.firstSlot??0;frame[23]=settings.dryingEnabled?1:0;
+    frame.set([settings.membraneThickness,settings.filamentLength,settings.dropScale,settings.roughness],28);
+    frame.set([settings.reflections,settings.puddleDepth,1,settings.residueLifetime],32);
+    frame.set([settings.dryingDuration,settings.dryingIrregularity,settings.surfaceAbsorption,settings.dyeResidue],36);
+    frame[43]=settings.residueIrregularity;frame[47]=settings.residuePersistence;
+
     frame.set([width, height, ppm, time], 0);
     frame.set([cx, cy, BODY_RECT.width, BODY_RECT.length], 12);
     frame[19] = state.engine.isStalled ? 1 : 0;
@@ -694,7 +693,7 @@ export class WorldLiquid {
         s,
         1,
         settings.residueAging?1:0,
-        ...absorption(e.hue),
+        ...dyeAbsorption(e.hue),
         1,
       ]);
       // Only deposition-shape controls invalidate the cached settled atlas.
@@ -781,14 +780,16 @@ export class WorldLiquid {
         );
     }
     Object.assign(this.stats, {
-      uploadBytes: 256 + events.length * 256 + 128 + this.ghostCount * 32,
+      uploadBytes: this.trails.uploadBytes + 256 + events.length * 256 + 128 + this.ghostCount * 32,
       events: events.length,
       airborne: this.airborne.length,
       ghostSprites: this.ghostCount,
       evictions,
       drawCalls: 0,
       atlasBytes: this.atlasSize ** 2 * MAX_LIQUID_EVENTS * 4,
-      targetBytes: width * height * 8,
+      targetBytes: width * height * 8 + this.trails.width*this.trails.height*8,
+      wetTransfers: this.trails.count,
+      wetTrailBytes:this.trails.bytes,
       hasArt: this.hasArt,
       budget: { ...this.q, atlas:this.atlasSize },
       quality,
@@ -803,6 +804,7 @@ export class WorldLiquid {
       pass.drawIndexed(count, instances);
       this.stats.drawCalls++;
     };
+    this.stats.drawCalls+=this.trails.encode(encoder);
     for (const { i, key, age } of this.rebuild) {
       const p = encoder.beginRenderPass({
         label: "world-liquid-deposition",
@@ -901,6 +903,7 @@ export class WorldLiquid {
     air.end();
   }
   destroy() {
+    this.trails?.destroy();
     this.world?.destroy();
     this.scene?.destroy();
     for (const r of this.resources) r.destroy?.();

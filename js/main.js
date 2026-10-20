@@ -1,3 +1,4 @@
+import { recordWetTireTransfer } from './renderer/wet-trail-events.js';
 import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
 // =============================================================
 // MAIN — entry point and game loop
@@ -1100,6 +1101,8 @@ function recordSkidMarks(dt) {
           alpha,
           createdTime: Date.now(),  // timestamp for decay calculation
         };
+        // Visual snapshot survives native skid expiration; gameplay data is untouched.
+        recordWetTireTransfer(seg, state.loop.simulationTime);
         state.skidMarks.push(seg);
         // Feed GPU accumulation — gpu-renderer.js drains this each render frame.
         if (state.skidMarksNewThisFrame) state.skidMarksNewThisFrame.push(seg);
