@@ -48,6 +48,7 @@ import {
 } from './constants.js';
 
 import { SCENE_DEFAULTS } from './renderer/environment.js';
+import { DUST_DEFAULTS } from './renderer/dust-controls.js';
 import { LIQUID_DEFAULTS } from './renderer/liquid-controls.js';
 
 import { DebugController } from './debug/controller.js';
@@ -441,6 +442,7 @@ const state = {
   params: {
     ...LIQUID_DEFAULTS,
     ...SCENE_DEFAULTS,
+    ...DUST_DEFAULTS,
     simulationFps:           100,  // physics Hz (wall-clock tick rate)
     maxSubstepsPerFrame:     6,    // cap on fixed-step ticks consumed per render frame
     timeScale:               1.0,

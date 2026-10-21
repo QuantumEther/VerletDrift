@@ -1,4 +1,5 @@
 import {recordWetTireTransfer} from './renderer/wet-trail-events.js';
+import {AtmosphericDust} from './renderer/atmospheric-dust.js';
 import { lighting, balloonHue } from './renderer/environment.js';
 // GPU world layers and optional procedural liquid. Vehicle/gameplay state is
 // read-only. Canvas retains HUD, diagnostics and the fallback vehicle path.
@@ -68,6 +69,7 @@ let pipelines = {},
   skidCache,
   timing;
 let liquidWorld;
+let atmosphericDust;
 let environmentSource="";
 let environmentGroups=new Map();
 const environmentData=new Float32Array(8);
@@ -119,15 +121,16 @@ let renderStats = {
 export function getGPURenderStats() {
   return {
     ...renderStats,
+    dust:atmosphericDust?{...atmosphericDust.stats,bytes:atmosphericDust.bytes}:null,
     liquid: liquidWorld
       ? liquidWorld.getStats(state.loop.simulationTime,state.params)
       : null,
-    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0),
+    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0) + (atmosphericDust?.bytes??0),
     resourceCount:
       renderStats.resourceCount +
       (liquidWorld
         ? liquidWorld.resourceCount
-        : 0),
+        : 0) + (atmosphericDust?.resourceCount??0),
     liquidResidentBytes: liquidWorld?.ownedBytes ?? 0,
     liquidResourceCount: liquidWorld
       ? liquidWorld.resourceCount
@@ -187,6 +190,7 @@ function release(reason) {
   for (const resource of resources) resource.destroy?.();
   resources.length = 0;
   environmentGroups.clear();
+  atmosphericDust?.destroy();atmosphericDust=null;
   liquidWorld?.destroy();
   liquidWorld = null;
   skidCache?.destroy();
@@ -355,6 +359,12 @@ export async function initGPU(target) {
     );
     buffers.environment=device.createBuffer({label:'sceneEnvironment',size:32,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
     environmentGroups=new Map([bg,skid,surface].map(p=>[p,device.createBindGroup({layout:p.getBindGroupLayout(1),entries:[{binding:0,resource:{buffer:buffers.environment}}]})]));
+    atmosphericDust=new AtmosphericDust(device,format,buffers.environment,environmentSource);
+    delete renderStats.dustError;
+    try{
+      device.pushErrorScope('validation');
+      try{await atmosphericDust.init();}finally{const error=await device.popErrorScope();if(error)throw Error(error.message);}
+    }catch(error){atmosphericDust?.destroy();atmosphericDust=null;renderStats.dustError=error.message;logger.warn('gpu','Atmospheric dust unavailable; existing effects retained.',{error:error.message});}
     skidCache = new GPUSkidCache(device, buffers.camera, skid);
     if (
       new URLSearchParams(globalThis.location?.search || "").get("liquid") !==
@@ -514,6 +524,8 @@ export function renderFrameGPU(width, height) {
     lastSimTime = state.loop.simulationTime;
     camera.set([cam.zoom, ppm, width, height, view.x, view.y]);
     write(buffers.camera, camera);
+    atmosphericDust?.prepare(state,canvas.width,canvas.height,view,cam.zoom*ppm*canvas.width/width,renderQuality,renderStats.cpuEncodeMs);
+    renderStats.uploadBytes+=atmosphericDust?.stats.uploadBytes??0;
     // Same authored blur controls; honor zero values. Purely visual accumulator.
     const speedNorm = Math.max(
       0,
@@ -886,6 +898,7 @@ export function renderFrameGPU(width, height) {
     );
     // Upper world objects must not be treated as asphalt by puddle optics.
     const drawUpperWorld = (pass) => {
+      renderStats.drawCalls+=atmosphericDust?.draw(pass)??0;
       draw(
         pass,
         pipelines.surface,

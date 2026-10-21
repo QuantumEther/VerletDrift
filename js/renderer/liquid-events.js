@@ -1,4 +1,5 @@
 import { resetWetTireTransfers } from './wet-trail-events.js';
+import { resetDustHistory } from './dust-history.js';
 // Visual event history only. Never consumes the authoritative physics RNG.
 export const MAX_LIQUID_EVENTS = 24;
 let events = [],
@@ -6,6 +7,7 @@ let events = [],
   generation = 0,
   evictions = 0;
 export function resetLiquidImpacts() {
+  resetDustHistory();
   resetWetTireTransfers();
   events = [];
   serial = 0;

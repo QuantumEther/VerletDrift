@@ -1,4 +1,5 @@
 import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
+import { DUST_DEFAULTS } from '../renderer/dust-controls.js';
 // One bidirectional binding per control. Presets and imports use the same path.
 import state from '../state.js';
 import { logger } from '../debug/logger.js';
@@ -6,7 +7,8 @@ import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
 import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
-const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS};
+const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS};
+const appearancePrefix=key=>Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
 
 export const controlBindings = new Map();
 const view = { canvasResolutionScale: 1 };
@@ -64,7 +66,7 @@ function writeBinding(binding,value,persist=true) {
   writingSound=true;
   try {updateSoundParam(key,canonical);} finally {writingSound=false;}
  } else scope[key]=canonical;
- if(persist && Object.hasOwn(APPEARANCE_DEFAULTS,key)) {try{localStorage.setItem((Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_')+key,String(canonical));}catch{/* Storage may be disabled. */}}
+ if(persist && Object.hasOwn(APPEARANCE_DEFAULTS,key)) {try{localStorage.setItem(appearancePrefix(key)+key,String(canonical));}catch{/* Storage may be disabled. */}}
  syncBinding(binding);
 }
 function validateValue(binding,value) {
@@ -153,12 +155,12 @@ export function initControls() {
   defaults.set(control.id,initial);
   let value=initial;
   if(scope===state.soundParams || Object.hasOwn(APPEARANCE_DEFAULTS,key)) {
-   try {const stored=localStorage.getItem((scope===state.soundParams?'soundParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_')+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
+   try {const stored=localStorage.getItem((scope===state.soundParams?'soundParam_':appearancePrefix(key))+key);if(stored!==null){const parsed=control.type==='checkbox'?stored==='true':Number(stored);validateValue(binding,parsed);value=parsed;}} catch { /* Keep the finite HTML default. */ }
   }
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
-   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();changed();
+   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();changed();
   });
  }
  document.getElementById('environmentPreset').addEventListener('change',event=>{
