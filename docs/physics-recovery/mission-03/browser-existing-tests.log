@@ -1,0 +1,19 @@
+
+Running 10 tests using 1 worker
+
+(node:50654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:50654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip (1.2m)
+  ✓   2 [chromium] › tests/e2e/suspension.spec.js:3:1 › suspension controls change physics and survive preset export/import (2.4s)
+  ✓   3 [chromium] › tests/e2e/ui-integration.spec.js:8:1 › every control writes to its authoritative state field (1.1s)
+  ✓   4 [chromium] › tests/e2e/ui-integration.spec.js:36:1 › presets, converted controls, and import/export share the same bindings (1.0s)
+  ✓   5 [chromium] › tests/e2e/ui-integration.spec.js:194:1 › tire v1 files migrate explicitly to v2 and invalid tire domains are atomic (761ms)
+  ✓   6 [chromium] › tests/e2e/wheel-braking.spec.js:3:1 › held throttle launches the vehicle and front brakes stop it in neutral (5.3s)
+  ✓   7 [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy (3.9s)
+  ✓   8 [chromium] › tests/e2e/wheel-braking.spec.js:71:1 › clutch shifts to second and reverse drives in the selected direction (18.5s)
+  ✓   9 [chromium] › tests/e2e/wheel-braking.spec.js:119:1 › low-traction wheelspin respects engine redline and service brakes stop the rear wheels (6.1s)
+  ✓  10 [chromium] › tests/e2e/wheel-braking.spec.js:151:1 › number-row gears work without a numpad and preserve typing and existing bindings (1.6s)
+
+  10 passed (1.9m)

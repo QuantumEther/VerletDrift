@@ -13,6 +13,7 @@ reset();for(let i=0;i<2000;i++)updateSteering(.01);
 const rates=[50,100,200,400,800];
 for(const hz of rates)for(const scenario of ['chatter','viscous','spring-underdamped','spring-critical','spring-overdamped','torque-reversal','stop','driver-release']){
   if(delayed && (scenario!=='release-moving'||![50,400].includes(hz)))continue;
+  if(delayed)continue;
   if(hz===800&&!scenario.startsWith('spring')&&scenario!=='driver-release')continue;
   const p={steeringSelfCenterRate:0,steeringCoulombFriction:0,steeringViscousDamping:0};
   if(scenario==='chatter')Object.assign(p,{steeringSelfCenterRate:5,steeringCoulombFriction:2,steeringViscousDamping:.1});

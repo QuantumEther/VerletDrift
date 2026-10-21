@@ -1,0 +1,64 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ✓ tests/events.test.js  (24 tests) 15ms
+ ✓ tests/faults.test.js  (12 tests) 7ms
+stderr | tests/faults.test.js > Fault timer independence > omega runaway should not suppress a simultaneous constraint spike
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Fault timer independence > constraint spike should not suppress a simultaneous omega runaway
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Wheel rearLeft omega runaway: 2000.0 rad/s
+
+stderr | tests/faults.test.js > Fault timer independence > omega timer deduplicates its own events but does not affect constraint timer
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Constraint spike startup guard > should fire when prev >= 0.001m AND current > 5× prev
+[FAULT] Constraint spike: 0.0600m
+
+stderr | tests/faults.test.js > resetFaultState > should clear omega timer so next call fires immediately
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+
+stderr | tests/faults.test.js > resetFaultState > should clear constraint timer so next call fires immediately
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Constraint spike: 0.1000m
+
+ ✓ tests/numerical-chassis.test.js  (46 tests) 1522ms
+ ✓ tests/suspension.test.js  (13 tests) 163ms
+ ✓ tests/logger.test.js  (14 tests) 8ms
+ ✓ tests/steering-model.test.js  (17 tests) 63ms
+ ✓ tests/tire-unloading.test.js  (11 tests) 518ms
+ ✓ tests/wheels.test.js  (14 tests) 3227ms
+ ✓ tests/tire-model.test.js  (21 tests) 58ms
+ ✓ tests/tire-recovery.test.js  (25 tests) 125ms
+ ✓ tests/steering-recovery.test.js  (22 tests) 126ms
+ ✓ tests/splash-lab.test.js  (8 tests) 6ms
+ ✓ tests/wheel-omega-audit.test.js  (23 tests) 1150ms
+ ✓ tests/engine-inertia.test.js  (6 tests) 6ms
+ ✓ tests/gpu-skid-cache.test.js  (6 tests) 6ms
+ ✓ tests/dust-history.test.js  (5 tests) 15ms
+ ✓ tests/wheel-solver.test.js  (9 tests) 29ms
+ ✓ tests/tire-coupling.test.js  (12 tests) 7681ms
+ ✓ tests/vehicle-airflow.test.js  (3 tests) 8ms
+ ✓ tests/weight-transfer.test.js  (5 tests) 4ms
+ ✓ tests/tire-transients.test.js  (11 tests) 707ms
+ ✓ tests/visual-geometry.test.js  (3 tests) 4ms
+ ✓ tests/handbrake-handling.test.js  (4 tests) 12168ms
+ ✓ tests/liquid-events.test.js  (3 tests) 6ms
+ ✓ tests/steering-exact.test.js  (6 tests) 51ms
+ ✓ tests/wet-trail-events.test.js  (3 tests) 53ms
+ ✓ tests/suspension-handling.test.js  (9 tests) 65280ms
+ ✓ tests/environment.test.js  (2 tests) 6ms
+ ✓ tests/steering-contact.test.js  (1 test) 37ms
+ ✓ tests/liquid-controls.test.js  (1 test) 3ms
+ ✓ tests/performance-summary.test.js  (1 test) 3ms
+ ✓ tests/steering-feedback.test.js  (2 tests) 69081ms
+ ✓ tests/render-culling.test.js  (1 test) 2ms
+
+ Test Files  33 passed (33)
+      Tests  343 passed (343)
+   Start at  14:44:42
+   Duration  88.55s (transform 606ms, setup 3ms, collect 1.68s, tests 162.14s, environment 7ms, prepare 2.27s)

@@ -1,0 +1,73 @@
+{
+  "sourceHash": "06968222184d9b2da97d36e98d8e392817cf8115f1cb3a49e3ec47e9c5312e97",
+  "results": [
+    {
+      "hz": 50,
+      "initialEnergy": 0.018,
+      "finalAngle": 0.0024716533942229137,
+      "finalRate": 0.24775944429256863,
+      "finalEnergy": 0.0024566115035467317,
+      "maxEnergy": 0.018,
+      "maxLateAngle": 0.07044102510362525,
+      "flips": 210,
+      "rateFlips": 439,
+      "frictionEndpointWork": 4.321194566827866,
+      "positiveFrictionEndpointWork": 4.321194566827866,
+      "frictionMidpointWork": -0.006724782524108592,
+      "positiveFrictionMidpointWork": 0.17265913308761172,
+      "viscousWork": -0.06231321372223568,
+      "maxResidual": 1.214306433183765e-17
+    },
+    {
+      "hz": 100,
+      "initialEnergy": 0.018,
+      "finalAngle": 0.0006634275269586157,
+      "finalRate": 0.12453683706351157,
+      "finalEnergy": 0.0006204649786480504,
+      "maxEnergy": 0.018,
+      "maxLateAngle": 0.05593505762108742,
+      "flips": 324,
+      "rateFlips": 857,
+      "frictionEndpointWork": 2.120591764863869,
+      "positiveFrictionEndpointWork": 2.1248558721006696,
+      "frictionMidpointWork": -0.008827704320562364,
+      "positiveFrictionMidpointWork": 0.06538057703606807,
+      "viscousWork": -0.021784762254541335,
+      "maxResidual": 9.540979117872439e-18
+    },
+    {
+      "hz": 200,
+      "initialEnergy": 0.018,
+      "finalAngle": 0.00013546985570067187,
+      "finalRate": 0.0625072461424509,
+      "finalEnergy": 0.00015628990322887846,
+      "maxEnergy": 0.018,
+      "maxLateAngle": 0.03479502257598497,
+      "flips": 424,
+      "rateFlips": 1665,
+      "frictionEndpointWork": 1.029721552865753,
+      "positiveFrictionEndpointWork": 1.0362983024548464,
+      "frictionMidpointWork": -0.008931554977706186,
+      "positiveFrictionMidpointWork": 0.032773692450726054,
+      "viscousWork": -0.012148708361653937,
+      "maxResidual": 1.3010426069826053e-17
+    },
+    {
+      "hz": 400,
+      "initialEnergy": 0.018,
+      "finalAngle": -0.00002052483041983985,
+      "finalRate": 0.03126945568557412,
+      "finalEnergy": 0.0000391112386086161,
+      "maxEnergy": 0.018,
+      "maxLateAngle": 0.0292776963052407,
+      "flips": 233,
+      "rateFlips": 3175,
+      "frictionEndpointWork": 0.4874747713830103,
+      "positiveFrictionEndpointWork": 0.49509553076407,
+      "frictionMidpointWork": -0.008782952425961525,
+      "positiveFrictionMidpointWork": 0.018127943249185208,
+      "viscousWork": -0.009952267678527383,
+      "maxResidual": 1.49890950346121e-17
+    }
+  ]
+}

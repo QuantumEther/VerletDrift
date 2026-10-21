@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+(node:49916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/steering-recovery.spec.js:3:1 › mouse drag anchors at the current angle, survives render changes, and releases mechanically (1.2s)
+  ✓  2 [chromium] › tests/e2e/steering-recovery.spec.js:15:1 › event batching cannot fabricate a steering rate and blur releases driver authority (1.2s)
+  ✓  3 [chromium] › tests/e2e/steering-recovery.spec.js:27:1 › steering presets retain units and explicitly identify changed model semantics (1.5s)
+  ✓  4 [chromium] › tests/e2e/steering-recovery.spec.js:34:1 › Shift-left steering releases even when Shift is lifted before the mouse button (1.3s)
+
+  4 passed (7.5s)

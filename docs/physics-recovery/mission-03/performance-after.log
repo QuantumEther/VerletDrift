@@ -1,0 +1,8 @@
+release 50 Hz: 13062.2 ms; peak 542 accepted steps
+rapid-countersteer 50 Hz: 19438.0 ms; peak 492 accepted steps
+release 100 Hz: 13072.2 ms; peak 432 accepted steps
+rapid-countersteer 100 Hz: 17433.5 ms; peak 256 accepted steps
+release 200 Hz: 13377.7 ms; peak 382 accepted steps
+rapid-countersteer 200 Hz: 14490.7 ms; peak 128 accepted steps
+release 400 Hz: 13793.1 ms; peak 216 accepted steps
+rapid-countersteer 400 Hz: 14508.5 ms; peak 64 accepted steps
