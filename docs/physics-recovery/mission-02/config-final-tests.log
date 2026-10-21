@@ -1,0 +1,9 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ✓ tests/tire-model.test.js  (21 tests) 47ms
+
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  12:43:07
+   Duration  252ms (transform 32ms, setup 0ms, collect 32ms, tests 47ms, environment 0ms, prepare 64ms)
