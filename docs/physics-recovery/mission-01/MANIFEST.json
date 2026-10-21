@@ -1,0 +1,36 @@
+{
+  "repository": "QuantumEther/VerletDrift",
+  "branch": "recovery/mission-01-numerical-dynamics",
+  "audited_revision": "a3887306c3c83a88466bd5aecb4c3c384841a595",
+  "test_first_commit": "22ab38a87526d0d1584585ca4af372d6295817c5",
+  "source_fix_commit": "3db2f7ac23d740222768e47db895a15635ca6611",
+  "tests": {
+    "existing_passed": 180,
+    "new_passed": 46,
+    "total_passed": 226,
+    "files_passed": 24,
+    "baseline_new_failed": 41,
+    "baseline_new_passed": 5
+  },
+  "notes": [
+    "Baseline production source hashes verified against the audited commit.",
+    "After source hashes verified against the source-fix commit.",
+    "Logs, CSV line endings, and SVG path whitespace normalized for Git hygiene; measurement data unchanged.",
+    "No browser/GPU end-to-end test run; mechanical prefix measured headlessly."
+  ],
+  "files": {
+    "README.md": "1d260ea2343316208a356a08ff54243504eb1a5caf8c47048a6bf4d48599a185",
+    "REPORT.md": "0f61ff0d0e64e7bc1b3a2033336457842e8fb67b7332f184ab71813b51ab3379",
+    "after-tests.log": "7ac1635f88a9a6b85b33bb9a4fa2420c471fa6928eca9598a0cf342804153ddc",
+    "after.json": "57155e41d33dca9f993b10397773ecc95c98419be7b46afcb2b27b705b6b79c3",
+    "audited-controls.json": "670cce43112ef3b1d7b787a078cef97e4f49b3bd9ba65d5d858dec1257852f3e",
+    "baseline-tests.log": "be19ff848c84425175620859d02ebea144d4d7142a3ce4f9bc914c97e00ee830",
+    "baseline.json": "ddc4ac3e69d0a7e8f32194d0a7b4c3bfbd19f0bb8720b775439d151920b07c36",
+    "cap-regression-before.log": "7398a4fe352ff4a25ba408c7e3f356365882fc8e04f991ce58e4cba526b0c0eb",
+    "comparison.pdf": "27174571a0956bd72aaac47fc7ade44cfbd778062f7e44b2f6fe71a7b710862c",
+    "comparison.png": "bf64e5a1a2b9bf59fdca4778774f63ff8ca2c7e81eb7ac415fd42fb5c1bd61bd",
+    "comparison.svg": "815893d3ed30a618c6e6797b068e3a266093586a9d544b53bea8af96d0af9bec",
+    "numerical-comparison.csv": "5d3f8c75131824926c27ea3546e162e71de5714fe844d45adea263c754b17e6b",
+    "plot-comparison.py": "2a9703442c54696c9edcce6683cfacb01f049a592c80b12f0e39b24b6f647d4b"
+  }
+}

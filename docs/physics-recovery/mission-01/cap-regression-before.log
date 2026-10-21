@@ -1,0 +1,41 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ❯ tests/numerical-chassis.test.js  (45 tests | 2 failed) 1278ms
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.1
+     → expected 12.873115452864852 to be less than 1e-7
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.05
+     → expected 5.745985036638501 to be less than 1e-7
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.1
+AssertionError: expected 12.873115452864852 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:14:39
+     12| const relativeInvariantTolerance = 1e-7;
+     13| function close(actual, expected, tolerance = velocityTolerance) {
+     14|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     15| }
+     16|
+ ❯ tests/numerical-chassis.test.js:130:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.05
+AssertionError: expected 5.745985036638501 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:14:39
+     12| const relativeInvariantTolerance = 1e-7;
+     13| function close(actual, expected, tolerance = velocityTolerance) {
+     14|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     15| }
+     16|
+ ❯ tests/numerical-chassis.test.js:130:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 43 passed (45)
+   Start at  11:15:12
+   Duration  1.63s (transform 122ms, setup 0ms, collect 183ms, tests 1.28s, environment 0ms, prepare 53ms)

@@ -1,7 +1,7 @@
 
- RUN  v1.6.1 /workspace/VerletDrift
+ RUN  v1.6.1 /workspace/VerletDrift-mission01-baseline
 
- ❯ tests/numerical-chassis.test.js  (41 tests | 36 failed) 123ms
+ ❯ tests/numerical-chassis.test.js  (46 tests | 41 failed) 148ms
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.02
      → expected 2.681195803547059 to be less than 1e-7
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.01
@@ -63,9 +63,19 @@
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > converges under time-varying external torque
      → expected 0.5595113517860841 to be less than 0.51
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves velocity and momentum across repeated Physics Hz and Time Scale changes
-     → expected 12.000000000000455 to be less than 1e-7
+     → expected 6.000000000000227 to be less than 1e-7
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > does not reinterpret history or manufacture derivatives when dt changes
      → expected 20.00000000000057 to be less than 1e-7
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > balances impulses and cached acceleration across variable timesteps under load
+     → expected 0.07836180757330169 to be less than 0.00001
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.1
+     → expected 12.872604973679813 to be less than 1e-7
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.05
+     → expected 5.745718240657567 to be less than 1e-7
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > rejects angular aliasing before mutation instead of silently reversing spin
+     → expected [Function] to throw an error
+   ❯ tests/numerical-chassis.test.js > chassis numerical foundation > resets the history interval when the chassis is reinitialized
+     → expected 0.0000062499510669056235 to be less than 1e-7
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > derives the same angular velocity when the same history is read again
      → expected 2 to be less than 1e-7
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > makes rigid free motion independent of constraint tuning (1 iterations)
@@ -75,407 +85,477 @@
    ❯ tests/numerical-chassis.test.js > chassis numerical foundation > makes rigid free motion independent of constraint tuning (12 iterations)
      → expected 0.3222627821483286 to be less than 1e-7
 
-⎯⎯⎯⎯⎯⎯ Failed Tests 36 ⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯ Failed Tests 41 ⎯⎯⎯⎯⎯⎯⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.02
 AssertionError: expected 2.681195803547059 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.01
 AssertionError: expected 0.7622344416901718 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.005
 AssertionError: expected 0.19753657506574385 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-20 rad/s) at dt=0.0025
 AssertionError: expected 0.04984432838977426 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-2 rad/s) at dt=0.02
 AssertionError: expected 0.0031936151840366023 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-2 rad/s) at dt=0.01
 AssertionError: expected 0.000799600237997744 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-2 rad/s) at dt=0.005
 AssertionError: expected 0.0001999750048202742 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-2 rad/s) at dt=0.0025
 AssertionError: expected 0.000049998439386911286 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-0.01 rad/s) at dt=0.02
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (0.01 rad/s) at dt=0.02
 AssertionError: expected 1.1403000677034925e-7 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:32:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:34:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-0.01 rad/s) at dt=0.01
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (0.01 rad/s) at dt=0.01
 AssertionError: expected 1.0851785658960722e-7 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:33:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:35:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-0.01 rad/s) at dt=0.005
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (0.01 rad/s) at dt=0.005
 AssertionError: expected 1.0544031847636859e-7 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:33:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:35:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (-0.01 rad/s) at dt=0.0025
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (0.01 rad/s) at dt=0.0025
 AssertionError: expected 1.048097117983815e-7 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:33:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:35:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (2 rad/s) at dt=0.02
 AssertionError: expected 0.0031936151840477045 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (2 rad/s) at dt=0.01
 AssertionError: expected 0.0007996002380199485 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (2 rad/s) at dt=0.005
 AssertionError: expected 0.00019997500486468311 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (2 rad/s) at dt=0.0025
 AssertionError: expected 0.00004999843947572913 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (20 rad/s) at dt=0.02
 AssertionError: expected 2.6811958035470695 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (20 rad/s) at dt=0.01
 AssertionError: expected 0.7622344416901967 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (20 rad/s) at dt=0.005
 AssertionError: expected 0.19753657506578648 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free rotation, angular momentum and energy (20 rad/s) at dt=0.0025
 AssertionError: expected 0.04984432838986308 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:31:9
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:33:9
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > balances applied force and torque impulses at dt=0.02
 AssertionError: expected 61.23775032705328 to be less than 0.00001
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:48:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:50:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > balances applied force and torque impulses at dt=0.01
 AssertionError: expected 33.90927595497578 to be less than 0.00001
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:48:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:50:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > balances applied force and torque impulses at dt=0.005
 AssertionError: expected 17.957002522357925 to be less than 0.00001
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:48:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:50:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > balances applied force and torque impulses at dt=0.0025
 AssertionError: expected 9.259068992453194 to be less than 0.00001
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:48:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:50:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > converges at first order in forced position and angle, without hidden damping
 AssertionError: expected 0.05315494260606979 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:62:25
- ❯ tests/numerical-chassis.test.js:57:26
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:64:25
+ ❯ tests/numerical-chassis.test.js:59:26
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > converges under time-varying external torque
 AssertionError: expected 0.5595113517860841 to be less than 0.51
- ❯ tests/numerical-chassis.test.js:79:61
-     77|       return Math.abs(state.body.angularVelocity - Math.sin(2));
-     78|     });
-     79|     errors.slice(1).forEach((e, i) => expect(e / errors[i]).toBeLessTh…
+ ❯ tests/numerical-chassis.test.js:81:61
+     79|       return Math.abs(state.body.angularVelocity - Math.sin(2));
+     80|     });
+     81|     errors.slice(1).forEach((e, i) => expect(e / errors[i]).toBeLessTh…
        |                                                             ^
-     80|     expect(errors[3]).toBeLessThan(0.0018);
-     81|   });
- ❯ tests/numerical-chassis.test.js:79:21
+     82|     expect(errors[3]).toBeLessThan(0.0018);
+     83|   });
+ ❯ tests/numerical-chassis.test.js:81:21
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves velocity and momentum across repeated Physics Hz and Time Scale changes
-AssertionError: expected 12.000000000000455 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+AssertionError: expected 6.000000000000227 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:89:7
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:91:7
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > does not reinterpret history or manufacture derivatives when dt changes
 AssertionError: expected 20.00000000000057 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:100:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:102:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/41]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > balances impulses and cached acceleration across variable timesteps under load
+AssertionError: expected 0.07836180757330169 to be less than 0.00001
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:120:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/41]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.1
+AssertionError: expected 12.872604973679813 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:131:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/41]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > preserves free motion in the production step at coarse dt=0.05
+AssertionError: expected 5.745718240657567 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:131:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/41]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > rejects angular aliasing before mutation instead of silently reversing spin
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/numerical-chassis.test.js:139:58
+    137|     reset({ omega: 40 });
+    138|     const before = structuredClone(state.wheels);
+    139|     expect(() => verletIntegrateAllPoints(0.1, 0, 0, 0)).toThrow(/subd…
+       |                                                          ^
+    140|     expect(state.wheels).toEqual(before);
+    141|     // The same elapsed time is representable with two resolved angula…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/41]⎯
+
+ FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > resets the history interval when the chassis is reinitialized
+AssertionError: expected 0.0000062499510669056235 to be less than 1e-7
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+       |                                       ^
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:151:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > derives the same angular velocity when the same history is read again
 AssertionError: expected 2 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:112:5
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:157:5
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/41]⎯
 
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > makes rigid free motion independent of constraint tuning (1 iterations)
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > makes rigid free motion independent of constraint tuning (4 iterations)
  FAIL  tests/numerical-chassis.test.js > chassis numerical foundation > makes rigid free motion independent of constraint tuning (12 iterations)
 AssertionError: expected 0.3222627821483286 to be less than 1e-7
- ❯ close tests/numerical-chassis.test.js:13:39
-     11| const relativeInvariantTolerance = 1e-7;
-     12| function close(actual, expected, tolerance = velocityTolerance) {
-     13|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
+ ❯ close tests/numerical-chassis.test.js:15:39
+     13| const relativeInvariantTolerance = 1e-7;
+     14| function close(actual, expected, tolerance = velocityTolerance) {
+     15|   expect(Math.abs(actual - expected)).toBeLessThan(tolerance);
        |                                       ^
-     14| }
-     15| 
- ❯ tests/numerical-chassis.test.js:119:7
+     16| }
+     17|
+ ❯ tests/numerical-chassis.test.js:164:7
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/36]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/41]⎯
 
  Test Files  1 failed (1)
-      Tests  36 failed | 5 passed (41)
-   Start at  11:08:19
-   Duration  437ms (transform 113ms, setup 0ms, collect 149ms, tests 123ms, environment 0ms, prepare 54ms)
-
+      Tests  41 failed | 5 passed (46)
+   Start at  11:16:29
+   Duration  535ms (transform 143ms, setup 0ms, collect 198ms, tests 148ms, environment 0ms, prepare 69ms)
