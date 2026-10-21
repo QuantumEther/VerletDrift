@@ -14,6 +14,7 @@
 //   Shift+left-click: also steering (alternative for one-button mice)
 //
 //   Gear changes (while A is held or at any time):
+//     Top-row 1–6 → gears 1–6; top-row 7 → Reverse
 //     Numpad 7 → 1st gear
 //     Numpad 1 → 2nd gear
 //     Numpad 8 → 3rd gear
@@ -36,6 +37,7 @@ import {
 // (e.g., numpad keys scroll the page; space opens quick-find).
 const KEYS_TO_SUPPRESS_DEFAULT = new Set([
   'KeyD', 'KeyS', 'KeyA', 'KeyQ',
+  'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7',
   'Numpad1', 'Numpad2', 'Numpad3',
   'Numpad4', 'Numpad5', 'Numpad6',
   'Numpad7', 'Numpad8', 'Numpad9',
@@ -87,6 +89,8 @@ export function initInput(simulationCanvas) {
 
 function onKeyDown(event) {
   if (event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  // Keep browser shortcuts such as Cmd+1 / Ctrl+1 available.
+  if (event.code.startsWith('Digit') && (event.metaKey || event.ctrlKey || event.altKey)) return;
   if (event.code === 'Space' && event.target.closest?.('button')) return;
   if (KEYS_TO_SUPPRESS_DEFAULT.has(event.code)) {
     event.preventDefault();
@@ -111,9 +115,16 @@ function onKeyDown(event) {
       state.input.clutchKeyHeld = true;
       break;
 
-    // Gear selection via numpad.
+    // Gear selection via the number row or the original numpad layout.
     // The gear is selectable at any time; holding A first is conventional
     // but not enforced — the engine/clutch model handles the consequence.
+    case 'Digit1':
+    case 'Digit2':
+    case 'Digit3':
+    case 'Digit4':
+    case 'Digit5':
+    case 'Digit6': selectGear(event.code.slice(-1), event); break;
+    case 'Digit7': selectGear('R', event); break;
     case 'Numpad7': selectGear('1', event); break;
     case 'Numpad1': selectGear(isQHeld() ? 'R' : '2', event); break;
     case 'Numpad8': selectGear('3', event); break;

@@ -146,3 +146,36 @@ test('low-traction wheelspin respects engine redline and service brakes stop the
     Math.abs(window.state.wheelOmega.rearRight))), { timeout: 5000 }).toBeLessThan(0.01);
   expect(errors).toEqual([]);
 });
+
+
+test('number-row gears work without a numpad and preserve typing and existing bindings', async ({ page }) => {
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  await page.keyboard.down('KeyA');
+  for (let gear = 1; gear <= 7; gear++) {
+    await page.keyboard.press(`Digit${gear}`);
+    expect(await page.evaluate(() => state.engine.currentGear)).toBe(gear === 7 ? 'R' : String(gear));
+  }
+  for (const [key, gear] of [['Numpad7','1'],['Numpad1','2'],['Numpad8','3'],['Numpad2','4'],['Numpad9','5'],['Numpad3','6'],['Numpad4','N'],['Numpad5','N'],['Numpad6','N']]) {
+    await page.keyboard.press(key);
+    expect(await page.evaluate(() => state.engine.currentGear)).toBe(gear);
+  }
+  await page.keyboard.down('KeyQ');
+  await page.keyboard.press('Numpad1');
+  await page.keyboard.up('KeyQ');
+  expect(await page.evaluate(() => state.engine.currentGear)).toBe('R');
+  await page.keyboard.up('KeyA');
+  await page.locator('#search').focus();
+  await page.keyboard.press('Digit1');
+  await expect(page.locator('#search')).toHaveValue('1');
+  expect(await page.evaluate(() => state.engine.currentGear)).toBe('R');
+  await page.locator('#search').blur();
+  for (const modifier of ['metaKey', 'ctrlKey', 'altKey']) {
+    const result = await page.evaluate(modifier => {
+      const key = new KeyboardEvent('keydown', {code:'Digit1', key:'1', [modifier]:true, bubbles:true, cancelable:true});
+      const browserDefaultAllowed = document.body.dispatchEvent(key);
+      return {browserDefaultAllowed, gear:state.engine.currentGear};
+    }, modifier);
+    expect(result).toEqual({browserDefaultAllowed:true, gear:'R'});
+  }
+});

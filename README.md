@@ -108,16 +108,16 @@ The current input mapping is defined in `js/input.js` and uses the following def
 | Brake | `S` |
 | Clutch (hold to disengage) | `A` |
 | Handbrake | `F` |
-| Reverse selector modifier | `Q` + `Numpad1` |
-| 1st gear | `Numpad7` |
-| 2nd gear | `Numpad1` |
-| 3rd gear | `Numpad8` |
-| 4th gear | `Numpad2` |
-| 5th gear | `Numpad9` |
-| 6th gear | `Numpad3` |
+| Reverse | Top-row `7` or `Q` + `Numpad1` |
+| 1st gear | Top-row `1` or `Numpad7` |
+| 2nd gear | Top-row `2` or `Numpad1` |
+| 3rd gear | Top-row `3` or `Numpad8` |
+| 4th gear | Top-row `4` or `Numpad2` |
+| 5th gear | Top-row `5` or `Numpad9` |
+| 6th gear | Top-row `6` or `Numpad3` |
 | Neutral | `Numpad4`, `Numpad5`, or `Numpad6` |
 
-> Note: If you are used to `W/A/S/D` or arrow-key throttle/steering layouts, this build intentionally maps controls differently (including mouse-analog steering/throttle and numpad gears) for drivetrain testing.
+> Note: If you are used to `W/A/S/D` or arrow-key throttle/steering layouts, this build intentionally maps controls differently (including mouse-analog steering/throttle and direct gear selection) for drivetrain testing.
 
 ### UI panels and runtime tuning
 
