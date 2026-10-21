@@ -1,0 +1,82 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ❯ tests/steering-exact.test.js  (5 tests | 5 failed) 318ms
+   ❯ tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 50 Hz
+     → expected 0.014788448493164824 to be close to 0.04, received difference is 0.025211551506835177, but expected 5e-13
+   ❯ tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 100 Hz
+     → expected 0.024276369153928452 to be close to 0.04, received difference is 0.01572363084607155, but expected 5e-13
+   ❯ tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 200 Hz
+     → expected 0.031154464156707494 to be close to 0.04, received difference is 0.008845535843292507, but expected 5e-13
+   ❯ tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 400 Hz
+     → expected 0.03530022079451509 to be close to 0.04, received difference is 0.004699779205484908, but expected 5e-13
+   ❯ tests/steering-exact.test.js > preserves the same undamped spring through production contact and sleep scheduling
+     → expected 0.03757656838114638 to be close to 0.04, received difference is 0.002423431618853618, but expected 5e-12
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 50 Hz
+AssertionError: expected 0.014788448493164824 to be close to 0.04, received difference is 0.025211551506835177, but expected 5e-13
+ ❯ tests/steering-exact.test.js:8:32
+      6|   let angle=.2,rate=0;
+      7|   for(let i=0;i<2*hz;i++) {const r=integrateSteering({angle,rate,dt:1/…
+      8|   expect(.04*rate**2+angle**2).toBeCloseTo(.04,12);
+       |                                ^
+      9|   expect(angle).toBeCloseTo(.2*Math.cos(10),12);expect(rate).toBeClose…
+     10| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 100 Hz
+AssertionError: expected 0.024276369153928452 to be close to 0.04, received difference is 0.01572363084607155, but expected 5e-13
+ ❯ tests/steering-exact.test.js:8:32
+      6|   let angle=.2,rate=0;
+      7|   for(let i=0;i<2*hz;i++) {const r=integrateSteering({angle,rate,dt:1/…
+      8|   expect(.04*rate**2+angle**2).toBeCloseTo(.04,12);
+       |                                ^
+      9|   expect(angle).toBeCloseTo(.2*Math.cos(10),12);expect(rate).toBeClose…
+     10| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 200 Hz
+AssertionError: expected 0.031154464156707494 to be close to 0.04, received difference is 0.008845535843292507, but expected 5e-13
+ ❯ tests/steering-exact.test.js:8:32
+      6|   let angle=.2,rate=0;
+      7|   for(let i=0;i<2*hz;i++) {const r=integrateSteering({angle,rate,dt:1/…
+      8|   expect(.04*rate**2+angle**2).toBeCloseTo(.04,12);
+       |                                ^
+      9|   expect(angle).toBeCloseTo(.2*Math.cos(10),12);expect(rate).toBeClose…
+     10| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/steering-exact.test.js > preserves an undamped linear spring and its phase at 400 Hz
+AssertionError: expected 0.03530022079451509 to be close to 0.04, received difference is 0.004699779205484908, but expected 5e-13
+ ❯ tests/steering-exact.test.js:8:32
+      6|   let angle=.2,rate=0;
+      7|   for(let i=0;i<2*hz;i++) {const r=integrateSteering({angle,rate,dt:1/…
+      8|   expect(.04*rate**2+angle**2).toBeCloseTo(.04,12);
+       |                                ^
+      9|   expect(angle).toBeCloseTo(.2*Math.cos(10),12);expect(rate).toBeClose…
+     10| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/steering-exact.test.js > preserves the same undamped spring through production contact and sleep scheduling
+AssertionError: expected 0.03757656838114638 to be close to 0.04, received difference is 0.002423431618853618, but expected 5e-12
+ ❯ tests/steering-exact.test.js:15:80
+     13|   state.engine.currentGear='N';state.engine.clutchEngagement=0;state.s…
+     14|   for(let i=0;i<100;i++)mechanicalStep(.02);
+     15|   const s=state.steering;expect(.04*s.angularVelocity**2+s.frontWheelA…
+       |                                                                                ^
+     16| },30000);
+     17| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  14:42:15
+   Duration  761ms (transform 153ms, setup 0ms, collect 234ms, tests 318ms, environment 0ms, prepare 74ms)
+

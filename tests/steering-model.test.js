@@ -80,3 +80,13 @@ it('converges to the analytical Coulomb stopping distance and dissipation',()=>{
     expect(frictionWork).toBeCloseTo(-.04+.1/hz,12);expect(numericalWork).toBeCloseTo(-.1/hz,12);
   }
 });
+it('identifies undamped spring energy loss as the exact BE defect and refines it',()=>{
+  let previous=Infinity;
+  for(const hz of [50,100,200,400]){
+    let angle=.2,rate=0,work=0;
+    for(let i=0;i<2*hz;i++){const r=integrateSteering({...base,angle,rate,dt:1/hz,stiffness:2});angle=r.angle;rate=r.rate;work+=r.ledger.numericalWork;}
+    const energy=.04*rate**2+angle**2,exactDiscrete=.04*(1+25/hz**2)**(-2*hz);
+    expect(energy).toBeCloseTo(exactDiscrete,12);expect(energy-.04).toBeCloseTo(work,12);
+    expect(.04-energy).toBeLessThan(previous);previous=.04-energy;
+  }
+});

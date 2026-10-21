@@ -1,0 +1,10 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ✓ tests/steering-model.test.js  (17 tests) 82ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  14:39:35
+   Duration  507ms (transform 123ms, setup 0ms, collect 183ms, tests 82ms, environment 0ms, prepare 76ms)
+
