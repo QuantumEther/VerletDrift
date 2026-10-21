@@ -1,0 +1,286 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ❯ tests/steering-recovery.test.js  (22 tests | 22 failed) 37ms
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 50 Hz for ten seconds
+     → expected 0.0024716533942229137 to be 0.3 // Object.is equality
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 100 Hz for ten seconds
+     → expected 0.0006634275269586157 to be 0.3 // Object.is equality
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 200 Hz for ten seconds
+     → expected 0.00013546985570067187 to be 0.3 // Object.is equality
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 400 Hz for ten seconds
+     → expected -0.00002052483041983985 to be 0.3 // Object.is equality
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 50 Hz
+     → expected +0 to be close to 0.025, received difference is 0.025, but expected 5e-13
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 100 Hz
+     → expected +0 to be close to 0.0125, received difference is 0.0125, but expected 5e-13
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 200 Hz
+     → expected +0 to be close to 0.00625, received difference is 0.00625, but expected 5e-13
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 400 Hz
+     → expected +0 to be close to 0.003125, received difference is 0.003125, but expected 5e-13
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 50 Hz
+     → expected -0.4 to be greater than or equal to 0
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 100 Hz
+     → expected -0.15 to be greater than or equal to 0
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 200 Hz
+     → expected -0.024999999999999994 to be greater than or equal to 0
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 400 Hz
+     → expected -0.024999999999999994 to be greater than or equal to 0
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > has a stationary spring with no speed controlled potential-energy source
+     → expected 0.19994074074074075 to be 0.1999604938271605 // Object.is equality
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 0 with a closed ledger
+     → expected undefined not to be undefined
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 0.4 with a closed ledger
+     → expected undefined not to be undefined
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 1 with a closed ledger
+     → expected undefined not to be undefined
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 2 with a closed ledger
+     → expected undefined not to be undefined
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 5 with a closed ledger
+     → expected undefined not to be undefined
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > accounts for a stop impact and permits inward departure (side -1)
+     → Cannot read properties of undefined (reading 'stopWork')
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > accounts for a stop impact and permits inward departure (side 1)
+     → Cannot read properties of undefined (reading 'stopWork')
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > moves through finite mechanical actuation and transfers its state on release
+     → expected 0.52 to be less than 0.52
+   ❯ tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > keeps body caches consistent with sleep histories while preserving steering and force memory
+     → expected 0.010000000000331966 to be +0 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 50 Hz for ten seconds
+AssertionError: expected 0.0024716533942229137 to be 0.3 // Object.is equality
+
+- Expected
++ Received
+
+- 0.3
++ 0.0024716533942229137
+
+ ❯ tests/steering-recovery.test.js:13:31
+     11|     const s=setup({steeringCoulombFriction:2,steeringViscousDamping:.1…
+     12|     for(let i=0;i<10*hz;i++)tick(1/hz);
+     13|     expect(s.frontWheelAngle).toBe(.3);expect(s.angularVelocity).toBe(…
+       |                               ^
+     14|   });
+     15|   it.each(rates)('sticks under applied subthreshold torque and breaks …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 100 Hz for ten seconds
+AssertionError: expected 0.0006634275269586157 to be 0.3 // Object.is equality
+
+- Expected
++ Received
+
+- 0.3
++ 0.0006634275269586157
+
+ ❯ tests/steering-recovery.test.js:13:31
+     11|     const s=setup({steeringCoulombFriction:2,steeringViscousDamping:.1…
+     12|     for(let i=0;i<10*hz;i++)tick(1/hz);
+     13|     expect(s.frontWheelAngle).toBe(.3);expect(s.angularVelocity).toBe(…
+       |                               ^
+     14|   });
+     15|   it.each(rates)('sticks under applied subthreshold torque and breaks …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 200 Hz for ten seconds
+AssertionError: expected 0.00013546985570067187 to be 0.3 // Object.is equality
+
+- Expected
++ Received
+
+- 0.3
++ 0.00013546985570067187
+
+ ❯ tests/steering-recovery.test.js:13:31
+     11|     const s=setup({steeringCoulombFriction:2,steeringViscousDamping:.1…
+     12|     for(let i=0;i<10*hz;i++)tick(1/hz);
+     13|     expect(s.frontWheelAngle).toBe(.3);expect(s.angularVelocity).toBe(…
+       |                               ^
+     14|   });
+     15|   it.each(rates)('sticks under applied subthreshold torque and breaks …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > holds the historical subthreshold spring at 400 Hz for ten seconds
+AssertionError: expected -0.00002052483041983985 to be 0.3 // Object.is equality
+
+- Expected
++ Received
+
+- 0.3
++ -0.00002052483041983985
+
+ ❯ tests/steering-recovery.test.js:13:31
+     11|     const s=setup({steeringCoulombFriction:2,steeringViscousDamping:.1…
+     12|     for(let i=0;i<10*hz;i++)tick(1/hz);
+     13|     expect(s.frontWheelAngle).toBe(.3);expect(s.angularVelocity).toBe(…
+       |                               ^
+     14|   });
+     15|   it.each(rates)('sticks under applied subthreshold torque and breaks …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 50 Hz
+AssertionError: expected +0 to be close to 0.025, received difference is 0.025, but expected 5e-13
+ ❯ tests/steering-recovery.test.js:19:31
+     17|     for(let i=0;i<hz;i++)tick(1/hz,1.9);
+     18|     expect(s.angularVelocity).toBe(0);tick(1/hz,2.1);
+     19|     expect(s.angularVelocity).toBeCloseTo(.1/state.params.steeringColu…
+       |                               ^
+     20|   });
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 100 Hz
+AssertionError: expected +0 to be close to 0.0125, received difference is 0.0125, but expected 5e-13
+ ❯ tests/steering-recovery.test.js:19:31
+     17|     for(let i=0;i<hz;i++)tick(1/hz,1.9);
+     18|     expect(s.angularVelocity).toBe(0);tick(1/hz,2.1);
+     19|     expect(s.angularVelocity).toBeCloseTo(.1/state.params.steeringColu…
+       |                               ^
+     20|   });
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 200 Hz
+AssertionError: expected +0 to be close to 0.00625, received difference is 0.00625, but expected 5e-13
+ ❯ tests/steering-recovery.test.js:19:31
+     17|     for(let i=0;i<hz;i++)tick(1/hz,1.9);
+     18|     expect(s.angularVelocity).toBe(0);tick(1/hz,2.1);
+     19|     expect(s.angularVelocity).toBeCloseTo(.1/state.params.steeringColu…
+       |                               ^
+     20|   });
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > sticks under applied subthreshold torque and breaks away at 400 Hz
+AssertionError: expected +0 to be close to 0.003125, received difference is 0.003125, but expected 5e-13
+ ❯ tests/steering-recovery.test.js:19:31
+     17|     for(let i=0;i<hz;i++)tick(1/hz,1.9);
+     18|     expect(s.angularVelocity).toBe(0);tick(1/hz,2.1);
+     19|     expect(s.angularVelocity).toBeCloseTo(.1/state.params.steeringColu…
+       |                               ^
+     20|   });
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 50 Hz
+AssertionError: expected -0.4 to be greater than or equal to 0
+ ❯ tests/steering-recovery.test.js:23:82
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+     22|     const s=setup({steeringSelfCenterRate:0,steeringCoulombFriction:2,…
+     23|     let last=energy();for(let i=0;i<hz;i++){tick(1/hz);expect(s.angula…
+       |                                                                                  ^
+     24|     expect(s.angularVelocity).toBe(0);
+     25|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 100 Hz
+AssertionError: expected -0.15 to be greater than or equal to 0
+ ❯ tests/steering-recovery.test.js:23:82
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+     22|     const s=setup({steeringSelfCenterRate:0,steeringCoulombFriction:2,…
+     23|     let last=energy();for(let i=0;i<hz;i++){tick(1/hz);expect(s.angula…
+       |                                                                                  ^
+     24|     expect(s.angularVelocity).toBe(0);
+     25|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 200 Hz
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > friction stops without velocity reversal or energy increase at 400 Hz
+AssertionError: expected -0.024999999999999994 to be greater than or equal to 0
+ ❯ tests/steering-recovery.test.js:23:82
+     21|   it.each(rates)('friction stops without velocity reversal or energy i…
+     22|     const s=setup({steeringSelfCenterRate:0,steeringCoulombFriction:2,…
+     23|     let last=energy();for(let i=0;i<hz;i++){tick(1/hz);expect(s.angula…
+       |                                                                                  ^
+     24|     expect(s.angularVelocity).toBe(0);
+     25|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > has a stationary spring with no speed controlled potential-energy source
+AssertionError: expected 0.19994074074074075 to be 0.1999604938271605 // Object.is equality
+
+- Expected
++ Received
+
+- 0.1999604938271605
++ 0.19994074074074075
+
+ ❯ tests/steering-recovery.test.js:28:23
+     26|   it('has a stationary spring with no speed controlled potential-energ…
+     27|     const angles=[];for(const speed of [0,1,10]){const s=setup({steeri…
+     28|     expect(angles[0]).toBe(angles[1]);expect(angles[1]).toBe(angles[2]…
+       |                       ^
+     29|   });
+     30|   it.each([0,.4,1,2,5])('dissipates mechanical energy at damping ratio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 0 with a closed ledger
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 0.4 with a closed ledger
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 1 with a closed ledger
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 2 with a closed ledger
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > dissipates mechanical energy at damping ratio 5 with a closed ledger
+AssertionError: expected undefined not to be undefined
+ ❯ tests/steering-recovery.test.js:32:147
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > accounts for a stop impact and permits inward departure (side -1)
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > accounts for a stop impact and permits inward departure (side 1)
+TypeError: Cannot read properties of undefined (reading 'stopWork')
+ ❯ tests/steering-recovery.test.js:36:96
+     34|   it.each([-1,1])('accounts for a stop impact and permits inward depar…
+     35|     const s=setup({steeringSelfCenterRate:0,steeringViscousDamping:0,s…
+     36|     expect(s.frontWheelAngle).toBe(sign*.52);expect(s.angularVelocity)…
+       |                                                                                                ^
+     37|     tick(.01,-sign);expect(sign*s.angularVelocity).toBeLessThan(0);
+     38|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > moves through finite mechanical actuation and transfers its state on release
+AssertionError: expected 0.52 to be less than 0.52
+ ❯ tests/steering-recovery.test.js:41:96
+     39|   it('moves through finite mechanical actuation and transfers its stat…
+     40|     const s=setup({steeringSelfCenterRate:0,steeringCoulombFriction:0,…
+     41|     updateSteering(.01);expect(s.frontWheelAngle).toBeGreaterThan(0);e…
+       |                                                                                                ^
+     42|     const rate=s.angularVelocity;s.isDragging=false;tick(.01);expect(s…
+     43|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+ FAIL  tests/steering-recovery.test.js > Mission 03 steering mechanics contract (established before fixes) > keeps body caches consistent with sleep histories while preserving steering and force memory
+AssertionError: expected 0.010000000000331966 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 0.010000000000331966
+
+ ❯ tests/steering-recovery.test.js:46:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/22]⎯
+
+ Test Files  1 failed (1)
+      Tests  22 failed (22)
+   Start at  14:17:20
+   Duration  547ms (transform 161ms, setup 0ms, collect 216ms, tests 37ms, environment 0ms, prepare 99ms)
+
