@@ -1,0 +1,26 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ❯ tests/steering-feedback.test.js  (1 test | 1 failed) 16605ms
+   ❯ tests/steering-feedback.test.js > resolves the moving-release feedback rather than accepting a coarse-step runaway
+     → expected 0.20474458677806623 to be less than 0.005
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/steering-feedback.test.js > resolves the moving-release feedback rather than accepting a coarse-step runaway
+AssertionError: expected 0.20474458677806623 to be less than 0.005
+ ❯ tests/steering-feedback.test.js:15:41
+     13|   // Fine-grid release returns near center. Allow 5 mrad coarse/fine e…
+     14|   // 1% of default lock, not the baseline 0.2 rad growing excursion.
+     15|   expect(Math.abs(angles[0]-angles[3])).toBeLessThan(.005);
+       |                                         ^
+     16| },60000);
+     17| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  14:21:26
+   Duration  17.16s (transform 195ms, setup 0ms, collect 298ms, tests 16.61s, environment 0ms, prepare 82ms)
+
