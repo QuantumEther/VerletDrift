@@ -10,7 +10,7 @@ export const inertia = () => state.params.carMassKg * (CAR_HALF_LENGTH ** 2 + CA
 export const wrap = angle => Math.atan2(Math.sin(angle), Math.cos(angle));
 export function reset({ dt = 0.01, vx = 0, vy = 0, omega = 0, center = 100, params = {} } = {}) {
   Object.assign(state, structuredClone(initial));
-  Object.assign(state.params, { mapWidth: 100000, mapHeight: 100000 }, params);
+  Object.assign(state.params, params, { mapWidth: 100000, mapHeight: 100000 });
   initializeCarBody(center, center);
   const c = Math.cos(-omega * dt), s = Math.sin(-omega * dt);
   for (const w of Object.values(state.wheels)) {

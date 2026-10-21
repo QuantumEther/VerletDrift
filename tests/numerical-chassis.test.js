@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 vi.hoisted(() => { globalThis.localStorage = { getItem: () => null, setItem: () => {} }; });
 import { reset, step, observe, inertia, wrap, state } from './helpers/numerical-chassis.js';
 import { computeBodyDerivedState } from '../js/physics/kinematics.js';
+import { verletIntegrateAllPoints } from '../js/physics/integrator.js';
+import { mechanicalStep } from './helpers/mechanical-step.js';
 import { solveRigidBodyConstraints } from '../js/physics/constraints.js';
 
 const steps = [0.02, 0.01, 0.005, 0.0025];
@@ -81,7 +83,7 @@ describe('chassis numerical foundation', () => {
   });
 
   it('preserves velocity and momentum across repeated Physics Hz and Time Scale changes', () => {
-    const start = reset({ dt: 0.01, vx: 12, vy: -7, omega: 2 });
+    const start = reset({ dt: 0.01, vx: 6, vy: -3, omega: 2 });
     let elapsed = 0;
     for (const dt of [0.005, 0.02, 0.0025, 0.001, 0.01, 0.05, 0.0005]) {
       for (let i = 0; i < 10; i++) { step(dt); elapsed += dt; }
@@ -104,6 +106,49 @@ describe('chassis numerical foundation', () => {
       step(dt, { fx: state.params.carMassKg * 2 });
       close(state.body.accelX, 2); close(state.body.jerkX, 0, 1e-4);
     }
+  });
+
+  it('balances impulses and cached acceleration across variable timesteps under load', () => {
+    const start = reset({ dt: 0.01, vx: 1, vy: -2, omega: -1 });
+    const mass = state.params.carMassKg, I = inertia();
+    let time = 0;
+    for (const dt of [0.01, 0.005, 0.02, 0.001, 0.0025, 0.01]) {
+      const end = step(dt, { fx: mass * 2, fy: mass * -3, torque: I * 4 });
+      time += dt;
+      close(end.vx, start.vx + 2 * time);
+      close(end.vy, start.vy - 3 * time);
+      close(end.angularMomentum - start.angularMomentum, I * 4 * time, 1e-5);
+      close(end.accelX, 2); close(end.accelY, -3);
+    }
+  });
+
+  it.each([0.1, 0.05])('preserves free motion in the production step at coarse dt=%s', dt => {
+    const initial = reset({ dt, vx: 20, omega: 2, params: {
+      tireFrictionCoeff: 0, rollingResistanceCoeff: 0, aeroDragCoeff: 0, yawDamping: 0,
+    } });
+    for (const nextDt of [dt, 0.0025, 0.1, 0.01]) {
+      mechanicalStep(nextDt);
+      close(state.body.velocityX, 20); close(state.body.angularVelocity, 2);
+      close(observe().energy / initial.energy, 1, relativeInvariantTolerance);
+    }
+  });
+
+  it('rejects angular aliasing before mutation instead of silently reversing spin', () => {
+    reset({ omega: 40 });
+    const before = structuredClone(state.wheels);
+    expect(() => verletIntegrateAllPoints(0.1, 0, 0, 0)).toThrow(/subdivide/);
+    expect(state.wheels).toEqual(before);
+    // The same elapsed time is representable with two resolved angular steps.
+    const params = { tireFrictionCoeff: 0, rollingResistanceCoeff: 0, aeroDragCoeff: 0, yawDamping: 0 };
+    reset({ omega: 40, params });
+    mechanicalStep(0.05); mechanicalStep(0.05);
+    close(state.body.angularVelocity, 40);
+  });
+
+  it('resets the history interval when the chassis is reinitialized', () => {
+    reset({ dt: 0.02, vx: 20, omega: 2 }); step(0.02);
+    reset({ dt: 0.0025, vx: 3, omega: -1 });
+    close(step(0.0025).vx, 3); close(state.body.angularVelocity, -1);
   });
 
   it('derives the same angular velocity when the same history is read again', () => {

@@ -5,6 +5,7 @@
 // =============================================================
 
 import { physicsState as state } from '../state.js';
+import { readPlanarMotion } from './planar-motion.js';
 import { resetSuspension } from './suspension.js';
 import { CAR_HALF_WIDTH, CAR_HALF_LENGTH, TAU } from '../constants.js';
 
@@ -33,6 +34,7 @@ export function wrapAngle(angle) {
 export function initializeCarBody(worldCenterX, worldCenterY) {
   const wheels = state.wheels;
   resetSuspension();
+  state.body.historyDt = null; // First derived-state read establishes the initial interval.
 
   // The car faces "up" initially. In canvas coordinates +Y is down,
   // so "front" of the car is at smaller Y (towards the top of the screen).
@@ -75,11 +77,9 @@ export function initializeCarBody(worldCenterX, worldCenterY) {
 
 // Computes all quantities that depend on wheel positions:
 // centre, heading, velocity, angular velocity, and accelerations.
-// Must be called at the TOP of each physics sub-step before anything
-// else reads from state.body. Also called again at the END of the step
-// so camera and render get up-to-date values.
+// Called once after each mechanical step. Velocity reads use the stored
+// history interval; acceleration and jerk compare successive endpoint samples.
 export function computeBodyDerivedState(dt) {
-  const wheels = state.wheels;
   const body   = state.body;
 
   // Save last frame's velocity so we can derive acceleration this frame.
@@ -87,36 +87,12 @@ export function computeBodyDerivedState(dt) {
   body.prevVelocityY = body.velocityY;
   body.prevHeading   = body.heading;
 
-  // Front-axle midpoint and rear-axle midpoint.
-  const frontMidX = (wheels.frontLeft.x + wheels.frontRight.x) * 0.5;
-  const frontMidY = (wheels.frontLeft.y + wheels.frontRight.y) * 0.5;
-  const rearMidX  = (wheels.rearLeft.x  + wheels.rearRight.x)  * 0.5;
-  const rearMidY  = (wheels.rearLeft.y  + wheels.rearRight.y)  * 0.5;
-
-  // Centre of mass = midpoint between front and rear axle midpoints.
-  body.centerX = (frontMidX + rearMidX) * 0.5;
-  body.centerY = (frontMidY + rearMidY) * 0.5;
-
-  // Heading: angle of the vector from rear midpoint to front midpoint.
-  // atan2 returns the angle of a vector in standard maths convention.
-  // We add PI/2 to rotate so heading 0 means facing up (−Y in canvas).
-  body.heading = Math.atan2(frontMidY - rearMidY, frontMidX - rearMidX) + Math.PI * 0.5;
-
-  // Derive linear velocity from centre-of-mass Verlet displacement.
-  // Average the four wheel velocities to get the body's CoM velocity.
-  let avgVelX = 0, avgVelY = 0;
-  for (const wheel of Object.values(wheels)) {
-    avgVelX += (wheel.x - wheel.prevX);
-    avgVelY += (wheel.y - wheel.prevY);
-  }
-  // Divide by count (4) and by dt to get px/s.
-  const inverseFourDt = 1 / (4 * dt);
-  body.velocityX = avgVelX * inverseFourDt;
-  body.velocityY = avgVelY * inverseFourDt;
-  body.speed     = Math.hypot(body.velocityX, body.velocityY);
-
-  // Angular velocity from heading change. wrapAngle handles wraparound.
-  body.angularVelocity = wrapAngle(body.heading - body.prevHeading) / dt;
+  // Decode the stored interval, independently of the next step's dt or of
+  // whether this pose has already been read. Re-reading a pose cannot erase yaw.
+  const motion = readPlanarMotion(dt);
+  state.body.historyDt ??= dt;
+  Object.assign(body, motion);
+  body.speed = Math.hypot(body.velocityX, body.velocityY);
 
   // Accelerations: change in velocity per second.
   // These are used by computeWeightTransfer() to shift tyre loads.

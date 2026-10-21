@@ -1,51 +1,34 @@
 // =============================================================
-// PHYSICS / INTEGRATOR
-// Verlet position integration for all four wheel particles.
+// PHYSICS / INTEGRATOR — rigid planar kick-drift
 // =============================================================
-//
-// INVARIANT — do not alter this formula:
-//   new_position = current + (current - previous) + acceleration × dt²
-//
-// Rotational acceleration is applied as a linearised perturbation:
-//   rotDeltaX = -netAngularAccel × armY × dt²
-//   rotDeltaY =  netAngularAccel × armX × dt²
-// This is only exact for small angular steps (which 100Hz guarantees).
-
+// The public name is retained for callers, but independent Cartesian Verlet
+// extrapolation is inappropriate for a constrained rotating rectangle: chords
+// stretch it, and subsequent projection dissipates angular momentum.
+// Instead integrate its three generalized coordinates (X, Y, heading).
+// Kick: v' = v + a dt; omega' = omega + alpha dt.
+// Drift: X' = X + v' dt; heading' = heading + omega' dt.
+// Rotate corner arms exactly; no constraint impulse or energy compensation is
+// needed for free rigid motion. This is first-order symplectic Euler under
+// applied loads and exact free SE(2) drift in real arithmetic.
 import { physicsState as state } from '../state.js';
+import { readPlanarMotion } from './planar-motion.js';
 
-
-// Applies linear and rotational acceleration to all four wheel particles.
-//
-// The Verlet integrator does not store velocity explicitly.
-// Instead, velocity is encoded in the gap between current and previous positions:
-//   new_position = current + (current - previous) + acceleration × dt²
-//
-// Linear acceleration (netAccelX, netAccelY) is the same for all four particles
-// because the body is rigid — every point translates identically.
-//
-// Rotational acceleration (netAngularAccel) adds an additional displacement
-// to each point proportional to its distance from the centre and perpendicular
-// to the arm vector. This is the 2D rotation applied as a linear perturbation.
 export function verletIntegrateAllPoints(dt, netAccelX, netAccelY, netAngularAccel) {
-  const body = state.body;
-  const dtSquared = dt * dt;
-
+  const motion = readPlanarMotion(dt);
+  const deltaX = (motion.velocityX + netAccelX * dt) * dt;
+  const deltaY = (motion.velocityY + netAccelY * dt) * dt;
+  const angle = (motion.angularVelocity + netAngularAccel * dt) * dt;
+  if (Math.abs(angle) >= Math.PI) {
+    throw new RangeError('Rigid pose history requires |omega * dt| < pi; subdivide the mechanical step');
+  }
+  const c = Math.cos(angle), s = Math.sin(angle);
   for (const wheel of Object.values(state.wheels)) {
-    // Arm vector from body centre to this wheel.
-    const armX = wheel.x - body.centerX;
-    const armY = wheel.y - body.centerY;
-
-    // Rotational displacement: ω × arm, where 2D cross = (-ω·armY, ω·armX).
-    // This is the linearised rotation: for small angles dθ in dt², it's exact.
-    const rotDeltaX = -netAngularAccel * armY * dtSquared;
-    const rotDeltaY =  netAngularAccel * armX * dtSquared;
-
-    const newX = wheel.x + (wheel.x - wheel.prevX) + (netAccelX * dtSquared) + rotDeltaX;
-    const newY = wheel.y + (wheel.y - wheel.prevY) + (netAccelY * dtSquared) + rotDeltaY;
-
+    const armX = wheel.x - motion.centerX;
+    const armY = wheel.y - motion.centerY;
     wheel.prevX = wheel.x;
     wheel.prevY = wheel.y;
-    wheel.x = newX;
-    wheel.y = newY;
+    wheel.x = motion.centerX + deltaX + c * armX - s * armY;
+    wheel.y = motion.centerY + deltaY + s * armX + c * armY;
   }
+  state.body.historyDt = dt;
 }

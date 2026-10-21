@@ -17,7 +17,7 @@ import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } f
 //   7.  combine into net linear + angular acceleration
 //   8.  verletIntegrateAllPoints(dt, ...)
 //   9.  solveRigidBodyConstraints()
-//  10.  clampParticleDisplacements()
+//  10.  no displacement-history cap (would impose a timestep-dependent speed limit)
 //  11.  handleBoundaryCollisions()
 //  12.  solveRigidBodyConstraints()  (again after collision)
 //  13.  computeBodyDerivedState(dt)  (recompute for camera and render)
@@ -63,7 +63,6 @@ import {
   computeBrakeForce,
   verletIntegrateAllPoints,
   solveRigidBodyConstraints,
-  clampParticleDisplacements,
   handleBoundaryCollisions,
   updateCamera,
   updateEngineSound,
@@ -611,15 +610,16 @@ function runPhysicsStep(dt) {
   const netLinearAccelY   = netForceY / massKg;
   const netAngularAccel   = dampenedNetTorque / momentOfInertia;
 
-  // 10. Verlet integration: advance all four wheel positions using the
-  //     computed linear and angular accelerations.
+  // 10. Rigid planar kick-drift: advance the center and rotate corner arms
+  //     exactly using the computed linear and angular accelerations.
   verletIntegrateAllPoints(dt, netLinearAccelX, netLinearAccelY, netAngularAccel);
 
   // 11. Constraint solver pass 1: restore rigid body distances after integration.
   solveRigidBodyConstraints();
 
-  // 12. Anti-tunnelling: clamp any particle that moved too far in one step.
-  clampParticleDisplacements();
+  // 12. Do not clamp displacement history: distance-per-step clamping changes
+  //     physical speed when Physics Hz / Time Scale changes. Map-edge crossing
+  //     is handled directly below; this does not provide swept interior contacts.
 
   // 13. Boundary collisions: bounce particles off map walls.
   handleBoundaryCollisions();

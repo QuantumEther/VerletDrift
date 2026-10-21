@@ -106,7 +106,8 @@ const state = {
     velocityY: 0,         // m/s, Y component
     speed: 0,             // m/s, magnitude of (velocityX, velocityY)
     angularVelocity: 0,   // rad/s, rate of heading change
-    prevHeading: 0,       // heading from the previous step (to derive angularVelocity)
+    historyDt: null,      // seconds represented by wheel position history; null before first read
+    prevHeading: 0,       // last derived heading (angular velocity uses wheel pose history)
     prevVelocityX: 0,     // velocity from the previous step (to derive acceleration)
     prevVelocityY: 0,
     longitudinalAccel: 0, // m/s², acceleration along the car's forward axis
