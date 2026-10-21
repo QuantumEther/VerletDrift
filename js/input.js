@@ -69,6 +69,7 @@ export function initInput(simulationCanvas) {
     state.input.handbrakeKeyHeld = state.input.clutchKeyHeld = false;
     state.input.mouseThrottleActive = false;
     state.steering.isDragging = false;
+    state.steering.dragButton = null;
   };
   window.addEventListener('blur', releaseInput);
   document.addEventListener('visibilitychange', () => { if(document.hidden) releaseInput(); });
@@ -192,6 +193,7 @@ function onMouseDown(event) {
   if (isSteeringButton) {
     state.steering.isDragging    = true;
     state.steering.dragStartX    = event.clientX;
+    state.steering.dragButton = event.button;
     state.steering.dragStartWheelAngle = state.steering.wheelAngle;
     state.steering.targetWheelAngle = state.steering.wheelAngle;
   }
@@ -227,10 +229,12 @@ function onMouseMove(event) {
 }
 
 function onMouseUp(event) {
-  if (event.button === 2 ||
-      (event.button === 0 && event.shiftKey) ||
+  const button = state.steering.dragButton;
+  if ((button !== null && event.button === button) ||
+      (button === null && (event.button === 2 || (event.button === 0 && event.shiftKey))) ||
       event.type === 'mouseleave') {
     state.steering.isDragging = false;
+    state.steering.dragButton = null;
   }
 
   if (event.button === 0 || event.type === 'mouseleave') {

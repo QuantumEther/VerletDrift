@@ -341,6 +341,7 @@ const state = {
     frontWheelAngle: 0,    // radians, actual tyre angle used in slip calculations
     isDragging:      false,
     dragStartX:      0,
+    dragButton: null, // initiating mouse button, independent of current Shift state
     dragStartWheelAngle: 0, // visual-coordinate drag anchor
     targetWheelAngle: null, // input target; never interpolated by rendering
     ledger: null,

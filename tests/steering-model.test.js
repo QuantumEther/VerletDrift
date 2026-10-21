@@ -61,3 +61,22 @@ describe('steering analytical response, passivity, and supported domain',()=>{
     for(const dt of [.01,.02,.005,.1,.0025]){updateSteering(dt);expect(state.steering.angularVelocity).toBe(.1);expect(Math.abs(state.steering.ledger.residual)).toBeLessThan(1e-14);}
   });
 });
+it('keeps exact-rest steering unchanged for ten seconds at every validation rate',()=>{
+  for(const hz of [50,100,200,400]){
+    reset();for(let i=0;i<10*hz;i++)updateSteering(1/hz);
+    expect(state.steering.frontWheelAngle).toBe(0);expect(state.steering.angularVelocity).toBe(0);expect(state.steering.ledger.residual).toBe(0);
+  }
+});
+it('converges to the analytical Coulomb stopping distance and dissipation',()=>{
+  for(const hz of [50,100,200,400]){
+    let angle=0,rate=1,frictionWork=0,numericalWork=0;
+    for(let i=0;i<.6*hz;i++){
+      const r=integrateSteering({...base,angle,rate,dt:1/hz,friction:.2});angle=r.angle;rate=r.rate;frictionWork+=r.ledger.frictionWork;numericalWork+=r.ledger.numericalWork;
+    }
+    expect(rate).toBe(0);
+    // Exact stopping time .4 s; BE under-travels by omega0*h/2 on this
+    // integer grid. Check the derived discretization error, not a tuned bound.
+    expect(.2-angle).toBeCloseTo(.5/hz,12);
+    expect(frictionWork).toBeCloseTo(-.04+.1/hz,12);expect(numericalWork).toBeCloseTo(-.1/hz,12);
+  }
+});

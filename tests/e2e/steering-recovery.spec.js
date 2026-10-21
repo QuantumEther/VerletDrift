@@ -35,6 +35,10 @@ test('Shift-left steering releases even when Shift is lifted before the mouse bu
   const out=await page.evaluate(()=>{
     const c=document.getElementById('simCanvas');
     c.dispatchEvent(new MouseEvent('mousedown',{button:0,shiftKey:true,bubbles:true}));const started=state.steering.isDragging;
-    c.dispatchEvent(new MouseEvent('mouseup',{button:0,shiftKey:false,bubbles:true}));return{started,released:!state.steering.isDragging};
-  });expect(out.started).toBe(true);expect(out.released).toBe(true);
+    c.dispatchEvent(new MouseEvent('mouseup',{button:0,shiftKey:false,bubbles:true}));const released=!state.steering.isDragging;
+    c.dispatchEvent(new MouseEvent('mousedown',{button:2,bubbles:true}));
+    c.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+    c.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));const retainedRight=state.steering.isDragging;
+    c.dispatchEvent(new MouseEvent('mouseup',{button:2,bubbles:true}));return{started,released,retainedRight,finalReleased:!state.steering.isDragging};
+  });expect(out.started).toBe(true);expect(out.released).toBe(true);expect(out.retainedRight).toBe(true);expect(out.finalReleased).toBe(true);
 });
