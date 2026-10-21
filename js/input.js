@@ -192,6 +192,8 @@ function onMouseDown(event) {
   if (isSteeringButton) {
     state.steering.isDragging    = true;
     state.steering.dragStartX    = event.clientX;
+    state.steering.dragStartWheelAngle = state.steering.wheelAngle;
+    state.steering.targetWheelAngle = state.steering.wheelAngle;
   }
 
   if (isThrottleButton) {
@@ -208,11 +210,11 @@ function onMouseMove(event) {
     const normalisedDrag = dragDelta / (state.params.steeringDragRange || STEERING_DRAG_RANGE_PX); // can exceed ±1
 
     // Visual wheel angle: larger range than physical tyre angle for feel.
-    state.steering.wheelAngle = normalisedDrag * MAX_VISUAL_WHEEL_ANGLE_RAD;
+    state.steering.targetWheelAngle = state.steering.dragStartWheelAngle + normalisedDrag * MAX_VISUAL_WHEEL_ANGLE_RAD;
     // Clamp so the visual doesn't spin forever with large drags.
     const maxVisual = MAX_VISUAL_WHEEL_ANGLE_RAD;
-    if (state.steering.wheelAngle >  maxVisual) state.steering.wheelAngle =  maxVisual;
-    if (state.steering.wheelAngle < -maxVisual) state.steering.wheelAngle = -maxVisual;
+    if (state.steering.targetWheelAngle >  maxVisual) state.steering.targetWheelAngle =  maxVisual;
+    if (state.steering.targetWheelAngle < -maxVisual) state.steering.targetWheelAngle = -maxVisual;
   }
 
   // Throttle: vertical drag, up from start = more throttle.

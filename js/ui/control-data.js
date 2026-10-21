@@ -2816,9 +2816,9 @@ export const CONTROLS = [
   {
     "id": "steeringSelfCenterRate",
     "type": "range",
-    "label": "Self-Center Rate",
+    "label": "Center Spring / Inertia",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Fixed mechanical centering approximation: stiffness = effective inertia × this value. Active at every speed; zero disables.",
     "min": 0,
     "max": 30,
     "step": 0.5,
@@ -2828,14 +2828,14 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Response & self-centering",
     "groupLabel": "Response & self-centering",
-    "unit": ""
+    "unit": "s⁻²"
   },
   {
     "id": "steeringColumnInertia",
     "type": "range",
-    "label": "Column Inertia",
+    "label": "Road-Wheel Inertia",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Effective inertia in the common front road-wheel angle, not the visual handwheel coordinate.",
     "min": 0.01,
     "max": 1,
     "step": 0.01,
@@ -2845,14 +2845,14 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Response & self-centering",
     "groupLabel": "Response & self-centering",
-    "unit": ""
+    "unit": "kg·m²"
   },
   {
     "id": "steeringViscousDamping",
     "type": "range",
     "label": "Viscous Damp",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Passive damping in the common road-wheel coordinate.",
     "min": 0,
     "max": 10,
     "step": 0.1,
@@ -2862,14 +2862,14 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Response & self-centering",
     "groupLabel": "Response & self-centering",
-    "unit": ""
+    "unit": "N·m·s/rad"
   },
   {
     "id": "steeringCoulombFriction",
     "type": "range",
     "label": "Coulomb Friction",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Equal static capacity and sliding friction torque; sticks under subthreshold torque.",
     "min": 0,
     "max": 2,
     "step": 0.01,
@@ -2879,14 +2879,14 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Response & self-centering",
     "groupLabel": "Response & self-centering",
-    "unit": ""
+    "unit": "N·m"
   },
   {
     "id": "pneumaticTrail",
     "type": "range",
     "label": "Pneumatic Trail",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Small-slip pneumatic trail; decays with tire saturation and reverses with rolling transport. No stationary scrub.",
     "min": 0,
     "max": 0.2,
     "step": 0.001,
@@ -2896,7 +2896,7 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Geometry & input",
     "groupLabel": "Geometry & input",
-    "unit": ""
+    "unit": "m"
   },
   {
     "id": "maxFrontWheelAngle",
@@ -2920,7 +2920,7 @@ export const CONTROLS = [
     "type": "range",
     "label": "Steer Drag Range",
     "section": "🔄 Steering Dynamics",
-    "detail": "",
+    "detail": "Relative mouse travel from the current angle to request one lock range; finite driver spring-damper actuation.",
     "min": 50,
     "max": 400,
     "step": 10,
@@ -2930,7 +2930,7 @@ export const CONTROLS = [
     "subsystem": "Steering",
     "group": "Steering / Geometry & input",
     "groupLabel": "Geometry & input",
-    "unit": ""
+    "unit": "px"
   },
   {
     "id": "canvasResolutionSlider",

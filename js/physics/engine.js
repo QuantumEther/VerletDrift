@@ -7,6 +7,7 @@
 import { physicsState as state } from '../state.js';
 import { updateEngineSound as soundUpdate, triggerGearChange as soundGearChange } from '../sound.js';
 import {
+  CAR_HALF_LENGTH, CAR_HALF_WIDTH,
   TORQUE_PEAK_RPM,
   GEAR_RATIOS,
   TAU,
@@ -323,6 +324,19 @@ export function applySleepIfNeeded() {
     }
     // Also zero body rotational velocity by snapping heading history
     state.body.prevHeading = state.body.heading;
+    // Sleep is an explicit dissipative body intervention. Keep its caches in
+    // agreement with the newly stationary pose histories before the next tire
+    // forecast. Do not erase rotor, force-magnitude, or steering state.
+    const b = state.body;
+    state.sleepDiagnostic = { removedBodyEnergy: .5 * state.params.carMassKg * b.speed ** 2
+      + .5 * state.params.carMassKg * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3 * b.angularVelocity ** 2 };
+    b.velocityX = b.velocityY = b.speed = b.angularVelocity = 0;
+    b.prevVelocityX = b.prevVelocityY = 0;
+    b.accelX = b.accelY = b.prevAccelX = b.prevAccelY = b.jerkX = b.jerkY = b.jerkMagnitude = 0;
+    b.longitudinalAccel = b.lateralAccel = 0;
+    // Exported SAT is an interval average, not stored tire torsional energy.
+    // With zero body transport the point-contact pneumatic moment is zero.
+    state.steering.selfAligningTorque = 0;
   }
 }
 

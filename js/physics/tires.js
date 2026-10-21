@@ -9,6 +9,7 @@
 
 import { physicsState as state } from '../state.js';
 import { integrateTireContacts } from './tire-contact.js';
+import { steeringIntegrationInput,commitSteering } from './steering.js';
 import { tireGripLimit } from './tire-load.js';
 import { validateTireParameters, SLIP_REFERENCE_SPEED } from './tire-model.js';
 import {
@@ -74,7 +75,7 @@ function computeWheelBrakeCapacity(name, wheelRad, params) {
 // All four wheels contribute lateral forces (from slip angles).
 //
 // Returns: { forceX, forceY, torque }
-export function computeTireForces(dt, { prescribedBody = false, externalAcceleration } = {}) {
+export function computeTireForces(dt, { prescribedBody = false, externalAcceleration, coupledSteering = false } = {}) {
   if (!(dt > 0) || !Number.isFinite(dt)) throw new RangeError('Tire timestep must be finite and positive');
   const body        = state.body;
   const engine      = state.engine;
@@ -133,7 +134,7 @@ export function computeTireForces(dt, { prescribedBody = false, externalAccelera
   const contacts = wheelNames.map(name => {
     const w = wheelPositions[name], isFront = name.startsWith('front');
     const angle = heading + (isFront ? state.steering.frontWheelAngle : 0);
-    return { name, armX: w.x - body.centerX, armY: w.y - body.centerY,
+    return { name, steered:isFront,baseHeading:heading,armX: w.x - body.centerX, armY: w.y - body.centerY,
       forwardX: Math.sin(angle), forwardY: -Math.cos(angle), rightX: Math.cos(angle), rightY: Math.sin(angle),
       radius: params.wheelRadius, omega: state.wheelOmega[name],
       inertia: wheelInertia + (isFront ? 0 : reflectedEngineInertia),
@@ -152,10 +153,15 @@ export function computeTireForces(dt, { prescribedBody = false, externalAccelera
     }
   }
   const solution = integrateTireContacts({ dt, contacts, prescribedBody, externalAcceleration,
+    steering:coupledSteering ? steeringIntegrationInput(dt) : null,
     mass: params.carMassKg,
     inertia: params.carMassKg * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3,
     velocity: [body.velocityX, body.velocityY, body.angularVelocity] });
-  state.tireContactSolve = { substeps: solution.substeps, evaluations: solution.evaluations,
+  if(solution.steering)commitSteering(solution.steering,dt);
+  state.tireContactSolve = { attemptedEvaluations:solution.attemptedEvaluations,
+    nonlinearIterations:solution.nonlinearIterations,rejectedIntervals:solution.rejectedIntervals,
+    attemptedSubsteps:solution.attemptedSubsteps,maxSteeringResidual:solution.maxSteeringResidual,
+    substeps: solution.substeps, evaluations: solution.evaluations,
     maxBodyResidual: solution.maxBodyResidual, predictedVelocity: solution.velocity };
 
   for (const name of wheelNames) {
@@ -315,8 +321,8 @@ export function computeTireForces(dt, { prescribedBody = false, externalAccelera
     perWheelAligningTorque[name] = rotation.aligningImpulse / dt;
 
     // Resolve forces into world space.
-    const wheelForceX = relaxedLon * wheelForwardX + relaxedLat * wheelRightX;
-    const wheelForceY = relaxedLon * wheelForwardY + relaxedLat * wheelRightY;
+    const wheelForceX = coupledSteering ? rotation.worldImpulseX/dt : relaxedLon * wheelForwardX + relaxedLat * wheelRightX;
+    const wheelForceY = coupledSteering ? rotation.worldImpulseY/dt : relaxedLon * wheelForwardY + relaxedLat * wheelRightY;
 
     state.wheelForces[name].fx = wheelForceX;
     state.wheelForces[name].fy = wheelForceY;

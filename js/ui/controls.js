@@ -10,6 +10,7 @@ import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
 import { TIRE_MODEL_VERSION, validateTireParameters } from '../physics/tire-model.js';
 import { migrateTireSettings } from '../physics/tire-config.js';
+import { STEERING_MODEL_VERSION } from '../physics/steering-model.js';
 const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS,...SMOKE_AIRFLOW_DEFAULTS};
 const appearancePrefix=key=>Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)?'smokeParam_':Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
 
@@ -101,10 +102,12 @@ function clearSelection(){document.querySelectorAll('[data-preset]').forEach(but
 export function exportSettings() {
  // Include supported runtime parameters as well as the visible control values.
  const {pacejkaB,pacejkaC,...params}=state.params;
- return {version:2,tireModelVersion:TIRE_MODEL_VERSION,params,soundParams:{...state.soundParams},view:{...view}};
+ return {version:2,steeringModelVersion:STEERING_MODEL_VERSION,tireModelVersion:TIRE_MODEL_VERSION,params,soundParams:{...state.soundParams},view:{...view}};
 }
 export function importSettings(data) {
  if(!data||typeof data!=='object'||Array.isArray(data)||!data.params||!data.soundParams)throw Error('Choose a simulator preset with params and soundParams.');
+ if(data.steeringModelVersion !== undefined && data.steeringModelVersion !== STEERING_MODEL_VERSION)throw Error('Unsupported steering model version.');
+ const steeringNotice=data.steeringModelVersion === undefined ? 'Steering migrated: fixed center spring and finite driver impedance; road-wheel units retained.' : '';
  // Accept older exports containing unused aliases left by the former presets.
  const migration=migrateTireSettings(data);data=migration.data;
  for(const name of ['params','soundParams'])if(typeof data[name]!=='object'||Array.isArray(data[name]))throw Error(`Invalid ${name} section.`);
@@ -138,7 +141,7 @@ export function importSettings(data) {
   if(item.binding)writeBinding(item.binding,item.value);
   else item.target[item.key]=item.value;
  }
- clearSelection();refreshControls();status(migration.notice || 'Preset imported. All controls are synchronized with the simulator.');
+ clearSelection();refreshControls();status([migration.notice,steeringNotice].filter(Boolean).join(' ') || 'Preset imported. All controls are synchronized with the simulator.');
 }
 function applyPreset(key,button) {
  const preset=PRESETS[key];if(!preset)return;

@@ -8,12 +8,12 @@ import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } f
 // with fixed-timestep physics sub-stepping and variable-rate rendering.
 //
 // PHYSICS STEP ORDER (enforced here, documented in physics.js):
-//   1.  updateSteering(dt)
+//   1.  sample steering target (mechanics solved with contact at step 4)
 //   2.  updateEngine(dt)
 //   3.  updateSuspension(dt)     [loads drive tire forces]
-//   4.  computeTireForces()
-//   5.  computeDragForces()
-//   6.  computeBrakeForce()
+//   4.  computeTireForces({coupledSteering:true}) with current tire moment
+//   5.  drag is read before contact and supplied as known acceleration
+//   6.  brakes are integrated inside wheel contact
 //   7.  combine into net linear + angular acceleration
 //   8.  verletIntegrateAllPoints(dt, ...)
 //   9.  solveRigidBodyConstraints()
@@ -556,9 +556,8 @@ function runPhysicsStep(dt) {
     state.input.handbrakeValue = Math.max(0.0, (state.input.handbrakeValue || 0) - dt / 0.15);
   }
 
-  // 1. Update steering: maps visual wheel angle → front tyre lock angle,
-  //    applies self-centring.
-  updateSteering(dt);
+  // 1. Steering is advanced in the shared contact solve below: current
+  //    tire moment and road-wheel mechanics use the same accepted interval.
 
   // 2. Update engine: advances clutch pedal position, computes clutch
   //    engagement from pedal, updates RPM for the current clutch zone,
@@ -578,7 +577,7 @@ function runPhysicsStep(dt) {
 
   // 5–7. Compute all forces.
   const dragForces  = computeDragForces();
-  const tireForces  = computeTireForces(dt, { externalAcceleration: {
+  const tireForces  = computeTireForces(dt, { coupledSteering:true, externalAcceleration: {
     x: dragForces.forceX / state.params.carMassKg,
     y: dragForces.forceY / state.params.carMassKg,
     yaw: -state.params.yawDamping * state.body.angularVelocity,
