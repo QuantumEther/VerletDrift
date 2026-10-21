@@ -31,3 +31,10 @@ test('steering presets retain units and explicitly identify changed model semant
     return{version,notice,rejected,atomic:before===JSON.stringify(exportSettings())};
   });expect(out.version).toBe(1);expect(out.notice).toContain('Steering migrated');expect(out.rejected).toBe(true);expect(out.atomic).toBe(true);
 });
+test('Shift-left steering releases even when Shift is lifted before the mouse button',async({page})=>{
+  const out=await page.evaluate(()=>{
+    const c=document.getElementById('simCanvas');
+    c.dispatchEvent(new MouseEvent('mousedown',{button:0,shiftKey:true,bubbles:true}));const started=state.steering.isDragging;
+    c.dispatchEvent(new MouseEvent('mouseup',{button:0,shiftKey:false,bubbles:true}));return{started,released:!state.steering.isDragging};
+  });expect(out.started).toBe(true);expect(out.released).toBe(true);
+});

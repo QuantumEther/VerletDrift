@@ -1,0 +1,33 @@
+
+Running 1 test using 1 worker
+
+(node:46133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/steering-recovery.spec.js:34:1 › Shift-left steering releases even when Shift is lifted before the mouse button (1.2s)
+
+
+  1) [chromium] › tests/e2e/steering-recovery.spec.js:34:1 › Shift-left steering releases even when Shift is lifted before the mouse button 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32mtrue[39m
+    Received: [31mfalse[39m
+
+      37 |     c.dispatchEvent(new MouseEvent('mousedown',{button:0,shiftKey:true,bubbles:true}));const started=state.steering.isDragging;
+      38 |     c.dispatchEvent(new MouseEvent('mouseup',{button:0,shiftKey:false,bubbles:true}));return{started,released:!state.steering.isDragging};
+    > 39 |   });expect(out.started).toBe(true);expect(out.released).toBe(true);
+         |                                                          ^
+      40 | });
+      41 |
+        at /workspace/VerletDrift/tests/e2e/steering-recovery.spec.js:39:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../.verletdrift-tools/test-results/steering-recovery-Shift-le-77f1a-ted-before-the-mouse-button-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../.verletdrift-tools/test-results/steering-recovery-Shift-le-77f1a-ted-before-the-mouse-button-chromium/error-context.md
+
+  1 failed
+    [chromium] › tests/e2e/steering-recovery.spec.js:34:1 › Shift-left steering releases even when Shift is lifted before the mouse button 
