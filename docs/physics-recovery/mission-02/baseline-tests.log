@@ -1,0 +1,160 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ❯ tests/tire-recovery.test.js  (25 tests | 14 failed) 112ms
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > builds progressive lateral force up to the configured peak, rather than clipping near zero angle
+     → expected 1 to be less than 0.1
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 2 degrees
+     → expected 2942.9999999999995 to be greater than 2957.7149999999992
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 5 degrees
+     → expected 2942.9999999999995 to be greater than 2957.7149999999992
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 8 degrees
+     → expected 2942.9999999999995 to be greater than 2957.7149999999992
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 15 degrees
+     → expected 2942.9999999999995 to be greater than 2957.7149999999992
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 20 degrees
+     → expected 2942.9999999999995 to be greater than 2957.7149999999992
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > gives sliding grip a lateral as well as longitudinal meaning
+     → expected 1 to be close to 0.5, received difference is 0.5, but expected 0.000005
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not let retired C=2.2 silently disable contact
+     → expected 0 to be greater than 2000
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not let retired C=3 silently disable contact
+     → expected 0 to be greater than 2000
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > resists pure yaw using local patch motion even with zero center speed
+     → expected 0 to be less than -100
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > bases a wheel force on its local motion, independent of the center/yaw decomposition
+     → expected -1561.9982758312137 to be close to +0, received difference is 1561.9982758312137, but expected 5e-7
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > clears tire-generated SAT when both front wheels unload
+     → expected -148.84031088884626 to be +0 // Object.is equality
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not carry force memory that performs positive frictional work on a reversed lateral slip
+     → expected 3084.7218885998045 to be less than or equal to 1e-8
+   ❯ tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not retain several tire lags in the lateral step response
+     → expected 0.003921035989957793 to be close to 0.09963772629732356, received difference is 0.09571669030736576, but expected 0.000005
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > builds progressive lateral force up to the configured peak, rather than clipping near zero angle
+AssertionError: expected 1 to be less than 0.1
+ ❯ tests/tire-recovery.test.js:14:26
+     12|     const middle = Math.abs(lateralProbe(2).wheel.fx);
+     13|     const peak = Math.abs(lateralProbe(8).wheel.fx);
+     14|     expect(small / peak).toBeLessThan(.1);
+       |                          ^
+     15|     expect(middle / peak).toBeGreaterThan(.3);
+     16|     expect(middle / peak).toBeLessThan(.8);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 2 degrees
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 5 degrees
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 8 degrees
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 15 degrees
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > places the pure lateral peak at its configured 20 degrees
+AssertionError: expected 2942.9999999999995 to be greater than 2957.7149999999992
+ ❯ tests/tire-recovery.test.js:23:16
+     21|     const at = Math.abs(lateralProbe(peak, { peakSlipAngleDeg: peak })…
+     22|     const right = Math.abs(lateralProbe(peak * 1.5, { peakSlipAngleDeg…
+     23|     expect(at).toBeGreaterThan(left * 1.005);
+       |                ^
+     24|     expect(at).toBeGreaterThan(right * 1.005);
+     25|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > gives sliding grip a lateral as well as longitudinal meaning
+AssertionError: expected 1 to be close to 0.5, received difference is 0.5, but expected 0.000005
+ ❯ tests/tire-recovery.test.js:29:24
+     27|     const low = Math.abs(lateralProbe(80, { tireSlidingFrictionRatio: …
+     28|     const high = Math.abs(lateralProbe(80, { tireSlidingFrictionRatio:…
+     29|     expect(low / high).toBeCloseTo(.5, 5);
+       |                        ^
+     30|   });
+     31|   it.each([2.2, 3])('does not let retired C=%s silently disable contac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not let retired C=2.2 silently disable contact
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not let retired C=3 silently disable contact
+AssertionError: expected 0 to be greater than 2000
+ ❯ tests/tire-recovery.test.js:32:62
+     30|   });
+     31|   it.each([2.2, 3])('does not let retired C=%s silently disable contac…
+     32|     expect(Math.abs(lateralProbe(8, { pacejkaC }).wheel.fx)).toBeGreat…
+       |                                                              ^
+     33|   });
+     34|   it('resists pure yaw using local patch motion even with zero center …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > resists pure yaw using local patch motion even with zero center speed
+AssertionError: expected 0 to be less than -100
+ ❯ tests/tire-recovery.test.js:37:24
+     35|     resetTire({ longitudinal: 0, yaw: 2, frozen: true });
+     36|     const out = settleTire();
+     37|     expect(out.torque).toBeLessThan(-100);
+       |                        ^
+     38|     for (const [name, f] of Object.entries(state.wheelForces)) {
+     39|       const v = state.wheelKinematics[name];
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > bases a wheel force on its local motion, independent of the center/yaw decomposition
+AssertionError: expected -1561.9982758312137 to be close to +0, received difference is 1561.9982758312137, but expected 5e-7
+ ❯ tests/tire-recovery.test.js:48:44
+     46|     const v = { x: k.wheelVelX, y: k.wheelVelY }, original = { ...stat…
+     47|     resetTire({ longitudinal: -v.y, lateral: v.x, frozen: true }); set…
+     48|     expect(state.wheelForces.frontLeft.fx).toBeCloseTo(original.fx, 6);
+       |                                            ^
+     49|     expect(state.wheelForces.frontLeft.fy).toBeCloseTo(original.fy, 6);
+     50|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > clears tire-generated SAT when both front wheels unload
+AssertionError: expected -148.84031088884626 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ -148.84031088884626
+
+ ❯ tests/tire-recovery.test.js:55:47
+     53|     state.wheelLoads.frontLeft = state.wheelLoads.frontRight = 0;
+     54|     computeTireForces(.01);
+     55|     expect(state.steering.selfAligningTorque).toBe(0);
+       |                                               ^
+     56|   });
+     57|   it('does not carry force memory that performs positive frictional wo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not carry force memory that performs positive frictional work on a reversed lateral slip
+AssertionError: expected 3084.7218885998045 to be less than or equal to 1e-8
+ ❯ tests/tire-recovery.test.js:62:53
+     60|     computeTireForces(.01);
+     61|     const f = state.wheelForces.frontLeft, v = state.wheelKinematics.f…
+     62|     expect(f.fx * v.wheelVelX + f.fy * v.wheelVelY).toBeLessThanOrEqua…
+       |                                                     ^
+     63|   });
+     64|   it('does not retain several tire lags in the lateral step response',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/tire-recovery.test.js > Mission 02 tire/contact recovery contracts > does not retain several tire lags in the lateral step response
+AssertionError: expected 0.003921035989957793 to be close to 0.09963772629732356, received difference is 0.09571669030736576, but expected 0.000005
+ ❯ tests/tire-recovery.test.js:67:44
+     65|     resetTire({ lateral: 2, frozen: true });
+     66|     computeTireForces(.001);
+     67|     expect(state.wheelSlipAngle.frontLeft).toBeCloseTo(Math.atan2(2, M…
+       |                                            ^
+     68|   });
+     69|   it.each([1e-6, 1, 100, 2943, 10000])('retains bounded support and di…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ Test Files  1 failed (1)
+      Tests  14 failed | 11 passed (25)
+   Start at  12:15:18
+   Duration  474ms (transform 109ms, setup 0ms, collect 162ms, tests 112ms, environment 0ms, prepare 75ms)
+
