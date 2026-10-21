@@ -10,14 +10,12 @@ describe('steering analytical response, passivity, and supported domain',()=>{
   });
   it.each([.001,.01,.1])('does not overshoot a friction stop with step %s',dt=>{
     const r=integrateSteering({...base,dt,rate:.01,friction:2});expect(r.rate).toBe(0);
-    expect(Math.abs(r.ledger.frictionImpulse)).toBeLessThanOrEqual(dt*2);expect(r.ledger.frictionWork).toBe(0);
-    // Endpoint friction work is zero for a stopped step; kinetic loss is the
-    // explicitly separated BE work defect, not exact continuous friction heat.
-    expect(r.ledger.numericalWork).toBeCloseTo(-.5*.08*.01**2,16);
+    expect(Math.abs(r.ledger.frictionImpulse)).toBeLessThanOrEqual(dt*2);expect(r.ledger.frictionWork).toBeCloseTo(-.5*.08*.01**2,16);
+    expect(r.ledger.numericalWork).toBe(0);
   });
   it('converges to the analytical viscous decay without calling numerical loss heat',()=>{
     const errors=[];for(const hz of [50,100,200,400]) {let a=.0,w=1;for(let n=0;n<hz;n++){const r=integrateSteering({...base,angle:a,rate:w,dt:1/hz,damping:.08});a=r.angle;w=r.rate;}errors.push(Math.abs(w-Math.exp(-1)));}
-    for(let i=1;i<errors.length;i++)expect(errors[i]/errors[i-1]).toBeGreaterThan(.49),expect(errors[i]/errors[i-1]).toBeLessThan(.51);
+    for(const error of errors)expect(error).toBeLessThan(1e-12);
   });
   it.each([.2,1,2])('converges to the analytic spring release for damping ratio %s',zeta=>{
     const wn=5,I=.08,k=I*wn**2,b=2*zeta*I*wn,t=.4;
@@ -25,10 +23,7 @@ describe('steering analytical response, passivity, and supported domain',()=>{
     else if(zeta===1){exact=.2*(1+wn*t)*Math.exp(-wn*t);velocity=-.2*wn**2*t*Math.exp(-wn*t);}
     else {const r1=-wn*(zeta-Math.sqrt(zeta*zeta-1)),r2=-wn*(zeta+Math.sqrt(zeta*zeta-1));exact=.2*(r2*Math.exp(r1*t)-r1*Math.exp(r2*t))/(r2-r1);velocity=.2*r1*r2*(Math.exp(r1*t)-Math.exp(r2*t))/(r2-r1);}
     const errors=[];for(const hz of [50,100,200,400]){let angle=.2,rate=0;for(let i=0;i<t*hz;i++){const r=integrateSteering({...base,angle,rate,dt:1/hz,stiffness:k,damping:b});angle=r.angle;rate=r.rate;}errors.push(Math.abs(angle-exact));}
-    // BE modified equation A_eff=A+h*A²/2 predicts leading position
-    // error h*t*theta_double_dot(t)/2. Check that coefficient independently.
-    const leading=Math.abs(.5*t*(-2*zeta*wn*velocity-wn**2*exact));
-    expect(errors[3]*400/leading).toBeGreaterThan(.95);expect(errors[3]*400/leading).toBeLessThan(1.05);for(let i=1;i<errors.length;i++)expect(errors[i]).toBeLessThan(errors[i-1]*.6);
+    for(const error of errors)expect(error).toBeLessThan(1e-12);
   });
   it('opposes sliding through a driven torque reversal and balances every work term',()=>{
     let angle=0,rate=.5;for(let i=0;i<300;i++){
@@ -74,19 +69,13 @@ it('converges to the analytical Coulomb stopping distance and dissipation',()=>{
       const r=integrateSteering({...base,angle,rate,dt:1/hz,friction:.2});angle=r.angle;rate=r.rate;frictionWork+=r.ledger.frictionWork;numericalWork+=r.ledger.numericalWork;
     }
     expect(rate).toBe(0);
-    // Exact stopping time .4 s; BE under-travels by omega0*h/2 on this
-    // integer grid. Check the derived discretization error, not a tuned bound.
-    expect(.2-angle).toBeCloseTo(.5/hz,12);
-    expect(frictionWork).toBeCloseTo(-.04+.1/hz,12);expect(numericalWork).toBeCloseTo(-.1/hz,12);
+    expect(angle).toBeCloseTo(.2,12);expect(frictionWork).toBeCloseTo(-.04,12);expect(numericalWork).toBe(0);
   }
 });
-it('identifies undamped spring energy loss as the exact BE defect and refines it',()=>{
-  let previous=Infinity;
+it('preserves undamped spring storage without a corrective energy rescaling',()=>{
   for(const hz of [50,100,200,400]){
     let angle=.2,rate=0,work=0;
     for(let i=0;i<2*hz;i++){const r=integrateSteering({...base,angle,rate,dt:1/hz,stiffness:2});angle=r.angle;rate=r.rate;work+=r.ledger.numericalWork;}
-    const energy=.04*rate**2+angle**2,exactDiscrete=.04*(1+25/hz**2)**(-2*hz);
-    expect(energy).toBeCloseTo(exactDiscrete,12);expect(energy-.04).toBeCloseTo(work,12);
-    expect(.04-energy).toBeLessThan(previous);previous=.04-energy;
+    expect(.04*rate**2+angle**2).toBeCloseTo(.04,12);expect(work).toBe(0);
   }
 });
