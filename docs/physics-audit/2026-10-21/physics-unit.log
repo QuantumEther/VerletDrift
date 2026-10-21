@@ -1,0 +1,18 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift
+
+ ✓ tests/suspension.test.js  (13 tests) 154ms
+ ✓ tests/tire-unloading.test.js  (11 tests) 154ms
+ ✓ tests/wheels.test.js  (14 tests) 725ms
+ ✓ tests/engine-inertia.test.js  (6 tests) 5ms
+ ✓ tests/wheel-solver.test.js  (9 tests) 8ms
+ ✓ tests/wheel-omega-audit.test.js  (23 tests) 634ms
+ ✓ tests/weight-transfer.test.js  (5 tests) 4ms
+ ✓ tests/handbrake-handling.test.js  (4 tests) 996ms
+ ✓ tests/suspension-handling.test.js  (9 tests) 4657ms
+
+ Test Files  9 passed (9)
+      Tests  94 passed (94)
+   Start at  10:08:28
+   Duration  7.52s (transform 234ms, setup 3ms, collect 580ms, tests 7.34s, environment 2ms, prepare 501ms)
+

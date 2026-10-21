@@ -1,0 +1,37 @@
+{
+  "net": {
+    "forceX": 0,
+    "forceY": 0,
+    "torque": 0
+  },
+  "lateralSpeed": {
+    "frontLeft": 2.407999999995809,
+    "frontRight": 2.407999999995809,
+    "rearLeft": 2.407999999995809,
+    "rearRight": 2.407999999995809
+  },
+  "forces": {
+    "frontLeft": {
+      "fx": 0,
+      "fy": 0
+    },
+    "frontRight": {
+      "fx": 0,
+      "fy": 0
+    },
+    "rearLeft": {
+      "fx": 0,
+      "fy": 0
+    },
+    "rearRight": {
+      "fx": 0,
+      "fy": 0
+    }
+  },
+  "slips": {
+    "frontLeft": 0,
+    "frontRight": 0,
+    "rearLeft": 0,
+    "rearRight": 0
+  }
+}

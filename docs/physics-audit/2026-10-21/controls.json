@@ -1,0 +1,722 @@
+[
+  {
+    "id": "peakEngineTorqueNm",
+    "label": "Peak Torque",
+    "default": 350,
+    "ui": 350,
+    "min": 50,
+    "max": 2000,
+    "unit": "Nm"
+  },
+  {
+    "id": "idleRpm",
+    "label": "Idle RPM",
+    "default": 800,
+    "ui": 800,
+    "min": 400,
+    "max": 1500,
+    "unit": "RPM"
+  },
+  {
+    "id": "redlineRpm",
+    "label": "Redline RPM",
+    "default": 9000,
+    "ui": 7000,
+    "min": 4000,
+    "max": 10000,
+    "unit": "RPM"
+  },
+  {
+    "id": "stallRpm",
+    "label": "Stall RPM",
+    "default": 600,
+    "ui": 600,
+    "min": 100,
+    "max": 1000,
+    "unit": "RPM"
+  },
+  {
+    "id": "stallResistance",
+    "label": "Stall Resist.",
+    "default": 0.7,
+    "ui": 0.5,
+    "min": 0,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "idleCreepForce",
+    "label": "Idle Creep",
+    "default": 200,
+    "ui": 200,
+    "min": 0,
+    "max": 500,
+    "unit": "N"
+  },
+  {
+    "id": "finalDriveRatio",
+    "label": "Final Drive",
+    "default": 4.1,
+    "ui": 4.1,
+    "min": 1,
+    "max": 8,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio1",
+    "label": "Gear 1",
+    "default": 3.5,
+    "ui": 3.5,
+    "min": 0.5,
+    "max": 6,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio2",
+    "label": "Gear 2",
+    "default": 2.1,
+    "ui": 2.1,
+    "min": 0.5,
+    "max": 5,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio3",
+    "label": "Gear 3",
+    "default": 1.4,
+    "ui": 1.4,
+    "min": 0.3,
+    "max": 3,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio4",
+    "label": "Gear 4",
+    "default": 1,
+    "ui": 1,
+    "min": 0.2,
+    "max": 2,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio5",
+    "label": "Gear 5",
+    "default": 0.75,
+    "ui": 0.75,
+    "min": 0.1,
+    "max": 1.5,
+    "unit": ""
+  },
+  {
+    "id": "gearRatio6",
+    "label": "Gear 6",
+    "default": 0.58,
+    "ui": 0.58,
+    "min": 0.1,
+    "max": 1.2,
+    "unit": ""
+  },
+  {
+    "id": "clutchBitePoint",
+    "label": "Bite Point",
+    "default": 0.35,
+    "ui": 0.35,
+    "min": 0.05,
+    "max": 0.85,
+    "unit": ""
+  },
+  {
+    "id": "clutchBiteRange",
+    "label": "Slip Zone",
+    "default": 0.2,
+    "ui": 0.2,
+    "min": 0.02,
+    "max": 0.5,
+    "unit": ""
+  },
+  {
+    "id": "clutchBiteCurve",
+    "label": "Bite Sharpness",
+    "default": 1.8,
+    "ui": 2.5,
+    "min": 1,
+    "max": 6,
+    "unit": ""
+  },
+  {
+    "id": "clutchEngageTime",
+    "label": "Engage Time",
+    "default": 0.3,
+    "ui": 0.3,
+    "min": 0.05,
+    "max": 1.5,
+    "unit": "s"
+  },
+  {
+    "id": "tireFrictionCoeff",
+    "label": "Tire Friction",
+    "default": 1,
+    "ui": 1,
+    "min": 0.1,
+    "max": 2.5,
+    "unit": ""
+  },
+  {
+    "id": "tireSlidingFrictionRatio",
+    "label": "Sliding Grip",
+    "default": 0.85,
+    "ui": 0.85,
+    "min": 0.5,
+    "max": 1,
+    "unit": "%"
+  },
+  {
+    "id": "tireLoadSensitivity",
+    "label": "Tire load sensitivity",
+    "default": 0.12,
+    "ui": 0.12,
+    "min": 0,
+    "max": 0.3,
+    "unit": ""
+  },
+  {
+    "id": "peakSlipAngleDeg",
+    "label": "Peak Slip Angle",
+    "default": 8,
+    "ui": 8,
+    "min": 2,
+    "max": 20,
+    "unit": "°"
+  },
+  {
+    "id": "peakSlipRatio",
+    "label": "Peak Slip Ratio",
+    "default": 0.12,
+    "ui": 0.12,
+    "min": 0.05,
+    "max": 0.3,
+    "unit": ""
+  },
+  {
+    "id": "pacejkaB",
+    "label": "Pacejka B",
+    "default": 10,
+    "ui": 10,
+    "min": 1,
+    "max": 30,
+    "unit": ""
+  },
+  {
+    "id": "pacejkaC",
+    "label": "Pacejka C",
+    "default": 1.9,
+    "ui": 1.9,
+    "min": 0.5,
+    "max": 3,
+    "unit": ""
+  },
+  {
+    "id": "tireRelaxationLength",
+    "label": "Relax Length",
+    "default": 0.3,
+    "ui": 0.3,
+    "min": 0.05,
+    "max": 1,
+    "unit": "m"
+  },
+  {
+    "id": "wheelRadius",
+    "label": "Wheel Radius",
+    "default": 0.35,
+    "ui": 0.35,
+    "min": 0.2,
+    "max": 0.6,
+    "unit": "m"
+  },
+  {
+    "id": "wheelInertia",
+    "label": "Wheel Inertia",
+    "default": 1.2,
+    "ui": 1.2,
+    "min": 0.5,
+    "max": 3,
+    "unit": "kg·m²"
+  },
+  {
+    "id": "gripLossThreshold",
+    "label": "Loss Threshold",
+    "default": 0.9,
+    "ui": 0.7,
+    "min": 0.1,
+    "max": 0.98,
+    "unit": ""
+  },
+  {
+    "id": "gripRecoveryThreshold",
+    "label": "Recovery Thresh.",
+    "default": 0.8,
+    "ui": 0.85,
+    "min": 0.3,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "gripEmaStable",
+    "label": "EMA α (stable)",
+    "default": 0.15,
+    "ui": 0.15,
+    "min": 0.01,
+    "max": 0.5,
+    "unit": ""
+  },
+  {
+    "id": "gripEmaSlipping",
+    "label": "EMA α (slip)",
+    "default": 0.35,
+    "ui": 0.35,
+    "min": 0.05,
+    "max": 0.8,
+    "unit": ""
+  },
+  {
+    "id": "simulationFps",
+    "label": "Physics Hz",
+    "default": 100,
+    "ui": 100,
+    "min": 30,
+    "max": 200,
+    "unit": "Hz"
+  },
+  {
+    "id": "timeScale",
+    "label": "Time Scale",
+    "default": 1,
+    "ui": 1,
+    "min": 0.1,
+    "max": 3,
+    "unit": ""
+  },
+  {
+    "id": "maxSubstepsPerFrame",
+    "label": "Max Substeps/Frame",
+    "default": 6,
+    "ui": 6,
+    "min": 1,
+    "max": 12,
+    "unit": ""
+  },
+  {
+    "id": "carMassKg",
+    "label": "Mass",
+    "default": 1200,
+    "ui": 1200,
+    "min": 100,
+    "max": 3000,
+    "unit": "kg"
+  },
+  {
+    "id": "rollingResistanceCoeff",
+    "label": "Roll Resist.",
+    "default": 0.012,
+    "ui": 0.012,
+    "min": 0.001,
+    "max": 0.03,
+    "unit": ""
+  },
+  {
+    "id": "aeroDragCoeff",
+    "label": "Aero Drag",
+    "default": 0.4,
+    "ui": 0.4,
+    "min": 0.1,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "bounciness",
+    "label": "Bounciness",
+    "default": 0.5,
+    "ui": 0.3,
+    "min": 0,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "yawDamping",
+    "label": "Yaw Damping",
+    "default": 1,
+    "ui": 1,
+    "min": 0,
+    "max": 5,
+    "unit": ""
+  },
+  {
+    "id": "brakeForce",
+    "label": "Brake Force",
+    "default": 9810,
+    "ui": 9810,
+    "min": 500,
+    "max": 20000,
+    "unit": "N"
+  },
+  {
+    "id": "constraintIterations",
+    "label": "Constraint Iters",
+    "default": 12,
+    "ui": 6,
+    "min": 1,
+    "max": 12,
+    "unit": ""
+  },
+  {
+    "id": "constraintDamping",
+    "label": "Constraint Damp",
+    "default": 0.85,
+    "ui": 0.8,
+    "min": 0,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "mapWidth",
+    "label": "Width",
+    "default": 384,
+    "ui": 300,
+    "min": 100,
+    "max": 1000,
+    "unit": "m"
+  },
+  {
+    "id": "mapHeight",
+    "label": "Height",
+    "default": 288,
+    "ui": 240,
+    "min": 100,
+    "max": 1000,
+    "unit": "m"
+  },
+  {
+    "id": "maxBalloons",
+    "label": "Max Balloons",
+    "default": 240,
+    "ui": 240,
+    "min": 1,
+    "max": 500,
+    "unit": ""
+  },
+  {
+    "id": "balloonRespawnRate",
+    "label": "Respawn Rate/s",
+    "default": 0.5,
+    "ui": 0.5,
+    "min": 0.01,
+    "max": 5,
+    "unit": ""
+  },
+  {
+    "id": "suspensionEnabled",
+    "label": "Dynamic suspension",
+    "default": true,
+    "ui": true,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "springRateFront",
+    "label": "Front spring",
+    "default": 35000,
+    "ui": 35000,
+    "min": 15000,
+    "max": 80000,
+    "unit": "N/m"
+  },
+  {
+    "id": "springRateRear",
+    "label": "Rear spring",
+    "default": 35000,
+    "ui": 35000,
+    "min": 15000,
+    "max": 80000,
+    "unit": "N/m"
+  },
+  {
+    "id": "damperRateFront",
+    "label": "Front damper",
+    "default": 2500,
+    "ui": 2500,
+    "min": 500,
+    "max": 5000,
+    "unit": "N·s/m"
+  },
+  {
+    "id": "damperRateRear",
+    "label": "Rear damper",
+    "default": 2500,
+    "ui": 2500,
+    "min": 500,
+    "max": 5000,
+    "unit": "N·s/m"
+  },
+  {
+    "id": "cogHeight",
+    "label": "CoG Height",
+    "default": 0.5,
+    "ui": 0.5,
+    "min": 0.1,
+    "max": 2,
+    "unit": "m"
+  },
+  {
+    "id": "antiRollStiffnessFront",
+    "label": "Front bar",
+    "default": 12000,
+    "ui": 12000,
+    "min": 0,
+    "max": 40000,
+    "unit": "N·m/rad"
+  },
+  {
+    "id": "antiRollStiffnessRear",
+    "label": "Rear bar",
+    "default": 8000,
+    "ui": 8000,
+    "min": 0,
+    "max": 40000,
+    "unit": "N·m/rad"
+  },
+  {
+    "id": "cameraOmega",
+    "label": "Freq ω₀",
+    "default": 2.2,
+    "ui": 2.2,
+    "min": 0.5,
+    "max": 20,
+    "unit": ""
+  },
+  {
+    "id": "cameraZeta",
+    "label": "Zeta ζ",
+    "default": 0.8,
+    "ui": 0.8,
+    "min": 0.1,
+    "max": 2,
+    "unit": ""
+  },
+  {
+    "id": "cameraZoomSensitivity",
+    "label": "Zoom Sens",
+    "default": 0.3,
+    "ui": 0.3,
+    "min": 0,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "showKinematicArrows",
+    "label": "Accel/Jerk Arrows",
+    "default": true,
+    "ui": true,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "showSparks",
+    "label": "HDR Sparks",
+    "default": true,
+    "ui": true,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "showSkidMarks",
+    "label": "Skid Marks",
+    "default": true,
+    "ui": true,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "motionBlurSamples",
+    "label": "Samples",
+    "default": 6,
+    "ui": 6,
+    "min": 1,
+    "max": 16,
+    "unit": ""
+  },
+  {
+    "id": "skidMaxAge",
+    "label": "Max Age",
+    "default": 5,
+    "ui": 5,
+    "min": 1,
+    "max": 30,
+    "unit": "s"
+  },
+  {
+    "id": "skidAlphaDecayRate",
+    "label": "Alpha Decay",
+    "default": 1,
+    "ui": 1,
+    "min": 0.05,
+    "max": 5,
+    "unit": "/s"
+  },
+  {
+    "id": "smokeEnabled",
+    "label": "Enable Smoke",
+    "default": true,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "trailSpawnInterval",
+    "label": "Spawn",
+    "default": 0.08,
+    "ui": 0.025118864315095794,
+    "min": 0,
+    "max": 100,
+    "unit": "s"
+  },
+  {
+    "id": "debugShowTireForces",
+    "label": "Tire Forces",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "debugShowSlipAngles",
+    "label": "Slip Angles",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "debugShowSAT",
+    "label": "Self-Align Torque",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "debugShowSmoothingFilter",
+    "label": "Filter Signal",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "debugShowCrossover",
+    "label": "Sign Flips",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "debugShowWheelSpeeds",
+    "label": "Wheel Velocities",
+    "default": false,
+    "ui": false,
+    "min": 0,
+    "max": 100,
+    "unit": ""
+  },
+  {
+    "id": "steeringSelfCenterRate",
+    "label": "Self-Center Rate",
+    "default": 5,
+    "ui": 5,
+    "min": 0,
+    "max": 30,
+    "unit": ""
+  },
+  {
+    "id": "steeringColumnInertia",
+    "label": "Column Inertia",
+    "default": 0.08,
+    "ui": 0.08,
+    "min": 0.01,
+    "max": 1,
+    "unit": ""
+  },
+  {
+    "id": "steeringViscousDamping",
+    "label": "Viscous Damp",
+    "default": 5.5,
+    "ui": 5.5,
+    "min": 0,
+    "max": 10,
+    "unit": ""
+  },
+  {
+    "id": "steeringCoulombFriction",
+    "label": "Coulomb Friction",
+    "default": 0.05,
+    "ui": 0.05,
+    "min": 0,
+    "max": 2,
+    "unit": ""
+  },
+  {
+    "id": "pneumaticTrail",
+    "label": "Pneumatic Trail",
+    "default": 0.035,
+    "ui": 0.035,
+    "min": 0,
+    "max": 0.2,
+    "unit": ""
+  },
+  {
+    "id": "maxFrontWheelAngle",
+    "label": "Max Steer",
+    "default": 0.52,
+    "ui": 0.52,
+    "min": 0.1,
+    "max": 1.2,
+    "unit": "rad"
+  },
+  {
+    "id": "steeringDragRange",
+    "label": "Steer Drag Range",
+    "default": 150,
+    "ui": 150,
+    "min": 50,
+    "max": 400,
+    "unit": ""
+  },
+  {
+    "id": "gpuResolutionScale",
+    "label": "GPU resolution",
+    "default": 1,
+    "ui": 1,
+    "min": 0.25,
+    "max": 2,
+    "unit": "×"
+  },
+  {
+    "id": "dustEnabled",
+    "label": "Atmospheric dust",
+    "default": true,
+    "ui": true,
+    "min": 0,
+    "max": 1,
+    "unit": ""
+  }
+]

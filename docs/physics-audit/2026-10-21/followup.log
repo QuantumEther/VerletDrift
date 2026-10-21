@@ -1,0 +1,14 @@
+low-speed-steering-0.01 {"finalV":0,"maxDelta":0.009997046913579997,"finalDelta":0.004769128614319752,"deltaFlips":0,"rateFlips":0,"maxRate":0.0008682197809779745}
+low-speed-steering-0.03 {"finalV":0,"maxDelta":0.009997066666666637,"finalDelta":0.0017721830646266511,"deltaFlips":0,"rateFlips":0,"maxRate":0.007922965629120418}
+low-speed-steering-0.1 {"finalV":0,"maxDelta":0.03552380275635093,"finalDelta":-0.021662045017371633,"deltaFlips":1,"rateFlips":5,"maxRate":0.134996425885677}
+low-speed-steering-0.5 {"finalV":2.1827872842550278e-9,"maxDelta":0.14304410220829658,"finalDelta":-0.01425694313563585,"deltaFlips":11,"rateFlips":11,"maxRate":1.1849946533081608}
+low-speed-steering-1 {"finalV":0.000001812049014746709,"maxDelta":0.4213761867343734,"finalDelta":-0.027774872069930054,"deltaFlips":11,"rateFlips":12,"maxRate":3.8946874820481043}
+low-speed-steering-2 {"finalV":0.03226984604505273,"maxDelta":0.52,"finalDelta":0.027117233565237948,"deltaFlips":18,"rateFlips":17,"maxRate":6.208074265463339}
+brake-to-stop {"finalV":0.0003973828782957358,"maxDelta":0.52,"finalDelta":-0.21525057080366242,"deltaFlips":13,"rateFlips":15,"maxRate":11.088637289575377}
+friction-steering-0.02 {"finalV":0,"maxDelta":0.29941463414634145,"finalDelta":0.0024716533942229137,"deltaFlips":210,"rateFlips":439,"maxRate":0.4867625711451478}
+friction-steering-0.01 {"finalV":0,"maxDelta":0.2998518518518518,"finalDelta":0.0006634275269586157,"deltaFlips":324,"rateFlips":857,"maxRate":0.46019148039640145}
+friction-steering-0.005 {"finalV":0,"maxDelta":0.2999627329192546,"finalDelta":0.00013546985570067187,"deltaFlips":424,"rateFlips":1665,"maxRate":0.46065536930580886}
+friction-steering-0.0025 {"finalV":0,"maxDelta":0.29999065420560744,"finalDelta":-0.00002052483041983985,"deltaFlips":233,"rateFlips":3175,"maxRate":0.4608932939968022}
+free-column-refine-0.02 {"finalV":23.690637926731245,"maxDelta":0.52,"finalDelta":-0.5134809577198985,"deltaFlips":15,"rateFlips":16,"maxRate":15}
+free-column-refine-0.01 {"finalV":23.19691318907352,"maxDelta":0.52,"finalDelta":-0.15910524534860282,"deltaFlips":13,"rateFlips":13,"maxRate":30}
+free-column-refine-0.005 {"finalV":22.447582480885735,"maxDelta":0.52,"finalDelta":-0.4617337595882151,"deltaFlips":13,"rateFlips":14,"maxRate":60}
