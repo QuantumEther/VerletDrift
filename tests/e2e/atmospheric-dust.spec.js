@@ -18,7 +18,7 @@ test('world dust reacts to velocity and slip, retains a settling wake, and recon
  await page.evaluate(()=>{window.__liquidHarness.s.params.dustDisturbance=1;window.__liquidHarness.s.body.velocityX=0;window.__liquidHarness.s.body.angularVelocity=0;});
  const stopped=await renderSimulatorLiquid(page,2.2);const settled=await renderSimulatorLiquid(page,8);expect(stopped.hash).not.toBe(settled.hash);
  const again=await renderSimulatorLiquid(page,2.2);expect(again.hash).toBe(stopped.hash);
- expect(again.stats.resourceCount).toBe(a.stats.resourceCount);expect(again.stats.dust.bytes).toBe(3200);
+ expect(again.stats.resourceCount).toBe(a.stats.resourceCount);expect(again.stats.dust.bytes).toBe(208000);
  await page.evaluate(()=>window.__liquidHarness.s.params.dustEnabled=false);const off=await renderSimulatorLiquid(page,2.2);
  expect(off.stats.dust.drawCalls).toBe(0);expect(off.hash).not.toBe(again.hash);
 });
@@ -33,6 +33,13 @@ test('failed dust shader keeps liquid and the established renderer functional',a
  await page.route('**/atmospheric-dust.wgsl*',route=>route.fulfill({status:404,body:'missing'}));
  expect(await bootSimulatorLiquid(page)).toBe(true);const frame=await renderSimulatorLiquid(page,1);
  expect(frame.stats.dust).toBeNull();expect(frame.stats.dustError).toContain('404');expect(frame.stats.liquidError).toBeUndefined();expect(frame.errors).toEqual([]);expect(frame.stats.ready).toBe(true);
+});
+test('airflow follows actual velocity with fixed heading, independently of the ground renderer',async({page})=>{
+ await scene(page);await page.evaluate(()=>{window.__dust.resetDustHistory();window.__liquidHarness.s.body.angularVelocity=0;});
+ const right=await renderSimulatorLiquid(page,2);
+ await page.evaluate(()=>Object.assign(window.__liquidHarness.s.body,{velocityX:0,velocityY:-8}));const forward=await renderSimulatorLiquid(page,2);expect(forward.hash).not.toBe(right.hash);
+ await page.evaluate(()=>window.__liquidHarness.s.params.dustEnabled=false);const offForward=await renderSimulatorLiquid(page,2);
+ await page.evaluate(()=>Object.assign(window.__liquidHarness.s.body,{velocityX:8,velocityY:0}));const offRight=await renderSimulatorLiquid(page,2);expect(offRight.hash).toBe(offForward.hash);
 });
 test('the real simulator records moving-car airflow without altering input and persists dust controls',async({page})=>{
  await installLiveGPUTarget(page);await startDyedDrift(page);

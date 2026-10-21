@@ -1,5 +1,6 @@
 import {beforeEach,it,expect} from 'vitest';
 import {observeDust,dustHistory,resetDustHistory,DUST_HISTORY_CAPACITY} from '../js/renderer/dust-history.js';
+import {AtmosphericDust} from '../js/renderer/atmospheric-dust.js';
 const body=t=>({centerX:12*t,centerY:3*t,velocityX:12,velocityY:3,heading:.4,angularVelocity:.2});
 const ordered=()=>{const h=dustHistory();return Array.from({length:h.count},(_,i)=>Array.from(h.data.slice(((h.head+i)%96)*8,((h.head+i)%96)*8+8)));};
 beforeEach(resetDustHistory);
@@ -15,4 +16,13 @@ it('bounds long sessions and time jumps, ignores resting/disabled samples, reset
  observeDust(body(.1),.1,false);expect(dustHistory().count).toBe(0);
  observeDust({...body(.2),centerX:1000},.2);expect(dustHistory().count).toBeLessThan(2);
  observeDust({...body(.2),centerX:1000},1000000);expect(dustHistory().count).toBeLessThanOrEqual(96);
+});
+it('bounds visible cells and thins under sustained CPU submission pressure without allocating GPU resources',()=>{
+ const writes=[];const device={queue:{writeBuffer:(...args)=>writes.push(args)},createBuffer:()=>{throw Error('unexpected allocation');}};
+ const gpu=new AtmosphericDust(device,'rgba8unorm',{},'');gpu.uniform={size:128};gpu.history={size:3072};gpu.elements={size:204800};
+ const state={params:{dustDensity:.42},loop:{simulationTime:3},body:body(3)};
+ for(let i=0;i<300;i++)gpu.prepare(state,3840,2160,{x:0,y:0},.1,{detail:1},20);
+ expect(gpu.count).toBeLessThanOrEqual(3320);expect(gpu.adaptive).toBeLessThan(.6);expect(gpu.bytes).toBe(208000);
+ const previous=gpu.adaptive;for(let i=0;i<400;i++)gpu.prepare(state,1920,1080,{x:10,y:3},30,{detail:1},0);
+ expect(gpu.adaptive).toBeGreaterThan(previous);expect(writes.length).toBe(701);
 });

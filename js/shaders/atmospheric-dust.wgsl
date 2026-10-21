@@ -3,6 +3,9 @@ struct DustFrame {view:vec4<f32>,camera:vec4<f32>,body:vec4<f32>,motion:vec4<f32
 struct Wake {place:vec4<f32>,motion:vec4<f32>}
 @group(0) @binding(0) var<uniform> dust:DustFrame;
 @group(0) @binding(1) var<storage,read> wakes:array<Wake>;
+struct DustElement {position:vec4<f32>,shape:vec4<f32>}
+@group(0) @binding(2) var<storage,read_write> computedDust:array<DustElement>;
+@group(0) @binding(3) var<storage,read> renderedDust:array<DustElement>;
 struct DustVertex {@builtin(position) position:vec4<f32>,@location(0) local:vec2<f32>,@location(1) world:vec2<f32>,@location(2) shape:vec4<f32>,@location(3) @interpolate(flat) seed:f32}
 fn dustFlow(p:vec2<f32>)->vec3<f32>{
  var flow=vec2(0.);var energy=0.;
@@ -37,7 +40,8 @@ fn dustFlow(p:vec2<f32>)->vec3<f32>{
  flow*=dust.motion.w;
  return vec3(flow/(1.+length(flow)*.20),min(2.,energy*dust.motion.w));
 }
-@vertex fn vs_dust(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->DustVertex{
+@compute @workgroup_size(64) fn prepare_dust(@builtin(global_invocation_id) invocation:vec3<u32>){
+ let id=invocation.x;if(id>=u32(dust.coarse.w+dust.counts.x)){return;}
  let veil=id<u32(dust.coarse.w);
  let index=select(id-u32(dust.coarse.w),id,veil);
  let grid=select(dust.fine,dust.coarse,veil);
@@ -45,21 +49,28 @@ fn dustFlow(p:vec2<f32>)->vec3<f32>{
  let stride=select(grid.w,dust.counts.w,veil);
  let cell=vec2<i32>(grid.xy+vec2(f32(index%u32(grid.z)),f32(index/u32(grid.z)))*stride);
  let seed=envHash(cell+select(vec2(0),vec2(7919),veil));
+ let rank=fract(seed*37.31);let density=dust.motion.z*dust.wind.w;
+ // Density/adaptive thinning also skips wake evaluation, not just blending.
+ if(!veil&&rank>=density+.02){computedDust[id]=DustElement(vec4(0.),vec4(0.));return;}
  let height=.15+1.8*fract(seed*19.37);
  var p=(vec2<f32>(cell)+vec2(fract(seed*53.7),fract(seed*97.3)))*cellScale+dust.wind.xy*dust.view.w;
  p+=vec2(sin(dust.view.w*.36+seed*31.),cos(dust.view.w*.29+seed*23.))*.09;
  let disturbance=dustFlow(p);p+=disturbance.xy;
- p+=vec2(0.,-height*.32); // Fixed oblique height projection, not camera-locked noise.
- let corner=vec2(f32(vertex%2u)*2.-1.,f32(vertex/2u)*2.-1.);
+ // A restrained height projection gives motes parallax against the road on pans.
+ p=dust.camera.xy+(p-dust.camera.xy)*select(1.+height*.018,1.,veil)+vec2(0.,-height*.32);
  let radius=select(.018+.030*fract(seed*71.1),1.7+1.6*seed,veil);
  let screenRadius=max(radius*dust.view.z,select(.55,0.,veil));
- let world=p+corner*screenRadius/dust.view.z;
- let clip=(world-dust.camera.xy)*dust.view.z/(dust.view.xy*.5)*vec2(1.,-1.);
- let rank=fract(seed*37.31);let density=dust.motion.z*dust.wind.w;
  let visible=1.-smoothstep(density*.95,density+.02,rank);
  let alpha=select((.08+.14*fract(seed*83.7))*visible,
   dust.motion.z*(.007+.22*disturbance.z),veil);
- return DustVertex(vec4(clip,0.,1.),corner,world,vec4(alpha,height,select(0.,1.,veil),disturbance.z),seed);
+ computedDust[id]=DustElement(vec4(p,screenRadius,alpha),vec4(height,select(0.,1.,veil),disturbance.z,seed));
+}
+@vertex fn vs_dust(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->DustVertex{
+ let element=renderedDust[id];
+ let corner=vec2(f32(vertex%2u)*2.-1.,f32(vertex/2u)*2.-1.);
+ let world=element.position.xy+corner*element.position.z/dust.view.z;
+ let clip=(world-dust.camera.xy)*dust.view.z/(dust.view.xy*.5)*vec2(1.,-1.);
+ return DustVertex(vec4(clip,0.,1.),corner,world,vec4(element.position.w,element.shape.xyz),element.shape.w);
 }
 @fragment fn fs_dust(in:DustVertex)->@location(0) vec4<f32>{
  let r2=dot(in.local,in.local);let aa=max(fwidth(r2),.03);

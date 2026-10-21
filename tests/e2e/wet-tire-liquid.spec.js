@@ -55,6 +55,10 @@ async function trails(page){
 }
 test('wet-only tracks survive native skid culling, dry spatially and replay exactly with bounded resources',async({page})=>{
  await trails(page);
+ // Compare visibility at the same time: ambient dust now moves independently.
+ await page.evaluate(()=>window.__liquidHarness.s.params.showSkidMarks=false);
+ const cleanAtSeven=await renderSimulatorLiquid(page,7);
+ await page.evaluate(()=>window.__liquidHarness.s.params.showSkidMarks=true);
  const fresh=await renderSimulatorLiquid(page,1),wet=await renderSimulatorLiquid(page,7),dry=await renderSimulatorLiquid(page,35),aged=await renderSimulatorLiquid(page,65),clean=await renderSimulatorLiquid(page,301);
  for(const f of [fresh,wet,dry,aged,clean])expect(f.errors).toEqual([]);
  expect(fresh.stats.liquid.wetTransfers).toBe(150);expect(fresh.stats.liquid.active).toBe(true);
@@ -64,7 +68,7 @@ test('wet-only tracks survive native skid culling, dry spatially and replay exac
  expect((await renderSimulatorLiquid(page,35)).hash).toBe(dry.hash);
  expect((await renderSimulatorLiquid(page,35)).stats.resourceCount).toBe(dry.stats.resourceCount);
  await page.evaluate(()=>window.__liquidHarness.s.params.showSkidMarks=false);
- const hidden=await renderSimulatorLiquid(page,7);expect(hidden.stats.liquid.active).toBe(false);expect(hidden.hash).toBe(clean.hash);
+ const hidden=await renderSimulatorLiquid(page,7);expect(hidden.stats.liquid.active).toBe(false);expect(hidden.hash).toBe(cleanAtSeven.hash);
 });
 test('optical field retains thickness and dye separately; overlapping colors mix absorption',async({page})=>{
  await trails(page);

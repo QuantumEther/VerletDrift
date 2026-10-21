@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 import {installLiveGPUTarget} from '../tests/e2e/helpers/live-gpu.js';
 const arg=(k,d)=>{const i=process.argv.indexOf(k);return i<0?d:process.argv[i+1];};
 const out=resolve(arg('--output','/tmp/atmospheric-dust'));mkdirSync(out,{recursive:true});
-const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-webgpu','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE||'/usr/bin/chromium',args:process.argv.includes('--native')?['--no-sandbox','--enable-unsafe-webgpu']:['--no-sandbox','--enable-unsafe-webgpu','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 try{
  const page=await browser.newPage({viewport:{width:1000,height:850}});await installLiveGPUTarget(page);
  await page.addInitScript(()=>{window.__frames=[];window.__clock=1000;window.requestAnimationFrame=f=>{window.__frames.push(f);return window.__frames.length;};Date.now=()=>1700000000000+window.__clock;});
@@ -14,7 +14,7 @@ try{
  await page.evaluate(async()=>{window.__gpu=await import('/js/gpu-renderer.js');window.__dust=await import('/js/renderer/dust-history.js');});
  await page.waitForFunction(()=>window.__gpu.isGPUReady(),null,{polling:100});
  await page.evaluate(()=>{
-  const s=state;s.params.determinismMode=true;s.params.determinismSeed=1337;s.params.smokeEnabled=false;s.params.showSparks=false;s.params.showTrailArrows=false;s.params.showKinematicArrows=false;s.params.motionBlurIntensity=0;s.params.pixelsPerMeter=20;s.params.cameraOmega=18;s.params.cameraZeta=1;s.params.cameraZoomSensitivity=0;s.params.trailSpawnInterval=100000;
+  const s=state;s.params.determinismMode=true;s.params.determinismSeed=1337;s.params.smokeEnabled=false;s.params.showSparks=false;s.params.showTrailArrows=false;s.params.showKinematicArrows=false;s.params.motionBlurIntensity=.000001;s.params.pixelsPerMeter=20;s.params.cameraOmega=18;s.params.cameraZeta=1;s.params.cameraZoomSensitivity=0;s.params.trailSpawnInterval=100000;
   s.balloons=[];s.splatDecals=[];s.engine.currentGear='N';s.engine.clutchEngagement=0;s.engine.clutchPedalPosition=0;
   s.steering.isDragging=true;s.steering.wheelAngle=0;
   const scale=document.getElementById('gpuResolutionScale');scale.value=.25;scale.dispatchEvent(new Event('input',{bubbles:true}));
@@ -36,14 +36,14 @@ try{
   await page.locator('#dust-capture').screenshot({path:`${out}/${name}.png`});writeFileSync(`${out}/${name}.json`,JSON.stringify(result,null,2));return result;
  };
  const stages=[];
- for(let frame=0;frame<=420;frame++){
+ for(let frame=0;frame<=540;frame++){
   if(frame===25)await page.evaluate(()=>window.__setMotion(16));
   if(frame===85)await page.evaluate(()=>window.__setMotion(32));
   if(frame===115){await page.evaluate(()=>state.steering.wheelAngle=.30/state.params.maxFrontWheelAngle*Math.PI*2.5);await page.keyboard.down('KeyF');}
   if(frame===220){await page.keyboard.up('KeyF');await page.keyboard.down('KeyS');await page.evaluate(()=>{window.__setMotion(0);state.steering.wheelAngle=0;});}
   await page.evaluate(async frame=>{window.__clock=1000+frame*1000/60;const q=window.__frames.splice(0);for(const f of q)f(window.__clock);await window.__liveGPU.queue.onSubmittedWorkDone();},frame);
   if(frame===205)await page.evaluate(()=>window.__benchmarkScene={body:structuredClone(state.body),wheels:structuredClone(state.wheels),camera:structuredClone(state.camera),steering:structuredClone(state.steering),marks:structuredClone(state.skidMarks),time:state.loop.simulationTime});
-  const stage={20:'stationary',80:'straight',110:'fast',205:'drift',235:'stopped',420:'settled'}[frame];
+  const stage={20:'stationary',80:'straight',110:'fast',205:'drift',235:'stopped',540:'settled'}[frame];
   if(stage){stages.push({name:stage,...await capture(stage+'-off')});stages.push({name:stage,...await capture(stage+'-on')});}
   if(frame>=150&&frame<=210&&frame%5===0)await capture(`motion-${frame}`,true);
  }
@@ -58,5 +58,5 @@ try{
   const c=document.getElementById('simCanvas'),scale=document.getElementById('gpuResolutionScale');scale.value=1;scale.dispatchEvent(new Event('input',{bubbles:true}));window.__gpu.resizeGPU(c.width,c.height);
   const result={};for(const enabled of [false,true]){state.params.dustEnabled=enabled;const samples=[];for(let i=0;i<24;i++){const start=performance.now();window.__gpu.renderFrameGPU(c.clientWidth,c.clientHeight);const encoded=performance.now();await window.__liveGPU.queue.onSubmittedWorkDone();if(i>=4)samples.push({encodeMs:encoded-start,completionMs:performance.now()-start});}result[enabled?'on':'off']={samples,stats:window.__gpu.getGPURenderStats()};}return result;
  });
- writeFileSync(`${out}/timing.json`,JSON.stringify({backend:'Forced SwiftShader; completion is CPU-observed queue completion, not native GPU time.',...timing},null,2));console.log({out,stages:stages.length,history:fixture.count});
+ writeFileSync(`${out}/timing.json`,JSON.stringify({backend:process.argv.includes('--native')?'Native requested; verify adapter below. CPU-observed queue completion, not GPU execution time.':'Forced SwiftShader; completion is CPU-observed queue completion, not native GPU time.',...timing},null,2));console.log({out,stages:stages.length,history:fixture.count});
 }finally{await browser.close();}

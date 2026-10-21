@@ -106,6 +106,7 @@ let renderStats = {
   uploadBytes: 0,
   drawCalls: 0,
   computeWorkgroups: 0,
+  smokeComputeWorkgroups: 0,
   gpuRenderMs: null,
   gpuTimingScope:
     "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
@@ -504,6 +505,7 @@ export function renderFrameGPU(width, height) {
   renderStats.uploadBytes = 0;
   renderStats.drawCalls = 0;
   renderStats.computeWorkgroups = 0;
+  renderStats.smokeComputeWorkgroups = 0;
   try {
     const p = state.params,
       body = state.body,
@@ -862,7 +864,9 @@ export function renderFrameGPU(width, height) {
       pass.dispatchWorkgroups(n);
       pass.end();
       renderStats.computeWorkgroups = n;
+      renderStats.smokeComputeWorkgroups = n;
     }
+    renderStats.computeWorkgroups+=atmosphericDust?.encode(encoder)??0;
     const pass = encoder.beginRenderPass({
       label: "worldLayers",
       timestampWrites: timing?.begin(),

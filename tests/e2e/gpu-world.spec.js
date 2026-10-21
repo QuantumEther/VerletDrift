@@ -123,7 +123,8 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
       s.loop.simulationTime += 0.02;
       gpu.renderFrameGPU(512, 512);
     }
-    const computePeak = gpu.getGPURenderStats().computeWorkgroups;
+    const peak = gpu.getGPURenderStats();
+    const computePeak = peak.smokeComputeWorkgroups;
     const resourcesBefore = gpu.getGPURenderStats().resourceCount;
     for (let i = 0; i < 60; i++) gpu.renderFrameGPU(512, 512);
     const resourcesAfter = gpu.getGPURenderStats().resourceCount;
@@ -185,6 +186,8 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
       computePeak,
       ok,
       particle,
+      computeTotal: peak.computeWorkgroups,
+      dustComputePeak: peak.dust?.computeWorkgroups ?? 0,
       stats: gpu.getGPURenderStats(),
       errors,
       mark: sample(256, 256),
@@ -199,9 +202,11 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   expect(result.particle[4]).toBeCloseTo(0.94, 5);
   expect(result.particle[11]).toBeCloseTo(0.7, 5);
   expect(result.computePeak).toBe(32);
+  expect(result.computeTotal).toBe(32 + result.dustComputePeak);
   expect(result.resourcesAfter).toBe(result.resourcesBefore);
   // Last frames have no physics tick: compute must not advance smoke.
-  expect(result.stats.computeWorkgroups).toBe(0);
+  expect(result.stats.smokeComputeWorkgroups).toBe(0);
+  expect(result.stats.computeWorkgroups).toBe(result.stats.dust?.computeWorkgroups ?? 0);
   expect(result.errors).toEqual([]);
   expect(result.stats.ready).toBe(true);
   if (result.stats.gpuTimingEnabled) {
