@@ -10,7 +10,9 @@ struct Ghost { pose:vec4<f32>, shape:vec4<f32> }
 @group(0) @binding(8) var<storage,read> ghosts:array<Ghost>;
 struct Screen { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<f32>, @location(1) @interpolate(flat) id:u32 }
 fn loadEvent(i:u32) {
- u=events[i];u.view=frame.view;u.ground.zw=frame.ground.zw;
+ u=events[i];u.view=frame.view;
+ // Whole-vector assignment also works on compilers that reject swizzle writes.
+ u.ground=vec4(u.ground.xy,frame.ground.zw);
  u.car=frame.car;u.pose=frame.pose;u.light=frame.light;u.environment=frame.environment;
 }
 @vertex fn vs_full(@builtin(vertex_index) id:u32)->Screen {

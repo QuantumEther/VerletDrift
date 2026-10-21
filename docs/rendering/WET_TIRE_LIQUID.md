@@ -192,6 +192,23 @@ are unchanged. After deploying it, a hard refresh may still be needed once to re
 the previously cached JavaScript loader. This is version separation and revalidation,
 not an atomic deployment protocol: a partially published site can still fail safely.
 
+## Mac shader-compiler compatibility
+
+A Mac compiler rejected the multi-component write `u.ground.zw = frame.ground.zw`
+in `loadEvent`. This now uses whole-vector construction:
+`u.ground = vec4(u.ground.xy, frame.ground.zw)`. Event-local x/y values and frame-local
+z/w values are preserved exactly. No optics, geometry, physics, passes or budgets
+change. The shared shader URL revision advances to `wet-tire-optics-2` so clients
+revalidate the corrected source.
+
+All five recorded fresh/detail/drying/residue/clean fixture frame hashes are
+identical before and after this rewrite on the available SwiftShader WebGPU backend;
+the PNG files are also byte-for-byte identical. All 16 simulator-liquid / wet-tire
+browser regression tests passed after the change.
+This is a compiler-portability correction; native Mac/Metal and RTX 5090 execution
+cannot be tested in this cloud environment. The reported rejected construct is
+removed from the liquid shader bundle.
+
 ## Files and reproduction
 
 Color propagation: `js/balloon.js`. Native observation/reset: `js/main.js`,
