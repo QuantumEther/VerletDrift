@@ -1,5 +1,5 @@
 import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
-import { DUST_DEFAULTS } from '../renderer/dust-controls.js';
+import { DUST_DEFAULTS, DUST_PRESETS } from '../renderer/dust-controls.js';
 // One bidirectional binding per control. Presets and imports use the same path.
 import state from '../state.js';
 import { logger } from '../debug/logger.js';
@@ -88,7 +88,8 @@ function syncLiquidPreset(){
  select.value=['reference','thin-film','deep-pool'].find(name=>Object.entries(liquidPreset(name)).every(([key,value])=>Math.abs(state.params[key]-value)<1e-7))??'custom';
 }
 function syncEnvironmentPreset(){const select=document.getElementById('environmentPreset');if(select)select.value=Object.keys(LIGHT_PRESETS).find(name=>Object.entries(LIGHT_PRESETS[name]).every(([key,v])=>Math.abs(state.params[key]-v)<1e-7))??'custom';}
-export function refreshControls() {controlBindings.forEach(syncBinding);syncLiquidPreset();syncEnvironmentPreset();changed();}
+function syncDustPreset(){const select=document.getElementById('dustAppearancePreset');if(select)select.value=Object.keys(DUST_PRESETS).find(name=>Object.entries(DUST_PRESETS[name]).every(([key,v])=>Math.abs(state.params[key]-v)<1e-7))??'custom';}
+export function refreshControls() {controlBindings.forEach(syncBinding);syncLiquidPreset();syncEnvironmentPreset();syncDustPreset();changed();}
 export function resetControls() {
  controlBindings.forEach(binding=>writeBinding(binding,defaults.get(binding.control.id)));
  clearSelection();refreshControls();status('All controls restored to startup defaults.');
@@ -160,9 +161,16 @@ export function initControls() {
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
-   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();changed();
+   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();if(Object.hasOwn(DUST_DEFAULTS,key))syncDustPreset();changed();
   });
  }
+ document.getElementById('dustAppearancePreset').addEventListener('change',event=>{
+  for(const [key,value] of Object.entries(DUST_PRESETS[event.target.value]??{}))writeBinding(controlBindings.get(key),value);
+  refreshControls();status('Dust appearance applied; airflow unchanged.');
+ });
+ document.getElementById('resetDustAppearance').addEventListener('click',()=>{
+  for(const [key,value] of Object.entries(DUST_PRESETS.cinematic))writeBinding(controlBindings.get(key),value);refreshControls();
+ });
  document.getElementById('environmentPreset').addEventListener('change',event=>{
   for(const [key,value] of Object.entries(LIGHT_PRESETS[event.target.value]??{}))writeBinding(controlBindings.get(key),value);
   writeBinding(controlBindings.get('sceneLightingEnabled'),true);refreshControls();status('Environment lighting applied.');

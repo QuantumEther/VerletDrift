@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Atmospheric airflow calibration — v33</title>
+<style>body{margin:24px auto;padding:0 16px;max-width:1200px;background:#0c1117;color:#dce6ee;font:16px system-ui}h1{font-size:26px}p{line-height:1.6;color:#aebdca}select,button{font:inherit;color:inherit;background:#18232d;border:1px solid #496072;border-radius:6px;padding:8px;margin:6px}img{width:100%;display:block}figure{margin:0}figcaption{padding:8px;color:#cfb777}.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare{position:relative;aspect-ratio:926/696}.compare img{position:absolute;inset:0}.compare img:last-child{clip-path:inset(0 0 0 50%)}input{width:100%;margin:12px 0}a{color:#80ced9}@media(max-width:650px){.pair{grid-template-columns:1fr}}</style>
+<h1>Air that reacts to the car</h1><p>Preserved v32 versus calibrated Cinematic. Real simulator ticks, identical time, vehicle state and speed-dependent camera zoom. Smoke, balloons and diagnostic arrows are disabled to isolate airflow. Images show ordinary 20 px/m base scale; follow position is stabilized for comparison. Software WebGPU captures are visual evidence, not native GPU performance measurements.</p>
+<label>Moment <select id="stage"><option value="drift">Fast drift</option><option value="straight">Straight driving</option><option value="fast">Fast straight driving</option><option value="stopped">Sudden stop</option><option value="settled">Dissipated</option><option value="stationary">Initially stationary</option></select></label>
+<label>Compare with <select id="reference"><option value="v32">Preserved v32</option><option value="off">Dust disabled</option></select></label>
+<p id="labels">Left: preserved v32 · Right: Cinematic</p><div class="compare"><img id="before" alt="Reference simulator view"><img id="after" alt="Calibrated Cinematic airflow"></div><label>Comparison divider <input id="split" type="range" min="0" max="100" value="50"></label>
+<h2>Moving sequences</h2><p>Both versions use the same recorded driving sequence. Restart loads both animations together. These are 6 fps inspection loops sampled from a controlled 60 Hz clock; playback speed does not represent measured application frame rate.</p>
+<label>Sequence <select id="sequence"><option value="drift">Fast drift</option><option value="straight">Straight / acceleration</option><option value="stop">Sudden stop and settling wake</option><option value="dissipate">Late dissipation</option></select></label><button id="restart">Restart both</button>
+<div class="pair"><figure><figcaption>Preserved v32</figcaption><img id="oldMotion" alt="Original dust motion"></figure><figure><figcaption>Cinematic</figcaption><img id="newMotion" alt="Visible airflow motion"></figure></div>
+<h2>Appearance and lighting</h2><p>Same frozen real drift, rendered through the normal world renderer and car sprite path. Density and wake visibility change independently of physical disturbance strength.</p><label>Lighting <select id="lighting"><option>daylight</option><option>overcast</option><option>sunset</option></select></label><label>Appearance <select id="appearance"><option>cinematic</option><option>subtle</option><option>off</option></select></label><img id="material" alt="Dust appearance under selected lighting">
+<p><a href="../ATMOSPHERIC_DUST_CALIBRATION.md">Implementation, measurements and limitations</a> · <a href="../../../?renderer=gpu">Open simulator</a></p>
+<script>
+const el=id=>document.getElementById(id);
+function still(){const stage=el('stage').value,ref=el('reference').value;el('before').src=`${ref}-${stage}.png`;el('after').src=`cinematic-${stage}.png`;el('labels').textContent=`Left: ${ref==='v32'?'preserved v32':'dust disabled'} · Right: Cinematic`;}
+function motion(){const s=el('sequence').value;el('oldMotion').src=`v32-${s}.webp`;el('newMotion').src=`cinematic-${s}.webp`;}
+function material(){el('material').src=`${el('lighting').value}-${el('appearance').value}.png`;}
+for(const id of ['stage','reference'])el(id).onchange=still;
+el('split').oninput=()=>el('after').style.clipPath=`inset(0 0 0 ${el('split').value}%)`;
+el('sequence').onchange=motion;el('restart').onclick=()=>{el('oldMotion').removeAttribute('src');el('newMotion').removeAttribute('src');requestAnimationFrame(motion);};
+for(const id of ['lighting','appearance'])el(id).onchange=material;
+still();motion();material();
+</script></html>

@@ -19,10 +19,17 @@ it('bounds long sessions and time jumps, ignores resting/disabled samples, reset
 });
 it('bounds visible cells and thins under sustained CPU submission pressure without allocating GPU resources',()=>{
  const writes=[];const device={queue:{writeBuffer:(...args)=>writes.push(args)},createBuffer:()=>{throw Error('unexpected allocation');}};
- const gpu=new AtmosphericDust(device,'rgba8unorm',{},'');gpu.uniform={size:128};gpu.history={size:3072};gpu.elements={size:204800};
+ const gpu=new AtmosphericDust(device,'rgba8unorm',{},'');gpu.uniform={size:144};gpu.history={size:3072};gpu.elements={size:204800};
  const state={params:{dustDensity:.42},loop:{simulationTime:3},body:body(3)};
  for(let i=0;i<300;i++)gpu.prepare(state,3840,2160,{x:0,y:0},.1,{detail:1},20);
- expect(gpu.count).toBeLessThanOrEqual(3320);expect(gpu.adaptive).toBeLessThan(.6);expect(gpu.bytes).toBe(208000);
+ expect(gpu.count).toBeLessThanOrEqual(3320);expect(gpu.adaptive).toBeLessThan(.6);expect(gpu.bytes).toBe(208016);
  const previous=gpu.adaptive;for(let i=0;i<400;i++)gpu.prepare(state,1920,1080,{x:10,y:3},30,{detail:1},0);
  expect(gpu.adaptive).toBeGreaterThan(previous);expect(writes.length).toBe(701);
+});
+it('wake visibility remains independent of ambient density and physical airflow strength',()=>{
+ const gpu=new AtmosphericDust({queue:{writeBuffer:()=>{}}},'rgba8unorm',{},'');
+ const s={params:{dustDensity:0,dustVisibility:1.15,dustDisturbance:.7},loop:{simulationTime:3},body:body(3)};
+ gpu.prepare(s,800,600,{x:0,y:0},20,{detail:1});
+ expect(gpu.count).toBeGreaterThan(0);expect(gpu.frame[14]).toBe(0);expect(gpu.frame[15]).toBeCloseTo(.7);expect(gpu.frame[32]).toBeCloseTo(1.15);
+ s.params.dustVisibility=0;gpu.prepare(s,800,600,{x:0,y:0},20,{detail:1});expect(gpu.count).toBe(0);
 });

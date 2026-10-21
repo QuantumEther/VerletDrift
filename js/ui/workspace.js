@@ -251,6 +251,11 @@ for (const [index, system] of CARD_GROUPS.entries()) {
     group.querySelector('.card-sliders').append(row);
     rows.set(slider.id, row);
   }
+  if(sliders.some(control=>control.id==='dustEnabled')){
+    const tools=document.createElement('div');tools.className='suspension-readout';
+    tools.innerHTML='<label for="dustAppearancePreset">Dust appearance </label><select class="toolbar-button" id="dustAppearancePreset"><option value="subtle">Subtle</option><option value="cinematic">Cinematic</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" id="resetDustAppearance" type="button">Reset appearance</button><p>Density controls ambient motes; wake visibility controls local wisps independently of airflow strength. WebGPU only.</p>';
+    group.querySelector('.card-sliders').append(tools);
+  }
   if(sliders.some(control=>control.id==='sceneLightAzimuth')){
     const tools=document.createElement('div');tools.className='suspension-readout';
     tools.innerHTML='<label for="environmentPreset">Lighting preset </label><select class="toolbar-button" id="environmentPreset"><option value="daylight">Daylight</option><option value="overcast">Overcast</option><option value="sunset">Low warm sun</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" type="button" id="resetEnvironment">Reset environment</button><p>Disable coherent lighting to compare the original materials. Balloon colour choices affect new impacts; existing liquid keeps its captured colour.</p>';

@@ -18,7 +18,7 @@ test('world dust reacts to velocity and slip, retains a settling wake, and recon
  await page.evaluate(()=>{window.__liquidHarness.s.params.dustDisturbance=1;window.__liquidHarness.s.body.velocityX=0;window.__liquidHarness.s.body.angularVelocity=0;});
  const stopped=await renderSimulatorLiquid(page,2.2);const settled=await renderSimulatorLiquid(page,8);expect(stopped.hash).not.toBe(settled.hash);
  const again=await renderSimulatorLiquid(page,2.2);expect(again.hash).toBe(stopped.hash);
- expect(again.stats.resourceCount).toBe(a.stats.resourceCount);expect(again.stats.dust.bytes).toBe(208000);
+ expect(again.stats.resourceCount).toBe(a.stats.resourceCount);expect(again.stats.dust.bytes).toBe(208016);
  await page.evaluate(()=>window.__liquidHarness.s.params.dustEnabled=false);const off=await renderSimulatorLiquid(page,2.2);
  expect(off.stats.dust.drawCalls).toBe(0);expect(off.hash).not.toBe(again.hash);
 });
@@ -50,5 +50,23 @@ test('the real simulator records moving-car airflow without altering input and p
  expect(await page.evaluate(()=>state.params.dustWind)).toBe(.4);
  expect(await page.evaluate(()=>localStorage.getItem('dustParam_dustWind'))).toBe('0.4');
  const settings=await page.evaluate(async()=>{const c=await import('/js/ui/controls.js');const v=c.exportSettings();c.importSettings(v);return state.params.dustWind;});expect(settings).toBe(.4);
- await page.reload();await page.waitForFunction(()=>window.state?.params.dustWind===.4);
+ await page.locator('#dustAppearancePreset').selectOption('subtle');
+ expect(await page.evaluate(()=>[state.params.dustDensity,state.params.dustVisibility,state.params.dustDisturbance])).toEqual([.3,.45,1]);
+ await page.locator('#dustVisibility').evaluate(n=>{n.value=1.4;n.dispatchEvent(new Event('input',{bubbles:true}));});
+ await expect(page.locator('#dustAppearancePreset')).toHaveValue('custom');
+ await page.locator('#dustAppearancePreset').selectOption('cinematic');
+ expect(await page.evaluate(()=>[state.params.dustDensity,state.params.dustVisibility,state.params.dustWind])).toEqual([.48,1.15,.4]);
+ await page.reload();await page.waitForFunction(()=>window.state?.params.dustWind===.4&&window.state.params.dustVisibility===1.15);
+ await expect(page.locator('#dustAppearancePreset')).toHaveValue('cinematic');
+});
+
+test('visible wake does not require ambient motes and a settled stationary field stays calm',async({page})=>{
+ await scene(page);
+ await page.evaluate(()=>{window.__liquidHarness.s.params.dustDensity=0;window.__liquidHarness.s.params.dustVisibility=1.15;});
+ const wake=await renderSimulatorLiquid(page,2);
+ await page.evaluate(()=>window.__liquidHarness.s.params.dustEnabled=false);const off=await renderSimulatorLiquid(page,2);expect(wake.hash).not.toBe(off.hash);
+ await page.evaluate(()=>{const s=window.__liquidHarness.s;s.params.dustEnabled=true;s.body.velocityX=0;s.body.angularVelocity=0;});
+ const settled=await renderSimulatorLiquid(page,10);
+ await page.evaluate(()=>window.__liquidHarness.s.params.dustEnabled=false);const clean=await renderSimulatorLiquid(page,10);
+ expect(settled.hash).toBe(clean.hash);expect(wake.errors).toEqual([]);
 });

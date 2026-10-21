@@ -1,0 +1,121 @@
+
+Running 109 tests using 1 worker
+
+(node:332090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:332090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:13:1 › world dust reacts to velocity and slip, retains a settling wake, and reconstructs time
+[2/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:25:1 › camera/zoom restores the same world field and history stays bounded under long driving
+[3/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:32:1 › failed dust shader keeps liquid and the established renderer functional
+[4/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:37:1 › airflow follows actual velocity with fixed heading, independently of the ground renderer
+[5/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:44:1 › the real simulator records moving-car airflow without altering input and persists dust controls
+[6/109] [chromium] › tests/e2e/atmospheric-dust.spec.js:63:1 › visible wake does not require ambient motes and a settled stationary field stays calm
+[7/109] [chromium] › tests/e2e/console-guard.spec.js:17:3 › Console Guard - Quiet Mode › quiet mode produces zero console spam
+[8/109] [chromium] › tests/e2e/console-guard.spec.js:75:3 › Console Guard - Quiet Mode › quiet mode allows error and warn logs
+[9/109] [chromium] › tests/e2e/console-guard.spec.js:109:3 › Console Guard - Quiet Mode › tuning mode shows sampled logs
+[10/109] [chromium] › tests/e2e/console-guard.spec.js:150:3 › Console Guard - Quiet Mode › trace mode with traceChannel shows high-frequency logs
+[11/109] [chromium] › tests/e2e/console-guard.spec.js:191:3 › Console Guard - Quiet Mode › keyboard toggles respect quiet mode gating
+[12/109] [chromium] › tests/e2e/console-guard.spec.js:231:3 › Console Guard - Quiet Mode › URL parameter logChannels allowlist works
+[13/109] [chromium] › tests/e2e/environment.spec.js:4:1 › lighting controls change the live materials without invalidating deposition or physics
+[14/109] [chromium] › tests/e2e/environment.spec.js:18:1 › palette changes affect real collisions and pigment consistently without changing score or source hue
+[15/109] [chromium] › tests/e2e/environment.spec.js:38:1 › environment controls persist and presets reset through the existing simulator bindings
+[16/109] [chromium] › tests/e2e/environment.spec.js:46:1 › dry GPU body pixels respond to ambient illumination, independently of the road
+[17/109] [chromium] › tests/e2e/environment.spec.js:53:1 › weathered blue dye remains blue rather than adopting the crimson reference residue
+[18/109] [chromium] › tests/e2e/environment.spec.js:62:1 › contact-shadow footprint rotates with the vehicle and preserves render resources
+[19/109] [chromium] › tests/e2e/fault-detection.spec.js:9:3 › Fault Detection & Event Recording › non-finite fault is detected and recorded
+[20/109] [chromium] › tests/e2e/fault-detection.spec.js:45:3 › Fault Detection & Event Recording › wheel omega runaway is detected
+[21/109] [chromium] › tests/e2e/fault-detection.spec.js:77:3 › Fault Detection & Event Recording › constraint spike is detected and logged
+[22/109] [chromium] › tests/e2e/fault-detection.spec.js:107:3 › Fault Detection & Event Recording › slip anomaly triggers warning
+[23/109] [chromium] › tests/e2e/fault-detection.spec.js:136:3 › Fault Detection & Event Recording › timing anomaly (frame drop) is detected
+[24/109] [chromium] › tests/e2e/fault-detection.spec.js:164:3 › Fault Detection & Event Recording › freeze on error mode pauses simulation
+[25/109] [chromium] › tests/e2e/fault-detection.spec.js:218:3 › Fault Detection & Event Recording › event buffer records fault events with metadata
+[26/109] [chromium] › tests/e2e/fault-detection.spec.js:262:3 › Fault Detection & Event Recording › deduplication prevents fault spam
+[27/109] [chromium] › tests/e2e/fault-detection.spec.js:299:3 › Fault Detection & Event Recording › overlay displays fault status indicator
+[28/109] [chromium] › tests/e2e/fault-detection.spec.js:344:3 › Fault Detection & Event Recording › trace mode records high-frequency fault diagnostics
+[29/109] [chromium] › tests/e2e/gpu-diagnostics.spec.js:3:1 › presentation diagnostic reports results without loading the simulator
+[30/109] [chromium] › tests/e2e/gpu-diagnostics.spec.js:27:1 › missing decorative RPM marker does not interrupt live instruments
+[31/109] [chromium] › tests/e2e/gpu-diagnostics.spec.js:48:1 › opt-in performance recorder downloads bounded CPU/GPU scope data
+[32/109] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[33/109] [chromium] › tests/e2e/gpu-world.spec.js:231:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[34/109] [chromium] › tests/e2e/gpu-world.spec.js:287:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[35/109] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU performance/checker respects logical units and reuses resized targets
+[36/109] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[37/109] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU high/studio respects logical units and reuses resized targets
+[38/109] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[39/109] [chromium] › tests/e2e/gpu-world.spec.js:401:1 › initialization failure leaves the simulator running in Canvas
+[40/109] [chromium] › tests/e2e/gpu-world.spec.js:429:1 › software adapters automatically select usable Canvas without allocating a device
+[41/109] [chromium] › tests/e2e/gpu-world.spec.js:460:1 › smoke billboards are neutral, translucent and irregular in both backends
+[42/109] [chromium] › tests/e2e/handbrake-drift.spec.js:48:1 › handbrake lock helps a steered car rotate and build sideslip
+[43/109] [chromium] › tests/e2e/liquid-controls-live.spec.js:4:1 › live uniforms and cached deposition respond independently to lab controls and quality presets
+[44/109] [chromium] › tests/e2e/liquid-controls-live.spec.js:20:1 › live residue clears, supports disabled degradation and reconstructs with no resource growth
+[45/109] [chromium] › tests/e2e/liquid-controls-live.spec.js:31:1 › new visuals suppress legacy splats and decals while leaving gameplay paint data intact
+[46/109] [chromium] › tests/e2e/liquid-controls-live.spec.js:40:1 › extreme impact controls expand atlas coverage to contain actual WGSL landing geometry
+[47/109] [chromium] › tests/e2e/live-rendering-settings.spec.js:6:1 › drifting collisions retain liquid through live lighting, quality and resolution edits
+[48/109] [chromium] › tests/e2e/residue-weathering.spec.js:7:1 › residue erodes reproducibly to clean asphalt without changing deposition or allocating resources
+[49/109] [chromium] › tests/e2e/residue-weathering.spec.js:19:1 › slowest residue controls still clear and early liquid appearance is preserved
+[50/109] [chromium] › tests/e2e/residue-weathering.spec.js:26:1 › actual WGSL removes weak dye first with stable spatial erosion rather than uniform fading
+[51/109] [chromium] › tests/e2e/residue-weathering.spec.js:56:1 › weathering controls independently change the material and reset reproduces defaults
+[52/109] [chromium] › tests/e2e/simulator-liquid.spec.js:20:1 › live world liquid evolves, deposits, dries and reconstructs without modifying vehicle state
+[53/109] [chromium] › tests/e2e/simulator-liquid.spec.js:64:1 › multiple coloured impacts persist through camera changes, resets and sprite fallback
+[54/109] [chromium] › tests/e2e/simulator-liquid.spec.js:174:1 › liquid opt-out preserves the existing GPU world and Canvas vehicle ownership
+[55/109] [chromium] › tests/e2e/simulator-liquid.spec.js:186:1 › real balloon collision emits one liquid event and device loss retains Canvas fallback
+[56/109] [chromium] › tests/e2e/simulator-liquid.spec.js:241:1 › vehicle ghosts stay in the liquid pass and reuse the existing pose history
+[57/109] [chromium] › tests/e2e/simulator-liquid.spec.js:277:3 › liquid performance has bounded persistent storage across repeated impacts and resize
+[58/109] [chromium] › tests/e2e/simulator-liquid.spec.js:277:3 › liquid high has bounded persistent storage across repeated impacts and resize
+[59/109] [chromium] › tests/e2e/simulator-liquid.spec.js:311:1 › a missing liquid shader preserves the existing GPU world
+[60/109] [chromium] › tests/e2e/simulator-liquid.spec.js:325:1 › failed liquid target allocation releases the added resources and leaves vehicle state intact
+[61/109] [chromium] › tests/e2e/simulator-liquid.spec.js:353:1 › body liquid follows the vehicle after it leaves the world puddle
+[62/109] [chromium] › tests/e2e/simulator-liquid.spec.js:387:1 › standing liquid stays below opaque balloons rather than dyeing them
+[63/109] [chromium] › tests/e2e/splash-lab.spec.js:10:1 › reference liquid shaders evolve and replay deterministically without importing the simulator
+[64/109] [chromium] › tests/e2e/splash-lab.spec.js:23:1 › controls, pause, seed, resize and quality changes retain bounded resources
+[65/109] [chromium] › tests/e2e/splash-lab.spec.js:43:1 › device loss stops the laboratory cleanly; failed artwork has a visible fallback
+[66/109] [chromium] › tests/e2e/splash-lab.spec.js:52:1 › absence of WebGPU is explained without crashing or starting the simulator
+[67/109] [chromium] › tests/e2e/splash-lab.spec.js:59:1 › partial GPU allocation failure releases the experiment resources
+[68/109] [chromium] › tests/e2e/splash-lab.spec.js:81:1 › world deposition accumulates, persists and reconstructs exactly after backward seeks
+[69/109] [chromium] › tests/e2e/splash-lab.spec.js:97:1 › settled ground is cached, world anchored and independent of frame history
+[70/109] [chromium] › tests/e2e/splash-lab.spec.js:118:1 › speed adds forward momentum while retaining outward spread without axis stretching
+[71/109] [chromium] › tests/e2e/splash-lab.spec.js:140:1 › droplet touchdown feeds a lasting footprint and secondary landing uses the same geometry
+[72/109] [chromium] › tests/e2e/splash-lab.spec.js:160:1 › puddle optics retain transmission, water Fresnel, directional reflections and settling
+[73/109] [chromium] › tests/e2e/splash-lab.spec.js:179:1 › settled reflected ground stays still and concentration changes only optics
+[74/109] [chromium] › tests/e2e/splash-lab.spec.js:192:1 › airborne water shares puddle absorption, thins at edges and absorbs overlapping layers
+[75/109] [chromium] › tests/e2e/splash-lab.spec.js:212:1 › appearance controls act independently and presets reproduce the reference look
+[76/109] [chromium] › tests/e2e/splash-lab.spec.js:233:1 › puddles retreat into damp asphalt and residue deterministically under time scrubbing
+[77/109] [chromium] › tests/e2e/splash-optimization.spec.js:10:1 › asphalt cache invalidates on seed and resize but not optical controls or time
+[78/109] [chromium] › tests/e2e/splash-optimization.spec.js:33:1 › fully evaporated water with no dye restores dry asphalt without a phantom Fresnel film
+[79/109] [chromium] › tests/e2e/splash-optimization.spec.js:42:1 › bounded car pass matches the combined reference shader at actual pixel centres
+[80/109] [chromium] › tests/e2e/suspension.spec.js:3:1 › suspension controls change physics and survive preset export/import
+[81/109] [chromium] › tests/e2e/ui-integration.spec.js:8:1 › every control writes to its authoritative state field
+[82/109] [chromium] › tests/e2e/ui-integration.spec.js:36:1 › presets, converted controls, and import/export share the same bindings
+[83/109] [chromium] › tests/e2e/ui-integration.spec.js:79:1 › engine, sound and cross-window sound controls update once and stay synchronized
+[84/109] [chromium] › tests/e2e/ui-integration.spec.js:106:1 › typing does not drive the car; driving input and instruments use real physics
+[85/109] [chromium] › tests/e2e/ui-integration.spec.js:132:1 › live warnings follow settings and folded layouts persist without affecting controls
+[86/109] [chromium] › tests/e2e/ui-integration.spec.js:158:1 › storage failure does not prevent startup, driving, sound or layout changes
+[87/109] [chromium] › tests/e2e/ui-integration.spec.js:178:1 › liquid presets, local persistence, reset and settings import operate in the simulator UI
+[88/109] [chromium] › tests/e2e/vehicle-liquid.spec.js:12:1 › vehicle contact splits local liquid, retains body film and dries to optional dye on the GPU
+[89/109] [chromium] › tests/e2e/vehicle-liquid.spec.js:27:1 › interaction and persistent body wetness replay exactly while ground deposition and resources stay unchanged
+[90/109] [chromium] › tests/e2e/vehicle-liquid.spec.js:47:1 › vehicle appearance controls have independently visible effects and reset restores the prototype
+[91/109] [chromium] › tests/e2e/vehicle-sprites.spec.js:17:1 › sprites align with physical anchors and preserve steering, camera transform and state
+[92/109] [chromium] › tests/e2e/vehicle-sprites.spec.js:78:1 › motion ghosts share the artwork and disabling sprites restores the old renderer
+[93/109] [chromium] › tests/e2e/vehicle-sprites.spec.js:115:3 › a failed DeLorean.png keeps the simulator and original renderer working
+[94/109] [chromium] › tests/e2e/vehicle-sprites.spec.js:115:3 › a failed DeLorean_Wheel.png keeps the simulator and original renderer working
+[95/109] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 1
+[96/109] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 2
+[97/109] [chromium] › tests/e2e/visual-scale.spec.js:48:1 › drifting marks originate at physical wheel centres and stay within tire width
+[98/109] [chromium] › tests/e2e/visual-scale.spec.js:94:1 › tire and mark centres agree through turns, zoom, view scale and shake
+[99/109] [chromium] › tests/e2e/visual-scale.spec.js:153:1 › GPU upload contract keeps raster density separate from geometry and shares the view camera
+[100/109] [chromium] › tests/e2e/wet-tire-liquid.spec.js:5:1 › liquid shader bundle bypasses obsolete unversioned material and compiles together
+[101/109] [chromium] › tests/e2e/wet-tire-liquid.spec.js:26:1 › Crimson collisions resolve one dye identity for splash, fresh tires and retained transfers
+[102/109] [chromium] › tests/e2e/wet-tire-liquid.spec.js:56:1 › wet-only tracks survive native skid culling, dry spatially and replay exactly with bounded resources
+[103/109] [chromium] › tests/e2e/wet-tire-liquid.spec.js:73:1 › optical field retains thickness and dye separately; overlapping colors mix absorption
+[104/109] [chromium] › tests/e2e/wet-tire-liquid.spec.js:101:1 › wet trails stay attached to the road through camera and zoom changes
+[105/109] [chromium] › tests/e2e/wheel-braking.spec.js:3:1 › held throttle launches the vehicle and front brakes stop it in neutral
+[106/109] [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy
+[107/109] [chromium] › tests/e2e/wheel-braking.spec.js:71:1 › clutch shifts to second and reverse drives in the selected direction
+[108/109] [chromium] › tests/e2e/wheel-braking.spec.js:119:1 › low-traction wheelspin respects engine redline and service brakes stop the rear wheels
+[109/109] [chromium] › tests/e2e/wheel-braking.spec.js:151:1 › number-row gears work without a numpad and preserve typing and existing bindings
+  109 passed (9.9m)

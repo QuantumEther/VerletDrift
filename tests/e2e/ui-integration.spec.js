@@ -28,8 +28,8 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 218, failures: [], finiteSound: true });
-  await expect(page.locator('input[type=range]')).toHaveCount(198);
+  expect(result).toEqual({ count: 219, failures: [], finiteSound: true });
+  await expect(page.locator('input[type=range]')).toHaveCount(199);
   await expect(page.locator('input[type=checkbox]')).toHaveCount(20);
 });
 
