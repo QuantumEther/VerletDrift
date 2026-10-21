@@ -1,0 +1,193 @@
+import { test, expect } from '@playwright/test';
+import {execFileSync} from 'node:child_process';
+import {writeFileSync} from 'node:fs';
+const ref=process.env.VERLET_BRAKING_REF;
+test.beforeEach(async({page})=>{
+ if(ref)for(const file of ['js/gpu-renderer.js','js/main.js','js/shaders/smoke-compute.wgsl','js/state.js','js/ui/control-data.js','js/ui/controls.js']){
+ const body=execFileSync('git',['show',`${ref}:${file}`],{cwd:'/workspace/VerletDrift',encoding:'utf8'});
+ await page.route(url=>url.pathname.endsWith('/'+file),route=>route.fulfill({body,contentType:file.endsWith('.js')?'text/javascript':'text/plain'}));}
+});
+test.afterEach(async({page},info)=>{
+ const state=await page.evaluate(async()=>{const s=window.state;if(!s)return null;const gpu=await import('/js/gpu-renderer.js');return {simulationTime:s.loop.simulationTime,body:s.body,engine:{gear:s.engine.currentGear,rpm:s.engine.rpm,clutch:s.engine.clutchEngagement},frozen:s.debug.faults.isFrozen,renderer:gpu.getGPURenderStats().backend,field:gpu.getGPURenderStats().smokeAirflow??null};});
+ writeFileSync(`/tmp/v35-braking-${ref||'current'}-${info.title.includes('backward')?'backward':'reverse'}.json`,JSON.stringify({ref:ref||'current',status:info.status,expectedStatus:info.expectedStatus,state},null,2));
+});
+
+test('held throttle launches the vehicle and front brakes stop it in neutral', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  const start = await page.evaluate(() => ({ ...window.state.body }));
+
+  await page.keyboard.down('KeyA');
+  await page.keyboard.press('Numpad7');
+  await page.keyboard.down('KeyD');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm), { timeout: 5000 })
+    .toBeGreaterThan(1500);
+  await page.keyboard.up('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 8000 })
+    .toBeGreaterThan(3);
+  const launched = await page.evaluate(() => ({ ...window.state.body }));
+  expect(launched.centerY).toBeLessThan(start.centerY);
+
+  await page.keyboard.up('KeyD');
+  await page.keyboard.press('Numpad4');
+  await page.keyboard.down('KeyS');
+  await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 10000 })
+    .toBeLessThan(0.05);
+  const stopped = await page.evaluate(() => ({
+    speed: window.state.body.speed,
+    omega: window.state.wheelOmega.frontLeft,
+    gear: window.state.engine.currentGear,
+  }));
+  expect(stopped.gear).toBe('N');
+  expect(stopped.omega).toBe(0);
+  expect(errors).toEqual([]);
+});
+
+test('braking a backward-rolling vehicle removes kinetic energy', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  await page.keyboard.down('KeyS');
+  const initialEnergy = await page.evaluate(async () => {
+    const { computeBodyDerivedState } = await import('/js/physics/kinematics.js');
+    const s = window.state;
+    const speed = -10;
+    const dt = s.params.timeScale / s.params.simulationFps;
+    s.engine.currentGear = 'N';
+    for (const [name, wheel] of Object.entries(s.wheels)) {
+      wheel.prevY = wheel.y + speed * dt;
+      s.wheelOmega[name] = speed / s.params.wheelRadius;
+    }
+    computeBodyDerivedState(dt);
+    return 0.5 * s.params.carMassKg * s.body.speed ** 2
+      + Object.values(s.wheelOmega).reduce((sum, omega) => sum + 0.5 * s.params.wheelInertia * omega ** 2, 0);
+  });
+  await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 15000 })
+    .toBeLessThan(0.05);
+  const final = await page.evaluate(() => {
+    const s = window.state;
+    return {
+      energy: 0.5 * s.params.carMassKg * s.body.speed ** 2
+        + Object.values(s.wheelOmega).reduce((sum, omega) => sum + 0.5 * s.params.wheelInertia * omega ** 2, 0),
+      frontOmega: s.wheelOmega.frontLeft,
+    };
+  });
+  expect(final.energy).toBeLessThan(initialEnergy * 0.001);
+  expect(final.frontOmega).toBe(0);
+  expect(errors).toEqual([]);
+});
+
+test('clutch shifts to second and reverse drives in the selected direction', async ({ page }) => {
+  test.setTimeout(90000); // Allow the fixed simulation-time budget on slow graphical backends.
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  const startY = await page.evaluate(() => window.state.body.centerY);
+
+  await page.keyboard.down('KeyA');
+  await page.keyboard.press('Numpad7');
+  await page.keyboard.down('KeyD');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm), { timeout: 5000 })
+    .toBeGreaterThan(1500);
+  await page.keyboard.up('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 8000 })
+    .toBeGreaterThan(3);
+
+  await page.keyboard.down('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.engine.clutchPedalPosition), { timeout: 2000 })
+    .toBeLessThan(0.01);
+  await page.keyboard.press('Numpad1');
+  await expect.poll(() => page.evaluate(() => window.state.engine.currentGear)).toBe('2');
+  expect(await page.evaluate(() => window.state.engine.drivetrainLocked)).toBe(false);
+  await page.keyboard.up('KeyA');
+
+  await page.keyboard.up('KeyD');
+  await page.keyboard.press('Numpad4');
+  const brakingStartedAt = await page.evaluate(() => window.state.loop.simulationTime);
+  await page.keyboard.down('KeyS');
+  // A wall-clock timeout can expire before the original 10-second physical
+  // budget elapses under software graphics. Keep the speed assertion unchanged.
+  await page.waitForFunction(start => window.state.body.speed < 0.05 ||
+    window.state.loop.simulationTime - start >= 10, brakingStartedAt, { timeout: 60000 });
+  expect(await page.evaluate(() => window.state.body.speed)).toBeLessThan(0.05);
+  await page.keyboard.up('KeyS');
+
+  await page.keyboard.down('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.engine.clutchPedalPosition), { timeout: 2000 })
+    .toBeLessThan(0.01);
+  await page.keyboard.down('KeyQ');
+  await page.keyboard.press('Numpad1');
+  await page.keyboard.up('KeyQ');
+  await expect.poll(() => page.evaluate(() => window.state.engine.currentGear)).toBe('R');
+  await page.keyboard.down('KeyD');
+  await page.keyboard.up('KeyA');
+
+  await expect.poll(() => page.evaluate(() => window.state.body.centerY), { timeout: 8000 })
+    .toBeGreaterThan(startY + 0.5);
+});
+
+test('low-traction wheelspin respects engine redline and service brakes stop the rear wheels', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  await page.keyboard.down('KeyA');
+  await page.evaluate(() => {
+    window.state.params.tireFrictionCoeff = 0.05;
+    window.state.engine.currentGear = '1';
+  });
+  await page.keyboard.down('KeyD');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm), { timeout: 5000 })
+    .toBeGreaterThan(1500);
+  await page.keyboard.up('KeyA');
+  await expect.poll(() => page.evaluate(() => window.state.engine.rpm / window.state.params.redlineRpm),
+    { timeout: 5000 }).toBeGreaterThan(0.98);
+  await page.waitForTimeout(4000);
+  const spinning = await page.evaluate(() => ({ omega: window.state.wheelOmega.rearLeft,
+    rpm: window.state.engine.rpm, ratio: window.state.params.gearRatio1 * window.state.params.finalDriveRatio,
+    redline: window.state.params.redlineRpm }));
+  expect(spinning.omega).toBeLessThan(70);
+  expect(spinning.rpm).toBeLessThan(spinning.redline + 150);
+  expect(spinning.rpm).toBeCloseTo(spinning.omega * spinning.ratio * 60 / (2 * Math.PI), 5);
+  await page.keyboard.up('KeyD');
+  await page.evaluate(() => { window.state.engine.currentGear = 'N'; });
+  await page.keyboard.down('KeyS');
+  await expect.poll(() => page.evaluate(() => Math.max(Math.abs(window.state.wheelOmega.rearLeft),
+    Math.abs(window.state.wheelOmega.rearRight))), { timeout: 5000 }).toBeLessThan(0.01);
+  expect(errors).toEqual([]);
+});
+
+
+test('number-row gears work without a numpad and preserve typing and existing bindings', async ({ page }) => {
+  await page.goto('/?debugMode=quiet');
+  await page.waitForFunction(() => window.state?.loop.simulationTime > 0);
+  await page.keyboard.down('KeyA');
+  for (let gear = 1; gear <= 7; gear++) {
+    await page.keyboard.press(`Digit${gear}`);
+    expect(await page.evaluate(() => state.engine.currentGear)).toBe(gear === 7 ? 'R' : String(gear));
+  }
+  for (const [key, gear] of [['Numpad7','1'],['Numpad1','2'],['Numpad8','3'],['Numpad2','4'],['Numpad9','5'],['Numpad3','6'],['Numpad4','N'],['Numpad5','N'],['Numpad6','N']]) {
+    await page.keyboard.press(key);
+    expect(await page.evaluate(() => state.engine.currentGear)).toBe(gear);
+  }
+  await page.keyboard.down('KeyQ');
+  await page.keyboard.press('Numpad1');
+  await page.keyboard.up('KeyQ');
+  expect(await page.evaluate(() => state.engine.currentGear)).toBe('R');
+  await page.keyboard.up('KeyA');
+  await page.locator('#search').focus();
+  await page.keyboard.press('Digit1');
+  await expect(page.locator('#search')).toHaveValue('1');
+  expect(await page.evaluate(() => state.engine.currentGear)).toBe('R');
+  await page.locator('#search').blur();
+  for (const modifier of ['metaKey', 'ctrlKey', 'altKey']) {
+    const result = await page.evaluate(modifier => {
+      const key = new KeyboardEvent('keydown', {code:'Digit1', key:'1', [modifier]:true, bubbles:true, cancelable:true});
+      const browserDefaultAllowed = document.body.dispatchEvent(key);
+      return {browserDefaultAllowed, gear:state.engine.currentGear};
+    }, modifier);
+    expect(result).toEqual({browserDefaultAllowed:true, gear:'R'});
+  }
+});

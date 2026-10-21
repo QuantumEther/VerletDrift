@@ -1,0 +1,42 @@
+
+Running 2 tests using 1 worker
+
+[1A[2K(node:424090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:424090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/2] [chromium] › tests/e2e/compare-braking.spec.js:48:1 › braking a backward-rolling vehicle removes kinetic energy
+[1A[2K[2/2] [chromium] › tests/e2e/compare-braking.spec.js:83:1 › clutch shifts to second and reverse drives in the selected direction
+[1A[2K  1) [chromium] › tests/e2e/compare-braking.spec.js:83:1 › clutch shifts to second and reverse drives in the selected direction 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m0.01[39m
+    Received:   [31m0.7000000000000001[39m
+
+    Call Log:
+    - Timeout 2000ms exceeded while waiting on the predicate
+
+      116 |
+      117 |   await page.keyboard.down('KeyA');
+    > 118 |   await expect.poll(() => page.evaluate(() => window.state.engine.clutchPedalPosition), { timeout: 2000 })
+          |   ^
+      119 |     .toBeLessThan(0.01);
+      120 |   await page.keyboard.down('KeyQ');
+      121 |   await page.keyboard.press('Numpad1');
+        at /workspace/VerletDrift-tools/tests/e2e/compare-braking.spec.js:118:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/compare-braking-clutch-shi-9bb2c-s-in-the-selected-direction-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/compare-braking-clutch-shi-9bb2c-s-in-the-selected-direction-chromium/error-context.md
+
+
+[1A[2K  1 failed
+    [chromium] › tests/e2e/compare-braking.spec.js:83:1 › clutch shifts to second and reverse drives in the selected direction 
+  1 passed (33.3s)

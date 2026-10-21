@@ -1,0 +1,37 @@
+{
+  "ref": "current",
+  "status": "passed",
+  "expectedStatus": "passed",
+  "state": {
+    "simulationTime": 3.5999999999999672,
+    "body": {
+      "centerX": 192,
+      "centerY": 153.78636519142847,
+      "heading": 0,
+      "velocityX": 0,
+      "velocityY": 0.01738209340942376,
+      "speed": 0.01738209340942376,
+      "angularVelocity": 0,
+      "prevHeading": 0,
+      "prevVelocityX": 0,
+      "prevVelocityY": 0.030321383613340913,
+      "longitudinalAccel": 1.2939290203917153,
+      "lateralAccel": 0,
+      "accelX": 0,
+      "accelY": -1.2939290203917153,
+      "prevAccelX": 0,
+      "prevAccelY": -1.1488448495811099,
+      "jerkX": 0,
+      "jerkY": -14.508417081060543,
+      "jerkMagnitude": 14.508417081060543
+    },
+    "engine": {
+      "gear": "N",
+      "rpm": 800,
+      "clutch": 1
+    },
+    "frozen": false,
+    "renderer": "canvas",
+    "field": null
+  }
+}

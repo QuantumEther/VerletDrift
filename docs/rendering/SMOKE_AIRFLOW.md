@@ -95,7 +95,17 @@ For native testing use your known-working NVIDIA/browser launch with `?renderer=
 
 ## Automated validation
 
-Checkpoint validation: **180 unit tests pass**. The initial full browser run passed 112 tests and found four failures: three count fixtures made outdated by the new pass/controls, and one missing persistence registration. Those are corrected; the targeted reload/reset/live-observation test passes. The final full browser rerun is in progress. Initial and targeted logs are retained alongside this report. Coverage includes original-motion equality against preserved v34, opposite particle rotation, repeatable seeded integration, optional shader failure, shared wake with dust hidden, field decay after stopping, zero strength, UI settings persistence, field update caching, read-only bounded observations and resource cleanup/device loss.
+Final validation:
+
+- **180/180 unit tests pass** across 23 files.
+- **114/116 browser tests pass** in the final full run (10.0 minutes). All rendering tests and all five new smoke-airflow tests pass, including rotation, seeded repeatability, shader failure, persistence/reset and shared observations with dust hidden/coupling temporarily disabled.
+- The two remaining full-run failures are existing `wheel-braking.spec.js` wall-clock deadlines: backward braking ended its 15 s poll at .1993 m/s instead of below .05; reverse travel ended its 8 s poll at Y=141.135 instead of exceeding 144.5. These assertions, deadlines and production physics were not modified.
+- A matched isolated comparison runs those **unchanged tests** against v34 runtime sources and current sources, with post-test read-only snapshots. Current passes both; v34 passes braking but fails the 2 s clutch-release deadline (.7 instead of below .01). Both paths use **Canvas**, with the airflow field uninitialized. The first full run also passed all five existing wheel-braking cases. This supports existing software-environment/wall-clock pacing sensitivity, not a demonstrated numerical regression from smoke compute. It does not erase the final full-run failures or establish an all-green full suite.
+- Native RTX 5090/Mac execution, high-refresh performance and reliable full-suite timing remain unverified. Keep this branch experimental rather than merging on these results alone.
+
+The initial run passed 112 tests and found three outdated count fixtures plus a real omission in new-control reload persistence. The count fixtures and persistence registration are corrected and pass the final run. Original and final full logs, matched comparison logs/snapshots, and the temporary comparison fixture (saved as `.txt`, excluded from the suite) are retained in `smoke-airflow/`. The comparison only routes the six changed runtime files from v34 before the original tests and captures state afterward; it does not change test inputs or assertions.
+
+Coverage includes original-motion equality against preserved v34, opposite particle rotation, repeatable seeded integration, optional shader failure, shared wake with dust hidden, field decay after stopping, zero strength, UI settings persistence, field update caching, read-only bounded observations and resource cleanup/device loss.
 
 The existing GPU-world fixture now counts the additional 144-workgroup field dispatch in its total; its original 32-workgroup smoke assertion and numerical assertions remain intact. The exhaustive UI fixture now expects 222 controls (one additional range and one additional checkbox); it still checks every binding. No numerical tolerances or existing test assertions are weakened. Existing numerical and browser regressions remain in place.
 
