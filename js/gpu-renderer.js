@@ -948,6 +948,7 @@ export function renderFrameGPU(width, height) {
     }
     device.queue.submit([encoder.finish()]);
     timing?.submitted();
+    atmosphericDust?.submitted?.();
     renderStats.gpuRenderMs = timing?.milliseconds ?? null;
     if (state.skidMarksNewThisFrame) state.skidMarksNewThisFrame.length = 0;
     if (readback) {
@@ -980,3 +981,6 @@ export function renderFrameGPU(width, height) {
   }
   renderStats.cpuEncodeMs = performance.now() - start;
 }
+
+// On-demand diagnostic readback; never invoked by the animation loop.
+export async function getDustTracerSnapshot(first=0,count){return atmosphericDust?atmosphericDust.readTracers(first,count):[];}

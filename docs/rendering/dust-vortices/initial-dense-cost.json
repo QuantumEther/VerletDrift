@@ -1,0 +1,339 @@
+{
+  "ref": "v34",
+  "backend": "Forced SwiftShader: timestamp values are software pass execution, not RTX GPU time.",
+  "timestamp": true,
+  "stats": {
+    "enabled": true,
+    "instances": 63433,
+    "history": 36,
+    "uploadBytes": 1152,
+    "drawCalls": 0,
+    "adaptive": 1,
+    "computeWorkgroups": 992,
+    "debug": false,
+    "gpuComputeMs": null,
+    "gpuTimestampSamples": 0,
+    "motes": 63433,
+    "fieldCells": 0,
+    "vortices": 16,
+    "flowEvents": 16,
+    "cellMetres": 0.25,
+    "tracerLifetime": 4,
+    "bytes": 4200576
+  },
+  "samples": [
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 116.29999999701977
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.699999988079071,
+      "completionMs": 1086.2999999970198
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 900.9000000059605
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 896.3999999910593
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.3999999910593033,
+      "completionMs": 1095.0999999940395
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 92.90000000596046
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 95.79999999701977
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 1061.199999988079
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 906.8999999910593
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 1058.300000011921
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 2328.5
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 96.20000000298023
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 104.3999999910593
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 1073.7999999970198
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 917.3999999910593
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 1,
+      "completionMs": 881.5
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.4000000059604645,
+      "completionMs": 1073.2000000029802
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 90
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 106.40000000596046
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.30000001192092896,
+      "completionMs": 992.8000000119209
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 934.5
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.9000000059604645,
+      "completionMs": 996
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.5,
+      "completionMs": 1063.4000000059605
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 105.29999999701977
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 94.90000000596046
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 1983.3999999910593
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 1558.3999999910593
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 916.7999999970198
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 980.5999999940395
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 108.19999998807907
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 100.90000000596046
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.4000000059604645,
+      "completionMs": 1096.800000011921
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 867.5
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 928.9000000059605
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 1098.7000000029802
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 130.5
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 95.5
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 1068
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 921
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 943.9000000059605
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 2334
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 92.09999999403954
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 114.40000000596046
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 809.4000000059605
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.3999999910593033,
+      "completionMs": 696.2000000029802
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 699.7999999970198
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 782.8999999910593
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 95.40000000596046
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 115.70000000298023
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 799.2000000029802
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 699.8999999910593
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 702.2999999970198
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.4000000059604645,
+      "completionMs": 915.7999999970198
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 113
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 115
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 793.9000000059605
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 671.7000000029802
+    },
+    {
+      "stage": "draw",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 677.2999999970198
+    },
+    {
+      "stage": "both",
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 1357.7000000029802
+    },
+    {
+      "stage": "compute",
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 201.79999999701977
+    }
+  ],
+  "computeTimestampMs": [
+    102.1536,
+    88.586335,
+    103.723945,
+    93.664693
+  ],
+  "drawTimestampMs": [
+    899.467609,
+    976.356705,
+    866.060211,
+    676.351256
+  ],
+  "errors": []
+}

@@ -28,9 +28,9 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 219, failures: [], finiteSound: true });
+  expect(result).toEqual({ count: 220, failures: [], finiteSound: true });
   await expect(page.locator('input[type=range]')).toHaveCount(199);
-  await expect(page.locator('input[type=checkbox]')).toHaveCount(20);
+  await expect(page.locator('input[type=checkbox]')).toHaveCount(21);
 });
 
 test('presets, converted controls, and import/export share the same bindings', async ({ page }) => {

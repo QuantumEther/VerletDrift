@@ -253,7 +253,7 @@ for (const [index, system] of CARD_GROUPS.entries()) {
   }
   if(sliders.some(control=>control.id==='dustEnabled')){
     const tools=document.createElement('div');tools.className='suspension-readout';
-    tools.innerHTML='<label for="dustAppearancePreset">Dust appearance </label><select class="toolbar-button" id="dustAppearancePreset"><option value="subtle">Subtle</option><option value="cinematic">Cinematic</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" id="resetDustAppearance" type="button">Reset appearance</button><p>Density controls ambient motes; wake visibility controls local wisps independently of airflow strength. WebGPU only.</p>';
+    tools.innerHTML='<label for="dustAppearancePreset">Dust appearance </label><select class="toolbar-button" id="dustAppearancePreset"><option value="subtle">Subtle</option><option value="cinematic">Cinematic</option><option value="custom" disabled>Custom</option></select> <button class="toolbar-button" id="resetDustAppearance" type="button">Reset appearance</button><p>Density controls suspended tracers; wake visibility controls their scattering in disturbed air. Flow trajectories show recent paths coloured by rotation direction. WebGPU only.</p>';
     group.querySelector('.card-sliders').append(tools);
   }
   if(sliders.some(control=>control.id==='sceneLightAzimuth')){

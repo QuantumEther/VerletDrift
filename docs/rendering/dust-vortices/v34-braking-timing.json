@@ -1,0 +1,319 @@
+{
+  "ref": "v34",
+  "threshold": 0.05,
+  "originalDeadlineMs": 15000,
+  "initial": {
+    "time": 0.060000000000000005,
+    "speed": 9.999999999999432,
+    "params": {
+      "timeScale": 1,
+      "simulationFps": 100
+    },
+    "gpu": {
+      "ready": false,
+      "backend": "canvas",
+      "resourceCount": 0,
+      "fallbackReason": "Software WebGPU adapter; Canvas selected",
+      "cpuEncodeMs": 0,
+      "uploadBytes": 0,
+      "drawCalls": 0,
+      "computeWorkgroups": 0,
+      "smokeComputeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 0,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "dust": null,
+      "liquid": null,
+      "liquidResidentBytes": 0,
+      "liquidResourceCount": 0,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 1600,
+      "backingHeight": 1200
+    }
+  },
+  "reachedMs": 9784.259892,
+  "samples": [
+    {
+      "elapsedMs": 8.358905999999934,
+      "simulationTime": 0.060000000000000005,
+      "speed": 9.999999999999432,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 264.462172,
+      "simulationTime": 0.11999999999999998,
+      "speed": 9.747831826271636,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 517.0783759999999,
+      "simulationTime": 0.11999999999999998,
+      "speed": 9.747831826271636,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 770.6680550000001,
+      "simulationTime": 0.11999999999999998,
+      "speed": 9.747831826271636,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 1024.7848479999998,
+      "simulationTime": 0.11999999999999998,
+      "speed": 9.747831826271636,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 1312.5393960000001,
+      "simulationTime": 0.18000000000000002,
+      "speed": 9.435320760218247,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 1568.3676529999998,
+      "simulationTime": 0.18000000000000002,
+      "speed": 9.435320760218247,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 2002.6337389999999,
+      "simulationTime": 0.24000000000000007,
+      "speed": 9.138589480158998,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 2282.063911,
+      "simulationTime": 0.24000000000000007,
+      "speed": 9.138589480158998,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 2537.909353,
+      "simulationTime": 0.24000000000000007,
+      "speed": 9.138589480158998,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 2796.474298,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 3049.1771280000003,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 3308.5430260000003,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 3564.594521,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 3838.1408899999997,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 4095.322258,
+      "simulationTime": 0.3200000000000001,
+      "speed": 8.74258671393875,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 4379.257381,
+      "simulationTime": 0.47000000000000025,
+      "speed": 7.984849398499705,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 4638.480158,
+      "simulationTime": 0.5900000000000003,
+      "speed": 7.377121382259588,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 4891.735975,
+      "simulationTime": 0.5900000000000003,
+      "speed": 7.377121382259588,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 5145.304865,
+      "simulationTime": 0.6500000000000004,
+      "speed": 7.073361546937917,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 5414.193585,
+      "simulationTime": 0.7700000000000005,
+      "speed": 6.466213979538793,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 5671.378821,
+      "simulationTime": 0.8300000000000005,
+      "speed": 6.162984097377944,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 5928.858062,
+      "simulationTime": 0.8900000000000006,
+      "speed": 5.859749167709083,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 6182.899142,
+      "simulationTime": 0.9500000000000006,
+      "speed": 5.556568658292349,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 6435.464599999999,
+      "simulationTime": 1.0700000000000007,
+      "speed": 4.950379656210657,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 6695.504865000001,
+      "simulationTime": 1.2100000000000009,
+      "speed": 4.243419546597238,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 6959.268183,
+      "simulationTime": 1.320000000000001,
+      "speed": 3.6891180005653723,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 7215.317537000001,
+      "simulationTime": 1.380000000000001,
+      "speed": 3.3863039924796112,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 7468.6728299999995,
+      "simulationTime": 1.440000000000001,
+      "speed": 3.0834739709575842,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 7740.848135,
+      "simulationTime": 1.500000000000001,
+      "speed": 2.780768663453159,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 7994.3338889999995,
+      "simulationTime": 1.5600000000000012,
+      "speed": 2.4779001145589064,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 8260.215202,
+      "simulationTime": 1.6200000000000012,
+      "speed": 2.1752312829818266,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 8512.186524,
+      "simulationTime": 1.6800000000000013,
+      "speed": 1.8720769972674134,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 8765.036069,
+      "simulationTime": 1.7900000000000014,
+      "speed": 1.3172476645394227,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 9021.045537,
+      "simulationTime": 1.8800000000000014,
+      "speed": 0.8633059814343369,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 9278.487505,
+      "simulationTime": 1.9400000000000015,
+      "speed": 0.5606367033891502,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 9531.338242,
+      "simulationTime": 2.0000000000000013,
+      "speed": 0.25823217380036567,
+      "backend": "canvas",
+      "ready": false
+    },
+    {
+      "elapsedMs": 9784.259892,
+      "simulationTime": 2.06,
+      "speed": 0.04230123947195352,
+      "backend": "canvas",
+      "ready": false
+    }
+  ]
+}

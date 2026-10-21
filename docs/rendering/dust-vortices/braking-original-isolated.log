@@ -1,0 +1,40 @@
+
+Running 1 test using 1 worker
+
+(node:378317) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:378317) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy
+  1) [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 0.05
+    Received:   0.2516160496440989
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      54 |       + Object.values(s.wheelOmega).reduce((sum, omega) => sum + 0.5 * s.params.wheelInertia * omega ** 2, 0);
+      55 |   });
+    > 56 |   await expect.poll(() => page.evaluate(() => window.state.body.speed), { timeout: 15000 })
+         |   ^
+      57 |     .toBeLessThan(0.05);
+      58 |   const final = await page.evaluate(() => {
+      59 |     const s = window.state;
+        at /workspace/VerletDrift-tools/tests/e2e/wheel-braking.spec.js:56:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/wheel-braking-braking-a-ba-b3e38-icle-removes-kinetic-energy-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/wheel-braking-braking-a-ba-b3e38-icle-removes-kinetic-energy-chromium/error-context.md
+
+
+  1 failed
+    [chromium] › tests/e2e/wheel-braking.spec.js:36:1 › braking a backward-rolling vehicle removes kinetic energy 

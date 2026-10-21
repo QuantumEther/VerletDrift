@@ -1,0 +1,55 @@
+{
+  "cases": [
+    {
+      "clip": "straight",
+      "mode": "tracers",
+      "frame2Hash": 1399173115,
+      "restoredHash": 1399173115
+    },
+    {
+      "clip": "straight",
+      "mode": "trajectories",
+      "frame2Hash": 1316451901,
+      "restoredHash": 1316451901
+    },
+    {
+      "clip": "drift",
+      "mode": "tracers",
+      "frame2Hash": 3941773238,
+      "restoredHash": 3941773238
+    },
+    {
+      "clip": "drift",
+      "mode": "trajectories",
+      "frame2Hash": 2705872680,
+      "restoredHash": 2705872680
+    },
+    {
+      "clip": "stop",
+      "mode": "tracers",
+      "frame2Hash": 2433070637,
+      "restoredHash": 2433070637
+    },
+    {
+      "clip": "stop",
+      "mode": "trajectories",
+      "frame2Hash": 726618404,
+      "restoredHash": 726618404
+    },
+    {
+      "clip": "settle",
+      "mode": "tracers",
+      "frame2Hash": 249238732,
+      "restoredHash": 249238732
+    },
+    {
+      "clip": "settle",
+      "mode": "trajectories",
+      "frame2Hash": 1071164114,
+      "restoredHash": 1071164114
+    }
+  ],
+  "playbackAdvanced": true,
+  "fallbackDecoded": true,
+  "errors": []
+}

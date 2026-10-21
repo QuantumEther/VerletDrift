@@ -161,7 +161,9 @@ Expand **Rendering → Atmospheric Dust** for world-space suspended motes, vehic
 wake strength/persistence and ambient wind. Dust is independent of tire smoke;
 `?dust=0` disables it for comparison. Subtle/Cinematic appearance presets separate
 ambient density and wake visibility from physical disturbance strength. See the
-[calibrated motion comparisons](docs/rendering/dust-calibration/index.html),
+[dense tracer / vortex motion inspection](docs/rendering/dust-vortices/index.html),
+[v34 architecture and measurements](docs/rendering/DUST_VORTICES.md),
+[preserved v33 comparisons](docs/rendering/dust-calibration/index.html),
 [calibration report](docs/rendering/ATMOSPHERIC_DUST_CALIBRATION.md), and preserved
 [v32 technique and measurements](docs/rendering/ATMOSPHERIC_DUST.md).
 
