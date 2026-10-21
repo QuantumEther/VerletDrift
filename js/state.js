@@ -1,3 +1,4 @@
+import {SMOKE_MATERIAL_DEFAULTS} from './renderer/smoke-material-controls.js';
 import {SMOKE_AIRFLOW_DEFAULTS} from './renderer/vehicle-airflow.js';
 // =============================================================
 // STATE — single source of truth for all mutable simulation data
@@ -445,6 +446,7 @@ const state = {
     ...SCENE_DEFAULTS,
     ...DUST_DEFAULTS,
     ...SMOKE_AIRFLOW_DEFAULTS,
+    ...SMOKE_MATERIAL_DEFAULTS,
     simulationFps:           100,  // physics Hz (wall-clock tick rate)
     maxSubstepsPerFrame:     6,    // cap on fixed-step ticks consumed per render frame
     timeScale:               1.0,

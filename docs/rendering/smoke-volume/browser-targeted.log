@@ -1,0 +1,32 @@
+
+Running 20 tests using 1 worker
+
+[1A[2K(node:431593) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:431593) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/20] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[1A[2K[2/20] [chromium] › tests/e2e/gpu-world.spec.js:234:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[1A[2K[3/20] [chromium] › tests/e2e/gpu-world.spec.js:290:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[1A[2K[4/20] [chromium] › tests/e2e/gpu-world.spec.js:331:3 › GPU performance/checker respects logical units and reuses resized targets
+[1A[2K[5/20] [chromium] › tests/e2e/gpu-world.spec.js:331:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[1A[2K[6/20] [chromium] › tests/e2e/gpu-world.spec.js:331:3 › GPU high/studio respects logical units and reuses resized targets
+[1A[2K[7/20] [chromium] › tests/e2e/gpu-world.spec.js:331:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[1A[2K[8/20] [chromium] › tests/e2e/gpu-world.spec.js:404:1 › initialization failure leaves the simulator running in Canvas
+[1A[2K[9/20] [chromium] › tests/e2e/gpu-world.spec.js:432:1 › software adapters automatically select usable Canvas without allocating a device
+[1A[2K[10/20] [chromium] › tests/e2e/gpu-world.spec.js:463:1 › smoke billboards are neutral, translucent and irregular in both backends
+[1A[2K[11/20] [chromium] › tests/e2e/smoke-volume.spec.js:3:1 › optional smoke material failure retains the original renderer
+[1A[2K[12/20] [chromium] › tests/e2e/smoke-volume.spec.js:7:1 › all smoke material pipelines compile and render live smoke
+[1A[2K[13/20] [chromium] › tests/e2e/smoke-volume.spec.js:18:1 › shared optical depth, lighting, resize and comparison do not alter smoke state
+[1A[2K[14/20] [chromium] › tests/e2e/ui-integration.spec.js:8:1 › every control writes to its authoritative state field
+[1A[2K[15/20] [chromium] › tests/e2e/ui-integration.spec.js:36:1 › presets, converted controls, and import/export share the same bindings
+[1A[2K[16/20] [chromium] › tests/e2e/ui-integration.spec.js:79:1 › engine, sound and cross-window sound controls update once and stay synchronized
+[1A[2K[17/20] [chromium] › tests/e2e/ui-integration.spec.js:106:1 › typing does not drive the car; driving input and instruments use real physics
+[1A[2K[18/20] [chromium] › tests/e2e/ui-integration.spec.js:132:1 › live warnings follow settings and folded layouts persist without affecting controls
+[1A[2K[19/20] [chromium] › tests/e2e/ui-integration.spec.js:158:1 › storage failure does not prevent startup, driving, sound or layout changes
+[1A[2K[20/20] [chromium] › tests/e2e/ui-integration.spec.js:178:1 › liquid presets, local persistence, reset and settings import operate in the simulator UI
+[1A[2K  20 passed (1.8m)

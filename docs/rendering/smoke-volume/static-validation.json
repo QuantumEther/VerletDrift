@@ -1,0 +1,301 @@
+{
+  "info": {
+    "timestamps": true,
+    "adapter": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "description": "",
+      "isFallbackAdapter": true
+    }
+  },
+  "frames": [
+    {
+      "scene": "sparse",
+      "light": "daylight",
+      "mode": 0,
+      "hash": 51455601,
+      "errors": [],
+      "bytes": 80
+    },
+    {
+      "scene": "sparse",
+      "light": "daylight",
+      "mode": 1,
+      "hash": 2597831623,
+      "errors": [],
+      "bytes": 80
+    },
+    {
+      "scene": "sparse",
+      "light": "daylight",
+      "mode": 2,
+      "hash": 1590824295,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "overcast",
+      "mode": 0,
+      "hash": 51455601,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "overcast",
+      "mode": 1,
+      "hash": 3988306924,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "overcast",
+      "mode": 2,
+      "hash": 3878337592,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "side",
+      "mode": 0,
+      "hash": 51455601,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "side",
+      "mode": 1,
+      "hash": 2216089095,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "side",
+      "mode": 2,
+      "hash": 4076727333,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "back",
+      "mode": 0,
+      "hash": 51455601,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "back",
+      "mode": 1,
+      "hash": 3371466941,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "sparse",
+      "light": "back",
+      "mode": 2,
+      "hash": 3889585406,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "daylight",
+      "mode": 0,
+      "hash": 1619451175,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "daylight",
+      "mode": 1,
+      "hash": 112677870,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "daylight",
+      "mode": 2,
+      "hash": 273139064,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "overcast",
+      "mode": 0,
+      "hash": 1619451175,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "overcast",
+      "mode": 1,
+      "hash": 921806318,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "overcast",
+      "mode": 2,
+      "hash": 1349901376,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "side",
+      "mode": 0,
+      "hash": 1619451175,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "side",
+      "mode": 1,
+      "hash": 650055835,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "side",
+      "mode": 2,
+      "hash": 3865736307,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "back",
+      "mode": 0,
+      "hash": 1619451175,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "back",
+      "mode": 1,
+      "hash": 1711894383,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "dense",
+      "light": "back",
+      "mode": 2,
+      "hash": 3550890572,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "daylight",
+      "mode": 0,
+      "hash": 894837049,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "daylight",
+      "mode": 1,
+      "hash": 62721272,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "daylight",
+      "mode": 2,
+      "hash": 2375407599,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "overcast",
+      "mode": 0,
+      "hash": 894837049,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "overcast",
+      "mode": 1,
+      "hash": 260390215,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "overcast",
+      "mode": 2,
+      "hash": 62590288,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "side",
+      "mode": 0,
+      "hash": 894837049,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "side",
+      "mode": 1,
+      "hash": 2609194146,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "side",
+      "mode": 2,
+      "hash": 1400721486,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "back",
+      "mode": 0,
+      "hash": 894837049,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "back",
+      "mode": 1,
+      "hash": 2076256661,
+      "errors": [],
+      "bytes": 614480
+    },
+    {
+      "scene": "overlap",
+      "light": "back",
+      "mode": 2,
+      "hash": 1458659983,
+      "errors": [],
+      "bytes": 614480
+    }
+  ]
+}

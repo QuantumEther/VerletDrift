@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Smoke material comparison — v36</title>
+<style>body{margin:24px;background:#11171b;color:#dbe4ea;font:16px system-ui;max-width:1500px}img,video{max-width:100%;display:block;margin:16px 0}a{color:#8ed2df}p{max-width:900px}</style>
+<h1>Smoke material comparison</h1><p>Original v35 on the left; shared-density v36 on the right. Both clips shade the same GPU smoke particles at the same simulation time. The unchanged emitter and vehicle airflow remain active. Captures use a software WebGPU adapter, 12 captured frames per simulation second; these clips illustrate material appearance, not interactive performance.</p>
+<h2>Recorded drift — ordinary 20 pixels/metre</h2><video src="drift.webm" controls loop muted></video>
+<h2>Sudden stop and wake persistence</h2><video src="stop.webm" controls loop muted></video>
+<h2>Controlled density and lighting</h2><p>Identical frozen particles in each row: original, local lighting, shared density. Top: daylight. Bottom: low backlight. These deliberately crowded fixtures expose overlap and shading differences.</p>
+<img src="sparse.jpg" alt="Sparse smoke: three material techniques"><img src="dense.jpg" alt="Dense plume: three material techniques"><img src="overlap.jpg" alt="Heavy overlap: three material techniques">
+<h2>Environmental light</h2><img src="lighting.jpg" alt="Matched daylight, overcast, side lighting and backlighting"><p><a href="../SMOKE_VOLUME.md">Architecture, measurements and limitations</a></p>

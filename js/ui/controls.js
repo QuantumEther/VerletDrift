@@ -1,3 +1,4 @@
+import {SMOKE_MATERIAL_DEFAULTS} from '../renderer/smoke-material-controls.js';
 import {SMOKE_AIRFLOW_DEFAULTS} from '../renderer/vehicle-airflow.js';
 import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
 import { DUST_DEFAULTS, DUST_PRESETS } from '../renderer/dust-controls.js';
@@ -8,8 +9,8 @@ import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
 import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
-const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS,...SMOKE_AIRFLOW_DEFAULTS};
-const appearancePrefix=key=>Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)?'smokeParam_':Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
+const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS,...SMOKE_AIRFLOW_DEFAULTS,...SMOKE_MATERIAL_DEFAULTS};
+const appearancePrefix=key=>(Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)||Object.hasOwn(SMOKE_MATERIAL_DEFAULTS,key))?'smokeParam_':Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
 
 export const controlBindings = new Map();
 const view = { canvasResolutionScale: 1 };
@@ -162,7 +163,7 @@ export function initControls() {
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
-   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key)&&!Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();if(Object.hasOwn(DUST_DEFAULTS,key))syncDustPreset();changed();
+   enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key)&&!Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)&&!Object.hasOwn(SMOKE_MATERIAL_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();if(Object.hasOwn(DUST_DEFAULTS,key))syncDustPreset();changed();
   });
  }
  document.getElementById('dustAppearancePreset').addEventListener('change',event=>{
