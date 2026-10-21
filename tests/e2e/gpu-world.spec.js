@@ -188,6 +188,7 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
       particle,
       computeTotal: peak.computeWorkgroups,
       dustComputePeak: peak.dust?.computeWorkgroups ?? 0,
+      airflowComputePeak: peak.smokeAirflow?.computeWorkgroups ?? 0,
       stats: gpu.getGPURenderStats(),
       errors,
       mark: sample(256, 256),
@@ -202,7 +203,8 @@ test("real WGSL renders resident skids, paint, smoke and ground without validati
   expect(result.particle[4]).toBeCloseTo(0.94, 5);
   expect(result.particle[11]).toBeCloseTo(0.7, 5);
   expect(result.computePeak).toBe(32);
-  expect(result.computeTotal).toBe(32 + result.dustComputePeak);
+  expect(result.airflowComputePeak).toBe(144);
+  expect(result.computeTotal).toBe(32 + result.dustComputePeak + result.airflowComputePeak);
   expect(result.resourcesAfter).toBe(result.resourcesBefore);
   // Last frames have no physics tick: compute must not advance smoke.
   expect(result.stats.smokeComputeWorkgroups).toBe(0);

@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Smoke entrainment in the vehicle wake</title>
+<style>body{margin:24px auto;padding:0 16px;max-width:1340px;background:#0d1219;color:#dae5ed;font:16px system-ui}h1{font-size:27px}p{max-width:1080px;line-height:1.55;color:#aebecb}select,button{font:inherit;color:inherit;background:#1c2835;border:1px solid #526b7b;border-radius:6px;padding:8px;margin:5px}label{display:inline-block}figure{margin:0}figcaption{padding:8px 0;color:#d8bc81}.pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}canvas,img{width:100%;max-width:720px;height:auto;background:#10151b;display:block}input{width:min(750px,80%);margin:12px 8px}a{color:#86d5df}output{font-variant-numeric:tabular-nums}small{color:#a8bbc8}.hidden{display:none}@media(max-width:800px){.pair{grid-template-columns:1fr}}</style>
+<h1>Tire smoke coupled to the vehicle wake</h1>
+<p>Identical seeded tire-smoke emission and motion on both sides. Left: existing curl-noise motion. Right: shared vehicle-wake velocity and local entrainment, retaining curl noise. Normal 20 px/m scale. Recorded drifting and controlled straight, wheelspin and countersteering probes; the stop/dissipation probes stop the recorded car at two seconds. Smoke opacity, lifetime, spawning and rendering are unchanged. Dust, skid marks and liquid are hidden here to isolate smoke.</p>
+<label>Sequence <select id="clip"><option value="drift">Recorded drifting</option><option value="straight">Straight travel</option><option value="wheelspin">Low-speed wheelspin</option><option value="countersteer">Countersteering probe</option><option value="stop">Sudden stop</option><option value="dissipation">Wake dissipation</option></select></label>
+<button id="play">Pause</button><button id="back">Previous frame</button><button id="next">Next frame</button>
+<div><label for="frame">Synchronized timeline</label> <input id="frame" type="range" min="0" max="14" value="0" step="1"><output id="time"></output></div>
+<p id="status" role="status">Loading motion…</p>
+<div class="pair"><figure><figcaption>Original smoke motion</figcaption><canvas id="before" width="720" height="560"></canvas><img class="hidden" id="oldFallback" alt="Uncoupled smoke motion"></figure><figure><figcaption id="newCaption">Wake-coupled smoke</figcaption><canvas id="after" width="720" height="560"></canvas><img class="hidden" id="newFallback" alt="Wake-coupled smoke motion"></figure></div>
+<p>Play, pause, step or seek: both clips display the same captured timestep. These 12 Hz inspection recordings use 24 Hz smoke updates and 120 Hz emitter/observation sampling; they are not frame-rate benchmarks. Each selected frame is a real WebGPU render with the existing car sprite drawn by its normal Canvas path.</p>
+<p><a id="oldFull" href="drift-off.png">Uncoupled frame</a> · <a id="newFull" href="drift-on.png">Coupled frame</a> · <a href="../SMOKE_AIRFLOW.md">Architecture, validation and measurements</a> · <a href="../../../?renderer=gpu">Open simulator</a></p>
+<p>The live controls are under <strong>Rendering → Smoke airflow</strong>. The isolated paired-core test verifies opposite smoke rotation exceeding 180°, repeatable seeded integration and unchanged disabled output. Native RTX 5090 and Mac performance remain unmeasured.</p>
+<script>
+const $=id=>document.getElementById(id),starts={straight:1/30,drift:1/30,wheelspin:1/30,countersteer:1/30,stop:1/30,dissipation:1/30};
+let decoders=[],playing=true,index=0,count=0,generation=0,busy=false,last=0,ready=false,wanted=null;
+async function show(i){
+ if(!ready)return;if(busy){wanted=i;return;}busy=true;const g=generation;index=(i+count)%count;
+ try{const results=await Promise.allSettled(decoders.map(d=>d.decode({frameIndex:index})));const frames=results.filter(r=>r.status==='fulfilled').map(r=>r.value);const failed=results.find(r=>r.status==='rejected');if(failed){frames.forEach(f=>f.image.close());throw failed.reason;}if(g===generation){for(let k=0;k<2;k++){const c=$(k?'after':'before');c.getContext('2d').drawImage(frames[k].image,0,0);} $('frame').value=index;$('time').textContent=`${(starts[$('clip').value]+index/12).toFixed(2)} s · ${index+1}/${count}`;}for(const f of frames)f.image.close();}
+ catch(e){if(g===generation)$('status').textContent='Motion decoding failed: '+e.message;}
+ finally{busy=false;if(wanted!==null){const next=wanted;wanted=null;show(next);}}
+}
+function fallback(urls,message){ready=false;for(const id of ['before','after'])$(id).classList.add('hidden');for(let k=0;k<2;k++){const im=$(k?'newFallback':'oldFallback');im.classList.remove('hidden');im.src=urls[k];}for(const id of ['play','back','next','frame'])$(id).disabled=true;$('status').textContent=message+' Native WebP loops are shown; their starts may not be synchronized.';}
+// WebP can merge identical late frames. Map the shared 12 Hz source timeline
+// onto each clip's actual ANMF durations instead of equating encoded indices.
+function webpTiming(buffer){
+ const bytes=new Uint8Array(buffer),view=new DataView(buffer),starts=[];let total=0;
+ for(let k=12;k+8<=bytes.length;){const size=view.getUint32(k+4,true);
+  if(String.fromCharCode(...bytes.subarray(k,k+4))==='ANMF'&&size>=16){const o=k+20;starts.push(total);total+=bytes[o]+bytes[o+1]*256+bytes[o+2]*65536;}
+  k+=8+size+(size%2);
+ }
+ return {starts,total};
+}
+async function load(){
+ const g=++generation;ready=false;wanted=null;for(const d of decoders)d.close();decoders=[];index=0;
+ const clip=$('clip').value,urls=[`${clip}-off.webp`,`${clip}-on.webp`];
+ $('newCaption').textContent='Wake-coupled smoke';$('oldFull').href=`${clip}-off.png`;$('newFull').href=`${clip}-on.png`;$('status').textContent='Loading synchronized frames…';
+ if(!('ImageDecoder' in window)){fallback(urls,'Frame-by-frame decoding is unavailable in this browser.');return;}
+ for(const id of ['before','after'])$(id).classList.remove('hidden');for(const id of ['oldFallback','newFallback'])$(id).classList.add('hidden');for(const id of ['play','back','next','frame'])$(id).disabled=false;
+ try{const created=await Promise.all(urls.map(async url=>{const r=await fetch(url);if(!r.ok)throw Error('HTTP '+r.status+' '+url);const data=await r.arrayBuffer(),timing=webpTiming(data),d=new ImageDecoder({data,type:'image/webp'});await d.tracks.ready;
+ return {durationMs:timing.total||1000/12,close:()=>d.close(),decode:({frameIndex})=>{let k=0;const ms=frameIndex*1000/12;while(k+1<timing.starts.length&&timing.starts[k+1]<=ms+1)k++;return d.decode({frameIndex:k});}};}));
+ if(g!==generation){created.forEach(d=>d.close());return;}decoders=created;count=Math.round(Math.max(...decoders.map(d=>d.durationMs))*12/1000);$('frame').max=count-1;ready=true;last=performance.now();$('status').textContent='Both views follow the same frame. Pause and step to inspect curling and entrainment.';await show(0);
+ }catch(e){if(g===generation)fallback(urls,e.message);}
+}
+$('clip').onchange=load;
+$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pause':'Play';last=performance.now();};
+$('frame').oninput=()=>{playing=false;$('play').textContent='Play';show(Number($('frame').value));};
+for(const [id,direction] of [['back',-1],['next',1]])$(id).onclick=()=>{playing=false;$('play').textContent='Play';show(index+direction);};
+function tick(now){if(playing&&ready&&!busy&&now-last>=1000/12){last=now;show(index+1);}requestAnimationFrame(tick);}requestAnimationFrame(tick);load();
+</script></html>

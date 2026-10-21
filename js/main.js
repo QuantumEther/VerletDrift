@@ -456,7 +456,7 @@ function mainLoop(timestampMilliseconds) {
       const simDt = physicsWallDt * state.params.timeScale;
       state.loop.simulationTime += simDt;
       runPhysicsStep(simDt);
-      observeDust(state.body,state.loop.simulationTime,state.params.dustEnabled);
+      observeDust(state.body,state.loop.simulationTime,state.params.dustEnabled || state.params.smokeEnabled);
 
       snapCurr = makeBodySnapshot();
 

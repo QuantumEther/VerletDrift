@@ -1,0 +1,85 @@
+{
+  "sequences": [
+    {
+      "clip": "drift",
+      "frames": 43,
+      "frame12": [
+        2632736358,
+        690044902
+      ],
+      "frame24": [
+        2095779121,
+        2108554073
+      ],
+      "backwardRestored": true
+    },
+    {
+      "clip": "straight",
+      "frames": 43,
+      "frame12": [
+        1418713794,
+        4072710330
+      ],
+      "frame24": [
+        3715983074,
+        2810917267
+      ],
+      "backwardRestored": true
+    },
+    {
+      "clip": "wheelspin",
+      "frames": 43,
+      "frame12": [
+        2525216299,
+        553894157
+      ],
+      "frame24": [
+        648085986,
+        66088748
+      ],
+      "backwardRestored": true
+    },
+    {
+      "clip": "countersteer",
+      "frames": 43,
+      "frame12": [
+        1931513852,
+        147998795
+      ],
+      "frame24": [
+        2816048346,
+        887324170
+      ],
+      "backwardRestored": true
+    },
+    {
+      "clip": "stop",
+      "frames": 43,
+      "frame12": [
+        2845744351,
+        1156535693
+      ],
+      "frame24": [
+        427696865,
+        2060100087
+      ],
+      "backwardRestored": true
+    },
+    {
+      "clip": "dissipation",
+      "frames": 61,
+      "frame12": [
+        2845744351,
+        1156535693
+      ],
+      "frame24": [
+        427696865,
+        2060100087
+      ],
+      "backwardRestored": true
+    }
+  ],
+  "errors": [],
+  "playbackAdvances": true,
+  "nativeFallback": true
+}

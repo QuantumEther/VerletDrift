@@ -163,6 +163,8 @@ wake strength/persistence and ambient wind. Dust is independent of tire smoke;
 ambient density and wake visibility from physical disturbance strength. See the
 [dense tracer / vortex motion inspection](docs/rendering/dust-vortices/index.html),
 [v34 architecture and measurements](docs/rendering/DUST_VORTICES.md),
+[smoke/wake motion comparison](docs/rendering/smoke-airflow/index.html),
+[v35 smoke-airflow design and measurements](docs/rendering/SMOKE_AIRFLOW.md),
 [preserved v33 comparisons](docs/rendering/dust-calibration/index.html),
 [calibration report](docs/rendering/ATMOSPHERIC_DUST_CALIBRATION.md), and preserved
 [v32 technique and measurements](docs/rendering/ATMOSPHERIC_DUST.md).

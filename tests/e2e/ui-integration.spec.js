@@ -28,9 +28,9 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 220, failures: [], finiteSound: true });
-  await expect(page.locator('input[type=range]')).toHaveCount(199);
-  await expect(page.locator('input[type=checkbox]')).toHaveCount(21);
+  expect(result).toEqual({ count: 222, failures: [], finiteSound: true });
+  await expect(page.locator('input[type=range]')).toHaveCount(200);
+  await expect(page.locator('input[type=checkbox]')).toHaveCount(22);
 });
 
 test('presets, converted controls, and import/export share the same bindings', async ({ page }) => {
@@ -151,7 +151,7 @@ test('live warnings follow settings and folded layouts persist without affecting
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('.jump-controls').click();
   await page.locator('#search').fill('smoke');
-  await expect(page.locator('.slider-row:visible')).toHaveCount(9);
+  await expect(page.locator('.slider-row:visible')).toHaveCount(11);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 

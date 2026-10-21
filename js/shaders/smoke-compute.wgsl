@@ -30,6 +30,17 @@ struct SmokeUniforms {
 @group(0) @binding(1) var<storage, read_write> particles: array<SmokeParticle>;
 @group(0) @binding(2) var<storage, read_write> aliveFlags: array<u32>;
 
+// Shared read-only instantaneous vehicle-airflow grid; separate from dust maps.
+struct AirflowFrame {body:vec4<f32>,motion:vec4<f32>,grid:vec4<f32>,options:vec4<f32>}
+@group(1) @binding(0) var<uniform> airflow:AirflowFrame;
+@group(1) @binding(1) var<storage,read> airflowGrid:array<vec4<f32>>;
+fn sampleVehicleAirflow(position:vec2<f32>)->vec3<f32>{
+ let q=(position-airflow.grid.xy)/max(.001,airflow.grid.z);let size=u32(airflow.grid.w);
+ if(size<2u||any(q<vec2(0.))||any(q>=vec2(f32(size-1u)))){return vec3(0.);}
+ let cell=vec2<u32>(floor(q));let f=fract(q);let k=cell.y*size+cell.x;
+ return mix(mix(airflowGrid[k].xyz,airflowGrid[k+1u].xyz,f.x),mix(airflowGrid[k+size].xyz,airflowGrid[k+size+1u].xyz,f.x),f.y);
+}
+
 // =============================================================
 // PERLIN NOISE (2D hash-based gradient noise)
 // =============================================================
@@ -140,7 +151,18 @@ fn computeSmoke(@builtin(global_invocation_id) global_id: vec3<u32>) {
   p.vel *= pow(0.96, uniforms.dt * 60.0);  // per-frame drag
 
   // ---- 6. INTEGRATE POSITION ----
-  p.pos += p.vel * uniforms.dt;
+  if(airflow.motion.y>0.){
+    // Stable exponential entrainment; bounded substeps resolve rotation at low FPS.
+    // Existing turbulence, buoyancy, drag and lifetime above remain intact.
+    let steps=u32(clamp(ceil(uniforms.dt*120.),1.,12.));let h=uniforms.dt/f32(steps);
+    for(var step=0u;step<steps;step++){
+      let flow=sampleVehicleAirflow(p.pos+p.vel*(h*.5));
+      p.vel=mix(p.vel,flow.xy,1.-exp(-12.*airflow.motion.y*flow.z*h));
+      p.pos+=p.vel*h;
+    }
+  }else{
+    p.pos += p.vel * uniforms.dt;
+  }
 
   // ---- 7. SIZE GROWTH ----
   // Particles grow over their lifetime: 1.0x at spawn, 3.0x at end

@@ -1,3 +1,4 @@
+import {SMOKE_AIRFLOW_CONTROLS} from '../renderer/vehicle-airflow.js';
 import { SCENE_CONTROLS } from '../renderer/environment.js';
 import { DUST_CONTROLS } from '../renderer/dust-controls.js';
 import { LIQUID_CONTROLS } from '../renderer/liquid-controls.js';
@@ -2989,5 +2990,6 @@ export const CONTROLS = [
   },
   ...LIQUID_CONTROLS,
   ...SCENE_CONTROLS,
+  ...SMOKE_AIRFLOW_CONTROLS,
   ...DUST_CONTROLS
 ];

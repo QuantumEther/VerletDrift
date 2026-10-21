@@ -1,3 +1,4 @@
+import {VehicleAirflow} from './renderer/vehicle-airflow.js';
 import {recordWetTireTransfer} from './renderer/wet-trail-events.js';
 import {AtmosphericDust} from './renderer/atmospheric-dust.js';
 import { lighting, balloonHue } from './renderer/environment.js';
@@ -70,6 +71,7 @@ let pipelines = {},
   timing;
 let liquidWorld;
 let atmosphericDust;
+let vehicleAirflow;
 let environmentSource="";
 let environmentGroups=new Map();
 const environmentData=new Float32Array(8);
@@ -122,16 +124,17 @@ let renderStats = {
 export function getGPURenderStats() {
   return {
     ...renderStats,
+    smokeAirflow:vehicleAirflow?{...vehicleAirflow.stats,bytes:vehicleAirflow.bytes}:null,
     dust:atmosphericDust?{...atmosphericDust.stats,bytes:atmosphericDust.bytes}:null,
     liquid: liquidWorld
       ? liquidWorld.getStats(state.loop.simulationTime,state.params)
       : null,
-    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0) + (atmosphericDust?.bytes??0),
+    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0) + (atmosphericDust?.bytes??0) + (vehicleAirflow?.bytes??0),
     resourceCount:
       renderStats.resourceCount +
       (liquidWorld
         ? liquidWorld.resourceCount
-        : 0) + (atmosphericDust?.resourceCount??0),
+        : 0) + (atmosphericDust?.resourceCount??0) + (vehicleAirflow?.resourceCount??0),
     liquidResidentBytes: liquidWorld?.ownedBytes ?? 0,
     liquidResourceCount: liquidWorld
       ? liquidWorld.resourceCount
@@ -192,6 +195,7 @@ function release(reason) {
   resources.length = 0;
   environmentGroups.clear();
   atmosphericDust?.destroy();atmosphericDust=null;
+  vehicleAirflow?.destroy();vehicleAirflow=null;
   liquidWorld?.destroy();
   liquidWorld = null;
   skidCache?.destroy();
@@ -306,6 +310,12 @@ export async function initGPU(target) {
       pipeline("skid-vector"),
       pipeline("surface-objects", 9),
     ]);
+    delete renderStats.airflowError;
+    vehicleAirflow=new VehicleAirflow(device);
+    try{
+      device.pushErrorScope('validation');
+      try{await vehicleAirflow.init();}finally{const error=await device.popErrorScope();if(error)throw Error(error.message);}
+    }catch(error){vehicleAirflow.pipeline=null;logger.warn('gpu','Smoke airflow unavailable; retaining original smoke motion.',{error:error.message});renderStats.airflowError=error.message;}
     const smokeComputeModule = await shader("smoke-compute");
     const smoke = await pipeline("smoke");
     const compute = await device.createComputePipelineAsync({
@@ -349,6 +359,7 @@ export async function initGPU(target) {
       binding(1, buffers.smoke),
       binding(2, buffers.flags),
     ]);
+    groups.airflow=vehicleAirflow.smokeGroup(compute);
     groups.smokeCamera = group(smoke, [
       binding(0, buffers.camera),
       binding(1, buffers.smokeUniform),
@@ -851,19 +862,23 @@ export function renderFrameGPU(width, height) {
       );
       renderStats.uploadBytes += liquidWorld.stats.uploadBytes;
     }
+    vehicleAirflow.prepare(state,!!timing,smokeSlots>0&&elapsed>0);
+    renderStats.uploadBytes+=vehicleAirflow.stats.uploadBytes;
     const encoder = device.createCommandEncoder({ label: "worldFrame" });
     timing?.startFrame();
     if (smokeSlots > 0 && elapsed > 0) {
+      renderStats.computeWorkgroups+=vehicleAirflow.encode(encoder);
       const pass = encoder.beginComputePass({
         label: "smokeCompute",
         timestampWrites: timing?.begin("compute"),
       });
       pass.setPipeline(pipelines.compute);
       pass.setBindGroup(0, groups.compute);
+      pass.setBindGroup(1, groups.airflow);
       const n = Math.ceil(smokeSlots / 256);
       pass.dispatchWorkgroups(n);
       pass.end();
-      renderStats.computeWorkgroups = n;
+      renderStats.computeWorkgroups += n;
       renderStats.smokeComputeWorkgroups = n;
     }
     renderStats.computeWorkgroups+=atmosphericDust?.encode(encoder)??0;
@@ -949,6 +964,7 @@ export function renderFrameGPU(width, height) {
     device.queue.submit([encoder.finish()]);
     timing?.submitted();
     atmosphericDust?.submitted?.();
+    vehicleAirflow?.submitted();
     renderStats.gpuRenderMs = timing?.milliseconds ?? null;
     if (state.skidMarksNewThisFrame) state.skidMarksNewThisFrame.length = 0;
     if (readback) {
