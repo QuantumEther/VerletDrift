@@ -1,0 +1,32 @@
+
+Running 20 tests using 1 worker
+
+(node:318092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:318092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/20] [chromium] › tests/e2e/atmospheric-dust.spec.js:13:1 › world dust reacts to velocity and slip, retains a settling wake, and reconstructs time
+[2/20] [chromium] › tests/e2e/atmospheric-dust.spec.js:25:1 › camera/zoom restores the same world field and history stays bounded under long driving
+[3/20] [chromium] › tests/e2e/atmospheric-dust.spec.js:32:1 › failed dust shader keeps liquid and the established renderer functional
+[4/20] [chromium] › tests/e2e/atmospheric-dust.spec.js:37:1 › airflow follows actual velocity with fixed heading, independently of the ground renderer
+[5/20] [chromium] › tests/e2e/atmospheric-dust.spec.js:44:1 › the real simulator records moving-car airflow without altering input and persists dust controls
+[6/20] [chromium] › tests/e2e/gpu-world.spec.js:16:1 › real WGSL renders resident skids, paint, smoke and ground without validation errors
+[7/20] [chromium] › tests/e2e/gpu-world.spec.js:231:1 › device loss releases GPU resources without changing authoritative wheel geometry
+[8/20] [chromium] › tests/e2e/gpu-world.spec.js:287:1 › explicit Canvas fallback remains drivable and produces no renderer errors
+[9/20] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU performance/checker respects logical units and reuses resized targets
+[10/20] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU balanced/asphalt respects logical units and reuses resized targets
+[11/20] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU high/studio respects logical units and reuses resized targets
+[12/20] [chromium] › tests/e2e/gpu-world.spec.js:328:3 › GPU ultra/diagnostic respects logical units and reuses resized targets
+[13/20] [chromium] › tests/e2e/gpu-world.spec.js:401:1 › initialization failure leaves the simulator running in Canvas
+[14/20] [chromium] › tests/e2e/gpu-world.spec.js:429:1 › software adapters automatically select usable Canvas without allocating a device
+[15/20] [chromium] › tests/e2e/gpu-world.spec.js:460:1 › smoke billboards are neutral, translucent and irregular in both backends
+[16/20] [chromium] › tests/e2e/wet-tire-liquid.spec.js:5:1 › liquid shader bundle bypasses obsolete unversioned material and compiles together
+[17/20] [chromium] › tests/e2e/wet-tire-liquid.spec.js:26:1 › Crimson collisions resolve one dye identity for splash, fresh tires and retained transfers
+[18/20] [chromium] › tests/e2e/wet-tire-liquid.spec.js:56:1 › wet-only tracks survive native skid culling, dry spatially and replay exactly with bounded resources
+[19/20] [chromium] › tests/e2e/wet-tire-liquid.spec.js:73:1 › optical field retains thickness and dye separately; overlapping colors mix absorption
+[20/20] [chromium] › tests/e2e/wet-tire-liquid.spec.js:101:1 › wet trails stay attached to the road through camera and zoom changes
+  20 passed (1.4m)

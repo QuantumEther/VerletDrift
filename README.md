@@ -155,6 +155,12 @@ The [wet tire liquid correction](docs/rendering/WET_TIRE_LIQUID.md) fixes Crimso
 balloon contamination colors and renders transferred dye as drying liquid films,
 with matched simulator captures and measured rendering costs.
 
+### Atmospheric dust (experimental WebGPU)
+
+Expand **Rendering → Atmospheric Dust** for world-space suspended motes, vehicle
+wake strength/persistence and ambient wind. Dust is independent of tire smoke;
+`?dust=0` disables it for comparison. See the [technique, captures and measurements](docs/rendering/ATMOSPHERIC_DUST.md).
+
 ## How It Works
 
 At a high level, each frame is split into:

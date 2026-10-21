@@ -1,0 +1,344 @@
+{
+  "ref": "working tree",
+  "backend": "Forced SwiftShader; queue completion is CPU observed, not native GPU execution time.",
+  "samples": [
+    {
+      "enabled": false,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 355.40000000596046
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.4000000059604645,
+      "completionMs": 366.90000000596046
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 311.20000000298023
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 286.40000000596046
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 267
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 338.8999999910593
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 356.5
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 255
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 299.3999999910593
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 313.79999999701977
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 340
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 264.59999999403954
+    },
+    {
+      "enabled": false,
+      "encodeMs": 2.9000000059604645,
+      "completionMs": 273.79999999701977
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 328
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.4000000059604645,
+      "completionMs": 331.5
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 257.40000000596046
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 282.29999999701977
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.30000001192092896,
+      "completionMs": 324.40000000596046
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 343.5
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 275.79999999701977
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 274.1000000089407
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 321.8999999910593
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 326
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 264.8999999910593
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 272.09999999403954
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.30000001192092896,
+      "completionMs": 327.6000000089407
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 344.20000000298023
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 260.30000001192093
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 275.09999999403954
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 1135.800000011921
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 1041.2000000029802
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.10000000894069672,
+      "completionMs": 529.7999999970198
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.3999999910593033,
+      "completionMs": 278.79999999701977
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 508.20000000298023
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.6000000089406967,
+      "completionMs": 559.4000000059605
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.19999998807907104,
+      "completionMs": 267.79999999701977
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 305.1000000089407
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.29999999701976776,
+      "completionMs": 329.19999998807907
+    },
+    {
+      "enabled": true,
+      "encodeMs": 0.20000000298023224,
+      "completionMs": 325.59999999403954
+    },
+    {
+      "enabled": false,
+      "encodeMs": 0.09999999403953552,
+      "completionMs": 277.59999999403954
+    }
+  ],
+  "stats": {
+    "off": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 30,
+      "fallbackReason": null,
+      "cpuEncodeMs": 0.09999999403953552,
+      "uploadBytes": 384,
+      "drawCalls": 3,
+      "computeWorkgroups": 0,
+      "smokeComputeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 35773608,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 6,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "dust": {
+        "enabled": false,
+        "instances": 0,
+        "history": 36,
+        "uploadBytes": 0,
+        "drawCalls": 0,
+        "adaptive": 1,
+        "computeWorkgroups": 0,
+        "motes": 0,
+        "fieldCells": 0,
+        "bytes": 208000
+      },
+      "liquid": {
+        "events": 0,
+        "airborne": 0,
+        "depositionRebuilds": 0,
+        "drawCalls": 0,
+        "evictions": 0,
+        "active": false,
+        "groundLayers": 0,
+        "retainedEvents": 0
+      },
+      "liquidResidentBytes": 31084880,
+      "liquidResourceCount": 12,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 926,
+      "backingHeight": 696
+    },
+    "on": {
+      "ready": true,
+      "backend": "webgpu",
+      "resourceCount": 30,
+      "fallbackReason": null,
+      "cpuEncodeMs": 0.20000000298023224,
+      "uploadBytes": 512,
+      "drawCalls": 4,
+      "computeWorkgroups": 43,
+      "smokeComputeWorkgroups": 0,
+      "gpuRenderMs": null,
+      "gpuTimingScope": "base world pass; separate smoke compute; excludes liquid/upper-world passes, Canvas and presentation",
+      "residentBytes": 35773608,
+      "skidTextureBytes": 0,
+      "omittedSkids": 0,
+      "error": null,
+      "quality": "balanced",
+      "surface": "asphalt",
+      "powerPreference": "high-performance",
+      "alphaMode": "premultiplied",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": true
+      },
+      "omittedSplats": 0,
+      "culledInstances": 0,
+      "instances": {
+        "decals": 0,
+        "balloons": 0,
+        "shadows": 6,
+        "arrows": 0,
+        "splats": 0,
+        "sparks": 0
+      },
+      "smokeSlots": 0,
+      "dust": {
+        "enabled": true,
+        "instances": 2744,
+        "history": 36,
+        "uploadBytes": 128,
+        "drawCalls": 1,
+        "adaptive": 1,
+        "computeWorkgroups": 43,
+        "motes": 2576,
+        "fieldCells": 168,
+        "bytes": 208000
+      },
+      "liquid": {
+        "events": 0,
+        "airborne": 0,
+        "depositionRebuilds": 0,
+        "drawCalls": 0,
+        "evictions": 0,
+        "active": false,
+        "groundLayers": 0,
+        "retainedEvents": 0
+      },
+      "liquidResidentBytes": 31084880,
+      "liquidResourceCount": 12,
+      "gpuComputeMs": null,
+      "gpuTimestampSamples": 0,
+      "gpuTimingEnabled": false,
+      "backingWidth": 926,
+      "backingHeight": 696
+    }
+  }
+}

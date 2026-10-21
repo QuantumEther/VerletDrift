@@ -55,14 +55,17 @@ fn dustFlow(p:vec2<f32>)->vec3<f32>{
  let height=.15+1.8*fract(seed*19.37);
  var p=(vec2<f32>(cell)+vec2(fract(seed*53.7),fract(seed*97.3)))*cellScale+dust.wind.xy*dust.view.w;
  p+=vec2(sin(dust.view.w*.36+seed*31.),cos(dust.view.w*.29+seed*23.))*.09;
- let disturbance=dustFlow(p);p+=disturbance.xy;
+ let disturbance=dustFlow(p);
+ // Ambient motes already fill the world. Avoid rasterizing imperceptible veils.
+ if(veil&&disturbance.z<=.015){computedDust[id]=DustElement(vec4(0.),vec4(0.));return;}
+ p+=disturbance.xy;
  // A restrained height projection gives motes parallax against the road on pans.
  p=dust.camera.xy+(p-dust.camera.xy)*select(1.+height*.018,1.,veil)+vec2(0.,-height*.32);
  let radius=select(.018+.030*fract(seed*71.1),1.7+1.6*seed,veil);
  let screenRadius=max(radius*dust.view.z,select(.55,0.,veil));
  let visible=1.-smoothstep(density*.95,density+.02,rank);
  let alpha=select((.08+.14*fract(seed*83.7))*visible,
-  dust.motion.z*(.007+.22*disturbance.z),veil);
+  dust.motion.z*.22*disturbance.z*smoothstep(.015,.055,disturbance.z),veil);
  computedDust[id]=DustElement(vec4(p,screenRadius,alpha),vec4(height,select(0.,1.,veil),disturbance.z,seed));
 }
 @vertex fn vs_dust(@builtin(vertex_index) vertex:u32,@builtin(instance_index) id:u32)->DustVertex{

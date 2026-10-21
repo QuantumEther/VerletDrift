@@ -1,0 +1,54 @@
+
+ RUN  v1.6.1 /workspace/VerletDrift-tools
+
+ ✓ tests/events.test.js  (24 tests) 7ms
+stderr | tests/faults.test.js > Fault timer independence > omega runaway should not suppress a simultaneous constraint spike
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Fault timer independence > constraint spike should not suppress a simultaneous omega runaway
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Wheel rearLeft omega runaway: 2000.0 rad/s
+
+stderr | tests/faults.test.js > Fault timer independence > omega timer deduplicates its own events but does not affect constraint timer
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Constraint spike: 0.1000m
+
+stderr | tests/faults.test.js > Constraint spike startup guard > should fire when prev >= 0.001m AND current > 5× prev
+[FAULT] Constraint spike: 0.0600m
+
+stderr | tests/faults.test.js > resetFaultState > should clear omega timer so next call fires immediately
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+[FAULT] Wheel frontLeft omega runaway: 1500.0 rad/s
+
+stderr | tests/faults.test.js > resetFaultState > should clear constraint timer so next call fires immediately
+[FAULT] Constraint spike: 0.1000m
+[FAULT] Constraint spike: 0.1000m
+
+ ✓ tests/faults.test.js  (12 tests) 6ms
+ ✓ tests/suspension.test.js  (13 tests) 175ms
+ ✓ tests/logger.test.js  (14 tests) 9ms
+ ✓ tests/tire-unloading.test.js  (11 tests) 141ms
+ ✓ tests/wheels.test.js  (14 tests) 866ms
+ ✓ tests/splash-lab.test.js  (8 tests) 8ms
+ ✓ tests/engine-inertia.test.js  (6 tests) 7ms
+ ✓ tests/gpu-skid-cache.test.js  (6 tests) 11ms
+ ✓ tests/wheel-omega-audit.test.js  (23 tests) 684ms
+ ✓ tests/wheel-solver.test.js  (9 tests) 12ms
+ ✓ tests/weight-transfer.test.js  (5 tests) 4ms
+ ✓ tests/visual-geometry.test.js  (3 tests) 6ms
+ ✓ tests/dust-history.test.js  (3 tests) 15ms
+ ✓ tests/handbrake-handling.test.js  (4 tests) 1513ms
+ ✓ tests/liquid-events.test.js  (3 tests) 5ms
+ ✓ tests/wet-trail-events.test.js  (3 tests) 66ms
+ ✓ tests/environment.test.js  (2 tests) 13ms
+ ✓ tests/liquid-controls.test.js  (1 test) 5ms
+ ✓ tests/performance-summary.test.js  (1 test) 2ms
+ ✓ tests/suspension-handling.test.js  (9 tests) 5851ms
+ ✓ tests/render-culling.test.js  (1 test) 4ms
+
+ Test Files  22 passed (22)
+      Tests  175 passed (175)
+   Start at  02:18:25
+   Duration  9.84s (transform 488ms, setup 1ms, collect 1.09s, tests 9.41s, environment 5ms, prepare 1.72s)
+
