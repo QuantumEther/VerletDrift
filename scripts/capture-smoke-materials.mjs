@@ -9,6 +9,13 @@ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTA
 const stats=[];
 try{for(const scenario of ['straight','wheelspin','drift','countersteer','stop','dissipation'].filter(s=>!only||s===only)){
  const page=await browser.newPage({baseURL:arg('--url','http://localhost:8000'),viewport:{width:1000,height:800}});
+ if(process.argv.includes('--snapshot'))await page.addInitScript(()=>{
+  const create=GPUDevice.prototype.createBuffer;
+  GPUDevice.prototype.createBuffer=function(desc){
+   const b=create.call(this,desc.label==='smokeParticles'?{...desc,usage:desc.usage|GPUBufferUsage.COPY_SRC}:desc);
+   if(['smokeParticles','smokeFlags'].includes(desc.label)){window.__captureSmokeBuffers??={};window.__captureSmokeBuffers[desc.label]=b;}return b;
+  };
+ });
  if(!await bootSimulatorLiquid(page))throw Error('No adapter');
  await page.evaluate(async({scenario,fixture,dense})=>{
   const {s,target}=window.__liquidHarness;target.width=720;target.height=560;
@@ -52,6 +59,13 @@ try{for(const scenario of ['straight','wheelspin','drift','countersteer','stop',
   }else await page.evaluate(t=>{const {s,gpu,target}=window.__liquidHarness;s.loop.simulationTime=t;gpu.renderFrameGPU(target.width,target.height);},t);
  }
  if(!peakSlots)throw Error(`${scenario}: no smoke emitted; check the existing emission gates`);
+ if(process.argv.includes('--snapshot')){
+  const snapshot=await page.evaluate(async()=>{
+   const {s,gpu}=window.__liquidHarness,d=window.__liquidDevice,count=gpu.getGPURenderStats().smokeSlots;
+   const read=async(name,size,Type)=>{const b=d.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ}),e=d.createCommandEncoder();e.copyBufferToBuffer(window.__captureSmokeBuffers[name],0,b,0,size);d.queue.submit([e.finish()]);await b.mapAsync(GPUMapMode.READ);const out=Array.from(new Type(b.getMappedRange()));b.unmap();b.destroy();return out;};
+   return {count,time:s.loop.simulationTime,camera:{x:s.camera.x,y:s.camera.y},values:await read('smokeParticles',count*48,Float32Array),flags:await read('smokeFlags',count*4,Uint32Array)};
+  });writeFileSync(`${out}/${scenario}-fixture.json`,JSON.stringify(snapshot));
+ }
  stats.push({scenario,peakSlots,...last});await page.close();console.log(name);
 }
 const old=only?(()=>{try{return JSON.parse(readFileSync(`${out}/validation.json`,'utf8')).filter(s=>s.scenario!==only);}catch{return [];}})():[];

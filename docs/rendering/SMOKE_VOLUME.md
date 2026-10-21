@@ -80,3 +80,32 @@ Cloud adapter: Google SwiftShader (fallback/software), 640×480, 512 slots; spar
 The dense cases support reducing repeated procedural fragment work and shading combined density. Sparse cases expose the extra pass/target cost; local lighting can be preferable there. Half resolution is the experimental default for dense-plume quality/cost, not a claim of universal speedup. Native RTX 5090 and Apple GPU execution time, full-game frame pacing, high-refresh behavior and compositor bandwidth remain unmeasured in this environment. Run the native benchmark on the target machine before drawing hardware conclusions.
 
 For deliberately dense moving comparisons, append `--dense` to the motion-capture script. This selects existing emission/lifetime settings (200, 3 s) only in the test harness; production defaults are preserved. At sparse production settings, separate emission gaps remain: the renderer does not fabricate smoke between disconnected particles or change spawn rates to conceal them.
+
+## Automated validation
+
+- Unit suite: **180/180 passed**, including numerical physics and airflow tests; no tolerance changes.
+- Full WebGPU browser run: **119/120 passed** in 11.7 minutes. Its sole failure was the recording-device upload-contract fixture, whose mock lacked error scopes and buffer/texture `destroy()` methods used by the new optional material initialization. This was a mock API mismatch, not a WGSL or real-device failure.
+- After adding those methods to the mock, the entire visual-scale file passed **5/5**, including the previously failing camera/upload contract. Its geometry assertions remain unchanged. The full 120-test suite was not repeated after this fixture-only correction; all 120 distinct browser checks have a passing result across the full run and focused rerun.
+- All four new smoke-material tests passed in the full run: original fallback on shader failure; live rendering in all modes; optical depth/light response and target reuse; controls persistence/import/reset. GPU snapshot equality verifies shading never writes smoke particle state.
+- Existing smoke-airflow tests passed: sustained opposite rotations, seeded repeatability, lifetime preservation, coupling fallback and device release. Real GPU world tests passed under the software adapter for resizing/quality, Canvas fallback and device loss.
+- Exact UI control counts and compute totals were extended for the four new controls and render-only bounds dispatch. Paused-smoke integration still asserts zero simulation workgroups.
+
+Raw logs: [initial full run](smoke-volume/browser-full-initial.log), [corrected visual-scale run](smoke-volume/browser-scale-final.log), [targeted rendering/UI run](smoke-volume/browser-targeted.log). No tests were removed, disabled or loosened. Native Apple/RTX validation remains a separate hardware check.
+
+## Recorded drift cross-check
+
+A second timing run uses a frozen GPU snapshot from the actual recorded-drift capture: 590 allocated slots, 450 live particles at 3.533 s, with airflow coupling enabled during generation. Existing smoke settings were raised only in the test harness (spawn rate 200, lifetime 3 s). No particle trajectories were fabricated for this run. Readback is capture-only instrumentation; production buffers and dynamics are unchanged.
+
+| Pixels/metre | Original | Local | Shared half | Shared full |
+|---:|---:|---:|---:|---:|
+| 20 | 49.40 | 44.28 | 19.46 | 43.22 |
+| 80 | 220.23 | 121.00 | 58.52 | 136.91 |
+
+Times are median summed GPU pass timestamps in ms on the same software adapter, twelve samples after four warmups; simulation and presentation excluded. [Raw drift timings](smoke-volume/drift-benchmark.json) and [frozen fixture](smoke-volume/drift-fixture.json) are retained. This tests the rendering of a representative emitted state, not whole-game performance during interactive drifting. The comparison viewer includes the corresponding dense moving sequence.
+
+```sh
+node scripts/capture-smoke-materials.mjs --scenario drift --dense --snapshot --output /tmp/smoke-dense
+node scripts/benchmark-smoke-materials.mjs --fixture /tmp/smoke-dense/drift-fixture.json --samples 12 --output /tmp/drift-cost.json
+# Or reuse the retained fixture directly with --native on the target GPU:
+node scripts/benchmark-smoke-materials.mjs --fixture docs/rendering/smoke-volume/drift-fixture.json --native --samples 30 --output /tmp/native-drift-cost.json
+```

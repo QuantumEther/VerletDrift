@@ -1,0 +1,17 @@
+
+Running 5 tests using 1 worker
+
+[1A[2K(node:450062) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:450062) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/5] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 1
+[1A[2K[2/5] [chromium] › tests/e2e/visual-scale.spec.js:4:3 › world scale stays constant across canvas resolutions at DPR 2
+[1A[2K[3/5] [chromium] › tests/e2e/visual-scale.spec.js:48:1 › drifting marks originate at physical wheel centres and stay within tire width
+[1A[2K[4/5] [chromium] › tests/e2e/visual-scale.spec.js:94:1 › tire and mark centres agree through turns, zoom, view scale and shake
+[1A[2K[5/5] [chromium] › tests/e2e/visual-scale.spec.js:153:1 › GPU upload contract keeps raster density separate from geometry and shares the view camera
+[1A[2K  5 passed (19.3s)

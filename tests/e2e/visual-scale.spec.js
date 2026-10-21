@@ -159,8 +159,9 @@ test('GPU upload contract keeps raster density separate from geometry and shares
     const pipeline = { getBindGroupLayout: () => ({}) };
     const device = {
       createShaderModule: () => ({}), createRenderPipelineAsync: async () => pipeline,
-      createComputePipelineAsync: async () => pipeline, createBuffer: desc => ({ ...desc }),
-      createTexture: () => ({ createView: () => ({}) }), createSampler: () => ({}),
+      createComputePipelineAsync: async () => pipeline, createBuffer: desc => ({ ...desc, destroy() {} }),
+      pushErrorScope() {}, popErrorScope: async () => null,
+      createTexture: () => ({ createView: () => ({}), destroy() {} }), createSampler: () => ({}),
       createBindGroup: () => ({}), createCommandEncoder: () => ({ beginRenderPass: () => pass, finish: () => ({}) }),
       queue: { writeBuffer: (buffer, _offset, data, start = 0, count = data.length) =>
         writes.push({ label: buffer.label, size: buffer.size, data: Array.from(data).slice(start, start + count) }), submit() {} },
