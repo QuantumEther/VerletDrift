@@ -8,6 +8,8 @@ import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
 import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
+import { TIRE_MODEL_VERSION, validateTireParameters } from '../physics/tire-model.js';
+import { migrateTireSettings } from '../physics/tire-config.js';
 const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS,...SMOKE_AIRFLOW_DEFAULTS};
 const appearancePrefix=key=>Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)?'smokeParam_':Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
 
@@ -98,12 +100,13 @@ export function resetControls() {
 function clearSelection(){document.querySelectorAll('[data-preset]').forEach(button=>button.setAttribute('aria-pressed','false'));}
 export function exportSettings() {
  // Include supported runtime parameters as well as the visible control values.
- return {version:1,params:{...state.params},soundParams:{...state.soundParams},view:{...view}};
+ const {pacejkaB,pacejkaC,...params}=state.params;
+ return {version:2,tireModelVersion:TIRE_MODEL_VERSION,params,soundParams:{...state.soundParams},view:{...view}};
 }
 export function importSettings(data) {
  if(!data||typeof data!=='object'||Array.isArray(data)||!data.params||!data.soundParams)throw Error('Choose a simulator preset with params and soundParams.');
  // Accept older exports containing unused aliases left by the former presets.
- if(data.version!==undefined&&data.version!==1)throw Error('Unsupported preset version.');
+ const migration=migrateTireSettings(data);data=migration.data;
  for(const name of ['params','soundParams'])if(typeof data[name]!=='object'||Array.isArray(data[name]))throw Error(`Invalid ${name} section.`);
  const params={...data.params};
  for(const [legacy,key] of Object.entries({mass:'carMassKg',rollResistCoeff:'rollingResistanceCoeff'})) {
@@ -111,6 +114,7 @@ export function importSettings(data) {
  }
  for(const key of ['yawDampingCoeff','brakeForceMult','aeroDownforce'])delete params[key];
  data={...data,params};
+ validateTireParameters({...state.params,...params});
  const staged=[];
  for(const [name,target] of [['params',state.params],['soundParams',state.soundParams],['view',view]]) {
   const source=data[name];if(source===undefined)continue;
@@ -134,7 +138,7 @@ export function importSettings(data) {
   if(item.binding)writeBinding(item.binding,item.value);
   else item.target[item.key]=item.value;
  }
- clearSelection();refreshControls();status('Preset imported. All controls are synchronized with the simulator.');
+ clearSelection();refreshControls();status(migration.notice || 'Preset imported. All controls are synchronized with the simulator.');
 }
 function applyPreset(key,button) {
  const preset=PRESETS[key];if(!preset)return;

@@ -28,8 +28,6 @@ import {
   FINAL_DRIVE_RATIO,
   BRAKE_FORCE,
   IDLE_CREEP_FORCE,
-  PACEJKA_B,
-  PACEJKA_C,
   TIRE_PEAK_SLIP_ANGLE_DEG,
   TIRE_PEAK_SLIP_RATIO,
   MAX_FRONT_WHEEL_ANGLE_RAD,
@@ -522,9 +520,7 @@ const state = {
     gearRatio5:         GEAR_RATIOS['5'],
     gearRatio6:         GEAR_RATIOS['6'],
 
-    // --- Tire Model (new sliders) ---
-    pacejkaB:              PACEJKA_B,
-    pacejkaC:              PACEJKA_C,
+    // --- Peak-normalized tire model v2 (stiffness follows the peak inputs) ---
     peakSlipAngleDeg:      TIRE_PEAK_SLIP_ANGLE_DEG,
     peakSlipRatio:         TIRE_PEAK_SLIP_RATIO,
     maxFrontWheelAngle:    MAX_FRONT_WHEEL_ANGLE_RAD,

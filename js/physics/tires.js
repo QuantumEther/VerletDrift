@@ -1,33 +1,26 @@
 // =============================================================
 // PHYSICS / TIRES
-// Pacejka tire model, per-wheel force computation, drag, brakes.
+// Peak-based combined-slip tire model, per-wheel force computation, drag, brakes.
 // =============================================================
 //
-// INVARIANTS — do not alter:
-//   EMA smoothing on lateral velocity: latSmoothAlpha = 1 - exp(-dt / 0.025)
-//   Low-speed lateral fade: clamp01(totalSpeed / 2.0)
-//   Tire relaxation: tireRelaxTau = max(relaxationLength / vLongAbs, 1e-4)
-//   Combined tire targets and relaxed force vectors stay inside frictionLimit.
-//   Wheel inertia: retain omega history; brakes oppose rotation, not chassis speed.
+// Tire v2: peak-normalized combined-slip contact, one dissipative force-
+// magnitude relaxation state, and trail derived from that contact's severity.
+// Suspension loads, wheel/body impulse exchange, and brake mechanics are retained.
 
 import { physicsState as state } from '../state.js';
-import { integrateWheelContact } from './wheel.js';
+import { integrateTireContacts } from './tire-contact.js';
 import { tireGripLimit } from './tire-load.js';
+import { validateTireParameters, SLIP_REFERENCE_SPEED } from './tire-model.js';
 import {
   GRAVITY,
-  TIRE_PEAK_SLIP_RATIO,
+  CAR_HALF_LENGTH, CAR_HALF_WIDTH,
   DEG_TO_RAD,
-  TAU,
 } from '../constants.js';
 
 import { logger } from '../debug/logger.js';
 import { eventBuffer } from '../debug/events.js';
 
 // --------------- private helpers ---------------
-
-function clamp(value, minimum, maximum) {
-  return Math.max(minimum, Math.min(maximum, value));
-}
 
 function clamp01(value) {
   return value < 0 ? 0 : value > 1 ? 1 : value;
@@ -51,17 +44,6 @@ function getGearRatio(gear, params) {
     '6': params.gearRatio6,
   };
   return map[gear] ?? 0;
-}
-
-// Simplified Pacejka "Magic Formula" (E=0 variant).
-// F = normalLoad × frictionCoeff × sin(C × atan(B × normalisedSlip))
-function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C) {
-  const safePeakSlip = Math.max(Math.abs(peakSlipValue), 1e-4);
-  const normalisedSlip = slipValue / safePeakSlip;
-  const peakNorm = Math.sin(C * Math.atan(B));
-  if (peakNorm < 0.0001) return 0;
-  return (normalLoad * frictionCoeff / peakNorm) *
-         Math.sin(C * Math.atan(B * normalisedSlip));
 }
 
 // Nominal rim-force settings converted to rotor torque capacity. Road friction
@@ -92,23 +74,18 @@ function computeWheelBrakeCapacity(name, wheelRad, params) {
 // All four wheels contribute lateral forces (from slip angles).
 //
 // Returns: { forceX, forceY, torque }
-export function computeTireForces(dt) {
+export function computeTireForces(dt, { prescribedBody = false, externalAcceleration } = {}) {
+  if (!(dt > 0) || !Number.isFinite(dt)) throw new RangeError('Tire timestep must be finite and positive');
   const body        = state.body;
   const engine      = state.engine;
   const loads       = state.wheelLoads;
   const params      = state.params;
+  validateTireParameters(params);
 
   const heading         = body.heading;
   const angularVelocity = body.angularVelocity;
   const frictionCoeff   = params.tireFrictionCoeff;
   const gearRatio       = getGearRatio(engine.currentGear, params);
-
-  // Car forward unit vector (in canvas coords: +Y is down, +X is right).
-  const forwardX = Math.sin(heading);
-  const forwardY = -Math.cos(heading);
-  // Car right unit vector (perpendicular, 90° clockwise from forward).
-  const rightX   =  Math.cos(heading);
-  const rightY   =  Math.sin(heading);
 
   // Apply clutch-transmitted crank torque through the current gear ratio.
   // Only the rear wheels are driven in this model.
@@ -130,15 +107,16 @@ export function computeTireForces(dt) {
     rearRight:  state.wheels.rearRight,
   };
 
-  const peakSlipAngleRad = Math.max(params.peakSlipAngleDeg * DEG_TO_RAD, 1e-4);
-  const safePeakSlipRatio = Math.max(Math.abs(params.peakSlipRatio), 1e-4);
+  const peakSlipAngleRad = params.peakSlipAngleDeg * DEG_TO_RAD;
+
 
   let netForceX = 0;
   let netForceY = 0;
   let netTorque = 0;
 
-  // Per-wheel lateral force magnitudes — stored for SAT computation after the loop.
-  const perWheelLateralForce = {};
+  // Tire-generated aligning moments, already using the common force transient.
+  const perWheelAligningTorque = {};
+  state.wheelContactDiagnostics ??= {};
 
   const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
   const wheelKinematics = state.wheelKinematics;
@@ -152,12 +130,39 @@ export function computeTireForces(dt) {
   let maxLateralWheelSpeed = 0;
   let anyWheelSlipping     = false;
 
+  const contacts = wheelNames.map(name => {
+    const w = wheelPositions[name], isFront = name.startsWith('front');
+    const angle = heading + (isFront ? state.steering.frontWheelAngle : 0);
+    return { name, armX: w.x - body.centerX, armY: w.y - body.centerY,
+      forwardX: Math.sin(angle), forwardY: -Math.cos(angle), rightX: Math.cos(angle), rightY: Math.sin(angle),
+      radius: params.wheelRadius, omega: state.wheelOmega[name],
+      inertia: wheelInertia + (isFront ? 0 : reflectedEngineInertia),
+      driveTorque: isFront ? 0 : driveForce * params.wheelRadius * .5,
+      brakeCapacity: computeWheelBrakeCapacity(name, params.wheelRadius, params),
+      previousForce: state.prevTireForce[name].lon, previousLateralForce: state.prevTireForce[name].lat,
+      limit: tireGripLimit(loads[name], frictionCoeff, params.carMassKg * GRAVITY / 4, params.tireLoadSensitivity),
+      peakAngle: peakSlipAngleRad, peakRatio: params.peakSlipRatio,
+      pneumaticTrail: params.pneumaticTrail, slidingRatio: params.tireSlidingFrictionRatio, relaxationLength: params.tireRelaxationLength };
+  });
+  // Clip carried history to current support before either body or wheel solve.
+  for (const c of contacts) {
+    const magnitude = Math.hypot(c.previousForce, c.previousLateralForce);
+    if (magnitude > c.limit && magnitude > 0) {
+      c.previousForce *= c.limit / magnitude; c.previousLateralForce *= c.limit / magnitude;
+    }
+  }
+  const solution = integrateTireContacts({ dt, contacts, prescribedBody, externalAcceleration,
+    mass: params.carMassKg,
+    inertia: params.carMassKg * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3,
+    velocity: [body.velocityX, body.velocityY, body.angularVelocity] });
+  state.tireContactSolve = { substeps: solution.substeps, evaluations: solution.evaluations,
+    maxBodyResidual: solution.maxBodyResidual, predictedVelocity: solution.velocity };
+
   for (const name of wheelNames) {
     const wheelPos    = wheelPositions[name];
     const normalLoad  = loads[name];
     const gripLimit = tireGripLimit(normalLoad, frictionCoeff,
       params.carMassKg * GRAVITY / 4, params.tireLoadSensitivity);
-    const effectiveFriction = normalLoad > 0 ? gripLimit / normalLoad : 0;
     const isFront     = name === 'frontLeft' || name === 'frontRight';
 
     // Arm vector: wheel position relative to body centre.
@@ -198,65 +203,13 @@ export function computeTireForces(dt) {
     if (lateralSpeedAbs > maxLateralWheelSpeed) maxLateralWheelSpeed = lateralSpeedAbs;
     if (lateralSpeedAbs > 1.8) anyWheelSlipping = true;
 
-    // --- Smooth lateral velocity BEFORE it enters the slip angle calculation ---
-    // Constraint solver micro-impulses create high-frequency noise in wheelLateralSpeed.
-    // That noise is amplified by the nonlinear Pacejka curve (small vLat changes →
-    // large force changes near saturation). Smoothing vLat upstream kills the noise
-    // before it enters the nonlinearity — far more effective than filtering the output.
-    // Time constant 25ms → at 100Hz alpha ≈ 0.22. Fast enough to track real slides,
-    // slow enough to reject constraint impulse spikes.
-    const latSmoothTau   = 0.025; // seconds
-    const latSmoothAlpha = 1.0 - Math.exp(-dt / latSmoothTau);
-    const prevSmoothedLat = state.smoothedWheelLat[name];
-    const smoothedLat = prevSmoothedLat + (wheelLateralSpeed - prevSmoothedLat) * latSmoothAlpha;
-    state.smoothedWheelLat[name] = smoothedLat;
-
-    // Use smoothed lateral speed for slip angle and force computation.
-    const vLong = wheelLongitudinalSpeed;
-    const vLat  = smoothedLat;   // ← smoothed, not raw
-    const minSlipDenom = 0.5;  // m/s — ensures slip angle defined even at standstill
-    const slipDenom = Math.max(Math.abs(vLong), minSlipDenom);
-    const slipAngle = Math.atan2(vLat, slipDenom);
-
-    // Lateral force (perpendicular to wheel heading): Pacejka.
-    const lateralForceMag = pacejkaForce(normalLoad, effectiveFriction,
-                                          Math.abs(slipAngle), peakSlipAngleRad,
-                                          params.pacejkaB, params.pacejkaC);
-    // Sign: opposes lateral drift direction (use smoothed vLat so sign is stable).
-    const lateralForceSign = smoothedLat > 0 ? -1 : 1;
-
-    // --- Low-speed lateral fade ---
-    // At near-zero speed, slip angle math hits the denominator clamp and
-    // constraint micro-impulses produce large slip angles from tiny velocities.
-    // Scale lateral force smoothly to zero below LOW_SPEED_FADE_END m/s.
-    const LOW_SPEED_FADE_END = 2.0; // m/s — full lateral force above this speed
-    const totalSpeed = Math.hypot(body.velocityX, body.velocityY);
-    const lowSpeedFade = clamp01(totalSpeed / LOW_SPEED_FADE_END);
-    const fadedLateralForceMag = lateralForceMag * lowSpeedFade;
-
-    // Compute true kinematic slip ratio: κ = (R·ω - v_long) / max(|R·ω|, |v_long|, ε)
+    const vLong = wheelLongitudinalSpeed, vLat = wheelLateralSpeed;
+    // Retained diagnostic alias; no extra upstream velocity filter.
+    state.smoothedWheelLat[name] = vLat;
     const wheelRad = params.wheelRadius;
-    function slipAtOmega(omega) {
-      const surfaceSpeed = omega * wheelRad;
-      const denominator = Math.max(Math.abs(surfaceSpeed), Math.abs(wheelLongitudinalSpeed), 0.5);
-      return clamp((surfaceSpeed - wheelLongitudinalSpeed) / denominator, -1, 1);
-    }
-
-    function longitudinalTarget(omega) {
-      const slip = slipAtOmega(omega);
-      const magnitude = pacejkaForce(normalLoad, effectiveFriction, Math.abs(slip),
-        safePeakSlipRatio, params.pacejkaB, params.pacejkaC);
-      return magnitude * Math.sign(slip);
-    }
-
-    // Preserve the combined-force cap and distance-based force relaxation.
-    // Resolve longitudinal force at the new rotor speed, so the contact force
-    // accelerating the body is the same force reacting against wheel inertia.
-    const frictionLimit  = gripLimit;
-    const relaxationLength = params.tireRelaxationLength !== undefined
-      ? Math.max(params.tireRelaxationLength, 0.02) : 0.3;
-    const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);
-    const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);
+    const frictionLimit = gripLimit;
+    const tireRelaxTau = params.tireRelaxationLength /
+      Math.max(Math.hypot(vLong, vLat), SLIP_REFERENCE_SPEED);
     const prev = state.prevTireForce[name];
     // Load can change faster than the tire relaxation state (especially at
     // wheel lift-off). Keep carried force inside the *current* friction circle
@@ -269,51 +222,20 @@ export function computeTireForces(dt) {
       prev.lon *= loadScale;
       prev.lat *= loadScale;
     }
-    function contactTarget(omega) {
-      const longitudinal = longitudinalTarget(omega);
-      const magnitude = Math.hypot(fadedLateralForceMag, longitudinal);
-      const scale = magnitude > frictionLimit && magnitude > 0 ? frictionLimit / magnitude : 1;
-      const rollingLon = longitudinal * scale;
-      const rollingLat = fadedLateralForceMag * scale * lateralForceSign;
-
-      // A locked tire scrubs in the direction opposite contact-patch motion.
-      // It cannot independently deliver a rolling tire's cornering force.
-      // Blend beyond the configured slip-ratio scale; full lock (|kappa|=1) uses only
-      // kinetic friction. This also treats wheelspin and reverse consistently.
-      const blendStart = Math.min(safePeakSlipRatio, 0.95);
-      const t = clamp01((Math.abs(slipAtOmega(omega)) - blendStart) / (1 - blendStart));
-      const slidingBlend = t * t * (3 - 2 * t);
-      const patchLongitudinalSlip = omega * wheelRad - wheelLongitudinalSpeed;
-      const patchLateralSlip = -wheelLateralSpeed;
-      const patchSlipSpeed = Math.hypot(patchLongitudinalSlip, patchLateralSlip);
-      const slidingLimit = frictionLimit * clamp01(params.tireSlidingFrictionRatio ?? 0.85);
-      const slidingScale = patchSlipSpeed > 0 ? slidingLimit / patchSlipSpeed : 0;
-      return {
-        lon: rollingLon * (1 - slidingBlend)
-          + patchLongitudinalSlip * slidingScale * slidingBlend,
-        lat: rollingLat * (1 - slidingBlend)
-          + patchLateralSlip * slidingScale * slidingBlend,
-      };
-    }
-
     const previousOmega = state.wheelOmega[name];
     const torqueDrive = isFront ? 0 : driveForce * wheelRad * 0.5;
-    const rotation = integrateWheelContact({
-      omega: previousOmega,
-      inertia: wheelInertia + (isFront ? 0 : reflectedEngineInertia),
-      radius: wheelRad, dt,
-      driveTorque: torqueDrive,
-      brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
-      previousForce: prev.lon, targetForce: omega => contactTarget(omega).lon,
-      previousLateralForce: prev.lat, targetLateralForce: omega => contactTarget(omega).lat,
-      frictionLimit, relaxationTime: tireRelaxTau,
-    });
+    const rotation = solution.rotations[wheelNames.indexOf(name)];
     // Preserve the torque-balanced result. A universal speed clamp hides
     // drivetrain overspeed and silently discards angular momentum.
     state.wheelOmega[name] = rotation.omega;
     state.wheelBrakeTorque[name] = dt > 0 ? rotation.brakeImpulse / dt : 0;
-    const slipRatio = slipAtOmega(state.wheelOmega[name]);
-    const target = contactTarget(state.wheelOmega[name]);
+    const target = rotation.target;
+    const slipRatio = target.kappa;
+    const slipAngle = target.alpha;
+    state.wheelContactDiagnostics[name] = { ...rotation,
+      impulseResidual: (wheelInertia + (isFront ? 0 : reflectedEngineInertia)) * (rotation.omega - previousOmega)
+        - torqueDrive * dt - rotation.brakeImpulse + wheelRad * rotation.contactImpulse,
+      relaxationTime: tireRelaxTau, bodyResidual: solution.maxBodyResidual, severity: target.severity, trail: params.pneumaticTrail * target.trailFraction };
     const scaledLateral = target.lat;
     const scaledLongitudinal = target.lon;
 
@@ -389,8 +311,8 @@ export function computeTireForces(dt) {
     }
     state.debug.transitionState.wheelGripStatePrev[name] = newState;
 
-    // Store lateral force magnitude for SAT computation (front wheels only).
-    perWheelLateralForce[name] = relaxedLat;
+    // Pneumatic trail is lost as the adhering contact region saturates.
+    perWheelAligningTorque[name] = rotation.aligningImpulse / dt;
 
     // Resolve forces into world space.
     const wheelForceX = relaxedLon * wheelForwardX + relaxedLat * wheelRightX;
@@ -472,34 +394,10 @@ export function computeTireForces(dt) {
   const driftAlpha = rawDrift > state.driftIntensity ? 0.25 : 0.05;
   state.driftIntensity = state.driftIntensity + (rawDrift - state.driftIntensity) * driftAlpha;
 
-  // --- Self-Aligning Torque (SAT) ---
-  // Pneumatic trail tp(α) = t₀ × exp(-|α| / α₀)
-  const t0     = state.params.pneumaticTrail;
-  const alpha0 = Math.PI / 12;
-
-  const frontLoad = (loads.frontLeft + loads.frontRight) * 0.5 || 1;
-  const frontLateralFL = Math.abs(perWheelLateralForce.frontLeft  || 0);
-  const frontLateralFR = Math.abs(perWheelLateralForce.frontRight || 0);
-  const peakLateralForce = frontLoad * frictionCoeff;
-  const slipFractionFL = peakLateralForce > 0 ? frontLateralFL / peakLateralForce : 0;
-  const slipFractionFR = peakLateralForce > 0 ? frontLateralFR / peakLateralForce : 0;
-  const peakSlipAngleRad2 = params.peakSlipAngleDeg * DEG_TO_RAD;
-  const approxSlipFL = slipFractionFL * peakSlipAngleRad2 * 2.5;
-  const approxSlipFR = slipFractionFR * peakSlipAngleRad2 * 2.5;
-
-  // Use actual wheel slip angles (computed earlier in the loop) instead of approximation
-  const trailFL = t0 * Math.exp(-Math.abs(state.wheelSlipAngle.frontLeft) / alpha0);
-  const trailFR = t0 * Math.exp(-Math.abs(state.wheelSlipAngle.frontRight) / alpha0);
-
-  const satFL  = (perWheelLateralForce.frontLeft  || 0) * trailFL;
-  const satFR  = (perWheelLateralForce.frontRight || 0) * trailFR;
-  const rawSAT = satFL + satFR;
-
-  // EMA output filter on SAT — smooth out high-frequency noise.
-  // The exponential trail (above) naturally limits peak SAT; no hard clamp needed.
-  const satFilterAlpha = 1.0 - Math.exp(-dt / 0.08);  // 80ms time constant
-  const prevSAT = state.steering.selfAligningTorque;
-  state.steering.selfAligningTorque = prevSAT + (rawSAT - prevSAT) * satFilterAlpha;
+  // Tire deformation is already represented by the force-magnitude state.
+  // No independent 80ms SAT filter: unloaded contacts cannot carry stale SAT.
+  state.steering.selfAligningTorque = (perWheelAligningTorque.frontLeft || 0)
+    + (perWheelAligningTorque.frontRight || 0);
 
   return { forceX: netForceX, forceY: netForceY, torque: netTorque };
 }

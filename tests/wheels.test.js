@@ -198,7 +198,9 @@ describe('wheel/contact/chassis exchange', () => {
     const reference = 2 * (200 / state.params.wheelRadius)
       / (state.params.carMassKg + 4 * state.params.wheelInertia / state.params.wheelRadius ** 2);
     expect(Math.abs(speeds[3] - reference) / reference).toBeLessThan(0.02);
-    expect(Math.abs(speeds[2] - speeds[3])).toBeLessThan(Math.abs(speeds[0] - speeds[1]));
+    // An implicit coupled impulse solve can reach this momentum-determined
+    // endpoint to the coordinate/root roundoff floor on every grid.
+    expect(Math.abs(speeds[2] - speeds[3])).toBeLessThan(Math.max(1e-9, Math.abs(speeds[0] - speeds[1])));
     expect(Math.abs(speeds[1] - speeds[3]) / speeds[3]).toBeLessThan(0.01);
   });
 });

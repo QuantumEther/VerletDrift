@@ -2,11 +2,14 @@
 // coupled motion experiments use ordinary wheel inertia, never this fixture.
 import state from '../../js/state.js';
 import { initializeCarBody, computeBodyDerivedState } from '../../js/physics/kinematics.js';
-import { computeTireForces } from '../../js/physics/tires.js';
+import { computeTireForces as productionTireForces } from '../../js/physics/tires.js';
 const initial = structuredClone(state);
-export function resetTire({ longitudinal = 20, lateral = 0, yaw = 0, omega, load, params = {}, frozen = false } = {}) {
+let prescribedBody = false;
+function computeTireForces(dt) { return productionTireForces(dt, { prescribedBody }); }
+export function resetTire({ longitudinal = 20, lateral = 0, yaw = 0, omega, load, params = {}, frozen = false, prescribed = frozen } = {}) {
   Object.assign(state, structuredClone(initial));
   Object.assign(state.params, params, { mapWidth: 100000, mapHeight: 100000 });
+  prescribedBody = prescribed;
   if (frozen) state.params.wheelInertia = 1e12;
   initializeCarBody(100, 100); computeBodyDerivedState(.01);
   state.engine.currentGear = 'N'; state.engine.clutchEngagement = 0;

@@ -577,9 +577,13 @@ function runPhysicsStep(dt) {
   updateSuspension(dt);
 
   // 5–7. Compute all forces.
-  const tireForces  = computeTireForces(dt);   // { forceX, forceY, torque }
+  const dragForces  = computeDragForces();
+  const tireForces  = computeTireForces(dt, { externalAcceleration: {
+    x: dragForces.forceX / state.params.carMassKg,
+    y: dragForces.forceY / state.params.carMassKg,
+    yaw: -state.params.yawDamping * state.body.angularVelocity,
+  } });   // { forceX, forceY, torque }
   synchronizeEngineWithWheels();
-  const dragForces  = computeDragForces();   // { forceX, forceY }
   const brakeForces = { forceX: 0, forceY: 0 }; // braking now per-wheel inside computeTireForces (traction circle)
 
   // 8. Sum forces into net values.

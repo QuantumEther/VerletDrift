@@ -28,8 +28,8 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 222, failures: [], finiteSound: true });
-  await expect(page.locator('input[type=range]')).toHaveCount(200);
+  expect(result).toEqual({ count: 220, failures: [], finiteSound: true });
+  await expect(page.locator('input[type=range]')).toHaveCount(198);
   await expect(page.locator('input[type=checkbox]')).toHaveCount(22);
 });
 
@@ -188,4 +188,22 @@ test('liquid presets, local persistence, reset and settings import operate in th
   const ui=await import('/js/ui/controls.js'),data=ui.exportSettings();data.params.liquidEnabled=false;data.params.liquidBodyRunoff=1.5;ui.importSettings(data);
   return [state.params.liquidEnabled,document.getElementById('liquidEnabled').checked,state.params.liquidBodyRunoff,ui.exportSettings().params.liquidBodyRunoff];
  });expect(imported).toEqual([false,false,1.5,1.5]);
+});
+
+
+test('tire v1 files migrate explicitly to v2 and invalid tire domains are atomic', async ({page}) => {
+ const result=await page.evaluate(async()=>{
+  const ui=await import('/js/ui/controls.js');state.debug.faults.isFrozen=true;
+  const current=ui.exportSettings();
+  const old={...current,version:1,params:{...current.params,pacejkaB:10,pacejkaC:3,peakSlipAngleDeg:8}};
+  delete old.tireModelVersion;ui.importSettings(old);
+  const notice=document.getElementById('actionStatus').textContent;
+  const migrated=ui.exportSettings(),snapshot=JSON.stringify(migrated);
+  let rejected=false;try{ui.importSettings({...migrated,params:{...migrated.params,peakSlipAngleDeg:0}});}catch{rejected=true;}
+  return {notice,version:migrated.version,model:migrated.tireModelVersion,peak:migrated.params.peakSlipAngleDeg,
+   retired:!Object.hasOwn(migrated.params,'pacejkaB')&&!Object.hasOwn(migrated.params,'pacejkaC'),
+   rejected,atomic:snapshot===JSON.stringify(ui.exportSettings())};
+ });
+ expect(result).toMatchObject({version:2,model:2,peak:8,retired:true,rejected:true,atomic:true});
+ expect(result.notice).toContain('labeled slip peaks now identify actual peaks');
 });

@@ -6,7 +6,9 @@ vi.hoisted(() => {
 
 import state from '../js/state.js';
 import { initializeCarBody, computeBodyDerivedState } from '../js/physics/kinematics.js';
-import { computeTireForces } from '../js/physics/tires.js';
+import { computeTireForces as tireForces } from '../js/physics/tires.js';
+// This suite prescribes body velocity while probing force curves, not free motion.
+const computeTireForces = dt => tireForces(dt, { prescribedBody: true });
 import { GRAVITY } from '../js/constants.js';
 import { tireGripLimit } from '../js/physics/tire-load.js';
 

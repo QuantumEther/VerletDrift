@@ -31,10 +31,10 @@ export function solveWheelRotation({
   }
   // The contact-force bound supplies a physical bracket, not a speed clamp.
   const excursion = (brakeCapacity + radius * forceBound) / inertiaRate;
-  let low = Math.min(0, freeOmega - excursion);
-  let high = Math.max(0, freeOmega + excursion);
-  if (direction > 0) low = 0;
-  else high = 0;
+  let low = freeOmega - excursion;
+  let high = freeOmega + excursion;
+  if (direction > 0) { low = Math.max(0, low); high = Math.max(0, high); }
+  else { low = Math.min(0, low); high = Math.min(0, high); }
 
   const equation = (speed) => residual(speed) - brakeTorque;
   if (equation(omega) === 0 && Math.sign(omega) === direction) {
@@ -45,6 +45,7 @@ export function solveWheelRotation({
   // remains bounded through friction saturation and the nonlinear tire curve.
   for (let iteration = 0; iteration < 40; iteration++) {
     const middle = (low + high) * 0.5;
+    if (middle === low || middle === high) return { omega: middle, brakeTorque };
     const value = equation(middle);
     if (value === 0) return { omega: middle, brakeTorque };
     if (value > 0) high = middle;
@@ -61,28 +62,67 @@ export function integrateWheelContact({
   omega, inertia, radius, dt, driveTorque, brakeCapacity,
   previousForce, targetForce, frictionLimit, relaxationTime,
   previousLateralForce = 0, targetLateralForce = () => 0,
+  targetContact, relaxationMode = 'vector', contactVelocity, singleStep = false,
 }) {
+  const additive = ['contactImpulse', 'lateralImpulse', 'brakeImpulse', 'driveWork',
+    'brakeWork', 'contactWork', 'contactPatchWork', 'endpointFrictionWork', 'rotorEnergyResidual'];
   if (dt === 0) return { omega, force: previousForce, lateralForce: previousLateralForce,
-    contactImpulse: 0, lateralImpulse: 0, brakeImpulse: 0 };
+    ...Object.fromEntries(additive.map(key => [key, 0])), substeps: 0 };
 
   function advance(speed, force, lateralForce, h) {
-    const alpha = 1 - Math.exp(-h / relaxationTime);
-    const forceAtOmega = (nextSpeed) => force + (targetForce(nextSpeed) - force) * alpha;
+    const x = h / relaxationTime;
+    const alpha = -Math.expm1(-x);
+    // Exact average of a first-order lag for a frozen target. The implicit
+    // rotor uses this SAME average; the force history uses the endpoint.
+    const beta = x < 1e-3 ? x / 2 - x * x / 6 + x ** 3 / 24 : 1 - alpha / x;
+    function relaxedAt(nextSpeed) {
+      const target = targetContact ? targetContact(nextSpeed)
+        : { lon: targetForce(nextSpeed), lat: targetLateralForce(nextSpeed) };
+      if (relaxationMode === 'dissipative-magnitude') {
+        const oldMagnitude = Math.hypot(force, lateralForce);
+        const magnitude = Math.hypot(target.lon, target.lat);
+        if (magnitude === 0) return { lon: 0, lat: 0, averageLon: 0, averageLat: 0 };
+        // No elastic energy is represented. Lag increasing friction magnitude,
+        // release decreasing demand immediately, and follow current slip
+        // direction. Thus stale force cannot drive a reversed or stopped patch.
+        const start = Math.min(oldMagnitude, magnitude);
+        const endpoint = (start + (magnitude - start) * alpha) / magnitude;
+        const average = (start + (magnitude - start) * beta) / magnitude;
+        return { lon: target.lon * endpoint, lat: target.lat * endpoint,
+          averageLon: target.lon * average, averageLat: target.lat * average };
+      }
+      return { lon: force + (target.lon - force) * alpha,
+        lat: lateralForce + (target.lat - lateralForce) * alpha,
+        averageLon: force + (target.lon - force) * beta,
+        averageLat: lateralForce + (target.lat - lateralForce) * beta };
+    }
+    const forceAtOmega = nextSpeed => relaxedAt(nextSpeed).averageLon;
     const rotation = solveWheelRotation({
-      omega: speed, inertia, radius, dt: h, driveTorque, brakeCapacity,
-      forceAtOmega,
-      forceBound: Math.abs(force) * (1 - alpha) + frictionLimit * alpha,
+      omega: speed, inertia, radius, dt: h, driveTorque, brakeCapacity, forceAtOmega,
+      forceBound: frictionLimit,
     });
-    const nextForce = forceAtOmega(rotation.omega);
-    const nextLateralForce = lateralForce
-      + (targetLateralForce(rotation.omega) - lateralForce) * alpha;
-    return {
-      omega: rotation.omega, force: nextForce, lateralForce: nextLateralForce,
-      contactImpulse: nextForce * h, lateralImpulse: nextLateralForce * h,
-      brakeImpulse: rotation.brakeTorque * h,
-    };
+    const next = relaxedAt(rotation.omega);
+    const contactImpulse = next.averageLon * h, lateralImpulse = next.averageLat * h;
+    const brakeImpulse = rotation.brakeTorque * h;
+    const midpointOmega = (speed + rotation.omega) / 2;
+    const driveWork = driveTorque * h * midpointOmega;
+    const brakeWork = brakeImpulse * midpointOmega;
+    const contactWork = -radius * contactImpulse * midpointOmega;
+    const contactPatchWork = contactVelocity ? contactWork
+      + contactImpulse * contactVelocity.longitudinal + lateralImpulse * contactVelocity.lateral : 0;
+    const endpointFrictionWork = contactVelocity ? contactImpulse * (contactVelocity.longitudinal - radius * rotation.omega)
+      + lateralImpulse * contactVelocity.lateral : 0;
+    return { omega: rotation.omega, force: next.lon, lateralForce: next.lat,
+      contactImpulse, lateralImpulse, brakeImpulse, driveWork, brakeWork, contactWork,
+      contactPatchWork, endpointFrictionWork,
+      rotorEnergyResidual: .5 * inertia * (rotation.omega ** 2 - speed ** 2) - driveWork - brakeWork - contactWork,
+      substeps: 1 };
   }
 
+  function combine(left, right) {
+    return { ...right, ...Object.fromEntries(additive.map(key => [key, left[key] + right[key]])),
+      substeps: left.substeps + right.substeps };
+  }
   function interval(speed, force, lateralForce, h, depth) {
     const full = advance(speed, force, lateralForce, h);
     const first = advance(speed, force, lateralForce, h * 0.5);
@@ -91,23 +131,16 @@ export function integrateWheelContact({
     const forceTolerance = 0.1 + 1e-3 * Math.max(frictionLimit, Math.abs(force));
     if (Math.abs(full.omega - second.omega) > speedTolerance ||
         Math.abs(full.force - second.force) > forceTolerance ||
-        Math.abs(full.lateralForce - second.lateralForce) > forceTolerance) {
-      if (depth === 12) throw new Error('Wheel/contact integration did not converge');
+        Math.abs(full.lateralForce - second.lateralForce) > forceTolerance ||
+        Math.abs(full.contactImpulse - first.contactImpulse - second.contactImpulse) > h * forceTolerance ||
+        Math.abs(full.lateralImpulse - first.lateralImpulse - second.lateralImpulse) > h * forceTolerance) {
+      if (depth === 20) throw new Error('Wheel/contact integration did not converge');
       const left = interval(speed, force, lateralForce, h * 0.5, depth + 1);
       const right = interval(left.omega, left.force, left.lateralForce, h * 0.5, depth + 1);
-      return {
-        ...right,
-        contactImpulse: left.contactImpulse + right.contactImpulse,
-        lateralImpulse: left.lateralImpulse + right.lateralImpulse,
-        brakeImpulse: left.brakeImpulse + right.brakeImpulse,
-      };
+      return combine(left, right);
     }
-    return {
-      ...second,
-      contactImpulse: first.contactImpulse + second.contactImpulse,
-      lateralImpulse: first.lateralImpulse + second.lateralImpulse,
-      brakeImpulse: first.brakeImpulse + second.brakeImpulse,
-    };
+    return combine(first, second);
   }
-  return interval(omega, previousForce, previousLateralForce, dt, 0);
+  return singleStep ? advance(omega, previousForce, previousLateralForce, dt)
+    : interval(omega, previousForce, previousLateralForce, dt, 0);
 }
