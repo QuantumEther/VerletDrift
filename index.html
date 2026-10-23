@@ -141,6 +141,15 @@
  <button class="toolbar-button local-toggle" id="engineToggle" aria-pressed="true">Engine ON</button>
  <button class="toolbar-button" id="soundToggle" aria-pressed="false">Sound OFF</button>
 </div>
+<section class="geometry-lab" aria-label="Experimental physical geometry">
+ <label for="experimentalGeometry">EXPERIMENTAL PHYSICAL GEOMETRY</label>
+ <select id="experimentalGeometry">
+  <option value="original">Original · centered DeLorean geometry</option>
+  <option value="asymmetric">Synthetic · asymmetric test geometry</option>
+ </select>
+ <output id="physicalGeometryReadout" aria-live="polite"></output>
+ <span>Changing geometry resets motion at the current vehicle position and heading.</span>
+</section>
 <div id="actionStatus" role="status">Adjust a control or choose a setup. Changes apply immediately to the simulator.</div>
 <div class="controls-sticky">
 <section class="search-bar" aria-label="Parameter search and layout">

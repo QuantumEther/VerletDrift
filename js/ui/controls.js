@@ -9,6 +9,14 @@ import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
 import { LIQUID_DEFAULTS, liquidPreset } from '../renderer/liquid-controls.js';
 import { PRESETS } from './presets.js';
+import { DEFAULT_PHYSICAL_VEHICLE_GEOMETRY, physicalGeometry } from '../physics/vehicle-geometry.js';
+import { initializeCarBody } from '../physics/kinematics.js';
+import { resetSuspension } from '../physics/suspension.js';
+import { GRAVITY } from '../constants.js';
+
+const EXPERIMENTAL_ASYMMETRIC_GEOMETRY = Object.freeze({
+ wheelbase: 2.7, frontTrack: 1.55, rearTrack: 1.62, centerOfMassOffset: 0.25,
+});
 const APPEARANCE_DEFAULTS={...LIQUID_DEFAULTS,...SCENE_DEFAULTS,...DUST_DEFAULTS,...SMOKE_AIRFLOW_DEFAULTS,...SMOKE_MATERIAL_DEFAULTS};
 const appearancePrefix=key=>(Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)||Object.hasOwn(SMOKE_MATERIAL_DEFAULTS,key))?'smokeParam_':Object.hasOwn(DUST_DEFAULTS,key)?'dustParam_':Object.hasOwn(SCENE_DEFAULTS,key)?'sceneParam_':'liquidParam_';
 
@@ -136,6 +144,7 @@ export function importSettings(data) {
   else item.target[item.key]=item.value;
  }
  clearSelection();refreshControls();status('Preset imported. All controls are synchronized with the simulator.');
+ updateGeometryReadout();
 }
 function applyPreset(key,button) {
  const preset=PRESETS[key];if(!preset)return;
@@ -147,7 +156,42 @@ function applyPreset(key,button) {
    validateValue(binding,value);writeBinding(binding,value);
   }
  }
- clearSelection();button.setAttribute('aria-pressed','true');refreshControls();status(`${button.textContent} applied to vehicle and sound settings.`);
+ clearSelection();button.setAttribute('aria-pressed','true');refreshControls();updateGeometryReadout();status(`${button.textContent} applied to vehicle and sound settings.`);
+}
+function updateGeometryReadout() {
+ const geometry=physicalGeometry(state.physicalGeometry), mass=state.params.carMassKg;
+ const front=geometry.frontStaticLoadFraction*100, rear=geometry.rearStaticLoadFraction*100;
+ const frontN=mass*GRAVITY*geometry.frontStaticLoadFraction, rearN=mass*GRAVITY*geometry.rearStaticLoadFraction;
+ document.getElementById('physicalGeometryReadout').textContent=
+  `Wheelbase ${geometry.wheelbase.toFixed(3)} m · tracks F/R ${geometry.frontTrack.toFixed(3)}/${geometry.rearTrack.toFixed(3)} m · COM ${geometry.centerOfMassOffset >= 0 ? '+' : ''}${geometry.centerOfMassOffset.toFixed(3)} m forward · static loads F/R ${front.toFixed(1)}/${rear.toFixed(1)}% (${frontN.toFixed(0)}/${rearN.toFixed(0)} N)`;
+}
+function applyPhysicalGeometry(value) {
+ if(value===state.physicalGeometry)return;
+ const body=state.body, centerX=body.centerX, centerY=body.centerY, heading=body.heading;
+ state.physicalGeometry=value;
+ initializeCarBody(centerX,centerY);
+ // Keep the current rendered pose while deliberately reconciling all stored
+ // Verlet history and motion to rest under the new rigid geometry.
+ const c=Math.cos(heading), s=Math.sin(heading);
+ for(const wheel of Object.values(state.wheels)) {
+  const x=wheel.x-centerX, y=wheel.y-centerY;
+  wheel.x=centerX+c*x-s*y; wheel.y=centerY+s*x+c*y;
+  wheel.prevX=wheel.x; wheel.prevY=wheel.y;
+ }
+ Object.assign(body,{centerX,centerY,heading,velocityX:0,velocityY:0,speed:0,angularVelocity:0,
+  historyDt:null,prevHeading:heading,prevVelocityX:0,prevVelocityY:0,longitudinalAccel:0,lateralAccel:0,
+  accelX:0,accelY:0,prevAccelX:0,prevAccelY:0,jerkX:0,jerkY:0,jerkMagnitude:0});
+ resetSuspension();
+ Object.assign(state.filteredBody,{accelX:0,accelY:0,jerkX:0,jerkY:0,jerkMagnitude:0});
+ for(const wheel of Object.values(state.wheelForces))Object.assign(wheel,{fx:0,fy:0});
+ for(const axle of Object.values(state.axleForces))Object.assign(axle,{fx:0,fy:0,N:0});
+ for(const key of Object.keys(state.wheelSlipRatio)){
+  state.wheelSlipRatio[key]=state.wheelSlipAngle[key]=state.wheelOmega[key]=0;
+  state.wheelFrictionUtil[key]=state.wheelLateralSpeed[key]=state.smoothedWheelLat[key]=0;
+  Object.assign(state.wheelKinematics[key],{wheelVelX:0,wheelVelY:0,lateralSpeedAbs:0});
+ }
+ updateGeometryReadout();
+ status('Physical geometry changed; vehicle motion was reset at its current position and heading.');
 }
 export function initControls() {
  for(const control of CONTROLS) {
@@ -163,6 +207,7 @@ export function initControls() {
   writeBinding(binding,value,false);
   input.addEventListener(control.type==='checkbox'?'change':'input',()=>{
    writeBinding(binding,decodeControl(control,control.type==='checkbox'?input.checked:input.value));
+   if(key==='carMassKg')updateGeometryReadout();
    enforcePair(control.id);clearSelection();if(Object.hasOwn(APPEARANCE_DEFAULTS,key)&&!Object.hasOwn(DUST_DEFAULTS,key)&&!Object.hasOwn(SMOKE_AIRFLOW_DEFAULTS,key)&&!Object.hasOwn(SMOKE_MATERIAL_DEFAULTS,key))syncLiquidPreset();if(Object.hasOwn(SCENE_DEFAULTS,key))syncEnvironmentPreset();if(Object.hasOwn(DUST_DEFAULTS,key))syncDustPreset();changed();
   });
  }
@@ -190,6 +235,11 @@ export function initControls() {
   document.getElementById('liquidMaterialPreset').value='reference';refreshControls();status('Liquid controls restored to laboratory defaults.');
  });
  document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset,button)));
+ const geometrySelect=document.getElementById('experimentalGeometry');
+ geometrySelect.addEventListener('change',()=>applyPhysicalGeometry(geometrySelect.value==='asymmetric'
+  ? EXPERIMENTAL_ASYMMETRIC_GEOMETRY : DEFAULT_PHYSICAL_VEHICLE_GEOMETRY));
+ geometrySelect.value=state.physicalGeometry.centerOfMassOffset===0?'original':'asymmetric';
+ updateGeometryReadout();
  document.getElementById('engineToggle').addEventListener('click',()=>{
   state.engine.isRunning=!state.engine.isRunning;
   if(state.engine.isRunning){state.engine.isStalled=false;state.engine.rpm=state.params.idleRpm;}

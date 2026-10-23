@@ -25,6 +25,11 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .banner-title { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
 .banner-desc { color: var(--text-dim); line-height: 1.5; flex: 1; min-width: 280px; }
 .banner-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--cyan); white-space: nowrap; }
+.geometry-lab { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:7px 24px; border-bottom:1px solid var(--border); background:rgba(72,212,232,.035); color:var(--text-dim); font-size:10px; }
+.geometry-lab label { color:var(--cyan); letter-spacing:.04em; }
+.geometry-lab select { background:var(--bg-input); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 7px; font:inherit; }
+.geometry-lab output { color:var(--text); }
+.geometry-lab span { opacity:.75; }
 
 details.meta { padding: 6px 24px; border-bottom: 1px solid var(--border); }
 summary { cursor: pointer; color: var(--text-dim); font-size: 11px; letter-spacing: 0.04em; user-select: none; }
