@@ -366,6 +366,7 @@ const state = {
     handbrakeValue:        0.0,    // 0–1 progressive handbrake strength
     clutchKeyHeld:         false,  // A key: clutch pedal to floor
     heldKeys:              {},     // map of currently pressed key codes
+    lastKeyEvent:          null,   // most recent keyboard event, for opt-in input diagnostics
     mouseThrottleAmount:   0.0,    // 0.0–1.0; set by left-click drag
     mouseThrottleActive:   false,  // true while left mouse is held
     mouseThrottleDragStartY: 0,

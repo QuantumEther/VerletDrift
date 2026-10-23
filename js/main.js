@@ -46,7 +46,7 @@ import {
   TACHOMETER_MAX_RPM,
 } from './constants.js';
 
-import { initInput } from './input.js';
+import { initInput, updateInputDiagnostics } from './input.js';
 import { initGPU, isGPUReady, isGPUVehicleReady, renderFrameGPU, resizeGPU } from './gpu-renderer.js';
 import { getSkidWidth } from './renderer/vehicle-geometry.js';
 import { drawFallbackSmoke } from './renderer/smoke-fallback.js';
@@ -581,6 +581,7 @@ function runPhysicsStep(dt) {
   synchronizeEngineWithWheels(dt);
   const dragForces  = computeDragForces();   // { forceX, forceY }
   const brakeForces = { forceX: 0, forceY: 0 }; // braking now per-wheel inside computeTireForces (traction circle)
+  if (typeof updateInputDiagnostics === 'function') updateInputDiagnostics();
 
   // 8. Sum forces into net values.
   const netForceX  = tireForces.forceX + dragForces.forceX + brakeForces.forceX;

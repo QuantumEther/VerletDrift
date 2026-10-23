@@ -30,9 +30,16 @@ function checkStall() {
   const e=state.engine, p=state.params;
   if(e.mode==='running' && e.omega < p.stallRpm*(1-p.stallResistance*.8)*TAU/60) e.mode='stalled';
 }
+export function requestEngineStart() {
+  const e=prepare();
+  if(e.mode==='running'||e.mode==='starting'||e.command==='start')return false;
+  e.command='start';
+  return true;
+}
 export function requestEngineToggle() {
   const e=prepare();
-  e.command=e.mode==='running'||e.mode==='starting' ? 'stop' : 'start';
+  if(e.mode==='running'||e.mode==='starting')e.command='stop';
+  else requestEngineStart();
 }
 export function handleGearChange(gear) {
   if(!['N','R','1','2','3','4','5','6'].includes(gear))return false;
