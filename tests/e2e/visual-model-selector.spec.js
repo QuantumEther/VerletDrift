@@ -16,7 +16,7 @@ test('BMW appearance switches independently and renders its own body and steerin
     const ctx = canvas.getContext('2d');
     const calls = [];
     const drawImage = ctx.drawImage.bind(ctx);
-    ctx.drawImage = (image, ...args) => { if(image.src?.endsWith('.svg')||image.vehicleBodySprite)calls.push({ name:image.vehicleBodySprite?'relit-body':image.src.split('/').pop(), args }); drawImage(image, ...args); };
+    ctx.drawImage = (image, ...args) => { if(image.src?.endsWith('.svg')||image.src?.endsWith('.png')||image.vehicleBodySprite)calls.push({ name:image.vehicleBodySprite?'relit-body':image.src.split('/').pop(), args }); drawImage(image, ...args); };
     const pose = { cx: 10, cy: 20, heading: .3, steerAngle: .2, isGhost: false,
       modelId: state.visualVehicleModel, wheelRadius: state.params.wheelRadius,
       visualWheels: { frontLeft:{x:1,y:2}, frontRight:{x:3,y:4}, rearLeft:{x:5,y:6}, rearRight:{x:7,y:8} },
@@ -74,9 +74,9 @@ test('BMW appearance switches independently and renders its own body and steerin
   if(result.gpuReady)expect(result.gpuModelArtAvailable).toBe(true);
   if(result.gpuReady)expect(result.gpuVehicleReady).toBe(true);
   expect(result.bmwCalls.slice(0,4).map(x=>x.name)).toEqual(Array(4).fill('wheel.svg'));
-  expect(['relit-body','body.svg']).toContain(result.bmwCalls[4].name);
+  expect(['relit-body','body.png']).toContain(result.bmwCalls[4].name);
   expect(result.integratedCalls.slice(0,4).map(x=>x.name)).toEqual(Array(4).fill('wheel.svg'));
-  expect(['relit-body','body.svg']).toContain(result.integratedCalls[4].name);
+  expect(['relit-body','body.png']).toContain(result.integratedCalls[4].name);
   expect(result.bmwCalls[0].args[0]).toBeCloseTo(-.205/2, 5);
   await page.locator('#bmwModelPreview').screenshot({ path: '/tmp/verletdrift-bmw-visual-check.png' });
   await page.locator('#visualVehicleModel').selectOption('delorean');

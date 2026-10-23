@@ -467,7 +467,7 @@ export class WorldLiquid {
     this.wheelArt =
       art[1].status === "fulfilled" ? art[1].value : this.emptyArt();
     const bmwArt=await Promise.allSettled([
-      this.art("../../bmw-e30-m3/body.svg"),
+      this.art("../../bmw-e30-m3/body.png"),
       this.art("../../bmw-e30-m3/wheel.svg"),
     ]);
     this.hasBMWArt=bmwArt.every(x=>x.status==='fulfilled');

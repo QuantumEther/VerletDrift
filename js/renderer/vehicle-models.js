@@ -22,7 +22,7 @@ export const VEHICLE_MODELS = Object.freeze({
   }),
   'bmw-e30-m3': Object.freeze({
     id: 'bmw-e30-m3', displayName: 'BMW E30 M3 · late-1980s road car', artwork: 'bmw-e30-m3',
-    bodyArtwork: '../../assets/vehicles/bmw-e30-m3/body.svg', wheelArtwork: '../../assets/vehicles/bmw-e30-m3/wheel.svg',
+    bodyArtwork: '../../assets/vehicles/bmw-e30-m3/body.png', wheelArtwork: '../../assets/vehicles/bmw-e30-m3/wheel.svg',
     // Reference dimensions: 1988 E30 M3, approx. 4.345 x 1.680 m;
     // 2.562 m wheelbase, 1.415/1.430 m front/rear track.
     bodyWidth: 1.680, bodyLength: 4.345, wheelbase: 2.562,

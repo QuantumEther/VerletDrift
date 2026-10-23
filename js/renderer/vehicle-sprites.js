@@ -19,7 +19,7 @@ function loadImage(path) {
 
 const bodyImage = loadImage('../../assets/vehicles/delorean/DeLorean.png');
 const wheelImage = loadImage('../../assets/vehicles/delorean/DeLorean_Wheel.png');
-const bmwBodyImage = loadImage('../../assets/vehicles/bmw-e30-m3/body.svg');
+const bmwBodyImage = loadImage('../../assets/vehicles/bmw-e30-m3/body.png');
 const bmwWheelImage = loadImage('../../assets/vehicles/bmw-e30-m3/wheel.svg');
 
 let relitBody=null,relitSource=null,relitKey='',bmwRelitBody=null,bmwRelitSource=null,bmwRelitKey='',shadowStamp=null;
