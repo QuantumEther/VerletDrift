@@ -240,6 +240,17 @@ export function initControls() {
   ? EXPERIMENTAL_ASYMMETRIC_GEOMETRY : DEFAULT_PHYSICAL_VEHICLE_GEOMETRY));
  geometrySelect.value=state.physicalGeometry.centerOfMassOffset===0?'original':'asymmetric';
  updateGeometryReadout();
+ const modelSelect=document.getElementById('visualVehicleModel');
+ modelSelect.value=state.visualVehicleModel;
+ modelSelect.addEventListener('change',()=>{
+  const modelId=modelSelect.value;
+  if(!['delorean','bmw-e30-m3'].includes(modelId)){modelSelect.value=state.visualVehicleModel;return;}
+  if(modelId===state.visualVehicleModel)return;
+  state.visualVehicleModel=modelId;
+  state.carPoseHistory.length=0;
+  document.dispatchEvent(new CustomEvent('vehiclemodelchange',{detail:{modelId}}));
+  status(`${modelId==='delorean'?'DeLorean DMC-12':'BMW E30 M3'} visual model selected; vehicle physics settings are unchanged.`);
+ });
  document.getElementById('engineToggle').addEventListener('click',()=>{
   state.engine.isRunning=!state.engine.isRunning;
   if(state.engine.isRunning){state.engine.isStalled=false;state.engine.rpm=state.params.idleRpm;}

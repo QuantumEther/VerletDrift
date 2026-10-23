@@ -14,6 +14,7 @@
 
 import { renderState as state } from '../state.js';
 import { physicsRandom } from '../random.js';
+import { visualWheelPositions } from './vehicle-models.js';
 
 import { logger } from '../debug/logger.js';
 import { eventBuffer } from '../debug/events.js';
@@ -68,7 +69,8 @@ export function updateSmoke(dt) {
   if (!params.smokeEnabled) return;
 
   const body = state.body;
-  const wheels = state.wheels;
+  const visualWheels = state.visualVehicleModel==='delorean'
+    ? state.wheels : visualWheelPositions(body, state.visualVehicleModel);
   const kappa = state.wheelSlipRatio;
   const kin = state.wheelKinematics;
   const speed = body.speed;
@@ -154,7 +156,7 @@ export function updateSmoke(dt) {
       if (spawnCount < 1 && physicsRandom() > emission * spawnRate * dt) continue;
       const count = Math.max(1, spawnCount);
 
-      const wheel = wheels[name];
+      const wheel = visualWheels[name];
       const wk = kin[name];
       const wvx = wk ? wk.wheelVelX : body.velocityX;
       const wvy = wk ? wk.wheelVelY : body.velocityY;

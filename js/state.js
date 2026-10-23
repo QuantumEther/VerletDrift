@@ -92,6 +92,8 @@ const state = {
     rearRight:  { x: 0, y: 0, prevX: 0, prevY: 0 },
   },
   physicalGeometry: DEFAULT_PHYSICAL_VEHICLE_GEOMETRY,
+  // Appearance is independent from physical geometry and vehicle parameters.
+  visualVehicleModel: 'delorean',
 
   // -----------------------------------------------------------
   // BODY — derived quantities recomputed every physics step

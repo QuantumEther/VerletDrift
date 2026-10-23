@@ -2,6 +2,7 @@ import { recordWetTireTransfer } from './renderer/wet-trail-events.js';
 import { observeDust } from './renderer/dust-history.js';
 import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
 import { physicalGeometry } from './physics/vehicle-geometry.js';
+import { visualWheelPositions } from './renderer/vehicle-models.js';
 // =============================================================
 // MAIN — entry point and game loop
 // =============================================================
@@ -841,12 +842,8 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     cx:      state.body.centerX,
     cy:      state.body.centerY,
     heading: state.body.heading,
-    wheels: {
-      frontLeft:  { x: state.wheels.frontLeft.x,  y: state.wheels.frontLeft.y  },
-      frontRight: { x: state.wheels.frontRight.x, y: state.wheels.frontRight.y },
-      rearLeft:   { x: state.wheels.rearLeft.x,   y: state.wheels.rearLeft.y   },
-      rearRight:  { x: state.wheels.rearRight.x,  y: state.wheels.rearRight.y  },
-    },
+    modelId: state.visualVehicleModel,
+    wheels: Object.fromEntries(Object.entries(visualWheelPositions(state.body, state.visualVehicleModel, state.wheels)).map(([name,w])=>[name,{x:w.x,y:w.y}])),
     steerAngle: state.steering.frontWheelAngle,
   });
   while (history.length > maxGhosts + 1) history.shift();
@@ -960,6 +957,10 @@ function spawnSingleBalloon() {
 
 let skidPrevPositions = {};
 const skidFadeState = { frontLeft: 0, frontRight: 0, rearLeft: 0, rearRight: 0 };
+document.addEventListener('vehiclemodelchange', () => {
+  skidPrevPositions = {};
+  state.carPoseHistory.length = 0;
+});
 
 function recordSkidMarks(dt) {
   // NOTE: wheelGrip now stores friction circle utilization [0=safe, 1=at limit]
@@ -967,6 +968,8 @@ function recordSkidMarks(dt) {
   const utilization = state.wheelFrictionUtil;
   const wheels = state.wheels;
   const body   = state.body;
+  const visualWheels = state.visualVehicleModel==='delorean'
+    ? wheels : visualWheelPositions(body, state.visualVehicleModel);
   const decals = state.splatDecals;
   const p      = state.params;
 
@@ -1080,7 +1083,8 @@ function recordSkidMarks(dt) {
 
     if (skidPrevPositions[wheelName]) {
       const prev = skidPrevPositions[wheelName];
-      const dist = Math.hypot(wheel.x - prev.x, wheel.y - prev.y);
+      const visualWheel = visualWheels[wheelName];
+      const dist = Math.hypot(visualWheel.x - prev.x, visualWheel.y - prev.y);
 
       if (dist > 0.03) {
         // Skid intensity scales with utilization above threshold
@@ -1094,7 +1098,7 @@ function recordSkidMarks(dt) {
 
         const seg = {
           x1: prev.x, y1: prev.y,
-          x2: wheel.x, y2: wheel.y,
+          x2: visualWheel.x, y2: visualWheel.y,
           hue,
           paintSaturation: hue >= 0 ? tp.saturation : 1.0,
           width,
@@ -1113,7 +1117,7 @@ function recordSkidMarks(dt) {
       }
     }
 
-    skidPrevPositions[wheelName] = { x: wheel.x, y: wheel.y };
+    skidPrevPositions[wheelName] = { ...visualWheels[wheelName] };
   }
 }
 

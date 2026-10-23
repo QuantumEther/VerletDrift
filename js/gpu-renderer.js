@@ -449,7 +449,7 @@ export async function initGPU(target) {
 export function isGPUVehicleReady() {
   return (
     ready &&
-    !!liquidWorld?.hasArt &&
+    !!liquidWorld?.hasModelArt(state.visualVehicleModel) &&
     liquidWorld.active(state.loop.simulationTime,state.params) &&
     vehicleSpriteSettings.enabled &&
     !vehicleSpriteSettings.calibration

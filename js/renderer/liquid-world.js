@@ -6,9 +6,8 @@ import { dyeAbsorption, QUALITY } from './liquid-settings.js';
 import {
   BODY_CROP,
   WHEEL_CROP,
-  BODY_RECT,
-  getTireSpriteDimensions,
 } from "./vehicle-geometry.js";
+import { getVehicleModel, visualWheelPositions, visualTireDimensions } from './vehicle-models.js';
 import { makeSheetMesh, makeStrandMesh } from "./liquid-mesh.js";
 import { getLiquidImpacts, MAX_LIQUID_EVENTS } from "./liquid-events.js";
 const PREMUL = {
@@ -467,6 +466,14 @@ export class WorldLiquid {
       art[0].status === "fulfilled" ? art[0].value : this.emptyArt();
     this.wheelArt =
       art[1].status === "fulfilled" ? art[1].value : this.emptyArt();
+    const bmwArt=await Promise.allSettled([
+      this.art("../../bmw-e30-m3/body.svg"),
+      this.art("../../bmw-e30-m3/wheel.svg"),
+    ]);
+    this.hasBMWArt=bmwArt.every(x=>x.status==='fulfilled');
+    this.bmwBodyArt=bmwArt[0].status==='fulfilled'?bmwArt[0].value:this.emptyArt();
+    this.bmwWheelArt=bmwArt[1].status==='fulfilled'?bmwArt[1].value:this.emptyArt();
+    this.modelId='delorean';
   }
   emptyArt() {
     const t = this.track(
@@ -486,15 +493,15 @@ export class WorldLiquid {
   }
   async art(name, crop) {
     const r = await fetch(
-      new URL(`../../assets/vehicles/delorean/${name}`, import.meta.url),
+      new URL(name.startsWith('../../')?`../../assets/vehicles/${name.slice(6)}`:`../../assets/vehicles/delorean/${name}`, import.meta.url),
     );
     if (!r.ok) throw Error(name);
     const source = await createImageBitmap(await r.blob());
     let bitmap;
     try {
-      bitmap = await createImageBitmap(source, ...crop);
+      bitmap = crop ? await createImageBitmap(source, ...crop) : source;
     } finally {
-      source.close();
+      if(bitmap!==source)source.close();
     }
     try {
       const t = this.track(
@@ -518,6 +525,7 @@ export class WorldLiquid {
       bitmap.close();
     }
   }
+  hasModelArt(modelId){return modelId==='bmw-e30-m3'?this.hasBMWArt:this.hasArt;}
   resize(width, height) {
     if (this.width === width && this.height === height && this.trailView===this.trails.view) return;
     const usage =
@@ -548,10 +556,13 @@ export class WorldLiquid {
         { binding: 8, resource: { buffer: this.ghostBuffer } },
         { binding: 9, resource: this.trails.view },
       ];
-      const sceneGroup = this.device.createBindGroup({
-        layout: this.layout,
-        entries,
+      const bindModel=(bodyArt,wheelArt)=>this.device.createBindGroup({
+        layout:this.layout,
+        entries:entries.map(entry=>entry.binding===5?{binding:5,resource:bodyArt.createView()}
+          :entry.binding===6?{binding:6,resource:wheelArt.createView()}:entry),
       });
+      const sceneGroups={delorean:bindModel(this.bodyArt,this.wheelArt)};
+      if(this.hasBMWArt)sceneGroups['bmw-e30-m3']=bindModel(this.bmwBodyArt,this.bmwWheelArt);
       const airGroups = Array.from({ length: MAX_LIQUID_EVENTS }, (_, i) =>
         this.device.createBindGroup({
           layout: this.airLayout,
@@ -573,7 +584,8 @@ export class WorldLiquid {
       this.scene?.destroy();
       this.world = world;
       this.scene = scene;
-      this.sceneGroup = sceneGroup;
+      this.sceneGroups = sceneGroups;
+      this.sceneGroup = sceneGroups[this.modelId]??sceneGroups.delorean;
       this.airGroups = airGroups;
       this.worldView = world.createView();
       this.sceneView = scene.createView();
@@ -588,19 +600,22 @@ export class WorldLiquid {
   }
   prepare(state, width, height, view, ppm, drawCar) {
     this.params=state.params;
+    this.modelId=state.visualVehicleModel??'delorean';
+    this.model=getVehicleModel(this.modelId);
     const settings=liquidSettings(state.params);
     const quality=['', 'performance','balanced','high'][state.params.liquidQuality??0]||this.baseQuality;
     this.q=state.params.liquidQuality>0?QUALITY[quality]:(BUDGETS[quality]??BUDGETS.high);
     this.trails.prepare(width,height,state.params.gpuSkidResolution??1);
     this.trails.enabled=state.params.showSkidMarks!==false;
     this.resize(width, height);
-    this.drawCar = drawCar && this.hasArt;
+    this.sceneGroup=this.sceneGroups?.[this.modelId]??this.sceneGroups?.delorean;
+    this.drawCar = drawCar && this.hasModelArt(this.modelId);
     const { events, generation, evictions } = getLiquidImpacts(),
       time = state.loop.simulationTime;
     const c = Math.cos(state.body.heading),
       s = Math.sin(state.body.heading),
-      ox = BODY_RECT.x + BODY_RECT.width * 0.5,
-      oy = BODY_RECT.y + BODY_RECT.length * 0.5;
+      ox = this.model.originOffset.x + this.model.bodyRect.x + this.model.bodyRect.width * 0.5,
+      oy = this.model.originOffset.y + this.model.bodyRect.y + this.model.bodyRect.length * 0.5;
     const cx = state.body.centerX + ox * c - oy * s,
       cy = state.body.centerY + ox * s + oy * c;
     const frame = (this.frameData ??= new Float32Array(64));
@@ -614,7 +629,7 @@ export class WorldLiquid {
     frame[43]=settings.residueIrregularity;frame[47]=settings.residuePersistence;
 
     frame.set([width, height, ppm, time], 0);
-    frame.set([cx, cy, BODY_RECT.width, BODY_RECT.length], 12);
+    frame.set([cx, cy, this.model.bodyRect.width, this.model.bodyRect.length], 12);
     frame[19] = state.engine.isStalled ? 1 : 0;
     frame[20] = events.length;
     frame[26] = view.x;
@@ -649,8 +664,8 @@ export class WorldLiquid {
         e.seed,
         cx,
         cy,
-        BODY_RECT.width,
-        BODY_RECT.length,
+        this.model.bodyRect.width,
+        this.model.bodyRect.length,
         e.dx,
         e.dy,
         this.q.detail,
@@ -708,12 +723,13 @@ export class WorldLiquid {
       0,
       events.length * 64,
     );
+    const visualWheels=visualWheelPositions(state.body,this.modelId,state.wheels);
     for (let i = 0; i < 4; i++) {
       const name = NAMES[i],
-        w = state.wheels[name],
+        w = visualWheels[name],
         angle =
           state.body.heading + (i < 2 ? state.steering.frontWheelAngle : 0),
-        t = getTireSpriteDimensions(state.params.wheelRadius, name);
+        t = visualTireDimensions(this.modelId,name,state.params.wheelRadius);
       this.wheelData.set([w.x, w.y, Math.cos(angle), Math.sin(angle)], i * 4);
       this.wheelData.set([t.width, t.length, 0, 0], 16 + i * 4);
     }
@@ -739,7 +755,7 @@ export class WorldLiquid {
           const name = NAMES[j],
             w = pose.wheels[name],
             angle = pose.heading + (j < 2 ? pose.steerAngle : 0),
-            size = getTireSpriteDimensions(state.params.wheelRadius, name);
+            size = visualTireDimensions(this.modelId,name,state.params.wheelRadius);
           add(
             w.x,
             w.y,
@@ -758,8 +774,8 @@ export class WorldLiquid {
           pose.cy + ox * s + oy * c,
           c,
           s,
-          BODY_RECT.width,
-          BODY_RECT.length,
+          this.model.bodyRect.width,
+          this.model.bodyRect.length,
           alpha,
           0,
         );
@@ -785,6 +801,7 @@ export class WorldLiquid {
       wetTransfers: this.trails.count,
       wetTrailBytes:this.trails.bytes,
       hasArt: this.hasArt,
+      hasBMWArt: this.hasBMWArt,
       budget: { ...this.q, atlas:this.atlasSize },
       quality,
       groundLayers: events.filter((e,i)=>this.eventData[i*64+19]>.5).length,
@@ -907,5 +924,6 @@ export class WorldLiquid {
     this.width = 0;
     this.height = 0;
     this.hasArt = false;
+    this.hasBMWArt = false;
   }
 }

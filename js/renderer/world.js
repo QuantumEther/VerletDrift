@@ -11,6 +11,7 @@ import { physicsRandom } from '../random.js';
 import { drawVehicleSprites, vehicleSpriteSettings } from './vehicle-sprites.js';
 import { drawVehicleCalibration } from './vehicle-calibration.js';
 import { getSkidRenderWidth } from './vehicle-geometry.js';
+import { visualWheelPositions } from './vehicle-models.js';
 import { getViewCamera, getCheckerTileMetres } from './view.js';
 import {
   CAR_HALF_WIDTH,
@@ -340,7 +341,8 @@ export function drawCar(ctx,groundShadow=true) {
 
   const spritePose = {
     cx: body.centerX, cy: body.centerY, heading: body.heading, groundShadow,
-    wheels, steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
+    wheels, visualWheels: visualWheelPositions(body, state.visualVehicleModel, wheels), modelId: state.visualVehicleModel,
+    steerAngle, wheelOmega: state.wheelOmega, isStalled: engine.isStalled,
     wheelRadius: state.params.wheelRadius,
     viewScale: state.camera.zoom * (state.params.pixelsPerMeter || PIXELS_PER_METER),
   };
