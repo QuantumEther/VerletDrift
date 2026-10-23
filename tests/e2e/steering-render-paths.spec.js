@@ -27,6 +27,8 @@ for (const renderer of ['canvas', 'gpu']) test(`${renderer} world rendering pres
   expect(await page.evaluate(() => state.steering.frontWheelAngle)).toBeCloseTo(.104, 12);
   if (renderer === 'gpu') {
     expect(await page.evaluate(() => Boolean(window.__liveTexture))).toBe(true);
+    await page.evaluate(() => __liveGPU.queue.onSubmittedWorkDone());
+    expect(await page.evaluate(() => __steeringGPU.isGPUReady())).toBe(true);
     expect(await page.evaluate(() => __steeringGPU.getGPURenderStats().error)).toBeNull();
   }
 });
