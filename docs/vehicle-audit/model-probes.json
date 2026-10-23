@@ -1,0 +1,5715 @@
+{
+  "startupParameterDifferences": {
+    "bounciness": {
+      "source": 0.5,
+      "browser": 0.3
+    },
+    "stallResistance": {
+      "source": 0.7,
+      "browser": 0.5
+    },
+    "trailSpawnInterval": {
+      "source": 0.08,
+      "browser": 0.025118864315095794
+    },
+    "trailLifespan": {
+      "source": 2,
+      "browser": 3
+    },
+    "trailFade": {
+      "source": 0.7,
+      "browser": 1
+    },
+    "constraintDamping": {
+      "source": 0.85,
+      "browser": 0.8
+    },
+    "mapWidth": {
+      "source": 384,
+      "browser": 300
+    },
+    "mapHeight": {
+      "source": 288,
+      "browser": 240
+    },
+    "clutchBiteCurve": {
+      "source": 1.8,
+      "browser": 2.5
+    },
+    "redlineRpm": {
+      "source": 9000,
+      "browser": 7000
+    },
+    "brakeForce": {
+      "source": 9810,
+      "browser": 9800
+    },
+    "gearRatio6": {
+      "source": 0.58,
+      "browser": 0.6
+    },
+    "constraintIterations": {
+      "source": 12,
+      "browser": 6
+    },
+    "smokeEnabled": {
+      "source": true,
+      "browser": false
+    },
+    "decalEvapRate": {
+      "source": 0.02,
+      "browser": 0.008
+    },
+    "exhaustPopVolume": {
+      "source": 0.5,
+      "browser": 0.3
+    },
+    "exhaustPopDensity": {
+      "source": 1.5,
+      "browser": 1
+    },
+    "gripLossThreshold": {
+      "source": 0.9,
+      "browser": 0.7
+    },
+    "gripRecoveryThreshold": {
+      "source": 0.8,
+      "browser": 0.85
+    }
+  },
+  "stallThresholdSource": 264.00000000000006,
+  "stallThresholdBrowser": 360,
+  "normalization": 0.33956094875694093,
+  "rawPeakFactor": 2.9449794025513927,
+  "rawPeakSlipRatio": 0.013035474901354944,
+  "rawPeakAngleDegrees": 0.8690316600903296,
+  "firstCapSlipRatio": 0.002212683164848639,
+  "firstCapAngleDegrees": 0.14751221098990927,
+  "zeroSlopePerTire": 1202236.0949489689,
+  "pacejkaCZeroThreshold": 2.1354996636010313,
+  "allowedCMax": 3,
+  "forceAtAllowedC2_5": 0,
+  "hysteresisAtUtilization0_8": [
+    "slipping",
+    "stable",
+    "slipping",
+    "stable",
+    "slipping",
+    "stable",
+    "slipping",
+    "stable"
+  ],
+  "curves": [
+    {
+      "alphaDegrees": 0,
+      "lateralRaw": 0,
+      "lateralCapped": 0,
+      "kappa": 0,
+      "longitudinalRaw": 0
+    },
+    {
+      "alphaDegrees": 0.025,
+      "lateralRaw": 0.1746986431553882,
+      "lateralCapped": 0.1746986431553882,
+      "kappa": 0.0005,
+      "longitudinalRaw": 0.23276638670637634
+    },
+    {
+      "alphaDegrees": 0.05,
+      "lateralRaw": 0.348443858728976,
+      "lateralCapped": 0.348443858728976,
+      "kappa": 0.001,
+      "longitudinalRaw": 0.4632810992074867
+    },
+    {
+      "alphaDegrees": 0.07500000000000001,
+      "lateralRaw": 0.520300192099947,
+      "lateralCapped": 0.520300192099947,
+      "kappa": 0.0015,
+      "longitudinalRaw": 0.689367421016085
+    },
+    {
+      "alphaDegrees": 0.1,
+      "lateralRaw": 0.689367421016085,
+      "lateralCapped": 0.689367421016085,
+      "kappa": 0.002,
+      "longitudinalRaw": 0.9089933225508757
+    },
+    {
+      "alphaDegrees": 0.125,
+      "lateralRaw": 0.854796436259516,
+      "lateralCapped": 0.854796436259516,
+      "kappa": 0.0025,
+      "longitudinalRaw": 1.1203313519049574
+    },
+    {
+      "alphaDegrees": 0.15000000000000002,
+      "lateralRaw": 1.0158031701423136,
+      "lateralCapped": 1,
+      "kappa": 0.003,
+      "longitudinalRaw": 1.3218052044745023
+    },
+    {
+      "alphaDegrees": 0.17500000000000002,
+      "lateralRaw": 1.1716801253370484,
+      "lateralCapped": 1,
+      "kappa": 0.0035,
+      "longitudinalRaw": 1.5121209314653428
+    },
+    {
+      "alphaDegrees": 0.2,
+      "lateralRaw": 1.3218052044745023,
+      "lateralCapped": 1,
+      "kappa": 0.004,
+      "longitudinalRaw": 1.6902822754380589
+    },
+    {
+      "alphaDegrees": 0.225,
+      "lateralRaw": 1.465647697359411,
+      "lateralCapped": 1,
+      "kappa": 0.0045000000000000005,
+      "longitudinalRaw": 1.8555910171400027
+    },
+    {
+      "alphaDegrees": 0.25,
+      "lateralRaw": 1.6027714344243311,
+      "lateralCapped": 1,
+      "kappa": 0.005,
+      "longitudinalRaw": 2.0076343174513402
+    },
+    {
+      "alphaDegrees": 0.275,
+      "lateralRaw": 1.732835250845895,
+      "lateralCapped": 1,
+      "kappa": 0.0055,
+      "longitudinalRaw": 2.1462617516813496
+    },
+    {
+      "alphaDegrees": 0.30000000000000004,
+      "lateralRaw": 1.8555910171400027,
+      "lateralCapped": 1,
+      "kappa": 0.006,
+      "longitudinalRaw": 2.271555047216836
+    },
+    {
+      "alphaDegrees": 0.325,
+      "lateralRaw": 1.9708795739788665,
+      "lateralCapped": 1,
+      "kappa": 0.006500000000000001,
+      "longitudinalRaw": 2.3837934976051613
+    },
+    {
+      "alphaDegrees": 0.35000000000000003,
+      "lateralRaw": 2.078624959782241,
+      "lateralCapped": 1,
+      "kappa": 0.007,
+      "longitudinalRaw": 2.4834177225827414
+    },
+    {
+      "alphaDegrees": 0.375,
+      "lateralRaw": 2.1788273406660634,
+      "lateralCapped": 1,
+      "kappa": 0.0075,
+      "longitudinalRaw": 2.570993974149463
+    },
+    {
+      "alphaDegrees": 0.4,
+      "lateralRaw": 2.271555047216836,
+      "lateralCapped": 1,
+      "kappa": 0.008,
+      "longitudinalRaw": 2.647180647467807
+    },
+    {
+      "alphaDegrees": 0.42500000000000004,
+      "lateralRaw": 2.356936096404524,
+      "lateralCapped": 1,
+      "kappa": 0.0085,
+      "longitudinalRaw": 2.7126981177485536
+    },
+    {
+      "alphaDegrees": 0.45,
+      "lateralRaw": 2.4351495355190886,
+      "lateralCapped": 1,
+      "kappa": 0.009000000000000001,
+      "longitudinalRaw": 2.768302542518541
+    },
+    {
+      "alphaDegrees": 0.47500000000000003,
+      "lateralRaw": 2.506416894053823,
+      "lateralCapped": 1,
+      "kappa": 0.0095,
+      "longitudinalRaw": 2.814763871929291
+    },
+    {
+      "alphaDegrees": 0.5,
+      "lateralRaw": 2.570993974149463,
+      "lateralCapped": 1,
+      "kappa": 0.01,
+      "longitudinalRaw": 2.8528480082379333
+    },
+    {
+      "alphaDegrees": 0.525,
+      "lateralRaw": 2.6291631548642673,
+      "lateralCapped": 1,
+      "kappa": 0.0105,
+      "longitudinalRaw": 2.8833028458474432
+    },
+    {
+      "alphaDegrees": 0.55,
+      "lateralRaw": 2.681226333424482,
+      "lateralCapped": 1,
+      "kappa": 0.011,
+      "longitudinalRaw": 2.906847793635771
+    },
+    {
+      "alphaDegrees": 0.5750000000000001,
+      "lateralRaw": 2.727498579977693,
+      "lateralCapped": 1,
+      "kappa": 0.0115,
+      "longitudinalRaw": 2.924166316197287
+    },
+    {
+      "alphaDegrees": 0.6000000000000001,
+      "lateralRaw": 2.768302542518541,
+      "lateralCapped": 1,
+      "kappa": 0.012,
+      "longitudinalRaw": 2.935901013890515
+    },
+    {
+      "alphaDegrees": 0.625,
+      "lateralRaw": 2.803963606096949,
+      "lateralCapped": 1,
+      "kappa": 0.0125,
+      "longitudinalRaw": 2.9426507784252642
+    },
+    {
+      "alphaDegrees": 0.65,
+      "lateralRaw": 2.834805785064927,
+      "lateralCapped": 1,
+      "kappa": 0.013000000000000001,
+      "longitudinalRaw": 2.944969598714728
+    },
+    {
+      "alphaDegrees": 0.675,
+      "lateralRaw": 2.8611483084562255,
+      "lateralCapped": 1,
+      "kappa": 0.0135,
+      "longitudinalRaw": 2.9433666411657056
+    },
+    {
+      "alphaDegrees": 0.7000000000000001,
+      "lateralRaw": 2.8833028458474432,
+      "lateralCapped": 1,
+      "kappa": 0.014,
+      "longitudinalRaw": 2.9383072823842444
+    },
+    {
+      "alphaDegrees": 0.7250000000000001,
+      "lateralRaw": 2.901571313311978,
+      "lateralCapped": 1,
+      "kappa": 0.0145,
+      "longitudinalRaw": 2.9302148255816536
+    },
+    {
+      "alphaDegrees": 0.75,
+      "lateralRaw": 2.9162441954114806,
+      "lateralCapped": 1,
+      "kappa": 0.015,
+      "longitudinalRaw": 2.919472681726879
+    },
+    {
+      "alphaDegrees": 0.775,
+      "lateralRaw": 2.927599318675846,
+      "lateralCapped": 1,
+      "kappa": 0.0155,
+      "longitudinalRaw": 2.906426841016358
+    },
+    {
+      "alphaDegrees": 0.8,
+      "lateralRaw": 2.935901013890515,
+      "lateralCapped": 1,
+      "kappa": 0.016,
+      "longitudinalRaw": 2.891388498802638
+    },
+    {
+      "alphaDegrees": 0.8250000000000001,
+      "lateralRaw": 2.9413996080370772,
+      "lateralCapped": 1,
+      "kappa": 0.0165,
+      "longitudinalRaw": 2.874636732669369
+    },
+    {
+      "alphaDegrees": 0.8500000000000001,
+      "lateralRaw": 2.944331191335925,
+      "lateralCapped": 1,
+      "kappa": 0.017,
+      "longitudinalRaw": 2.8564211541979483
+    },
+    {
+      "alphaDegrees": 0.875,
+      "lateralRaw": 2.944917610050102,
+      "lateralCapped": 1,
+      "kappa": 0.0175,
+      "longitudinalRaw": 2.8369644806992267
+    },
+    {
+      "alphaDegrees": 0.9,
+      "lateralRaw": 2.9433666411657056,
+      "lateralCapped": 1,
+      "kappa": 0.018000000000000002,
+      "longitudinalRaw": 2.816464989440415
+    },
+    {
+      "alphaDegrees": 0.925,
+      "lateralRaw": 2.9398723104976345,
+      "lateralCapped": 1,
+      "kappa": 0.0185,
+      "longitudinalRaw": 2.7950988303577335
+    },
+    {
+      "alphaDegrees": 0.9500000000000001,
+      "lateralRaw": 2.934615320990195,
+      "lateralCapped": 1,
+      "kappa": 0.019,
+      "longitudinalRaw": 2.7730221835512596
+    },
+    {
+      "alphaDegrees": 0.9750000000000001,
+      "lateralRaw": 2.92776356286388,
+      "lateralCapped": 1,
+      "kappa": 0.0195,
+      "longitudinalRaw": 2.750373255590915
+    },
+    {
+      "alphaDegrees": 1,
+      "lateralRaw": 2.919472681726879,
+      "lateralCapped": 1,
+      "kappa": 0.02,
+      "longitudinalRaw": 2.727274114329553
+    },
+    {
+      "alphaDegrees": 1.0250000000000001,
+      "lateralRaw": 2.9098866847853677,
+      "lateralCapped": 1,
+      "kappa": 0.0205,
+      "longitudinalRaw": 2.7038323659533328
+    },
+    {
+      "alphaDegrees": 1.05,
+      "lateralRaw": 2.8991385688414444,
+      "lateralCapped": 1,
+      "kappa": 0.021,
+      "longitudinalRaw": 2.680142680761654
+    },
+    {
+      "alphaDegrees": 1.075,
+      "lateralRaw": 2.8873509568729006,
+      "lateralCapped": 1,
+      "kappa": 0.021500000000000002,
+      "longitudinalRaw": 2.656288175954585
+    },
+    {
+      "alphaDegrees": 1.1,
+      "lateralRaw": 2.874636732669369,
+      "lateralCapped": 1,
+      "kappa": 0.022,
+      "longitudinalRaw": 2.6323416647535525
+    },
+    {
+      "alphaDegrees": 1.125,
+      "lateralRaw": 2.8610996652874388,
+      "lateralCapped": 1,
+      "kappa": 0.0225,
+      "longitudinalRaw": 2.608366781681301
+    },
+    {
+      "alphaDegrees": 1.1500000000000001,
+      "lateralRaw": 2.846835017020324,
+      "lateralCapped": 1,
+      "kappa": 0.023,
+      "longitudinalRaw": 2.5844189939292685
+    },
+    {
+      "alphaDegrees": 1.175,
+      "lateralRaw": 2.8319301301940643,
+      "lateralCapped": 1,
+      "kappa": 0.0235,
+      "longitudinalRaw": 2.5605465085609875
+    },
+    {
+      "alphaDegrees": 1.2000000000000002,
+      "lateralRaw": 2.816464989440415,
+      "lateralCapped": 1,
+      "kappa": 0.024,
+      "longitudinalRaw": 2.5367910849281854
+    },
+    {
+      "alphaDegrees": 1.225,
+      "lateralRaw": 2.8005127571927435,
+      "lateralCapped": 1,
+      "kappa": 0.0245,
+      "longitudinalRaw": 2.513188761179736
+    },
+    {
+      "alphaDegrees": 1.25,
+      "lateralRaw": 2.7841402810394373,
+      "lateralCapped": 1,
+      "kappa": 0.025,
+      "longitudinalRaw": 2.4897705031731854
+    },
+    {
+      "alphaDegrees": 1.2750000000000001,
+      "lateralRaw": 2.767408572280105,
+      "lateralCapped": 1,
+      "kappa": 0.025500000000000002,
+      "longitudinalRaw": 2.466562783491526
+    },
+    {
+      "alphaDegrees": 1.3,
+      "lateralRaw": 2.750373255590915,
+      "lateralCapped": 1,
+      "kappa": 0.026000000000000002,
+      "longitudinalRaw": 2.443588097651298
+    },
+    {
+      "alphaDegrees": 1.3250000000000002,
+      "lateralRaw": 2.7330849901409704,
+      "lateralCapped": 1,
+      "kappa": 0.0265,
+      "longitudinalRaw": 2.4208654239806453
+    },
+    {
+      "alphaDegrees": 1.35,
+      "lateralRaw": 2.7155898628330055,
+      "lateralCapped": 1,
+      "kappa": 0.027,
+      "longitudinalRaw": 2.3984106330608523
+    },
+    {
+      "alphaDegrees": 1.375,
+      "lateralRaw": 2.69792975458713,
+      "lateralCapped": 1,
+      "kappa": 0.0275,
+      "longitudinalRaw": 2.376236852070276
+    },
+    {
+      "alphaDegrees": 1.4000000000000001,
+      "lateralRaw": 2.680142680761654,
+      "lateralCapped": 1,
+      "kappa": 0.028,
+      "longitudinalRaw": 2.354354788850413
+    },
+    {
+      "alphaDegrees": 1.425,
+      "lateralRaw": 2.6622631069235467,
+      "lateralCapped": 1,
+      "kappa": 0.0285,
+      "longitudinalRaw": 2.3327730200327754
+    },
+    {
+      "alphaDegrees": 1.4500000000000002,
+      "lateralRaw": 2.644322241253954,
+      "lateralCapped": 1,
+      "kappa": 0.029,
+      "longitudinalRaw": 2.3114982471227217
+    },
+    {
+      "alphaDegrees": 1.475,
+      "lateralRaw": 2.626348304911089,
+      "lateralCapped": 1,
+      "kappa": 0.029500000000000002,
+      "longitudinalRaw": 2.2905355240321246
+    },
+    {
+      "alphaDegrees": 1.5,
+      "lateralRaw": 2.608366781681301,
+      "lateralCapped": 1,
+      "kappa": 0.03,
+      "longitudinalRaw": 2.2698884591851582
+    },
+    {
+      "alphaDegrees": 1.5250000000000001,
+      "lateralRaw": 2.5904006482359208,
+      "lateralCapped": 1,
+      "kappa": 0.0305,
+      "longitudinalRaw": 2.249559394988823
+    },
+    {
+      "alphaDegrees": 1.55,
+      "lateralRaw": 2.572470586281752,
+      "lateralCapped": 1,
+      "kappa": 0.031,
+      "longitudinalRaw": 2.2295495671596752
+    },
+    {
+      "alphaDegrees": 1.5750000000000002,
+      "lateralRaw": 2.554595177851276,
+      "lateralCapped": 1,
+      "kappa": 0.0315,
+      "longitudinalRaw": 2.2098592461283264
+    },
+    {
+      "alphaDegrees": 1.6,
+      "lateralRaw": 2.5367910849281854,
+      "lateralCapped": 1,
+      "kappa": 0.032,
+      "longitudinalRaw": 2.1904878625011195
+    },
+    {
+      "alphaDegrees": 1.625,
+      "lateralRaw": 2.5190732145476202,
+      "lateralCapped": 1,
+      "kappa": 0.0325,
+      "longitudinalRaw": 2.1714341183415264
+    },
+    {
+      "alphaDegrees": 1.6500000000000001,
+      "lateralRaw": 2.5014548704507047,
+      "lateralCapped": 1,
+      "kappa": 0.033,
+      "longitudinalRaw": 2.1526960858400144
+    },
+    {
+      "alphaDegrees": 1.675,
+      "lateralRaw": 2.4839478923113796,
+      "lateralCapped": 1,
+      "kappa": 0.0335,
+      "longitudinalRaw": 2.1342712947681015
+    },
+    {
+      "alphaDegrees": 1.7000000000000002,
+      "lateralRaw": 2.466562783491526,
+      "lateralCapped": 1,
+      "kappa": 0.034,
+      "longitudinalRaw": 2.116156809958044
+    },
+    {
+      "alphaDegrees": 1.725,
+      "lateralRaw": 2.449308828218996,
+      "lateralCapped": 1,
+      "kappa": 0.0345,
+      "longitudinalRaw": 2.09834929991223
+    },
+    {
+      "alphaDegrees": 1.75,
+      "lateralRaw": 2.432194199023184,
+      "lateralCapped": 1,
+      "kappa": 0.035,
+      "longitudinalRaw": 2.08084509752397
+    },
+    {
+      "alphaDegrees": 1.7750000000000001,
+      "lateralRaw": 2.4152260552047933,
+      "lateralCapped": 1,
+      "kappa": 0.035500000000000004,
+      "longitudinalRaw": 2.0636402537826455
+    },
+    {
+      "alphaDegrees": 1.8,
+      "lateralRaw": 2.3984106330608523,
+      "lateralCapped": 1,
+      "kappa": 0.036000000000000004,
+      "longitudinalRaw": 2.046730585239369
+    },
+    {
+      "alphaDegrees": 1.8250000000000002,
+      "lateralRaw": 2.3817533285331054,
+      "lateralCapped": 1,
+      "kappa": 0.0365,
+      "longitudinalRaw": 2.030111715923344
+    },
+    {
+      "alphaDegrees": 1.85,
+      "lateralRaw": 2.3652587728978074,
+      "lateralCapped": 1,
+      "kappa": 0.037,
+      "longitudinalRaw": 2.0137791143226926
+    },
+    {
+      "alphaDegrees": 1.875,
+      "lateralRaw": 2.3489309020677083,
+      "lateralCapped": 1,
+      "kappa": 0.0375,
+      "longitudinalRaw": 1.997728125975635
+    },
+    {
+      "alphaDegrees": 1.9000000000000001,
+      "lateralRaw": 2.3327730200327754,
+      "lateralCapped": 1,
+      "kappa": 0.038,
+      "longitudinalRaw": 1.9819540021575606
+    },
+    {
+      "alphaDegrees": 1.925,
+      "lateralRaw": 2.3167878569247655,
+      "lateralCapped": 1,
+      "kappa": 0.0385,
+      "longitudinalRaw": 1.966451925095987
+    },
+    {
+      "alphaDegrees": 1.9500000000000002,
+      "lateralRaw": 2.3009776221521694,
+      "lateralCapped": 1,
+      "kappa": 0.039,
+      "longitudinalRaw": 1.9512170300977536
+    },
+    {
+      "alphaDegrees": 1.975,
+      "lateralRaw": 2.2853440530161953,
+      "lateralCapped": 1,
+      "kappa": 0.0395,
+      "longitudinalRaw": 1.9362444249305493
+    },
+    {
+      "alphaDegrees": 2,
+      "lateralRaw": 2.2698884591851582,
+      "lateralCapped": 1,
+      "kappa": 0.04,
+      "longitudinalRaw": 1.9215292067632472
+    },
+    {
+      "alphaDegrees": 2.025,
+      "lateralRaw": 2.2546117633738736,
+      "lateralCapped": 1,
+      "kappa": 0.0405,
+      "longitudinalRaw": 1.9070664769361472
+    },
+    {
+      "alphaDegrees": 2.0500000000000003,
+      "lateralRaw": 2.2395145385461257,
+      "lateralCapped": 1,
+      "kappa": 0.041,
+      "longitudinalRaw": 1.8928513538025187
+    },
+    {
+      "alphaDegrees": 2.075,
+      "lateralRaw": 2.2245970419320944,
+      "lateralCapped": 1,
+      "kappa": 0.0415,
+      "longitudinalRaw": 1.87887898385646
+    },
+    {
+      "alphaDegrees": 2.1,
+      "lateralRaw": 2.2098592461283264,
+      "lateralCapped": 1,
+      "kappa": 0.042,
+      "longitudinalRaw": 1.8651445513385831
+    },
+    {
+      "alphaDegrees": 2.125,
+      "lateralRaw": 2.195300867525635,
+      "lateralCapped": 1,
+      "kappa": 0.0425,
+      "longitudinalRaw": 1.8516432864901835
+    },
+    {
+      "alphaDegrees": 2.15,
+      "lateralRaw": 2.180921392289749,
+      "lateralCapped": 1,
+      "kappa": 0.043000000000000003,
+      "longitudinalRaw": 1.8383704726079588
+    },
+    {
+      "alphaDegrees": 2.1750000000000003,
+      "lateralRaw": 2.166720100100751,
+      "lateralCapped": 1,
+      "kappa": 0.043500000000000004,
+      "longitudinalRaw": 1.825321452034798
+    },
+    {
+      "alphaDegrees": 2.2,
+      "lateralRaw": 2.1526960858400144,
+      "lateralCapped": 1,
+      "kappa": 0.044,
+      "longitudinalRaw": 1.81249163120745
+    },
+    {
+      "alphaDegrees": 2.225,
+      "lateralRaw": 2.138848279397513,
+      "lateralCapped": 1,
+      "kappa": 0.0445,
+      "longitudinalRaw": 1.7998764848687827
+    },
+    {
+      "alphaDegrees": 2.25,
+      "lateralRaw": 2.1251754637578104,
+      "lateralCapped": 1,
+      "kappa": 0.045,
+      "longitudinalRaw": 1.7874715595406236
+    },
+    {
+      "alphaDegrees": 2.275,
+      "lateralRaw": 2.111676291509697,
+      "lateralCapped": 1,
+      "kappa": 0.0455,
+      "longitudinalRaw": 1.7752724763428247
+    },
+    {
+      "alphaDegrees": 2.3000000000000003,
+      "lateralRaw": 2.09834929991223,
+      "lateralCapped": 1,
+      "kappa": 0.046,
+      "longitudinalRaw": 1.763274933234854
+    },
+    {
+      "alphaDegrees": 2.325,
+      "lateralRaw": 2.085192924638741,
+      "lateralCapped": 1,
+      "kappa": 0.0465,
+      "longitudinalRaw": 1.7514747067480179
+    },
+    {
+      "alphaDegrees": 2.35,
+      "lateralRaw": 2.0722055123100764,
+      "lateralCapped": 1,
+      "kappa": 0.047,
+      "longitudinalRaw": 1.7398676532689723
+    },
+    {
+      "alphaDegrees": 2.375,
+      "lateralRaw": 2.0593853319190516,
+      "lateralCapped": 1,
+      "kappa": 0.0475,
+      "longitudinalRaw": 1.7284497099286589
+    },
+    {
+      "alphaDegrees": 2.4000000000000004,
+      "lateralRaw": 2.046730585239369,
+      "lateralCapped": 1,
+      "kappa": 0.048,
+      "longitudinalRaw": 1.7172168951448854
+    },
+    {
+      "alphaDegrees": 2.4250000000000003,
+      "lateralRaw": 2.034239416304528,
+      "lateralCapped": 1,
+      "kappa": 0.0485,
+      "longitudinalRaw": 1.7061653088615842
+    },
+    {
+      "alphaDegrees": 2.45,
+      "lateralRaw": 2.02190992003495,
+      "lateralCapped": 1,
+      "kappa": 0.049,
+      "longitudinalRaw": 1.6952911325230304
+    },
+    {
+      "alphaDegrees": 2.475,
+      "lateralRaw": 2.0097401500850105,
+      "lateralCapped": 1,
+      "kappa": 0.0495,
+      "longitudinalRaw": 1.6845906288171997
+    },
+    {
+      "alphaDegrees": 2.5,
+      "lateralRaw": 1.997728125975635,
+      "lateralCapped": 1,
+      "kappa": 0.05,
+      "longitudinalRaw": 1.6740601412186706
+    },
+    {
+      "alphaDegrees": 2.5250000000000004,
+      "lateralRaw": 1.9858718395725912,
+      "lateralCapped": 1,
+      "kappa": 0.0505,
+      "longitudinalRaw": 1.6636960933581404
+    },
+    {
+      "alphaDegrees": 2.5500000000000003,
+      "lateralRaw": 1.974169260965583,
+      "lateralCapped": 1,
+      "kappa": 0.051000000000000004,
+      "longitudinalRaw": 1.6534949882426717
+    },
+    {
+      "alphaDegrees": 2.575,
+      "lateralRaw": 1.9626183437985898,
+      "lateralCapped": 1,
+      "kappa": 0.051500000000000004,
+      "longitudinalRaw": 1.6434534073481113
+    },
+    {
+      "alphaDegrees": 2.6,
+      "lateralRaw": 1.9512170300977536,
+      "lateralCapped": 1,
+      "kappa": 0.052000000000000005,
+      "longitudinalRaw": 1.633568009602731
+    },
+    {
+      "alphaDegrees": 2.625,
+      "lateralRaw": 1.939963254639141,
+      "lateralCapped": 1,
+      "kappa": 0.0525,
+      "longitudinalRaw": 1.6238355302790377
+    },
+    {
+      "alphaDegrees": 2.6500000000000004,
+      "lateralRaw": 1.9288549488952629,
+      "lateralCapped": 1,
+      "kappa": 0.053,
+      "longitudinalRaw": 1.614252779808789
+    },
+    {
+      "alphaDegrees": 2.6750000000000003,
+      "lateralRaw": 1.917890044595941,
+      "lateralCapped": 1,
+      "kappa": 0.0535,
+      "longitudinalRaw": 1.6048166425345392
+    },
+    {
+      "alphaDegrees": 2.7,
+      "lateralRaw": 1.9070664769361472,
+      "lateralCapped": 1,
+      "kappa": 0.054,
+      "longitudinalRaw": 1.5955240754095386
+    },
+    {
+      "alphaDegrees": 2.725,
+      "lateralRaw": 1.896382187460756,
+      "lateralCapped": 1,
+      "kappa": 0.0545,
+      "longitudinalRaw": 1.5863721066564476
+    },
+    {
+      "alphaDegrees": 2.75,
+      "lateralRaw": 1.8858351266536275,
+      "lateralCapped": 1,
+      "kappa": 0.055,
+      "longitudinalRaw": 1.577357834394097
+    },
+    {
+      "alphaDegrees": 2.7750000000000004,
+      "lateralRaw": 1.8754232562561908,
+      "lateralCapped": 1,
+      "kappa": 0.0555,
+      "longitudinalRaw": 1.5684784252404655
+    },
+    {
+      "alphaDegrees": 2.8000000000000003,
+      "lateralRaw": 1.8651445513385831,
+      "lateralCapped": 1,
+      "kappa": 0.056,
+      "longitudinalRaw": 1.5597311128990476
+    },
+    {
+      "alphaDegrees": 2.825,
+      "lateralRaw": 1.854997002144512,
+      "lateralCapped": 1,
+      "kappa": 0.0565,
+      "longitudinalRaw": 1.5511131967349405
+    },
+    {
+      "alphaDegrees": 2.85,
+      "lateralRaw": 1.8449786157292458,
+      "lateralCapped": 1,
+      "kappa": 0.057,
+      "longitudinalRaw": 1.5426220403461912
+    },
+    {
+      "alphaDegrees": 2.875,
+      "lateralRaw": 1.8350874174085356,
+      "lateralCapped": 1,
+      "kappa": 0.0575,
+      "longitudinalRaw": 1.5342550701352562
+    },
+    {
+      "alphaDegrees": 2.9000000000000004,
+      "lateralRaw": 1.825321452034798,
+      "lateralCapped": 1,
+      "kappa": 0.058,
+      "longitudinalRaw": 1.5260097738848037
+    },
+    {
+      "alphaDegrees": 2.9250000000000003,
+      "lateralRaw": 1.8156787851155367,
+      "lateralCapped": 1,
+      "kappa": 0.0585,
+      "longitudinalRaw": 1.5178836993415468
+    },
+    {
+      "alphaDegrees": 2.95,
+      "lateralRaw": 1.8061575037877686,
+      "lateralCapped": 1,
+      "kappa": 0.059000000000000004,
+      "longitudinalRaw": 1.5098744528112915
+    },
+    {
+      "alphaDegrees": 2.975,
+      "lateralRaw": 1.7967557176610396,
+      "lateralCapped": 1,
+      "kappa": 0.059500000000000004,
+      "longitudinalRaw": 1.5019796977679434
+    },
+    {
+      "alphaDegrees": 3,
+      "lateralRaw": 1.7874715595406236,
+      "lateralCapped": 1,
+      "kappa": 0.06,
+      "longitudinalRaw": 1.4941971534788474
+    },
+    {
+      "alphaDegrees": 3.0250000000000004,
+      "lateralRaw": 1.7783031860415281,
+      "lateralCapped": 1,
+      "kappa": 0.0605,
+      "longitudinalRaw": 1.4865245936484532
+    },
+    {
+      "alphaDegrees": 3.0500000000000003,
+      "lateralRaw": 1.7692487781030237,
+      "lateralCapped": 1,
+      "kappa": 0.061,
+      "longitudinalRaw": 1.4789598450820078
+    },
+    {
+      "alphaDegrees": 3.075,
+      "lateralRaw": 1.7603065414126688,
+      "lateralCapped": 1,
+      "kappa": 0.0615,
+      "longitudinalRaw": 1.471500786370709
+    },
+    {
+      "alphaDegrees": 3.1,
+      "lateralRaw": 1.7514747067480179,
+      "lateralCapped": 1,
+      "kappa": 0.062,
+      "longitudinalRaw": 1.4641453465994723
+    },
+    {
+      "alphaDegrees": 3.125,
+      "lateralRaw": 1.7427515302435477,
+      "lateralCapped": 1,
+      "kappa": 0.0625,
+      "longitudinalRaw": 1.4568915040782968
+    },
+    {
+      "alphaDegrees": 3.1500000000000004,
+      "lateralRaw": 1.734135293589708,
+      "lateralCapped": 1,
+      "kappa": 0.063,
+      "longitudinalRaw": 1.4497372850979806
+    },
+    {
+      "alphaDegrees": 3.1750000000000003,
+      "lateralRaw": 1.7256243041704256,
+      "lateralCapped": 1,
+      "kappa": 0.0635,
+      "longitudinalRaw": 1.4426807627107756
+    },
+    {
+      "alphaDegrees": 3.2,
+      "lateralRaw": 1.7172168951448854,
+      "lateralCapped": 1,
+      "kappa": 0.064,
+      "longitudinalRaw": 1.4357200555364331
+    },
+    {
+      "alphaDegrees": 3.225,
+      "lateralRaw": 1.7089114254789268,
+      "lateralCapped": 1,
+      "kappa": 0.0645,
+      "longitudinalRaw": 1.4288533265939565
+    },
+    {
+      "alphaDegrees": 3.25,
+      "lateralRaw": 1.700706279930918,
+      "lateralCapped": 1,
+      "kappa": 0.065,
+      "longitudinalRaw": 1.4220787821592293
+    },
+    {
+      "alphaDegrees": 3.2750000000000004,
+      "lateralRaw": 1.6925998689966297,
+      "lateralCapped": 1,
+      "kappa": 0.0655,
+      "longitudinalRaw": 1.415394670648638
+    },
+    {
+      "alphaDegrees": 3.3000000000000003,
+      "lateralRaw": 1.6845906288171997,
+      "lateralCapped": 1,
+      "kappa": 0.066,
+      "longitudinalRaw": 1.4087992815286643
+    },
+    {
+      "alphaDegrees": 3.325,
+      "lateralRaw": 1.6766770210539503,
+      "lateralCapped": 1,
+      "kappa": 0.0665,
+      "longitudinalRaw": 1.4022909442513756
+    },
+    {
+      "alphaDegrees": 3.35,
+      "lateralRaw": 1.6688575327335369,
+      "lateralCapped": 1,
+      "kappa": 0.067,
+      "longitudinalRaw": 1.3958680272156654
+    },
+    {
+      "alphaDegrees": 3.375,
+      "lateralRaw": 1.661130676066581,
+      "lateralCapped": 1,
+      "kappa": 0.0675,
+      "longitudinalRaw": 1.3895289367540362
+    },
+    {
+      "alphaDegrees": 3.4000000000000004,
+      "lateralRaw": 1.6534949882426717,
+      "lateralCapped": 1,
+      "kappa": 0.068,
+      "longitudinalRaw": 1.3832721161446582
+    },
+    {
+      "alphaDegrees": 3.4250000000000003,
+      "lateralRaw": 1.6459490312044287,
+      "lateralCapped": 1,
+      "kappa": 0.0685,
+      "longitudinalRaw": 1.3770960446484035
+    },
+    {
+      "alphaDegrees": 3.45,
+      "lateralRaw": 1.6384913914030148,
+      "lateralCapped": 1,
+      "kappa": 0.069,
+      "longitudinalRaw": 1.3709992365705148
+    },
+    {
+      "alphaDegrees": 3.475,
+      "lateralRaw": 1.6311206795373467,
+      "lateralCapped": 1,
+      "kappa": 0.0695,
+      "longitudinalRaw": 1.3649802403465294
+    },
+    {
+      "alphaDegrees": 3.5,
+      "lateralRaw": 1.6238355302790377,
+      "lateralCapped": 1,
+      "kappa": 0.07,
+      "longitudinalRaw": 1.359037637652068
+    },
+    {
+      "alphaDegrees": 3.5250000000000004,
+      "lateralRaw": 1.6166346019849223,
+      "lateralCapped": 1,
+      "kappa": 0.07050000000000001,
+      "longitudinalRaw": 1.3531700425360484
+    },
+    {
+      "alphaDegrees": 3.5500000000000003,
+      "lateralRaw": 1.6095165763988593,
+      "lateralCapped": 1,
+      "kappa": 0.07100000000000001,
+      "longitudinalRaw": 1.3473761005769063
+    },
+    {
+      "alphaDegrees": 3.575,
+      "lateralRaw": 1.6024801583443704,
+      "lateralCapped": 1,
+      "kappa": 0.07150000000000001,
+      "longitudinalRaw": 1.341654488061347
+    },
+    {
+      "alphaDegrees": 3.6,
+      "lateralRaw": 1.5955240754095386,
+      "lateralCapped": 1,
+      "kappa": 0.07200000000000001,
+      "longitudinalRaw": 1.336003911185169
+    },
+    {
+      "alphaDegrees": 3.625,
+      "lateralRaw": 1.5886470776254333,
+      "lateralCapped": 1,
+      "kappa": 0.0725,
+      "longitudinalRaw": 1.3304231052756943
+    },
+    {
+      "alphaDegrees": 3.6500000000000004,
+      "lateralRaw": 1.5818479371392538,
+      "lateralCapped": 1,
+      "kappa": 0.073,
+      "longitudinalRaw": 1.3249108340353066
+    },
+    {
+      "alphaDegrees": 3.6750000000000003,
+      "lateralRaw": 1.575125447883262,
+      "lateralCapped": 1,
+      "kappa": 0.0735,
+      "longitudinalRaw": 1.3194658888056314
+    },
+    {
+      "alphaDegrees": 3.7,
+      "lateralRaw": 1.5684784252404655,
+      "lateralCapped": 1,
+      "kappa": 0.074,
+      "longitudinalRaw": 1.314087087851861
+    },
+    {
+      "alphaDegrees": 3.725,
+      "lateralRaw": 1.5619057057079548,
+      "lateralCapped": 1,
+      "kappa": 0.0745,
+      "longitudinalRaw": 1.3087732756667454
+    },
+    {
+      "alphaDegrees": 3.75,
+      "lateralRaw": 1.5554061465586613,
+      "lateralCapped": 1,
+      "kappa": 0.075,
+      "longitudinalRaw": 1.3035233222937523
+    },
+    {
+      "alphaDegrees": 3.7750000000000004,
+      "lateralRaw": 1.548978625502311,
+      "lateralCapped": 1,
+      "kappa": 0.0755,
+      "longitudinalRaw": 1.2983361226689385
+    },
+    {
+      "alphaDegrees": 3.8000000000000003,
+      "lateralRaw": 1.5426220403461912,
+      "lateralCapped": 1,
+      "kappa": 0.076,
+      "longitudinalRaw": 1.293210595981033
+    },
+    {
+      "alphaDegrees": 3.825,
+      "lateralRaw": 1.5363353086563394,
+      "lateralCapped": 1,
+      "kappa": 0.0765,
+      "longitudinalRaw": 1.288145685049275
+    },
+    {
+      "alphaDegrees": 3.85,
+      "lateralRaw": 1.5301173674196815,
+      "lateralCapped": 1,
+      "kappa": 0.077,
+      "longitudinalRaw": 1.2831403557185248
+    },
+    {
+      "alphaDegrees": 3.875,
+      "lateralRaw": 1.5239671727076345,
+      "lateralCapped": 1,
+      "kappa": 0.0775,
+      "longitudinalRaw": 1.2781935962712092
+    },
+    {
+      "alphaDegrees": 3.9000000000000004,
+      "lateralRaw": 1.5178836993415468,
+      "lateralCapped": 1,
+      "kappa": 0.078,
+      "longitudinalRaw": 1.273304416855629
+    },
+    {
+      "alphaDegrees": 3.9250000000000003,
+      "lateralRaw": 1.5118659405604191,
+      "lateralCapped": 1,
+      "kappa": 0.0785,
+      "longitudinalRaw": 1.268471848930197
+    },
+    {
+      "alphaDegrees": 3.95,
+      "lateralRaw": 1.5059129076912159,
+      "lateralCapped": 1,
+      "kappa": 0.079,
+      "longitudinalRaw": 1.2636949447231622
+    },
+    {
+      "alphaDegrees": 3.975,
+      "lateralRaw": 1.5000236298220997,
+      "lateralCapped": 1,
+      "kappa": 0.0795,
+      "longitudinalRaw": 1.2589727767073937
+    },
+    {
+      "alphaDegrees": 4,
+      "lateralRaw": 1.4941971534788474,
+      "lateralCapped": 1,
+      "kappa": 0.08,
+      "longitudinalRaw": 1.2543044370898115
+    },
+    {
+      "alphaDegrees": 4.025,
+      "lateralRaw": 1.4884325423046842,
+      "lateralCapped": 1,
+      "kappa": 0.0805,
+      "longitudinalRaw": 1.2496890373150398
+    },
+    {
+      "alphaDegrees": 4.05,
+      "lateralRaw": 1.4827288767437634,
+      "lateralCapped": 1,
+      "kappa": 0.081,
+      "longitudinalRaw": 1.245125707582893
+    },
+    {
+      "alphaDegrees": 4.075,
+      "lateralRaw": 1.4770852537284727,
+      "lateralCapped": 1,
+      "kappa": 0.0815,
+      "longitudinalRaw": 1.240613596379296
+    },
+    {
+      "alphaDegrees": 4.1000000000000005,
+      "lateralRaw": 1.471500786370709,
+      "lateralCapped": 1,
+      "kappa": 0.082,
+      "longitudinalRaw": 1.2361518700202678
+    },
+    {
+      "alphaDegrees": 4.125,
+      "lateralRaw": 1.4659746036572892,
+      "lateralCapped": 1,
+      "kappa": 0.0825,
+      "longitudinalRaw": 1.2317397122085614
+    },
+    {
+      "alphaDegrees": 4.15,
+      "lateralRaw": 1.4605058501495896,
+      "lateralCapped": 1,
+      "kappa": 0.083,
+      "longitudinalRaw": 1.2273763236026425
+    },
+    {
+      "alphaDegrees": 4.175,
+      "lateralRaw": 1.4550936856875327,
+      "lateralCapped": 1,
+      "kappa": 0.0835,
+      "longitudinalRaw": 1.2230609213976158
+    },
+    {
+      "alphaDegrees": 4.2,
+      "lateralRaw": 1.4497372850979806,
+      "lateralCapped": 1,
+      "kappa": 0.084,
+      "longitudinalRaw": 1.2187927389177613
+    },
+    {
+      "alphaDegrees": 4.2250000000000005,
+      "lateralRaw": 1.444435837907625,
+      "lateralCapped": 1,
+      "kappa": 0.0845,
+      "longitudinalRaw": 1.2145710252203539
+    },
+    {
+      "alphaDegrees": 4.25,
+      "lateralRaw": 1.439188548060403,
+      "lateralCapped": 1,
+      "kappa": 0.085,
+      "longitudinalRaw": 1.2103950447104221
+    },
+    {
+      "alphaDegrees": 4.275,
+      "lateralRaw": 1.4339946336395017,
+      "lateralCapped": 1,
+      "kappa": 0.0855,
+      "longitudinalRaw": 1.2062640767661454
+    },
+    {
+      "alphaDegrees": 4.3,
+      "lateralRaw": 1.4288533265939565,
+      "lateralCapped": 1,
+      "kappa": 0.08600000000000001,
+      "longitudinalRaw": 1.2021774153745597
+    },
+    {
+      "alphaDegrees": 4.325,
+      "lateralRaw": 1.423763872469872,
+      "lateralCapped": 1,
+      "kappa": 0.08650000000000001,
+      "longitudinalRaw": 1.1981343687772874
+    },
+    {
+      "alphaDegrees": 4.3500000000000005,
+      "lateralRaw": 1.4187255301462731,
+      "lateralCapped": 1,
+      "kappa": 0.08700000000000001,
+      "longitudinalRaw": 1.1941342591259754
+    },
+    {
+      "alphaDegrees": 4.375,
+      "lateralRaw": 1.4137375715755718,
+      "lateralCapped": 1,
+      "kappa": 0.08750000000000001,
+      "longitudinalRaw": 1.190176422147191
+    },
+    {
+      "alphaDegrees": 4.4,
+      "lateralRaw": 1.4087992815286643,
+      "lateralCapped": 1,
+      "kappa": 0.088,
+      "longitudinalRaw": 1.186260206816458
+    },
+    {
+      "alphaDegrees": 4.425,
+      "lateralRaw": 1.4039099573446134,
+      "lateralCapped": 1,
+      "kappa": 0.0885,
+      "longitudinalRaw": 1.1823849750412043
+    },
+    {
+      "alphaDegrees": 4.45,
+      "lateralRaw": 1.3990689086849106,
+      "lateralCapped": 1,
+      "kappa": 0.089,
+      "longitudinalRaw": 1.1785501013523143
+    },
+    {
+      "alphaDegrees": 4.4750000000000005,
+      "lateralRaw": 1.3942754572922862,
+      "lateralCapped": 1,
+      "kappa": 0.0895,
+      "longitudinalRaw": 1.1747549726040865
+    },
+    {
+      "alphaDegrees": 4.5,
+      "lateralRaw": 1.3895289367540362,
+      "lateralCapped": 1,
+      "kappa": 0.09,
+      "longitudinalRaw": 1.1709989876823033
+    },
+    {
+      "alphaDegrees": 4.525,
+      "lateralRaw": 1.3848286922698076,
+      "lateralCapped": 1,
+      "kappa": 0.0905,
+      "longitudinalRaw": 1.1672815572201911
+    },
+    {
+      "alphaDegrees": 4.55,
+      "lateralRaw": 1.3801740804238356,
+      "lateralCapped": 1,
+      "kappa": 0.091,
+      "longitudinalRaw": 1.1636021033220547
+    },
+    {
+      "alphaDegrees": 4.575,
+      "lateralRaw": 1.375564468961549,
+      "lateralCapped": 1,
+      "kappa": 0.0915,
+      "longitudinalRaw": 1.1599600592943358
+    },
+    {
+      "alphaDegrees": 4.6000000000000005,
+      "lateralRaw": 1.3709992365705148,
+      "lateralCapped": 1,
+      "kappa": 0.092,
+      "longitudinalRaw": 1.1563548693838896
+    },
+    {
+      "alphaDegrees": 4.625,
+      "lateralRaw": 1.3664777726656752,
+      "lateralCapped": 1,
+      "kappa": 0.0925,
+      "longitudinalRaw": 1.1527859885232712
+    },
+    {
+      "alphaDegrees": 4.65,
+      "lateralRaw": 1.3619994771788002,
+      "lateralCapped": 1,
+      "kappa": 0.093,
+      "longitudinalRaw": 1.1492528820828187
+    },
+    {
+      "alphaDegrees": 4.675,
+      "lateralRaw": 1.3575637603521153,
+      "lateralCapped": 1,
+      "kappa": 0.0935,
+      "longitudinalRaw": 1.1457550256293447
+    },
+    {
+      "alphaDegrees": 4.7,
+      "lateralRaw": 1.3531700425360484,
+      "lateralCapped": 1,
+      "kappa": 0.094,
+      "longitudinalRaw": 1.1422919046912197
+    },
+    {
+      "alphaDegrees": 4.7250000000000005,
+      "lateralRaw": 1.348817753991016,
+      "lateralCapped": 1,
+      "kappa": 0.0945,
+      "longitudinalRaw": 1.1388630145297012
+    },
+    {
+      "alphaDegrees": 4.75,
+      "lateralRaw": 1.3445063346932196,
+      "lateralCapped": 1,
+      "kappa": 0.095,
+      "longitudinalRaw": 1.1354678599162795
+    },
+    {
+      "alphaDegrees": 4.775,
+      "lateralRaw": 1.3402352341443493,
+      "lateralCapped": 1,
+      "kappa": 0.0955,
+      "longitudinalRaw": 1.132105954915908
+    },
+    {
+      "alphaDegrees": 4.800000000000001,
+      "lateralRaw": 1.336003911185169,
+      "lateralCapped": 1,
+      "kappa": 0.096,
+      "longitudinalRaw": 1.1287768226759078
+    },
+    {
+      "alphaDegrees": 4.825,
+      "lateralRaw": 1.3318118338128981,
+      "lateralCapped": 1,
+      "kappa": 0.0965,
+      "longitudinalRaw": 1.1254799952204153
+    },
+    {
+      "alphaDegrees": 4.8500000000000005,
+      "lateralRaw": 1.3276584790023234,
+      "lateralCapped": 1,
+      "kappa": 0.097,
+      "longitudinalRaw": 1.1222150132501962
+    },
+    {
+      "alphaDegrees": 4.875,
+      "lateralRaw": 1.323543332530598,
+      "lateralCapped": 1,
+      "kappa": 0.0975,
+      "longitudinalRaw": 1.1189814259476656
+    },
+    {
+      "alphaDegrees": 4.9,
+      "lateralRaw": 1.31946588880563,
+      "lateralCapped": 1,
+      "kappa": 0.098,
+      "longitudinalRaw": 1.1157787907869776
+    },
+    {
+      "alphaDegrees": 4.925000000000001,
+      "lateralRaw": 1.315425650698037,
+      "lateralCapped": 1,
+      "kappa": 0.0985,
+      "longitudinalRaw": 1.1126066733490245
+    },
+    {
+      "alphaDegrees": 4.95,
+      "lateralRaw": 1.3114221293765473,
+      "lateralCapped": 1,
+      "kappa": 0.099,
+      "longitudinalRaw": 1.1094646471412228
+    },
+    {
+      "alphaDegrees": 4.9750000000000005,
+      "lateralRaw": 1.307454844146847,
+      "lateralCapped": 1,
+      "kappa": 0.0995,
+      "longitudinalRaw": 1.1063522934219194
+    },
+    {
+      "alphaDegrees": 5,
+      "lateralRaw": 1.3035233222937523,
+      "lateralCapped": 1,
+      "kappa": 0.1,
+      "longitudinalRaw": 1.1032692010293217
+    },
+    {
+      "alphaDegrees": 5.025,
+      "lateralRaw": 1.2996270989266798,
+      "lateralCapped": 1,
+      "kappa": 0.1005,
+      "longitudinalRaw": 1.1002149662147942
+    },
+    {
+      "alphaDegrees": 5.050000000000001,
+      "lateralRaw": 1.2957657168283383,
+      "lateralCapped": 1,
+      "kappa": 0.101,
+      "longitudinalRaw": 1.0971891924804036
+    },
+    {
+      "alphaDegrees": 5.075,
+      "lateralRaw": 1.2919387263065631,
+      "lateralCapped": 1,
+      "kappa": 0.1015,
+      "longitudinalRaw": 1.0941914904206005
+    },
+    {
+      "alphaDegrees": 5.1000000000000005,
+      "lateralRaw": 1.288145685049275,
+      "lateralCapped": 1,
+      "kappa": 0.10200000000000001,
+      "longitudinalRaw": 1.0912214775679125
+    },
+    {
+      "alphaDegrees": 5.125,
+      "lateralRaw": 1.2843861579824465,
+      "lateralCapped": 1,
+      "kappa": 0.10250000000000001,
+      "longitudinalRaw": 1.0882787782425378
+    },
+    {
+      "alphaDegrees": 5.15,
+      "lateralRaw": 1.28065971713106,
+      "lateralCapped": 1,
+      "kappa": 0.10300000000000001,
+      "longitudinalRaw": 1.0853630234057168
+    },
+    {
+      "alphaDegrees": 5.175000000000001,
+      "lateralRaw": 1.2769659414829713,
+      "lateralCapped": 1,
+      "kappa": 0.10350000000000001,
+      "longitudinalRaw": 1.0824738505168061
+    },
+    {
+      "alphaDegrees": 5.2,
+      "lateralRaw": 1.273304416855629,
+      "lateralCapped": 1,
+      "kappa": 0.10400000000000001,
+      "longitudinalRaw": 1.0796109033939119
+    },
+    {
+      "alphaDegrees": 5.2250000000000005,
+      "lateralRaw": 1.2696747357655862,
+      "lateralCapped": 1,
+      "kappa": 0.1045,
+      "longitudinalRaw": 1.076773832078009
+    },
+    {
+      "alphaDegrees": 5.25,
+      "lateralRaw": 1.2660764973007543,
+      "lateralCapped": 1,
+      "kappa": 0.105,
+      "longitudinalRaw": 1.0739622927004453
+    },
+    {
+      "alphaDegrees": 5.275,
+      "lateralRaw": 1.262509306995341,
+      "lateralCapped": 1,
+      "kappa": 0.1055,
+      "longitudinalRaw": 1.0711759473537188
+    },
+    {
+      "alphaDegrees": 5.300000000000001,
+      "lateralRaw": 1.2589727767073937,
+      "lateralCapped": 1,
+      "kappa": 0.106,
+      "longitudinalRaw": 1.0684144639654591
+    },
+    {
+      "alphaDegrees": 5.325,
+      "lateralRaw": 1.2554665244989347,
+      "lateralCapped": 1,
+      "kappa": 0.1065,
+      "longitudinalRaw": 1.065677516175517
+    },
+    {
+      "alphaDegrees": 5.3500000000000005,
+      "lateralRaw": 1.2519901745185986,
+      "lateralCapped": 1,
+      "kappa": 0.107,
+      "longitudinalRaw": 1.0629647832160605
+    },
+    {
+      "alphaDegrees": 5.375,
+      "lateralRaw": 1.2485433568867295,
+      "lateralCapped": 1,
+      "kappa": 0.1075,
+      "longitudinalRaw": 1.0602759497946233
+    },
+    {
+      "alphaDegrees": 5.4,
+      "lateralRaw": 1.245125707582893,
+      "lateralCapped": 1,
+      "kappa": 0.108,
+      "longitudinalRaw": 1.0576107059799889
+    },
+    {
+      "alphaDegrees": 5.425000000000001,
+      "lateralRaw": 1.2417368683357395,
+      "lateralCapped": 1,
+      "kappa": 0.1085,
+      "longitudinalRaw": 1.0549687470908682
+    },
+    {
+      "alphaDegrees": 5.45,
+      "lateralRaw": 1.23837648651518,
+      "lateralCapped": 1,
+      "kappa": 0.109,
+      "longitudinalRaw": 1.0523497735872713
+    },
+    {
+      "alphaDegrees": 5.4750000000000005,
+      "lateralRaw": 1.2350442150268137,
+      "lateralCapped": 1,
+      "kappa": 0.1095,
+      "longitudinalRaw": 1.049753490964496
+    },
+    {
+      "alphaDegrees": 5.5,
+      "lateralRaw": 1.2317397122085614,
+      "lateralCapped": 1,
+      "kappa": 0.11,
+      "longitudinalRaw": 1.0471796096496906
+    },
+    {
+      "alphaDegrees": 5.525,
+      "lateralRaw": 1.2284626417294602,
+      "lateralCapped": 1,
+      "kappa": 0.1105,
+      "longitudinalRaw": 1.0446278449008801
+    },
+    {
+      "alphaDegrees": 5.550000000000001,
+      "lateralRaw": 1.225212672490581,
+      "lateralCapped": 1,
+      "kappa": 0.111,
+      "longitudinalRaw": 1.0420979167084248
+    },
+    {
+      "alphaDegrees": 5.575,
+      "lateralRaw": 1.2219894785279914,
+      "lateralCapped": 1,
+      "kappa": 0.1115,
+      "longitudinalRaw": 1.0395895496988192
+    },
+    {
+      "alphaDegrees": 5.6000000000000005,
+      "lateralRaw": 1.2187927389177613,
+      "lateralCapped": 1,
+      "kappa": 0.112,
+      "longitudinalRaw": 1.0371024730407954
+    },
+    {
+      "alphaDegrees": 5.625,
+      "lateralRaw": 1.215622137682934,
+      "lateralCapped": 1,
+      "kappa": 0.1125,
+      "longitudinalRaw": 1.0346364203536356
+    },
+    {
+      "alphaDegrees": 5.65,
+      "lateralRaw": 1.2124773637024313,
+      "lateralCapped": 1,
+      "kappa": 0.113,
+      "longitudinalRaw": 1.0321911296176625
+    },
+    {
+      "alphaDegrees": 5.675000000000001,
+      "lateralRaw": 1.2093581106218578,
+      "lateralCapped": 1,
+      "kappa": 0.1135,
+      "longitudinalRaw": 1.0297663430868347
+    },
+    {
+      "alphaDegrees": 5.7,
+      "lateralRaw": 1.2062640767661454,
+      "lateralCapped": 1,
+      "kappa": 0.114,
+      "longitudinalRaw": 1.0273618072033948
+    },
+    {
+      "alphaDegrees": 5.7250000000000005,
+      "lateralRaw": 1.2031949650540146,
+      "lateralCapped": 1,
+      "kappa": 0.1145,
+      "longitudinalRaw": 1.024977272514518
+    },
+    {
+      "alphaDegrees": 5.75,
+      "lateralRaw": 1.2001504829142011,
+      "lateralCapped": 1,
+      "kappa": 0.115,
+      "longitudinalRaw": 1.0226124935909007
+    },
+    {
+      "alphaDegrees": 5.775,
+      "lateralRaw": 1.1971303422034116,
+      "lateralCapped": 1,
+      "kappa": 0.1155,
+      "longitudinalRaw": 1.0202672289472476
+    },
+    {
+      "alphaDegrees": 5.800000000000001,
+      "lateralRaw": 1.1941342591259754,
+      "lateralCapped": 1,
+      "kappa": 0.116,
+      "longitudinalRaw": 1.017941240964601
+    },
+    {
+      "alphaDegrees": 5.825,
+      "lateralRaw": 1.1911619541551512,
+      "lateralCapped": 1,
+      "kappa": 0.1165,
+      "longitudinalRaw": 1.0156342958144582
+    },
+    {
+      "alphaDegrees": 5.8500000000000005,
+      "lateralRaw": 1.1882131519560388,
+      "lateralCapped": 1,
+      "kappa": 0.117,
+      "longitudinalRaw": 1.0133461633846501
+    },
+    {
+      "alphaDegrees": 5.875,
+      "lateralRaw": 1.1852875813101034,
+      "lateralCapped": 1,
+      "kappa": 0.11750000000000001,
+      "longitudinalRaw": 1.011076617206906
+    },
+    {
+      "alphaDegrees": 5.9,
+      "lateralRaw": 1.1823849750412043,
+      "lateralCapped": 1,
+      "kappa": 0.11800000000000001,
+      "longitudinalRaw": 1.0088254343860916
+    },
+    {
+      "alphaDegrees": 5.925000000000001,
+      "lateralRaw": 1.179505069943178,
+      "lateralCapped": 1,
+      "kappa": 0.11850000000000001,
+      "longitudinalRaw": 1.0065923955310454
+    },
+    {
+      "alphaDegrees": 5.95,
+      "lateralRaw": 1.1766476067088778,
+      "lateralCapped": 1,
+      "kappa": 0.11900000000000001,
+      "longitudinalRaw": 1.0043772846869996
+    },
+    {
+      "alphaDegrees": 5.9750000000000005,
+      "lateralRaw": 1.173812329860661,
+      "lateralCapped": 1,
+      "kappa": 0.11950000000000001,
+      "longitudinalRaw": 1.0021798892695328
+    },
+    {
+      "alphaDegrees": 6,
+      "lateralRaw": 1.1709989876823033,
+      "lateralCapped": 1,
+      "kappa": 0.12,
+      "longitudinalRaw": 1
+    },
+    {
+      "alphaDegrees": 6.025,
+      "lateralRaw": 1.1682073321522803,
+      "lateralCapped": 1,
+      "kappa": 0.1205,
+      "longitudinalRaw": 0.9978374108424423
+    },
+    {
+      "alphaDegrees": 6.050000000000001,
+      "lateralRaw": 1.165437118878422,
+      "lateralCapped": 1,
+      "kappa": 0.121,
+      "longitudinalRaw": 0.9956919189418819
+    },
+    {
+      "alphaDegrees": 6.075,
+      "lateralRaw": 1.1626881070338677,
+      "lateralCapped": 1,
+      "kappa": 0.1215,
+      "longitudinalRaw": 0.9935633245640274
+    },
+    {
+      "alphaDegrees": 6.1000000000000005,
+      "lateralRaw": 1.1599600592943358,
+      "lateralCapped": 1,
+      "kappa": 0.122,
+      "longitudinalRaw": 0.991451431036299
+    },
+    {
+      "alphaDegrees": 6.125,
+      "lateralRaw": 1.1572527417766456,
+      "lateralCapped": 1,
+      "kappa": 0.1225,
+      "longitudinalRaw": 0.9893560446901868
+    },
+    {
+      "alphaDegrees": 6.15,
+      "lateralRaw": 1.1545659239784807,
+      "lateralCapped": 1,
+      "kappa": 0.123,
+      "longitudinalRaw": 0.9872769748048685
+    },
+    {
+      "alphaDegrees": 6.175000000000001,
+      "lateralRaw": 1.1518993787193657,
+      "lateralCapped": 1,
+      "kappa": 0.1235,
+      "longitudinalRaw": 0.9852140335520847
+    },
+    {
+      "alphaDegrees": 6.2,
+      "lateralRaw": 1.1492528820828187,
+      "lateralCapped": 1,
+      "kappa": 0.124,
+      "longitudinalRaw": 0.9831670359422152
+    },
+    {
+      "alphaDegrees": 6.2250000000000005,
+      "lateralRaw": 1.1466262133596719,
+      "lateralCapped": 1,
+      "kappa": 0.1245,
+      "longitudinalRaw": 0.9811357997715584
+    },
+    {
+      "alphaDegrees": 6.25,
+      "lateralRaw": 1.1440191549925112,
+      "lateralCapped": 1,
+      "kappa": 0.125,
+      "longitudinalRaw": 0.9791201455707437
+    },
+    {
+      "alphaDegrees": 6.275,
+      "lateralRaw": 1.1414314925212379,
+      "lateralCapped": 1,
+      "kappa": 0.1255,
+      "longitudinalRaw": 0.9771198965542814
+    },
+    {
+      "alphaDegrees": 6.300000000000001,
+      "lateralRaw": 1.1388630145297012,
+      "lateralCapped": 1,
+      "kappa": 0.126,
+      "longitudinalRaw": 0.97513487857121
+    },
+    {
+      "alphaDegrees": 6.325,
+      "lateralRaw": 1.1363135125933939,
+      "lateralCapped": 1,
+      "kappa": 0.1265,
+      "longitudinalRaw": 0.9731649200567999
+    },
+    {
+      "alphaDegrees": 6.3500000000000005,
+      "lateralRaw": 1.1337827812281893,
+      "lateralCapped": 1,
+      "kappa": 0.127,
+      "longitudinalRaw": 0.9712098519853182
+    },
+    {
+      "alphaDegrees": 6.375,
+      "lateralRaw": 1.131270617840075,
+      "lateralCapped": 1,
+      "kappa": 0.1275,
+      "longitudinalRaw": 0.9692695078238015
+    },
+    {
+      "alphaDegrees": 6.4,
+      "lateralRaw": 1.1287768226759078,
+      "lateralCapped": 1,
+      "kappa": 0.128,
+      "longitudinalRaw": 0.9673437234868157
+    },
+    {
+      "alphaDegrees": 6.425000000000001,
+      "lateralRaw": 1.1263011987750984,
+      "lateralCapped": 1,
+      "kappa": 0.1285,
+      "longitudinalRaw": 0.9654323372921986
+    },
+    {
+      "alphaDegrees": 6.45,
+      "lateralRaw": 1.1238435519222842,
+      "lateralCapped": 1,
+      "kappa": 0.129,
+      "longitudinalRaw": 0.9635351899177311
+    },
+    {
+      "alphaDegrees": 6.4750000000000005,
+      "lateralRaw": 1.1214036906008986,
+      "lateralCapped": 1,
+      "kappa": 0.1295,
+      "longitudinalRaw": 0.9616521243587433
+    },
+    {
+      "alphaDegrees": 6.5,
+      "lateralRaw": 1.1189814259476656,
+      "lateralCapped": 1,
+      "kappa": 0.13,
+      "longitudinalRaw": 0.9597829858866032
+    },
+    {
+      "alphaDegrees": 6.525,
+      "lateralRaw": 1.116576571707979,
+      "lateralCapped": 1,
+      "kappa": 0.1305,
+      "longitudinalRaw": 0.9579276220081043
+    },
+    {
+      "alphaDegrees": 6.550000000000001,
+      "lateralRaw": 1.114188944192144,
+      "lateralCapped": 1,
+      "kappa": 0.131,
+      "longitudinalRaw": 0.9560858824256884
+    },
+    {
+      "alphaDegrees": 6.575,
+      "lateralRaw": 1.1118183622324742,
+      "lateralCapped": 1,
+      "kappa": 0.1315,
+      "longitudinalRaw": 0.954257618998514
+    },
+    {
+      "alphaDegrees": 6.6000000000000005,
+      "lateralRaw": 1.1094646471412228,
+      "lateralCapped": 1,
+      "kappa": 0.132,
+      "longitudinalRaw": 0.9524426857043409
+    },
+    {
+      "alphaDegrees": 6.625,
+      "lateralRaw": 1.1071276226693139,
+      "lateralCapped": 1,
+      "kappa": 0.1325,
+      "longitudinalRaw": 0.9506409386022004
+    },
+    {
+      "alphaDegrees": 6.65,
+      "lateralRaw": 1.104807114965893,
+      "lateralCapped": 1,
+      "kappa": 0.133,
+      "longitudinalRaw": 0.948852235795855
+    },
+    {
+      "alphaDegrees": 6.675000000000001,
+      "lateralRaw": 1.1025029525386272,
+      "lateralCapped": 1,
+      "kappa": 0.1335,
+      "longitudinalRaw": 0.9470764373980085
+    },
+    {
+      "alphaDegrees": 6.7,
+      "lateralRaw": 1.1002149662147942,
+      "lateralCapped": 1,
+      "kappa": 0.134,
+      "longitudinalRaw": 0.9453134054952537
+    },
+    {
+      "alphaDegrees": 6.7250000000000005,
+      "lateralRaw": 1.0979429891030974,
+      "lateralCapped": 1,
+      "kappa": 0.1345,
+      "longitudinalRaw": 0.943563004113754
+    },
+    {
+      "alphaDegrees": 6.75,
+      "lateralRaw": 1.0956868565562254,
+      "lateralCapped": 1,
+      "kappa": 0.135,
+      "longitudinalRaw": 0.9418250991856122
+    },
+    {
+      "alphaDegrees": 6.775,
+      "lateralRaw": 1.0934464061341134,
+      "lateralCapped": 1,
+      "kappa": 0.1355,
+      "longitudinalRaw": 0.9400995585159445
+    },
+    {
+      "alphaDegrees": 6.800000000000001,
+      "lateralRaw": 1.0912214775679125,
+      "lateralCapped": 1,
+      "kappa": 0.136,
+      "longitudinalRaw": 0.938386251750627
+    },
+    {
+      "alphaDegrees": 6.825,
+      "lateralRaw": 1.0890119127246414,
+      "lateralCapped": 1,
+      "kappa": 0.1365,
+      "longitudinalRaw": 0.9366850503446769
+    },
+    {
+      "alphaDegrees": 6.8500000000000005,
+      "lateralRaw": 1.086817555572497,
+      "lateralCapped": 1,
+      "kappa": 0.137,
+      "longitudinalRaw": 0.9349958275313079
+    },
+    {
+      "alphaDegrees": 6.875,
+      "lateralRaw": 1.0846382521468405,
+      "lateralCapped": 1,
+      "kappa": 0.1375,
+      "longitudinalRaw": 0.9333184582915819
+    },
+    {
+      "alphaDegrees": 6.9,
+      "lateralRaw": 1.0824738505168061,
+      "lateralCapped": 1,
+      "kappa": 0.138,
+      "longitudinalRaw": 0.9316528193246983
+    },
+    {
+      "alphaDegrees": 6.925000000000001,
+      "lateralRaw": 1.0803242007525462,
+      "lateralCapped": 1,
+      "kappa": 0.1385,
+      "longitudinalRaw": 0.9299987890188594
+    },
+    {
+      "alphaDegrees": 6.95,
+      "lateralRaw": 1.0781891548930902,
+      "lateralCapped": 1,
+      "kappa": 0.139,
+      "longitudinalRaw": 0.9283562474227328
+    },
+    {
+      "alphaDegrees": 6.9750000000000005,
+      "lateralRaw": 1.0760685669148065,
+      "lateralCapped": 1,
+      "kappa": 0.1395,
+      "longitudinalRaw": 0.9267250762174823
+    },
+    {
+      "alphaDegrees": 7,
+      "lateralRaw": 1.0739622927004453,
+      "lateralCapped": 1,
+      "kappa": 0.14,
+      "longitudinalRaw": 0.9251051586893535
+    },
+    {
+      "alphaDegrees": 7.025,
+      "lateralRaw": 1.0718701900087722,
+      "lateralCapped": 1,
+      "kappa": 0.1405,
+      "longitudinalRaw": 0.9234963797028034
+    },
+    {
+      "alphaDegrees": 7.050000000000001,
+      "lateralRaw": 1.06979211844475,
+      "lateralCapped": 1,
+      "kappa": 0.14100000000000001,
+      "longitudinalRaw": 0.9218986256741691
+    },
+    {
+      "alphaDegrees": 7.075,
+      "lateralRaw": 1.0677279394302868,
+      "lateralCapped": 1,
+      "kappa": 0.14150000000000001,
+      "longitudinalRaw": 0.9203117845458455
+    },
+    {
+      "alphaDegrees": 7.1000000000000005,
+      "lateralRaw": 1.065677516175517,
+      "lateralCapped": 1,
+      "kappa": 0.14200000000000002,
+      "longitudinalRaw": 0.9187357457609844
+    },
+    {
+      "alphaDegrees": 7.125,
+      "lateralRaw": 1.0636407136506152,
+      "lateralCapped": 1,
+      "kappa": 0.14250000000000002,
+      "longitudinalRaw": 0.9171704002386762
+    },
+    {
+      "alphaDegrees": 7.15,
+      "lateralRaw": 1.0616173985581268,
+      "lateralCapped": 1,
+      "kappa": 0.14300000000000002,
+      "longitudinalRaw": 0.9156156403496326
+    },
+    {
+      "alphaDegrees": 7.175000000000001,
+      "lateralRaw": 1.0596074393058161,
+      "lateralCapped": 1,
+      "kappa": 0.14350000000000002,
+      "longitudinalRaw": 0.9140713598923291
+    },
+    {
+      "alphaDegrees": 7.2,
+      "lateralRaw": 1.0576107059799889,
+      "lateralCapped": 1,
+      "kappa": 0.14400000000000002,
+      "longitudinalRaw": 0.9125374540696236
+    },
+    {
+      "alphaDegrees": 7.2250000000000005,
+      "lateralRaw": 1.0556270703193322,
+      "lateralCapped": 1,
+      "kappa": 0.1445,
+      "longitudinalRaw": 0.9110138194658174
+    },
+    {
+      "alphaDegrees": 7.25,
+      "lateralRaw": 1.0536564056892126,
+      "lateralCapped": 1,
+      "kappa": 0.145,
+      "longitudinalRaw": 0.9095003540241743
+    },
+    {
+      "alphaDegrees": 7.275,
+      "lateralRaw": 1.0516985870564388,
+      "lateralCapped": 1,
+      "kappa": 0.1455,
+      "longitudinalRaw": 0.907996957024859
+    },
+    {
+      "alphaDegrees": 7.300000000000001,
+      "lateralRaw": 1.049753490964496,
+      "lateralCapped": 1,
+      "kappa": 0.146,
+      "longitudinalRaw": 0.9065035290633056
+    },
+    {
+      "alphaDegrees": 7.325,
+      "lateralRaw": 1.047820995509222,
+      "lateralCapped": 1,
+      "kappa": 0.1465,
+      "longitudinalRaw": 0.9050199720290022
+    },
+    {
+      "alphaDegrees": 7.3500000000000005,
+      "lateralRaw": 1.0459009803149142,
+      "lateralCapped": 1,
+      "kappa": 0.147,
+      "longitudinalRaw": 0.9035461890846797
+    },
+    {
+      "alphaDegrees": 7.375,
+      "lateralRaw": 1.0439933265108876,
+      "lateralCapped": 1,
+      "kappa": 0.1475,
+      "longitudinalRaw": 0.9020820846458985
+    },
+    {
+      "alphaDegrees": 7.4,
+      "lateralRaw": 1.0420979167084248,
+      "lateralCapped": 1,
+      "kappa": 0.148,
+      "longitudinalRaw": 0.9006275643610144
+    },
+    {
+      "alphaDegrees": 7.425000000000001,
+      "lateralRaw": 1.04021463497817,
+      "lateralCapped": 1,
+      "kappa": 0.1485,
+      "longitudinalRaw": 0.8991825350915421
+    },
+    {
+      "alphaDegrees": 7.45,
+      "lateralRaw": 1.0383433668279047,
+      "lateralCapped": 1,
+      "kappa": 0.149,
+      "longitudinalRaw": 0.8977469048928715
+    },
+    {
+      "alphaDegrees": 7.4750000000000005,
+      "lateralRaw": 1.03648399918073,
+      "lateralCapped": 1,
+      "kappa": 0.1495,
+      "longitudinalRaw": 0.8963205829953537
+    },
+    {
+      "alphaDegrees": 7.5,
+      "lateralRaw": 1.0346364203536356,
+      "lateralCapped": 1,
+      "kappa": 0.15,
+      "longitudinalRaw": 0.8949034797857494
+    },
+    {
+      "alphaDegrees": 7.525,
+      "lateralRaw": 1.032800520036446,
+      "lateralCapped": 1,
+      "kappa": 0.1505,
+      "longitudinalRaw": 0.8934955067890117
+    },
+    {
+      "alphaDegrees": 7.550000000000001,
+      "lateralRaw": 1.0309761892711427,
+      "lateralCapped": 1,
+      "kappa": 0.151,
+      "longitudinalRaw": 0.8920965766504173
+    },
+    {
+      "alphaDegrees": 7.575,
+      "lateralRaw": 1.0291633204315536,
+      "lateralCapped": 1,
+      "kappa": 0.1515,
+      "longitudinalRaw": 0.890706603118036
+    },
+    {
+      "alphaDegrees": 7.6000000000000005,
+      "lateralRaw": 1.0273618072033948,
+      "lateralCapped": 1,
+      "kappa": 0.152,
+      "longitudinalRaw": 0.8893255010255048
+    },
+    {
+      "alphaDegrees": 7.625,
+      "lateralRaw": 1.0255715445646703,
+      "lateralCapped": 1,
+      "kappa": 0.1525,
+      "longitudinalRaw": 0.8879531862751483
+    },
+    {
+      "alphaDegrees": 7.65,
+      "lateralRaw": 1.0237924287664018,
+      "lateralCapped": 1,
+      "kappa": 0.153,
+      "longitudinalRaw": 0.8865895758213874
+    },
+    {
+      "alphaDegrees": 7.675000000000001,
+      "lateralRaw": 1.0220243573137167,
+      "lateralCapped": 1,
+      "kappa": 0.1535,
+      "longitudinalRaw": 0.8852345876544679
+    },
+    {
+      "alphaDegrees": 7.7,
+      "lateralRaw": 1.0202672289472476,
+      "lateralCapped": 1,
+      "kappa": 0.154,
+      "longitudinalRaw": 0.883888140784479
+    },
+    {
+      "alphaDegrees": 7.7250000000000005,
+      "lateralRaw": 1.0185209436248643,
+      "lateralCapped": 1,
+      "kappa": 0.1545,
+      "longitudinalRaw": 0.8825501552256723
+    },
+    {
+      "alphaDegrees": 7.75,
+      "lateralRaw": 1.0167854025037215,
+      "lateralCapped": 1,
+      "kappa": 0.155,
+      "longitudinalRaw": 0.8812205519810602
+    },
+    {
+      "alphaDegrees": 7.775,
+      "lateralRaw": 1.0150605079226147,
+      "lateralCapped": 1,
+      "kappa": 0.1555,
+      "longitudinalRaw": 0.8798992530272964
+    },
+    {
+      "alphaDegrees": 7.800000000000001,
+      "lateralRaw": 1.0133461633846501,
+      "lateralCapped": 1,
+      "kappa": 0.156,
+      "longitudinalRaw": 0.8785861812998307
+    },
+    {
+      "alphaDegrees": 7.825,
+      "lateralRaw": 1.0116422735401975,
+      "lateralCapped": 1,
+      "kappa": 0.1565,
+      "longitudinalRaw": 0.8772812606783389
+    },
+    {
+      "alphaDegrees": 7.8500000000000005,
+      "lateralRaw": 1.0099487441701551,
+      "lateralCapped": 1,
+      "kappa": 0.157,
+      "longitudinalRaw": 0.8759844159724
+    },
+    {
+      "alphaDegrees": 7.875,
+      "lateralRaw": 1.0082654821694859,
+      "lateralCapped": 1,
+      "kappa": 0.1575,
+      "longitudinalRaw": 0.8746955729074515
+    },
+    {
+      "alphaDegrees": 7.9,
+      "lateralRaw": 1.0065923955310454,
+      "lateralCapped": 1,
+      "kappa": 0.158,
+      "longitudinalRaw": 0.8734146581109757
+    },
+    {
+      "alphaDegrees": 7.925000000000001,
+      "lateralRaw": 1.0049293933296772,
+      "lateralCapped": 1,
+      "kappa": 0.1585,
+      "longitudinalRaw": 0.8721415990989538
+    },
+    {
+      "alphaDegrees": 7.95,
+      "lateralRaw": 1.0032763857065916,
+      "lateralCapped": 1,
+      "kappa": 0.159,
+      "longitudinalRaw": 0.8708763242625424
+    },
+    {
+      "alphaDegrees": 7.9750000000000005,
+      "lateralRaw": 1.0016332838539979,
+      "lateralCapped": 1,
+      "kappa": 0.1595,
+      "longitudinalRaw": 0.8696187628550024
+    },
+    {
+      "alphaDegrees": 8,
+      "lateralRaw": 1,
+      "lateralCapped": 1,
+      "kappa": 0.16,
+      "longitudinalRaw": 0.8683688449788471
+    },
+    {
+      "alphaDegrees": 8.025,
+      "lateralRaw": 0.9983764473937565,
+      "lateralCapped": 0.9983764473937565,
+      "kappa": 0.1605,
+      "longitudinalRaw": 0.8671265015732359
+    },
+    {
+      "alphaDegrees": 8.05,
+      "lateralRaw": 0.9967625402908747,
+      "lateralCapped": 0.9967625402908747,
+      "kappa": 0.161,
+      "longitudinalRaw": 0.8658916644015612
+    },
+    {
+      "alphaDegrees": 8.075000000000001,
+      "lateralRaw": 0.9951581939390634,
+      "lateralCapped": 0.9951581939390634,
+      "kappa": 0.1615,
+      "longitudinalRaw": 0.8646642660392891
+    },
+    {
+      "alphaDegrees": 8.1,
+      "lateralRaw": 0.9935633245640274,
+      "lateralCapped": 0.9935633245640274,
+      "kappa": 0.162,
+      "longitudinalRaw": 0.8634442398619812
+    },
+    {
+      "alphaDegrees": 8.125,
+      "lateralRaw": 0.9919778493555826,
+      "lateralCapped": 0.9919778493555826,
+      "kappa": 0.1625,
+      "longitudinalRaw": 0.8622315200335481
+    },
+    {
+      "alphaDegrees": 8.15,
+      "lateralRaw": 0.9904016864540272,
+      "lateralCapped": 0.9904016864540272,
+      "kappa": 0.163,
+      "longitudinalRaw": 0.8610260414946991
+    },
+    {
+      "alphaDegrees": 8.175,
+      "lateralRaw": 0.9888347549367139,
+      "lateralCapped": 0.9888347549367139,
+      "kappa": 0.1635,
+      "longitudinalRaw": 0.8598277399515929
+    },
+    {
+      "alphaDegrees": 8.200000000000001,
+      "lateralRaw": 0.9872769748048685,
+      "lateralCapped": 0.9872769748048685,
+      "kappa": 0.164,
+      "longitudinalRaw": 0.8586365518646846
+    },
+    {
+      "alphaDegrees": 8.225,
+      "lateralRaw": 0.9857282669706128,
+      "lateralCapped": 0.9857282669706128,
+      "kappa": 0.1645,
+      "longitudinalRaw": 0.857452414437773
+    },
+    {
+      "alphaDegrees": 8.25,
+      "lateralRaw": 0.9841885532442018,
+      "lateralCapped": 0.9841885532442018,
+      "kappa": 0.165,
+      "longitudinalRaw": 0.8562752656072231
+    },
+    {
+      "alphaDegrees": 8.275,
+      "lateralRaw": 0.9826577563214849,
+      "lateralCapped": 0.9826577563214849,
+      "kappa": 0.1655,
+      "longitudinalRaw": 0.8551050440313905
+    },
+    {
+      "alphaDegrees": 8.3,
+      "lateralRaw": 0.9811357997715584,
+      "lateralCapped": 0.9811357997715584,
+      "kappa": 0.166,
+      "longitudinalRaw": 0.853941689080213
+    },
+    {
+      "alphaDegrees": 8.325000000000001,
+      "lateralRaw": 0.9796226080246306,
+      "lateralCapped": 0.9796226080246306,
+      "kappa": 0.1665,
+      "longitudinalRaw": 0.852785140824994
+    },
+    {
+      "alphaDegrees": 8.35,
+      "lateralRaw": 0.9781181063600802,
+      "lateralCapped": 0.9781181063600802,
+      "kappa": 0.167,
+      "longitudinalRaw": 0.8516353400283421
+    },
+    {
+      "alphaDegrees": 8.375,
+      "lateralRaw": 0.9766222208947126,
+      "lateralCapped": 0.9766222208947126,
+      "kappa": 0.1675,
+      "longitudinalRaw": 0.8504922281343065
+    },
+    {
+      "alphaDegrees": 8.4,
+      "lateralRaw": 0.97513487857121,
+      "lateralCapped": 0.97513487857121,
+      "kappa": 0.168,
+      "longitudinalRaw": 0.8493557472586529
+    },
+    {
+      "alphaDegrees": 8.425,
+      "lateralRaw": 0.9736560071467626,
+      "lateralCapped": 0.9736560071467626,
+      "kappa": 0.1685,
+      "longitudinalRaw": 0.8482258401793283
+    },
+    {
+      "alphaDegrees": 8.450000000000001,
+      "lateralRaw": 0.9721855351818914,
+      "lateralCapped": 0.9721855351818914,
+      "kappa": 0.169,
+      "longitudinalRaw": 0.8471024503270732
+    },
+    {
+      "alphaDegrees": 8.475,
+      "lateralRaw": 0.9707233920294516,
+      "lateralCapped": 0.9707233920294516,
+      "kappa": 0.1695,
+      "longitudinalRaw": 0.8459855217761888
+    },
+    {
+      "alphaDegrees": 8.5,
+      "lateralRaw": 0.9692695078238015,
+      "lateralCapped": 0.9692695078238015,
+      "kappa": 0.17,
+      "longitudinalRaw": 0.844874999235476
+    },
+    {
+      "alphaDegrees": 8.525,
+      "lateralRaw": 0.9678238134701669,
+      "lateralCapped": 0.9678238134701669,
+      "kappa": 0.1705,
+      "longitudinalRaw": 0.8437708280393068
+    },
+    {
+      "alphaDegrees": 8.55,
+      "lateralRaw": 0.9663862406341603,
+      "lateralCapped": 0.9663862406341603,
+      "kappa": 0.171,
+      "longitudinalRaw": 0.8426729541388576
+    },
+    {
+      "alphaDegrees": 8.575000000000001,
+      "lateralRaw": 0.9649567217314726,
+      "lateralCapped": 0.9649567217314726,
+      "kappa": 0.1715,
+      "longitudinalRaw": 0.8415813240934888
+    },
+    {
+      "alphaDegrees": 8.6,
+      "lateralRaw": 0.9635351899177311,
+      "lateralCapped": 0.9635351899177311,
+      "kappa": 0.17200000000000001,
+      "longitudinalRaw": 0.840495885062257
+    },
+    {
+      "alphaDegrees": 8.625,
+      "lateralRaw": 0.9621215790785227,
+      "lateralCapped": 0.9621215790785227,
+      "kappa": 0.17250000000000001,
+      "longitudinalRaw": 0.839416584795578
+    },
+    {
+      "alphaDegrees": 8.65,
+      "lateralRaw": 0.9607158238195652,
+      "lateralCapped": 0.9607158238195652,
+      "kappa": 0.17300000000000001,
+      "longitudinalRaw": 0.838343371627023
+    },
+    {
+      "alphaDegrees": 8.675,
+      "lateralRaw": 0.9593178594570433,
+      "lateralCapped": 0.9593178594570433,
+      "kappa": 0.17350000000000002,
+      "longitudinalRaw": 0.837276194465259
+    },
+    {
+      "alphaDegrees": 8.700000000000001,
+      "lateralRaw": 0.9579276220081043,
+      "lateralCapped": 0.9579276220081043,
+      "kappa": 0.17400000000000002,
+      "longitudinalRaw": 0.8362150027861023
+    },
+    {
+      "alphaDegrees": 8.725,
+      "lateralRaw": 0.9565450481814831,
+      "lateralCapped": 0.9565450481814831,
+      "kappa": 0.17450000000000002,
+      "longitudinalRaw": 0.8351597466247237
+    },
+    {
+      "alphaDegrees": 8.75,
+      "lateralRaw": 0.9551700753682997,
+      "lateralCapped": 0.9551700753682997,
+      "kappa": 0.17500000000000002,
+      "longitudinalRaw": 0.8341103765679689
+    },
+    {
+      "alphaDegrees": 8.775,
+      "lateralRaw": 0.9538026416329811,
+      "lateralCapped": 0.9538026416329811,
+      "kappa": 0.17550000000000002,
+      "longitudinalRaw": 0.8330668437468094
+    },
+    {
+      "alphaDegrees": 8.8,
+      "lateralRaw": 0.9524426857043409,
+      "lateralCapped": 0.9524426857043409,
+      "kappa": 0.176,
+      "longitudinalRaw": 0.8320290998289112
+    },
+    {
+      "alphaDegrees": 8.825000000000001,
+      "lateralRaw": 0.951090146966787,
+      "lateralCapped": 0.951090146966787,
+      "kappa": 0.1765,
+      "longitudinalRaw": 0.8309970970113303
+    },
+    {
+      "alphaDegrees": 8.85,
+      "lateralRaw": 0.9497449654516789,
+      "lateralCapped": 0.9497449654516789,
+      "kappa": 0.177,
+      "longitudinalRaw": 0.8299707880133239
+    },
+    {
+      "alphaDegrees": 8.875,
+      "lateralRaw": 0.9484070818288062,
+      "lateralCapped": 0.9484070818288062,
+      "kappa": 0.1775,
+      "longitudinalRaw": 0.8289501260692741
+    },
+    {
+      "alphaDegrees": 8.9,
+      "lateralRaw": 0.9470764373980085,
+      "lateralCapped": 0.9470764373980085,
+      "kappa": 0.178,
+      "longitudinalRaw": 0.827935064921731
+    },
+    {
+      "alphaDegrees": 8.925,
+      "lateralRaw": 0.945752974080926,
+      "lateralCapped": 0.945752974080926,
+      "kappa": 0.1785,
+      "longitudinalRaw": 0.8269255588145706
+    },
+    {
+      "alphaDegrees": 8.950000000000001,
+      "lateralRaw": 0.9444366344128725,
+      "lateralCapped": 0.9444366344128725,
+      "kappa": 0.179,
+      "longitudinalRaw": 0.8259215624862476
+    },
+    {
+      "alphaDegrees": 8.975,
+      "lateralRaw": 0.943127361534837,
+      "lateralCapped": 0.943127361534837,
+      "kappa": 0.1795,
+      "longitudinalRaw": 0.8249230311631743
+    },
+    {
+      "alphaDegrees": 9,
+      "lateralRaw": 0.9418250991856122,
+      "lateralCapped": 0.9418250991856122,
+      "kappa": 0.18,
+      "longitudinalRaw": 0.8239299205531925
+    },
+    {
+      "alphaDegrees": 9.025,
+      "lateralRaw": 0.9405297916940303,
+      "lateralCapped": 0.9405297916940303,
+      "kappa": 0.1805,
+      "longitudinalRaw": 0.8229421868391572
+    },
+    {
+      "alphaDegrees": 9.05,
+      "lateralRaw": 0.93924138397134,
+      "lateralCapped": 0.93924138397134,
+      "kappa": 0.181,
+      "longitudinalRaw": 0.8219597866726139
+    },
+    {
+      "alphaDegrees": 9.075000000000001,
+      "lateralRaw": 0.9379598215036796,
+      "lateralCapped": 0.9379598215036796,
+      "kappa": 0.1815,
+      "longitudinalRaw": 0.8209826771675837
+    },
+    {
+      "alphaDegrees": 9.1,
+      "lateralRaw": 0.9366850503446769,
+      "lateralCapped": 0.9366850503446769,
+      "kappa": 0.182,
+      "longitudinalRaw": 0.8200108158944435
+    },
+    {
+      "alphaDegrees": 9.125,
+      "lateralRaw": 0.9354170171081572,
+      "lateralCapped": 0.9354170171081572,
+      "kappa": 0.1825,
+      "longitudinalRaw": 0.8190441608738998
+    },
+    {
+      "alphaDegrees": 9.15,
+      "lateralRaw": 0.9341556689609639,
+      "lateralCapped": 0.9341556689609639,
+      "kappa": 0.183,
+      "longitudinalRaw": 0.8180826705710661
+    },
+    {
+      "alphaDegrees": 9.175,
+      "lateralRaw": 0.9329009536158869,
+      "lateralCapped": 0.9329009536158869,
+      "kappa": 0.1835,
+      "longitudinalRaw": 0.8171263038896187
+    },
+    {
+      "alphaDegrees": 9.200000000000001,
+      "lateralRaw": 0.9316528193246983,
+      "lateralCapped": 0.9316528193246983,
+      "kappa": 0.184,
+      "longitudinalRaw": 0.8161750201660566
+    },
+    {
+      "alphaDegrees": 9.225,
+      "lateralRaw": 0.9304112148712963,
+      "lateralCapped": 0.9304112148712963,
+      "kappa": 0.1845,
+      "longitudinalRaw": 0.8152287791640493
+    },
+    {
+      "alphaDegrees": 9.25,
+      "lateralRaw": 0.929176089564946,
+      "lateralCapped": 0.929176089564946,
+      "kappa": 0.185,
+      "longitudinalRaw": 0.8142875410688649
+    },
+    {
+      "alphaDegrees": 9.275,
+      "lateralRaw": 0.9279473932336294,
+      "lateralCapped": 0.9279473932336294,
+      "kappa": 0.1855,
+      "longitudinalRaw": 0.8133512664818898
+    },
+    {
+      "alphaDegrees": 9.3,
+      "lateralRaw": 0.9267250762174823,
+      "lateralCapped": 0.9267250762174823,
+      "kappa": 0.186,
+      "longitudinalRaw": 0.8124199164152349
+    },
+    {
+      "alphaDegrees": 9.325000000000001,
+      "lateralRaw": 0.9255090893623527,
+      "lateralCapped": 0.9255090893623527,
+      "kappa": 0.1865,
+      "longitudinalRaw": 0.8114934522864243
+    },
+    {
+      "alphaDegrees": 9.35,
+      "lateralRaw": 0.9242993840134273,
+      "lateralCapped": 0.9242993840134273,
+      "kappa": 0.187,
+      "longitudinalRaw": 0.8105718359131595
+    },
+    {
+      "alphaDegrees": 9.375,
+      "lateralRaw": 0.9230959120089735,
+      "lateralCapped": 0.9230959120089735,
+      "kappa": 0.1875,
+      "longitudinalRaw": 0.8096550295081716
+    },
+    {
+      "alphaDegrees": 9.4,
+      "lateralRaw": 0.9218986256741691,
+      "lateralCapped": 0.9218986256741691,
+      "kappa": 0.188,
+      "longitudinalRaw": 0.808742995674153
+    },
+    {
+      "alphaDegrees": 9.425,
+      "lateralRaw": 0.9207074778150129,
+      "lateralCapped": 0.9207074778150129,
+      "kappa": 0.1885,
+      "longitudinalRaw": 0.8078356973987599
+    },
+    {
+      "alphaDegrees": 9.450000000000001,
+      "lateralRaw": 0.9195224217123433,
+      "lateralCapped": 0.9195224217123433,
+      "kappa": 0.189,
+      "longitudinalRaw": 0.8069330980496963
+    },
+    {
+      "alphaDegrees": 9.475,
+      "lateralRaw": 0.9183434111159348,
+      "lateralCapped": 0.9183434111159348,
+      "kappa": 0.1895,
+      "longitudinalRaw": 0.806035161369868
+    },
+    {
+      "alphaDegrees": 9.5,
+      "lateralRaw": 0.9171704002386762,
+      "lateralCapped": 0.9171704002386762,
+      "kappa": 0.19,
+      "longitudinalRaw": 0.8051418514726187
+    },
+    {
+      "alphaDegrees": 9.525,
+      "lateralRaw": 0.9160033437508496,
+      "lateralCapped": 0.9160033437508496,
+      "kappa": 0.1905,
+      "longitudinalRaw": 0.8042531328370249
+    },
+    {
+      "alphaDegrees": 9.55,
+      "lateralRaw": 0.9148421967744792,
+      "lateralCapped": 0.9148421967744792,
+      "kappa": 0.191,
+      "longitudinalRaw": 0.8033689703032816
+    },
+    {
+      "alphaDegrees": 9.575000000000001,
+      "lateralRaw": 0.9136869148777694,
+      "lateralCapped": 0.9136869148777694,
+      "kappa": 0.1915,
+      "longitudinalRaw": 0.8024893290681312
+    },
+    {
+      "alphaDegrees": 9.600000000000001,
+      "lateralRaw": 0.9125374540696236,
+      "lateralCapped": 0.9125374540696236,
+      "kappa": 0.192,
+      "longitudinalRaw": 0.8016141746803865
+    },
+    {
+      "alphaDegrees": 9.625,
+      "lateralRaw": 0.9113937707942416,
+      "lateralCapped": 0.9113937707942416,
+      "kappa": 0.1925,
+      "longitudinalRaw": 0.8007434730365073
+    },
+    {
+      "alphaDegrees": 9.65,
+      "lateralRaw": 0.9102558219257935,
+      "lateralCapped": 0.9102558219257935,
+      "kappa": 0.193,
+      "longitudinalRaw": 0.7998771903762437
+    },
+    {
+      "alphaDegrees": 9.675,
+      "lateralRaw": 0.9091235647631821,
+      "lateralCapped": 0.9091235647631821,
+      "kappa": 0.1935,
+      "longitudinalRaw": 0.799015293278345
+    },
+    {
+      "alphaDegrees": 9.700000000000001,
+      "lateralRaw": 0.907996957024859,
+      "lateralCapped": 0.907996957024859,
+      "kappa": 0.194,
+      "longitudinalRaw": 0.798157748656342
+    },
+    {
+      "alphaDegrees": 9.725000000000001,
+      "lateralRaw": 0.9068759568437396,
+      "lateralCapped": 0.9068759568437396,
+      "kappa": 0.1945,
+      "longitudinalRaw": 0.7973045237543713
+    },
+    {
+      "alphaDegrees": 9.75,
+      "lateralRaw": 0.905760522762178,
+      "lateralCapped": 0.905760522762178,
+      "kappa": 0.195,
+      "longitudinalRaw": 0.79645558614309
+    },
+    {
+      "alphaDegrees": 9.775,
+      "lateralRaw": 0.9046506137270081,
+      "lateralCapped": 0.9046506137270081,
+      "kappa": 0.1955,
+      "longitudinalRaw": 0.7956109037156188
+    },
+    {
+      "alphaDegrees": 9.8,
+      "lateralRaw": 0.9035461890846797,
+      "lateralCapped": 0.9035461890846797,
+      "kappa": 0.196,
+      "longitudinalRaw": 0.7947704446835713
+    },
+    {
+      "alphaDegrees": 9.825000000000001,
+      "lateralRaw": 0.902447208576436,
+      "lateralCapped": 0.902447208576436,
+      "kappa": 0.1965,
+      "longitudinalRaw": 0.7939341775731279
+    },
+    {
+      "alphaDegrees": 9.850000000000001,
+      "lateralRaw": 0.901353632333579,
+      "lateralCapped": 0.901353632333579,
+      "kappa": 0.197,
+      "longitudinalRaw": 0.7931020712211715
+    },
+    {
+      "alphaDegrees": 9.875,
+      "lateralRaw": 0.9002654208727939,
+      "lateralCapped": 0.9002654208727939,
+      "kappa": 0.1975,
+      "longitudinalRaw": 0.7922740947714806
+    },
+    {
+      "alphaDegrees": 9.9,
+      "lateralRaw": 0.8991825350915421,
+      "lateralCapped": 0.8991825350915421,
+      "kappa": 0.198,
+      "longitudinalRaw": 0.7914502176709699
+    },
+    {
+      "alphaDegrees": 9.925,
+      "lateralRaw": 0.8981049362635204,
+      "lateralCapped": 0.8981049362635204,
+      "kappa": 0.1985,
+      "longitudinalRaw": 0.7906304096660025
+    },
+    {
+      "alphaDegrees": 9.950000000000001,
+      "lateralRaw": 0.8970325860341847,
+      "lateralCapped": 0.8970325860341847,
+      "kappa": 0.199,
+      "longitudinalRaw": 0.7898146407987382
+    },
+    {
+      "alphaDegrees": 9.975000000000001,
+      "lateralRaw": 0.8959654464163305,
+      "lateralCapped": 0.8959654464163305,
+      "kappa": 0.1995,
+      "longitudinalRaw": 0.7890028814035444
+    },
+    {
+      "alphaDegrees": 10,
+      "lateralRaw": 0.8949034797857494,
+      "lateralCapped": 0.8949034797857494,
+      "kappa": 0.2,
+      "longitudinalRaw": 0.7881951021034553
+    },
+    {
+      "alphaDegrees": 10.025,
+      "lateralRaw": 0.8938466488769313,
+      "lateralCapped": 0.8938466488769313,
+      "kappa": 0.2005,
+      "longitudinalRaw": 0.7873912738066849
+    },
+    {
+      "alphaDegrees": 10.05,
+      "lateralRaw": 0.8927949167788357,
+      "lateralCapped": 0.8927949167788357,
+      "kappa": 0.201,
+      "longitudinalRaw": 0.7865913677031912
+    },
+    {
+      "alphaDegrees": 10.075000000000001,
+      "lateralRaw": 0.8917482469307223,
+      "lateralCapped": 0.8917482469307223,
+      "kappa": 0.2015,
+      "longitudinalRaw": 0.7857953552612804
+    },
+    {
+      "alphaDegrees": 10.100000000000001,
+      "lateralRaw": 0.890706603118036,
+      "lateralCapped": 0.890706603118036,
+      "kappa": 0.202,
+      "longitudinalRaw": 0.7850032082242766
+    },
+    {
+      "alphaDegrees": 10.125,
+      "lateralRaw": 0.8896699494683497,
+      "lateralCapped": 0.8896699494683497,
+      "kappa": 0.2025,
+      "longitudinalRaw": 0.7842148986072187
+    },
+    {
+      "alphaDegrees": 10.15,
+      "lateralRaw": 0.888638250447369,
+      "lateralCapped": 0.888638250447369,
+      "kappa": 0.203,
+      "longitudinalRaw": 0.7834303986936239
+    },
+    {
+      "alphaDegrees": 10.175,
+      "lateralRaw": 0.8876114708549863,
+      "lateralCapped": 0.8876114708549863,
+      "kappa": 0.20350000000000001,
+      "longitudinalRaw": 0.7826496810322845
+    },
+    {
+      "alphaDegrees": 10.200000000000001,
+      "lateralRaw": 0.8865895758213874,
+      "lateralCapped": 0.8865895758213874,
+      "kappa": 0.20400000000000001,
+      "longitudinalRaw": 0.7818727184341125
+    },
+    {
+      "alphaDegrees": 10.225000000000001,
+      "lateralRaw": 0.8855725308032222,
+      "lateralCapped": 0.8855725308032222,
+      "kappa": 0.20450000000000002,
+      "longitudinalRaw": 0.7810994839690367
+    },
+    {
+      "alphaDegrees": 10.25,
+      "lateralRaw": 0.884560301579819,
+      "lateralCapped": 0.884560301579819,
+      "kappa": 0.20500000000000002,
+      "longitudinalRaw": 0.7803299509629301
+    },
+    {
+      "alphaDegrees": 10.275,
+      "lateralRaw": 0.8835528542494535,
+      "lateralCapped": 0.8835528542494535,
+      "kappa": 0.20550000000000002,
+      "longitudinalRaw": 0.7795640929945945
+    },
+    {
+      "alphaDegrees": 10.3,
+      "lateralRaw": 0.8825501552256723,
+      "lateralCapped": 0.8825501552256723,
+      "kappa": 0.20600000000000002,
+      "longitudinalRaw": 0.7788018838927757
+    },
+    {
+      "alphaDegrees": 10.325000000000001,
+      "lateralRaw": 0.8815521712336587,
+      "lateralCapped": 0.8815521712336587,
+      "kappa": 0.20650000000000002,
+      "longitudinalRaw": 0.7780432977332333
+    },
+    {
+      "alphaDegrees": 10.350000000000001,
+      "lateralRaw": 0.8805588693066568,
+      "lateralCapped": 0.8805588693066568,
+      "kappa": 0.20700000000000002,
+      "longitudinalRaw": 0.7772883088358367
+    },
+    {
+      "alphaDegrees": 10.375,
+      "lateralRaw": 0.8795702167824411,
+      "lateralCapped": 0.8795702167824411,
+      "kappa": 0.20750000000000002,
+      "longitudinalRaw": 0.7765368917617118
+    },
+    {
+      "alphaDegrees": 10.4,
+      "lateralRaw": 0.8785861812998307,
+      "lateralCapped": 0.8785861812998307,
+      "kappa": 0.20800000000000002,
+      "longitudinalRaw": 0.7757890213104284
+    },
+    {
+      "alphaDegrees": 10.425,
+      "lateralRaw": 0.8776067307952619,
+      "lateralCapped": 0.8776067307952619,
+      "kappa": 0.2085,
+      "longitudinalRaw": 0.7750446725172226
+    },
+    {
+      "alphaDegrees": 10.450000000000001,
+      "lateralRaw": 0.8766318334993883,
+      "lateralCapped": 0.8766318334993883,
+      "kappa": 0.209,
+      "longitudinalRaw": 0.7743038206502509
+    },
+    {
+      "alphaDegrees": 10.475000000000001,
+      "lateralRaw": 0.8756614579337444,
+      "lateralCapped": 0.8756614579337444,
+      "kappa": 0.2095,
+      "longitudinalRaw": 0.773566441207902
+    },
+    {
+      "alphaDegrees": 10.5,
+      "lateralRaw": 0.8746955729074515,
+      "lateralCapped": 0.8746955729074515,
+      "kappa": 0.21,
+      "longitudinalRaw": 0.7728325099161256
+    },
+    {
+      "alphaDegrees": 10.525,
+      "lateralRaw": 0.8737341475139546,
+      "lateralCapped": 0.8737341475139546,
+      "kappa": 0.2105,
+      "longitudinalRaw": 0.7721020027258091
+    },
+    {
+      "alphaDegrees": 10.55,
+      "lateralRaw": 0.8727771511278193,
+      "lateralCapped": 0.8727771511278193,
+      "kappa": 0.211,
+      "longitudinalRaw": 0.771374895810189
+    },
+    {
+      "alphaDegrees": 10.575000000000001,
+      "lateralRaw": 0.8718245534015655,
+      "lateralCapped": 0.8718245534015655,
+      "kappa": 0.2115,
+      "longitudinalRaw": 0.7706511655622889
+    },
+    {
+      "alphaDegrees": 10.600000000000001,
+      "lateralRaw": 0.8708763242625424,
+      "lateralCapped": 0.8708763242625424,
+      "kappa": 0.212,
+      "longitudinalRaw": 0.769930788592411
+    },
+    {
+      "alphaDegrees": 10.625,
+      "lateralRaw": 0.8699324339098431,
+      "lateralCapped": 0.8699324339098431,
+      "kappa": 0.2125,
+      "longitudinalRaw": 0.7692137417256463
+    },
+    {
+      "alphaDegrees": 10.65,
+      "lateralRaw": 0.8689928528112668,
+      "lateralCapped": 0.8689928528112668,
+      "kappa": 0.213,
+      "longitudinalRaw": 0.768500001999419
+    },
+    {
+      "alphaDegrees": 10.675,
+      "lateralRaw": 0.8680575517003153,
+      "lateralCapped": 0.8680575517003153,
+      "kappa": 0.2135,
+      "longitudinalRaw": 0.7677895466610759
+    },
+    {
+      "alphaDegrees": 10.700000000000001,
+      "lateralRaw": 0.8671265015732359,
+      "lateralCapped": 0.8671265015732359,
+      "kappa": 0.214,
+      "longitudinalRaw": 0.767082353165497
+    },
+    {
+      "alphaDegrees": 10.725000000000001,
+      "lateralRaw": 0.866199673686093,
+      "lateralCapped": 0.866199673686093,
+      "kappa": 0.2145,
+      "longitudinalRaw": 0.7663783991727444
+    },
+    {
+      "alphaDegrees": 10.75,
+      "lateralRaw": 0.8652770395518915,
+      "lateralCapped": 0.8652770395518915,
+      "kappa": 0.215,
+      "longitudinalRaw": 0.7656776625457415
+    },
+    {
+      "alphaDegrees": 10.775,
+      "lateralRaw": 0.8643585709377257,
+      "lateralCapped": 0.8643585709377257,
+      "kappa": 0.2155,
+      "longitudinalRaw": 0.7649801213479844
+    },
+    {
+      "alphaDegrees": 10.8,
+      "lateralRaw": 0.8634442398619812,
+      "lateralCapped": 0.8634442398619812,
+      "kappa": 0.216,
+      "longitudinalRaw": 0.7642857538412832
+    },
+    {
+      "alphaDegrees": 10.825000000000001,
+      "lateralRaw": 0.8625340185915465,
+      "lateralCapped": 0.8625340185915465,
+      "kappa": 0.2165,
+      "longitudinalRaw": 0.7635945384835275
+    },
+    {
+      "alphaDegrees": 10.850000000000001,
+      "lateralRaw": 0.8616278796390994,
+      "lateralCapped": 0.8616278796390994,
+      "kappa": 0.217,
+      "longitudinalRaw": 0.7629064539265001
+    },
+    {
+      "alphaDegrees": 10.875,
+      "lateralRaw": 0.8607257957603908,
+      "lateralCapped": 0.8607257957603908,
+      "kappa": 0.2175,
+      "longitudinalRaw": 0.7622214790136971
+    },
+    {
+      "alphaDegrees": 10.9,
+      "lateralRaw": 0.8598277399515929,
+      "lateralCapped": 0.8598277399515929,
+      "kappa": 0.218,
+      "longitudinalRaw": 0.7615395927781928
+    },
+    {
+      "alphaDegrees": 10.925,
+      "lateralRaw": 0.8589336854466627,
+      "lateralCapped": 0.8589336854466627,
+      "kappa": 0.2185,
+      "longitudinalRaw": 0.7608607744405284
+    },
+    {
+      "alphaDegrees": 10.950000000000001,
+      "lateralRaw": 0.858043605714752,
+      "lateralCapped": 0.858043605714752,
+      "kappa": 0.219,
+      "longitudinalRaw": 0.760185003406627
+    },
+    {
+      "alphaDegrees": 10.975000000000001,
+      "lateralRaw": 0.8571574744576437,
+      "lateralCapped": 0.8571574744576437,
+      "kappa": 0.2195,
+      "longitudinalRaw": 0.7595122592657375
+    },
+    {
+      "alphaDegrees": 11,
+      "lateralRaw": 0.8562752656072231,
+      "lateralCapped": 0.8562752656072231,
+      "kappa": 0.22,
+      "longitudinalRaw": 0.7588425217884063
+    },
+    {
+      "alphaDegrees": 11.025,
+      "lateralRaw": 0.8553969533229898,
+      "lateralCapped": 0.8553969533229898,
+      "kappa": 0.2205,
+      "longitudinalRaw": 0.7581757709244759
+    },
+    {
+      "alphaDegrees": 11.05,
+      "lateralRaw": 0.8545225119895843,
+      "lateralCapped": 0.8545225119895843,
+      "kappa": 0.221,
+      "longitudinalRaw": 0.7575119868011111
+    },
+    {
+      "alphaDegrees": 11.075000000000001,
+      "lateralRaw": 0.8536519162143618,
+      "lateralCapped": 0.8536519162143618,
+      "kappa": 0.2215,
+      "longitudinalRaw": 0.756851149720845
+    },
+    {
+      "alphaDegrees": 11.100000000000001,
+      "lateralRaw": 0.852785140824994,
+      "lateralCapped": 0.852785140824994,
+      "kappa": 0.222,
+      "longitudinalRaw": 0.7561932401596548
+    },
+    {
+      "alphaDegrees": 11.125,
+      "lateralRaw": 0.8519221608670963,
+      "lateralCapped": 0.8519221608670963,
+      "kappa": 0.2225,
+      "longitudinalRaw": 0.7555382387650751
+    },
+    {
+      "alphaDegrees": 11.15,
+      "lateralRaw": 0.8510629516018928,
+      "lateralCapped": 0.8510629516018928,
+      "kappa": 0.223,
+      "longitudinalRaw": 0.7548861263543067
+    },
+    {
+      "alphaDegrees": 11.175,
+      "lateralRaw": 0.8502074885039004,
+      "lateralCapped": 0.8502074885039004,
+      "kappa": 0.2235,
+      "longitudinalRaw": 0.7542368839123774
+    },
+    {
+      "alphaDegrees": 11.200000000000001,
+      "lateralRaw": 0.8493557472586529,
+      "lateralCapped": 0.8493557472586529,
+      "kappa": 0.224,
+      "longitudinalRaw": 0.7535904925903125
+    },
+    {
+      "alphaDegrees": 11.225000000000001,
+      "lateralRaw": 0.848507703760454,
+      "lateralCapped": 0.848507703760454,
+      "kappa": 0.2245,
+      "longitudinalRaw": 0.7529469337033385
+    },
+    {
+      "alphaDegrees": 11.25,
+      "lateralRaw": 0.8476633341101502,
+      "lateralCapped": 0.8476633341101502,
+      "kappa": 0.225,
+      "longitudinalRaw": 0.7523061887290974
+    },
+    {
+      "alphaDegrees": 11.275,
+      "lateralRaw": 0.8468226146129357,
+      "lateralCapped": 0.8468226146129357,
+      "kappa": 0.2255,
+      "longitudinalRaw": 0.7516682393058942
+    },
+    {
+      "alphaDegrees": 11.3,
+      "lateralRaw": 0.8459855217761888,
+      "lateralCapped": 0.8459855217761888,
+      "kappa": 0.226,
+      "longitudinalRaw": 0.751033067230968
+    },
+    {
+      "alphaDegrees": 11.325000000000001,
+      "lateralRaw": 0.8451520323073354,
+      "lateralCapped": 0.8451520323073354,
+      "kappa": 0.2265,
+      "longitudinalRaw": 0.7504006544587766
+    },
+    {
+      "alphaDegrees": 11.350000000000001,
+      "lateralRaw": 0.8443221231117298,
+      "lateralCapped": 0.8443221231117298,
+      "kappa": 0.227,
+      "longitudinalRaw": 0.7497709830993069
+    },
+    {
+      "alphaDegrees": 11.375,
+      "lateralRaw": 0.8434957712905734,
+      "lateralCapped": 0.8434957712905734,
+      "kappa": 0.2275,
+      "longitudinalRaw": 0.7491440354164114
+    },
+    {
+      "alphaDegrees": 11.4,
+      "lateralRaw": 0.8426729541388576,
+      "lateralCapped": 0.8426729541388576,
+      "kappa": 0.228,
+      "longitudinalRaw": 0.7485197938261672
+    },
+    {
+      "alphaDegrees": 11.425,
+      "lateralRaw": 0.8418536491433265,
+      "lateralCapped": 0.8418536491433265,
+      "kappa": 0.2285,
+      "longitudinalRaw": 0.7478982408952384
+    },
+    {
+      "alphaDegrees": 11.450000000000001,
+      "lateralRaw": 0.841037833980469,
+      "lateralCapped": 0.841037833980469,
+      "kappa": 0.229,
+      "longitudinalRaw": 0.7472793593392848
+    },
+    {
+      "alphaDegrees": 11.475000000000001,
+      "lateralRaw": 0.8402254865145335,
+      "lateralCapped": 0.8402254865145335,
+      "kappa": 0.2295,
+      "longitudinalRaw": 0.7466631320213708
+    },
+    {
+      "alphaDegrees": 11.5,
+      "lateralRaw": 0.839416584795578,
+      "lateralCapped": 0.839416584795578,
+      "kappa": 0.23,
+      "longitudinalRaw": 0.7460495419504065
+    },
+    {
+      "alphaDegrees": 11.525,
+      "lateralRaw": 0.8386111070575242,
+      "lateralCapped": 0.8386111070575242,
+      "kappa": 0.2305,
+      "longitudinalRaw": 0.7454385722796028
+    },
+    {
+      "alphaDegrees": 11.55,
+      "lateralRaw": 0.8378090317162553,
+      "lateralCapped": 0.8378090317162553,
+      "kappa": 0.231,
+      "longitudinalRaw": 0.7448302063049428
+    },
+    {
+      "alphaDegrees": 11.575000000000001,
+      "lateralRaw": 0.8370103373677265,
+      "lateralCapped": 0.8370103373677265,
+      "kappa": 0.2315,
+      "longitudinalRaw": 0.7442244274636857
+    },
+    {
+      "alphaDegrees": 11.600000000000001,
+      "lateralRaw": 0.8362150027861023,
+      "lateralCapped": 0.8362150027861023,
+      "kappa": 0.232,
+      "longitudinalRaw": 0.743621219332873
+    },
+    {
+      "alphaDegrees": 11.625,
+      "lateralRaw": 0.8354230069219152,
+      "lateralCapped": 0.8354230069219152,
+      "kappa": 0.2325,
+      "longitudinalRaw": 0.7430205656278663
+    },
+    {
+      "alphaDegrees": 11.65,
+      "lateralRaw": 0.8346343289002479,
+      "lateralCapped": 0.8346343289002479,
+      "kappa": 0.233,
+      "longitudinalRaw": 0.7424224502008989
+    },
+    {
+      "alphaDegrees": 11.675,
+      "lateralRaw": 0.8338489480189383,
+      "lateralCapped": 0.8338489480189383,
+      "kappa": 0.2335,
+      "longitudinalRaw": 0.7418268570396342
+    },
+    {
+      "alphaDegrees": 11.700000000000001,
+      "lateralRaw": 0.8330668437468094,
+      "lateralCapped": 0.8330668437468094,
+      "kappa": 0.234,
+      "longitudinalRaw": 0.7412337702657698
+    },
+    {
+      "alphaDegrees": 11.725000000000001,
+      "lateralRaw": 0.8322879957219073,
+      "lateralCapped": 0.8322879957219073,
+      "kappa": 0.23450000000000001,
+      "longitudinalRaw": 0.7406431741336288
+    },
+    {
+      "alphaDegrees": 11.75,
+      "lateralRaw": 0.8315123837497826,
+      "lateralCapped": 0.8315123837497826,
+      "kappa": 0.23500000000000001,
+      "longitudinalRaw": 0.7400550530287912
+    },
+    {
+      "alphaDegrees": 11.775,
+      "lateralRaw": 0.8307399878017756,
+      "lateralCapped": 0.8307399878017756,
+      "kappa": 0.23550000000000001,
+      "longitudinalRaw": 0.7394693914667205
+    },
+    {
+      "alphaDegrees": 11.8,
+      "lateralRaw": 0.8299707880133239,
+      "lateralCapped": 0.8299707880133239,
+      "kappa": 0.23600000000000002,
+      "longitudinalRaw": 0.7388861740914365
+    },
+    {
+      "alphaDegrees": 11.825000000000001,
+      "lateralRaw": 0.8292047646823021,
+      "lateralCapped": 0.8292047646823021,
+      "kappa": 0.23650000000000002,
+      "longitudinalRaw": 0.7383053856741734
+    },
+    {
+      "alphaDegrees": 11.850000000000001,
+      "lateralRaw": 0.8284418982673661,
+      "lateralCapped": 0.8284418982673661,
+      "kappa": 0.23700000000000002,
+      "longitudinalRaw": 0.7377270111120741
+    },
+    {
+      "alphaDegrees": 11.875,
+      "lateralRaw": 0.8276821693863344,
+      "lateralCapped": 0.8276821693863344,
+      "kappa": 0.23750000000000002,
+      "longitudinalRaw": 0.7371510354269016
+    },
+    {
+      "alphaDegrees": 11.9,
+      "lateralRaw": 0.8269255588145706,
+      "lateralCapped": 0.8269255588145706,
+      "kappa": 0.23800000000000002,
+      "longitudinalRaw": 0.7365774437637451
+    },
+    {
+      "alphaDegrees": 11.925,
+      "lateralRaw": 0.8261720474833948,
+      "lateralCapped": 0.8261720474833948,
+      "kappa": 0.23850000000000002,
+      "longitudinalRaw": 0.7360062213897727
+    },
+    {
+      "alphaDegrees": 11.950000000000001,
+      "lateralRaw": 0.825421616478522,
+      "lateralCapped": 0.825421616478522,
+      "kappa": 0.23900000000000002,
+      "longitudinalRaw": 0.7354373536929717
+    },
+    {
+      "alphaDegrees": 11.975000000000001,
+      "lateralRaw": 0.8246742470385023,
+      "lateralCapped": 0.8246742470385023,
+      "kappa": 0.23950000000000002,
+      "longitudinalRaw": 0.7348708261809226
+    },
+    {
+      "alphaDegrees": 12,
+      "lateralRaw": 0.8239299205531925,
+      "lateralCapped": 0.8239299205531925,
+      "kappa": 0.24,
+      "longitudinalRaw": 0.7343066244795788
+    },
+    {
+      "alphaDegrees": 12.025,
+      "lateralRaw": 0.823188618562241,
+      "lateralCapped": 0.823188618562241,
+      "kappa": 0.2405,
+      "longitudinalRaw": 0.7337447343320637
+    },
+    {
+      "alphaDegrees": 12.05,
+      "lateralRaw": 0.8224503227535893,
+      "lateralCapped": 0.8224503227535893,
+      "kappa": 0.241,
+      "longitudinalRaw": 0.7331851415974846
+    },
+    {
+      "alphaDegrees": 12.075000000000001,
+      "lateralRaw": 0.8217150149619982,
+      "lateralCapped": 0.8217150149619982,
+      "kappa": 0.2415,
+      "longitudinalRaw": 0.7326278322497554
+    },
+    {
+      "alphaDegrees": 12.100000000000001,
+      "lateralRaw": 0.8209826771675837,
+      "lateralCapped": 0.8209826771675837,
+      "kappa": 0.242,
+      "longitudinalRaw": 0.7320727923764393
+    },
+    {
+      "alphaDegrees": 12.125,
+      "lateralRaw": 0.8202532914943713,
+      "lateralCapped": 0.8202532914943713,
+      "kappa": 0.2425,
+      "longitudinalRaw": 0.7315200081776049
+    },
+    {
+      "alphaDegrees": 12.15,
+      "lateralRaw": 0.8195268402088746,
+      "lateralCapped": 0.8195268402088746,
+      "kappa": 0.243,
+      "longitudinalRaw": 0.730969465964689
+    },
+    {
+      "alphaDegrees": 12.175,
+      "lateralRaw": 0.8188033057186824,
+      "lateralCapped": 0.8188033057186824,
+      "kappa": 0.2435,
+      "longitudinalRaw": 0.7304211521593796
+    },
+    {
+      "alphaDegrees": 12.200000000000001,
+      "lateralRaw": 0.8180826705710661,
+      "lateralCapped": 0.8180826705710661,
+      "kappa": 0.244,
+      "longitudinalRaw": 0.7298750532925207
+    },
+    {
+      "alphaDegrees": 12.225000000000001,
+      "lateralRaw": 0.8173649174516034,
+      "lateralCapped": 0.8173649174516034,
+      "kappa": 0.2445,
+      "longitudinalRaw": 0.7293311560030046
+    },
+    {
+      "alphaDegrees": 12.25,
+      "lateralRaw": 0.8166500291828184,
+      "lateralCapped": 0.8166500291828184,
+      "kappa": 0.245,
+      "longitudinalRaw": 0.7287894470367036
+    },
+    {
+      "alphaDegrees": 12.275,
+      "lateralRaw": 0.8159379887228345,
+      "lateralCapped": 0.8159379887228345,
+      "kappa": 0.2455,
+      "longitudinalRaw": 0.7282499132454051
+    },
+    {
+      "alphaDegrees": 12.3,
+      "lateralRaw": 0.8152287791640493,
+      "lateralCapped": 0.8152287791640493,
+      "kappa": 0.246,
+      "longitudinalRaw": 0.7277125415857537
+    },
+    {
+      "alphaDegrees": 12.325000000000001,
+      "lateralRaw": 0.8145223837318194,
+      "lateralCapped": 0.8145223837318194,
+      "kappa": 0.2465,
+      "longitudinalRaw": 0.7271773191182085
+    },
+    {
+      "alphaDegrees": 12.350000000000001,
+      "lateralRaw": 0.8138187857831586,
+      "lateralCapped": 0.8138187857831586,
+      "kappa": 0.247,
+      "longitudinalRaw": 0.7266442330060268
+    },
+    {
+      "alphaDegrees": 12.375,
+      "lateralRaw": 0.8131179688054634,
+      "lateralCapped": 0.8131179688054634,
+      "kappa": 0.2475,
+      "longitudinalRaw": 0.7261132705142307
+    },
+    {
+      "alphaDegrees": 12.4,
+      "lateralRaw": 0.8124199164152349,
+      "lateralCapped": 0.8124199164152349,
+      "kappa": 0.248,
+      "longitudinalRaw": 0.7255844190086229
+    },
+    {
+      "alphaDegrees": 12.425,
+      "lateralRaw": 0.8117246123568393,
+      "lateralCapped": 0.8117246123568393,
+      "kappa": 0.2485,
+      "longitudinalRaw": 0.7250576659547737
+    },
+    {
+      "alphaDegrees": 12.450000000000001,
+      "lateralRaw": 0.8110320405012509,
+      "lateralCapped": 0.8110320405012509,
+      "kappa": 0.249,
+      "longitudinalRaw": 0.7245329989170575
+    },
+    {
+      "alphaDegrees": 12.475000000000001,
+      "lateralRaw": 0.8103421848448445,
+      "lateralCapped": 0.8103421848448445,
+      "kappa": 0.2495,
+      "longitudinalRaw": 0.7240104055576739
+    },
+    {
+      "alphaDegrees": 12.5,
+      "lateralRaw": 0.8096550295081716,
+      "lateralCapped": 0.8096550295081716,
+      "kappa": 0.25,
+      "longitudinalRaw": 0.7234898736356938
+    },
+    {
+      "alphaDegrees": 12.525,
+      "lateralRaw": 0.8089705587347744,
+      "lateralCapped": 0.8089705587347744,
+      "kappa": 0.2505,
+      "longitudinalRaw": 0.7229713910061132
+    },
+    {
+      "alphaDegrees": 12.55,
+      "lateralRaw": 0.8082887568899983,
+      "lateralCapped": 0.8082887568899983,
+      "kappa": 0.251,
+      "longitudinalRaw": 0.7224549456189137
+    },
+    {
+      "alphaDegrees": 12.575000000000001,
+      "lateralRaw": 0.8076096084598192,
+      "lateralCapped": 0.8076096084598192,
+      "kappa": 0.2515,
+      "longitudinalRaw": 0.7219405255181423
+    },
+    {
+      "alphaDegrees": 12.600000000000001,
+      "lateralRaw": 0.8069330980496963,
+      "lateralCapped": 0.8069330980496963,
+      "kappa": 0.252,
+      "longitudinalRaw": 0.7214281188409997
+    },
+    {
+      "alphaDegrees": 12.625,
+      "lateralRaw": 0.8062592103834222,
+      "lateralCapped": 0.8062592103834222,
+      "kappa": 0.2525,
+      "longitudinalRaw": 0.7209177138169263
+    },
+    {
+      "alphaDegrees": 12.65,
+      "lateralRaw": 0.8055879303019959,
+      "lateralCapped": 0.8055879303019959,
+      "kappa": 0.253,
+      "longitudinalRaw": 0.720409298766725
+    },
+    {
+      "alphaDegrees": 12.675,
+      "lateralRaw": 0.8049192427625059,
+      "lateralCapped": 0.8049192427625059,
+      "kappa": 0.2535,
+      "longitudinalRaw": 0.7199028621016655
+    },
+    {
+      "alphaDegrees": 12.700000000000001,
+      "lateralRaw": 0.8042531328370249,
+      "lateralCapped": 0.8042531328370249,
+      "kappa": 0.254,
+      "longitudinalRaw": 0.7193983923226162
+    },
+    {
+      "alphaDegrees": 12.725000000000001,
+      "lateralRaw": 0.8035895857115227,
+      "lateralCapped": 0.8035895857115227,
+      "kappa": 0.2545,
+      "longitudinalRaw": 0.7188958780191844
+    },
+    {
+      "alphaDegrees": 12.75,
+      "lateralRaw": 0.8029285866847813,
+      "lateralCapped": 0.8029285866847813,
+      "kappa": 0.255,
+      "longitudinalRaw": 0.7183953078688666
+    },
+    {
+      "alphaDegrees": 12.775,
+      "lateralRaw": 0.802270121167328,
+      "lateralCapped": 0.802270121167328,
+      "kappa": 0.2555,
+      "longitudinalRaw": 0.7178966706361939
+    },
+    {
+      "alphaDegrees": 12.8,
+      "lateralRaw": 0.8016141746803865,
+      "lateralCapped": 0.8016141746803865,
+      "kappa": 0.256,
+      "longitudinalRaw": 0.7173999551719138
+    },
+    {
+      "alphaDegrees": 12.825000000000001,
+      "lateralRaw": 0.8009607328548303,
+      "lateralCapped": 0.8009607328548303,
+      "kappa": 0.2565,
+      "longitudinalRaw": 0.7169051504121579
+    },
+    {
+      "alphaDegrees": 12.850000000000001,
+      "lateralRaw": 0.8003097814301466,
+      "lateralCapped": 0.8003097814301466,
+      "kappa": 0.257,
+      "longitudinalRaw": 0.7164122453776295
+    },
+    {
+      "alphaDegrees": 12.875,
+      "lateralRaw": 0.799661306253427,
+      "lateralCapped": 0.799661306253427,
+      "kappa": 0.2575,
+      "longitudinalRaw": 0.7159212291728009
+    },
+    {
+      "alphaDegrees": 12.9,
+      "lateralRaw": 0.799015293278345,
+      "lateralCapped": 0.799015293278345,
+      "kappa": 0.258,
+      "longitudinalRaw": 0.715432090985118
+    },
+    {
+      "alphaDegrees": 12.925,
+      "lateralRaw": 0.7983717285641748,
+      "lateralCapped": 0.7983717285641748,
+      "kappa": 0.2585,
+      "longitudinalRaw": 0.714944820084208
+    },
+    {
+      "alphaDegrees": 12.950000000000001,
+      "lateralRaw": 0.7977305982747921,
+      "lateralCapped": 0.7977305982747921,
+      "kappa": 0.259,
+      "longitudinalRaw": 0.7144594058211111
+    },
+    {
+      "alphaDegrees": 12.975000000000001,
+      "lateralRaw": 0.7970918886777048,
+      "lateralCapped": 0.7970918886777048,
+      "kappa": 0.2595,
+      "longitudinalRaw": 0.7139758376275067
+    },
+    {
+      "alphaDegrees": 13,
+      "lateralRaw": 0.79645558614309,
+      "lateralCapped": 0.79645558614309,
+      "kappa": 0.26,
+      "longitudinalRaw": 0.7134941050149495
+    },
+    {
+      "alphaDegrees": 13.025,
+      "lateralRaw": 0.7958216771428384,
+      "lateralCapped": 0.7958216771428384,
+      "kappa": 0.2605,
+      "longitudinalRaw": 0.7130141975741261
+    },
+    {
+      "alphaDegrees": 13.05,
+      "lateralRaw": 0.7951901482496081,
+      "lateralCapped": 0.7951901482496081,
+      "kappa": 0.261,
+      "longitudinalRaw": 0.7125361049741071
+    },
+    {
+      "alphaDegrees": 13.075000000000001,
+      "lateralRaw": 0.7945609861358999,
+      "lateralCapped": 0.7945609861358999,
+      "kappa": 0.2615,
+      "longitudinalRaw": 0.712059816961611
+    },
+    {
+      "alphaDegrees": 13.100000000000001,
+      "lateralRaw": 0.7939341775731279,
+      "lateralCapped": 0.7939341775731279,
+      "kappa": 0.262,
+      "longitudinalRaw": 0.7115853233602821
+    },
+    {
+      "alphaDegrees": 13.125,
+      "lateralRaw": 0.7933097094307127,
+      "lateralCapped": 0.7933097094307127,
+      "kappa": 0.2625,
+      "longitudinalRaw": 0.7111126140699691
+    },
+    {
+      "alphaDegrees": 13.15,
+      "lateralRaw": 0.7926875686751722,
+      "lateralCapped": 0.7926875686751722,
+      "kappa": 0.263,
+      "longitudinalRaw": 0.710641679066013
+    },
+    {
+      "alphaDegrees": 13.175,
+      "lateralRaw": 0.7920677423692385,
+      "lateralCapped": 0.7920677423692385,
+      "kappa": 0.2635,
+      "longitudinalRaw": 0.71017250839855
+    },
+    {
+      "alphaDegrees": 13.200000000000001,
+      "lateralRaw": 0.7914502176709699,
+      "lateralCapped": 0.7914502176709699,
+      "kappa": 0.264,
+      "longitudinalRaw": 0.7097050921918128
+    },
+    {
+      "alphaDegrees": 13.225000000000001,
+      "lateralRaw": 0.7908349818328787,
+      "lateralCapped": 0.7908349818328787,
+      "kappa": 0.2645,
+      "longitudinalRaw": 0.7092394206434449
+    },
+    {
+      "alphaDegrees": 13.25,
+      "lateralRaw": 0.7902220222010663,
+      "lateralCapped": 0.7902220222010663,
+      "kappa": 0.265,
+      "longitudinalRaw": 0.7087754840238192
+    },
+    {
+      "alphaDegrees": 13.275,
+      "lateralRaw": 0.7896113262143772,
+      "lateralCapped": 0.7896113262143772,
+      "kappa": 0.2655,
+      "longitudinalRaw": 0.7083132726753709
+    },
+    {
+      "alphaDegrees": 13.3,
+      "lateralRaw": 0.7890028814035444,
+      "lateralCapped": 0.7890028814035444,
+      "kappa": 0.266,
+      "longitudinalRaw": 0.7078527770119273
+    },
+    {
+      "alphaDegrees": 13.325000000000001,
+      "lateralRaw": 0.7883966753903591,
+      "lateralCapped": 0.7883966753903591,
+      "kappa": 0.2665,
+      "longitudinalRaw": 0.7073939875180528
+    },
+    {
+      "alphaDegrees": 13.350000000000001,
+      "lateralRaw": 0.7877926958868461,
+      "lateralCapped": 0.7877926958868461,
+      "kappa": 0.267,
+      "longitudinalRaw": 0.7069368947484062
+    },
+    {
+      "alphaDegrees": 13.375,
+      "lateralRaw": 0.7871909306944417,
+      "lateralCapped": 0.7871909306944417,
+      "kappa": 0.2675,
+      "longitudinalRaw": 0.7064814893270833
+    },
+    {
+      "alphaDegrees": 13.4,
+      "lateralRaw": 0.7865913677031912,
+      "lateralCapped": 0.7865913677031912,
+      "kappa": 0.268,
+      "longitudinalRaw": 0.706027761946993
+    },
+    {
+      "alphaDegrees": 13.425,
+      "lateralRaw": 0.7859939948909413,
+      "lateralCapped": 0.7859939948909413,
+      "kappa": 0.2685,
+      "longitudinalRaw": 0.7055757033692281
+    },
+    {
+      "alphaDegrees": 13.450000000000001,
+      "lateralRaw": 0.7853988003225568,
+      "lateralCapped": 0.7853988003225568,
+      "kappa": 0.269,
+      "longitudinalRaw": 0.7051253044224356
+    },
+    {
+      "alphaDegrees": 13.475000000000001,
+      "lateralRaw": 0.7848057721491306,
+      "lateralCapped": 0.7848057721491306,
+      "kappa": 0.2695,
+      "longitudinalRaw": 0.7046765560022047
+    },
+    {
+      "alphaDegrees": 13.5,
+      "lateralRaw": 0.7842148986072187,
+      "lateralCapped": 0.7842148986072187,
+      "kappa": 0.27,
+      "longitudinalRaw": 0.7042294490704689
+    },
+    {
+      "alphaDegrees": 13.525,
+      "lateralRaw": 0.7836261680180647,
+      "lateralCapped": 0.7836261680180647,
+      "kappa": 0.2705,
+      "longitudinalRaw": 0.7037839746548858
+    },
+    {
+      "alphaDegrees": 13.55,
+      "lateralRaw": 0.7830395687868466,
+      "lateralCapped": 0.7830395687868466,
+      "kappa": 0.271,
+      "longitudinalRaw": 0.7033401238482564
+    },
+    {
+      "alphaDegrees": 13.575000000000001,
+      "lateralRaw": 0.7824550894019273,
+      "lateralCapped": 0.7824550894019273,
+      "kappa": 0.2715,
+      "longitudinalRaw": 0.7028978878079315
+    },
+    {
+      "alphaDegrees": 13.600000000000001,
+      "lateralRaw": 0.7818727184341125,
+      "lateralCapped": 0.7818727184341125,
+      "kappa": 0.272,
+      "longitudinalRaw": 0.7024572577552252
+    },
+    {
+      "alphaDegrees": 13.625,
+      "lateralRaw": 0.7812924445359142,
+      "lateralCapped": 0.7812924445359142,
+      "kappa": 0.2725,
+      "longitudinalRaw": 0.7020182249748482
+    },
+    {
+      "alphaDegrees": 13.65,
+      "lateralRaw": 0.7807142564408294,
+      "lateralCapped": 0.7807142564408294,
+      "kappa": 0.273,
+      "longitudinalRaw": 0.7015807808143253
+    },
+    {
+      "alphaDegrees": 13.675,
+      "lateralRaw": 0.7801381429626181,
+      "lateralCapped": 0.7801381429626181,
+      "kappa": 0.2735,
+      "longitudinalRaw": 0.7011449166834444
+    },
+    {
+      "alphaDegrees": 13.700000000000001,
+      "lateralRaw": 0.7795640929945945,
+      "lateralCapped": 0.7795640929945945,
+      "kappa": 0.274,
+      "longitudinalRaw": 0.7007106240536912
+    },
+    {
+      "alphaDegrees": 13.725000000000001,
+      "lateralRaw": 0.7789920955089205,
+      "lateralCapped": 0.7789920955089205,
+      "kappa": 0.2745,
+      "longitudinalRaw": 0.7002778944576956
+    },
+    {
+      "alphaDegrees": 13.75,
+      "lateralRaw": 0.7784221395559165,
+      "lateralCapped": 0.7784221395559165,
+      "kappa": 0.275,
+      "longitudinalRaw": 0.6998467194886937
+    },
+    {
+      "alphaDegrees": 13.775,
+      "lateralRaw": 0.7778542142633652,
+      "lateralCapped": 0.7778542142633652,
+      "kappa": 0.2755,
+      "longitudinalRaw": 0.6994170907999795
+    },
+    {
+      "alphaDegrees": 13.8,
+      "lateralRaw": 0.7772883088358367,
+      "lateralCapped": 0.7772883088358367,
+      "kappa": 0.276,
+      "longitudinalRaw": 0.6989890001043773
+    },
+    {
+      "alphaDegrees": 13.825000000000001,
+      "lateralRaw": 0.7767244125540083,
+      "lateralCapped": 0.7767244125540083,
+      "kappa": 0.2765,
+      "longitudinalRaw": 0.6985624391737066
+    },
+    {
+      "alphaDegrees": 13.850000000000001,
+      "lateralRaw": 0.7761625147740034,
+      "lateralCapped": 0.7761625147740034,
+      "kappa": 0.277,
+      "longitudinalRaw": 0.6981373998382654
+    },
+    {
+      "alphaDegrees": 13.875,
+      "lateralRaw": 0.77560260492673,
+      "lateralCapped": 0.77560260492673,
+      "kappa": 0.2775,
+      "longitudinalRaw": 0.6977138739863047
+    },
+    {
+      "alphaDegrees": 13.9,
+      "lateralRaw": 0.7750446725172226,
+      "lateralCapped": 0.7750446725172226,
+      "kappa": 0.278,
+      "longitudinalRaw": 0.6972918535635281
+    },
+    {
+      "alphaDegrees": 13.925,
+      "lateralRaw": 0.7744887071240012,
+      "lateralCapped": 0.7744887071240012,
+      "kappa": 0.2785,
+      "longitudinalRaw": 0.696871330572574
+    },
+    {
+      "alphaDegrees": 13.950000000000001,
+      "lateralRaw": 0.7739346983984295,
+      "lateralCapped": 0.7739346983984295,
+      "kappa": 0.279,
+      "longitudinalRaw": 0.6964522970725194
+    },
+    {
+      "alphaDegrees": 13.975000000000001,
+      "lateralRaw": 0.7733826360640841,
+      "lateralCapped": 0.7733826360640841,
+      "kappa": 0.2795,
+      "longitudinalRaw": 0.6960347451783847
+    },
+    {
+      "alphaDegrees": 14,
+      "lateralRaw": 0.7728325099161256,
+      "lateralCapped": 0.7728325099161256,
+      "kappa": 0.28,
+      "longitudinalRaw": 0.69561866706064
+    },
+    {
+      "alphaDegrees": 14.025,
+      "lateralRaw": 0.7722843098206787,
+      "lateralCapped": 0.7722843098206787,
+      "kappa": 0.2805,
+      "longitudinalRaw": 0.69520405494472
+    },
+    {
+      "alphaDegrees": 14.05,
+      "lateralRaw": 0.7717380257142198,
+      "lateralCapped": 0.7717380257142198,
+      "kappa": 0.281,
+      "longitudinalRaw": 0.6947909011105494
+    },
+    {
+      "alphaDegrees": 14.075000000000001,
+      "lateralRaw": 0.7711936476029677,
+      "lateralCapped": 0.7711936476029677,
+      "kappa": 0.28150000000000003,
+      "longitudinalRaw": 0.6943791978920549
+    },
+    {
+      "alphaDegrees": 14.100000000000001,
+      "lateralRaw": 0.7706511655622889,
+      "lateralCapped": 0.7706511655622889,
+      "kappa": 0.28200000000000003,
+      "longitudinalRaw": 0.6939689376767081
+    },
+    {
+      "alphaDegrees": 14.125,
+      "lateralRaw": 0.770110569736092,
+      "lateralCapped": 0.770110569736092,
+      "kappa": 0.28250000000000003,
+      "longitudinalRaw": 0.6935601129050504
+    },
+    {
+      "alphaDegrees": 14.15,
+      "lateralRaw": 0.7695718503362491,
+      "lateralCapped": 0.7695718503362491,
+      "kappa": 0.28300000000000003,
+      "longitudinalRaw": 0.6931527160702362
+    },
+    {
+      "alphaDegrees": 14.175,
+      "lateralRaw": 0.7690349976420089,
+      "lateralCapped": 0.7690349976420089,
+      "kappa": 0.28350000000000003,
+      "longitudinalRaw": 0.6927467397175785
+    },
+    {
+      "alphaDegrees": 14.200000000000001,
+      "lateralRaw": 0.768500001999419,
+      "lateralCapped": 0.768500001999419,
+      "kappa": 0.28400000000000003,
+      "longitudinalRaw": 0.692342176444092
+    },
+    {
+      "alphaDegrees": 14.225000000000001,
+      "lateralRaw": 0.7679668538207582,
+      "lateralCapped": 0.7679668538207582,
+      "kappa": 0.28450000000000003,
+      "longitudinalRaw": 0.6919390188980522
+    },
+    {
+      "alphaDegrees": 14.25,
+      "lateralRaw": 0.7674355435839688,
+      "lateralCapped": 0.7674355435839688,
+      "kappa": 0.28500000000000003,
+      "longitudinalRaw": 0.6915372597785483
+    },
+    {
+      "alphaDegrees": 14.275,
+      "lateralRaw": 0.7669060618320978,
+      "lateralCapped": 0.7669060618320978,
+      "kappa": 0.28550000000000003,
+      "longitudinalRaw": 0.6911368918350516
+    },
+    {
+      "alphaDegrees": 14.3,
+      "lateralRaw": 0.7663783991727444,
+      "lateralCapped": 0.7663783991727444,
+      "kappa": 0.28600000000000003,
+      "longitudinalRaw": 0.6907379078669735
+    },
+    {
+      "alphaDegrees": 14.325000000000001,
+      "lateralRaw": 0.7658525462775121,
+      "lateralCapped": 0.7658525462775121,
+      "kappa": 0.28650000000000003,
+      "longitudinalRaw": 0.6903403007232518
+    },
+    {
+      "alphaDegrees": 14.350000000000001,
+      "lateralRaw": 0.7653284938814665,
+      "lateralCapped": 0.7653284938814665,
+      "kappa": 0.28700000000000003,
+      "longitudinalRaw": 0.6899440633019093
+    },
+    {
+      "alphaDegrees": 14.375,
+      "lateralRaw": 0.764806232782595,
+      "lateralCapped": 0.764806232782595,
+      "kappa": 0.28750000000000003,
+      "longitudinalRaw": 0.6895491885496436
+    },
+    {
+      "alphaDegrees": 14.4,
+      "lateralRaw": 0.7642857538412832,
+      "lateralCapped": 0.7642857538412832,
+      "kappa": 0.28800000000000003,
+      "longitudinalRaw": 0.6891556694614155
+    },
+    {
+      "alphaDegrees": 14.425,
+      "lateralRaw": 0.7637670479797752,
+      "lateralCapped": 0.7637670479797752,
+      "kappa": 0.2885,
+      "longitudinalRaw": 0.6887634990800261
+    },
+    {
+      "alphaDegrees": 14.450000000000001,
+      "lateralRaw": 0.7632501061816721,
+      "lateralCapped": 0.7632501061816721,
+      "kappa": 0.289,
+      "longitudinalRaw": 0.6883726704957157
+    },
+    {
+      "alphaDegrees": 14.475000000000001,
+      "lateralRaw": 0.7627349194913964,
+      "lateralCapped": 0.7627349194913964,
+      "kappa": 0.2895,
+      "longitudinalRaw": 0.6879831768457704
+    },
+    {
+      "alphaDegrees": 14.5,
+      "lateralRaw": 0.7622214790136971,
+      "lateralCapped": 0.7622214790136971,
+      "kappa": 0.29,
+      "longitudinalRaw": 0.6875950113141016
+    },
+    {
+      "alphaDegrees": 14.525,
+      "lateralRaw": 0.7617097759131336,
+      "lateralCapped": 0.7617097759131336,
+      "kappa": 0.2905,
+      "longitudinalRaw": 0.6872081671308733
+    },
+    {
+      "alphaDegrees": 14.55,
+      "lateralRaw": 0.7611998014135819,
+      "lateralCapped": 0.7611998014135819,
+      "kappa": 0.291,
+      "longitudinalRaw": 0.6868226375720956
+    },
+    {
+      "alphaDegrees": 14.575000000000001,
+      "lateralRaw": 0.7606915467977385,
+      "lateralCapped": 0.7606915467977385,
+      "kappa": 0.2915,
+      "longitudinalRaw": 0.6864384159592467
+    },
+    {
+      "alphaDegrees": 14.600000000000001,
+      "lateralRaw": 0.760185003406627,
+      "lateralCapped": 0.760185003406627,
+      "kappa": 0.292,
+      "longitudinalRaw": 0.6860554956588891
+    },
+    {
+      "alphaDegrees": 14.625,
+      "lateralRaw": 0.7596801626391178,
+      "lateralCapped": 0.7596801626391178,
+      "kappa": 0.2925,
+      "longitudinalRaw": 0.6856738700822833
+    },
+    {
+      "alphaDegrees": 14.65,
+      "lateralRaw": 0.7591770159514404,
+      "lateralCapped": 0.7591770159514404,
+      "kappa": 0.293,
+      "longitudinalRaw": 0.6852935326850237
+    },
+    {
+      "alphaDegrees": 14.675,
+      "lateralRaw": 0.7586755548567158,
+      "lateralCapped": 0.7586755548567158,
+      "kappa": 0.2935,
+      "longitudinalRaw": 0.6849144769666557
+    },
+    {
+      "alphaDegrees": 14.700000000000001,
+      "lateralRaw": 0.7581757709244759,
+      "lateralCapped": 0.7581757709244759,
+      "kappa": 0.294,
+      "longitudinalRaw": 0.6845366964703197
+    },
+    {
+      "alphaDegrees": 14.725000000000001,
+      "lateralRaw": 0.7576776557802087,
+      "lateralCapped": 0.7576776557802087,
+      "kappa": 0.2945,
+      "longitudinalRaw": 0.6841601847823725
+    },
+    {
+      "alphaDegrees": 14.75,
+      "lateralRaw": 0.7571812011048833,
+      "lateralCapped": 0.7571812011048833,
+      "kappa": 0.295,
+      "longitudinalRaw": 0.6837849355320427
+    },
+    {
+      "alphaDegrees": 14.775,
+      "lateralRaw": 0.7566863986345063,
+      "lateralCapped": 0.7566863986345063,
+      "kappa": 0.2955,
+      "longitudinalRaw": 0.6834109423910636
+    },
+    {
+      "alphaDegrees": 14.8,
+      "lateralRaw": 0.7561932401596548,
+      "lateralCapped": 0.7561932401596548,
+      "kappa": 0.296,
+      "longitudinalRaw": 0.6830381990733211
+    },
+    {
+      "alphaDegrees": 14.825000000000001,
+      "lateralRaw": 0.7557017175250426,
+      "lateralCapped": 0.7557017175250426,
+      "kappa": 0.2965,
+      "longitudinalRaw": 0.6826666993345065
+    },
+    {
+      "alphaDegrees": 14.850000000000001,
+      "lateralRaw": 0.7552118226290621,
+      "lateralCapped": 0.7552118226290621,
+      "kappa": 0.297,
+      "longitudinalRaw": 0.6822964369717694
+    },
+    {
+      "alphaDegrees": 14.875,
+      "lateralRaw": 0.7547235474233577,
+      "lateralCapped": 0.7547235474233577,
+      "kappa": 0.2975,
+      "longitudinalRaw": 0.6819274058233719
+    },
+    {
+      "alphaDegrees": 14.9,
+      "lateralRaw": 0.7542368839123774,
+      "lateralCapped": 0.7542368839123774,
+      "kappa": 0.298,
+      "longitudinalRaw": 0.681559599768355
+    },
+    {
+      "alphaDegrees": 14.925,
+      "lateralRaw": 0.7537518241529556,
+      "lateralCapped": 0.7537518241529556,
+      "kappa": 0.2985,
+      "longitudinalRaw": 0.6811930127261969
+    },
+    {
+      "alphaDegrees": 14.950000000000001,
+      "lateralRaw": 0.7532683602538721,
+      "lateralCapped": 0.7532683602538721,
+      "kappa": 0.299,
+      "longitudinalRaw": 0.6808276386564835
+    },
+    {
+      "alphaDegrees": 14.975000000000001,
+      "lateralRaw": 0.7527864843754454,
+      "lateralCapped": 0.7527864843754454,
+      "kappa": 0.2995,
+      "longitudinalRaw": 0.6804634715585747
+    },
+    {
+      "alphaDegrees": 15,
+      "lateralRaw": 0.7523061887290974,
+      "lateralCapped": 0.7523061887290974,
+      "kappa": 0.3,
+      "longitudinalRaw": 0.6801005054712838
+    },
+    {
+      "alphaDegrees": 15.025,
+      "lateralRaw": 0.7518274655769482,
+      "lateralCapped": 0.7518274655769482,
+      "kappa": 0.3005,
+      "longitudinalRaw": 0.6797387344725521
+    },
+    {
+      "alphaDegrees": 15.05,
+      "lateralRaw": 0.7513503072314082,
+      "lateralCapped": 0.7513503072314082,
+      "kappa": 0.301,
+      "longitudinalRaw": 0.6793781526791234
+    },
+    {
+      "alphaDegrees": 15.075000000000001,
+      "lateralRaw": 0.7508747060547626,
+      "lateralCapped": 0.7508747060547626,
+      "kappa": 0.3015,
+      "longitudinalRaw": 0.6790187542462395
+    },
+    {
+      "alphaDegrees": 15.100000000000001,
+      "lateralRaw": 0.7504006544587766,
+      "lateralCapped": 0.7504006544587766,
+      "kappa": 0.302,
+      "longitudinalRaw": 0.6786605333673115
+    },
+    {
+      "alphaDegrees": 15.125,
+      "lateralRaw": 0.7499281449042894,
+      "lateralCapped": 0.7499281449042894,
+      "kappa": 0.3025,
+      "longitudinalRaw": 0.678303484273623
+    },
+    {
+      "alphaDegrees": 15.15,
+      "lateralRaw": 0.7494571699008319,
+      "lateralCapped": 0.7494571699008319,
+      "kappa": 0.303,
+      "longitudinalRaw": 0.6779476012340122
+    },
+    {
+      "alphaDegrees": 15.175,
+      "lateralRaw": 0.7489877220062152,
+      "lateralCapped": 0.7489877220062152,
+      "kappa": 0.3035,
+      "longitudinalRaw": 0.6775928785545726
+    },
+    {
+      "alphaDegrees": 15.200000000000001,
+      "lateralRaw": 0.7485197938261672,
+      "lateralCapped": 0.7485197938261672,
+      "kappa": 0.304,
+      "longitudinalRaw": 0.6772393105783477
+    },
+    {
+      "alphaDegrees": 15.225000000000001,
+      "lateralRaw": 0.7480533780139296,
+      "lateralCapped": 0.7480533780139296,
+      "kappa": 0.3045,
+      "longitudinalRaw": 0.6768868916850405
+    },
+    {
+      "alphaDegrees": 15.25,
+      "lateralRaw": 0.7475884672698851,
+      "lateralCapped": 0.7475884672698851,
+      "kappa": 0.305,
+      "longitudinalRaw": 0.676535616290703
+    },
+    {
+      "alphaDegrees": 15.275,
+      "lateralRaw": 0.7471250543411854,
+      "lateralCapped": 0.7471250543411854,
+      "kappa": 0.3055,
+      "longitudinalRaw": 0.6761854788474578
+    },
+    {
+      "alphaDegrees": 15.3,
+      "lateralRaw": 0.7466631320213708,
+      "lateralCapped": 0.7466631320213708,
+      "kappa": 0.306,
+      "longitudinalRaw": 0.6758364738432
+    },
+    {
+      "alphaDegrees": 15.325000000000001,
+      "lateralRaw": 0.7462026931500083,
+      "lateralCapped": 0.7462026931500083,
+      "kappa": 0.3065,
+      "longitudinalRaw": 0.6754885958013106
+    },
+    {
+      "alphaDegrees": 15.350000000000001,
+      "lateralRaw": 0.7457437306123147,
+      "lateralCapped": 0.7457437306123147,
+      "kappa": 0.307,
+      "longitudinalRaw": 0.6751418392803719
+    },
+    {
+      "alphaDegrees": 15.375,
+      "lateralRaw": 0.745286237338808,
+      "lateralCapped": 0.745286237338808,
+      "kappa": 0.3075,
+      "longitudinalRaw": 0.6747961988738908
+    },
+    {
+      "alphaDegrees": 15.4,
+      "lateralRaw": 0.7448302063049428,
+      "lateralCapped": 0.7448302063049428,
+      "kappa": 0.308,
+      "longitudinalRaw": 0.6744516692100088
+    },
+    {
+      "alphaDegrees": 15.425,
+      "lateralRaw": 0.7443756305307484,
+      "lateralCapped": 0.7443756305307484,
+      "kappa": 0.3085,
+      "longitudinalRaw": 0.6741082449512387
+    },
+    {
+      "alphaDegrees": 15.450000000000001,
+      "lateralRaw": 0.7439225030804877,
+      "lateralCapped": 0.7439225030804877,
+      "kappa": 0.309,
+      "longitudinalRaw": 0.6737659207941752
+    },
+    {
+      "alphaDegrees": 15.475000000000001,
+      "lateralRaw": 0.7434708170623029,
+      "lateralCapped": 0.7434708170623029,
+      "kappa": 0.3095,
+      "longitudinalRaw": 0.673424691469243
+    },
+    {
+      "alphaDegrees": 15.5,
+      "lateralRaw": 0.7430205656278663,
+      "lateralCapped": 0.7430205656278663,
+      "kappa": 0.31,
+      "longitudinalRaw": 0.6730845517404067
+    },
+    {
+      "alphaDegrees": 15.525,
+      "lateralRaw": 0.7425717419720497,
+      "lateralCapped": 0.7425717419720497,
+      "kappa": 0.3105,
+      "longitudinalRaw": 0.672745496404923
+    },
+    {
+      "alphaDegrees": 15.55,
+      "lateralRaw": 0.7421243393325713,
+      "lateralCapped": 0.7421243393325713,
+      "kappa": 0.311,
+      "longitudinalRaw": 0.6724075202930649
+    },
+    {
+      "alphaDegrees": 15.575000000000001,
+      "lateralRaw": 0.7416783509896715,
+      "lateralCapped": 0.7416783509896715,
+      "kappa": 0.3115,
+      "longitudinalRaw": 0.6720706182678654
+    },
+    {
+      "alphaDegrees": 15.600000000000001,
+      "lateralRaw": 0.7412337702657698,
+      "lateralCapped": 0.7412337702657698,
+      "kappa": 0.312,
+      "longitudinalRaw": 0.6717347852248594
+    },
+    {
+      "alphaDegrees": 15.625,
+      "lateralRaw": 0.7407905905251467,
+      "lateralCapped": 0.7407905905251467,
+      "kappa": 0.3125,
+      "longitudinalRaw": 0.6714000160918265
+    },
+    {
+      "alphaDegrees": 15.65,
+      "lateralRaw": 0.740348805173609,
+      "lateralCapped": 0.740348805173609,
+      "kappa": 0.313,
+      "longitudinalRaw": 0.6710663058285354
+    },
+    {
+      "alphaDegrees": 15.675,
+      "lateralRaw": 0.7399084076581688,
+      "lateralCapped": 0.7399084076581688,
+      "kappa": 0.3135,
+      "longitudinalRaw": 0.670733649426498
+    },
+    {
+      "alphaDegrees": 15.700000000000001,
+      "lateralRaw": 0.7394693914667205,
+      "lateralCapped": 0.7394693914667205,
+      "kappa": 0.314,
+      "longitudinalRaw": 0.6704020419087097
+    },
+    {
+      "alphaDegrees": 15.725000000000001,
+      "lateralRaw": 0.7390317501277306,
+      "lateralCapped": 0.7390317501277306,
+      "kappa": 0.3145,
+      "longitudinalRaw": 0.6700714783294163
+    },
+    {
+      "alphaDegrees": 15.75,
+      "lateralRaw": 0.7385954772099163,
+      "lateralCapped": 0.7385954772099163,
+      "kappa": 0.315,
+      "longitudinalRaw": 0.6697419537738595
+    },
+    {
+      "alphaDegrees": 15.775,
+      "lateralRaw": 0.738160566321934,
+      "lateralCapped": 0.738160566321934,
+      "kappa": 0.3155,
+      "longitudinalRaw": 0.6694134633580369
+    },
+    {
+      "alphaDegrees": 15.8,
+      "lateralRaw": 0.7377270111120741,
+      "lateralCapped": 0.7377270111120741,
+      "kappa": 0.316,
+      "longitudinalRaw": 0.6690860022284667
+    },
+    {
+      "alphaDegrees": 15.825000000000001,
+      "lateralRaw": 0.7372948052679569,
+      "lateralCapped": 0.7372948052679569,
+      "kappa": 0.3165,
+      "longitudinalRaw": 0.668759565561944
+    },
+    {
+      "alphaDegrees": 15.850000000000001,
+      "lateralRaw": 0.7368639425162207,
+      "lateralCapped": 0.7368639425162207,
+      "kappa": 0.317,
+      "longitudinalRaw": 0.6684341485653095
+    },
+    {
+      "alphaDegrees": 15.875,
+      "lateralRaw": 0.7364344166222279,
+      "lateralCapped": 0.7364344166222279,
+      "kappa": 0.3175,
+      "longitudinalRaw": 0.6681097464752113
+    },
+    {
+      "alphaDegrees": 15.9,
+      "lateralRaw": 0.7360062213897727,
+      "lateralCapped": 0.7360062213897727,
+      "kappa": 0.318,
+      "longitudinalRaw": 0.6677863545578837
+    },
+    {
+      "alphaDegrees": 15.925,
+      "lateralRaw": 0.7355793506607736,
+      "lateralCapped": 0.7355793506607736,
+      "kappa": 0.3185,
+      "longitudinalRaw": 0.6674639681089067
+    },
+    {
+      "alphaDegrees": 15.950000000000001,
+      "lateralRaw": 0.7351537983149911,
+      "lateralCapped": 0.7351537983149911,
+      "kappa": 0.319,
+      "longitudinalRaw": 0.6671425824529854
+    },
+    {
+      "alphaDegrees": 15.975000000000001,
+      "lateralRaw": 0.7347295582697349,
+      "lateralCapped": 0.7347295582697349,
+      "kappa": 0.3195,
+      "longitudinalRaw": 0.6668221929437257
+    },
+    {
+      "alphaDegrees": 16,
+      "lateralRaw": 0.7343066244795788,
+      "lateralCapped": 0.7343066244795788,
+      "kappa": 0.32,
+      "longitudinalRaw": 0.6665027949634108
+    },
+    {
+      "alphaDegrees": 16.025000000000002,
+      "lateralRaw": 0.7338849909360723,
+      "lateralCapped": 0.7338849909360723,
+      "kappa": 0.3205,
+      "longitudinalRaw": 0.6661843839227769
+    },
+    {
+      "alphaDegrees": 16.05,
+      "lateralRaw": 0.7334646516674658,
+      "lateralCapped": 0.7334646516674658,
+      "kappa": 0.321,
+      "longitudinalRaw": 0.6658669552607991
+    },
+    {
+      "alphaDegrees": 16.075,
+      "lateralRaw": 0.7330456007384225,
+      "lateralCapped": 0.7330456007384225,
+      "kappa": 0.3215,
+      "longitudinalRaw": 0.6655505044444785
+    },
+    {
+      "alphaDegrees": 16.1,
+      "lateralRaw": 0.7326278322497554,
+      "lateralCapped": 0.7326278322497554,
+      "kappa": 0.322,
+      "longitudinalRaw": 0.6652350269686154
+    },
+    {
+      "alphaDegrees": 16.125,
+      "lateralRaw": 0.732211340338139,
+      "lateralCapped": 0.732211340338139,
+      "kappa": 0.3225,
+      "longitudinalRaw": 0.664920518355609
+    },
+    {
+      "alphaDegrees": 16.150000000000002,
+      "lateralRaw": 0.7317961191758454,
+      "lateralCapped": 0.7317961191758454,
+      "kappa": 0.323,
+      "longitudinalRaw": 0.6646069741552391
+    },
+    {
+      "alphaDegrees": 16.175,
+      "lateralRaw": 0.7313821629704742,
+      "lateralCapped": 0.7313821629704742,
+      "kappa": 0.3235,
+      "longitudinalRaw": 0.6642943899444641
+    },
+    {
+      "alphaDegrees": 16.2,
+      "lateralRaw": 0.730969465964689,
+      "lateralCapped": 0.730969465964689,
+      "kappa": 0.324,
+      "longitudinalRaw": 0.6639827613272057
+    },
+    {
+      "alphaDegrees": 16.225,
+      "lateralRaw": 0.7305580224359441,
+      "lateralCapped": 0.7305580224359441,
+      "kappa": 0.3245,
+      "longitudinalRaw": 0.663672083934151
+    },
+    {
+      "alphaDegrees": 16.25,
+      "lateralRaw": 0.7301478266962337,
+      "lateralCapped": 0.7301478266962337,
+      "kappa": 0.325,
+      "longitudinalRaw": 0.6633623534225463
+    },
+    {
+      "alphaDegrees": 16.275000000000002,
+      "lateralRaw": 0.7297388730918241,
+      "lateralCapped": 0.7297388730918241,
+      "kappa": 0.3255,
+      "longitudinalRaw": 0.6630535654759983
+    },
+    {
+      "alphaDegrees": 16.3,
+      "lateralRaw": 0.7293311560030046,
+      "lateralCapped": 0.7293311560030046,
+      "kappa": 0.326,
+      "longitudinalRaw": 0.6627457158042706
+    },
+    {
+      "alphaDegrees": 16.325,
+      "lateralRaw": 0.7289246698438209,
+      "lateralCapped": 0.7289246698438209,
+      "kappa": 0.3265,
+      "longitudinalRaw": 0.6624388001430889
+    },
+    {
+      "alphaDegrees": 16.35,
+      "lateralRaw": 0.728519409061835,
+      "lateralCapped": 0.728519409061835,
+      "kappa": 0.327,
+      "longitudinalRaw": 0.6621328142539451
+    },
+    {
+      "alphaDegrees": 16.375,
+      "lateralRaw": 0.7281153681378675,
+      "lateralCapped": 0.7281153681378675,
+      "kappa": 0.3275,
+      "longitudinalRaw": 0.6618277539239038
+    },
+    {
+      "alphaDegrees": 16.400000000000002,
+      "lateralRaw": 0.7277125415857537,
+      "lateralCapped": 0.7277125415857537,
+      "kappa": 0.328,
+      "longitudinalRaw": 0.6615236149654103
+    },
+    {
+      "alphaDegrees": 16.425,
+      "lateralRaw": 0.7273109239520912,
+      "lateralCapped": 0.7273109239520912,
+      "kappa": 0.3285,
+      "longitudinalRaw": 0.6612203932160927
+    },
+    {
+      "alphaDegrees": 16.45,
+      "lateralRaw": 0.7269105098160069,
+      "lateralCapped": 0.7269105098160069,
+      "kappa": 0.329,
+      "longitudinalRaw": 0.6609180845385872
+    },
+    {
+      "alphaDegrees": 16.475,
+      "lateralRaw": 0.7265112937889041,
+      "lateralCapped": 0.7265112937889041,
+      "kappa": 0.3295,
+      "longitudinalRaw": 0.6606166848203365
+    },
+    {
+      "alphaDegrees": 16.5,
+      "lateralRaw": 0.7261132705142307,
+      "lateralCapped": 0.7261132705142307,
+      "kappa": 0.33,
+      "longitudinalRaw": 0.6603161899734158
+    },
+    {
+      "alphaDegrees": 16.525000000000002,
+      "lateralRaw": 0.7257164346672415,
+      "lateralCapped": 0.7257164346672415,
+      "kappa": 0.3305,
+      "longitudinalRaw": 0.6600165959343415
+    },
+    {
+      "alphaDegrees": 16.55,
+      "lateralRaw": 0.7253207809547586,
+      "lateralCapped": 0.7253207809547586,
+      "kappa": 0.331,
+      "longitudinalRaw": 0.6597178986638913
+    },
+    {
+      "alphaDegrees": 16.575,
+      "lateralRaw": 0.724926304114942,
+      "lateralCapped": 0.724926304114942,
+      "kappa": 0.3315,
+      "longitudinalRaw": 0.6594200941469232
+    },
+    {
+      "alphaDegrees": 16.6,
+      "lateralRaw": 0.7245329989170575,
+      "lateralCapped": 0.7245329989170575,
+      "kappa": 0.332,
+      "longitudinalRaw": 0.6591231783922008
+    },
+    {
+      "alphaDegrees": 16.625,
+      "lateralRaw": 0.7241408601612478,
+      "lateralCapped": 0.7241408601612478,
+      "kappa": 0.3325,
+      "longitudinalRaw": 0.6588271474322089
+    },
+    {
+      "alphaDegrees": 16.650000000000002,
+      "lateralRaw": 0.7237498826783082,
+      "lateralCapped": 0.7237498826783082,
+      "kappa": 0.333,
+      "longitudinalRaw": 0.6585319973229803
+    },
+    {
+      "alphaDegrees": 16.675,
+      "lateralRaw": 0.7233600613294559,
+      "lateralCapped": 0.7233600613294559,
+      "kappa": 0.3335,
+      "longitudinalRaw": 0.6582377241439257
+    },
+    {
+      "alphaDegrees": 16.7,
+      "lateralRaw": 0.7229713910061132,
+      "lateralCapped": 0.7229713910061132,
+      "kappa": 0.334,
+      "longitudinalRaw": 0.6579443239976569
+    },
+    {
+      "alphaDegrees": 16.725,
+      "lateralRaw": 0.72258386662968,
+      "lateralCapped": 0.72258386662968,
+      "kappa": 0.3345,
+      "longitudinalRaw": 0.6576517930098148
+    },
+    {
+      "alphaDegrees": 16.75,
+      "lateralRaw": 0.7221974831513215,
+      "lateralCapped": 0.7221974831513215,
+      "kappa": 0.335,
+      "longitudinalRaw": 0.6573601273289036
+    },
+    {
+      "alphaDegrees": 16.775000000000002,
+      "lateralRaw": 0.721812235551748,
+      "lateralCapped": 0.721812235551748,
+      "kappa": 0.3355,
+      "longitudinalRaw": 0.6570693231261183
+    },
+    {
+      "alphaDegrees": 16.8,
+      "lateralRaw": 0.7214281188409997,
+      "lateralCapped": 0.7214281188409997,
+      "kappa": 0.336,
+      "longitudinalRaw": 0.6567793765951824
+    },
+    {
+      "alphaDegrees": 16.825,
+      "lateralRaw": 0.7210451280582286,
+      "lateralCapped": 0.7210451280582286,
+      "kappa": 0.3365,
+      "longitudinalRaw": 0.6564902839521812
+    },
+    {
+      "alphaDegrees": 16.85,
+      "lateralRaw": 0.7206632582714988,
+      "lateralCapped": 0.7206632582714988,
+      "kappa": 0.337,
+      "longitudinalRaw": 0.6562020414353907
+    },
+    {
+      "alphaDegrees": 16.875,
+      "lateralRaw": 0.7202825045775622,
+      "lateralCapped": 0.7202825045775622,
+      "kappa": 0.3375,
+      "longitudinalRaw": 0.6559146453051333
+    },
+    {
+      "alphaDegrees": 16.900000000000002,
+      "lateralRaw": 0.7199028621016655,
+      "lateralCapped": 0.7199028621016655,
+      "kappa": 0.338,
+      "longitudinalRaw": 0.6556280918435943
+    },
+    {
+      "alphaDegrees": 16.925,
+      "lateralRaw": 0.7195243259973287,
+      "lateralCapped": 0.7195243259973287,
+      "kappa": 0.3385,
+      "longitudinalRaw": 0.655342377354681
+    },
+    {
+      "alphaDegrees": 16.95,
+      "lateralRaw": 0.7191468914461552,
+      "lateralCapped": 0.7191468914461552,
+      "kappa": 0.339,
+      "longitudinalRaw": 0.6550574981638556
+    },
+    {
+      "alphaDegrees": 16.975,
+      "lateralRaw": 0.7187705536576163,
+      "lateralCapped": 0.7187705536576163,
+      "kappa": 0.3395,
+      "longitudinalRaw": 0.654773450617979
+    },
+    {
+      "alphaDegrees": 17,
+      "lateralRaw": 0.7183953078688666,
+      "lateralCapped": 0.7183953078688666,
+      "kappa": 0.34,
+      "longitudinalRaw": 0.6544902310851561
+    },
+    {
+      "alphaDegrees": 17.025000000000002,
+      "lateralRaw": 0.7180211493445227,
+      "lateralCapped": 0.7180211493445227,
+      "kappa": 0.3405,
+      "longitudinalRaw": 0.6542078359545852
+    },
+    {
+      "alphaDegrees": 17.05,
+      "lateralRaw": 0.7176480733764874,
+      "lateralCapped": 0.7176480733764874,
+      "kappa": 0.341,
+      "longitudinalRaw": 0.6539262616363986
+    },
+    {
+      "alphaDegrees": 17.075,
+      "lateralRaw": 0.7172760752837438,
+      "lateralCapped": 0.7172760752837438,
+      "kappa": 0.3415,
+      "longitudinalRaw": 0.6536455045615208
+    },
+    {
+      "alphaDegrees": 17.1,
+      "lateralRaw": 0.7169051504121579,
+      "lateralCapped": 0.7169051504121579,
+      "kappa": 0.342,
+      "longitudinalRaw": 0.6533655611815058
+    },
+    {
+      "alphaDegrees": 17.125,
+      "lateralRaw": 0.7165352941342936,
+      "lateralCapped": 0.7165352941342936,
+      "kappa": 0.3425,
+      "longitudinalRaw": 0.6530864279683988
+    },
+    {
+      "alphaDegrees": 17.150000000000002,
+      "lateralRaw": 0.7161665018492229,
+      "lateralCapped": 0.7161665018492229,
+      "kappa": 0.343,
+      "longitudinalRaw": 0.6528081014145856
+    },
+    {
+      "alphaDegrees": 17.175,
+      "lateralRaw": 0.7157987689823256,
+      "lateralCapped": 0.7157987689823256,
+      "kappa": 0.3435,
+      "longitudinalRaw": 0.6525305780326466
+    },
+    {
+      "alphaDegrees": 17.2,
+      "lateralRaw": 0.715432090985118,
+      "lateralCapped": 0.715432090985118,
+      "kappa": 0.34400000000000003,
+      "longitudinalRaw": 0.6522538543552084
+    },
+    {
+      "alphaDegrees": 17.225,
+      "lateralRaw": 0.7150664633350488,
+      "lateralCapped": 0.7150664633350488,
+      "kappa": 0.34450000000000003,
+      "longitudinalRaw": 0.6519779269348046
+    },
+    {
+      "alphaDegrees": 17.25,
+      "lateralRaw": 0.7147018815353343,
+      "lateralCapped": 0.7147018815353343,
+      "kappa": 0.34500000000000003,
+      "longitudinalRaw": 0.6517027923437338
+    },
+    {
+      "alphaDegrees": 17.275000000000002,
+      "lateralRaw": 0.7143383411147582,
+      "lateralCapped": 0.7143383411147582,
+      "kappa": 0.34550000000000003,
+      "longitudinalRaw": 0.6514284471739122
+    },
+    {
+      "alphaDegrees": 17.3,
+      "lateralRaw": 0.7139758376275067,
+      "lateralCapped": 0.7139758376275067,
+      "kappa": 0.34600000000000003,
+      "longitudinalRaw": 0.6511548880367434
+    },
+    {
+      "alphaDegrees": 17.325,
+      "lateralRaw": 0.7136143666529702,
+      "lateralCapped": 0.7136143666529702,
+      "kappa": 0.34650000000000003,
+      "longitudinalRaw": 0.6508821115629657
+    },
+    {
+      "alphaDegrees": 17.35,
+      "lateralRaw": 0.7132539237955832,
+      "lateralCapped": 0.7132539237955832,
+      "kappa": 0.34700000000000003,
+      "longitudinalRaw": 0.6506101144025317
+    },
+    {
+      "alphaDegrees": 17.375,
+      "lateralRaw": 0.7128945046846366,
+      "lateralCapped": 0.7128945046846366,
+      "kappa": 0.34750000000000003,
+      "longitudinalRaw": 0.6503388932244558
+    },
+    {
+      "alphaDegrees": 17.400000000000002,
+      "lateralRaw": 0.7125361049741071,
+      "lateralCapped": 0.7125361049741071,
+      "kappa": 0.34800000000000003,
+      "longitudinalRaw": 0.6500684447166873
+    },
+    {
+      "alphaDegrees": 17.425,
+      "lateralRaw": 0.7121787203424815,
+      "lateralCapped": 0.7121787203424815,
+      "kappa": 0.34850000000000003,
+      "longitudinalRaw": 0.6497987655859795
+    },
+    {
+      "alphaDegrees": 17.45,
+      "lateralRaw": 0.7118223464925886,
+      "lateralCapped": 0.7118223464925886,
+      "kappa": 0.34900000000000003,
+      "longitudinalRaw": 0.649529852557744
+    },
+    {
+      "alphaDegrees": 17.475,
+      "lateralRaw": 0.7114669791514194,
+      "lateralCapped": 0.7114669791514194,
+      "kappa": 0.34950000000000003,
+      "longitudinalRaw": 0.6492617023759342
+    },
+    {
+      "alphaDegrees": 17.5,
+      "lateralRaw": 0.7111126140699691,
+      "lateralCapped": 0.7111126140699691,
+      "kappa": 0.35000000000000003,
+      "longitudinalRaw": 0.6489943118029031
+    },
+    {
+      "alphaDegrees": 17.525000000000002,
+      "lateralRaw": 0.7107592470230604,
+      "lateralCapped": 0.7107592470230604,
+      "kappa": 0.35050000000000003,
+      "longitudinalRaw": 0.6487276776192764
+    },
+    {
+      "alphaDegrees": 17.55,
+      "lateralRaw": 0.7104068738091831,
+      "lateralCapped": 0.7104068738091831,
+      "kappa": 0.35100000000000003,
+      "longitudinalRaw": 0.6484617966238286
+    },
+    {
+      "alphaDegrees": 17.575,
+      "lateralRaw": 0.7100554902503271,
+      "lateralCapped": 0.7100554902503271,
+      "kappa": 0.35150000000000003,
+      "longitudinalRaw": 0.6481966656333487
+    },
+    {
+      "alphaDegrees": 17.6,
+      "lateralRaw": 0.7097050921918128,
+      "lateralCapped": 0.7097050921918128,
+      "kappa": 0.352,
+      "longitudinalRaw": 0.6479322814825209
+    },
+    {
+      "alphaDegrees": 17.625,
+      "lateralRaw": 0.7093556755021406,
+      "lateralCapped": 0.7093556755021406,
+      "kappa": 0.3525,
+      "longitudinalRaw": 0.6476686410237911
+    },
+    {
+      "alphaDegrees": 17.650000000000002,
+      "lateralRaw": 0.709007236072818,
+      "lateralCapped": 0.709007236072818,
+      "kappa": 0.353,
+      "longitudinalRaw": 0.6474057411272498
+    },
+    {
+      "alphaDegrees": 17.675,
+      "lateralRaw": 0.7086597698182096,
+      "lateralCapped": 0.7086597698182096,
+      "kappa": 0.3535,
+      "longitudinalRaw": 0.6471435786805041
+    },
+    {
+      "alphaDegrees": 17.7,
+      "lateralRaw": 0.7083132726753709,
+      "lateralCapped": 0.7083132726753709,
+      "kappa": 0.354,
+      "longitudinalRaw": 0.646882150588558
+    },
+    {
+      "alphaDegrees": 17.725,
+      "lateralRaw": 0.7079677406038964,
+      "lateralCapped": 0.7079677406038964,
+      "kappa": 0.3545,
+      "longitudinalRaw": 0.6466214537736901
+    },
+    {
+      "alphaDegrees": 17.75,
+      "lateralRaw": 0.7076231695857631,
+      "lateralCapped": 0.7076231695857631,
+      "kappa": 0.355,
+      "longitudinalRaw": 0.646361485175334
+    },
+    {
+      "alphaDegrees": 17.775000000000002,
+      "lateralRaw": 0.7072795556251726,
+      "lateralCapped": 0.7072795556251726,
+      "kappa": 0.3555,
+      "longitudinalRaw": 0.6461022417499589
+    },
+    {
+      "alphaDegrees": 17.8,
+      "lateralRaw": 0.7069368947484062,
+      "lateralCapped": 0.7069368947484062,
+      "kappa": 0.356,
+      "longitudinalRaw": 0.6458437204709507
+    },
+    {
+      "alphaDegrees": 17.825,
+      "lateralRaw": 0.70659518300366,
+      "lateralCapped": 0.70659518300366,
+      "kappa": 0.3565,
+      "longitudinalRaw": 0.6455859183284943
+    },
+    {
+      "alphaDegrees": 17.85,
+      "lateralRaw": 0.7062544164609063,
+      "lateralCapped": 0.7062544164609063,
+      "kappa": 0.357,
+      "longitudinalRaw": 0.6453288323294604
+    },
+    {
+      "alphaDegrees": 17.875,
+      "lateralRaw": 0.7059145912117404,
+      "lateralCapped": 0.7059145912117404,
+      "kappa": 0.3575,
+      "longitudinalRaw": 0.6450724594972889
+    },
+    {
+      "alphaDegrees": 17.900000000000002,
+      "lateralRaw": 0.7055757033692281,
+      "lateralCapped": 0.7055757033692281,
+      "kappa": 0.358,
+      "longitudinalRaw": 0.644816796871869
+    },
+    {
+      "alphaDegrees": 17.925,
+      "lateralRaw": 0.7052377490677653,
+      "lateralCapped": 0.7052377490677653,
+      "kappa": 0.3585,
+      "longitudinalRaw": 0.6445618415094355
+    },
+    {
+      "alphaDegrees": 17.95,
+      "lateralRaw": 0.7049007244629268,
+      "lateralCapped": 0.7049007244629268,
+      "kappa": 0.359,
+      "longitudinalRaw": 0.6443075904824491
+    },
+    {
+      "alphaDegrees": 17.975,
+      "lateralRaw": 0.7045646257313248,
+      "lateralCapped": 0.7045646257313248,
+      "kappa": 0.3595,
+      "longitudinalRaw": 0.6440540408794879
+    },
+    {
+      "alphaDegrees": 18,
+      "lateralRaw": 0.7042294490704689,
+      "lateralCapped": 0.7042294490704689,
+      "kappa": 0.36,
+      "longitudinalRaw": 0.6438011898051348
+    },
+    {
+      "alphaDegrees": 18.025000000000002,
+      "lateralRaw": 0.7038951906986126,
+      "lateralCapped": 0.7038951906986126,
+      "kappa": 0.3605,
+      "longitudinalRaw": 0.6435490343798687
+    },
+    {
+      "alphaDegrees": 18.05,
+      "lateralRaw": 0.7035618468546243,
+      "lateralCapped": 0.7035618468546243,
+      "kappa": 0.361,
+      "longitudinalRaw": 0.6432975717399603
+    },
+    {
+      "alphaDegrees": 18.075,
+      "lateralRaw": 0.7032294137978399,
+      "lateralCapped": 0.7032294137978399,
+      "kappa": 0.3615,
+      "longitudinalRaw": 0.6430467990373527
+    },
+    {
+      "alphaDegrees": 18.1,
+      "lateralRaw": 0.7028978878079315,
+      "lateralCapped": 0.7028978878079315,
+      "kappa": 0.362,
+      "longitudinalRaw": 0.6427967134395709
+    },
+    {
+      "alphaDegrees": 18.125,
+      "lateralRaw": 0.7025672651847581,
+      "lateralCapped": 0.7025672651847581,
+      "kappa": 0.3625,
+      "longitudinalRaw": 0.6425473121295946
+    },
+    {
+      "alphaDegrees": 18.150000000000002,
+      "lateralRaw": 0.7022375422482403,
+      "lateralCapped": 0.7022375422482403,
+      "kappa": 0.363,
+      "longitudinalRaw": 0.642298592305774
+    },
+    {
+      "alphaDegrees": 18.175,
+      "lateralRaw": 0.701908715338221,
+      "lateralCapped": 0.701908715338221,
+      "kappa": 0.3635,
+      "longitudinalRaw": 0.6420505511817125
+    },
+    {
+      "alphaDegrees": 18.2,
+      "lateralRaw": 0.7015807808143253,
+      "lateralCapped": 0.7015807808143253,
+      "kappa": 0.364,
+      "longitudinalRaw": 0.6418031859861667
+    },
+    {
+      "alphaDegrees": 18.225,
+      "lateralRaw": 0.7012537350558381,
+      "lateralCapped": 0.7012537350558381,
+      "kappa": 0.3645,
+      "longitudinalRaw": 0.6415564939629418
+    },
+    {
+      "alphaDegrees": 18.25,
+      "lateralRaw": 0.700927574461565,
+      "lateralCapped": 0.700927574461565,
+      "kappa": 0.365,
+      "longitudinalRaw": 0.6413104723707949
+    },
+    {
+      "alphaDegrees": 18.275000000000002,
+      "lateralRaw": 0.7006022954496983,
+      "lateralCapped": 0.7006022954496983,
+      "kappa": 0.3655,
+      "longitudinalRaw": 0.6410651184833259
+    },
+    {
+      "alphaDegrees": 18.3,
+      "lateralRaw": 0.7002778944576956,
+      "lateralCapped": 0.7002778944576956,
+      "kappa": 0.366,
+      "longitudinalRaw": 0.6408204295888877
+    },
+    {
+      "alphaDegrees": 18.325,
+      "lateralRaw": 0.6999543679421453,
+      "lateralCapped": 0.6999543679421453,
+      "kappa": 0.3665,
+      "longitudinalRaw": 0.6405764029904736
+    },
+    {
+      "alphaDegrees": 18.35,
+      "lateralRaw": 0.6996317123786386,
+      "lateralCapped": 0.6996317123786386,
+      "kappa": 0.367,
+      "longitudinalRaw": 0.6403330360056293
+    },
+    {
+      "alphaDegrees": 18.375,
+      "lateralRaw": 0.699309924261643,
+      "lateralCapped": 0.699309924261643,
+      "kappa": 0.3675,
+      "longitudinalRaw": 0.640090325966353
+    },
+    {
+      "alphaDegrees": 18.400000000000002,
+      "lateralRaw": 0.6989890001043773,
+      "lateralCapped": 0.6989890001043773,
+      "kappa": 0.368,
+      "longitudinalRaw": 0.6398482702189955
+    },
+    {
+      "alphaDegrees": 18.425,
+      "lateralRaw": 0.698668936438688,
+      "lateralCapped": 0.698668936438688,
+      "kappa": 0.3685,
+      "longitudinalRaw": 0.6396068661241622
+    },
+    {
+      "alphaDegrees": 18.45,
+      "lateralRaw": 0.6983497298149188,
+      "lateralCapped": 0.6983497298149188,
+      "kappa": 0.369,
+      "longitudinalRaw": 0.6393661110566263
+    },
+    {
+      "alphaDegrees": 18.475,
+      "lateralRaw": 0.6980313768017964,
+      "lateralCapped": 0.6980313768017964,
+      "kappa": 0.3695,
+      "longitudinalRaw": 0.6391260024052245
+    },
+    {
+      "alphaDegrees": 18.5,
+      "lateralRaw": 0.6977138739863047,
+      "lateralCapped": 0.6977138739863047,
+      "kappa": 0.37,
+      "longitudinalRaw": 0.6388865375727663
+    },
+    {
+      "alphaDegrees": 18.525000000000002,
+      "lateralRaw": 0.6973972179735606,
+      "lateralCapped": 0.6973972179735606,
+      "kappa": 0.3705,
+      "longitudinalRaw": 0.6386477139759441
+    },
+    {
+      "alphaDegrees": 18.55,
+      "lateralRaw": 0.6970814053866983,
+      "lateralCapped": 0.6970814053866983,
+      "kappa": 0.371,
+      "longitudinalRaw": 0.6384095290452363
+    },
+    {
+      "alphaDegrees": 18.575,
+      "lateralRaw": 0.6967664328667471,
+      "lateralCapped": 0.6967664328667471,
+      "kappa": 0.3715,
+      "longitudinalRaw": 0.6381719802248162
+    },
+    {
+      "alphaDegrees": 18.6,
+      "lateralRaw": 0.6964522970725194,
+      "lateralCapped": 0.6964522970725194,
+      "kappa": 0.372,
+      "longitudinalRaw": 0.6379350649724624
+    },
+    {
+      "alphaDegrees": 18.625,
+      "lateralRaw": 0.6961389946804837,
+      "lateralCapped": 0.6961389946804837,
+      "kappa": 0.3725,
+      "longitudinalRaw": 0.6376987807594707
+    },
+    {
+      "alphaDegrees": 18.650000000000002,
+      "lateralRaw": 0.6958265223846564,
+      "lateralCapped": 0.6958265223846564,
+      "kappa": 0.373,
+      "longitudinalRaw": 0.6374631250705576
+    },
+    {
+      "alphaDegrees": 18.675,
+      "lateralRaw": 0.6955148768964826,
+      "lateralCapped": 0.6955148768964826,
+      "kappa": 0.3735,
+      "longitudinalRaw": 0.6372280954037796
+    },
+    {
+      "alphaDegrees": 18.7,
+      "lateralRaw": 0.69520405494472,
+      "lateralCapped": 0.69520405494472,
+      "kappa": 0.374,
+      "longitudinalRaw": 0.6369936892704359
+    },
+    {
+      "alphaDegrees": 18.725,
+      "lateralRaw": 0.694894053275336,
+      "lateralCapped": 0.694894053275336,
+      "kappa": 0.3745,
+      "longitudinalRaw": 0.6367599041949928
+    },
+    {
+      "alphaDegrees": 18.75,
+      "lateralRaw": 0.6945848686513738,
+      "lateralCapped": 0.6945848686513738,
+      "kappa": 0.375,
+      "longitudinalRaw": 0.6365267377149845
+    },
+    {
+      "alphaDegrees": 18.775000000000002,
+      "lateralRaw": 0.6942764978528682,
+      "lateralCapped": 0.6942764978528682,
+      "kappa": 0.3755,
+      "longitudinalRaw": 0.6362941873809353
+    },
+    {
+      "alphaDegrees": 18.8,
+      "lateralRaw": 0.6939689376767081,
+      "lateralCapped": 0.6939689376767081,
+      "kappa": 0.376,
+      "longitudinalRaw": 0.6360622507562705
+    },
+    {
+      "alphaDegrees": 18.825,
+      "lateralRaw": 0.6936621849365435,
+      "lateralCapped": 0.6936621849365435,
+      "kappa": 0.3765,
+      "longitudinalRaw": 0.6358309254172346
+    },
+    {
+      "alphaDegrees": 18.85,
+      "lateralRaw": 0.693356236462674,
+      "lateralCapped": 0.693356236462674,
+      "kappa": 0.377,
+      "longitudinalRaw": 0.6356002089528009
+    },
+    {
+      "alphaDegrees": 18.875,
+      "lateralRaw": 0.6930510891019289,
+      "lateralCapped": 0.6930510891019289,
+      "kappa": 0.3775,
+      "longitudinalRaw": 0.6353700989645998
+    },
+    {
+      "alphaDegrees": 18.900000000000002,
+      "lateralRaw": 0.6927467397175785,
+      "lateralCapped": 0.6927467397175785,
+      "kappa": 0.378,
+      "longitudinalRaw": 0.6351405930668211
+    },
+    {
+      "alphaDegrees": 18.925,
+      "lateralRaw": 0.6924431851892112,
+      "lateralCapped": 0.6924431851892112,
+      "kappa": 0.3785,
+      "longitudinalRaw": 0.6349116888861458
+    },
+    {
+      "alphaDegrees": 18.95,
+      "lateralRaw": 0.6921404224126346,
+      "lateralCapped": 0.6921404224126346,
+      "kappa": 0.379,
+      "longitudinalRaw": 0.6346833840616539
+    },
+    {
+      "alphaDegrees": 18.975,
+      "lateralRaw": 0.69183844829977,
+      "lateralCapped": 0.69183844829977,
+      "kappa": 0.3795,
+      "longitudinalRaw": 0.6344556762447487
+    },
+    {
+      "alphaDegrees": 19,
+      "lateralRaw": 0.6915372597785483,
+      "lateralCapped": 0.6915372597785483,
+      "kappa": 0.38,
+      "longitudinalRaw": 0.6342285630990782
+    },
+    {
+      "alphaDegrees": 19.025000000000002,
+      "lateralRaw": 0.6912368537928056,
+      "lateralCapped": 0.6912368537928056,
+      "kappa": 0.3805,
+      "longitudinalRaw": 0.6340020423004515
+    },
+    {
+      "alphaDegrees": 19.05,
+      "lateralRaw": 0.6909372273021831,
+      "lateralCapped": 0.6909372273021831,
+      "kappa": 0.381,
+      "longitudinalRaw": 0.6337761115367625
+    },
+    {
+      "alphaDegrees": 19.075,
+      "lateralRaw": 0.6906383772820173,
+      "lateralCapped": 0.6906383772820173,
+      "kappa": 0.3815,
+      "longitudinalRaw": 0.6335507685079098
+    },
+    {
+      "alphaDegrees": 19.1,
+      "lateralRaw": 0.6903403007232518,
+      "lateralCapped": 0.6903403007232518,
+      "kappa": 0.382,
+      "longitudinalRaw": 0.6333260109257187
+    },
+    {
+      "alphaDegrees": 19.125,
+      "lateralRaw": 0.690042994632327,
+      "lateralCapped": 0.690042994632327,
+      "kappa": 0.3825,
+      "longitudinalRaw": 0.6331018365138665
+    },
+    {
+      "alphaDegrees": 19.150000000000002,
+      "lateralRaw": 0.6897464560310824,
+      "lateralCapped": 0.6897464560310824,
+      "kappa": 0.383,
+      "longitudinalRaw": 0.6328782430078073
+    },
+    {
+      "alphaDegrees": 19.175,
+      "lateralRaw": 0.6894506819566639,
+      "lateralCapped": 0.6894506819566639,
+      "kappa": 0.3835,
+      "longitudinalRaw": 0.6326552281546867
+    },
+    {
+      "alphaDegrees": 19.200000000000003,
+      "lateralRaw": 0.6891556694614155,
+      "lateralCapped": 0.6891556694614155,
+      "kappa": 0.384,
+      "longitudinalRaw": 0.6324327897132787
+    },
+    {
+      "alphaDegrees": 19.225,
+      "lateralRaw": 0.6888614156127914,
+      "lateralCapped": 0.6888614156127914,
+      "kappa": 0.3845,
+      "longitudinalRaw": 0.632210925453903
+    },
+    {
+      "alphaDegrees": 19.25,
+      "lateralRaw": 0.6885679174932543,
+      "lateralCapped": 0.6885679174932543,
+      "kappa": 0.385,
+      "longitudinalRaw": 0.6319896331583534
+    },
+    {
+      "alphaDegrees": 19.275000000000002,
+      "lateralRaw": 0.6882751722001796,
+      "lateralCapped": 0.6882751722001796,
+      "kappa": 0.3855,
+      "longitudinalRaw": 0.6317689106198247
+    },
+    {
+      "alphaDegrees": 19.3,
+      "lateralRaw": 0.6879831768457704,
+      "lateralCapped": 0.6879831768457704,
+      "kappa": 0.386,
+      "longitudinalRaw": 0.6315487556428382
+    },
+    {
+      "alphaDegrees": 19.325000000000003,
+      "lateralRaw": 0.6876919285569421,
+      "lateralCapped": 0.6876919285569421,
+      "kappa": 0.3865,
+      "longitudinalRaw": 0.6313291660431674
+    },
+    {
+      "alphaDegrees": 19.35,
+      "lateralRaw": 0.6874014244752511,
+      "lateralCapped": 0.6874014244752511,
+      "kappa": 0.387,
+      "longitudinalRaw": 0.6311101396477724
+    },
+    {
+      "alphaDegrees": 19.375,
+      "lateralRaw": 0.6871116617567894,
+      "lateralCapped": 0.6871116617567894,
+      "kappa": 0.3875,
+      "longitudinalRaw": 0.6308916742947216
+    },
+    {
+      "alphaDegrees": 19.400000000000002,
+      "lateralRaw": 0.6868226375720956,
+      "lateralCapped": 0.6868226375720956,
+      "kappa": 0.388,
+      "longitudinalRaw": 0.6306737678331249
+    },
+    {
+      "alphaDegrees": 19.425,
+      "lateralRaw": 0.6865343491060609,
+      "lateralCapped": 0.6865343491060609,
+      "kappa": 0.3885,
+      "longitudinalRaw": 0.6304564181230629
+    },
+    {
+      "alphaDegrees": 19.450000000000003,
+      "lateralRaw": 0.6862467935578457,
+      "lateralCapped": 0.6862467935578457,
+      "kappa": 0.389,
+      "longitudinalRaw": 0.630239623035515
+    },
+    {
+      "alphaDegrees": 19.475,
+      "lateralRaw": 0.685959968140781,
+      "lateralCapped": 0.685959968140781,
+      "kappa": 0.3895,
+      "longitudinalRaw": 0.6300233804522924
+    },
+    {
+      "alphaDegrees": 19.5,
+      "lateralRaw": 0.6856738700822833,
+      "lateralCapped": 0.6856738700822833,
+      "kappa": 0.39,
+      "longitudinalRaw": 0.6298076882659679
+    },
+    {
+      "alphaDegrees": 19.525000000000002,
+      "lateralRaw": 0.6853884966237662,
+      "lateralCapped": 0.6853884966237662,
+      "kappa": 0.3905,
+      "longitudinalRaw": 0.6295925443798104
+    },
+    {
+      "alphaDegrees": 19.55,
+      "lateralRaw": 0.68510384502055,
+      "lateralCapped": 0.68510384502055,
+      "kappa": 0.391,
+      "longitudinalRaw": 0.6293779467077111
+    },
+    {
+      "alphaDegrees": 19.575000000000003,
+      "lateralRaw": 0.684819912541775,
+      "lateralCapped": 0.684819912541775,
+      "kappa": 0.3915,
+      "longitudinalRaw": 0.6291638931741256
+    },
+    {
+      "alphaDegrees": 19.6,
+      "lateralRaw": 0.6845366964703197,
+      "lateralCapped": 0.6845366964703197,
+      "kappa": 0.392,
+      "longitudinalRaw": 0.6289503817139985
+    },
+    {
+      "alphaDegrees": 19.625,
+      "lateralRaw": 0.6842541941027037,
+      "lateralCapped": 0.6842541941027037,
+      "kappa": 0.3925,
+      "longitudinalRaw": 0.6287374102727009
+    },
+    {
+      "alphaDegrees": 19.650000000000002,
+      "lateralRaw": 0.6839724027490143,
+      "lateralCapped": 0.6839724027490143,
+      "kappa": 0.393,
+      "longitudinalRaw": 0.628524976805967
+    },
+    {
+      "alphaDegrees": 19.675,
+      "lateralRaw": 0.6836913197328155,
+      "lateralCapped": 0.6836913197328155,
+      "kappa": 0.3935,
+      "longitudinalRaw": 0.6283130792798238
+    },
+    {
+      "alphaDegrees": 19.700000000000003,
+      "lateralRaw": 0.6834109423910636,
+      "lateralCapped": 0.6834109423910636,
+      "kappa": 0.394,
+      "longitudinalRaw": 0.6281017156705305
+    },
+    {
+      "alphaDegrees": 19.725,
+      "lateralRaw": 0.6831312680740256,
+      "lateralCapped": 0.6831312680740256,
+      "kappa": 0.3945,
+      "longitudinalRaw": 0.6278908839645151
+    },
+    {
+      "alphaDegrees": 19.75,
+      "lateralRaw": 0.6828522941451938,
+      "lateralCapped": 0.6828522941451938,
+      "kappa": 0.395,
+      "longitudinalRaw": 0.6276805821583047
+    },
+    {
+      "alphaDegrees": 19.775000000000002,
+      "lateralRaw": 0.6825740179812083,
+      "lateralCapped": 0.6825740179812083,
+      "kappa": 0.3955,
+      "longitudinalRaw": 0.6274708082584672
+    },
+    {
+      "alphaDegrees": 19.8,
+      "lateralRaw": 0.6822964369717694,
+      "lateralCapped": 0.6822964369717694,
+      "kappa": 0.396,
+      "longitudinalRaw": 0.627261560281551
+    },
+    {
+      "alphaDegrees": 19.825000000000003,
+      "lateralRaw": 0.6820195485195606,
+      "lateralCapped": 0.6820195485195606,
+      "kappa": 0.3965,
+      "longitudinalRaw": 0.6270528362540148
+    },
+    {
+      "alphaDegrees": 19.85,
+      "lateralRaw": 0.6817433500401678,
+      "lateralCapped": 0.6817433500401678,
+      "kappa": 0.397,
+      "longitudinalRaw": 0.6268446342121714
+    },
+    {
+      "alphaDegrees": 19.875,
+      "lateralRaw": 0.6814678389619975,
+      "lateralCapped": 0.6814678389619975,
+      "kappa": 0.3975,
+      "longitudinalRaw": 0.6266369522021289
+    },
+    {
+      "alphaDegrees": 19.900000000000002,
+      "lateralRaw": 0.6811930127261969,
+      "lateralCapped": 0.6811930127261969,
+      "kappa": 0.398,
+      "longitudinalRaw": 0.626429788279721
+    },
+    {
+      "alphaDegrees": 19.925,
+      "lateralRaw": 0.6809188687865817,
+      "lateralCapped": 0.6809188687865817,
+      "kappa": 0.3985,
+      "longitudinalRaw": 0.6262231405104539
+    },
+    {
+      "alphaDegrees": 19.950000000000003,
+      "lateralRaw": 0.6806454046095486,
+      "lateralCapped": 0.6806454046095486,
+      "kappa": 0.399,
+      "longitudinalRaw": 0.626017006969444
+    },
+    {
+      "alphaDegrees": 19.975,
+      "lateralRaw": 0.6803726176740037,
+      "lateralCapped": 0.6803726176740037,
+      "kappa": 0.3995,
+      "longitudinalRaw": 0.6258113857413597
+    },
+    {
+      "alphaDegrees": 20,
+      "lateralRaw": 0.6801005054712838,
+      "lateralCapped": 0.6801005054712838,
+      "kappa": 0.4,
+      "longitudinalRaw": 0.625606274920357
+    }
+  ],
+  "references": {
+    "externalFetch": "NASA drag equation, X-engineer tire formula and OpenStax rotation pages were attempted; session network proxy returned HTTP tunnel 403. No external vehicle measurements verified.",
+    "identifiedReferenceVehicle": false
+  }
+}

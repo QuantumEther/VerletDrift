@@ -1,0 +1,36 @@
+{
+  "dataValid": true,
+  "integrity": {
+    "realtime": {
+      "scenarios": true,
+      "schema": true,
+      "finite": true,
+      "noSolverExceptions": true,
+      "repeatExact": true
+    },
+    "repair": {
+      "scenarios": true,
+      "schema": true,
+      "finite": true,
+      "noSolverExceptions": true,
+      "repeatExact": true
+    },
+    "input": {
+      "scenarios": true,
+      "schema": true,
+      "finite": true,
+      "noSolverExceptions": true,
+      "repeatExact": true
+    }
+  },
+  "repairInputAllExact": true,
+  "physical": {
+    "straightLineMirrorSymmetry": false,
+    "wheelOrderDoesNotSelectYawDirection": false,
+    "rendererPreservesPendingMouseInput": false,
+    "onePixelRegrabHasContinuousAngle": false,
+    "modifiedRPreservesReload": false,
+    "coherentGripHysteresis": false,
+    "launchOutcomeStableAcrossTestedRates": false
+  }
+}

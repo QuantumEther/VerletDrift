@@ -1,0 +1,485 @@
+{
+  "sliderBefore": {
+    "rpm": 745.131006262198,
+    "mode": "running",
+    "throttle": false,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [],
+    "starterWork": 0,
+    "combustion": 15.822083203376813,
+    "dropped": 10,
+    "frozen": false
+  },
+  "sliderHeld": {
+    "rpm": 1224.2298249605835,
+    "mode": "running",
+    "throttle": true,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [
+      "KeyD"
+    ],
+    "starterWork": 0,
+    "combustion": 101.10005389775606,
+    "dropped": 10,
+    "frozen": false
+  },
+  "text": {
+    "value": "dr",
+    "state": {
+      "rpm": 1166.0054786496896,
+      "mode": "running",
+      "throttle": false,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [],
+      "starterWork": 0,
+      "combustion": 0,
+      "dropped": 18,
+      "frozen": false
+    }
+  },
+  "combination": {
+    "rpm": 1118.459742537051,
+    "mode": "running",
+    "throttle": true,
+    "clutch": true,
+    "brake": true,
+    "handbrake": true,
+    "held": [
+      "KeyA",
+      "KeyS",
+      "KeyD",
+      "KeyF"
+    ],
+    "starterWork": 0,
+    "combustion": 0,
+    "dropped": 18,
+    "frozen": false
+  },
+  "genuineFocusLoss": {
+    "state": {
+      "rpm": 1706.6705771291356,
+      "mode": "running",
+      "throttle": true,
+      "clutch": true,
+      "brake": true,
+      "handbrake": true,
+      "held": [
+        "KeyA",
+        "KeyS",
+        "KeyD",
+        "KeyF"
+      ],
+      "starterWork": 0,
+      "combustion": 165.51146974963785,
+      "dropped": 18,
+      "frozen": false
+    },
+    "visibility": "visible"
+  },
+  "restored": {
+    "rpm": 1882.7889782846387,
+    "mode": "running",
+    "throttle": true,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [
+      "KeyD"
+    ],
+    "starterWork": 0,
+    "combustion": 186.643999931269,
+    "dropped": 18,
+    "frozen": false
+  },
+  "syntheticBlur": {
+    "rpm": 1882.7889782846387,
+    "mode": "running",
+    "throttle": false,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [],
+    "starterWork": 0,
+    "combustion": 186.643999931269,
+    "dropped": 18,
+    "frozen": false
+  },
+  "Control+r": {
+    "reloaded": false,
+    "state": {
+      "rpm": 1781.8887772576059,
+      "mode": "running",
+      "throttle": false,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [],
+      "starterWork": 0,
+      "combustion": 0,
+      "dropped": 18,
+      "frozen": false
+    }
+  },
+  "Control+Shift+r": {
+    "reloaded": false,
+    "state": {
+      "rpm": 1697.3008511439457,
+      "mode": "running",
+      "throttle": false,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [],
+      "starterWork": 0,
+      "combustion": 0,
+      "dropped": 18,
+      "frozen": false
+    }
+  },
+  "modifiedRWhenStopped": {
+    "rpm": 242.7030664465942,
+    "mode": "starting",
+    "throttle": false,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [],
+    "starterWork": 87.55826065461234,
+    "combustion": 0,
+    "dropped": 18,
+    "frozen": false
+  },
+  "stalledThrottle": {
+    "rpm": 1.4222429329025193e-06,
+    "mode": "stalled",
+    "throttle": true,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [
+      "KeyD"
+    ],
+    "starterWork": 87.55826065461234,
+    "combustion": 0,
+    "dropped": 18,
+    "frozen": false
+  },
+  "normalStarter": {
+    "rpm": 97.94302326147087,
+    "mode": "starting",
+    "throttle": false,
+    "clutch": false,
+    "brake": false,
+    "handbrake": false,
+    "held": [],
+    "starterWork": 108.24803799575827,
+    "combustion": 0,
+    "dropped": 18,
+    "frozen": false
+  },
+  "frozen": {
+    "before": {
+      "rpm": 107.71739314371764,
+      "mode": "starting",
+      "throttle": false,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [],
+      "starterWork": 112.57175679843827,
+      "combustion": 0,
+      "dropped": 18,
+      "frozen": true
+    },
+    "after": {
+      "rpm": 107.71739314371764,
+      "mode": "starting",
+      "throttle": true,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [
+        "KeyD"
+      ],
+      "starterWork": 112.57175679843827,
+      "combustion": 0,
+      "dropped": 18,
+      "frozen": true
+    }
+  },
+  "blockingProbe": {
+    "eventRoundTripMs": 202.15518100000008,
+    "state": {
+      "rpm": 253.89944797631156,
+      "mode": "starting",
+      "throttle": true,
+      "clutch": false,
+      "brake": false,
+      "handbrake": false,
+      "held": [
+        "KeyD"
+      ],
+      "starterWork": 226.46429286315936,
+      "combustion": 0,
+      "dropped": 32,
+      "frozen": false
+    }
+  },
+  "steeringRegrab": {
+    "before": 0.2,
+    "afterOnePixel": 0,
+    "angularVelocity": 0,
+    "afterRelease": 0,
+    "note": "Uncontrolled RAF can overwrite this fixture; use causal-input.json to isolate re-grab behavior."
+  },
+  "events": [
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "Delete",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {},
+      "mode": "running"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {},
+      "mode": "running"
+    },
+    {
+      "code": "KeyR",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {},
+      "mode": "running"
+    },
+    {
+      "code": "KeyA",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyA": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyS",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyA": true,
+        "KeyS": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyA": true,
+        "KeyS": true,
+        "KeyD": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyF",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyA": true,
+        "KeyS": true,
+        "KeyD": true,
+        "KeyF": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "ControlLeft",
+      "ctrl": true,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {
+        "ControlLeft": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyR",
+      "ctrl": true,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "ControlLeft": true,
+        "KeyR": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "ControlLeft",
+      "ctrl": true,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {
+        "ControlLeft": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "ShiftLeft",
+      "ctrl": true,
+      "shift": true,
+      "repeat": false,
+      "prevented": false,
+      "held": {
+        "ControlLeft": true,
+        "ShiftLeft": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "KeyR",
+      "ctrl": true,
+      "shift": true,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "ControlLeft": true,
+        "ShiftLeft": true,
+        "KeyR": true
+      },
+      "mode": "running"
+    },
+    {
+      "code": "ControlLeft",
+      "ctrl": true,
+      "shift": false,
+      "repeat": false,
+      "prevented": false,
+      "held": {
+        "ControlLeft": true
+      },
+      "mode": "stopped",
+      "command": null
+    },
+    {
+      "code": "KeyR",
+      "ctrl": true,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "ControlLeft": true,
+        "KeyR": true
+      },
+      "mode": "stopped",
+      "command": "start"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "stalled",
+      "command": null
+    },
+    {
+      "code": "KeyR",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyR": true
+      },
+      "mode": "stalled",
+      "command": "start"
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "starting",
+      "command": null
+    },
+    {
+      "code": "KeyD",
+      "ctrl": false,
+      "shift": false,
+      "repeat": false,
+      "prevented": true,
+      "held": {
+        "KeyD": true
+      },
+      "mode": "starting",
+      "command": null
+    }
+  ]
+}

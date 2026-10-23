@@ -1,0 +1,50 @@
+{
+  "target": "simCanvas",
+  "regrab": {
+    "initialRoadAngle": 0.2,
+    "visualCommand": 0.05235987755982989,
+    "roadAngle": 0.003466666666666667,
+    "velocity": -19.653333333333332,
+    "dragging": true,
+    "afterRelease": -0.11296152098765429
+  },
+  "pendingCommand": {
+    "wheelAngle": 1.5707963267948966,
+    "roadAngle": 0,
+    "simTime": 0.01,
+    "dragging": true,
+    "throttle": true
+  },
+  "afterRenderOnlyFrame": {
+    "wheelAngle": 0,
+    "roadAngle": 0,
+    "simTime": 0.01,
+    "dragging": true,
+    "throttle": true
+  },
+  "afterNextPhysicsFrame": {
+    "wheelAngle": 0,
+    "roadAngle": 0,
+    "simTime": 0.02,
+    "dragging": true,
+    "throttle": true
+  },
+  "secondCommand": {
+    "wheelAngle": 1.6231562043547265,
+    "roadAngle": 0,
+    "simTime": 0.02,
+    "dragging": true,
+    "throttle": true
+  },
+  "afterImmediatePhysicsFrame": {
+    "wheelAngle": 1.6231562043547265,
+    "roadAngle": 0.10746666666666667,
+    "simTime": 0.03,
+    "dragging": true,
+    "throttle": true
+  },
+  "mouseTargets": [
+    "simCanvas",
+    "simCanvas"
+  ]
+}
