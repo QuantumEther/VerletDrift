@@ -28,8 +28,8 @@ test('every control writes to its authoritative state field', async ({ page }) =
     return { count: controlBindings.size, failures,
       finiteSound: Object.values(state.soundParams).every(value => typeof value !== 'number' || Number.isFinite(value)) };
   });
-  expect(result).toEqual({ count: 222, failures: [], finiteSound: true });
-  await expect(page.locator('input[type=range]')).toHaveCount(200);
+  expect(result).toEqual({ count: 226, failures: [], finiteSound: true });
+  await expect(page.locator('input[type=range]')).toHaveCount(204);
   await expect(page.locator('input[type=checkbox]')).toHaveCount(22);
 });
 
@@ -151,7 +151,7 @@ test('live warnings follow settings and folded layouts persist without affecting
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('.jump-controls').click();
   await page.locator('#search').fill('smoke');
-  await expect(page.locator('.slider-row:visible')).toHaveCount(11);
+  await expect(page.locator('.slider-row:visible')).toHaveCount(15);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 

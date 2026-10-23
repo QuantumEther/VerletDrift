@@ -1,3 +1,4 @@
+import {SmokeVolume} from './renderer/smoke-volume.js';
 import {VehicleAirflow} from './renderer/vehicle-airflow.js';
 import {recordWetTireTransfer} from './renderer/wet-trail-events.js';
 import {AtmosphericDust} from './renderer/atmospheric-dust.js';
@@ -72,6 +73,7 @@ let pipelines = {},
 let liquidWorld;
 let atmosphericDust;
 let vehicleAirflow;
+let smokeVolume;
 let environmentSource="";
 let environmentGroups=new Map();
 const environmentData=new Float32Array(8);
@@ -124,17 +126,18 @@ let renderStats = {
 export function getGPURenderStats() {
   return {
     ...renderStats,
+    smokeMaterial:smokeVolume?{...smokeVolume.stats,bytes:smokeVolume.bytes}:null,
     smokeAirflow:vehicleAirflow?{...vehicleAirflow.stats,bytes:vehicleAirflow.bytes}:null,
     dust:atmosphericDust?{...atmosphericDust.stats,bytes:atmosphericDust.bytes}:null,
     liquid: liquidWorld
       ? liquidWorld.getStats(state.loop.simulationTime,state.params)
       : null,
-    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0) + (atmosphericDust?.bytes??0) + (vehicleAirflow?.bytes??0),
+    residentBytes: renderStats.residentBytes + (liquidWorld?.ownedBytes ?? 0) + (atmosphericDust?.bytes??0) + (vehicleAirflow?.bytes??0) + (smokeVolume?.bytes??0),
     resourceCount:
       renderStats.resourceCount +
       (liquidWorld
         ? liquidWorld.resourceCount
-        : 0) + (atmosphericDust?.resourceCount??0) + (vehicleAirflow?.resourceCount??0),
+        : 0) + (atmosphericDust?.resourceCount??0) + (vehicleAirflow?.resourceCount??0) + (smokeVolume?.resourceCount??0),
     liquidResidentBytes: liquidWorld?.ownedBytes ?? 0,
     liquidResourceCount: liquidWorld
       ? liquidWorld.resourceCount
@@ -196,6 +199,7 @@ function release(reason) {
   environmentGroups.clear();
   atmosphericDust?.destroy();atmosphericDust=null;
   vehicleAirflow?.destroy();vehicleAirflow=null;
+  smokeVolume?.destroy();smokeVolume=null;
   liquidWorld?.destroy();
   liquidWorld = null;
   skidCache?.destroy();
@@ -369,6 +373,12 @@ export async function initGPU(target) {
       [binding(0, buffers.smoke), binding(1, buffers.flags)],
       1,
     );
+    delete renderStats.smokeMaterialError;
+    smokeVolume=new SmokeVolume(device,format,buffers);
+    try{
+      device.pushErrorScope('validation');
+      try{await smokeVolume.init();}finally{const error=await device.popErrorScope();if(error)throw Error(error.message);}
+    }catch(error){smokeVolume.destroy();smokeVolume=null;renderStats.smokeMaterialError=error.message;logger.warn('gpu','Shared smoke unavailable; retaining original shading.',{error:error.message});}
     buffers.environment=device.createBuffer({label:'sceneEnvironment',size:32,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
     environmentGroups=new Map([bg,skid,surface].map(p=>[p,device.createBindGroup({layout:p.getBindGroupLayout(1),entries:[{binding:0,resource:{buffer:buffers.environment}}]})]));
     atmosphericDust=new AtmosphericDust(device,format,buffers.environment,environmentSource);
@@ -864,6 +874,8 @@ export function renderFrameGPU(width, height) {
     }
     vehicleAirflow.prepare(state,!!timing,smokeSlots>0&&elapsed>0);
     renderStats.uploadBytes+=vehicleAirflow.stats.uploadBytes;
+    smokeVolume?.prepare(state,canvas.width,canvas.height,cam.zoom*ppm*canvas.width/width,smokeSlots,!!timing);
+    renderStats.uploadBytes+=smokeVolume?.stats.uploadBytes??0;
     const encoder = device.createCommandEncoder({ label: "worldFrame" });
     timing?.startFrame();
     if (smokeSlots > 0 && elapsed > 0) {
@@ -881,6 +893,8 @@ export function renderFrameGPU(width, height) {
       renderStats.computeWorkgroups += n;
       renderStats.smokeComputeWorkgroups = n;
     }
+    renderStats.computeWorkgroups+=smokeVolume?.encode(encoder)??0;
+    renderStats.drawCalls+=smokeVolume?.stats.drawCalls??0;
     renderStats.computeWorkgroups+=atmosphericDust?.encode(encoder)??0;
     const pass = encoder.beginRenderPass({
       label: "worldLayers",
@@ -927,11 +941,13 @@ export function renderFrameGPU(width, height) {
         buffers.balloons,
       );
       if (smokeSlots > 0 && p.smokeEnabled) {
+        if(smokeVolume?.mode){renderStats.drawCalls+=smokeVolume.draw(pass);}else{
         pass.setPipeline(pipelines.smoke);
         pass.setBindGroup(0, groups.smokeCamera);
         pass.setBindGroup(1, groups.smokeParticles);
         pass.draw(6, smokeSlots);
         renderStats.drawCalls++;
+        }
       }
       draw(pass, pipelines.part, groups.part, 6, sparkCount, buffers.sparks);
       if (!proceduralVisuals)
@@ -965,6 +981,7 @@ export function renderFrameGPU(width, height) {
     timing?.submitted();
     atmosphericDust?.submitted?.();
     vehicleAirflow?.submitted();
+    smokeVolume?.submitted();
     renderStats.gpuRenderMs = timing?.milliseconds ?? null;
     if (state.skidMarksNewThisFrame) state.skidMarksNewThisFrame.length = 0;
     if (readback) {
