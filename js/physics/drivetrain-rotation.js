@@ -26,6 +26,7 @@ export function rearMobility(wheelInertia, shaftInertia, g) {
 }
 
 export function clutchImpulse(crank, input, Ie, Js, capacity, dt) {
+  if(capacity===0)return { impulse:0,heat:0,locked:false,crank,input };
   const result = frictionImpulse(crank - input, 1 / Ie + 1 / Js, capacity, dt);
   return { ...result, crank: crank - result.impulse / Ie,
     input: input + result.impulse / Js };

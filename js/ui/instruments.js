@@ -17,7 +17,7 @@ function renderInstruments(s) {
  updateCompactReadouts(s);
  setText('instrument-speed',Math.round(s.speed));
  setText('instrument-rpm',Math.round(s.rpm).toLocaleString('en-US'));
- setText('instrument-gear',s.gear);
+ setText('instrument-gear',s.requestedGear&&s.requestedGear!==s.gear?`${s.gear} → ${s.requestedGear}`:s.gear);
  gearLabels.forEach(el=>el.classList.toggle('active',el.dataset.gear===s.gear));
  const speedAngle = -30 + (s.speed / 400)*240;
  element('speed-needle').setAttribute('transform',`translate(150 143) rotate(${speedAngle})`);
@@ -29,7 +29,7 @@ function renderInstruments(s) {
  const redlineMarker=document.querySelector('.redline-marker');
  if(redlineMarker)redlineMarker.style.left=`${s.redlineRpm/100}%`;
  element('slipPeakNote').textContent=`slip peak |κ| = ${s.peakSlipRatio.toFixed(2)}`;
- pill('rpm-state',s.engineState==='stalled'?'ENGINE STALLED':s.engineState==='off'?'ENGINE OFF':s.rpm>=s.redlineRpm?'REDLINE EXCEEDED':'BELOW REDLINE',s.engineState==='stalled'||s.rpm>=s.redlineRpm?'danger':'normal');
+ pill('rpm-state',s.engineState==='starting'?'ENGINE STARTING':s.engineState==='stalled'?'ENGINE STALLED':s.engineState==='off'?'ENGINE OFF':s.rpm>=s.redlineRpm?'REDLINE EXCEEDED':'BELOW REDLINE',s.engineState==='stalled'||s.rpm>=s.redlineRpm?'danger':'normal');
  setText('instrument-lateral',s.lateral.toFixed(2)+' g');
  pill('lateral-state',s.lateral>=1?'ABOVE 1.0 g':'BELOW 1.0 g',s.lateral>=1?'danger':'normal');
  fillMeter('lateral',s.lateral/1.5,1/1.5);
@@ -74,8 +74,8 @@ export function readTelemetry(state) {
  const beta=Math.atan2(lateral,Math.max(Math.abs(longitudinal),.25));
  const force=axle=>{const f=state.axleForces[axle], divisor=p.tireFrictionCoeff*f.N; return divisor>0?[f.fx/divisor,f.fy/divisor]:[0,0];};
  const names=['frontLeft','frontRight','rearLeft','rearRight'];
- return {speed:body.speed*3.6,rpm:state.engine.isRunning&&!state.engine.isStalled?state.engine.rpm:0,
- engineState:state.engine.isStalled?'stalled':state.engine.isRunning?'running':'off',gear:state.engine.currentGear,lateral:Math.abs(body.lateralAccel)/9.81,yaw:body.angularVelocity,
+ return {speed:body.speed*3.6,rpm:state.engine.rpm,
+ engineState:state.engine.mode==='starting'?'starting':state.engine.isStalled?'stalled':state.engine.isRunning?'running':'off',gear:state.engine.currentGear,requestedGear:state.engine.requestedGear,lateral:Math.abs(body.lateralAccel)/9.81,yaw:body.angularVelocity,
  beta:beta*180/Math.PI,util:names.map(name=>state.wheelFrictionUtil[name]),slip:names.map(name=>state.wheelSlipRatio[name]),
  front:force('front'),rear:force('rear'),jerk:body.jerkMagnitude,drift:state.driftIntensity,
  blur:state.blurAccumulator||0,alignment:Math.max(1-Math.abs(Math.sign(beta)*state.steering.frontWheelAngle)/.35,0),
@@ -91,7 +91,7 @@ export function updateInstruments(state, now=performance.now()) {
  if(valid)renderInstruments(telemetry);
  document.querySelector('.instrument-dashboard').style.setProperty('--gauge-label-scale',state.params.gaugeLabelScale);
  const button=element('engineToggle');
- button.textContent=state.engine.isRunning?'Engine ON':'Engine OFF';
- button.setAttribute('aria-pressed',String(state.engine.isRunning));
+ button.textContent=state.engine.mode==='starting'?'Engine STARTING':state.engine.isStalled?'Engine STALLED · Restart':state.engine.isRunning?'Engine ON':'Engine OFF · Start';
+ button.setAttribute('aria-pressed',String(state.engine.isRunning||state.engine.mode==='starting'));
  element('telemetryStatus').textContent=!valid?'Invalid telemetry · inspect diagnostics':state.debug.faults.isFrozen?'Simulation frozen · inspect diagnostics':'Live vehicle telemetry';
 }

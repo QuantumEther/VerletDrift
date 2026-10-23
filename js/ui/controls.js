@@ -4,6 +4,7 @@ import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
 import { DUST_DEFAULTS, DUST_PRESETS } from '../renderer/dust-controls.js';
 // One bidirectional binding per control. Presets and imports use the same path.
 import state from '../state.js';
+import { requestEngineToggle } from '../physics/engine.js';
 import { logger } from '../debug/logger.js';
 import { updateSoundParam } from '../soundStateManager.js';
 import { CONTROLS } from './control-data.js';
@@ -191,8 +192,7 @@ export function initControls() {
  });
  document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset,button)));
  document.getElementById('engineToggle').addEventListener('click',()=>{
-  state.engine.isRunning=!state.engine.isRunning;
-  if(state.engine.isRunning){state.engine.isStalled=false;state.engine.rpm=state.params.idleRpm;}
+  requestEngineToggle();
  });
  document.getElementById('exportPreset').addEventListener('click',()=>{
   const url=URL.createObjectURL(new Blob([JSON.stringify(exportSettings(),null,2)],{type:'application/json'}));

@@ -578,7 +578,7 @@ function runPhysicsStep(dt) {
 
   // 5–7. Compute all forces.
   const tireForces  = computeTireForces(dt);   // { forceX, forceY, torque }
-  synchronizeEngineWithWheels();
+  synchronizeEngineWithWheels(dt);
   const dragForces  = computeDragForces();   // { forceX, forceY }
   const brakeForces = { forceX: 0, forceY: 0 }; // braking now per-wheel inside computeTireForces (traction circle)
 

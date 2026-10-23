@@ -376,11 +376,15 @@ const state = {
   // clutchPedalPosition: 0 = pedal on floor (disengaged), 1 = released (engaged).
   // clutchEngagement:    computed from pedal position via the bite-zone curve;
   //                      0 = no torque transfer, 1 = full rigid coupling.
-  // isStalled:           when true, engine produces zero torque.
-  //                      Cleared when user blips throttle with partial clutch.
-  // isRunning:           top-level engine on/off; false = no torque, no RPM rise.
+  // mode/omega own combustion and mechanics after one-time bootstrap.
+  // rpm/isRunning/isStalled are derived presentation caches, never control inputs.
   // -----------------------------------------------------------
   engine: {
+    omega:                null, // Signed crank rad/s; initialized from initial RPM once.
+    mode:                 null, // One-time bootstrap; thereafter owns combustion state.
+    inputOmega:           null, // Gearbox input shaft rad/s (independent in neutral).
+    requestedGear:        null,
+    mechanicalActive:     false,
     rpm:                  IDLE_RPM,
     currentGear:          'N',
     previousGear:         'N',
@@ -510,6 +514,11 @@ const state = {
     // --- Engine & Drivetrain (new sliders) ---
     peakEngineTorqueNm: PEAK_ENGINE_TORQUE_NM,
     engineInertiaKgM2:   ENGINE_INERTIA_KG_M2,
+    gearboxInputInertiaKgM2: .02, // Lumped input shaft; assumed, not vehicle calibrated.
+    clutchCapacityNm:    PEAK_ENGINE_TORQUE_NM, // Independent mechanical friction capacity.
+    synchronizerCapacityNm: 20, // Assumed input-shaft friction capacity.
+    starterTorqueNm:     40, // Minimal constant starter, no electrical subsystem.
+    starterFiringRpm:    400,
     idleRpm:            IDLE_RPM,
     redlineRpm:         REDLINE_RPM,
     stallRpm:           STALL_RPM,

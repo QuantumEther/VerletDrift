@@ -535,7 +535,7 @@ function updateFoldedReadouts(s) {
   el.textContent=text;el.dataset.tone=danger?'danger':warning?'warning':'normal';
  };
  setCompact('speed',`${Math.round(s.speed)} km/h`);
- setCompact('rpm',s.engineState==='stalled'?'STALL':s.engineState==='off'?'OFF':`${Math.round(s.rpm).toLocaleString('en-US')} RPM`,s.engineState==='stalled'||s.rpm>=s.redlineRpm);
+ setCompact('rpm',s.engineState==='starting'?'STARTING':s.engineState==='stalled'?'STALL':s.engineState==='off'?'OFF':`${Math.round(s.rpm).toLocaleString('en-US')} RPM`,s.engineState==='stalled'||s.rpm>=s.redlineRpm);
  setCompact('gear',`Gear ${s.gear}`);
  setCompact('lateral-g',`${s.lateral.toFixed(2)} g`,s.lateral>=1);
  setCompact('yaw-stability',`${s.yaw>0?'+':''}${s.yaw.toFixed(2)} rad/s`,Math.abs(s.yaw)>=1.5);

@@ -12,6 +12,7 @@
 
 import { physicsState as state } from '../state.js';
 import { integrateWheelContact } from './wheel.js';
+import { gearRatio as signedGearRatio, rearMobility } from './drivetrain-rotation.js';
 import { tireGripLimit } from './tire-load.js';
 import {
   GRAVITY,
@@ -35,22 +36,6 @@ function clamp01(value) {
 
 function dot(ax, ay, bx, by) {
   return ax * bx + ay * by;
-}
-
-// Returns the effective gear ratio for the current gear, reading from
-// state.params so slider changes take effect at runtime.
-function getGearRatio(gear, params) {
-  if (gear === 'N') return 0;
-  if (gear === 'R') return -(params.gearRatio1 ?? 3.5);
-  const map = {
-    '1': params.gearRatio1,
-    '2': params.gearRatio2,
-    '3': params.gearRatio3,
-    '4': params.gearRatio4,
-    '5': params.gearRatio5,
-    '6': params.gearRatio6,
-  };
-  return map[gear] ?? 0;
 }
 
 // Simplified Pacejka "Magic Formula" (E=0 variant).
@@ -101,7 +86,7 @@ export function computeTireForces(dt) {
   const heading         = body.heading;
   const angularVelocity = body.angularVelocity;
   const frictionCoeff   = params.tireFrictionCoeff;
-  const gearRatio       = getGearRatio(engine.currentGear, params);
+  const gearRatio       = signedGearRatio(engine.currentGear, params);
 
   // Car forward unit vector (in canvas coords: +Y is down, +X is right).
   const forwardX = Math.sin(heading);
@@ -113,9 +98,9 @@ export function computeTireForces(dt) {
   // Apply clutch-transmitted crank torque through the current gear ratio.
   // Only the rear wheels are driven in this model.
   let driveForce = 0;
-  if (gearRatio !== 0 && engine.clutchEngagement > 0 && !engine.isStalled) {
+  if (!engine.mechanicalActive && gearRatio !== 0 && engine.clutchEngagement > 0 && !engine.isStalled) {
     const wheelTorque = (engine.transmittedTorqueNm || 0)
-      * Math.abs(gearRatio) * params.finalDriveRatio;
+      * Math.abs(gearRatio);
     driveForce = wheelTorque / params.wheelRadius;
 
     // Reverse: flip the direction.
@@ -143,10 +128,8 @@ export function computeTireForces(dt) {
   const wheelNames = ['frontLeft', 'frontRight', 'rearLeft', 'rearRight'];
   const wheelKinematics = state.wheelKinematics;
   const wheelInertia = params.wheelInertia || 1.2;
-  const reflectedEngineInertia = engine.drivetrainLocked
-    ? (params.engineInertiaKgM2 || 0.25)
-      * (gearRatio * params.finalDriveRatio) ** 2 / 2
-    : 0;
+  const mobility = rearMobility(wheelInertia, engine.mechanicalActive
+    ? params.gearboxInputInertiaKgM2 : 0, signedGearRatio(engine.currentGear, params));
   if (!state.wheelBrakeTorque) state.wheelBrakeTorque = {};
 
   let maxLateralWheelSpeed = 0;
@@ -300,7 +283,7 @@ export function computeTireForces(dt) {
     const torqueDrive = isFront ? 0 : driveForce * wheelRad * 0.5;
     const rotation = integrateWheelContact({
       omega: previousOmega,
-      inertia: wheelInertia + (isFront ? 0 : reflectedEngineInertia),
+      inertia: isFront ? wheelInertia : 1 / mobility.diagonal,
       radius: wheelRad, dt,
       driveTorque: torqueDrive,
       brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
@@ -311,6 +294,12 @@ export function computeTireForces(dt) {
     // Preserve the torque-balanced result. A universal speed clamp hides
     // drivetrain overspeed and silently discards angular momentum.
     state.wheelOmega[name] = rotation.omega;
+    if (!isFront && engine.mechanicalActive) {
+      // Each existing scalar contact solve acts along one column of the
+      // analytic shared-input-shaft mobility; its opposite rear rotor reacts.
+      const other=name==='rearLeft'?'rearRight':'rearLeft';
+      state.wheelOmega[other]+=mobility.offDiagonal/mobility.diagonal*(rotation.omega-previousOmega);
+    }
     state.wheelBrakeTorque[name] = dt > 0 ? rotation.brakeImpulse / dt : 0;
     const slipRatio = slipAtOmega(state.wheelOmega[name]);
     const target = contactTarget(state.wheelOmega[name]);
