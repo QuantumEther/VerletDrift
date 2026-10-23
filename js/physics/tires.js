@@ -11,7 +11,7 @@
 //   Wheel inertia: retain omega history; brakes oppose rotation, not chassis speed.
 
 import { physicsState as state } from '../state.js';
-import { integrateWheelContact } from './wheel.js';
+import { integrateWheelContact, computeWheelBrakeCapacity } from './wheel.js';
 import { gearRatio as signedGearRatio, rearMobility } from './drivetrain-rotation.js';
 import { tireGripLimit } from './tire-load.js';
 import {
@@ -47,26 +47,6 @@ function pacejkaForce(normalLoad, frictionCoeff, slipValue, peakSlipValue, B, C)
   if (peakNorm < 0.0001) return 0;
   return (normalLoad * frictionCoeff / peakNorm) *
          Math.sin(C * Math.atan(B * normalisedSlip));
-}
-
-// Nominal rim-force settings converted to rotor torque capacity. Road friction
-// limits tire contact force, not the brake's ability to stop an airborne wheel.
-function computeWheelBrakeCapacity(name, wheelRad, params) {
-  let brakeForceMag = 0;
-  const isRearWheel = name.startsWith('rear');
-
-  // Service brakes act on all wheels: 80% front / 20% rear axle bias.
-  if (state.input.brakeKeyHeld) {
-    brakeForceMag = params.brakeForce * (isRearWheel ? 0.1 : 0.4);
-  }
-
-  // Handbrake pressure is stored as a ramped value. Continue applying it while
-  // that value decays after key release, rather than gating it on the key.
-  if (isRearWheel) {
-    brakeForceMag += params.brakeForce * 0.5 * clamp01(state.input.handbrakeValue || 0);
-  }
-
-  return Math.max(0, brakeForceMag) * wheelRad;
 }
 
 // -----------------------------------------------
@@ -286,7 +266,8 @@ export function computeTireForces(dt) {
       inertia: isFront ? wheelInertia : 1 / mobility.diagonal,
       radius: wheelRad, dt,
       driveTorque: torqueDrive,
-      brakeCapacity: computeWheelBrakeCapacity(name, wheelRad, params),
+      brakeCapacity: !isFront&&engine.mechanicalActive&&gearRatio!==0 ? 0
+        : computeWheelBrakeCapacity(name, wheelRad, params, state.input),
       previousForce: prev.lon, targetForce: omega => contactTarget(omega).lon,
       previousLateralForce: prev.lat, targetLateralForce: omega => contactTarget(omega).lat,
       frictionLimit, relaxationTime: tireRelaxTau,

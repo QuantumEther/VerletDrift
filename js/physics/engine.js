@@ -3,7 +3,9 @@
 import { physicsState as state } from '../state.js';
 import { updateEngineSound as soundUpdate, triggerGearChange as soundGearChange } from '../sound.js';
 import { TORQUE_PEAK_RPM, TAU } from '../constants.js';
-import { clamp, gearRatio, clutchImpulse } from './drivetrain-rotation.js';
+import { clamp, gearRatio, clutchImpulse, frictionImpulse, clutchBrakeImpulse } from './drivetrain-rotation.js';
+import { computeWheelBrakeCapacity } from './wheel.js';
+import { eventBuffer } from '../debug/events.js';
 
 const rpmOf = omega => Math.abs(omega) * 60 / TAU;
 function prepare() {
@@ -39,6 +41,36 @@ export function handleGearChange(gear) {
   return true;
 }
 
+function advanceGear(dt) {
+  const e=state.engine,p=state.params;
+  if(e.requestedGear===e.currentGear){e.shiftState=e.currentGear==='N'?'neutral':'engaged';return;}
+  if(e.currentGear!=='N') {
+    // Dog-face friction under load must be overcome by the driver's fork force.
+    // No clutch-key gate: a torque-unloaded clutchless shift can disengage.
+    const load=Math.min(Math.abs(e.transmittedTorqueNm),p.clutchCapacityNm*e.clutchEngagement);
+    const releaseLimit=p.shiftForkForceN*p.dogPitchRadiusM/p.dogFrictionCoeff;
+    if(load>releaseLimit){e.shiftState='unloading';return;}
+    e.previousGear=e.currentGear;e.currentGear='N';
+  }
+  if(e.requestedGear==='N'){e.shiftState='neutral';return;}
+  e.shiftState='synchronizing';
+  const g=gearRatio(e.requestedGear,p), Iw=p.wheelInertia, Ji=p.gearboxInputInertiaKgM2;
+  const axle=(state.wheelOmega.rearLeft+state.wheelOmega.rearRight)/2;
+  const result=frictionImpulse(e.inputOmega-g*axle,1/Ji+g*g/(2*Iw),p.synchronizerCapacityNm,dt);
+  e.inputOmega-=result.impulse/Ji;
+  const delta=g*result.impulse/(2*Iw);
+  state.wheelOmega.rearLeft+=delta;state.wheelOmega.rearRight+=delta;
+  e.synchronizerHeatJ+=result.heat;
+  e.synchronizerTorqueNm=result.impulse/dt;
+  if(result.locked){
+    e.currentGear=e.requestedGear;e.shiftState='engaged';
+    soundGearChange(Math.abs(g)<Math.abs(gearRatio(e.previousGear,p)));
+    state.debug.transitionState.lastGear=e.currentGear;
+    eventBuffer?.pushEvent({level:'info',channel:'drivetrain',type:'gear_change',
+      msg:`Engaged ${e.currentGear}`,data:{fromGear:e.previousGear,toGear:e.currentGear,rpm:e.rpm}});
+  }
+}
+
 export function updateEngine(dt) {
   const e=prepare(), p=state.params, input=state.input;
   e.stepDt=dt;
@@ -47,6 +79,8 @@ export function updateEngine(dt) {
   const travel=dt/Math.max(p.clutchEngageTime,1e-4);
   e.clutchPedalPosition+=clamp(target-e.clutchPedalPosition,-travel,travel);
   e.clutchEngagement=Math.pow(clamp((e.clutchPedalPosition-p.clutchBitePoint)/p.clutchBiteRange,0,1),p.clutchBiteCurve);
+  e.synchronizerTorqueNm=0;
+  advanceGear(dt);
   e.revMatchTimer=0; // No driver-assistance rev matching.
   checkStall();
   const throttle=input.mouseThrottleActive?input.mouseThrottleAmount:input.throttleKeyHeld?1:0;
@@ -79,13 +113,24 @@ export function synchronizeEngineWithWheels(dt = state.engine.stepDt ?? .01) {
   if(g!==0)e.inputOmega=g*(state.wheelOmega.rearLeft+state.wheelOmega.rearRight)/2;
   const Js=p.gearboxInputInertiaKgM2+(g===0?0:2*p.wheelInertia/(g*g));
   const capacity=p.clutchCapacityNm*e.clutchEngagement;
-  const result=clutchImpulse(e.omega,e.inputOmega,p.engineInertiaKgM2,Js,capacity,dt);
-  if(g!==0){
+  const bl=computeWheelBrakeCapacity('rearLeft',p.wheelRadius,p,state.input);
+  const br=computeWheelBrakeCapacity('rearRight',p.wheelRadius,p,state.input);
+  const joint=g!==0&&(bl>0||br>0);
+  const result=joint ? clutchBrakeImpulse(e.omega,state.wheelOmega.rearLeft,state.wheelOmega.rearRight,
+    p.engineInertiaKgM2,p.gearboxInputInertiaKgM2,p.wheelInertia,g,capacity,bl,br,dt)
+    : clutchImpulse(e.omega,e.inputOmega,p.engineInertiaKgM2,Js,capacity,dt);
+  if(joint){
+    state.wheelOmega.rearLeft=result.left;state.wheelOmega.rearRight=result.right;
+    state.wheelBrakeTorque.rearLeft=result.brakeLeft/dt;state.wheelBrakeTorque.rearRight=result.brakeRight/dt;
+    result.input=g*(result.left+result.right)/2;
+  } else if(g!==0){
     const delta=(result.input-e.inputOmega)/g;
     state.wheelOmega.rearLeft+=delta; state.wheelOmega.rearRight+=delta;
   }
   e.omega=result.crank; e.inputOmega=result.input;
-  e.transmittedTorqueNm=result.impulse/dt; e.clutchHeatJ+=result.heat;
+  e.transmittedTorqueNm=result.impulse/dt;
+  e.frictionHeatJ=(e.frictionHeatJ||0)+result.heat;
+  if(!joint)e.clutchHeatJ+=result.heat; // Joint heat is not separately attributed.
   e.clutchState=capacity===0?'open':result.locked?'locked':'slipping';
   e.drivetrainLocked=g!==0&&result.locked;
   e.clutchSlipRadS=e.omega-e.inputOmega;

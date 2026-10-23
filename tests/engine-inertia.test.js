@@ -10,6 +10,7 @@ import {
   updateEngine,
   synchronizeEngineWithWheels,
 } from '../js/physics/engine.js';
+import { computeTireForces } from '../js/physics/tires.js';
 import { TAU } from '../js/constants.js';
 
 const initial = structuredClone(state);
@@ -48,10 +49,11 @@ describe('engine and clutch rotational inertia', () => {
     state.engine.rpm = 3000;
     state.engine.clutchPedalPosition = 0.45;
     state.input.clutchKeyHeld = false;
-    updateEngine(0.01);
+    updateEngine(0.01); synchronizeEngineWithWheels(.01);
     const loadedRpm = state.engine.rpm;
 
     state.engine.currentGear = 'N';
+    state.engine.omega = null; state.engine.inputOmega = 0;
     state.engine.rpm = 3000;
     state.engine.clutchPedalPosition = 0;
     state.engine.clutchEngagement = 0;
@@ -72,8 +74,8 @@ describe('engine and clutch rotational inertia', () => {
     updateEngine(0.01);
 
     expect(state.engine.isStalled).toBe(true);
-    expect(state.engine.rpm).toBe(0);
-    expect(state.engine.transmittedTorqueNm).toBe(0);
+    expect(state.engine.rpm).toBeGreaterThan(0);
+    expect(state.engine.combustionTorqueNm).toBe(0);
   });
 
   it('synchronizes locked engine RPM to the driven axle after the wheel solve', () => {
@@ -82,13 +84,12 @@ describe('engine and clutch rotational inertia', () => {
     state.input.clutchKeyHeld = false;
     state.wheelOmega.rearLeft = 20;
     state.wheelOmega.rearRight = 20;
-    updateEngine(0.01);
+    state.engine.rpm = 20 * state.params.gearRatio1 * state.params.finalDriveRatio * 60 / TAU;
+    updateEngine(0.01); synchronizeEngineWithWheels(.01);
     expect(state.engine.drivetrainLocked).toBe(true);
 
-    state.wheelOmega.rearLeft = 24;
-    state.wheelOmega.rearRight = 24;
-    synchronizeEngineWithWheels();
-    const expectedRpm = 24 * state.params.gearRatio1 * state.params.finalDriveRatio * 60 / TAU;
+    computeTireForces(.01); synchronizeEngineWithWheels(.01);
+    const expectedRpm = (state.wheelOmega.rearLeft+state.wheelOmega.rearRight)/2 * state.params.gearRatio1 * state.params.finalDriveRatio * 60 / TAU;
     expect(state.engine.rpm).toBeCloseTo(expectedRpm, 10);
   });
 
@@ -109,17 +110,16 @@ describe('engine and clutch rotational inertia', () => {
     expect(state.engine.rpm).toBeGreaterThan(3900);
   });
 
-  it('classifies reverse gear changes by ratio magnitude for rev matching', () => {
+  it('requires reverse shaft synchronization without automatic rev matching', () => {
     state.engine.currentGear = '2';
     state.engine.rpm = 1000;
     state.body.speed = 10;
-
+    state.wheelOmega.rearLeft=state.wheelOmega.rearRight=10/state.params.wheelRadius;
     handleGearChange('R');
-
-    const expectedTarget = state.body.speed * 60 / (TAU * state.params.wheelRadius)
-      * Math.abs(state.params.gearRatio1) * state.params.finalDriveRatio;
-    expect(state.engine.currentGear).toBe('R');
-    expect(state.engine.revMatchTimer).toBeGreaterThan(0);
-    expect(state.engine.revMatchTargetRpm).toBeCloseTo(expectedTarget, 8);
+    expect(state.engine.currentGear).toBe('2');
+    expect(state.engine.requestedGear).toBe('R');
+    expect(state.engine.revMatchTimer).toBe(0);
+    updateEngine(.01);
+    expect(state.engine.currentGear).not.toBe('R');
   });
 });

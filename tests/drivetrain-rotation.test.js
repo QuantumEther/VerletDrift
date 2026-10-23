@@ -1,7 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { clutchImpulse, rearMobility } from '../js/physics/drivetrain-rotation.js';
+import { clutchImpulse, rearMobility, clutchBrakeImpulse } from '../js/physics/drivetrain-rotation.js';
 
 describe('bounded drivetrain impulses', () => {
+  it.each([50,100,200,400])('joint clutch/brakes conserve accounted work and dissipate at %s Hz',hz=>{
+    const Ie=.25,Ji=.02,Iw=1.2,g=14.35,e=80,l=0,r=0;
+    const energy=(e,l,r)=>.5*Ie*e*e+.5*Iw*(l*l+r*r)+.5*Ji*(g*(l+r)/2)**2;
+    const v=clutchBrakeImpulse(e,l,r,Ie,Ji,Iw,g,350,3000,3000,1/hz);
+    expect(energy(v.crank,v.left,v.right)+v.heat).toBeCloseTo(energy(e,l,r),9);
+    expect(v.heat).toBeGreaterThanOrEqual(0);
+    expect(Math.abs(v.impulse)).toBeLessThanOrEqual(350/hz+1e-10);
+    expect(Math.abs(v.brakeLeft)).toBeLessThanOrEqual(3000/hz+1e-10);
+    expect(v.left).toBeCloseTo(0,10);expect(v.right).toBeCloseTo(0,10);
+  });
   it.each([50,100,200,400])('conserves momentum and accounts clutch work at %s Hz', hz => {
     const Ie=.25, Js=2.4, initialE=.5*Ie*80**2+.5*Js*100**2;
     const r=clutchImpulse(80,100,Ie,Js,350,1/hz);

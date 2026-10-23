@@ -7,6 +7,20 @@ const initial=structuredClone(state);
 const step=dt=>{updateEngine(dt);computeTireForces(dt);synchronizeEngineWithWheels(dt);};
 beforeEach(()=>{Object.assign(state,structuredClone(initial));state.input.clutchKeyHeld=true;});
 describe('starter and engine operation',()=>{
+ it.each([50,100,200,400])('BLOCKER: a holding static clutch produces no friction heat at %s Hz',hz=>{
+  state.params.tireFrictionCoeff=0;
+  state.params.gearRatio1=state.params.finalDriveRatio=1;
+  const omega=800*2*Math.PI/60;
+  Object.assign(state.engine,{mode:'running',omega,inputOmega:omega,currentGear:'1',requestedGear:'1',clutchPedalPosition:1});
+  state.wheelOmega.rearLeft=state.wheelOmega.rearRight=omega;
+  state.input.clutchKeyHeld=false;state.input.throttleKeyHeld=true;
+  step(1/hz);
+  expect(state.engine.drivetrainLocked).toBe(true);
+  expect(Math.abs(state.engine.transmittedTorqueNm)).toBeLessThan(state.params.clutchCapacityNm);
+  // A static friction constraint carrying sub-capacity torque does no slip
+  // work. Projecting a free engine kick afterwards spuriously dissipates it.
+  expect(state.engine.clutchHeatJ).toBeLessThanOrEqual(1e-9);
+ });
  it('accounts starter work and drag without a speed assignment',()=>{
   Object.assign(state.engine,{mode:'stopped',omega:0,rpm:0,isRunning:false});
   requestEngineToggle();expect(state.engine.omega).toBe(0);

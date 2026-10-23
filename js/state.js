@@ -517,6 +517,9 @@ const state = {
     gearboxInputInertiaKgM2: .02, // Lumped input shaft; assumed, not vehicle calibrated.
     clutchCapacityNm:    PEAK_ENGINE_TORQUE_NM, // Independent mechanical friction capacity.
     synchronizerCapacityNm: 20, // Assumed input-shaft friction capacity.
+    shiftForkForceN:     50, // Driver force at dog; frictional unloading criterion.
+    dogPitchRadiusM:     .03,
+    dogFrictionCoeff:    .1,
     starterTorqueNm:     40, // Minimal constant starter, no electrical subsystem.
     starterFiringRpm:    400,
     idleRpm:            IDLE_RPM,

@@ -4,6 +4,12 @@
 //
 // I(omegaNew - omegaOld)/dt = drive + brakeSigned - R * forceAtOmega(omegaNew)
 // Brake friction opposes omegaNew; at zero it balances torque up to capacity.
+export function computeWheelBrakeCapacity(name, radius, params, input) {
+  let force=input.brakeKeyHeld?params.brakeForce*(name.startsWith('rear')?.1:.4):0;
+  if(name.startsWith('rear'))force+=params.brakeForce*.5*Math.max(0,Math.min(1,input.handbrakeValue||0));
+  return Math.max(0,force)*radius;
+}
+
 export function solveWheelRotation({
   omega, inertia, radius, dt, driveTorque, brakeCapacity,
   forceAtOmega, forceBound,
