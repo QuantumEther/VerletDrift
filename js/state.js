@@ -1,5 +1,6 @@
 import {SMOKE_MATERIAL_DEFAULTS} from './renderer/smoke-material-controls.js';
 import {SMOKE_AIRFLOW_DEFAULTS} from './renderer/vehicle-airflow.js';
+import { DEFAULT_PHYSICAL_VEHICLE_GEOMETRY } from './physics/vehicle-geometry.js';
 // =============================================================
 // STATE — single source of truth for all mutable simulation data
 // =============================================================
@@ -90,6 +91,7 @@ const state = {
     rearLeft:   { x: 0, y: 0, prevX: 0, prevY: 0 },
     rearRight:  { x: 0, y: 0, prevX: 0, prevY: 0 },
   },
+  physicalGeometry: DEFAULT_PHYSICAL_VEHICLE_GEOMETRY,
 
   // -----------------------------------------------------------
   // BODY — derived quantities recomputed every physics step
@@ -99,8 +101,8 @@ const state = {
   // from the previous step, which is fine for rendering.
   // -----------------------------------------------------------
   body: {
-    centerX: 0,           // average of all four wheel X positions
-    centerY: 0,           // average of all four wheel Y positions
+    centerX: 0,           // reconstructed physical center of mass
+    centerY: 0,           // reconstructed physical center of mass
     heading: 0,           // radians; 0 = facing up (+Y), increases clockwise
                           // derived: atan2(frontMid - rearMid) + PI/2
     velocityX: 0,         // m/s, X component of centre-of-mass velocity

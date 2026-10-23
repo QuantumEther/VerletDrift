@@ -7,7 +7,8 @@
 import { physicsState as state } from '../state.js';
 import { readPlanarMotion } from './planar-motion.js';
 import { resetSuspension } from './suspension.js';
-import { CAR_HALF_WIDTH, CAR_HALF_LENGTH, TAU } from '../constants.js';
+import { TAU } from '../constants.js';
+import { physicalGeometry } from './vehicle-geometry.js';
 
 // --------------- private helpers ---------------
 
@@ -33,22 +34,23 @@ export function wrapAngle(angle) {
 // Previous positions are set equal to current so initial velocity = 0.
 export function initializeCarBody(worldCenterX, worldCenterY) {
   const wheels = state.wheels;
+  const coordinates = physicalGeometry(state.physicalGeometry).coordinates;
   resetSuspension();
   state.body.historyDt = null; // First derived-state read establishes the initial interval.
 
   // The car faces "up" initially. In canvas coordinates +Y is down,
   // so "front" of the car is at smaller Y (towards the top of the screen).
-  wheels.frontLeft.x  = worldCenterX - CAR_HALF_WIDTH;
-  wheels.frontLeft.y  = worldCenterY - CAR_HALF_LENGTH;
+  wheels.frontLeft.x  = worldCenterX + coordinates.frontLeft.x;
+  wheels.frontLeft.y  = worldCenterY + coordinates.frontLeft.y;
 
-  wheels.frontRight.x = worldCenterX + CAR_HALF_WIDTH;
-  wheels.frontRight.y = worldCenterY - CAR_HALF_LENGTH;
+  wheels.frontRight.x = worldCenterX + coordinates.frontRight.x;
+  wheels.frontRight.y = worldCenterY + coordinates.frontRight.y;
 
-  wheels.rearLeft.x   = worldCenterX - CAR_HALF_WIDTH;
-  wheels.rearLeft.y   = worldCenterY + CAR_HALF_LENGTH;
+  wheels.rearLeft.x   = worldCenterX + coordinates.rearLeft.x;
+  wheels.rearLeft.y   = worldCenterY + coordinates.rearLeft.y;
 
-  wheels.rearRight.x  = worldCenterX + CAR_HALF_WIDTH;
-  wheels.rearRight.y  = worldCenterY + CAR_HALF_LENGTH;
+  wheels.rearRight.x  = worldCenterX + coordinates.rearRight.x;
+  wheels.rearRight.y  = worldCenterY + coordinates.rearRight.y;
 
   // Set previous = current so Verlet starts at rest.
   for (const wheel of Object.values(wheels)) {

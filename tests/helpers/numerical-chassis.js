@@ -1,12 +1,12 @@
 // Isolated production chassis stages, with physical inputs expressed in SI units.
 import state from '../../js/state.js';
-import { CAR_HALF_LENGTH, CAR_HALF_WIDTH } from '../../js/constants.js';
 import { initializeCarBody, computeBodyDerivedState } from '../../js/physics/kinematics.js';
+import { physicalGeometry } from '../../js/physics/vehicle-geometry.js';
 import { verletIntegrateAllPoints } from '../../js/physics/integrator.js';
 import { solveRigidBodyConstraints, clampParticleDisplacements, handleBoundaryCollisions } from '../../js/physics/constraints.js';
 
 const initial = structuredClone(state);
-export const inertia = () => state.params.carMassKg * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3;
+export const inertia = () => physicalGeometry(state.physicalGeometry).yawInertia(state.params.carMassKg);
 export const wrap = angle => Math.atan2(Math.sin(angle), Math.cos(angle));
 export function reset({ dt = 0.01, vx = 0, vy = 0, omega = 0, center = 100, params = {} } = {}) {
   Object.assign(state, structuredClone(initial));

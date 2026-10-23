@@ -30,11 +30,10 @@ export const PIXELS_PER_METER = 20;
 export const KPH_TO_MPS = 1000 / 3600; // ≈ 0.2778
 
 // -------------------------------------------------------------
-// CAR BODY GEOMETRY (metres)
-// The car is represented by four Verlet particles at wheel positions.
-// These legacy names mean HALF TRACK and HALF WHEELBASE, not shell dimensions.
-// DMC-12 targets use the average of 1.590/1.588 m axle tracks to preserve the
-// existing rectangular four-particle architecture. No dynamic tuning is changed.
+// DEFAULT DELOREAN VISUAL GEOMETRY (metres)
+// These legacy half-dimension names remain for renderer compatibility. Runtime
+// physical wheel placement and constraint geometry come from
+// js/physics/vehicle-geometry.js and are independent of this visual shell.
 // -------------------------------------------------------------
 export const DELOREAN_GEOMETRY = Object.freeze({
   bodyLength: 4.267, bodyWidth: 1.988,

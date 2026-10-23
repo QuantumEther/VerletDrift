@@ -4,9 +4,8 @@
 import { uiState as state } from './state.js';
 import {
   KPH_TO_MPS,
-  CAR_HALF_LENGTH,
-  CAR_HALF_WIDTH,
 } from './constants.js';
+import { physicalGeometry } from './physics/vehicle-geometry.js';
 
 import { logger } from './debug/logger.js';
 
@@ -107,7 +106,7 @@ export function updateInfoBar() {
   // wheel spin. Engine inertia reflected into the rear wheel solver is omitted
   // here to avoid counting drivetrain energy twice.
   const mass = Math.max(0, state.params.carMassKg);
-  const yawInertia = mass * (CAR_HALF_LENGTH ** 2 + CAR_HALF_WIDTH ** 2) / 3;
+  const yawInertia = physicalGeometry(state.physicalGeometry).yawInertia(mass);
   const linearJ = 0.5 * mass * (body.velocityX ** 2 + body.velocityY ** 2);
   const yawJ = 0.5 * yawInertia * body.angularVelocity ** 2;
   const wheelInertia = Math.max(0, state.params.wheelInertia || 0);

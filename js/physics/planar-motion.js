@@ -3,12 +3,14 @@
 // independent tangent velocities. The interval belongs to the HISTORY: a new
 // integration dt must never reinterpret an old displacement.
 import { physicsState as state } from '../state.js';
+import { physicalGeometry } from './vehicle-geometry.js';
 
 export function readPlanarMotion(fallbackDt) {
   if (!(fallbackDt > 0) || !Number.isFinite(fallbackDt)) {
     throw new RangeError('Mechanical timestep must be finite and positive');
   }
   const wheels = state.wheels;
+  const geometry = physicalGeometry(state.physicalGeometry);
   const dt = state.body.historyDt ?? fallbackDt;
   let centerX = 0, centerY = 0, previousCenterX = 0, previousCenterY = 0;
   for (const wheel of Object.values(wheels)) {
@@ -25,7 +27,16 @@ export function readPlanarMotion(fallbackDt) {
   // As with any two-pose history, angular increments must be smaller than pi.
   const angle = Math.atan2(previousAxisX * axisY - previousAxisY * axisX,
     previousAxisX * axisX + previousAxisY * axisY);
-  return { centerX, centerY, heading: Math.atan2(axisY, axisX) + Math.PI * 0.5,
+  const heading = Math.atan2(axisY, axisX) + Math.PI * 0.5;
+  const centroidX = geometry.centroidX, centroidY = geometry.centroidY;
+  const c = Math.cos(heading), s = Math.sin(heading);
+  const previousHeading = heading - angle;
+  const pc = Math.cos(previousHeading), ps = Math.sin(previousHeading);
+  centerX -= c * centroidX - s * centroidY;
+  centerY -= s * centroidX + c * centroidY;
+  previousCenterX -= pc * centroidX - ps * centroidY;
+  previousCenterY -= ps * centroidX + pc * centroidY;
+  return { centerX, centerY, heading,
     velocityX: (centerX - previousCenterX) / dt,
     velocityY: (centerY - previousCenterY) / dt,
     angularVelocity: angle / dt };

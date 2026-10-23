@@ -38,9 +38,8 @@ import {
   BALLOON_BASE_SCORE,
   COMBO_FLASH_DURATION,
   BALLOON_HUE_RANGE,
-  CAR_HALF_WIDTH,
-  CAR_HALF_LENGTH,
 } from './constants.js';
+import { physicalGeometry } from './physics/vehicle-geometry.js';
 import { physicsRandom } from './random.js';
 import { recordLiquidImpact, resetLiquidImpacts } from './renderer/liquid-events.js';
 
@@ -127,6 +126,7 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
   const body         = state.body;
   const balloons     = state.balloons;
   const score        = state.score;
+  const physical = physicalGeometry(state.physicalGeometry);
 
   // Collect all four wheel positions for collision testing.
   const wheelParticles = [
@@ -175,10 +175,9 @@ export function checkBalloonCollisions(dt, currentTimeSeconds) {
       const wheel          = wheelParticles[wheelIndex];
       const distanceToCenter = Math.hypot(wheel.x - balloon.x, wheel.y - balloon.y);
 
-      // Collision radius = balloon radius + a small car contact radius.
-      // Using CAR_HALF_WIDTH * 0.5 as the wheel contact radius so the balloon
-      // pops before the wheel particle's point literally enters the balloon.
-      const collisionRadius = balloon.radius + CAR_HALF_WIDTH * 0.5;
+      // Scale the contact radius to that wheel's physical axle track.
+      const track = wheelIndex < 2 ? physical.frontTrack : physical.rearTrack;
+      const collisionRadius = balloon.radius + track * 0.25;
 
       // Pre-deformation zone: start squishing when within 1.5× collision radius
       if (distanceToCenter <= collisionRadius * 1.4 && balloon.deformTime === 0) {

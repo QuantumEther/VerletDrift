@@ -5,7 +5,8 @@
 // =============================================================
 
 import { physicsState as state } from '../state.js';
-import { GRAVITY, CAR_HALF_LENGTH, CAR_HALF_WIDTH } from '../constants.js';
+import { GRAVITY } from '../constants.js';
+import { physicalGeometry } from './vehicle-geometry.js';
 
 // --------------- private helpers ---------------
 
@@ -29,16 +30,17 @@ export function computeWeightTransfer() {
   const body      = state.body;
   const loads     = state.wheelLoads;
   const params    = state.params;
+  const geometry  = physicalGeometry(state.physicalGeometry);
 
   const massKg       = params.carMassKg;
   const gravity      = GRAVITY;
   const cogHeight    = params.cogHeight;
-  const wheelbase    = CAR_HALF_LENGTH * 2;  // FL↔RL distance
-  const trackWidth   = CAR_HALF_WIDTH  * 2;  // FL↔FR distance
+  const wheelbase    = geometry.wheelbase;
 
-  // Total weight equally split front/rear (assumed 50/50 CoG position).
   const totalWeight    = massKg * gravity;
-  const halfWeight     = totalWeight * 0.5;
+  const frontStaticFraction = geometry.frontStaticLoadFraction;
+  const frontStaticWeight = totalWeight * frontStaticFraction;
+  const rearStaticWeight = totalWeight - frontStaticWeight;
 
   // Longitudinal transfer: braking shifts load forward; acceleration shifts it rearward.
   // Transfer = mass × longitudinal_accel × CoG_height / wheelbase
@@ -50,8 +52,8 @@ export function computeWeightTransfer() {
   // axle loses, including at wheel lift-off.
   const longitudinalTransfer = clamp(
     massKg * clampedLongAccel * cogHeight / wheelbase,
-    -halfWeight,
-    halfWeight,
+    -rearStaticWeight,
+    frontStaticWeight,
   );
 
   // Lateral transfer: cornering shifts load to the outside wheels.
@@ -60,10 +62,15 @@ export function computeWeightTransfer() {
   // The total outside-vs-inside shift is shared evenly by both axles, so each
   // wheel changes by half this amount. Limit it to the lighter axle's wheel
   // load so lateral transfer cannot create negative normal loads.
-  const lateralTransfer = clamp(
-    massKg * clampedLatAccel * cogHeight / (2 * trackWidth),
-    -Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,
-    Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,
+  const frontLateralTransfer = clamp(
+    massKg * clampedLatAccel * cogHeight * frontStaticFraction / geometry.frontTrack,
+    -Math.max(0, frontStaticWeight - longitudinalTransfer) * 0.5,
+    Math.max(0, frontStaticWeight - longitudinalTransfer) * 0.5,
+  );
+  const rearLateralTransfer = clamp(
+    massKg * clampedLatAccel * cogHeight * (1 - frontStaticFraction) / geometry.rearTrack,
+    -Math.max(0, rearStaticWeight + longitudinalTransfer) * 0.5,
+    Math.max(0, rearStaticWeight + longitudinalTransfer) * 0.5,
   );
 
   // Each axle gets half the total weight, then longitudinal transfer shifts
@@ -73,11 +80,14 @@ export function computeWeightTransfer() {
   // Sign convention:
   //   longitudinalAccel > 0 (accelerating forward) → weight shifts rearward
   //   lateralAccel > 0 (rightward cornering force) → outside LEFT wheels gain load
-  const frontAxleLoad = halfWeight - longitudinalTransfer;
-  const rearAxleLoad  = halfWeight + longitudinalTransfer;
+  const frontAxleLoad = frontStaticWeight - longitudinalTransfer;
+  const rearAxleLoad  = rearStaticWeight + longitudinalTransfer;
+  const lateralLimit = Math.max(0, Math.min(frontAxleLoad, rearAxleLoad) * 0.5);
+  const boundedFrontLateralTransfer = clamp(frontLateralTransfer, -lateralLimit, lateralLimit);
+  const boundedRearLateralTransfer = clamp(rearLateralTransfer, -lateralLimit, lateralLimit);
 
-  loads.frontLeft  = frontAxleLoad * 0.5 + lateralTransfer;
-  loads.frontRight = frontAxleLoad * 0.5 - lateralTransfer;
-  loads.rearLeft   = rearAxleLoad  * 0.5 + lateralTransfer;
-  loads.rearRight  = rearAxleLoad  * 0.5 - lateralTransfer;
+  loads.frontLeft  = frontAxleLoad * 0.5 + boundedFrontLateralTransfer;
+  loads.frontRight = frontAxleLoad * 0.5 - boundedFrontLateralTransfer;
+  loads.rearLeft   = rearAxleLoad  * 0.5 + boundedRearLateralTransfer;
+  loads.rearRight  = rearAxleLoad  * 0.5 - boundedRearLateralTransfer;
 }

@@ -1,6 +1,7 @@
 import { recordWetTireTransfer } from './renderer/wet-trail-events.js';
 import { observeDust } from './renderer/dust-history.js';
 import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
+import { physicalGeometry } from './physics/vehicle-geometry.js';
 // =============================================================
 // MAIN — entry point and game loop
 // =============================================================
@@ -41,8 +42,6 @@ import {
   DEFAULT_MAP_WIDTH,
   DEFAULT_MAP_HEIGHT,
   MAX_FRAME_TIME_SEC,
-  CAR_HALF_LENGTH,
-  CAR_HALF_WIDTH,
   TACHOMETER_MAX_RPM,
 } from './constants.js';
 
@@ -597,8 +596,7 @@ function runPhysicsStep(dt) {
   //   3.0 → sporty stability control
   //   5.0 → heavy stability assist
   const massKg = state.params.carMassKg;
-  const momentOfInertia = massKg * (CAR_HALF_LENGTH * CAR_HALF_LENGTH +
-                                    CAR_HALF_WIDTH  * CAR_HALF_WIDTH) / 3;
+  const momentOfInertia = physicalGeometry(state.physicalGeometry).yawInertia(massKg);
   const yawDampingTorque = -state.params.yawDamping * momentOfInertia * state.body.angularVelocity;
   const dampenedNetTorque = netTorque + yawDampingTorque;
 
@@ -1177,6 +1175,9 @@ window.state = state;
 window.eventBuffer = eventBuffer;
 window.drawDebugPanels = drawDebugPanels;
 window.getState = () => state;
+if (new URLSearchParams(location.search).get('physicsProfile') === '1') {
+  window.__runPhysicsStep = runPhysicsStep;
+}
 
 // Kick off the game loop.
 requestAnimationFrame(mainLoop);

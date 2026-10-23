@@ -13,6 +13,7 @@
 import { physicsState as state } from '../state.js';
 import { integrateWheelContact } from './wheel.js';
 import { tireGripLimit } from './tire-load.js';
+import { physicalGeometry } from './vehicle-geometry.js';
 import {
   GRAVITY,
   TIRE_PEAK_SLIP_RATIO,
@@ -102,6 +103,7 @@ export function computeTireForces(dt) {
   const angularVelocity = body.angularVelocity;
   const frictionCoeff   = params.tireFrictionCoeff;
   const gearRatio       = getGearRatio(engine.currentGear, params);
+  const geometry        = physicalGeometry(state.physicalGeometry);
 
   // Car forward unit vector (in canvas coords: +Y is down, +X is right).
   const forwardX = Math.sin(heading);
@@ -155,10 +157,12 @@ export function computeTireForces(dt) {
   for (const name of wheelNames) {
     const wheelPos    = wheelPositions[name];
     const normalLoad  = loads[name];
-    const gripLimit = tireGripLimit(normalLoad, frictionCoeff,
-      params.carMassKg * GRAVITY / 4, params.tireLoadSensitivity);
-    const effectiveFriction = normalLoad > 0 ? gripLimit / normalLoad : 0;
     const isFront     = name === 'frontLeft' || name === 'frontRight';
+    const staticLoad = params.carMassKg * GRAVITY
+      * (isFront ? geometry.frontStaticLoadFraction : geometry.rearStaticLoadFraction) / 2;
+    const gripLimit = tireGripLimit(normalLoad, frictionCoeff, staticLoad,
+      params.tireLoadSensitivity);
+    const effectiveFriction = normalLoad > 0 ? gripLimit / normalLoad : 0;
 
     // Arm vector: wheel position relative to body centre.
     const armX = wheelPos.x - body.centerX;

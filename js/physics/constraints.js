@@ -12,11 +12,9 @@
 
 import { physicsState as state } from '../state.js';
 import {
-  CONSTRAINT_AXLE_WIDTH,
-  CONSTRAINT_SIDE_LENGTH,
-  CONSTRAINT_DIAGONAL,
   MAX_DISPLACEMENT_PER_STEP,
 } from '../constants.js';
+import { physicalGeometry } from './vehicle-geometry.js';
 
 import { logger } from '../debug/logger.js';
 
@@ -91,6 +89,7 @@ let constraintMetrics = {
 
 export function solveRigidBodyConstraints() {
   const wh     = state.wheels;
+  const geometry = physicalGeometry(state.physicalGeometry);
   // Stabilizer #2 — iteration clamp by mode.
   // Determinism mode uses a tighter cap to keep CPU cost and correction order
   // stable across machines; normal mode allows a higher cap for rigidity tuning.
@@ -105,13 +104,13 @@ export function solveRigidBodyConstraints() {
 
   for (let iteration = 0; iteration < iters; iteration++) {
     // Four edges: front axle, rear axle, left side, right side.
-    enforceDistanceConstraint(wh.frontLeft,  wh.frontRight, CONSTRAINT_AXLE_WIDTH);
-    enforceDistanceConstraint(wh.rearLeft,   wh.rearRight,  CONSTRAINT_AXLE_WIDTH);
-    enforceDistanceConstraint(wh.frontLeft,  wh.rearLeft,   CONSTRAINT_SIDE_LENGTH);
-    enforceDistanceConstraint(wh.frontRight, wh.rearRight,  CONSTRAINT_SIDE_LENGTH);
+    enforceDistanceConstraint(wh.frontLeft,  wh.frontRight, geometry.frontTrack);
+    enforceDistanceConstraint(wh.rearLeft,   wh.rearRight,  geometry.rearTrack);
+    enforceDistanceConstraint(wh.frontLeft,  wh.rearLeft,   geometry.sideLength);
+    enforceDistanceConstraint(wh.frontRight, wh.rearRight, geometry.sideLength);
     // Two diagonals: prevents shear.
-    enforceDistanceConstraint(wh.frontLeft,  wh.rearRight,  CONSTRAINT_DIAGONAL);
-    enforceDistanceConstraint(wh.frontRight, wh.rearLeft,   CONSTRAINT_DIAGONAL);
+    enforceDistanceConstraint(wh.frontLeft,  wh.rearRight,  geometry.diagonal);
+    enforceDistanceConstraint(wh.frontRight, wh.rearLeft,  geometry.diagonal);
   }
 
   // Update telemetry metrics
