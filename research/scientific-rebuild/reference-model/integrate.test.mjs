@@ -12,3 +12,8 @@ test('diagnostic-free benchmark path preserves exact mechanical result',()=>{
  const x=[14.96,-.84,.29,50.56,49.75],u={gamma:Math.PI/36,Md:200};
  assert.deepEqual(step(x,1/800,u).state,step(x,1/800,u,undefined,{},false).state);
 });
+test('invalid initial state is never labeled last accepted, nonfinite report survives JSON',()=>{
+ const r=simulate({id:'invalid-initial',x:[NaN,0,0,50,50],u:{gamma:0,Md:0},duration:.1},.01);
+ assert.equal(r.status,'FAIL');assert.equal(r.lastAccepted,null);assert.equal(r.count.attempted,0);
+ assert.equal(JSON.parse(JSON.stringify(r)).violations[0].value,'NaN');
+});

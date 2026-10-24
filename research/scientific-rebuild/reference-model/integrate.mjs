@@ -23,11 +23,12 @@ export function step(x,h,u,p=parameters,counter={},ledger=true){
 // Compensated summation per signed port; never infer work from energy difference.
 export function simulate(spec,h,p=parameters){
  const count={rhs:0,tires:0,attempted:0,completed:0,rejected:0};let x=[...spec.x],positive=0,negative=0;
+ try{checkDomain(x,spec.u,p);}catch(e){if(!(e instanceof ExperimentError))throw e;return {id:spec.id,h,status:e.status,lastAccepted:null,attemptedStep:0,stage:'initial',stageTime:0,violations:e.violations,count,rows:[]};}
  const E0=energy(x,p),work=Array(5).fill(0),comp=Array(5).fill(0),rows=[[0,...x,...work]],branches={};let crossings=0,last=null;
  const n=Math.round(spec.duration/h);if(Math.abs(n*h-spec.duration)>1e-12)throw new Error('Horizon must align with fixed steps');
  for(let i=0;i<n;i++){
   const result=step(x,h,spec.u,p,count);
-  if(result.status!=='PASS')return {id:spec.id,h,status:result.status,lastAccepted:{time:i*h,state:x},attemptedStep:i,...result,count,rows};
+  if(result.status!=='PASS')return {id:spec.id,h,status:result.status,lastAccepted:{time:i*h,state:x},attemptedStep:i,attemptedStageTime:i*h+result.stageTime,...result,count,rows};
   x=result.state;positive+=result.positiveContactWork;negative+=result.negativeContactWork;
   result.work.forEach((v,j)=>{const y=v-comp[j],t=work[j]+y;comp[j]=(t-work[j])-y;work[j]=t;});
   for(const b of result.branches){const key=b.join('/');branches[key]=(branches[key]||0)+1;if(last!==null&&last!==key)crossings++;last=key;}

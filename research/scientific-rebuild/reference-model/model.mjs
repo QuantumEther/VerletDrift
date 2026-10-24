@@ -8,8 +8,8 @@ export function kinematics(x,u,p=parameters){
 export function checkDomain(x,u,p=parameters){
  try{validateParameters(p);}catch(e){throw new ExperimentError('FAIL',[{field:'parameters',value:e.message,bound:'valid SI configuration'}]);}const bad=[];const limits=[[5,25],[-8,8],[-2,2],[20,200],[20,200]];
  if(x.length!==5)throw new ExperimentError('FAIL',[{field:'state.length',value:x.length,bound:5}]);
- for(let i=0;i<5;i++){const value=x[i],bound=limits[i];if(!Number.isFinite(value)||value<bound[0]||value>bound[1])bad.push({field:names[i],value,bound});}
- for(const [key,bound]of [['gamma',[-Math.PI/12,Math.PI/12]],['Md',[-500,800]]]){const value=u[key];if(!Number.isFinite(value)||value<bound[0]||value>bound[1])bad.push({field:key,value,bound});}
+ for(let i=0;i<5;i++){const value=x[i],bound=limits[i];if(!Number.isFinite(value)||value<bound[0]||value>bound[1])bad.push({field:names[i],value:Number.isFinite(value)?value:String(value),bound});}
+ for(const [key,bound]of [['gamma',[-Math.PI/12,Math.PI/12]],['Md',[-500,800]]]){const value=u[key];if(!Number.isFinite(value)||value<bound[0]||value>bound[1])bad.push({field:key,value:Number.isFinite(value)?value:String(value),bound});}
  for(const key of ['gammaDot','gammaDDot'])if(u[key]!==undefined&&u[key]!==0)bad.push({field:key,value:u[key],bound:0});
  if(bad.length)throw new ExperimentError(bad.some(b=>!Number.isFinite(b.value))?'FAIL':'OUT OF DOMAIN',bad);
  const k=kinematics(x,u,p);
