@@ -4,12 +4,13 @@ let state=createVehicle(),accumulator=0,last=performance.now();
 const keys=new Set();
 window.addEventListener('keydown',e=>{
   const key=e.key.toLowerCase();
-  if(['w','s','r','b',' '].includes(key))e.preventDefault();
+  if(['w','s','r','b',' ','a','d'].includes(key))e.preventDefault();
   if(!e.repeat){if(key==='r'){state=createVehicle();accumulator=0;}if(key===' ')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
   keys.add(key);
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
 function draw(){
+ if(document.querySelector('#view').value==='top'){drawTop();return;}
  const scale=120,ground=canvas.height*.85,xscreen=x=>canvas.width/2+(x-state.x)*scale,zscreen=z=>ground-z*scale;
  ctx.clearRect(0,0,canvas.width,canvas.height);
  ctx.strokeStyle='#8aa3b6';ctx.lineWidth=2;ctx.beginPath();
@@ -21,13 +22,27 @@ function draw(){
  ctx.beginPath();ctx.arc(x,bottom,c.radius*scale,0,2*Math.PI);ctx.fillStyle='#263747';ctx.fill();ctx.strokeStyle=f.contact?'#55d6be':'#eb9265';ctx.lineWidth=4;ctx.stroke();ctx.beginPath();ctx.moveTo(x,bottom);ctx.lineTo(x+Math.cos(c.angle)*c.radius*scale*.85,bottom+Math.sin(c.angle)*c.radius*scale*.85);ctx.stroke();
  }
 }
+function drawTop(){
+ const p=state.planar,scale=85,cx=canvas.width/2,cy=canvas.height/2;
+ ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#334c60';ctx.lineWidth=1;
+ for(let x=Math.floor(p.x-5);x<p.x+5;x++){ctx.beginPath();ctx.moveTo(cx+(x-p.x)*scale,0);ctx.lineTo(cx+(x-p.x)*scale,canvas.height);ctx.stroke();}
+ for(let y=Math.floor(p.y-4);y<p.y+4;y++){ctx.beginPath();ctx.moveTo(0,cy-(y-p.y)*scale);ctx.lineTo(canvas.width,cy-(y-p.y)*scale);ctx.stroke();}
+ ctx.save();ctx.translate(cx,cy);ctx.rotate(-p.heading);ctx.fillStyle='#dfb65d';ctx.fillRect(-scale,-.25*scale,2*scale,.5*scale);
+ for(const [i,c] of state.corners.entries()){ctx.save();ctx.translate(c.arm*scale,0);ctx.rotate(i===0?-p.steering:0);ctx.fillStyle=c.normal>0?'#55d6be':'#eb9265';ctx.fillRect(-22,-7,44,14);ctx.restore();}
+ ctx.strokeStyle='white';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1.3*scale,0);ctx.stroke();ctx.restore();
+ const wx=Math.cos(p.heading)*p.u-Math.sin(p.heading)*p.v,wy=Math.sin(p.heading)*p.u+Math.cos(p.heading)*p.v;
+ ctx.strokeStyle='#e79b64';ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+wx*15,cy-wy*15);ctx.stroke();
+}
 function diagnostics(){
+ const p=state.planar;
+ document.querySelector('#planar').textContent=`u ${p.u.toFixed(3)} m/s; lateral ${p.v.toFixed(3)} m/s; yaw ${(p.r*180/Math.PI).toFixed(2)} deg/s; heading ${(p.heading*180/Math.PI).toFixed(2)} deg; steer ${(p.steering*180/Math.PI).toFixed(2)} deg; sideslip ${(Math.atan2(p.v,Math.max(Math.abs(p.u),.01))*180/Math.PI).toFixed(2)} deg; world (${p.x.toFixed(2)}, ${p.y.toFixed(2)}) m`;
+ document.querySelector('#tires').textContent=state.corners.map((c,i)=>`${i===0?'Front':'Rear'}: alpha ${((c.alpha||0)*180/Math.PI).toFixed(2)} deg; Fx ${c.fx.toFixed(2)} N; Fy ${(c.fy||0).toFixed(2)} N; N ${(c.normal||0).toFixed(2)} N; utilization ${((c.utilization||0)*100).toFixed(1)}%`).join('\n');
  document.querySelector('#speed').textContent=`${state.v.toFixed(3)} m/s`;
  document.querySelector('#position').textContent=`${state.x.toFixed(3)} m`;
  document.querySelector('#pitch').textContent=`${(state.pitch*180/Math.PI).toFixed(3)}°; rate ${state.pitchRate.toFixed(4)} rad/s; height ${state.z.toFixed(4)} m`;
  for(const [i,c] of state.corners.entries()) {const f=cornerForces(state,c);document.querySelector(i===0?'#front':'#rear').textContent=`ω ${c.omega.toFixed(3)} rad/s | slip ${(c.radius*c.omega-state.v).toFixed(3)} m/s | Fx ${c.fx.toFixed(2)} N | N ${f.normal.toFixed(2)} N | compression ${f.compression.toFixed(4)} m | contact ${f.contact} | drive ${c.drive.toFixed(1)} / brake ${c.brake.toFixed(1)} Nm`;}
 }
 function frame(now){accumulator+=(now-last)/1000;last=now;
- try{let steps=0;while(accumulator>=.001&&steps<1000){stepVehicle(state,{drive:keys.has('w')?Number(document.querySelector('#drive').value):0,brake:keys.has('s')?8:0});accumulator-=.001;steps++;}draw();diagnostics();requestAnimationFrame(frame);}catch(e){document.querySelector('#warning').textContent=`Paused: ${e.message}; t=${state.time}`;console.error(e);}
+ try{let steps=0;while(accumulator>=.001&&steps<1000){stepVehicle(state,{drive:keys.has('w')?Number(document.querySelector('#drive').value):0,brake:keys.has('s')?8:0,steer:(Number(keys.has('a'))-Number(keys.has('d')))*.4});accumulator-=.001;steps++;}draw();diagnostics();requestAnimationFrame(frame);}catch(e){document.querySelector('#warning').textContent=`Paused: ${e.message}; t=${state.time}`;console.error(e);}
 }
 requestAnimationFrame(frame);

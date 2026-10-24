@@ -21,7 +21,7 @@
 <body>
 <h1>Two-axle side-view vehicle</h1><p>W rear drive · S both brakes · R reset · Space upward chassis impulse · B place an 8 cm bump ahead.</p>
 <p>1 ms fixed step. Small-angle chassis pitch; shared horizontal translation. Front axle is on the right.</p>
-<canvas id="wheel" width="620" height="360"></canvas>
+<label>View <select id="view"><option value="side">Side suspension view</option><option value="top">Top driving view</option></select></label><p>A / D steer left / right. Two axle contacts, no separate left/right tires.</p><p id="planar"></p><pre id="tires" style="white-space:pre-wrap"></pre><canvas id="wheel" width="620" height="360"></canvas>
 <label>Rear drive torque (Nm) <input id="drive" type="number" value="20"></label>
 <dl><dt>Speed</dt><dd id="speed"></dd><dt>Position</dt><dd id="position"></dd><dt>Chassis pitch</dt><dd id="pitch"></dd></dl>
 <h2>Front</h2><p id="front"></p><h2>Rear</h2><p id="rear"></p><p id="warning"></p>

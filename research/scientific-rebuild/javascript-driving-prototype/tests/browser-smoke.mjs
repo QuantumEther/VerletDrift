@@ -37,6 +37,15 @@ try {
   await page.keyboard.up('w');
   await page.keyboard.down('s');await page.waitForTimeout(1500);await page.keyboard.up('s');
   const braked=await page.locator('#speed').textContent();assert.ok(parseFloat(braked)<parseFloat(driven));
+  await page.selectOption('#view','top');
+  const beforeTurn=await page.locator('canvas').screenshot();
+  await page.keyboard.down('w');await page.keyboard.down('a');await page.waitForTimeout(2000);
+  await page.keyboard.up('a');await page.keyboard.up('w');
+  const dynamics=await page.locator('#planar').textContent();
+  assert.ok(parseFloat(dynamics.match(/heading ([\d.-]+)/)[1])>1,dynamics);
+  assert.ok(!beforeTurn.equals(await page.locator('canvas').screenshot()));
+  await page.selectOption('#view','side');
+  await page.keyboard.press('b');await page.waitForTimeout(200);
   await page.keyboard.press('r');await page.waitForTimeout(100);
   assert.equal(parseFloat(await page.locator('#position').textContent()),0);
   assert.equal(await page.locator('#warning').textContent(),'');
