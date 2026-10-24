@@ -22,7 +22,7 @@
   <h1>Torque driven wheel on a flat road</h1>
   <p class="help">Hold <kbd>W</kbd> to drive, hold <kbd>S</kbd> to brake, and press <kbd>R</kbd> to reset.</p>
   <p class="help">Temporary capped slip-force model on a flat road. Physical parameter changes reset the experiment. Negative drive torque permits reverse.</p>
-  <div class="layout">
+  <p>Space: upward 0.5 m/s suspension impulse. Normal load assumes total weight; wheel height is constrained.</p><p id="suspension"></p><div class="layout">
     <canvas id="wheel" width="500" height="360" aria-label="Physics-driven rotating wheel"></canvas>
     <section>
       <label>Rotational inertia I (kg·m²) <input id="inertia" type="number" min="0.01" step="0.1" value="2"></label>

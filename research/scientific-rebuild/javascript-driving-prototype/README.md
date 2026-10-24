@@ -35,3 +35,9 @@ CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/javascript-driv
 ```
 
 With an installed Playwright browser, omit `CHROMIUM_PATH`; otherwise set it to your Chromium executable. The test serves the sandbox on an ephemeral local port. Chromium execution passed: module initialization, W acceleration, changing Canvas image, S deceleration, R reset, and no page exceptions. One observed run accelerated to 1.981 m/s and braked to 0.793 m/s; browser timings vary. Production files are untouched.
+
+## Mission 26 suspension
+
+One independent vertical coordinate above a fixed-height wheel support uses mass 40 kg, stiffness 4000 N/m, damping 160 N·s/m, free length 0.6 m, and gravity 9.81 m/s². Equilibrium length is 0.5019 m. Implicit midpoint integrates the linear spring/damper at the same 1 ms clock. Space adds upward velocity 0.5 m/s once per key press (20 N·s impulse); R restores equilibrium. Gravity energy uses z=0 at the wheel support. Spring and damper reactions are reported on the constrained support. Normal load is assumed constant (wheel mass + sprung mass)g, not calculated from that reaction. No reaction is counted twice. Horizontal inertia remains the existing wheel assembly mass; the vertical fixture is an independently constrained experiment.
+
+Run all 14 mechanics tests with `node --test research/scientific-rebuild/javascript-driving-prototype/tests/*.test.js`. Tests cover static balance, predicted undamped period (0.6283 s), damping decay, force signs, and existing wheel regressions.

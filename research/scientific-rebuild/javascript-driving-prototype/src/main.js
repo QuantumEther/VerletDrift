@@ -1,3 +1,4 @@
+import {createSuspension, stepSuspension, suspensionDiagnostics} from './suspension.js';
 import { createWheel, DEFAULT_DT, rotationalEnergy, stepWheel, totalKineticEnergy, translationalEnergy } from './wheel.js';
 
 const canvas = document.querySelector('#wheel');
@@ -5,6 +6,8 @@ const ctx = canvas.getContext('2d');
 const readout = id => document.querySelector(`#${id}`);
 const input = id => document.querySelector(`#${id}`);
 const wheel = createWheel({ inertia: Number(input('inertia').value), mass: Number(input('mass').value), radius: Number(input('radius').value), friction: Number(input('friction').value), slipStiffness: Number(input('stiffness').value) });
+const suspension = createSuspension();
+wheel.normalLoad = (wheel.mass + suspension.mass)*9.81;
 const keys = new Set();
 let accumulator = 0;
 let lastFrame = performance.now();
@@ -18,6 +21,7 @@ const TAU = Math.PI * 2;
 function reset() {
   wheel.x = wheel.velocity = wheel.theta = wheel.omega = wheel.time = 0;
   wheel.lastContactForce = 0;
+  suspension.z=suspension.equilibrium; suspension.velocity=0;
   accumulator = 0;
   netTorque = 0;
   stepCount = 0;
@@ -25,8 +29,9 @@ function reset() {
 
 window.addEventListener('keydown', event => {
   const key = event.key.toLowerCase();
-  if (['w', 's', 'r'].includes(key)) event.preventDefault();
+  if (['w', 's', 'r', ' '].includes(key)) event.preventDefault();
   if (key === 'r' && !event.repeat) reset();
+  if (key === ' ' && !event.repeat) suspension.velocity += 0.5;
   keys.add(key);
 });
 window.addEventListener('keyup', event => keys.delete(event.key.toLowerCase()));
@@ -42,7 +47,7 @@ for (const [id, property, positive] of [['mass', 'mass', true], ['radius', 'radi
     const value = Number(input(id).value);
     if (Number.isFinite(value) && (positive ? value > 0 : value >= 0)) {
       wheel[property] = value;
-      wheel.normalLoad = wheel.mass * 9.81;
+      wheel.normalLoad = (wheel.mass + suspension.mass) * 9.81;
       reset(); // Configuration edits start a new experiment, with zero energy.
     } else input(id).value = wheel[property];
   });
@@ -60,6 +65,14 @@ function draw() {
   ctx.fillStyle = '#8293a1';
   const markerOffset = -(cameraX % 70);
   for (let x = markerOffset; x < w; x += 70) ctx.fillRect(x, roadY + 14, 34, 4);
+  const massY=cy-suspension.z*180;
+  ctx.fillStyle='#dfb65d'; ctx.fillRect(cx-42,massY-18,84,22);
+  ctx.strokeStyle='#dfb65d'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-18,massY+4);
+  for(let i=1;i<=12;i++) ctx.lineTo(cx-18+(i%2?8:-8),massY+4+(cy-massY-4)*i/13);
+  ctx.lineTo(cx-18,cy); ctx.stroke();
+  ctx.strokeRect(cx+14,(massY+cy)/2-12,12,24);
+  ctx.beginPath();ctx.moveTo(cx+20,massY+4);ctx.lineTo(cx+20,cy);ctx.stroke();
   const radius = wheelRadius;
   ctx.beginPath(); ctx.arc(cx, cy, radius, 0, TAU); ctx.fillStyle = '#263747'; ctx.fill();
   ctx.lineWidth = 12; ctx.strokeStyle = '#9eabb5'; ctx.stroke();
@@ -77,6 +90,7 @@ function frame(now) {
   const brake = keys.has('s') ? Math.max(0, Number(input('brake').value) || 0) : 0;
   while (accumulator >= DEFAULT_DT) {
     ({ netTorque } = stepWheel(wheel, { driveTorque: drive, brakeTorque: brake }, DEFAULT_DT));
+    stepSuspension(suspension, DEFAULT_DT);
     accumulator -= DEFAULT_DT; stepCount++; rateSteps++;
   }
   if (now - rateStart >= 500) { physicsHz = rateSteps * 1000 / (now - rateStart); rateSteps = 0; rateStart = now; }
@@ -97,6 +111,8 @@ function frame(now) {
   readout('trans-energy').textContent = `${translationalEnergy(wheel).toFixed(3)} J`;
   readout('total-energy').textContent = `${totalKineticEnergy(wheel).toFixed(3)} J`;
   readout('direction').textContent = wheel.velocity > 0.01 ? 'Forward' : wheel.velocity < -0.01 ? 'Reverse' : 'Stationary';
+  const d=suspensionDiagnostics(suspension);
+  readout('suspension').textContent=`z ${suspension.z.toFixed(4)} m · vz ${suspension.velocity.toFixed(4)} m/s · compression ${d.compression.toFixed(4)} m · spring ${d.spring.toFixed(2)} N · damper ${d.damper.toFixed(2)} N · support reaction ${d.supportReaction.toFixed(2)} N · spring energy ${d.springEnergy.toFixed(3)} J · vertical KE ${d.kineticEnergy.toFixed(3)} J · gravity PE ${d.gravityEnergy.toFixed(3)} J`;
   requestAnimationFrame(frame);
 }
 

@@ -23,6 +23,10 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.waitForFunction(() => document.querySelector('#omega').textContent.includes('rad/s'));
+  const rest = await page.locator('#suspension').textContent();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(150);
+  assert.notEqual(await page.locator('#suspension').textContent(), rest);
   const initialImage = await page.locator('canvas').screenshot();
   await page.keyboard.down('w');
   await page.waitForTimeout(1000);
