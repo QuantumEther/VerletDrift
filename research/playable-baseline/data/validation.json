@@ -1,0 +1,20 @@
+{
+  "baseline": "b23935b2b98b3474bf7d178283a0450724febb81",
+  "candidateMeasured": "2c6c654f414c4e4fe1e47677e13daeba46e17bfd",
+  "unit": {
+    "passed": 226,
+    "failed": 0
+  },
+  "browser": {
+    "steeringCanvasSoftwareGPU": 15,
+    "artwork": 2,
+    "driving": 6,
+    "controlsAndRecorder": 2
+  },
+  "baselinePendingSteeringTest": "failed before correction",
+  "initialHarnessFailures": [
+    "three gear assertions referenced a nonexistent historical gear field; changed to currentGear",
+    "newer rear-order probe depended on absent drivetrain-rotation.js; excluded as incompatible"
+  ],
+  "humanValidation": "pending"
+}

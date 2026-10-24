@@ -1,0 +1,6 @@
+{
+  "browserErrorsAbsent": true,
+  "mechanicalParity": true,
+  "deterministic": true,
+  "finite": true
+}
