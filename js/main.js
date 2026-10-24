@@ -776,105 +776,114 @@ function renderFrame(alpha, prev, curr, wallRenderDt) {
     resizeGPU(Math.round(backingWidth * gpuScale), Math.round(backingHeight * gpuScale));
   }
 
-  // --- INTERPOLATE RENDER STATE ---
-  // If we have two snapshots, lerp between them by alpha.
-  // On the very first frame before any physics ticks, just render raw state.
-  if (prev && curr) {
-    // Angle interpolation needs shortest-path wrapping to avoid spinning through 2π.
-    const headingDelta  = wrapAngle(curr.heading    - prev.heading);
-    const steerDelta    = wrapAngle(curr.steerAngle - prev.steerAngle);
-    const wheelDelta    = wrapAngle(curr.wheelAngle - prev.wheelAngle);
+  // Input may be newer than curr. Borrow live steering only synchronously for
+  // drawing, then restore exactly what was present on entry, even if drawing
+  // throws. Input events cannot interleave with this synchronous render scope.
+  const liveWheelAngle = state.steering.wheelAngle;
+  const liveFrontWheelAngle = state.steering.frontWheelAngle;
+  try {
+    // --- INTERPOLATE RENDER STATE ---
+    // If we have two snapshots, lerp between them by alpha.
+    // On the very first frame before any physics ticks, just render raw state.
+    if (prev && curr) {
+      // Angle interpolation needs shortest-path wrapping to avoid spinning through 2π.
+      const headingDelta  = wrapAngle(curr.heading    - prev.heading);
+      const steerDelta    = wrapAngle(curr.steerAngle - prev.steerAngle);
+      const wheelDelta    = wrapAngle(curr.wheelAngle - prev.wheelAngle);
 
-    state.body.centerX              = prev.centerX + (curr.centerX - prev.centerX) * alpha;
-    state.body.centerY              = prev.centerY + (curr.centerY - prev.centerY) * alpha;
-    state.body.heading              = prev.heading  + headingDelta * alpha;
-    state.steering.frontWheelAngle  = prev.steerAngle + steerDelta * alpha;
-    state.steering.wheelAngle       = prev.wheelAngle  + wheelDelta * alpha;
-    state.camera.x                  = prev.camX   + (curr.camX   - prev.camX)   * alpha;
-    state.camera.y                  = prev.camY   + (curr.camY   - prev.camY)   * alpha;
-    state.camera.zoom               = prev.camZoom + (curr.camZoom - prev.camZoom) * alpha;
-  }
-
-  // --- World space (camera transform active) ---
-  simCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-  applyCameraTransform(simCtx, canvasWidth, canvasHeight);
-
-  if (isGPUReady()) {
-    // GPU owns world effects and the wet vehicle when liquid is active.
-    // Canvas retains the fallback vehicle, boundary, diagnostics and HUD.
-    drawMapBoundary(simCtx);
-    if (state.params.showKinematicArrows) {
-      drawKinematicArrows(simCtx);
+      state.body.centerX              = prev.centerX + (curr.centerX - prev.centerX) * alpha;
+      state.body.centerY              = prev.centerY + (curr.centerY - prev.centerY) * alpha;
+      state.body.heading              = prev.heading  + headingDelta * alpha;
+      state.steering.frontWheelAngle  = prev.steerAngle + steerDelta * alpha;
+      state.steering.wheelAngle       = prev.wheelAngle  + wheelDelta * alpha;
+      state.camera.x                  = prev.camX   + (curr.camX   - prev.camX)   * alpha;
+      state.camera.y                  = prev.camY   + (curr.camY   - prev.camY)   * alpha;
+      state.camera.zoom               = prev.camZoom + (curr.camZoom - prev.camZoom) * alpha;
     }
-  } else {
-    // Canvas 2D fallback — full world-space rendering when WebGPU is unavailable.
-    drawCheckerboard(simCtx, canvasWidth, canvasHeight);  // also updates blurAccumulator
-    drawMapBoundary(simCtx);
-    drawSplatDecals(simCtx);
-    if (state.params.showSkidMarks) {
-      drawSkidMarks(simCtx);
+
+    // --- World space (camera transform active) ---
+    simCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    applyCameraTransform(simCtx, canvasWidth, canvasHeight);
+
+    if (isGPUReady()) {
+      // GPU owns world effects and the wet vehicle when liquid is active.
+      // Canvas retains the fallback vehicle, boundary, diagnostics and HUD.
+      drawMapBoundary(simCtx);
+      if (state.params.showKinematicArrows) {
+        drawKinematicArrows(simCtx);
+      }
+    } else {
+      // Canvas 2D fallback — full world-space rendering when WebGPU is unavailable.
+      drawCheckerboard(simCtx, canvasWidth, canvasHeight);  // also updates blurAccumulator
+      drawMapBoundary(simCtx);
+      drawSplatDecals(simCtx);
+      if (state.params.showSkidMarks) {
+        drawSkidMarks(simCtx);
+      }
+      drawSplatParticles(simCtx);
+      drawBalloons(simCtx);
+      drawTrailArrows(simCtx);
+      drawFallbackSmoke(simCtx);
+      // This legacy upload queue is render-only. The authoritative marks remain
+      // in state.skidMarks; retaining this duplicate queue leaks in Canvas mode.
+      state.skidMarksNewThisFrame.length = 0;
+      if (state.params.showSparks) {
+        drawSparks(simCtx);
+      }
+      if (state.params.showKinematicArrows) {
+        drawKinematicArrows(simCtx);
+      }
     }
-    drawSplatParticles(simCtx);
-    drawBalloons(simCtx);
-    drawTrailArrows(simCtx);
-    drawFallbackSmoke(simCtx);
-    // This legacy upload queue is render-only. The authoritative marks remain
-    // in state.skidMarks; retaining this duplicate queue leaks in Canvas mode.
-    state.skidMarksNewThisFrame.length = 0;
-    if (state.params.showSparks) {
-      drawSparks(simCtx);
+
+    // Debug overlays (tire forces, SAT, slip angles, etc.) — always Canvas 2D.
+    if (state.params.debugShowTireForces || state.params.debugShowSlipAngles ||
+        state.params.debugShowSAT || state.params.debugShowSmoothingFilter ||
+        state.params.debugShowCrossover || state.params.debugShowWheelSpeeds) {
+      drawDebugOverlays(simCtx);
     }
-    if (state.params.showKinematicArrows) {
-      drawKinematicArrows(simCtx);
+
+    // --- Record current pose for motion blur ghost trail ---
+    const maxGhosts = Math.max(1, (state.params.motionBlurSamples || 6));
+    const history = state.carPoseHistory;
+    history.push({
+      cx:      state.body.centerX,
+      cy:      state.body.centerY,
+      heading: state.body.heading,
+      wheels: {
+        frontLeft:  { x: state.wheels.frontLeft.x,  y: state.wheels.frontLeft.y  },
+        frontRight: { x: state.wheels.frontRight.x, y: state.wheels.frontRight.y },
+        rearLeft:   { x: state.wheels.rearLeft.x,   y: state.wheels.rearLeft.y   },
+        rearRight:  { x: state.wheels.rearRight.x,  y: state.wheels.rearRight.y  },
+      },
+      steerAngle: state.steering.frontWheelAngle,
+    });
+    while (history.length > maxGhosts + 1) history.shift();
+
+    if (!isGPUVehicleReady()) {
+      drawCarGhosts(simCtx);
+      drawCar(simCtx, !isGPUReady());
     }
-  }
+    removeCameraTransform(simCtx);
 
-  // Debug overlays (tire forces, SAT, slip angles, etc.) — always Canvas 2D.
-  if (state.params.debugShowTireForces || state.params.debugShowSlipAngles ||
-      state.params.debugShowSAT || state.params.debugShowSmoothingFilter ||
-      state.params.debugShowCrossover || state.params.debugShowWheelSpeeds) {
-    drawDebugOverlays(simCtx);
-  }
+    // --- GPU world render (background + skid + arrows + particles) ---
+    // Called after interpolated state is set but before restoring physics state.
+    if (isGPUReady()) {
+      renderFrameGPU(canvasWidth, canvasHeight);
+    }
 
-  // --- Record current pose for motion blur ghost trail ---
-  const maxGhosts = Math.max(1, (state.params.motionBlurSamples || 6));
-  const history = state.carPoseHistory;
-  history.push({
-    cx:      state.body.centerX,
-    cy:      state.body.centerY,
-    heading: state.body.heading,
-    wheels: {
-      frontLeft:  { x: state.wheels.frontLeft.x,  y: state.wheels.frontLeft.y  },
-      frontRight: { x: state.wheels.frontRight.x, y: state.wheels.frontRight.y },
-      rearLeft:   { x: state.wheels.rearLeft.x,   y: state.wheels.rearLeft.y   },
-      rearRight:  { x: state.wheels.rearRight.x,  y: state.wheels.rearRight.y  },
-    },
-    steerAngle: state.steering.frontWheelAngle,
-  });
-  while (history.length > maxGhosts + 1) history.shift();
+  } finally {
+    // --- Restore physics state after render (so physics reads real values next step) ---
+    if (curr) {
+      state.body.centerX              = curr.centerX;
+      state.body.centerY              = curr.centerY;
+      state.body.heading              = curr.heading;
+      state.camera.x                  = curr.camX;
+      state.camera.y                  = curr.camY;
+      state.camera.zoom               = curr.camZoom;
+    }
 
-  if (!isGPUVehicleReady()) {
-    drawCarGhosts(simCtx);
-    drawCar(simCtx, !isGPUReady());
-  }
-  removeCameraTransform(simCtx);
-
-  // --- GPU world render (background + skid + arrows + particles) ---
-  // Called after interpolated state is set but before restoring physics state.
-  if (isGPUReady()) {
-    renderFrameGPU(canvasWidth, canvasHeight);
-  }
-
-  // --- Restore physics state after render (so physics reads real values next step) ---
-  if (curr) {
-    state.body.centerX              = curr.centerX;
-    state.body.centerY              = curr.centerY;
-    state.body.heading              = curr.heading;
-    state.steering.frontWheelAngle  = curr.steerAngle;
-    state.steering.wheelAngle       = curr.wheelAngle;
-    state.camera.x                  = curr.camX;
-    state.camera.y                  = curr.camY;
-    state.camera.zoom               = curr.camZoom;
+    state.steering.frontWheelAngle = liveFrontWheelAngle;
+    state.steering.wheelAngle = liveWheelAngle;
   }
 
   // --- Screen space (HUD, no camera transform) ---

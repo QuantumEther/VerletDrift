@@ -335,15 +335,18 @@ const state = {
 
   // -----------------------------------------------------------
   // STEERING
-  // wheelAngle is the visual steering wheel position in radians —
-  // what the on-screen HUD shows. The physics uses frontWheelAngle,
-  // which maps wheel angle to a physically meaningful tyre lock angle.
+  // wheelAngle is the mouse command while dragging; otherwise physics mirrors
+  // the free column into it for the HUD. frontWheelAngle and its derivatives
+  // belong to physics. Rendering borrows angles synchronously and restores
+  // the live values, never an older snapshot over a pending command.
   // -----------------------------------------------------------
   steering: {
-    wheelAngle:      0,    // radians, visual indicator only; full lock ≈ ±7.85 rad
+    wheelAngle:      0,    // radians; driver command while dragging, column mirror otherwise
     frontWheelAngle: 0,    // radians, actual tyre angle used in slip calculations
     isDragging:      false,
     dragStartX:      0,
+    dragStartAngle:  0,    // command at mouse-down, in visual wheel radians
+    dragButton:     null, // button owning the current steering drag
     // --- Steering column physics (SAT-driven) ---
     angularVelocity:        0,  // rad/s, rate of change of frontWheelAngle
     angularAcceleration:    0,  // rad/s², 2nd derivative

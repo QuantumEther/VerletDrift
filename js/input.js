@@ -89,6 +89,8 @@ export function initInput(simulationCanvas) {
 
 function onKeyDown(event) {
   if (event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  // Preserve browser shortcuts; this baseline has no R starter binding.
+  if (event.code === 'KeyR' && (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey)) return;
   // Keep browser shortcuts such as Cmd+1 / Ctrl+1 available.
   if (event.code.startsWith('Digit') && (event.metaKey || event.ctrlKey || event.altKey)) return;
   if (event.code === 'Space' && event.target.closest?.('button')) return;
@@ -192,6 +194,8 @@ function onMouseDown(event) {
   if (isSteeringButton) {
     state.steering.isDragging    = true;
     state.steering.dragStartX    = event.clientX;
+    state.steering.dragStartAngle = state.steering.wheelAngle;
+    state.steering.dragButton = event.button;
   }
 
   if (isThrottleButton) {
@@ -208,7 +212,7 @@ function onMouseMove(event) {
     const normalisedDrag = dragDelta / (state.params.steeringDragRange || STEERING_DRAG_RANGE_PX); // can exceed ±1
 
     // Visual wheel angle: larger range than physical tyre angle for feel.
-    state.steering.wheelAngle = normalisedDrag * MAX_VISUAL_WHEEL_ANGLE_RAD;
+    state.steering.wheelAngle = state.steering.dragStartAngle + normalisedDrag * MAX_VISUAL_WHEEL_ANGLE_RAD;
     // Clamp so the visual doesn't spin forever with large drags.
     const maxVisual = MAX_VISUAL_WHEEL_ANGLE_RAD;
     if (state.steering.wheelAngle >  maxVisual) state.steering.wheelAngle =  maxVisual;
@@ -225,8 +229,7 @@ function onMouseMove(event) {
 }
 
 function onMouseUp(event) {
-  if (event.button === 2 ||
-      (event.button === 0 && event.shiftKey) ||
+  if (event.button === state.steering.dragButton ||
       event.type === 'mouseleave') {
     state.steering.isDragging = false;
   }
