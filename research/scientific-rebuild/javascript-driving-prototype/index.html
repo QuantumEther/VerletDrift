@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Torque Driven Wheel Sandbox</title>
+  <style>
+    :root { color-scheme: dark; font: 16px system-ui, sans-serif; background: #111820; color: #e8eef4; }
+    body { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.4rem; }
+    .layout { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(210px, .7fr); gap: 1.5rem; align-items: center; }
+    canvas { width: 100%; background: #18232e; border: 1px solid #405266; border-radius: 8px; }
+    dl { display: grid; grid-template-columns: 1fr auto; gap: .45rem 1rem; }
+    dt { color: #aebdca; } dd { margin: 0; font-variant-numeric: tabular-nums; }
+    label { display: block; margin: .7rem 0; }
+    input { width: 7rem; }
+    .help { color: #afbdc8; line-height: 1.5; }
+    @media (max-width: 650px) { .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Torque driven wheel</h1>
+  <p class="help">Hold <kbd>W</kbd> to drive, hold <kbd>S</kbd> to brake, and press <kbd>R</kbd> to reset.</p>
+  <div class="layout">
+    <canvas id="wheel" width="500" height="360" aria-label="Physics-driven rotating wheel"></canvas>
+    <section>
+      <label>Rotational inertia I (kg·m²) <input id="inertia" type="number" min="0.01" step="0.1" value="2"></label>
+      <label>Drive torque (N·m) <input id="drive" type="number" step="1" value="20"></label>
+      <label>Brake torque magnitude (N·m) <input id="brake" type="number" min="0" step="1" value="8"></label>
+      <dl>
+        <dt>Time step</dt><dd id="dt">—</dd>
+        <dt>Angular position</dt><dd id="theta">—</dd>
+        <dt>Angular velocity</dt><dd id="omega">—</dd>
+        <dt>RPM</dt><dd id="rpm">—</dd>
+        <dt>Applied net torque</dt><dd id="torque">—</dd>
+        <dt>Rotational energy</dt><dd id="energy">—</dd>
+      </dl>
+    </section>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
