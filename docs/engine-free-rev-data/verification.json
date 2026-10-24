@@ -1,0 +1,19 @@
+{
+  "comparisons": 210350,
+  "maxBrowserNodeDifference": 0,
+  "productionFilesIdenticalToBase": 99,
+  "base": "52c6385",
+  "runtime": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "engineCore": {
+    "dt": 0.01,
+    "warmup": 20000,
+    "batches": 100,
+    "stepsPerBatch": 5000,
+    "meanUs": 0.1223277539999997,
+    "p95BatchMeanUs": 0.1531977999999981,
+    "worstBatchMeanUs": 0.16559819999999945,
+    "stepsPerWallSecond": 8174759.752394394
+  },
+  "note": "Batch averages, not individual-tick percentiles. Steady running neutral idle, clutch open. Production unchanged; before/after are the same implementation."
+}
