@@ -20,6 +20,8 @@ const bodyImage = loadImage('../../assets/vehicles/delorean/DeLorean.png');
 const wheelImage = loadImage('../../assets/vehicles/delorean/DeLorean_Wheel.png');
 
 let relitBody=null,relitSource=null,relitKey='',shadowStamp=null;
+// A single bounded cache for heading-independent brightness/temperature work.
+let litBase=null,litBaseKey='';
 const lightData=new Float32Array(8);
 function bodyArtwork(pose){
  if(state.params.sceneLightingEnabled===false||pose.isGhost)return null;
@@ -31,10 +33,23 @@ function bodyArtwork(pose){
  const w=384,h=Math.round(w*BODY_CROP[3]/BODY_CROP[2]);
  if(relitBody.width!==w||relitBody.height!==h){relitBody.width=w;relitBody.height=h;}
  const ctx=relitBody.getContext('2d');ctx.clearRect(0,0,w,h);
- const exposure=Math.pow(Math.max(.05,lightData[4]*.7+lightData[3]*.9*lightData[2]),1/2.2);
- ctx.filter=`brightness(${exposure})`;ctx.drawImage(bodyImage,...BODY_CROP,0,0,w,h);ctx.filter='none';
+ // Only the directional gradient below depends on heading. Reusing this
+ // same-size base avoids filtering/rasterizing the PNG at every heading bucket.
+ // Keep the original final bitmap and composite order for identical artwork.
+ const baseKey=key.slice(key.indexOf(':')+1);
+ if(baseKey!==litBaseKey){
+  if(!litBase)litBase=typeof OffscreenCanvas==='undefined'?document.createElement('canvas'):new OffscreenCanvas(w,h);
+  if(litBase.width!==w||litBase.height!==h){litBase.width=w;litBase.height=h;}
+  const baseCtx=litBase.getContext('2d');baseCtx.clearRect(0,0,w,h);
+  const exposure=Math.pow(Math.max(.05,lightData[4]*.7+lightData[3]*.9*lightData[2]),1/2.2);
+  baseCtx.filter=`brightness(${exposure})`;baseCtx.drawImage(bodyImage,...BODY_CROP,0,0,w,h);baseCtx.filter='none';
+  baseCtx.globalCompositeOperation='source-atop';
+  const color=lightColor(lightData[6]);baseCtx.fillStyle=`rgba(${color.map(x=>Math.round(x*255)).join(',')},${Math.abs(lightData[6])*.07})`;baseCtx.fillRect(0,0,w,h);
+  baseCtx.globalCompositeOperation='source-over';
+  litBaseKey=baseKey;
+ }
+ ctx.drawImage(litBase,0,0);
  ctx.globalCompositeOperation='source-atop';
- const color=lightColor(lightData[6]);ctx.fillStyle=`rgba(${color.map(x=>Math.round(x*255)).join(',')},${Math.abs(lightData[6])*.07})`;ctx.fillRect(0,0,w,h);
  const c=Math.cos(angle),s=Math.sin(angle),side=lightData[0]*c+lightData[1]*s;
  const gradient=ctx.createLinearGradient(0,0,w,0);gradient.addColorStop(0,`rgba(255,255,255,${Math.max(0,-side)*.045*lightData[3]})`);gradient.addColorStop(.5,'rgba(255,255,255,0)');gradient.addColorStop(1,`rgba(255,255,255,${Math.max(0,side)*.045*lightData[3]})`);
  ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over';relitSource?.close?.();relitSource=relitBody.transferToImageBitmap?.()??relitBody;relitSource.vehicleBodySprite=true;relitKey=key;return relitSource;
