@@ -1,0 +1,30 @@
+{
+  "upstream_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "upstream_tracked_diff_clean": true,
+  "source_patches": [],
+  "cmake": "3.31.6",
+  "ninja": "1.11.1.3",
+  "eigen": "Debian libeigen3-dev 3.4.0-4",
+  "eigen_deb_sha256": "1a167bb381acb90c1d8450a8f3e66a09d216dbc64b33ac8a082a0912513ef939",
+  "native_build": {
+    "seconds": 468.7004386149929,
+    "exit_code": 0
+  },
+  "native_build_work_units": 640,
+  "jobs": 4,
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "available_cpus": 5,
+  "cgroup_memory_bytes": 34359738368,
+  "libraries": {
+    "libChrono_core.so": {
+      "bytes": 15533176,
+      "sha256": "a79c5d825dfd888bfb3122368bd22dc1dad90a12d4135b27be1eb73dcb23a61c"
+    },
+    "libChrono_vehicle.so": {
+      "bytes": 7288656,
+      "sha256": "48fb99d4d8af84340de4d6b202462f43a9b7bf91a3ef58858e1ea3f25b06a0f7"
+    }
+  },
+  "runtime_stderr_empty_both_runs": true,
+  "scope": "Core and Vehicle shared libraries; unchanged original Generic_Wheel and Generic_TMeasyTire compiled into probe; no optional vehicle/robot model libraries, FEA, GUI, powertrain application, asset tree or benchmark"
+}

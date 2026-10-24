@@ -1,0 +1,15 @@
+{
+  "schema": "mission21-native-v1",
+  "chrono_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "verlet_base": "7e2df69bec9ed5153a7fed6229ced50f34bb998e",
+  "fixture": "Original Generic_TMeasyTire::SetTMeasyParams, no coefficient changes",
+  "terrain": {"type": "chrono::vehicle::FlatTerrain", "height_m": 0, "friction_float": 0.8},
+  "spindle": {"position_m": [0,0,0.449072], "orientation_wxyz": [1,0,0,0], "base_mass_kg": 1, "base_inertia_kgm2": [1,1,1], "gravity_mps2": [0,0,0]},
+  "bristle_initial_m": [0,0],
+  "radius_reference_m": 0.46295733333333333,
+  "A": {"vx_mps": 0, "vy_mps": 0, "omega_radps": 0, "vz_formula": "native stiffness at actual native contact depth / source dz + offset", "offsets_mps": [-0.000001,0,0.000001], "configured_dt_s": 0.001, "advance_dt_s": 0.001},
+  "B": {"vx_mps": [0.999999,1,1.000001], "vy_mps": 0.1, "omega_formula": "Vx / radius_reference_m", "configured_dt_s": 0.001, "advance_dt_s": 0.001},
+  "C": {"vx_vy_omega": [[10,0.1,21.384260032601997],[-10,-0.1,-21.384260032601997]], "configured_dt_s": 0.001, "advance_dt_s": 0.001},
+  "D": {"vx_mps": 0.1, "vy_mps": 0, "omega_radps": 0, "configured_advance_dt_pairs_s": [[0.001,0.001],[0.01,0.01],[0.001,0.01]]},
+  "execution": "fresh native system/wheel/tire per case; two identical full runs; official ordering: native Synchronize then wheel cached-wrench accumulation, then tire Advance, then one system integration with finite applied wrench; a second ordinary Synchronize/wheel application observes the pending wrench at naturally advanced state"
+}

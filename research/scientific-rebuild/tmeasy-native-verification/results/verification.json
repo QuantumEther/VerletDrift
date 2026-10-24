@@ -1,0 +1,473 @@
+{
+  "schema": "mission21-native-v1",
+  "provenance": {
+    "chrono_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+    "verlet_base": "7e2df69bec9ed5153a7fed6229ced50f34bb998e",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+    "native_executable_sha256": "320590c8f94989b9ac6d428a9c2c9074dd978e329f70d8b401732d31b0c90058",
+    "native_executable_bytes": 240024,
+    "input_sha256": "5ec0f0c056a3cd64bc7604864828b6ea7c50e2a3610d9f73f2f6158629bc2a26",
+    "harness_sha256": {
+      "native.cpp": "f9ca868202d7897cf73bb0f5c97f9fd16233c503c4c0165ef69cf1ab1ababc68",
+      "CMakeLists.txt": "7dcaa58fc8f5b396be667ab407d685d5239b6de71931493cedbb6b2fefc6af90",
+      "verify.py": "a3d809e3e073a4d4c101306d74c3d0f635c2cb51cffa5c9332134baf283c390a"
+    },
+    "run_sha256": [
+      "55c6810ed1fcdf1e860b6e763e57f09e9f52b175f669d6d5f14fcbdd539e526e",
+      "55c6810ed1fcdf1e860b6e763e57f09e9f52b175f669d6d5f14fcbdd539e526e"
+    ],
+    "mission20_cases_sha256": "28680496d8f91ce3c595f86ea770daee81960e1ad397351d68f4f98baa170340",
+    "source_build_paths": {
+      "source": "/tmp/m20-chrono",
+      "build": "/tmp/m21-build"
+    }
+  },
+  "case_count": 11,
+  "checks": [
+    {
+      "id": "deterministic-two-native-runs",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-inactive-suppresses-cached-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-inactive-suppresses-cached-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-inactive-suppresses-cached-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-actual-disc-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-zero-initial-bristles",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-native-time-advanced",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-cached-first-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-native-hub-transform",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-pending-wheel-power",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-next-applied-force",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-upright-contact-frame",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-next-applied-moment",
+      "status": "PASS"
+    },
+    {
+      "id": "A-native-zero-boundary",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-mission20-output-agreement",
+      "status": "PASS"
+    },
+    {
+      "id": "B-moment-jump-survives-native-application",
+      "status": "PASS"
+    },
+    {
+      "id": "C-native-reverse-asymmetry",
+      "status": "PASS"
+    },
+    {
+      "id": "D-timestep-contract",
+      "status": "PASS"
+    },
+    {
+      "id": "D-force-old-bristle-level",
+      "status": "PASS"
+    }
+  ],
+  "observations": {
+    "A": {
+      "exact_zero_reached": true,
+      "active_at_zero": true,
+      "nonfinite_pending_force": true,
+      "nonfinite_bristles": true,
+      "next_active": false,
+      "next_force_finite": true
+    },
+    "B": {
+      "contact_jump_Nm": 13.394799774034606,
+      "next_applied_jump_Nm": 13.39479977403461
+    },
+    "C": {
+      "forward_Fx_N": -1049.3768151614518,
+      "reverse_Fx_N": 499.99999999999903,
+      "forward_Mz_Nm": 36.26848164371496,
+      "reverse_Mz_Nm": 0.0
+    },
+    "D": {
+      "small_brx_m": 9.994164214387788e-05,
+      "large_brx_m": 0.000994194704999124,
+      "mismatched_brx_m": 9.994164214387788e-05,
+      "interface_contract": true
+    }
+  },
+  "global_passivity": "UNRESOLVED"
+}

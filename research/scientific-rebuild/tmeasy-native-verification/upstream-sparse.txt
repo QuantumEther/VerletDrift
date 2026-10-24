@@ -1,0 +1,12 @@
+/*
+!/*/
+/cmake/
+/src/CMakeLists.txt
+/src/*.in
+/src/chrono/
+/src/chrono_vehicle/
+/src/chrono_thirdparty/
+/src/**/CMakeLists.txt
+/src/chrono_models/ChApiModels.h
+/src/chrono_models/vehicle/generic/Generic_Wheel.*
+/src/chrono_models/vehicle/generic/tire/Generic_TMeasyTire.*

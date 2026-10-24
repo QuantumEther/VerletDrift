@@ -1,0 +1,22 @@
+{
+  "schema": "mission21-native-assessment-v1",
+  "gate": "NATIVE CONDITIONALLY READY",
+  "A": {
+    "verification": "NATIVE VERIFIED",
+    "outcome": "Exact zero active contact and NaN pending wrench/bristles reproduced. In the naturally separating native sequence the cached zero first wrench is finite; next Synchronize deactivates contact and suppresses pending invalid wrench, while bristles stay NaN. Propagation to spindle was not observed."
+  },
+  "B": {
+    "verification": "NATIVE VERIFIED",
+    "outcome": "13.3947997740346 Nm contact jump; native next-callback hub application retains that jump."
+  },
+  "C": {
+    "verification": "NATIVE VERIFIED",
+    "outcome": "Mirrored zero-initial-bristle force/moment asymmetry reproduced at contact and following hub application."
+  },
+  "D": {
+    "verification": "NATIVE PARTIALLY VERIFIED",
+    "outcome": "Real tire, wheel and system reproduce configured-step ownership. Official rig/vehicle orchestration was inspected, not instantiated; generic automatic correspondence is not experimentally verified."
+  },
+  "verdict": "NATIVE FINDINGS PARTIALLY CONFIRMED",
+  "global_passivity": "UNRESOLVED"
+}

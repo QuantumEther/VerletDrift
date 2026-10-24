@@ -1,0 +1,19 @@
+{
+  "commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "sha256": {
+    "src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.cpp": "4e254282b6e45eeb17e7206d08eb512b08f1c5e20402b198b26de7026b93322a",
+    "src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.h": "8c33511b9310156f507f3b582230777f8433688f3d3038fe5871ae4ed25cdf96",
+    "src/chrono_vehicle/wheeled_vehicle/tire/ChForceElementTire.cpp": "815f8c30aa371e37c47a70941e0830d6f4d0305ff73e03ea70689841e7d6aec1",
+    "src/chrono_vehicle/wheeled_vehicle/ChTire.cpp": "e53749518994579531f1686cc6a8b57a385b1b9b7ac3ec0d382e6ae9c0654391",
+    "src/chrono_vehicle/wheeled_vehicle/ChWheel.cpp": "8404d233a7e7398c5921d10f85561f4f0d178de15615f64bdfaf631335d3c7a3",
+    "src/chrono_vehicle/wheeled_vehicle/ChSpindle.cpp": "833803e568c29f61971d9d6c807102c2663af63cdfaae1cb2981ccfb0d707fa3",
+    "src/chrono_vehicle/wheeled_vehicle/ChWheeledVehicle.cpp": "36c0a8d10f4258c13e4cee32545ae6f1a0bc5534f77d902804399b65bfac48fb",
+    "src/chrono_vehicle/wheeled_vehicle/ChAxle.cpp": "0644cb29e1b2c8267db393304af0e793352b856ec97a9b13989e293d4ae434bf",
+    "src/chrono_vehicle/wheeled_vehicle/test_rig/ChWheelTestRig.cpp": "8cd55e4852bc5f200a1ac12023d7cc568de965dc4000c1ce7c7dbdba9482ce4b",
+    "src/chrono_vehicle/ChVehicle.cpp": "fa133900783710dd2536bb2c7780205a1b18c99938ab22535c03b60dea897f70",
+    "src/chrono_vehicle/terrain/FlatTerrain.cpp": "a43abc74e0b9dd62f77728c037eb602551f9cef5a23ff938a487638eca40f664",
+    "src/chrono_models/vehicle/generic/Generic_Wheel.cpp": "911b9d2b40ec04f188afed83f9a3be0a14d830a378cdfc41401b12709ac712fe",
+    "src/chrono_models/vehicle/generic/tire/Generic_TMeasyTire.cpp": "63620865543692f2808960806728ebf6a1b9932792ae724c3812592aa223e6c5",
+    "LICENSE": "5f625eb4c9e0ddf86db9d1ed9b6adb5b30296ea81919282b2f38c977136bf079"
+  }
+}
