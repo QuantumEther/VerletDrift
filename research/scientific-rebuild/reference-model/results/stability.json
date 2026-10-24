@@ -1,0 +1,50 @@
+{
+  "cornering": [
+    {
+      "time": 0.05,
+      "dominantEigenvalue": -0.06994980264167769,
+      "predictedModeMultiplier": 0.996508618962287,
+      "observedModeMultiplierReal": 0.9965085797005944,
+      "observedModeMultiplierImag": -3.2420527852775764e-18,
+      "modeRate": -0.06995059062670268,
+      "tangentVsExpmMax": 1.8759428197512307e-06,
+      "finiteAmplitudeEvenRemainderMax": 0.0004711872961138397,
+      "interpretation": "central finite-amplitude perturbations; remainder is an uncertainty indicator, not a rigorous error bound"
+    },
+    {
+      "time": 0.25,
+      "dominantEigenvalue": -0.06994980264167769,
+      "predictedModeMultiplier": 0.9826645673790454,
+      "observedModeMultiplierReal": 0.982664454633191,
+      "observedModeMultiplierImag": -3.1970192576834797e-18,
+      "modeRate": -0.06995026158103361,
+      "tangentVsExpmMax": 6.567522853190289e-07,
+      "finiteAmplitudeEvenRemainderMax": 0.001042215025393034,
+      "interpretation": "central finite-amplitude perturbations; remainder is an uncertainty indicator, not a rigorous error bound"
+    }
+  ],
+  "drifting": [
+    {
+      "time": 0.05,
+      "dominantEigenvalue": 1.6598303798937586,
+      "predictedModeMultiplier": 1.086532593620464,
+      "observedModeMultiplierReal": 1.086532603378762,
+      "observedModeMultiplierImag": 0.0,
+      "modeRate": 1.6598305595164953,
+      "tangentVsExpmMax": 1.4711414659807076e-06,
+      "finiteAmplitudeEvenRemainderMax": 0.0010473901262741947,
+      "interpretation": "central finite-amplitude perturbations; remainder is an uncertainty indicator, not a rigorous error bound"
+    },
+    {
+      "time": 0.25,
+      "dominantEigenvalue": 1.6598303798937586,
+      "predictedModeMultiplier": 1.5143065251221082,
+      "observedModeMultiplierReal": 1.5143066237511449,
+      "observedModeMultiplierImag": 0.0,
+      "modeRate": 1.6598306404197007,
+      "tangentVsExpmMax": 7.62416689170653e-07,
+      "finiteAmplitudeEvenRemainderMax": 0.0016885865150584323,
+      "interpretation": "central finite-amplitude perturbations; remainder is an uncertainty indicator, not a rigorous error bound"
+    }
+  ]
+}

@@ -1,0 +1,4015 @@
+{
+  "provenance": {
+    "branch": "scientific-rebuild/03-isolated-reference",
+    "commit": "0bf59dc46f9309eb7f75f31b97771beee0bdc6f2",
+    "configHash": "e3f8adb9e1c716fd5f6d36a2384e8395cedae6097df69317c614008ae51fc1c4",
+    "parameters": {
+      "mv": 1200,
+      "mw": 100,
+      "JG": 2500,
+      "C": 2.77,
+      "D": 4.5,
+      "l": 2.5,
+      "d": 1.5,
+      "q": 1,
+      "r": 0.3,
+      "kx": 4000000,
+      "ky": 2000000,
+      "a": 0.1,
+      "mu0": 0.9,
+      "mu": 0.6,
+      "g": 9.81
+    },
+    "units": {
+      "state": [
+        "m/s",
+        "m/s",
+        "rad/s",
+        "rad/s",
+        "rad/s"
+      ],
+      "force": "N",
+      "moment": "Nm",
+      "power": "W",
+      "energy": "J",
+      "kx": "N/m^2",
+      "ky": "N/m^2"
+    },
+    "node": "v24.19.0"
+  },
+  "columns": [
+    "time_s",
+    "v_m_per_s",
+    "sigma_m_per_s",
+    "omega_rad_per_s",
+    "Omega_r_rad_per_s",
+    "Omega_f_rad_per_s",
+    "drive_J",
+    "rear_force_J",
+    "front_force_J",
+    "rear_moment_J",
+    "front_moment_J"
+  ],
+  "runs": [
+    {
+      "id": "cornering-equilibrium",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 2000,
+        "tires": 4000,
+        "attempted": 500,
+        "completed": 500,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 2000
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -50500.53398829566,
+      "work": [
+        50500.533988374424,
+        -16662.852379227505,
+        -33706.75543980197,
+        -54.85947944089093,
+        -76.06668982527539
+      ],
+      "energyResidual": 1.1047092129956582e-9,
+      "hz": 100,
+      "stateErrorMax": [
+        3.6131098113401094e-12,
+        6.63358257213531e-13,
+        7.988054662178001e-14,
+        1.1894485396624077e-11,
+        1.2605028132384177e-11
+      ],
+      "normalizedError": 7.988054662178001e-8,
+      "diagnosticCounts": {
+        "rhs": 501,
+        "tires": 1002
+      },
+      "identityMax": 4.324846842959041e-12,
+      "forcePowerMax": -3332.5704758437796,
+      "workReferenceErrorMaxJ": 7.394699252927239e-8,
+      "energyResidualMaxJ": 1.1477823136374354e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-equilibrium",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 4000,
+        "tires": 8000,
+        "attempted": 1000,
+        "completed": 1000,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 4000
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -50500.533988294264,
+      "work": [
+        50500.53398837393,
+        -16662.852379227093,
+        -33706.75543980104,
+        -54.85947944089114,
+        -76.06668982527587
+      ],
+      "energyResidual": -4.715374757324753e-9,
+      "hz": 200,
+      "stateErrorMax": [
+        3.3928415632544784e-12,
+        6.687983500341943e-13,
+        7.982503547054876e-14,
+        1.1155520951433573e-11,
+        1.1887379969266476e-11
+      ],
+      "normalizedError": 7.982503547054876e-8,
+      "diagnosticCounts": {
+        "rhs": 1001,
+        "tires": 2002
+      },
+      "identityMax": 4.067160553785976e-12,
+      "forcePowerMax": -3332.570475843777,
+      "workReferenceErrorMaxJ": 7.479032149149134e-8,
+      "energyResidualMaxJ": 5.520782053736184e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 0.0010029163010002395
+    },
+    {
+      "id": "cornering-equilibrium",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 8000,
+        "tires": 16000,
+        "attempted": 2000,
+        "completed": 2000,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 8000
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -50500.53398829454,
+      "work": [
+        50500.53398837401,
+        -16662.85237922716,
+        -33706.75543980116,
+        -54.85947944089107,
+        -76.06668982527582
+      ],
+      "energyResidual": -3.995168640358315e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        3.417710559006082e-12,
+        6.605826996519681e-13,
+        7.943645741192995e-14,
+        1.1247891507082386e-11,
+        1.1972645097557688e-11
+      ],
+      "normalizedError": 7.943645741192995e-8,
+      "diagnosticCounts": {
+        "rhs": 2001,
+        "tires": 4002
+      },
+      "identityMax": 4.631490992063385e-12,
+      "forcePowerMax": -3332.570475843814,
+      "workReferenceErrorMaxJ": 7.468129581411631e-8,
+      "energyResidualMaxJ": 4.8920014705799986e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 0.00704000371262994
+    },
+    {
+      "id": "cornering-equilibrium",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 16000,
+        "tires": 32000,
+        "attempted": 4000,
+        "completed": 4000,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 16000
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -50500.53398829402,
+      "work": [
+        50500.533988374926,
+        -16662.852379228338,
+        -33706.75543980337,
+        -54.85947944089068,
+        -76.06668982527499
+      ],
+      "energyResidual": -1.3287788647176058e-8,
+      "hz": 800,
+      "stateErrorMax": [
+        2.8972380050618085e-12,
+        6.671330154972566e-13,
+        8.054668043655511e-14,
+        9.478640095039736e-12,
+        1.028865881380625e-11
+      ],
+      "normalizedError": 8.054668043655511e-8,
+      "diagnosticCounts": {
+        "rhs": 4001,
+        "tires": 8002
+      },
+      "identityMax": 5.3787215948558385e-12,
+      "forcePowerMax": -3332.570475843743,
+      "workReferenceErrorMaxJ": 7.221596831641364e-8,
+      "energyResidualMaxJ": 2.0929803667968372e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": -0.020023847340076676
+    },
+    {
+      "id": "cornering-perturb-0-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20166.073535090793,
+      "work": [
+        20188.240198308,
+        -6653.979558155157,
+        -13459.712284267853,
+        -21.94700381545914,
+        -30.43468885234302
+      ],
+      "energyResidual": 0.00004760367420786338,
+      "hz": 100,
+      "stateErrorMax": [
+        0.0000010822587217518276,
+        4.513878160139484e-9,
+        4.711274659285891e-8,
+        0.00004586896561420417,
+        0.00005509831247962893
+      ],
+      "normalizedError": 0.05509831247962893,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.080291660102375e-12,
+      "forcePowerMax": -3325.2125037263095,
+      "workReferenceErrorMaxJ": 0.00006856688130341126,
+      "energyResidualMaxJ": 0.000047603856414113466,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-0-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20166.073471322125,
+      "work": [
+        20188.240198016985,
+        -6653.979528637602,
+        -13459.712249901357,
+        -21.947003871174196,
+        -30.434688912001235
+      ],
+      "energyResidual": 0.0000022964373513900682,
+      "hz": 200,
+      "stateErrorMax": [
+        5.1391749522622376e-8,
+        2.1843449271585769e-10,
+        2.24626378608761e-9,
+        0.0000022059375694993832,
+        0.000002588606790254744
+      ],
+      "normalizedError": 0.002588606790254744,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.284572696633404e-12,
+      "forcePowerMax": -3325.2125033038856,
+      "workReferenceErrorMaxJ": 0.0000033252820372808856,
+      "energyResidualMaxJ": 0.000002296734142870349,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.411760392006298
+    },
+    {
+      "id": "cornering-perturb-0-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20166.07346825232,
+      "work": [
+        20188.240198003277,
+        -6653.979527210465,
+        -13459.712248253192,
+        -21.94700387384828,
+        -30.434688914838276
+      ],
+      "energyResidual": 1.2697193341182356e-7,
+      "hz": 400,
+      "stateErrorMax": [
+        2.7564563964688205e-9,
+        1.2109424574191507e-11,
+        1.2050294095899972e-10,
+        1.1841662939104936e-7,
+        1.3893590988800497e-7
+      ],
+      "normalizedError": 0.00013893590988800497,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 5.593747687271389e-12,
+      "forcePowerMax": -3325.2125032828967,
+      "workReferenceErrorMaxJ": 1.8435178361642102e-7,
+      "energyResidualMaxJ": 1.2737445409527481e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.219684399382187
+    },
+    {
+      "id": "cornering-perturb-0-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20166.07346808268,
+      "work": [
+        20188.240198002517,
+        -6653.979527131446,
+        -13459.712248162237,
+        -21.9470038739959,
+        -30.434688914994283
+      ],
+      "energyResidual": 7.569681770291936e-9,
+      "hz": 800,
+      "stateErrorMax": [
+        1.5998224967006536e-10,
+        7.155387393709134e-13,
+        7.001010882135006e-12,
+        6.883951186864579e-9,
+        8.041823207349807e-9
+      ],
+      "normalizedError": 0.000008041823207349807,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 5.988098905618244e-12,
+      "forcePowerMax": -3325.2125032817203,
+      "workReferenceErrorMaxJ": 1.0772957637072977e-8,
+      "energyResidualMaxJ": 7.679782143554803e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.110753101513053
+    },
+    {
+      "id": "cornering-perturb-0-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20234.40218541894,
+      "work": [
+        20212.18685607188,
+        -6676.322530040412,
+        -13505.720501937762,
+        -21.94053708984108,
+        -30.41861635093359
+      ],
+      "energyResidual": 0.00004812042562463148,
+      "hz": 100,
+      "stateErrorMax": [
+        0.000001089881966009898,
+        9.702455394666742e-9,
+        4.842705070284836e-8,
+        0.00004661212904011336,
+        0.000055046555416993215
+      ],
+      "normalizedError": 0.055046555416993215,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.162004074714787e-12,
+      "forcePowerMax": -3322.39418424628,
+      "workReferenceErrorMaxJ": 0.00007120766375834364,
+      "energyResidualMaxJ": 0.000048120450323096975,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-0-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20234.402119284954,
+      "work": [
+        20212.186855896576,
+        -6676.322499212519,
+        -13505.720466513969,
+        -21.940537148175032,
+        -30.418616410292316
+      ],
+      "energyResidual": 0.0000023208521966466833,
+      "hz": 200,
+      "stateErrorMax": [
+        5.1637552900274386e-8,
+        4.7104220524119e-10,
+        2.3133601700919826e-9,
+        0.000002231807371799732,
+        0.000002584579021913669
+      ],
+      "normalizedError": 0.002584579021913669,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.405364961712621e-12,
+      "forcePowerMax": -3322.39418424628,
+      "workReferenceErrorMaxJ": 0.0000034577906902200084,
+      "energyResidualMaxJ": 0.000002320919406884059,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.412651071213391
+    },
+    {
+      "id": "cornering-perturb-0-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20234.40211609803,
+      "work": [
+        20212.186855889177,
+        -6676.322497721681,
+        -13505.720464812253,
+        -21.940537150985104,
+        -30.4186164131152
+      ],
+      "energyResidual": 1.2804000704136342e-7,
+      "hz": 400,
+      "stateErrorMax": [
+        2.771589180383671e-9,
+        2.602273951879397e-11,
+        1.2408318816881092e-10,
+        1.19767086914635e-7,
+        1.3874807081037943e-7
+      ],
+      "normalizedError": 0.00013874807081037943,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.725109192804666e-12,
+      "forcePowerMax": -3322.39418424628,
+      "workReferenceErrorMaxJ": 1.919115177884123e-7,
+      "energyResidualMaxJ": 1.284759187925033e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.219389695367685
+    },
+    {
+      "id": "cornering-perturb-0-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20234.402115921963,
+      "work": [
+        20212.1868558888,
+        -6676.322497639188,
+        -13505.720464718346,
+        -21.940537151140408,
+        -30.418616413270417
+      ],
+      "energyResidual": 7.709694216373464e-9,
+      "hz": 800,
+      "stateErrorMax": [
+        1.6077805753411667e-10,
+        1.5289991495137656e-12,
+        7.213285524443336e-12,
+        6.9658696588703606e-9,
+        8.029871878534323e-9
+      ],
+      "normalizedError": 0.000008029871878534323,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.884981308350689e-12,
+      "forcePowerMax": -3322.39418424628,
+      "workReferenceErrorMaxJ": 1.1395066223940375e-8,
+      "energyResidualMaxJ": 7.864322526529577e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.110946932912431
+    },
+    {
+      "id": "cornering-perturb-1-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20224.812218248648,
+      "work": [
+        20199.31355585115,
+        -6673.263458646138,
+        -13499.22988617422,
+        -21.923530739389022,
+        -30.395342688906574
+      ],
+      "energyResidual": 2.3074226618291505e-7,
+      "hz": 100,
+      "stateErrorMax": [
+        1.4361644318228173e-8,
+        4.004208187247116e-9,
+        1.035253549552806e-9,
+        0.0000024183886253581477,
+        0.0000036782453776140756
+      ],
+      "normalizedError": 0.0036782453776140756,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 3.2454039455842576e-12,
+      "forcePowerMax": -3327.789837183914,
+      "workReferenceErrorMaxJ": 0.000006498481704309,
+      "energyResidualMaxJ": 2.3076482236206175e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-1-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20224.812218024905,
+      "work": [
+        20199.313555848377,
+        -6673.263458561403,
+        -13499.229886034653,
+        -21.923530739614424,
+        -30.39534268925111
+      ],
+      "energyResidual": 1.1236313213203175e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        6.3987393161824e-10,
+        1.977579211498437e-10,
+        5.095318611481048e-11,
+        1.1930433174711652e-7,
+        1.791686727870001e-7
+      ],
+      "normalizedError": 0.0001791686727870001,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.350297899691213e-12,
+      "forcePowerMax": -3327.789667820896,
+      "workReferenceErrorMaxJ": 3.2030498298141197e-7,
+      "energyResidualMaxJ": 1.1497288454620502e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.359627413089461
+    },
+    {
+      "id": "cornering-perturb-1-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20224.81221801406,
+      "work": [
+        20199.313555848235,
+        -6673.263458557239,
+        -13499.229886027924,
+        -21.92353073962545,
+        -30.39534268926768
+      ],
+      "energyResidual": 3.9544545415992616e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        3.441691376337985e-11,
+        1.070565858185546e-11,
+        2.7967073101820006e-12,
+        6.493358739589894e-9,
+        9.648871923673141e-9
+      ],
+      "normalizedError": 0.000009648871923673141,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.32720526077901e-12,
+      "forcePowerMax": -3327.789667821521,
+      "workReferenceErrorMaxJ": 1.7333721791246148e-8,
+      "energyResidualMaxJ": 6.637002059051156e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.2148143146816555
+    },
+    {
+      "id": "cornering-perturb-1-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20224.81221801352,
+      "work": [
+        20199.31355584826,
+        -6673.263458557022,
+        -13499.229886027602,
+        -21.923530739626045,
+        -30.395342689268556
+      ],
+      "energyResidual": 4.169287137756328e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        1.9664270212160773e-12,
+        6.231681837221004e-13,
+        1.6436851879575443e-13,
+        3.787548052969214e-10,
+        5.608953301816655e-10
+      ],
+      "normalizedError": 5.608953301816655e-7,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.764189043271472e-12,
+      "forcePowerMax": -3327.7896542185254,
+      "workReferenceErrorMaxJ": 1.008242600519793e-9,
+      "energyResidualMaxJ": 6.109637240570009e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104556805960782
+    },
+    {
+      "id": "cornering-perturb-1-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.83611603533,
+      "work": [
+        20201.111518493442,
+        -6657.117956094788,
+        -13466.296513843876,
+        -21.963823678890215,
+        -30.45782241776853
+      ],
+      "energyResidual": 2.3562702367030397e-7,
+      "hz": 100,
+      "stateErrorMax": [
+        1.4693373628915651e-8,
+        4.047152057928827e-9,
+        1.034911045749709e-9,
+        0.0000024711768915608445,
+        0.0000037699666677326604
+      ],
+      "normalizedError": 0.0037699666677326604,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 3.645084234449314e-12,
+      "forcePowerMax": -3291.268353358863,
+      "workReferenceErrorMaxJ": 0.00000636139576781769,
+      "energyResidualMaxJ": 2.3577517538342363e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-1-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.836115770177,
+      "work": [
+        20201.111518490226,
+        -6657.117955993846,
+        -13466.296513679037,
+        -21.963823679132403,
+        -30.45782241814081
+      ],
+      "energyResidual": 1.157083673319903e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        6.530616047939475e-10,
+        2.0014490065278778e-10,
+        5.092892774172242e-11,
+        1.2194033160994877e-7,
+        1.830160343274656e-7
+      ],
+      "normalizedError": 0.0001830160343274656,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 5.377920331284258e-12,
+      "forcePowerMax": -3291.268353358863,
+      "workReferenceErrorMaxJ": 3.128484531433884e-7,
+      "energyResidualMaxJ": 1.1776748465308629e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.364509811942128
+    },
+    {
+      "id": "cornering-perturb-1-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.836115756807,
+      "work": [
+        20201.111518490063,
+        -6657.11795598871,
+        -13466.296513670806,
+        -21.963823679144397,
+        -30.457822418158948
+      ],
+      "energyResidual": 5.215028409111255e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        3.5131009212818753e-11,
+        1.0823231200163264e-11,
+        2.7930435742007376e-12,
+        6.630997972933983e-9,
+        9.848804438661318e-9
+      ],
+      "normalizedError": 0.000009848804438661318,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 5.009326287108706e-12,
+      "forcePowerMax": -3291.268353358863,
+      "workReferenceErrorMaxJ": 1.6890060905438986e-8,
+      "energyResidualMaxJ": 7.084395292622503e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.215877636386831
+    },
+    {
+      "id": "cornering-perturb-1-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.836115756025,
+      "work": [
+        20201.111518490045,
+        -6657.117955988416,
+        -13466.296513670335,
+        -21.963823679145065,
+        -30.457822418159953
+      ],
+      "energyResidual": -2.8263613671697385e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        2.0126122990404838e-12,
+        6.298295218698513e-13,
+        1.6409096303959814e-13,
+        3.866560405185737e-10,
+        5.725837581849191e-10
+      ],
+      "normalizedError": 5.725837581849191e-7,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.68336480707876e-12,
+      "forcePowerMax": -3291.268353358863,
+      "workReferenceErrorMaxJ": 9.82309122932179e-10,
+      "energyResidualMaxJ": 4.630322791854269e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104389951470125
+    },
+    {
+      "id": "cornering-perturb-2-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.266880459734,
+      "work": [
+        20201.196092837574,
+        -6652.503005618425,
+        -13470.40548549459,
+        -21.940360301952477,
+        -30.41802904477325
+      ],
+      "energyResidual": 5.773458155999833e-9,
+      "hz": 100,
+      "stateErrorMax": [
+        1.1573554559163313e-8,
+        1.1278422640259578e-11,
+        4.836945843855744e-10,
+        4.466574523576128e-7,
+        6.330263317977369e-7
+      ],
+      "normalizedError": 0.0006330263317977369,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 3.383071600637777e-12,
+      "forcePowerMax": -3318.143429793527,
+      "workReferenceErrorMaxJ": 2.5453022661769964e-7,
+      "energyResidualMaxJ": 5.779931200322608e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-2-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.266880450486,
+      "work": [
+        20201.196092837305,
+        -6652.503005613629,
+        -13470.405485490142,
+        -21.940360301952836,
+        -30.418029044772226
+      ],
+      "energyResidual": 1.4483703125733882e-10,
+      "hz": 200,
+      "stateErrorMax": [
+        5.482831966219237e-10,
+        5.013767179207207e-13,
+        2.29961050202121e-11,
+        2.1316139964255854e-8,
+        2.983241387255475e-8
+      ],
+      "normalizedError": 0.000029832413872554753,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.829914246329281e-12,
+      "forcePowerMax": -3318.1433303569647,
+      "workReferenceErrorMaxJ": 1.177386513284695e-8,
+      "energyResidualMaxJ": 2.2885515704729187e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.407312889889254
+    },
+    {
+      "id": "cornering-perturb-2-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.26688045001,
+      "work": [
+        20201.196092837297,
+        -6652.503005613365,
+        -13470.40548548993,
+        -21.940360301952776,
+        -30.418029044772034
+      ],
+      "energyResidual": 1.1184653203599737e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        2.941646926046815e-11,
+        2.8310687127941492e-14,
+        1.2336243138122427e-12,
+        1.1433769486757228e-9,
+        1.6010233139240881e-9
+      ],
+      "normalizedError": 0.0000016010233139240881,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.451550239537028e-12,
+      "forcePowerMax": -3318.14311943112,
+      "workReferenceErrorMaxJ": 6.320213241650663e-10,
+      "energyResidualMaxJ": 2.809272814374708e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.219814495747833
+    },
+    {
+      "id": "cornering-perturb-2-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20175.266880449908,
+      "work": [
+        20201.19609283727,
+        -6652.503005613333,
+        -13470.405485489871,
+        -21.940360301952783,
+        -30.41802904477205
+      ],
+      "energyResidual": -6.775771055345103e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        1.7035262089848402e-12,
+        1.1102230246251565e-14,
+        7.149836278586008e-14,
+        6.642864036621177e-11,
+        9.270451073462027e-11
+      ],
+      "normalizedError": 9.270451073462027e-8,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.4577674884749285e-12,
+      "forcePowerMax": -3318.143119431132,
+      "workReferenceErrorMaxJ": 9.820411150940345e-11,
+      "energyResidualMaxJ": 9.072991247194295e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.110210968200967
+    },
+    {
+      "id": "cornering-perturb-2-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20225.266148221493,
+      "work": [
+        20199.22763916738,
+        -6677.833550852915,
+        -13495.050203910905,
+        -21.947108157805648,
+        -30.435285299879567
+      ],
+      "energyResidual": 5.7792597374373145e-9,
+      "hz": 100,
+      "stateErrorMax": [
+        1.1566639201987527e-8,
+        1.2431611295937728e-11,
+        4.831858801956912e-10,
+        4.448748356367105e-7,
+        6.341617861949089e-7
+      ],
+      "normalizedError": 0.0006341617861949089,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.909850304102292e-12,
+      "forcePowerMax": -3331.1258780036974,
+      "workReferenceErrorMaxJ": 2.5269693487706135e-7,
+      "energyResidualMaxJ": 5.8579345818543516e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-2-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20225.266148217754,
+      "work": [
+        20199.22763916749,
+        -6677.833550852639,
+        -13495.050203907402,
+        -21.94710815781731,
+        -30.43528529989806
+      ],
+      "energyResidual": 4.361204730685131e-10,
+      "hz": 200,
+      "stateErrorMax": [
+        5.479279252540437e-10,
+        5.350164755668629e-13,
+        2.2976953673037315e-11,
+        2.123949371934941e-8,
+        2.9876602525291673e-8
+      ],
+      "normalizedError": 0.000029876602525291673,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.9631410092843e-12,
+      "forcePowerMax": -3331.125878011871,
+      "workReferenceErrorMaxJ": 1.1598189880723808e-8,
+      "energyResidualMaxJ": 4.836238076677546e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.40776294128635
+    },
+    {
+      "id": "cornering-perturb-2-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20225.266148217568,
+      "work": [
+        20199.227639167486,
+        -6677.833550852649,
+        -13495.050203907223,
+        -21.947108157817954,
+        -30.43528529989909
+      ],
+      "energyResidual": -3.389146741028526e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        2.9393376621555944e-11,
+        6.006306563222097e-14,
+        1.2327916465437738e-12,
+        1.139348171363963e-9,
+        1.6035244243539637e-9
+      ],
+      "normalizedError": 0.0000016035244243539637,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.703792910731863e-12,
+      "forcePowerMax": -3331.125878012354,
+      "workReferenceErrorMaxJ": 6.235879312921355e-10,
+      "energyResidualMaxJ": 4.726317115455458e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.219697864929182
+    },
+    {
+      "id": "cornering-perturb-2-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20225.266148217626,
+      "work": [
+        20199.2276391675,
+        -6677.833550852672,
+        -13495.050203907247,
+        -21.947108157818,
+        -30.435285299899157
+      ],
+      "energyResidual": 3.051212615901022e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        1.7035262089848402e-12,
+        2.853273173286652e-14,
+        7.172040739078511e-14,
+        6.622968840019894e-11,
+        9.28821464185603e-11
+      ],
+      "normalizedError": 9.28821464185603e-8,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.519939977853937e-12,
+      "forcePowerMax": -3331.1258780124076,
+      "workReferenceErrorMaxJ": 2.454285663588962e-10,
+      "energyResidualMaxJ": 3.972253637130052e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.109701206468931
+    },
+    {
+      "id": "cornering-perturb-3-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.599374376066,
+      "work": [
+        20200.06468335407,
+        -6664.879561559868,
+        -13482.349121413255,
+        -21.943964499759936,
+        -30.426726903194403
+      ],
+      "energyResidual": 0.0000017397950564657094,
+      "hz": 100,
+      "stateErrorMax": [
+        1.4828758843066225e-7,
+        8.79509620688168e-9,
+        9.6734345533811e-9,
+        0.00001204906060081612,
+        0.000001777271194214336
+      ],
+      "normalizedError": 0.01204906060081612,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 3.964828465541359e-12,
+      "forcePowerMax": -3329.8988254042733,
+      "workReferenceErrorMaxJ": 0.000011439508780075602,
+      "energyResidualMaxJ": 0.0000017402777907626898,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-3-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.599369133968,
+      "work": [
+        20200.064683420165,
+        -6664.879558286728,
+        -13482.349119441014,
+        -21.943964503634053,
+        -30.426726902584143
+      ],
+      "energyResidual": 8.478268043177195e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        7.1095573872526074e-9,
+        4.3353964862546945e-10,
+        4.723119673144538e-10,
+        5.913503784427121e-7,
+        7.572839422209654e-8
+      ],
+      "normalizedError": 0.0005913503784427121,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.251043961289724e-12,
+      "forcePowerMax": -3329.8988254042733,
+      "workReferenceErrorMaxJ": 5.577112868193623e-7,
+      "energyResidualMaxJ": 8.5234730828887e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.3487636728831465
+    },
+    {
+      "id": "cornering-perturb-3-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.59936887885,
+      "work": [
+        20200.064683423414,
+        -6664.879558127416,
+        -13482.349119345068,
+        -21.943964503822727,
+        -30.426726902554293
+      ],
+      "energyResidual": 4.3184371634197305e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        3.815294746800646e-10,
+        2.3521962155825804e-11,
+        2.5447810525491832e-11,
+        3.19040225349454e-8,
+        3.902734135863284e-9
+      ],
+      "normalizedError": 0.0000319040225349454,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.549721710489507e-12,
+      "forcePowerMax": -3329.8988254042733,
+      "workReferenceErrorMaxJ": 3.041175192231016e-8,
+      "energyResidualMaxJ": 4.839783684928989e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.212202949721426
+    },
+    {
+      "id": "cornering-perturb-3-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.59936886486,
+      "work": [
+        20200.064683423643,
+        -6664.879558118608,
+        -13482.34911933982,
+        -21.943964503833197,
+        -30.426726902552613
+      ],
+      "energyResidual": 8.384049010601302e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        2.219202599462733e-11,
+        1.3700152123874432e-12,
+        1.478706046498246e-12,
+        1.8544312752055703e-9,
+        2.2173196612129686e-10
+      ],
+      "normalizedError": 0.0000018544312752055703,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 5.702327499079729e-12,
+      "forcePowerMax": -3329.8988254042733,
+      "workReferenceErrorMaxJ": 1.7774930416436518e-9,
+      "energyResidualMaxJ": 1.2599912224686705e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104689625876406
+    },
+    {
+      "id": "cornering-perturb-3-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.829229989962,
+      "work": [
+        20200.362490315893,
+        -6665.403222057277,
+        -13483.055764813973,
+        -21.94361800744433,
+        -30.42662511126586
+      ],
+      "energyResidual": 0.0000017254477846506688,
+      "hz": 100,
+      "stateErrorMax": [
+        1.47336763234307e-7,
+        8.376225935080583e-9,
+        9.44668182567554e-9,
+        0.000011969249371190926,
+        0.0000017681004749192653
+      ],
+      "normalizedError": 0.011969249371190926,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.992839475193023e-12,
+      "forcePowerMax": -3332.6277843438697,
+      "workReferenceErrorMaxJ": 0.000009001208545827977,
+      "energyResidualMaxJ": 0.0000017255526358894713,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-3-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.82922480914,
+      "work": [
+        20200.362490379164,
+        -6665.403218818479,
+        -13483.055762868733,
+        -21.94361801125142,
+        -30.426625110664542
+      ],
+      "energyResidual": 8.466003009743872e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        7.075604102624311e-9,
+        4.1455072707918816e-10,
+        4.597758285207476e-10,
+        5.88427482739462e-7,
+        7.53766400407585e-8
+      ],
+      "normalizedError": 0.000588427482739462,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.495459560160953e-12,
+      "forcePowerMax": -3332.627784571695,
+      "workReferenceErrorMaxJ": 4.4741005847392934e-7,
+      "energyResidualMaxJ": 8.47212859866886e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.3463242391938195
+    },
+    {
+      "id": "cornering-perturb-3-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.829224557063,
+      "work": [
+        20200.362490382267,
+        -6665.40321866084,
+        -13483.05576277416,
+        -21.94361801143664,
+        -30.426625110635143
+      ],
+      "energyResidual": 5.025881932851917e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        3.7977976319325535e-10,
+        2.2457480319815204e-11,
+        2.4757862426838528e-11,
+        3.175264140509171e-8,
+        3.885581634222035e-9
+      ],
+      "normalizedError": 0.00003175264140509171,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.895417404782165e-12,
+      "forcePowerMax": -3332.6277845828145,
+      "workReferenceErrorMaxJ": 2.423676520590945e-8,
+      "energyResidualMaxJ": 5.172402950393007e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.211916114435607
+    },
+    {
+      "id": "cornering-perturb-3-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.82922454311,
+      "work": [
+        20200.36249038244,
+        -6665.403218652091,
+        -13483.05576276891,
+        -21.943618011446926,
+        -30.42662511063352
+      ],
+      "energyResidual": 6.435030286411347e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        2.2080115513745113e-11,
+        1.3075096561010469e-12,
+        1.4393486402752842e-12,
+        1.8452936956236954e-9,
+        2.2085799855631194e-10
+      ],
+      "normalizedError": 0.0000018452936956236954,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 4.898664807129194e-12,
+      "forcePowerMax": -3332.6277845834384,
+      "workReferenceErrorMaxJ": 1.4119520552746678e-9,
+      "energyResidualMaxJ": 7.579394889489777e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104954252280211
+    },
+    {
+      "id": "cornering-perturb-4-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.816825908925,
+      "work": [
+        20200.08798601458,
+        -6664.996723570988,
+        -13482.449588940844,
+        -21.943808658774085,
+        -30.42670473831957
+      ],
+      "energyResidual": 0.0000021033895443167694,
+      "hz": 100,
+      "stateErrorMax": [
+        1.7773193228265427e-7,
+        6.981499267588731e-9,
+        4.663736674626051e-9,
+        0.000001790173747906465,
+        0.000014795163572500769
+      ],
+      "normalizedError": 0.014795163572500769,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.556327537486027e-12,
+      "forcePowerMax": -3332.4750887464984,
+      "workReferenceErrorMaxJ": 0.000013386913594343186,
+      "energyResidualMaxJ": 0.0000021033955270866045,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-4-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.816826013775,
+      "work": [
+        20200.087985928356,
+        -6664.996724481251,
+        -13482.449588129284,
+        -21.94380865944918,
+        -30.426704743783365
+      ],
+      "energyResidual": 1.0142233719534488e-7,
+      "hz": 200,
+      "stateErrorMax": [
+        8.346688673555036e-9,
+        3.430771222667772e-10,
+        2.1182178233658533e-10,
+        7.63018590532738e-8,
+        7.067729939080891e-7
+      ],
+      "normalizedError": 0.0007067729939080891,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 4.553468713197617e-12,
+      "forcePowerMax": -3332.475089493493,
+      "workReferenceErrorMaxJ": 6.382022985917946e-7,
+      "energyResidualMaxJ": 1.017177388984436e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.3877349215940145
+    },
+    {
+      "id": "cornering-perturb-4-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.816826018996,
+      "work": [
+        20200.08798592422,
+        -6664.996724525103,
+        -13482.449588090361,
+        -21.94380865948148,
+        -30.42670474404594
+      ],
+      "energyResidual": 5.572708516865532e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        4.4803627474720997e-10,
+        1.8519075162259924e-11,
+        1.1394940546693988e-11,
+        3.9328895695689425e-9,
+        3.791119240759144e-8
+      ],
+      "normalizedError": 0.00003791119240759144,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.7666037783500315e-12,
+      "forcePowerMax": -3332.4750891200724,
+      "workReferenceErrorMaxJ": 3.438270210209815e-8,
+      "energyResidualMaxJ": 5.934402302898434e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.220551176039584
+    },
+    {
+      "id": "cornering-perturb-4-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20199.816826019272,
+      "work": [
+        20200.087985924,
+        -6664.996724527529,
+        -13482.449588088224,
+        -21.943808659483267,
+        -30.426704744060437
+      ],
+      "energyResidual": 4.794529218088428e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        2.5924151714207255e-11,
+        1.0763612223740893e-12,
+        6.558642517973112e-13,
+        2.234941121059819e-10,
+        2.203741189532593e-9
+      ],
+      "normalizedError": 0.000002203741189532593,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 5.1648130217074595e-12,
+      "forcePowerMax": -3332.4750891220406,
+      "workReferenceErrorMaxJ": 1.99637029130173e-9,
+      "energyResidualMaxJ": 8.292744269056129e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104597126975451
+    },
+    {
+      "id": "cornering-perturb-4-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.610344239936,
+      "work": [
+        20200.33922350061,
+        -6665.284979632248,
+        -13482.954943952334,
+        -21.943774743056466,
+        -30.426645912285714
+      ],
+      "energyResidual": 0.000002101062939630083,
+      "hz": 100,
+      "stateErrorMax": [
+        1.7756407189040146e-7,
+        7.180184335986439e-9,
+        4.767050310050536e-9,
+        0.0000017894198833801056,
+        0.000014782111783517848
+      ],
+      "normalizedError": 0.014782111783517848,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 4.2649460352262025e-12,
+      "forcePowerMax": -3332.5258293706956,
+      "workReferenceErrorMaxJ": 0.000015597255290489276,
+      "energyResidualMaxJ": 0.0000021010819253319823,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "cornering-perturb-4-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.610344344874,
+      "work": [
+        20200.33922341451,
+        -6665.284980541578,
+        -13482.954943141829,
+        -21.943774743730792,
+        -30.426645917740984
+      ],
+      "energyResidual": 1.0147295625984043e-7,
+      "hz": 200,
+      "stateErrorMax": [
+        8.340286683505838e-9,
+        3.541745785540229e-10,
+        2.18295825860082e-10,
+        7.627407683230558e-8,
+        7.063089952907831e-7
+      ],
+      "normalizedError": 0.0007063089952907831,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 3.926609037918638e-12,
+      "forcePowerMax": -3332.5240255416825,
+      "workReferenceErrorMaxJ": 7.631207386560313e-7,
+      "energyResidualMaxJ": 1.016283037724719e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.387409108221544
+    },
+    {
+      "id": "cornering-perturb-4-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.610344350112,
+      "work": [
+        20200.339223410374,
+        -6665.284980585383,
+        -13482.954943102943,
+        -21.943774743763058,
+        -30.42664591800315
+      ],
+      "energyResidual": 5.466450403446288e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        4.476863324498481e-10,
+        1.912703329054466e-11,
+        1.1722456338958409e-11,
+        3.931617698071932e-9,
+        3.788424152162406e-8
+      ],
+      "normalizedError": 0.00003788424152162406,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 4.356015548268033e-12,
+      "forcePowerMax": -3332.5239987656983,
+      "workReferenceErrorMaxJ": 4.121301638848607e-8,
+      "energyResidualMaxJ": 5.718078455174691e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.220629701078136
+    },
+    {
+      "id": "cornering-perturb-4-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 6400,
+        "tires": 12800,
+        "attempted": 1600,
+        "completed": 1600,
+        "rejected": 0
+      },
+      "branches": {
+        "adhesion/adhesion": 6400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -20200.610344350338,
+      "work": [
+        20200.339223410127,
+        -6665.284980587785,
+        -13482.954943100758,
+        -21.943774743764845,
+        -30.426645918017645
+      ],
+      "energyResidual": 2.7132784907735186e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        2.5915269930010254e-11,
+        1.1111112030448567e-12,
+        6.754596881819452e-13,
+        2.234585849691939e-10,
+        2.2022916823516425e-9
+      ],
+      "normalizedError": 0.0000022022916823516425,
+      "diagnosticCounts": {
+        "rhs": 1601,
+        "tires": 3202
+      },
+      "identityMax": 5.553113524570108e-12,
+      "forcePowerMax": -3332.523962301683,
+      "workReferenceErrorMaxJ": 2.395092374429808e-9,
+      "energyResidualMaxJ": 5.180780249247618e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.104520399757039
+    },
+    {
+      "id": "drifting-equilibrium",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -29776.217089303438,
+      "work": [
+        29776.21708930339,
+        -19081.60793193797,
+        -10681.226613400246,
+        0,
+        -13.382543965169477
+      ],
+      "energyResidual": -4.204636638860393e-12,
+      "hz": 100,
+      "stateErrorMax": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "normalizedError": 0,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 9.139370557878663e-13,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 3.3113281006080797e-9,
+      "energyResidualMaxJ": 7.689848757763684e-12,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-equilibrium",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -29776.21708930329,
+      "work": [
+        29776.21708930339,
+        -19081.60793193797,
+        -10681.226613400246,
+        0,
+        -13.382543965169477
+      ],
+      "energyResidual": -4.204636638860393e-12,
+      "hz": 200,
+      "stateErrorMax": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "normalizedError": 0,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 9.139370557878663e-13,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 3.3304736746231356e-9,
+      "energyResidualMaxJ": 7.689848757763684e-12,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-equilibrium",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 1600,
+        "tires": 3200,
+        "attempted": 400,
+        "completed": 400,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 1600
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -29776.21708930352,
+      "work": [
+        29776.21708930339,
+        -19081.60793193797,
+        -10681.226613400246,
+        0,
+        -13.382543965169477
+      ],
+      "energyResidual": -4.204636638860393e-12,
+      "hz": 400,
+      "stateErrorMax": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "normalizedError": 0,
+      "diagnosticCounts": {
+        "rhs": 401,
+        "tires": 802
+      },
+      "identityMax": 9.139370557878663e-13,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 3.3331772897327028e-9,
+      "energyResidualMaxJ": 7.689848757763684e-12,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-equilibrium",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 3200,
+        "tires": 6400,
+        "attempted": 800,
+        "completed": 800,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 3200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -29776.21708930302,
+      "work": [
+        29776.21708930339,
+        -19081.60793193797,
+        -10681.226613400246,
+        0,
+        -13.382543965169477
+      ],
+      "energyResidual": -4.204636638860393e-12,
+      "hz": 800,
+      "stateErrorMax": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "normalizedError": 0,
+      "diagnosticCounts": {
+        "rhs": 801,
+        "tires": 1602
+      },
+      "identityMax": 9.139370557878663e-13,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 3.3331772897327028e-9,
+      "energyResidualMaxJ": 8.284928298962768e-12,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-0-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7447.094086840183,
+      "work": [
+        7441.348104327211,
+        -4771.9864247027745,
+        -2671.766086102589,
+        0,
+        -3.341576034819299
+      ],
+      "energyResidual": 0.000012300000379994458,
+      "hz": 100,
+      "stateErrorMax": [
+        2.775337932803268e-7,
+        4.106163498107662e-8,
+        1.8267220014411834e-8,
+        1.7732844526108238e-7,
+        0.00002601907601729181
+      ],
+      "normalizedError": 0.02601907601729181,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.1194600801900378e-11,
+      "forcePowerMax": -10685.221826758898,
+      "workReferenceErrorMaxJ": 0.00004830700937946686,
+      "energyResidualMaxJ": 0.000012300000379994458,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-0-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7447.094079180101,
+      "work": [
+        7441.348104662846,
+        -4771.9864255921575,
+        -2671.7660775203317,
+        0,
+        -3.341576067612771
+      ],
+      "energyResidual": 6.195366424321946e-7,
+      "hz": 200,
+      "stateErrorMax": [
+        1.3662711850770393e-8,
+        2.026289358525446e-9,
+        9.019439639601501e-10,
+        8.719744926111161e-9,
+        0.0000012809352654130635
+      ],
+      "normalizedError": 0.0012809352654130635,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.1269207789155189e-11,
+      "forcePowerMax": -10685.221828233123,
+      "workReferenceErrorMaxJ": 0.0000023453927721628354,
+      "energyResidualMaxJ": 6.195937078956604e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344300257153038
+    },
+    {
+      "id": "drifting-perturb-0-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7447.094078801298,
+      "work": [
+        7441.348104682562,
+        -4771.986425640573,
+        -2671.7660770914677,
+        0,
+        -3.341576069254788
+      ],
+      "energyResidual": 3.480741739281257e-8,
+      "hz": 400,
+      "stateErrorMax": [
+        7.480380759261607e-10,
+        1.1089618112691824e-10,
+        4.933320418842868e-11,
+        4.790905450136052e-10,
+        7.01305822303766e-8
+      ],
+      "normalizedError": 0.0000701305822303766,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.383426706524915e-11,
+      "forcePowerMax": -10685.221828312197,
+      "workReferenceErrorMaxJ": 1.2994283926648365e-7,
+      "energyResidualMaxJ": 3.4951119554094134e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191010052416558
+    },
+    {
+      "id": "drifting-perturb-0-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7447.094078780147,
+      "work": [
+        7441.348104683758,
+        -4771.986425643402,
+        -2671.766077067395,
+        0,
+        -3.341576069347025
+      ],
+      "energyResidual": 2.070533078324388e-9,
+      "hz": 800,
+      "stateErrorMax": [
+        4.381206508696778e-11,
+        6.4925842480079154e-12,
+        2.8848035071860068e-12,
+        2.815880861817277e-11,
+        4.107612028292351e-9
+      ],
+      "normalizedError": 0.000004107612028292351,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.7212897773788427e-11,
+      "forcePowerMax": -10685.221828316731,
+      "workReferenceErrorMaxJ": 7.62095925255224e-9,
+      "energyResidualMaxJ": 2.0894912466928872e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.093671877509698
+    },
+    {
+      "id": "drifting-perturb-0-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7441.022516776129,
+      "work": [
+        7446.762443163474,
+        -4768.82191204584,
+        -2668.850935508468,
+        0,
+        -3.3496692218214634
+      ],
+      "energyResidual": 0.000012331795081976793,
+      "hz": 100,
+      "stateErrorMax": [
+        2.7786917833338975e-7,
+        4.289041566352125e-8,
+        1.9330268774542247e-8,
+        1.7835507293284536e-7,
+        0.00002605844602499019
+      ],
+      "normalizedError": 0.02605844602499019,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.3571366253017914e-11,
+      "forcePowerMax": -10673.506157157939,
+      "workReferenceErrorMaxJ": 0.000034770858636568036,
+      "energyResidualMaxJ": 0.00001233180379500709,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-0-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7441.022508427576,
+      "work": [
+        7446.762442911702,
+        -4768.8219123421795,
+        -2668.8509268302973,
+        0,
+        -3.349669255100811
+      ],
+      "energyResidual": 6.2110540444138e-7,
+      "hz": 200,
+      "stateErrorMax": [
+        1.368268343071577e-8,
+        2.1071846489917334e-9,
+        9.492926444920613e-10,
+        8.773177739840321e-9,
+        0.000001283137116558919
+      ],
+      "normalizedError": 0.001283137116558919,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.333688715021708e-11,
+      "forcePowerMax": -10673.503752180837,
+      "workReferenceErrorMaxJ": 0.00000174526049978585,
+      "energyResidualMaxJ": 6.211712744175202e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.34400380172074
+    },
+    {
+      "id": "drifting-perturb-0-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7441.022508007846,
+      "work": [
+        7446.762442896287,
+        -4768.821912355094,
+        -2668.850926395982,
+        0,
+        -3.3496692567706594
+      ],
+      "energyResidual": 3.5094337214047755e-8,
+      "hz": 400,
+      "stateErrorMax": [
+        7.490985609592826e-10,
+        1.1540457478531607e-10,
+        5.2003401584954645e-11,
+        4.819113996745727e-10,
+        7.024695491963939e-8
+      ],
+      "normalizedError": 0.00007024695491963939,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.91526794424135e-11,
+      "forcePowerMax": -10673.503637987305,
+      "workReferenceErrorMaxJ": 9.493832453522089e-8,
+      "energyResidualMaxJ": 3.5094570804972136e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191095846995358
+    },
+    {
+      "id": "drifting-perturb-0-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7441.022507984202,
+      "work": [
+        7446.762442895336,
+        -4768.821912355752,
+        -2668.8509263715832,
+        0,
+        -3.3496692568645607
+      ],
+      "energyResidual": 2.1540262906682983e-9,
+      "hz": 800,
+      "stateErrorMax": [
+        4.3870684862667986e-11,
+        6.767919558114954e-12,
+        3.049338559435455e-12,
+        2.8336444302112795e-11,
+        4.1140353346236225e-9
+      ],
+      "normalizedError": 0.0000041140353346236225,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.5415224652315374e-11,
+      "forcePowerMax": -10673.502654615475,
+      "workReferenceErrorMaxJ": 5.536139768835824e-9,
+      "energyResidualMaxJ": 2.1880506295701707e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.0938095983821325
+    },
+    {
+      "id": "drifting-perturb-1-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7419.756285367676,
+      "work": [
+        7442.509463287258,
+        -4760.9352778919965,
+        -2655.4528606151193,
+        0,
+        -3.3681468605581113
+      ],
+      "energyResidual": 1.2068028354406124e-7,
+      "hz": 100,
+      "stateErrorMax": [
+        2.741739990597125e-8,
+        4.12565359653172e-9,
+        1.8336123175366481e-9,
+        2.0467595618356427e-8,
+        0.000002567214508530924
+      ],
+      "normalizedError": 0.002567214508530924,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.8246737454319373e-11,
+      "forcePowerMax": -10617.12154118645,
+      "workReferenceErrorMaxJ": 0.000004138637988759797,
+      "energyResidualMaxJ": 1.2074580979515304e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-1-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7419.756285473198,
+      "work": [
+        7442.509463489103,
+        -4760.935278086896,
+        -2655.452860525476,
+        0,
+        -3.368146860825303
+      ],
+      "energyResidual": 6.022812470973804e-9,
+      "hz": 200,
+      "stateErrorMax": [
+        1.3500276452305116e-9,
+        2.0321166971370985e-10,
+        9.035061587781001e-11,
+        1.0205027933807287e-9,
+        1.2641752533681938e-7
+      ],
+      "normalizedError": 0.00012641752533681938,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.3301360013429075e-11,
+      "forcePowerMax": -10617.12154118645,
+      "workReferenceErrorMaxJ": 2.0350158824733455e-7,
+      "energyResidualMaxJ": 6.0420006775530055e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.343935463935654
+    },
+    {
+      "id": "drifting-perturb-1-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7419.756285480177,
+      "work": [
+        7442.5094635011665,
+        -4760.93527809847,
+        -2655.4528605208707,
+        0,
+        -3.3681468608382943
+      ],
+      "energyResidual": 2.4277824195451103e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        7.389466816221102e-11,
+        1.1119105636225868e-11,
+        4.939049169649934e-12,
+        5.724132279283367e-11,
+        6.918327244420652e-9
+      ],
+      "normalizedError": 0.000006918327244420652,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.539035565656377e-11,
+      "forcePowerMax": -10617.12154118645,
+      "workReferenceErrorMaxJ": 1.1138993727399793e-8,
+      "energyResidualMaxJ": 3.3795899412325525e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191629412453831
+    },
+    {
+      "id": "drifting-perturb-1-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7419.756285480622,
+      "work": [
+        7442.509463501904,
+        -4760.935278099174,
+        -2655.452860520609,
+        0,
+        -3.368146860839011
+      ],
+      "energyResidual": 2.3940316395965056e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        4.32542890393961e-12,
+        6.483702463810914e-13,
+        2.8888003100746573e-13,
+        3.453237695794087e-12,
+        4.050022539558995e-10
+      ],
+      "normalizedError": 4.050022539558995e-7,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.716671249596402e-11,
+      "forcePowerMax": -10617.12154118645,
+      "workReferenceErrorMaxJ": 6.525013862557216e-10,
+      "energyResidualMaxJ": 2.5622171051509213e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.094421414221261
+    },
+    {
+      "id": "drifting-perturb-1-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7468.361363118779,
+      "work": [
+        7445.596715425663,
+        -4779.866461144804,
+        -2685.1719183937475,
+        0,
+        -3.322983580228631
+      ],
+      "energyResidual": 1.1778875119716758e-7,
+      "hz": 100,
+      "stateErrorMax": [
+        2.675537302820885e-8,
+        4.045022095056083e-9,
+        1.799479565356421e-9,
+        2.0084044649593125e-8,
+        0.000002505296450294736
+      ],
+      "normalizedError": 0.002505296450294736,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.3002932064409833e-11,
+      "forcePowerMax": -10738.836658998369,
+      "workReferenceErrorMaxJ": 0.000003935129579302199,
+      "energyResidualMaxJ": 1.1783713915747285e-7,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-1-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7468.361362855448,
+      "work": [
+        7445.596715223203,
+        -4779.866460956015,
+        -2685.171918318845,
+        0,
+        -3.3229835805885086
+      ],
+      "energyResidual": 5.926988677629197e-9,
+      "hz": 200,
+      "stateErrorMax": [
+        1.3170531332207247e-9,
+        1.9908874548946187e-10,
+        8.85945761197604e-11,
+        1.0028173846876598e-9,
+        1.2333235588357638e-7
+      ],
+      "normalizedError": 0.00012333235588357638,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.3130829756846651e-11,
+      "forcePowerMax": -10738.834798124382,
+      "workReferenceErrorMaxJ": 1.9405789419835173e-7,
+      "energyResidualMaxJ": 5.99270322254597e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344358085457272
+    },
+    {
+      "id": "drifting-perturb-1-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7468.361362840515,
+      "work": [
+        7445.596715211097,
+        -4779.866460944708,
+        -2685.1719183152018,
+        0,
+        -3.322983580606961
+      ],
+      "energyResidual": 4.5300296847017307e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        7.214850938908057e-11,
+        1.0897949209720537e-11,
+        4.847566792420821e-12,
+        5.6196824971266324e-11,
+        6.754731884939247e-9
+      ],
+      "normalizedError": 0.000006754731884939247,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.695354967523599e-11,
+      "forcePowerMax": -10738.83479813553,
+      "workReferenceErrorMaxJ": 1.0619231494146675e-8,
+      "energyResidualMaxJ": 4.630180683307117e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.190509020102054
+    },
+    {
+      "id": "drifting-perturb-1-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7468.361362839625,
+      "work": [
+        7445.596715210354,
+        -4779.866460944017,
+        -2685.1719183150035,
+        0,
+        -3.322983580608003
+      ],
+      "energyResidual": -9.983835980165168e-11,
+      "hz": 800,
+      "stateErrorMax": [
+        4.227729277772596e-12,
+        6.31494856406789e-13,
+        2.8371749394295875e-13,
+        3.304023721284466e-12,
+        3.957723038183758e-10
+      ],
+      "normalizedError": 3.957723038183758e-7,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.3741896509600338e-11,
+      "forcePowerMax": -10738.834708285847,
+      "workReferenceErrorMaxJ": 6.222129478317129e-10,
+      "energyResidualMaxJ": 1.8416201896798157e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.093155944801502
+    },
+    {
+      "id": "drifting-perturb-2-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7448.194094501566,
+      "work": [
+        7444.399651688674,
+        -4773.386725820493,
+        -2671.4552382508687,
+        0,
+        -3.352130430205306
+      ],
+      "energyResidual": 2.4283419719495214e-10,
+      "hz": 100,
+      "stateErrorMax": [
+        1.0494840552155438e-9,
+        1.602078469886692e-10,
+        7.2415295981898e-11,
+        5.048548246122664e-10,
+        9.867741113112061e-8
+      ],
+      "normalizedError": 0.00009867741113112061,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 9.57989243488555e-12,
+      "forcePowerMax": -10674.815036434013,
+      "workReferenceErrorMaxJ": 1.6108758260635625e-7,
+      "energyResidualMaxJ": 2.815869759587031e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-2-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7448.19409447599,
+      "work": [
+        7444.399651675274,
+        -4773.386725805691,
+        -2671.4552382400575,
+        0,
+        -3.3521304302410813
+      ],
+      "energyResidual": 2.0130253020056443e-10,
+      "hz": 200,
+      "stateErrorMax": [
+        5.167954952867149e-11,
+        7.887024366937112e-12,
+        3.56326079753444e-12,
+        2.5906388145813253e-11,
+        4.858712543409638e-9
+      ],
+      "normalizedError": 0.000004858712543409638,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.411315508903499e-11,
+      "forcePowerMax": -10674.815036434013,
+      "workReferenceErrorMaxJ": 7.923221551076054e-9,
+      "energyResidualMaxJ": 2.0130253020056443e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344073880296922
+    },
+    {
+      "id": "drifting-perturb-2-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7448.194094474445,
+      "work": [
+        7444.399651674467,
+        -4773.386725804804,
+        -2671.455238239399,
+        0,
+        -3.352130430243267
+      ],
+      "energyResidual": -6.936007324043203e-11,
+      "hz": 400,
+      "stateErrorMax": [
+        2.8279600883251987e-12,
+        4.32542890393961e-13,
+        1.9517720772910252e-13,
+        1.5916157281026244e-12,
+        2.659987785591511e-10
+      ],
+      "normalizedError": 2.659987785591511e-7,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.836752971939859e-11,
+      "forcePowerMax": -10674.815036434013,
+      "workReferenceErrorMaxJ": 4.348634508044569e-10,
+      "energyResidualMaxJ": 1.0203971001487844e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191082554503826
+    },
+    {
+      "id": "drifting-perturb-2-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7448.194094474346,
+      "work": [
+        7444.399651674418,
+        -4773.386725804748,
+        -2671.4552382393576,
+        0,
+        -3.3521304302434034
+      ],
+      "energyResidual": -3.057021302765861e-11,
+      "hz": 800,
+      "stateErrorMax": [
+        1.652011860642233e-13,
+        2.842170943040401e-14,
+        1.1102230246251565e-14,
+        1.1368683772161603e-13,
+        1.5582202195218997e-11
+      ],
+      "normalizedError": 1.5582202195218997e-8,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.7264412122131034e-11,
+      "forcePowerMax": -10674.815036434013,
+      "workReferenceErrorMaxJ": 2.516792330098383e-11,
+      "energyResidualMaxJ": 1.5252177298918923e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.093448575477363
+    },
+    {
+      "id": "drifting-perturb-2-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7439.914404672137,
+      "work": [
+        7443.708682400921,
+        -4767.417138409986,
+        -2669.1581373872414,
+        0,
+        -3.3391288749091133
+      ],
+      "energyResidual": 1.2929612935863588e-10,
+      "hz": 100,
+      "stateErrorMax": [
+        1.0460041721671587e-9,
+        1.5971135525205682e-10,
+        7.217870745535038e-11,
+        5.028155669606349e-10,
+        9.835145675651802e-8
+      ],
+      "normalizedError": 0.00009835145675651802,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.2768452961609e-11,
+      "forcePowerMax": -10666.405798755846,
+      "workReferenceErrorMaxJ": 1.6061030627678718e-7,
+      "energyResidualMaxJ": 2.1956902962472213e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-2-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7439.914404697533,
+      "work": [
+        7443.708682414331,
+        -4767.4171384248375,
+        -2669.1581373978224,
+        0,
+        -3.339128874874355
+      ],
+      "energyResidual": -1.91491267287347e-11,
+      "hz": 200,
+      "stateErrorMax": [
+        5.150191384473146e-11,
+        7.864819906444609e-12,
+        3.5515479446246445e-12,
+        2.5991653274104465e-11,
+        4.842114265102282e-9
+      ],
+      "normalizedError": 0.000004842114265102282,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.809397076613095e-11,
+      "forcePowerMax": -10666.405798701539,
+      "workReferenceErrorMaxJ": 7.899870702043899e-9,
+      "energyResidualMaxJ": 7.828049319869024e-11,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344237391656584
+    },
+    {
+      "id": "drifting-perturb-2-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7439.9144046990705,
+      "work": [
+        7443.7086824151365,
+        -4767.417138425727,
+        -2669.1581373984695,
+        0,
+        -3.3391288748722197
+      ],
+      "energyResidual": 4.0106584719978855e-11,
+      "hz": 400,
+      "stateErrorMax": [
+        2.815525590449397e-12,
+        4.360956040727615e-13,
+        1.949551631241775e-13,
+        1.5987211554602254e-12,
+        2.651034947120934e-10
+      ],
+      "normalizedError": 2.651034947120934e-7,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.3359979789129284e-11,
+      "forcePowerMax": -10666.40579869819,
+      "workReferenceErrorMaxJ": 4.331216774122737e-10,
+      "energyResidualMaxJ": 8.219203095904959e-11,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191009531030857
+    },
+    {
+      "id": "drifting-perturb-2-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7439.914404699159,
+      "work": [
+        7443.708682415184,
+        -4767.417138425777,
+        -2669.158137398504,
+        0,
+        -3.3391288748720953
+      ],
+      "energyResidual": 1.9063861600443488e-11,
+      "hz": 800,
+      "stateErrorMax": [
+        1.652011860642233e-13,
+        3.108624468950438e-14,
+        1.1657341758564144e-14,
+        9.237055564881302e-14,
+        1.5518253349000588e-11
+      ],
+      "normalizedError": 1.5518253349000588e-8,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.8772539078781847e-11,
+      "forcePowerMax": -10666.405798697955,
+      "workReferenceErrorMaxJ": 2.488642625309012e-11,
+      "energyResidualMaxJ": 1.2036283081329202e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.0945175987842894
+    },
+    {
+      "id": "drifting-perturb-3-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7443.380909916909,
+      "work": [
+        7443.513484080762,
+        -4769.793058917099,
+        -2670.242369707982,
+        0,
+        -3.345481291827756
+      ],
+      "energyResidual": 6.29999163948014e-10,
+      "hz": 100,
+      "stateErrorMax": [
+        5.813820536104686e-10,
+        8.268674633882256e-11,
+        3.145916860347597e-11,
+        3.5074876336693706e-9,
+        5.264080726874454e-8
+      ],
+      "normalizedError": 0.00005264080726874454,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.7176704503185647e-11,
+      "forcePowerMax": -10680.587093670716,
+      "workReferenceErrorMaxJ": 7.53605989833872e-8,
+      "energyResidualMaxJ": 6.759215409601893e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-3-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7443.380909812567,
+      "work": [
+        7443.5134839860575,
+        -4769.793058821479,
+        -2670.2423696992114,
+        0,
+        -3.345481291874918
+      ],
+      "energyResidual": -7.453637707044436e-11,
+      "hz": 200,
+      "stateErrorMax": [
+        2.858158154595003e-11,
+        4.075850768003875e-12,
+        1.5036305534010808e-12,
+        2.1007195982747362e-10,
+        2.5919533186424815e-9
+      ],
+      "normalizedError": 0.0000025919533186424815,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.484967704357132e-11,
+      "forcePowerMax": -10680.587093762517,
+      "workReferenceErrorMaxJ": 3.727599173775076e-9,
+      "energyResidualMaxJ": 7.453637707044436e-11,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344069973096644
+    },
+    {
+      "id": "drifting-perturb-3-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7443.380909806325,
+      "work": [
+        7443.513483980394,
+        -4769.793058815757,
+        -2670.2423696986857,
+        0,
+        -3.345481291877737
+      ],
+      "energyResidual": 1.010866945705402e-10,
+      "hz": 400,
+      "stateErrorMax": [
+        1.5631940186722204e-12,
+        2.220446049250313e-13,
+        8.043565813409259e-14,
+        1.2896350654045818e-11,
+        1.418740680492192e-10
+      ],
+      "normalizedError": 1.418740680492192e-7,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.5106693673772043e-11,
+      "forcePowerMax": -10680.587093767983,
+      "workReferenceErrorMaxJ": 2.0117169041711236e-10,
+      "energyResidualMaxJ": 1.051441156363353e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191356914677265
+    },
+    {
+      "id": "drifting-perturb-3-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7443.380909805939,
+      "work": [
+        7443.513483980048,
+        -4769.793058815409,
+        -2670.2423696986557,
+        0,
+        -3.3454812918779067
+      ],
+      "energyResidual": 1.2763168300011785e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        8.704148513061227e-14,
+        1.687538997430238e-14,
+        4.440892098500626e-15,
+        8.668621376273222e-13,
+        8.306244581035571e-12
+      ],
+      "normalizedError": 8.306244581035571e-9,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.389161008447104e-11,
+      "forcePowerMax": -10680.587093768325,
+      "workReferenceErrorMaxJ": 4.042322032660195e-11,
+      "energyResidualMaxJ": 1.873159405363367e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.09427075216877
+    },
+    {
+      "id": "drifting-perturb-3-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.728126128364,
+      "work": [
+        7444.595261446025,
+        -4771.011365326928,
+        -2670.3709700812733,
+        0,
+        -3.34579072016429
+      ],
+      "energyResidual": 5.117488655059788e-10,
+      "hz": 100,
+      "stateErrorMax": [
+        5.806910507999419e-10,
+        8.254463779167054e-11,
+        3.144168259083813e-11,
+        3.498946909985534e-9,
+        5.2583530418814917e-8
+      ],
+      "normalizedError": 0.00005258353041881492,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.0845435660655767e-11,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 7.547736408097805e-8,
+      "energyResidualMaxJ": 5.901323874013542e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-3-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.728126231252,
+      "work": [
+        7444.595261540136,
+        -4771.011365421288,
+        -2670.3709700898467,
+        0,
+        -3.3457907201171904
+      ],
+      "energyResidual": -5.512701406473752e-11,
+      "hz": 200,
+      "stateErrorMax": [
+        2.8549607122840825e-11,
+        4.0669689838068734e-12,
+        1.5037415757035433e-12,
+        2.0959589619451435e-10,
+        2.589096936844726e-9
+      ],
+      "normalizedError": 0.000002589096936844726,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.734101751083017e-11,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 3.7329786484185945e-9,
+      "energyResidualMaxJ": 9.811951251492701e-11,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.3440901202190005
+    },
+    {
+      "id": "drifting-perturb-3-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.728126237407,
+      "work": [
+        7444.5952615457645,
+        -4771.011365426932,
+        -2670.370970090358,
+        0,
+        -3.3457907201143775
+      ],
+      "energyResidual": -8.522471617311567e-11,
+      "hz": 400,
+      "stateErrorMax": [
+        1.5702994460298214e-12,
+        2.2026824808563106e-13,
+        8.065770273901762e-14,
+        1.290345608140342e-11,
+        1.4169643236527918e-10
+      ],
+      "normalizedError": 1.4169643236527918e-7,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.600419796687902e-11,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 2.0182519544498234e-10,
+      "energyResidualMaxJ": 1.2005818561533488e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191573641709362
+    },
+    {
+      "id": "drifting-perturb-3-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.728126237782,
+      "work": [
+        7444.595261546109,
+        -4771.011365427279,
+        -2670.3709700903923,
+        0,
+        -3.3457907201141985
+      ],
+      "energyResidual": -1.6452972317893e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        8.881784197001252e-14,
+        1.2434497875801753e-14,
+        5.384581669432009e-15,
+        8.668621376273222e-13,
+        8.284928298962768e-12
+      ],
+      "normalizedError": 8.284928298962768e-9,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.3795076192479883e-11,
+      "forcePowerMax": -10681.226613400246,
+      "workReferenceErrorMaxJ": 1.5018208898709418e-11,
+      "energyResidualMaxJ": 2.6818414156082326e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.096170412443529
+    },
+    {
+      "id": "drifting-perturb-4-minus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.097403357472,
+      "work": [
+        7444.0284349009,
+        -4770.425820858259,
+        -2670.326004528359,
+        0,
+        -3.3455779708539666
+      ],
+      "energyResidual": 0.000001103485075759636,
+      "hz": 100,
+      "stateErrorMax": [
+        8.311431898277988e-8,
+        1.2647307201518743e-8,
+        5.681635217857917e-9,
+        5.171093420131001e-8,
+        0.000007795445888802988
+      ],
+      "normalizedError": 0.007795445888802988,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.171451824433234e-11,
+      "forcePowerMax": -10681.217221329502,
+      "workReferenceErrorMaxJ": 0.000011839810954816787,
+      "energyResidualMaxJ": 0.0000011035171167961266,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-4-minus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.097402645508,
+      "work": [
+        7444.028434909153,
+        -4770.4258209166865,
+        -2670.3260037550062,
+        0,
+        -3.345577973815362
+      ],
+      "energyResidual": 5.56467609769129e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        4.092335359473509e-9,
+        6.222853343729184e-10,
+        2.79513245882157e-10,
+        2.5461730501774582e-9,
+        3.838241084963556e-7
+      ],
+      "normalizedError": 0.0003838241084963556,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.3766765505351941e-11,
+      "forcePowerMax": -10681.217140468947,
+      "workReferenceErrorMaxJ": 5.859140185804357e-7,
+      "energyResidualMaxJ": 5.567926564253867e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344114308396672
+    },
+    {
+      "id": "drifting-perturb-4-minus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.097402610046,
+      "work": [
+        7444.028434909612,
+        -4770.425820919748,
+        -2670.3260037163323,
+        0,
+        -3.3455779739638003
+      ],
+      "energyResidual": 3.0467801614975087e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        2.240518881535536e-10,
+        3.4072300536536204e-11,
+        1.5306644840507033e-11,
+        1.3936585219198605e-10,
+        2.1013356388266402e-8
+      ],
+      "normalizedError": 0.000021013356388266402,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.8190449146970877e-11,
+      "forcePowerMax": -10681.217128374119,
+      "workReferenceErrorMaxJ": 3.20235596651397e-8,
+      "energyResidualMaxJ": 3.1067042272070466e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.191066809901252
+    },
+    {
+      "id": "drifting-perturb-4-minus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.097402608049,
+      "work": [
+        7444.028434909639,
+        -4770.425820919919,
+        -2670.326003714157,
+        0,
+        -3.3455779739721474
+      ],
+      "energyResidual": 1.506559321740042e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        1.3127277043167851e-11,
+        1.993960552226781e-12,
+        8.970602038971265e-13,
+        8.142819751810748e-12,
+        1.2306813346185663e-9
+      ],
+      "normalizedError": 0.0000012306813346185663,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.6545043113325164e-11,
+      "forcePowerMax": -10681.217110655849,
+      "workReferenceErrorMaxJ": 1.871949900644765e-9,
+      "energyResidualMaxJ": 2.6550606158082246e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.093777464607669
+    },
+    {
+      "id": "drifting-perturb-4-plus",
+      "h": 0.01,
+      "status": "PASS",
+      "count": {
+        "rhs": 100,
+        "tires": 200,
+        "attempted": 25,
+        "completed": 25,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 100
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.011441772789,
+      "work": [
+        7444.080108223841,
+        -4770.37812450203,
+        -2670.2876244943814,
+        0,
+        -3.345692776377866
+      ],
+      "energyResidual": 0.00000110280792098294,
+      "hz": 100,
+      "stateErrorMax": [
+        8.30941306873001e-8,
+        1.2486217393359311e-8,
+        5.587167450915587e-9,
+        5.170133476894989e-8,
+        0.000007792774951553838
+      ],
+      "normalizedError": 0.007792774951553838,
+      "diagnosticCounts": {
+        "rhs": 26,
+        "tires": 52
+      },
+      "identityMax": 1.6896706256375182e-11,
+      "forcePowerMax": -10680.14098505186,
+      "workReferenceErrorMaxJ": 0.000013052334537022592,
+      "energyResidualMaxJ": 0.0000011029015918317953,
+      "numericalStatus": "PASS",
+      "observedOrder": null
+    },
+    {
+      "id": "drifting-perturb-4-plus",
+      "h": 0.005,
+      "status": "PASS",
+      "count": {
+        "rhs": 200,
+        "tires": 400,
+        "attempted": 50,
+        "completed": 50,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 200
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.011441052267,
+      "work": [
+        7444.080108224185,
+        -4770.378124552398,
+        -2670.287623720527,
+        0,
+        -3.3456927793409457
+      ],
+      "energyResidual": 5.5511984786704716e-8,
+      "hz": 200,
+      "stateErrorMax": [
+        4.091074146117535e-9,
+        6.15187012442675e-10,
+        2.7531404933611725e-10,
+        2.545625932270923e-9,
+        3.8367334553868204e-7
+      ],
+      "normalizedError": 0.00038367334553868204,
+      "diagnosticCounts": {
+        "rhs": 51,
+        "tires": 102
+      },
+      "identityMax": 1.5274170817036747e-11,
+      "forcePowerMax": -10680.14098505186,
+      "workReferenceErrorMaxJ": 6.39669398977416e-7,
+      "energyResidualMaxJ": 5.556978166509907e-8,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.344186706210827
+    },
+    {
+      "id": "drifting-perturb-4-plus",
+      "h": 0.0025,
+      "status": "PASS",
+      "count": {
+        "rhs": 400,
+        "tires": 800,
+        "attempted": 100,
+        "completed": 100,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 400
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.011441016283,
+      "work": [
+        7444.080108224173,
+        -4770.378124554974,
+        -2670.2876236818192,
+        0,
+        -3.3456927794894993
+      ],
+      "energyResidual": 3.2722793363859637e-9,
+      "hz": 400,
+      "stateErrorMax": [
+        2.2398083387997758e-10,
+        3.368150203186815e-11,
+        1.5070056313959412e-11,
+        1.3933032505519805e-10,
+        2.1005419625907962e-8
+      ],
+      "normalizedError": 0.000021005419625907962,
+      "diagnosticCounts": {
+        "rhs": 101,
+        "tires": 202
+      },
+      "identityMax": 1.6173951067344206e-11,
+      "forcePowerMax": -10680.14098505186,
+      "workReferenceErrorMaxJ": 3.507439386152278e-8,
+      "energyResidualMaxJ": 3.2722793363859637e-9,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.19104502987537
+    },
+    {
+      "id": "drifting-perturb-4-plus",
+      "h": 0.00125,
+      "status": "PASS",
+      "count": {
+        "rhs": 800,
+        "tires": 1600,
+        "attempted": 200,
+        "completed": 200,
+        "rejected": 0
+      },
+      "branches": {
+        "sliding/adhesion": 800
+      },
+      "crossings": 0,
+      "positiveContactWork": 0,
+      "negativeContactWork": -7444.011441014266,
+      "work": [
+        7444.080108224173,
+        -4770.37812455512,
+        -2670.2876236796446,
+        0,
+        -3.3456927794978535
+      ],
+      "energyResidual": 2.9112445787404795e-10,
+      "hz": 800,
+      "stateErrorMax": [
+        1.312194797264965e-11,
+        1.9761969838327786e-12,
+        8.828493491819245e-13,
+        8.149925179168349e-12,
+        1.2302834306865407e-9
+      ],
+      "normalizedError": 0.0000012302834306865407,
+      "diagnosticCounts": {
+        "rhs": 201,
+        "tires": 402
+      },
+      "identityMax": 1.6400214519762812e-11,
+      "forcePowerMax": -10680.14098505186,
+      "workReferenceErrorMaxJ": 2.0593264316026705e-9,
+      "energyResidualMaxJ": 4.4581827118861383e-10,
+      "numericalStatus": "PASS",
+      "observedOrder": 4.093698982180906
+    }
+  ]
+}

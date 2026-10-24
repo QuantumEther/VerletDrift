@@ -1,0 +1,86 @@
+[
+  {
+    "name": "cornering",
+    "seed": [
+      14.96,
+      -0.84,
+      0.29,
+      50.56,
+      49.75
+    ],
+    "seedResidual": [
+      0.22575317757715901,
+      -0.019859741540639853,
+      0.009840569124738094,
+      -4.129501838046711,
+      -16.378390320447988
+    ],
+    "root": [
+      14.959551725963632,
+      -0.8550304834498416,
+      0.2904059047049009,
+      50.50053398836876,
+      49.51138613566645
+    ],
+    "rootMinusSeed": [
+      -0.0004482740363691562,
+      -0.015030483449841592,
+      0.0004059047049009279,
+      -0.05946601163124399,
+      -0.23861386433355136
+    ],
+    "assumption": "all printed state entries rounded to nearest 0.01; gamma/radius fixed as specified",
+    "centerInterval": [
+      14.849284494023367,
+      14.860989555859236
+    ],
+    "rollingInterval": [
+      14.923499999999999,
+      14.9265
+    ],
+    "printedFrontRollingConsistency": "FAIL",
+    "cause": "UNRESOLVED; author data/code needed; no parameter substitution made"
+  },
+  {
+    "name": "drifting",
+    "seed": [
+      13.63,
+      4.02,
+      -0.39,
+      54.64,
+      46.33
+    ],
+    "seedResidual": [
+      0.008546279515813548,
+      0.06341721363674502,
+      0.0066273132598359645,
+      -0.4380497207220944,
+      -0.919999167624818
+    ],
+    "root": [
+      13.631677027351403,
+      4.042351630163378,
+      -0.3867263269612893,
+      54.63526071431814,
+      46.32804373084742
+    ],
+    "rootMinusSeed": [
+      0.0016770273514019607,
+      0.02235163016337882,
+      0.003273673038710734,
+      -0.004739285681857552,
+      -0.001956269152579182
+    ],
+    "assumption": "all printed state entries rounded to nearest 0.01; gamma/radius fixed as specified",
+    "centerInterval": [
+      13.888656550246557,
+      13.900361612082426
+    ],
+    "rollingInterval": [
+      13.897499999999999,
+      13.9005
+    ],
+    "printedFrontRollingConsistency": "not contradicted by this interval test",
+    "cause": "UNRESOLVED; author data/code needed; no parameter substitution made"
+  }
+]

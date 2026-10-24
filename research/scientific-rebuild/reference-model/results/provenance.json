@@ -1,0 +1,36 @@
+{
+  "branch": "scientific-rebuild/03-isolated-reference",
+  "numericalCodeCommit": "0bf59dc46f9309eb7f75f31b97771beee0bdc6f2",
+  "sourceSHA256": "d90caa7ac9a70cb3b767c6475feb30b913989aa2bb64d921adbfbc182ac80479",
+  "filesSHA256": {
+    "tire.test.mjs": "45853630481802a2c447fa782f360a121a5c3224b7abd9a94dc0458d507a727d",
+    "assess.mjs": "b2d2d4d0c69655bf895da4ac36d6a4a2fcd1f4ba766059fc6cb0b795d84392dd",
+    "model.mjs": "2783eb618cffa3dc5d5b6574ca17e52a2573e421189d1e07eb4c9c76d806d2dd",
+    "cli.mjs": "bad24fcbdcff02f7181513818c9de638afca6f8857ce86c141e090d81837822c",
+    "benchmark.mjs": "af00decc0e658d03d891ff31021f0edbf73403c5a9833ca4d6bcf79ac32d371f",
+    "model.test.mjs": "012594d13caabfb035771844a6691974ab4d0bbb193d9e3a72faaf3bd041fe83",
+    "parameters.mjs": "f2620bd2f474a3f040a308899342cbac71921ad72dcf8bf80f9c7014468c5cba",
+    "tire.mjs": "e6de7caf3ab7ef8655635b932fb47fef7b14bf79832b571411e2aa3122c792cd",
+    "cases.mjs": "80b823aee34418a98c206e23ac5c5d2462d47406ea41f9c554dd1af760347717",
+    "source-table-audit.mjs": "bd6cab1f72efa7c395203af2f1d962496262df55b2c36353060078c6dcd3ea2b",
+    "integrate.test.mjs": "69d120d5aab6ec21971877a0e4397c29ae5f5881703cc0e54b69a31ae2cd5130",
+    "offline.py": "9bd4705ed07aa5d81f611bc0f8b709b6bc69fd8f3508f509ec67bf87cd410c93",
+    "fixtures.json": "edc3389fb7a6ef262ff42746cd22d394a9da17e39b5893f6f06347ba6ecd9061",
+    "fixtures.py": "36fff9d117d17f126cfe0c49a4a213311ddb510f6522fb06f9347396abbafc64",
+    "integrate.mjs": "ca3c5de91ec4382907a40a315044edd5d5ba94c6811eac0ca19ad60424aab846"
+  },
+  "tests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "sourceTableConsistency": "FAIL/UNRESOLVED attribution",
+  "physicalPassivity": "FAIL expected source limitation",
+  "independentReference": {
+    "scipy": "1.17.0",
+    "numpy": "2.3.5",
+    "python": "3.12.14",
+    "method": "DOP853; independent normalized tire/mass-matrix transcription"
+  },
+  "benchmarkCodeCommit": "0bf59dc46f9309eb7f75f31b97771beee0bdc6f2",
+  "scientificVerdict": "PARTIALLY VERIFIED"
+}
