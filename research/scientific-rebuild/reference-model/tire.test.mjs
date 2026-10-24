@@ -32,3 +32,12 @@ test('dimensional homogeneity: length unit transformation preserves force and sc
  const t=tire(14,-.3,50,5000),p2={...p,r:p.r*2,a:p.a*2,kx:p.kx/4,ky:p.ky/4};
  const t2=tire(28,-.6,50,5000,p2);close(t.Fx,t2.Fx,4500);close(t.Fy,t2.Fy,4500);close(t.Mz*2,t2.Mz,900);
 });
+test('combined-slip branch continuity includes nonzero aligning moment limits',()=>{
+ const Kcrit=3*p.mu0*5000/(2*p.a**2);
+ for(const theta of [.2,.7,1.2,-.7]){
+  const c=Math.cos(theta),s=Math.sin(theta),B=Kcrit/Math.hypot(p.kx*c,p.ky*s);
+  const a=at(B*c*(1-1e-8),B*s*(1-1e-8)),b=at(B*c*(1+1e-8),B*s*(1+1e-8));
+  assert.equal(a.branch,'adhesion');assert.equal(b.branch,'sliding');
+  assert.ok(Math.abs(a.Fx-b.Fx)<.001&&Math.abs(a.Fy-b.Fy)<.001&&Math.abs(a.Mz)<.001);
+ }
+});

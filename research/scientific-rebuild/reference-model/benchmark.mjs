@@ -6,10 +6,10 @@ const output={provenance:{commit:execFileSync('git',['rev-parse','HEAD'],{encodi
 let sink=0;
 for(const [family,r]of Object.entries(roots)){
  const u={gamma:r.gamma,Md:r.Md};for(let i=0;i<10000;i++)derivative(r.state,p,u);
- const full=step(r.state,1/800,u);let x=[...r.state];
- const jobs={timer:()=>{sink++;},tire:()=>{sink+=tire(14,-.3,50,5000).Fx;},rhsMechanics:()=>{sink+=derivative(r.state,p,u,undefined,undefined,false).dx[0];},rhsDiagnostics:()=>{sink+=derivative(r.state,p,u).diagnostics.energy;},rkMechanics:()=>{const z=step(x,1/800,u,p,{},false);if(z.status!=='PASS')throw new Error('Invalid benchmark segment');x=z.state;sink+=x[0];},rkLedger:()=>{const z=step(x,1/800,u);if(z.status!=='PASS')throw new Error('Invalid benchmark segment');x=z.state;sink+=x[0];},reportSerialization:()=>{sink+=JSON.stringify(full).length;}};
+ const full=step(r.state,1/800,u);let x=[...r.state],operations={};
+ const jobs={timer:()=>{sink++;},tire:()=>{sink+=tire(14,-.3,50,5000,p,operations).Fx;},rhsMechanics:()=>{sink+=derivative(r.state,p,u,operations,undefined,false).dx[0];},rhsDiagnostics:()=>{sink+=derivative(r.state,p,u,operations).diagnostics.energy;},rkMechanics:()=>{const z=step(x,1/800,u,p,operations,false);if(z.status!=='PASS')throw new Error('Invalid benchmark segment');x=z.state;sink+=x[0];},rkLedger:()=>{const z=step(x,1/800,u,p,operations);if(z.status!=='PASS')throw new Error('Invalid benchmark segment');x=z.state;sink+=x[0];},reportSerialization:()=>{sink+=JSON.stringify(full).length;}};
  for(const [category,job]of Object.entries(jobs)){
-  const samples=[],repetitions=[];let heapPeak=process.memoryUsage().heapUsed;const heapStart=heapPeak;
+  operations={};const samples=[],repetitions=[];let heapPeak=process.memoryUsage().heapUsed;const heapStart=heapPeak;
   for(let repeat=0;repeat<5;repeat++){
    const own=[];
    for(let i=0;i<10000;i++){
@@ -18,7 +18,7 @@ for(const [family,r]of Object.entries(roots)){
    }
    repetitions.push(dist(own));
   }
-  output.results.push({family,category,ms:dist(samples),repetitions,heap:{start:heapStart,end:process.memoryUsage().heapUsed,observedPeak:heapPeak},countsPerSample:category==='tire'?{tires:1}:category.startsWith('rhs')?{rhs:1,tires:2}:category.startsWith('rk')?{rhs:4,tires:8}:null});
+  output.results.push({family,category,ms:dist(samples),repetitions,operationTotals:{...operations},heap:{start:heapStart,end:process.memoryUsage().heapUsed,observedPeak:heapPeak},countsPerSample:category==='tire'?{tires:1}:category.startsWith('rhs')?{rhs:1,tires:2}:category.startsWith('rk')?{rhs:4,tires:8}:null});
   console.log(family,category,output.results.at(-1).ms);
  }
 }

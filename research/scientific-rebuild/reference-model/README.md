@@ -21,6 +21,7 @@ node "$R/cli.mjs" plan
 node --test "$R/"*.test.mjs
 python3 -u "$R/offline.py" references
 node "$R/cli.mjs" validate
+node "$R/source-table-audit.mjs"
 python3 "$R/offline.py" stability
 node "$R/assess.mjs"
 node "$R/benchmark.mjs"
@@ -53,3 +54,5 @@ fixed-size timing samples valid, explicitly outside sample timing; this is **not
 a continued trajectory validation or a repair of an exited run. No speedup against
 legacy bisection counts is claimed. Heap observations include GC and timing data;
 they do not measure allocation bytes per call.
+
+The ordinary Table 2 front-rotor entry is inconsistent with its printed state and Eq.13 beyond nearest-two-decimal rounding. `source-table-audit.json` preserves this source-level FAIL/UNRESOLVED attribution; root refinement uses the governing equations and the frozen windows, not a correction to the paper or parameter fit.
