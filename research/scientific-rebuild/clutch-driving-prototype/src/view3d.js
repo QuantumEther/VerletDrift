@@ -1,0 +1,59 @@
+import * as THREE from '../vendor/three.module.js';
+import {OrbitControls} from '../vendor/OrbitControls.js';
+import {roadAt} from './vehicle.js';
+
+// Read-only visualization. Simulation axes are retained: x forward, y left, z up.
+export function createView3D(canvas,resetButton){
+ const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ const scene=new THREE.Scene();scene.background=new THREE.Color('#18232e');
+ const camera=new THREE.PerspectiveCamera(45,620/360,.05,150);camera.up.set(0,0,1);
+ const controls=new OrbitControls(camera,canvas);controls.enablePan=false;controls.minDistance=2;controls.maxDistance=30;
+ function resetCamera(){camera.position.set(-4,-5,3);controls.target.set(0,0,.5);controls.update();}
+ resetButton.addEventListener('click',resetCamera);resetCamera();
+ scene.add(new THREE.HemisphereLight(0xffffff,0x304050,2));
+ const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(3,-4,7);scene.add(sun);
+ const gold=new THREE.MeshStandardMaterial({color:0xdfb65d,roughness:.65});
+ const dark=new THREE.MeshStandardMaterial({color:0x182129,roughness:1});
+ const metal=new THREE.MeshStandardMaterial({color:0x9cabb8,metalness:.5,roughness:.4});
+ const body=new THREE.Group(),chassis=new THREE.Mesh(new THREE.BoxGeometry(2.3,1,.18),gold);body.add(chassis);scene.add(body);
+ // White nose marks positive x, independent of camera orientation.
+ const nose=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.02),metal);nose.position.set(1.05,0,.1);body.add(nose);
+ const axle=new THREE.Group();
+ const shaft=new THREE.Mesh(new THREE.BoxGeometry(.06,1.2,.06),metal);axle.add(shaft);
+ const housing=new THREE.Mesh(new THREE.BoxGeometry(.24,.24,.20),gold);axle.add(housing);scene.add(axle);
+ const hubs=[],rotors=[],links=[];
+ for(let i=0;i<4;i++){
+  const hub=new THREE.Group(),rotor=new THREE.Group();hub.add(rotor);scene.add(hub);
+  const tire=new THREE.Mesh(new THREE.CylinderGeometry(1,1,.22,24),dark);rotor.add(tire);
+  const rim=new THREE.Mesh(new THREE.CylinderGeometry(.65,.65,.225,16),metal);rotor.add(rim);
+  const spoke=new THREE.Mesh(new THREE.BoxGeometry(1.7,.235,.09),gold);rotor.add(spoke);
+  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0xdfb65d}));scene.add(line);
+  hubs.push(hub);rotors.push(rotor);links.push(line);
+ }
+ const geometry=new THREE.PlaneGeometry(40,40,160,20);
+ const ground=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x30444b,side:THREE.DoubleSide,roughness:1}));scene.add(ground);
+ const grid=new THREE.GridHelper(40,40,0x78919a,0x4a636d);grid.rotation.x=Math.PI/2;scene.add(grid);
+ function draw(state){
+  const width=canvas.clientWidth,height=canvas.clientHeight;
+  if(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio())){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+  const p=state.planar,co=Math.cos(p.heading),si=Math.sin(p.heading);
+  axle.position.set(-co,-si,state.corners[1].z);axle.rotation.z=p.heading;
+  body.position.set(0,0,state.z);body.rotation.set(0,-state.pitch,p.heading,'ZYX');
+  state.wheels.forEach((w,i)=>{
+   const x=co*w.x-si*w.y,y=si*w.x+co*w.y,z=state.corners[w.axle].z;
+   hubs[i].position.set(x,y,z);hubs[i].rotation.z=p.heading+(w.steering||0);
+   rotors[i].scale.set(w.radius,1,w.radius);rotors[i].rotation.y=w.angle;
+   const a=links[i].geometry.attributes.position;
+   a.setXYZ(0,x,y,state.z+w.x*state.pitch);a.setXYZ(1,x,y,z);a.needsUpdate=true;
+  });
+  const offsetX=Math.floor(p.x),offsetY=Math.floor(p.y);
+  ground.position.set(offsetX-p.x,offsetY-p.y,0);
+  const vertices=geometry.attributes.position;
+  for(let i=0;i<vertices.count;i++)vertices.setZ(i,roadAt(state,vertices.getX(i)+offsetX).height);
+  vertices.needsUpdate=true;geometry.computeVertexNormals();
+  grid.position.set(offsetX-p.x,offsetY-p.y,.002);
+  controls.update();renderer.render(scene,camera);
+ }
+ return {draw,resetCamera};
+}
