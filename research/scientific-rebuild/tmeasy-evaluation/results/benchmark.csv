@@ -1,0 +1,9 @@
+regime,work_unit,mean_ns,median_ns,p95_ns,p99_ns,worst_ns,samples,allocations
+forward,synchronize_advance,104.8205,100,110,111,20421,10000,0
+forward,bristle,31.966799999999999,30,40,41,60,10000,0
+blend,synchronize_advance,141.3021,140,141,150,11157,10000,0
+blend,bristle,33.439500000000002,30,40,41,14912,10000,0
+near_zero,synchronize_advance,85.599699999999999,81,91,91,11357,10000,0
+near_zero,bristle,31.953700000000001,30,40,41,41,10000,0
+reverse,synchronize_advance,105.08240000000001,100,101,110,38237,10000,0
+reverse,bristle,33.385399999999997,30,40,41,14421,10000,0

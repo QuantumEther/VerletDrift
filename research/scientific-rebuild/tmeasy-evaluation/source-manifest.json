@@ -1,0 +1,26 @@
+{
+  "repository": "https://github.com/projectchrono/chrono",
+  "commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "files": {
+    "LICENSE": {
+      "path": "LICENSE",
+      "sha256": "5f625eb4c9e0ddf86db9d1ed9b6adb5b30296ea81919282b2f38c977136bf079"
+    },
+    "ChTMeasyTire.cpp": {
+      "path": "src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.cpp",
+      "sha256": "4e254282b6e45eeb17e7206d08eb512b08f1c5e20402b198b26de7026b93322a"
+    },
+    "ChTMeasyTire.h": {
+      "path": "src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.h",
+      "sha256": "8c33511b9310156f507f3b582230777f8433688f3d3038fe5871ae4ed25cdf96"
+    },
+    "ChFunctionSineStep.cpp": {
+      "path": "src/chrono/functions/ChFunctionSineStep.cpp",
+      "sha256": "cf5847f97322c7bdcd1a89b27d597ac07a3fa48c1427107f3ca4965b275f7993"
+    },
+    "Generic_TMeasyTire.cpp": {
+      "path": "src/chrono_models/vehicle/generic/tire/Generic_TMeasyTire.cpp",
+      "sha256": "63620865543692f2808960806728ebf6a1b9932792ae724c3812592aa223e6c5"
+    }
+  }
+}

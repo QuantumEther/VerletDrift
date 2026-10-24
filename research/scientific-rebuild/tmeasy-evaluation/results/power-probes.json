@@ -1,0 +1,110 @@
+[
+  {
+    "case": "lat_tiny_positive",
+    "yaw_radps": -0.3,
+    "force_slip_W": -6.343940100589109e-09,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": 6.69611153723891e-05,
+    "wheel_wrench_W": -1303.6855863680535
+  },
+  {
+    "case": "lat_tiny_positive",
+    "yaw_radps": 0,
+    "force_slip_W": -6.343940100589109e-09,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": -0.0,
+    "wheel_wrench_W": -1303.6856533291689
+  },
+  {
+    "case": "lat_tiny_positive",
+    "yaw_radps": 0.3,
+    "force_slip_W": -6.343940100589109e-09,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": -6.69611153723891e-05,
+    "wheel_wrench_W": -1303.6857202902843
+  },
+  {
+    "case": "lat_0.020000",
+    "yaw_radps": -0.3,
+    "force_slip_W": -235.36973222085913,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": 11.943910331660227,
+    "wheel_wrench_W": -1527.1114752120238
+  },
+  {
+    "case": "lat_0.020000",
+    "yaw_radps": 0,
+    "force_slip_W": -235.36973222085913,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": -0.0,
+    "wheel_wrench_W": -1539.055385543684
+  },
+  {
+    "case": "lat_0.020000",
+    "yaw_radps": 0.3,
+    "force_slip_W": -235.36973222085913,
+    "radius_port_difference_W": -0.0,
+    "rolling_W": -1303.685653322825,
+    "aligning_W": -11.943910331660227,
+    "wheel_wrench_W": -1550.9992958753442
+  },
+  {
+    "case": "forward_reflect",
+    "yaw_radps": -0.3,
+    "force_slip_W": -209.875363032295,
+    "radius_port_difference_W": -311.58891680617546,
+    "rolling_W": -1290.6487967895964,
+    "aligning_W": -10.880544493114568,
+    "wheel_wrench_W": -1822.993621121182
+  },
+  {
+    "case": "forward_reflect",
+    "yaw_radps": 0,
+    "force_slip_W": -209.875363032295,
+    "radius_port_difference_W": -311.58891680617546,
+    "rolling_W": -1290.6487967895964,
+    "aligning_W": 0.0,
+    "wheel_wrench_W": -1812.1130766280676
+  },
+  {
+    "case": "forward_reflect",
+    "yaw_radps": 0.3,
+    "force_slip_W": -209.875363032295,
+    "radius_port_difference_W": -311.58891680617546,
+    "rolling_W": -1290.6487967895964,
+    "aligning_W": 10.880544493114568,
+    "wheel_wrench_W": -1801.232532134953
+  },
+  {
+    "case": "release_storage",
+    "yaw_radps": -0.3,
+    "force_slip_W": 0.49416080675979746,
+    "radius_port_difference_W": -0.014821209273702748,
+    "rolling_W": -0.028155573811660776,
+    "aligning_W": -0.0,
+    "wheel_wrench_W": 0.4511840236744339
+  },
+  {
+    "case": "release_storage",
+    "yaw_radps": 0,
+    "force_slip_W": 0.49416080675979746,
+    "radius_port_difference_W": -0.014821209273702748,
+    "rolling_W": -0.028155573811660776,
+    "aligning_W": 0.0,
+    "wheel_wrench_W": 0.4511840236744339
+  },
+  {
+    "case": "release_storage",
+    "yaw_radps": 0.3,
+    "force_slip_W": 0.49416080675979746,
+    "radius_port_difference_W": -0.014821209273702748,
+    "rolling_W": -0.028155573811660776,
+    "aligning_W": 0.0,
+    "wheel_wrench_W": 0.4511840236744339
+  }
+]

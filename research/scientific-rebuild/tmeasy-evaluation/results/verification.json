@@ -1,0 +1,271 @@
+{
+  "schema": "mission20-v1",
+  "source_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "verlet_base": "9f60a9931c6c9dc08f5b4095aa901193b6ed5a9b",
+  "case_count": 54,
+  "nonfinite_cases": [
+    "zero_normal"
+  ],
+  "checks": [
+    {
+      "id": "deterministic-byte-replay",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "fixture-load-SI",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "fixture-radius-SI",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "fixture-matches-source-vertical-stiffness",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "finite-positive-load-and-removed-contact-cases",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "long-sign-reflection-0.020000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "long-sign-reflection-0.200000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "long-initial-stiffness",
+      "status": "PASS",
+      "details": {
+        "measured_N": 152216.21166632083,
+        "source_small_slip_limit_N": 152216.2309402714,
+        "relative_tolerance": 1e-05
+      }
+    },
+    {
+      "id": "lat-sign-reflection-0.020000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "lat-sign-reflection-0.200000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "lat-initial-stiffness",
+      "status": "PASS",
+      "details": {
+        "measured_N": 63376.02498091019,
+        "source_small_slip_limit_N": 63376.04858454078,
+        "relative_tolerance": 1e-05
+      }
+    },
+    {
+      "id": "combined-reflection-0.020000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "combined-reflection-0.200000",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "combined-not-independent-superposition",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "load-clamp-0.5",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "load-clamp-1",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "load-clamp-2",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "load-clamp-4",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "matched-time-trapezoid-state-convergence",
+      "status": "PASS",
+      "details": {
+        "time_s": 0.1,
+        "exact_z_m": 0.009438163017790536,
+        "errors_m": [
+          1.0112870584000344e-07,
+          2.528180112655598e-08,
+          6.3204268294786425e-09,
+          1.580105239359919e-09
+        ],
+        "error_ratios": [
+          4.000059383972368,
+          4.00001484213708,
+          4.000003716232831
+        ]
+      }
+    },
+    {
+      "id": "geometric-contact-loss-clears-memory",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "memory-actually-affects-force",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "rolling-resistance-opposes-spin",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_tiny_positive--0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_tiny_positive-0",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_tiny_positive-0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_0.020000--0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_0.020000-0",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-lat_0.020000-0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-forward_reflect--0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-forward_reflect-0",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-forward_reflect-0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-release_storage--0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-release_storage-0",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "wrench-identity-release_storage-0.3",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "zero-force-failure-reproduced",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "aligning-discontinuity-reproduced",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "reverse-asymmetry-reproduced",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "advance-argument-ignored-reproduced",
+      "status": "PASS",
+      "details": null
+    }
+  ],
+  "candidate_limitations": [
+    {
+      "id": "zero-normal-force",
+      "status": "FAIL",
+      "observation": "Contact remains active at Fn==0; original bristle division by fc==0 produces nonfinite output.",
+      "reproduced": true
+    },
+    {
+      "id": "aligning-switch-continuity",
+      "status": "FAIL",
+      "observation": "Mz jumps at signed Vx=1 m/s; no matching moment blend.",
+      "jump_Nm": 13.394799774034619
+    },
+    {
+      "id": "forward-reverse-symmetry",
+      "status": "FAIL",
+      "observation": "Mirrored motion selects different laws; reverse Mz=0.",
+      "Fx_forward_N": -1049.376815161475,
+      "Fx_reverse_N": 500.0000000000071
+    },
+    {
+      "id": "advance-step-contract",
+      "status": "FAIL",
+      "observation": "Changing Advance argument alone does not change bristle evolution.",
+      "reproduced": true
+    },
+    {
+      "id": "negative-normal-memory",
+      "status": "SOURCE LIMITATION",
+      "observation": "Damping deactivation returns zero wrench but preserves bristles during that Synchronize call.",
+      "brx_m": 0.001
+    },
+    {
+      "id": "global-passivity",
+      "status": "UNRESOLVED",
+      "observation": "No full storage/transport proof; positive stored-bristle release is not by itself a thermodynamic failure."
+    }
+  ],
+  "trace_sha256": "28680496d8f91ce3c595f86ea770daee81960e1ad397351d68f4f98baa170340",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "harness_source_sha256": {
+    "build.py": "3e8c106a66f1c0b6b048a07093e43bba99a5367d8457a6a8e5da468798e78728",
+    "harness.cpp": "67fc84267a0f5e1e0661bcc3b7b0c9cd1bdda3ed15cff0b69d0b81f4d14afc04",
+    "verify.py": "3915c7501cef297465d178799f73da7f66744f034c4d2a7f1b4a5c008fbd916d",
+    "source-manifest.json": "3a2e1a45dbb2a99ab129e5a07fa10cdc9cef5affc10c3dbb61c1fbe384448476"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0"
+}
