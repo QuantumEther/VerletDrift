@@ -1,0 +1,19 @@
+{
+  "label": "VERLETDRIFT RESEARCH PATCH — NOT UPSTREAM CHRONO",
+  "upstream": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "verlet_base": "32d7adf9fbb2310df04cc7a03a0becc4c8a8fea5",
+  "fixture": "unchanged Mission 21 Generic tire/wheel, road float friction .8, gravity zero, 1 kg base spindle, identity initial orientation",
+  "frozen_cases": "../tmeasy-native-verification/cases.json (all eleven, unchanged)",
+  "history": {
+    "dt_s": 0.001,
+    "initial_bristles": "native default zero; never assigned by harness",
+    "input_kind": "nine prescribed native wheel pose/velocity samples; retain tire history; native body step when accumulated wrench finite; any rejected baseline step explicitly recorded",
+    "phases": ["loaded_1", "loaded_2", "positive_unload", "zero_support", "direct_resupport", "separated", "zero_penetration", "recontact", "loaded_no_slip"],
+    "loaded": {"hub_z_m":0.449072,"vx_mps":0.1,"vy_mps":0.01,"omega_radps":0},
+    "positive_unload": {"hub_z_m":0.449072,"vx_mps":0,"vy_mps":0,"vz":"native Elastic(depth)/dz - 1e-6"},
+    "zero_support": {"hub_z_m":0.449072,"vx_mps":0,"vy_mps":0,"vz":"native Elastic(depth)/dz"},
+    "separated": {"hub_z_m":0.4799,"velocity_mps":[0,0,0]},
+    "zero_penetration": {"hub_z_m":0.4699,"velocity_mps":[0,0,0]},
+    "loaded_no_slip": {"hub_z_m":0.449072,"velocity_mps":[0,0,0]}
+  }
+}

@@ -1,0 +1,436 @@
+{
+  "label": "VERLETDRIFT RESEARCH PATCH \u2014 NOT UPSTREAM CHRONO",
+  "verdict": "SAFETY PATCH VERIFIED",
+  "verlet_base": "32d7adf9fbb2310df04cc7a03a0becc4c8a8fea5",
+  "upstream": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "checks": [
+    {
+      "id": "original-frozen-exit-1",
+      "status": "PASS"
+    },
+    {
+      "id": "original-frozen-exit-2",
+      "status": "PASS"
+    },
+    {
+      "id": "original-frozen-deterministic",
+      "status": "PASS"
+    },
+    {
+      "id": "original-trajectory-exit-1",
+      "status": "PASS"
+    },
+    {
+      "id": "original-trajectory-exit-2",
+      "status": "PASS"
+    },
+    {
+      "id": "original-trajectory-deterministic",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-frozen-exit-1",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-frozen-exit-2",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-frozen-deterministic",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-trajectory-exit-1",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-trajectory-exit-2",
+      "status": "PASS"
+    },
+    {
+      "id": "patched-trajectory-deterministic",
+      "status": "PASS"
+    },
+    {
+      "id": "baseline-frozen-byte-identical-to-mission21",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "A_below-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "A_zero-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "A_above-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "B_below-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "B_at-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "B_above-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "C_forward-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "C_reverse-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "D_small_matched-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "D_large_matched-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-patched-all-recorded-values-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "D_mismatched-unrelated-native-behavior-preserved",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-support-inactive",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-support-next-native-step-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "original-exact-singularity-observed",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-hub_force-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-hub_moment-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-acc_force-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-acc_moment-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-next_acc_force-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-next_acc_moment-is-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "all-nine-history-phases-retained",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_1-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_1-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_2-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_2-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "positive_unload-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "positive_unload-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "zero_support-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "zero_support-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "direct_resupport-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "direct_resupport-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "separated-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "separated-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "zero_penetration-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "zero_penetration-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "recontact-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "recontact-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_no_slip-entire-patched-record-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_no_slip-native-step-not-rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_1-unchanged-before-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded_2-unchanged-before-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "positive_unload-unchanged-before-zero",
+      "status": "PASS"
+    },
+    {
+      "id": "finite-nonzero-history-frozen-not-reset",
+      "status": "PASS"
+    },
+    {
+      "id": "direct-positive-resupport-resumes-history",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-returned_force",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-returned_moment",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-cache_force",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-cache_moment",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-applied_force",
+      "status": "PASS"
+    },
+    {
+      "id": "history-zero-applied_moment",
+      "status": "PASS"
+    },
+    {
+      "id": "baseline-direct-resupport-propagates-invalid-wrench",
+      "status": "PASS"
+    },
+    {
+      "id": "actual-separation-retains-existing-reset",
+      "status": "PASS"
+    },
+    {
+      "id": "zero-penetration-is-geometric-no-contact",
+      "status": "PASS"
+    },
+    {
+      "id": "post-separation-positive-recontact-finite",
+      "status": "PASS"
+    },
+    {
+      "id": "loaded-zero-slip-preserves-preload",
+      "status": "PASS"
+    },
+    {
+      "id": "known-moment-jump-remains",
+      "status": "PASS"
+    },
+    {
+      "id": "known-reverse-asymmetry-remains",
+      "status": "PASS"
+    },
+    {
+      "id": "setstepsize-contract-unchanged",
+      "status": "PASS"
+    },
+    {
+      "id": "variant-runtime-library-selected",
+      "status": "PASS"
+    },
+    {
+      "id": "patch-sha-matches-build",
+      "status": "PASS"
+    }
+  ],
+  "original_failures_preserved": {
+    "frozen_nonfinite_cases": [
+      "A_zero"
+    ],
+    "history_nonfinite_phases": [
+      "zero_support",
+      "direct_resupport",
+      "separated"
+    ],
+    "native_history_steps_rejected": [
+      "direct_resupport"
+    ]
+  },
+  "inputs_sha256": {
+    "inputs.json": "71e5b1509c851fbeb3406a1d3184fcdd40274cbb7ec89755cbf8f8e3b799fce0",
+    "zero-load.patch": "2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610",
+    "trajectory.cpp": "3621c3fe931a4eb944644f8efa8e419a45755c23f04c191d217281d858ac69df",
+    "CMakeLists.txt": "e7e47de7d664a08873ff62fdccc07d64399cbe83df9b7e7d30ffbd9770a4adf2",
+    "build_variant.py": "ba7129d827e860518c4b33c6356b666a5b9736d7a5a34de1b5a676b5ad5259e1",
+    "verify.py": "e204dab45ade6f94c914d1ff854b31fda2f5389d8e2e7fe977e9cbac42f492ca"
+  },
+  "variant_provenance": {
+    "label": "VERLETDRIFT RESEARCH PATCH \u2014 NOT UPSTREAM CHRONO",
+    "upstream_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+    "original_source_sha256": "4e254282b6e45eeb17e7206d08eb512b08f1c5e20402b198b26de7026b93322a",
+    "patch_sha256": "2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610",
+    "patched_source_sha256": "317c1b0b4aa2a961dbfa76436b7963872b73b7ad9e16bae45cf29ecac708d540",
+    "variant_library_sha256": "dd95b45f7131196ce818434f3bd822bae45954bba9731c487b2b18a7c5a61d20",
+    "original_libraries_unchanged_sha256": {
+      "libChrono_core.so": "a79c5d825dfd888bfb3122368bd22dc1dad90a12d4135b27be1eb73dcb23a61c",
+      "libChrono_vehicle.so": "48fb99d4d8af84340de4d6b202462f43a9b7bf91a3ef58858e1ea3f25b06a0f7"
+    },
+    "seconds": 7.844228870992083,
+    "compile_command": [
+      "/usr/bin/c++",
+      "-DCH_API_COMPILE_VEHICLE",
+      "-DCH_IGNORE_DEPRECATED",
+      "-DChrono_vehicle_EXPORTS",
+      "-DEIGEN_DONT_PARALLELIZE",
+      "-DNDEBUG",
+      "-D_ENABLE_EXTENDED_ALIGNED_STORAGE",
+      "-I/tmp/m20-chrono/src",
+      "-I/tmp/m21-build",
+      "-isystem",
+      "/tmp/m20-chrono/src/chrono/collision/bullet",
+      "-isystem",
+      "/tmp/m20-chrono/src/chrono_thirdparty",
+      "-isystem",
+      "/tmp/m20-chrono/src/chrono_thirdparty/HACDv2",
+      "-isystem",
+      "/tmp/m21-deps/usr/include/eigen3",
+      "-O3",
+      "-DNDEBUG",
+      "-std=gnu++17",
+      "-fPIC",
+      "-march=native",
+      "-Wint-in-bool-context",
+      "-Wno-sign-compare",
+      "-Wno-reorder",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-Wno-unused-result",
+      "-Wno-deprecated",
+      "-MD",
+      "-MT",
+      "/tmp/m22-variant/ChTMeasyTire.cpp.o",
+      "-MF",
+      "/tmp/m22-variant/tmeasy.d",
+      "-o",
+      "/tmp/m22-variant/ChTMeasyTire.cpp.o",
+      "-c",
+      "/tmp/m22-variant/src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.cpp"
+    ],
+    "link_command_sha256": "341cfb5e78c774b2028ddcf70a55f1359e3b31930e6bd91fae16e699f382fe86",
+    "method": "one native object replaced; all other original native Vehicle objects and Core library reused; no ELF interposition"
+  },
+  "traces_sha256": {
+    "patched-trajectory-2.csv": "095ef8a4994af3b20b91d775c37bbe5b7e3f04f57949e0c7c8845055b999ce0a",
+    "patched-trajectory-1.csv": "095ef8a4994af3b20b91d775c37bbe5b7e3f04f57949e0c7c8845055b999ce0a",
+    "patched-frozen-2.csv": "b5337f4b51207dd47d859bb4f9e44bed8281248952d71d71320b16730331c142",
+    "patched-frozen-1.csv": "b5337f4b51207dd47d859bb4f9e44bed8281248952d71d71320b16730331c142",
+    "original-trajectory-2.csv": "e4dbaee109a99d757cc549a787b9a2fae8fee46fc43173ae4897529e94a4700e",
+    "original-trajectory-1.csv": "e4dbaee109a99d757cc549a787b9a2fae8fee46fc43173ae4897529e94a4700e",
+    "original-frozen-2.csv": "55c6810ed1fcdf1e860b6e763e57f09e9f52b175f669d6d5f14fcbdd539e526e",
+    "original-frozen-1.csv": "55c6810ed1fcdf1e860b6e763e57f09e9f52b175f669d6d5f14fcbdd539e526e"
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "known_limitations": [
+    "aligning threshold discontinuity",
+    "signed-speed reverse asymmetry",
+    "SetStepsize ownership",
+    "full tire passivity unresolved",
+    "finite initial state assumed; corrupt imported checkpoints are not repaired"
+  ]
+}

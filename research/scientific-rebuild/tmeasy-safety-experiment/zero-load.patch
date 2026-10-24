@@ -1,0 +1,13 @@
+--- a/src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.cpp
++++ b/src/chrono_vehicle/wheeled_vehicle/tire/ChTMeasyTire.cpp
+@@ -141,7 +141,9 @@
+         double Fn_mag = GetNormalStiffnessForce(m_data.depth) + GetNormalDampingForce(m_data.depth, -m_data.vel.z());
+ 
+         // Skip Force and moment calculations when the normal force = 0
+-        if (Fn_mag < 0) {
++        // VERLETDRIFT RESEARCH PATCH — NOT UPSTREAM CHRONO.
++        // No support: return no wrench and freeze finite history until re-support or separation.
++        if (Fn_mag <= 0) {
+             Fn_mag = 0;
+             m_data.in_contact = false;
+         }

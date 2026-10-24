@@ -1,0 +1,57 @@
+# Mission 22 — isolated safety patch validation
+
+## SAFETY PATCH VERIFIED
+
+**VERLETDRIFT RESEARCH PATCH — NOT UPSTREAM CHRONO.** The outcome concerns the tested finite-state boundary and regressions, not full tire validation or production adoption.
+
+Branch `scientific-rebuild/09-tmeasy-safety-and-vehicle-contract`; base `32d7adf9fbb2310df04cc7a03a0becc4c8a8fea5`. Original Chrono pin `9a5072b5324e012a66d9fb7eaac0c679b8465e73` remains byte-for-byte unchanged. No Mission 20/21 result is overwritten.
+
+|Artifact|SHA-256|
+|---|---|
+|Original ChTMeasyTire.cpp|`4e254282b6e45eeb17e7206d08eb512b08f1c5e20402b198b26de7026b93322a`|
+|Unified diff|`2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610`|
+|Experimental patched cpp|`317c1b0b4aa2a961dbfa76436b7963872b73b7ad9e16bae45cf29ecac708d540`|
+
+## What changed and what actually executed
+
+The [patch](../../research/scientific-rebuild/tmeasy-safety-experiment/zero-load.patch) changes one comparison, `<0`→`<=0`; comments label its research status. No denominator epsilon, positive load floor, coefficient, force curve, trail, reverse or timestep change. [Root cause](tmeasy-zero-load-root-cause.md) gives the history/cached-wrench policy.
+
+Real ChSystemSMC, ChSpindle, Generic_Wheel, Generic_TMeasyTire, FlatTerrain, native contact, wheel state, tire lifecycle and spindle accumulation were used. The eleven frozen native Mission 21 cases compile from the **unchanged historical native test source**. A separate native test adds nine controlled contact-history stages. Each original/patched executable runs twice.
+
+A separate temporary native Vehicle library is relinked from all original objects with exactly one newly compiled patched object. Original source, objects and libraries are not overwritten; no copied-method adapter or ELF symbol-interposition shim. The verifier checks the selected runtime library path. Core and other Vehicle objects are reused from the original native build. The variant compilation/relink took 7.8442 s; this is setup cost, not a tire benchmark.
+
+Environment is the Mission 21 GCC 14.2.0, Release -O3/-march=native, Eigen 3.4.0-4, CMake 3.31.6, Ninja 1.11.1.3, Python 3.12.14, Linux x86_64/glibc 2.41 environment. Compile arguments, original/library hashes, exact input and harness hashes, runtime paths and environment are recorded in [verification.json](../../research/scientific-rebuild/tmeasy-safety-experiment/results/verification.json) and [native environment](../../research/scientific-rebuild/tmeasy-safety-experiment/results/native-environment.json). Source/library integrity assertions pass. BSD-3-Clause notices are preserved in [UPSTREAM-LICENSE](../../research/scientific-rebuild/tmeasy-safety-experiment/UPSTREAM-LICENSE).
+
+## Frozen cases and observed results
+
+The original eleven-case trace is byte-identical to Mission 21's saved trace. It retains the exact zero support at depth `.020827999999999958 m`, separation velocity `2.1779025180746867 m/s`, and neighboring velocities ±1e-6 m/s. All Generic coefficients and .001/.01 timestep fixtures remain frozen. [Inputs](../../research/scientific-rebuild/tmeasy-safety-experiment/inputs.json) also fixes the nine-stage history test before execution.
+
+**83 checks passed; none failed.** Original failures remain in CSV; their reproduction is not misreported as a passing unpatched model. All four executable/variant combinations replay identically across their two runs.
+
+|Requirement|Original native result|Research variant result|
+|---|---|---|
+|A exact zero support|Active, NaN force/hub moment/bristles|Inactive, finite zero returned/cached/applied wrench, finite bristles; next callback finite|
+|B small positive neighbor|Fn=.003931684976 N, finite|Unchanged; no invented threshold/load floor|
+|C negative neighbor|Inactive, zero returned wrench|Unchanged|
+|D history / direct re-support|Zero support corrupts history; subsequent positive support exposes NaN applied wrench and one rejected native body update|All nine stages finite and all nine native body steps accepted; dormant history resumes without reset|
+|E forward combined slip|Fx=-1049.37681516145 N, Mz=36.2684816437 Nm|Unchanged|
+|F reverse reflection|Fx≈+500 N, Mz=0|Unchanged; asymmetry retained|
+|G threshold|Mz jump≈13.3947997740 Nm at Vx=1|Unchanged; known discontinuity remains|
+|H timestep|Configured .001 with Advance .01 matches .001 bristle update|Unchanged SetStepsize contract|
+|I repeatability|Native fixed-input replay|Both patched runs byte-identical|
+
+All ten unaffected frozen records were also identical as strings in this environment; numeric assertions use 1e-8 absolute + 2e-11 relative tolerance. This threshold is inherited from native floating-point comparisons, not tuned to cover a changed curve.
+
+### History details
+
+Stages are loaded_1 → loaded_2 → positive_unload → zero_support → direct_resupport → separated → zero_penetration → recontact → loaded_no_slip. Retained bristles are generated by native slip updates, never assigned by the test.
+
+At zero support, patched `(brx,bry)=(.000199766636688299,.0000199976645272651) m` remains exactly unchanged. Direct positive support resumes to approximately `(.000299475119779340,.0000299947453738455) m`. Actual separation clears both to zero. Recontact builds finite memory again; loaded zero-slip retains that valid preload. A finite state is not merely hidden behind zero output.
+
+Original nonfinite records occur at zero_support, direct_resupport and in the **incoming** state of separated; separation then resets it. Original direct_resupport has a nonfinite applied spindle wrench and the driver rejects that body integration. Both failure data and the missing native elapsed step are explicit. Patched native time completes .009 s; original completes .008 s. This is a prescribed pose/velocity excitation with driver interventions, not a claim of an unforced continuous vehicle trajectory or a closed energy experiment.
+
+## Reproduce and limitations
+
+[README commands](../../research/scientific-rebuild/tmeasy-safety-experiment/README.md) build the original probes, apply the diff to a temporary copy, relink the variant, and repeat/compare both. All eight full CSV traces and library-selection records are under [results](../../research/scientific-rebuild/tmeasy-safety-experiment/results/).
+
+Remaining limitations are intentional: source trail jump, reverse approximation, configured-step ownership, empirical force calibration, absent parking/belt dynamics, effective/static-radius work interpretation and unresolved global passivity. Corrupt imported checkpoints and extreme underflow are not repaired. No full vehicle, suspension, drivetrain, renderer or production integration was implemented. [Vehicle gates](vehicle-physics-acceptance-gates.md) are proposed future tests, not additional results of this patch experiment.
