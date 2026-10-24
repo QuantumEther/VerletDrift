@@ -1,8 +1,14 @@
+import {createView3D} from './view3d.js';
 import {createVehicle,stepVehicle,cornerForces,roadAt} from './vehicle.js';
 const canvas=document.querySelector('#wheel'),ctx=canvas.getContext('2d');
 let state=createVehicle(),accumulator=0,last=performance.now();
 const keys=new Set();
 let trail=[];
+let view3d;
+const canvas3d=document.querySelector('#perspective');
+function selectView(){const active=document.querySelector('#view').value==='3d';canvas.hidden=active;canvas3d.hidden=!active;document.querySelector('#reset-camera').hidden=!active;}
+document.querySelector('#view').addEventListener('change',selectView);
+selectView();
 window.addEventListener('keydown',e=>{
   const key=e.key.toLowerCase();
   if(['w','s','r','b',' ','a','d'].includes(key))e.preventDefault();
@@ -11,6 +17,7 @@ window.addEventListener('keydown',e=>{
 });
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
 function draw(){
+ if(document.querySelector('#view').value==='3d'){view3d??=createView3D(canvas3d,document.querySelector('#reset-camera'));view3d.draw(state);return;}
  if(document.querySelector('#view').value==='top'){drawTop();return;}
  const scale=120,ground=canvas.height*.85,xscreen=x=>canvas.width/2+(x-state.x)*scale,zscreen=z=>ground-z*scale;
  ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -30,7 +37,7 @@ function drawTop(){
  for(let y=Math.floor(p.y-4);y<p.y+4;y++){ctx.beginPath();ctx.moveTo(0,cy-(y-p.y)*scale);ctx.lineTo(canvas.width,cy-(y-p.y)*scale);ctx.stroke();}
  ctx.strokeStyle='#55d6be';ctx.beginPath();trail.forEach((point,i)=>{const x=cx+(point[0]-p.x)*scale,y=cy-(point[1]-p.y)*scale;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
  ctx.save();ctx.translate(cx,cy);ctx.rotate(-p.heading);ctx.fillStyle='#dfb65d';ctx.fillRect(-scale,-.25*scale,2*scale,.5*scale);
- for(const c of state.wheels){ctx.save();ctx.translate(c.x*scale,-c.y*scale);ctx.rotate(-c.steering);ctx.fillStyle=c.normal>0?'#55d6be':'#eb9265';ctx.fillRect(-22,-7,44,14);ctx.fillStyle='#10232e';const spin=Math.sin(c.angle)*17;ctx.fillRect(spin-2,-7,4,14);ctx.restore();}
+ for(const c of state.wheels){ctx.save();ctx.translate(c.x*scale,-c.y*scale);ctx.rotate(-(c.steering||0));ctx.fillStyle=c.normal>0?'#55d6be':'#eb9265';ctx.fillRect(-22,-7,44,14);ctx.fillStyle='#10232e';const spin=Math.sin(c.angle)*17;ctx.fillRect(spin-2,-7,4,14);ctx.restore();}
  ctx.strokeStyle='white';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1.3*scale,0);ctx.stroke();ctx.restore();
  const wx=Math.cos(p.heading)*p.u-Math.sin(p.heading)*p.v,wy=Math.sin(p.heading)*p.u+Math.cos(p.heading)*p.v;
  ctx.strokeStyle='#e79b64';ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+wx*15,cy-wy*15);ctx.stroke();
@@ -38,7 +45,7 @@ function drawTop(){
 function diagnostics(){
  const p=state.planar;
  document.querySelector('#planar').textContent=`u ${p.u.toFixed(3)} m/s; lateral ${p.v.toFixed(3)} m/s; yaw ${(p.r*180/Math.PI).toFixed(2)} deg/s; heading ${(p.heading*180/Math.PI).toFixed(2)} deg; steer ${(p.steering*180/Math.PI).toFixed(2)} deg; sideslip ${(Math.atan2(p.v,Math.max(Math.abs(p.u),.01))*180/Math.PI).toFixed(2)} deg; world (${p.x.toFixed(2)}, ${p.y.toFixed(2)}) m`;
- for(const c of state.wheels){const row=document.querySelector('#'+c.name);row.textContent=`${c.name} | ${c.omega.toFixed(2)} | ${c.slip.toFixed(3)} | ${(c.alpha*180/Math.PI).toFixed(2)} | ${c.fx.toFixed(2)} | ${c.fy.toFixed(2)} | ${c.normal.toFixed(2)} | ${(c.steering*180/Math.PI).toFixed(2)}`;}
+ for(const c of state.wheels){const row=document.querySelector('#'+c.name);row.textContent=`${c.name} | ${c.omega.toFixed(2)} | ${(c.slip||0).toFixed(3)} | ${((c.alpha||0)*180/Math.PI).toFixed(2)} | ${c.fx.toFixed(2)} | ${(c.fy||0).toFixed(2)} | ${(c.normal??cornerForces(state,state.corners[c.axle]).normal/2).toFixed(2)} | ${((c.steering||0)*180/Math.PI).toFixed(2)}`;}
  document.querySelector('#speed').textContent=`${state.v.toFixed(3)} m/s`;
  document.querySelector('#position').textContent=`${state.x.toFixed(3)} m`;
  document.querySelector('#pitch').textContent=`${(state.pitch*180/Math.PI).toFixed(3)}°; rate ${state.pitchRate.toFixed(4)} rad/s; height ${state.z.toFixed(4)} m`;
@@ -48,3 +55,6 @@ function frame(now){accumulator+=(now-last)/1000;last=now;
  try{let steps=0;while(accumulator>=.001&&steps<1000){stepVehicle(state,{drive:keys.has('w')?Number(document.querySelector('#drive').value):0,brake:keys.has('s')?8:0,steer:(Number(keys.has('a'))-Number(keys.has('d')))*.4});accumulator-=.001;steps++;if(steps%20===0){trail.push([state.planar.x,state.planar.y]);if(trail.length>1000)trail.shift();}}draw();diagnostics();requestAnimationFrame(frame);}catch(e){document.querySelector('#warning').textContent=`Paused: ${e.message}; t=${state.time}`;console.error(e);}
 }
 requestAnimationFrame(frame);
+
+// Read-only diagnostic snapshot, also used to verify camera isolation.
+export function simulationSnapshot(){return structuredClone(state);}

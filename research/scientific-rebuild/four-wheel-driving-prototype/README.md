@@ -23,3 +23,17 @@ Existing Playwright is used only for browser verification; runtime needs no depe
 Validation: 5/5 new deterministic tests passed, covering the ten requested checks in grouped scenarios; all 31/31 existing tests passed without edits. Chromium smoke passed on the new entry point: side suspension impulse and bump controls, acceleration, all-wheel braking, top view selection, steering-induced heading change, changing Canvas, reset, and zero runtime exceptions. The original tracked prototype files were compared byte-for-byte with commit 1a43beb, and remain unchanged.
 
 No real-world handling calibration or universal numerical stability is claimed. Lateral stiffness is explicit per step; extreme speed or large slips can exceed this model's useful range. The fixed-work contact solve avoids unbounded nonlinear iteration. The browser intentionally keeps the existing plain Canvas renderer.
+
+## Mission 30.1 — 3D perspective view
+
+Choose **3D perspective** in the existing View selector. Drag the canvas to orbit, scroll to zoom, and use Reset camera to restore the follow view. The orbit target follows the vehicle horizontally; camera movement never feeds into simulation. W/S/A/D and bump/impulse controls are unchanged. Top and side views remain selectable.
+
+`view3d.js` reads existing state: body yaw, pitch and height; each wheel's steering and rotor angle; and the corresponding front/rear axle hub height. It creates no additional degrees of freedom. Left/right hub heights on an axle remain equal; no roll, camber or independent left/right articulation is invented. The body displays the integrated small pitch angle as a rigid rotation; suspension endpoints follow the model's linearized attachment-height formula. Terrain uses the existing road-height function.
+
+Three.js 0.160.0 and OrbitControls are vendored locally from the npm package, so the page needs no CDN or build step. MIT attribution is retained in `vendor/LICENSE.three`; OrbitControls' import points to the local module. WebGL is required only for perspective view.
+
+Verification: all 5 four-wheel tests and all 31 frozen-prototype tests passed. The original tracked prototype files and current physics modules were checked unchanged. The original browser smoke covers the retained modes. Additional test:
+```bash
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/four-wheel-driving-prototype/tests/browser-3d.mjs
+```
+The 3D test uses a controlled frame clock: accelerating/steering state is snapshotted, then switches through 3D/side/top/3D without time advancement must preserve every state value exactly. It also checks heading, four integrated rotor angles, orbit/zoom image changes and no page exceptions. A screenshot was visually inspected. A headless Chromium run using software WebGL measured 1.60 ms average CPU time per steady frame over 120 frames including simulation and render submission; initial renderer/shader setup was 134 ms. These are local CPU timings, not GPU-completion latency or a desktop FPS guarantee.
