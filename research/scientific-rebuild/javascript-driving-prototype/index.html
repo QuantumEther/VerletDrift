@@ -22,11 +22,11 @@
   <h1>Torque driven wheel on a flat road</h1>
   <p class="help">Hold <kbd>W</kbd> to drive, hold <kbd>S</kbd> to brake, and press <kbd>R</kbd> to reset.</p>
   <p class="help">Temporary capped slip-force model on a flat road. Physical parameter changes reset the experiment. Negative drive torque permits reverse.</p>
-  <p>Space: upward 0.5 m/s suspension impulse. Normal load assumes total weight; wheel height is constrained.</p><p id="suspension"></p><div class="layout">
+  <p>Space: upward 0.5 m/s sprung impulse. B: smooth 8 cm road bump over 0.4 s. Dynamic tire load limits friction.</p><p id="suspension"></p><div class="layout">
     <canvas id="wheel" width="500" height="360" aria-label="Physics-driven rotating wheel"></canvas>
     <section>
       <label>Rotational inertia I (kg·m²) <input id="inertia" type="number" min="0.01" step="0.1" value="2"></label>
-      <label>Assembly mass m (kg) <input id="mass" type="number" min="0.1" step="1" value="12"></label>
+      <label>Unsprung mass (kg) <input id="mass" type="number" min="0.1" step="1" value="12"></label>
       <label>Wheel radius R (m) <input id="radius" type="number" min="0.05" step="0.01" value="0.32"></label>
       <label>Friction coefficient μ <input id="friction" type="number" min="0" step="0.1" value="0.9"></label>
       <label>Slip coefficient kₛ (N·s/m) <input id="stiffness" type="number" min="0" step="1000" value="18000"></label>

@@ -27,6 +27,10 @@ try {
   await page.keyboard.press('Space');
   await page.waitForTimeout(150);
   assert.notEqual(await page.locator('#suspension').textContent(), rest);
+  const load = await page.locator('#normal').textContent();
+  await page.keyboard.press('b');
+  await page.waitForTimeout(100);
+  assert.notEqual(await page.locator('#normal').textContent(), load);
   const initialImage = await page.locator('canvas').screenshot();
   await page.keyboard.down('w');
   await page.waitForTimeout(1000);

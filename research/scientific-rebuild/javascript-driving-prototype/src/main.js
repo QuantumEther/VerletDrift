@@ -1,13 +1,12 @@
-import {createSuspension, stepSuspension, suspensionDiagnostics} from './suspension.js';
+import {createQuarter, stepQuarter, forces, road, verticalEnergy} from './quarter.js';
 import { createWheel, DEFAULT_DT, rotationalEnergy, stepWheel, totalKineticEnergy, translationalEnergy } from './wheel.js';
 
 const canvas = document.querySelector('#wheel');
 const ctx = canvas.getContext('2d');
 const readout = id => document.querySelector(`#${id}`);
 const input = id => document.querySelector(`#${id}`);
-const wheel = createWheel({ inertia: Number(input('inertia').value), mass: Number(input('mass').value), radius: Number(input('radius').value), friction: Number(input('friction').value), slipStiffness: Number(input('stiffness').value) });
-const suspension = createSuspension();
-wheel.normalLoad = (wheel.mass + suspension.mass)*9.81;
+let quarter = createQuarter();
+let wheel = quarter.wheel;
 const keys = new Set();
 let accumulator = 0;
 let lastFrame = performance.now();
@@ -19,9 +18,8 @@ let physicsHz = 0;
 const TAU = Math.PI * 2;
 
 function reset() {
-  wheel.x = wheel.velocity = wheel.theta = wheel.omega = wheel.time = 0;
-  wheel.lastContactForce = 0;
-  suspension.z=suspension.equilibrium; suspension.velocity=0;
+  quarter=createQuarter({unsprungMass:Number(input('mass').value),radius:Number(input('radius').value),inertia:Number(input('inertia').value),friction:Number(input('friction').value),slipStiffness:Number(input('stiffness').value)});
+  wheel=quarter.wheel;
   accumulator = 0;
   netTorque = 0;
   stepCount = 0;
@@ -29,9 +27,10 @@ function reset() {
 
 window.addEventListener('keydown', event => {
   const key = event.key.toLowerCase();
-  if (['w', 's', 'r', ' '].includes(key)) event.preventDefault();
+  if (['w', 's', 'r', ' ', 'b'].includes(key)) event.preventDefault();
   if (key === 'r' && !event.repeat) reset();
-  if (key === ' ' && !event.repeat) suspension.velocity += 0.5;
+  if (key === ' ' && !event.repeat) quarter.vs += 0.5;
+  if (key === 'b' && !event.repeat) quarter.bumpStart=quarter.time;
   keys.add(key);
 });
 window.addEventListener('keyup', event => keys.delete(event.key.toLowerCase()));
@@ -47,7 +46,7 @@ for (const [id, property, positive] of [['mass', 'mass', true], ['radius', 'radi
     const value = Number(input(id).value);
     if (Number.isFinite(value) && (positive ? value > 0 : value >= 0)) {
       wheel[property] = value;
-      wheel.normalLoad = (wheel.mass + suspension.mass) * 9.81;
+
       reset(); // Configuration edits start a new experiment, with zero energy.
     } else input(id).value = wheel[property];
   });
@@ -56,16 +55,17 @@ for (const [id, property, positive] of [['mass', 'mass', true], ['radius', 'radi
 function draw() {
   const w = canvas.width, h = canvas.height;
   ctx.clearRect(0, 0, w, h);
-  const wheelRadius = Math.min(w, h) * 0.24;
+  const scale=190;
+  const wheelRadius = wheel.radius*scale;
   const pixelsPerMetre = 90;
   const travel = Math.tanh(wheel.x) * w * 0.15;
   const cameraX = wheel.x * pixelsPerMetre - travel;
-  const cx = w / 2 + travel, roadY = h * 0.72, cy = roadY - wheelRadius;
+  const cx = w / 2 + travel, roadY = h * 0.88-road(quarter).height*scale, cy = h*.88-quarter.zu*scale;
   ctx.strokeStyle = '#8293a1'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, roadY + 2); ctx.lineTo(w, roadY + 2); ctx.stroke();
   ctx.fillStyle = '#8293a1';
   const markerOffset = -(cameraX % 70);
   for (let x = markerOffset; x < w; x += 70) ctx.fillRect(x, roadY + 14, 34, 4);
-  const massY=cy-suspension.z*180;
+  const massY=h*.88-quarter.zs*scale;
   ctx.fillStyle='#dfb65d'; ctx.fillRect(cx-42,massY-18,84,22);
   ctx.strokeStyle='#dfb65d'; ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(cx-18,massY+4);
@@ -89,8 +89,8 @@ function frame(now) {
   const drive = keys.has('w') ? Number(input('drive').value) || 0 : 0;
   const brake = keys.has('s') ? Math.max(0, Number(input('brake').value) || 0) : 0;
   while (accumulator >= DEFAULT_DT) {
-    ({ netTorque } = stepWheel(wheel, { driveTorque: drive, brakeTorque: brake }, DEFAULT_DT));
-    stepSuspension(suspension, DEFAULT_DT);
+    ({ netTorque } = stepQuarter(quarter, { driveTorque: drive, brakeTorque: brake }, DEFAULT_DT));
+
     accumulator -= DEFAULT_DT; stepCount++; rateSteps++;
   }
   if (now - rateStart >= 500) { physicsHz = rateSteps * 1000 / (now - rateStart); rateSteps = 0; rateStart = now; }
@@ -111,8 +111,8 @@ function frame(now) {
   readout('trans-energy').textContent = `${translationalEnergy(wheel).toFixed(3)} J`;
   readout('total-energy').textContent = `${totalKineticEnergy(wheel).toFixed(3)} J`;
   readout('direction').textContent = wheel.velocity > 0.01 ? 'Forward' : wheel.velocity < -0.01 ? 'Reverse' : 'Stationary';
-  const d=suspensionDiagnostics(suspension);
-  readout('suspension').textContent=`z ${suspension.z.toFixed(4)} m · vz ${suspension.velocity.toFixed(4)} m/s · compression ${d.compression.toFixed(4)} m · spring ${d.spring.toFixed(2)} N · damper ${d.damper.toFixed(2)} N · support reaction ${d.supportReaction.toFixed(2)} N · spring energy ${d.springEnergy.toFixed(3)} J · vertical KE ${d.kineticEnergy.toFixed(3)} J · gravity PE ${d.gravityEnergy.toFixed(3)} J`;
+  const d=forces(quarter);
+  readout('suspension').textContent=`Sprung z ${quarter.zs.toFixed(4)} m, v ${quarter.vs.toFixed(4)} m/s; unsprung z ${quarter.zu.toFixed(4)} m, v ${quarter.vu.toFixed(4)} m/s; suspension compression ${d.compression.toFixed(4)} m, force ${d.suspension.toFixed(2)} N; tire compression ${d.delta.toFixed(4)} m; radial spring ${d.tireSpring.toFixed(2)} N, damper ${d.tireDamper.toFixed(2)} N; contact ${d.contact}; vertical energy ${verticalEnergy(quarter).toFixed(3)} J; vertical KE ${(0.5*quarter.ms*quarter.vs**2+0.5*quarter.mu*quarter.vu**2).toFixed(3)} J; tire energy ${(0.5*quarter.kt*d.delta**2).toFixed(3)} J; spring energy ${(0.5*quarter.ks*d.compression**2).toFixed(3)} J; gravity PE ${(quarter.g*(quarter.ms*quarter.zs+quarter.mu*quarter.zu)).toFixed(3)} J`;
   requestAnimationFrame(frame);
 }
 
