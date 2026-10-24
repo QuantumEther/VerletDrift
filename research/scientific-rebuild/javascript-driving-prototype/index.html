@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Torque Driven Wheel Sandbox</title>
+  <title>Torque Driven Rolling Wheel Sandbox</title>
   <style>
     :root { color-scheme: dark; font: 16px system-ui, sans-serif; background: #111820; color: #e8eef4; }
     body { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
@@ -19,12 +19,17 @@
   </style>
 </head>
 <body>
-  <h1>Torque driven wheel</h1>
+  <h1>Torque driven wheel on a flat road</h1>
   <p class="help">Hold <kbd>W</kbd> to drive, hold <kbd>S</kbd> to brake, and press <kbd>R</kbd> to reset.</p>
+  <p class="help">Temporary capped slip-force model on a flat road. Physical parameter changes reset the experiment. Negative drive torque permits reverse.</p>
   <div class="layout">
     <canvas id="wheel" width="500" height="360" aria-label="Physics-driven rotating wheel"></canvas>
     <section>
       <label>Rotational inertia I (kg·m²) <input id="inertia" type="number" min="0.01" step="0.1" value="2"></label>
+      <label>Assembly mass m (kg) <input id="mass" type="number" min="0.1" step="1" value="12"></label>
+      <label>Wheel radius R (m) <input id="radius" type="number" min="0.05" step="0.01" value="0.32"></label>
+      <label>Friction coefficient μ <input id="friction" type="number" min="0" step="0.1" value="0.9"></label>
+      <label>Slip coefficient kₛ (N·s/m) <input id="stiffness" type="number" min="0" step="1000" value="18000"></label>
       <label>Drive torque (N·m) <input id="drive" type="number" step="1" value="20"></label>
       <label>Brake torque magnitude (N·m) <input id="brake" type="number" min="0" step="1" value="8"></label>
       <dl>
@@ -34,6 +39,15 @@
         <dt>RPM</dt><dd id="rpm">—</dd>
         <dt>Applied net torque</dt><dd id="torque">—</dd>
         <dt>Rotational energy</dt><dd id="energy">—</dd>
+        <dt>Position x</dt><dd id="position">—</dd>
+        <dt>Forward speed</dt><dd id="speed">—</dd>
+        <dt>Wheel circumference speed</dt><dd id="circ-speed">—</dd>
+        <dt>Slip velocity</dt><dd id="slip">—</dd>
+        <dt>Road force Fₓ</dt><dd id="force">—</dd>
+        <dt>Normal load N</dt><dd id="normal">—</dd>
+        <dt>Translational energy</dt><dd id="trans-energy">—</dd>
+        <dt>Total kinetic energy</dt><dd id="total-energy">—</dd>
+        <dt>Travel direction</dt><dd id="direction">—</dd>
       </dl>
     </section>
   </div>
