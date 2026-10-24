@@ -10,6 +10,9 @@ export function distribution(values) {
     p99: quantile(.99), max: sorted.at(-1),
     standardDeviation: Math.sqrt(sorted.reduce((sum,x) => sum+(x-mean)**2,0)/sorted.length) };
 }
+export function recordPerformanceTick(ms) {
+  if (capture && capture.tickMs.length < 15000) capture.tickMs.push(ms);
+}
 let capture = null, lastFrame = null, status, button;
 function finish(reason = '30-second capture complete') {
   if (!capture) return;
@@ -19,7 +22,7 @@ function finish(reason = '30-second capture complete') {
   report.ended = new Date().toISOString();
   const field = key => distribution(report.frames.map(frame => frame[key]));
   report.summary = { frameCadenceMs: field('frameIntervalMs'), cpuFrameMs: field('cpuFrameMs'),
-    cpuSimulationLoopMs: field('cpuSimulationLoopMs'), cpuRenderMs: field('cpuRenderMs'),
+    cpuSimulationLoopMs: field('cpuSimulationLoopMs'), physicsTickMs: distribution(report.tickMs), cpuRenderMs: field('cpuRenderMs'),
     cpuGPUEncodeMs: field('cpuGPUEncodeMs'), uploadedBytesPerFrame: field('uploadedBytes'),
     gpuRenderMs: distribution(report.gpuSamples.map(s => s.renderMs)),
     gpuSmokeComputeMs: distribution(report.gpuSamples.map(s => s.computeMs)),
@@ -70,7 +73,7 @@ export function installPerformanceCapture() {
     const stats=getGPURenderStats();
     capture={ started:new Date().toISOString(), startedMs:performance.now(),
       lastTimestampSample:stats.gpuTimestampSamples, userAgent:navigator.userAgent,
-      url:location.href, devicePixelRatio, initialRenderer:stats, frames:[], gpuSamples:[],
+      devicePixelRatio, canvas: {width: document.querySelector('#simCanvas').width, height: document.querySelector('#simCanvas').height}, initialRenderer:stats, frames:[], gpuSamples:[], tickMs:[],
       scope:'CPU frame is JS execution only. Simulation loop includes snapshots/bookkeeping. GPU timestamps separately measure world render and smoke compute, excluding Canvas, compositing, presentation and driver scheduling gaps. rAF cadence and its 1% low are not independently measured presented FPS. No synchronous GPU waits/readbacks are added by this capture.' };
     button.disabled=true;
   };

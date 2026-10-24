@@ -44,7 +44,7 @@ for (const hz of [60, 120, 240]) test(`pending command survives ${hz} Hz renderi
     expect(current.angle).toBeCloseTo(current.time > pending.time ? .104 : 0, 12);
   }
   expect(await page.evaluate(() => [state.input.throttleKeyHeld, state.input.brakeKeyHeld,
-    state.input.clutchKeyHeld, state.engine.gear])).toEqual([true, true, true, '2']);
+    state.input.clutchKeyHeld, state.engine.currentGear])).toEqual([true, true, true, '2']);
 });
 for (const angle of [-.52, -.2, 0, .2, .52]) test(`regrab continuous at ${angle} rad and release`, async ({ page }) => {
   const { x, y } = await point(page);

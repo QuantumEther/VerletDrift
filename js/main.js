@@ -1,6 +1,6 @@
 import { recordWetTireTransfer } from './renderer/wet-trail-events.js';
 import { observeDust } from './renderer/dust-history.js';
-import { profilingEnabled, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
+import { profilingEnabled, recordPerformanceTick, recordPerformanceFrame, installPerformanceCapture } from './diagnostics/performance-capture.js';
 // =============================================================
 // MAIN — entry point and game loop
 // =============================================================
@@ -454,7 +454,9 @@ function mainLoop(timestampMilliseconds) {
       // Simulated dt: real step size × timeScale.
       const simDt = physicsWallDt * state.params.timeScale;
       state.loop.simulationTime += simDt;
+      const tickProfileStart = profilingEnabled ? performance.now() : 0;
       runPhysicsStep(simDt);
+      if (profilingEnabled) recordPerformanceTick(performance.now() - tickProfileStart);
       observeDust(state.body,state.loop.simulationTime,state.params.dustEnabled || state.params.smokeEnabled);
 
       snapCurr = makeBodySnapshot();
