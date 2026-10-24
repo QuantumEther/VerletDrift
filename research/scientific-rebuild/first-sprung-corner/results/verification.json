@@ -1,0 +1,629 @@
+{
+  "branch": "scientific-rebuild/10-first-sprung-corner",
+  "checks": [
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 8000
+      },
+      "name": "static: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 3000
+      },
+      "name": "disturbance: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 300
+      },
+      "name": "spin: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 800
+      },
+      "name": "drive: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 300
+      },
+      "name": "brake: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 300
+      },
+      "name": "brake_high: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 3000
+      },
+      "name": "unload: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 50
+      },
+      "name": "boundary: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 500
+      },
+      "name": "refine_1ms: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 1000
+      },
+      "name": "refine_05ms: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 2000
+      },
+      "name": "refine_025ms: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "failed_row": null,
+        "reason": null,
+        "samples": 5000
+      },
+      "name": "bench: accepted finite trace",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "expected_spring_N": 2746.8,
+        "expected_tire_N": 3409.9560000000006,
+        "max_body_vertical_speed_m_s": 3.0999405456308712e-18,
+        "max_carrier_vertical_speed_m_s": 6.386177257175908e-16,
+        "max_vertical_guide_reaction_N": 7.169477240863747e-24,
+        "measured_spring_N": 2746.7999999999993,
+        "measured_tire_N": 3409.956000000004
+      },
+      "name": "static gravity force balance",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "integrated_torque_impulse_Nms": 30.0,
+        "wheel_delta_L_Nms": 30.00000000269511
+      },
+      "name": "free-wheel angular momentum",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "delta_rotational_energy_J": 61.52331733725384,
+        "drive_work_J": 61.52331733727077,
+        "ledger_residual_J": "-1.6925127965805586e-11"
+      },
+      "name": "free-wheel torque work",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "brake_work_J": "-572.65630340560438",
+        "final_relative_speed_rad_s": "27.265630339670523",
+        "torque_impulse_Nms": -20.0,
+        "wheel_delta_L_Nms": -20.00000000654787
+      },
+      "name": "brake: slipping brake torque response",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "brake_work_J": "-2316.4075851414495",
+        "final_relative_speed_rad_s": "16.328151704209539",
+        "torque_impulse_Nms": -100.0,
+        "wheel_delta_L_Nms": -99.99999998990015
+      },
+      "name": "brake_high: slipping brake torque response",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "interpretation": "fixed x guide reacts to force; no vehicle acceleration claim",
+        "max_hub_x_m": 2.719881607675975e-14,
+        "peak_Fx_N": 577.3156687647356,
+        "peak_carrier_guide_reaction_x_N": 577.3156687629194
+      },
+      "name": "driven tire force transmitted to constrained guide",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "active": "0",
+        "applied_normal_N": "0",
+        "bristle_x_m": "-0.0022583330363418613",
+        "bristle_y_m": "0",
+        "raw_normal_N": "-4.5474735088646412e-13"
+      },
+      "name": "exact-zero support remains inactive with finite history",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "active": "0",
+        "bristle_x_m": "-0.0022583330363418613",
+        "bristle_y_m": "0",
+        "raw_normal_N": "-4.5474735088646412e-13"
+      },
+      "name": "zero-load boundary preserves a pre-existing finite bristle history",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "contact_states": [
+          "0",
+          "1"
+        ],
+        "low_positive_support_samples": 1,
+        "negative_raw_support_samples": 8,
+        "recontact_count": 1,
+        "separated_samples": 390
+      },
+      "name": "load reduction, negative support, separation and recontact remain finite",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "assumptions": "linear tire stiffness/damping at static depth; heave-only bodies; one dominant sprung mode",
+        "decay_relative_error": 0.001696516886937273,
+        "eigenvalues_per_s": [
+          [
+            -44.26150513019193,
+            66.50762035913164
+          ],
+          [
+            -44.26150513019193,
+            -66.50762035913164
+          ],
+          [
+            -3.18333302685099,
+            9.589667343767665
+          ],
+          [
+            -3.18333302685099,
+            -9.589667343767665
+          ]
+        ],
+        "frequency_relative_error": 0.00031095762389226066,
+        "measured_logarithmic_decay_per_s": 3.188733605087788,
+        "measured_peak_frequency_hz": 1.5267175572519882,
+        "measured_peak_period_s": 0.6549999999999657,
+        "slow_mode_decay_per_s": 3.18333302685099,
+        "slow_mode_hz": 1.52624296036755
+      },
+      "name": "vertical disturbance agrees with reduced linearized two-mass mode",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "maximum_independent_reconstruction_error_Nm": 6.483360359961745e-11
+      },
+      "name": "hub wrench moment translation",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "refine_05ms": {
+          "common_samples": 1000,
+          "final_energy_residual_J": "-4.267031171362019e-12",
+          "state_errors_vs_0.25ms": {
+            "Fx_N": {
+              "max_abs": 12.197607359663039,
+              "rms": 1.2276510801150486
+            },
+            "body_z_m": {
+              "max_abs": 0.0,
+              "rms": 0.0
+            },
+            "carrier_z_m": {
+              "max_abs": 2.55351295663786e-15,
+              "rms": 4.660490927961624e-16
+            },
+            "normal_N": {
+              "max_abs": 4.845333023695275e-09,
+              "rms": 1.1631642151737032e-09
+            },
+            "relative_omega_rad_s": {
+              "max_abs": 0.0011241825495842683,
+              "rms": 0.00025964075487088027
+            },
+            "wheel_z_m": {
+              "max_abs": 5.551115123125783e-16,
+              "rms": 1.5691108440466028e-16
+            }
+          }
+        },
+        "refine_1ms": {
+          "common_samples": 500,
+          "final_energy_residual_J": "-1.5342838103910033e-11",
+          "state_errors_vs_0.25ms": {
+            "Fx_N": {
+              "max_abs": 37.061555541391954,
+              "rms": 3.7180249421820095
+            },
+            "body_z_m": {
+              "max_abs": 0.0,
+              "rms": 0.0
+            },
+            "carrier_z_m": {
+              "max_abs": 1.049160758270773e-14,
+              "rms": 1.9080725848391353e-15
+            },
+            "normal_N": {
+              "max_abs": 1.1249994713580236e-08,
+              "rms": 2.357322389993488e-09
+            },
+            "relative_omega_rad_s": {
+              "max_abs": 0.0034821662764645683,
+              "rms": 0.0007968749507229493
+            },
+            "wheel_z_m": {
+              "max_abs": 2.220446049250313e-15,
+              "rms": 4.195849941696801e-16
+            }
+          }
+        }
+      },
+      "name": "timestep refinement comparison",
+      "status": "PASS"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "static",
+        "/tmp/m23-final-results3/static.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.340023574011866
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "disturbance",
+        "/tmp/m23-final-results3/disturbance.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.10391654600971378
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "spin",
+        "/tmp/m23-final-results3/spin.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.021054323995485902
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "drive",
+        "/tmp/m23-final-results3/drive.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.04083589499350637
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "brake",
+        "/tmp/m23-final-results3/brake.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.01828397301142104
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "brake_high",
+        "/tmp/m23-final-results3/brake_high.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.017204745003255084
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "unload",
+        "/tmp/m23-final-results3/unload.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.10232525900937617
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "boundary",
+        "/tmp/m23-final-results3/boundary.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.011217785009648651
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "refine",
+        "/tmp/m23-final-results3/refine_1ms.csv",
+        "0.001"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.02638668500003405
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "refine",
+        "/tmp/m23-final-results3/refine_05ms.csv",
+        "0.0005"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.04779601699556224
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "refine",
+        "/tmp/m23-final-results3/refine_025ms.csv",
+        "0.00025"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.0895997489860747
+    },
+    {
+      "argv": [
+        "/tmp/m23-build/corner",
+        "bench",
+        "/tmp/m23-final-results3/bench.csv"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "runtime_s_including_process_and_csv": 0.1736742509820033
+    }
+  ],
+  "experiment_id": "M23-CORNER-001",
+  "git_head_before_run": "e75a0650cd0001f13192aead8a416fca7189dd4d",
+  "linearized_vertical_model": {
+    "assumptions": "linear tire stiffness/damping at static depth; heave-only bodies; one dominant sprung mode",
+    "decay_relative_error": 0.001696516886937273,
+    "eigenvalues_per_s": [
+      [
+        -44.26150513019193,
+        66.50762035913164
+      ],
+      [
+        -44.26150513019193,
+        -66.50762035913164
+      ],
+      [
+        -3.18333302685099,
+        9.589667343767665
+      ],
+      [
+        -3.18333302685099,
+        -9.589667343767665
+      ]
+    ],
+    "frequency_relative_error": 0.00031095762389226066,
+    "measured_logarithmic_decay_per_s": 3.188733605087788,
+    "measured_peak_frequency_hz": 1.5267175572519882,
+    "measured_peak_period_s": 0.6549999999999657,
+    "slow_mode_decay_per_s": 3.18333302685099,
+    "slow_mode_hz": 1.52624296036755
+  },
+  "metadata_hashes": {
+    "bench.csv.meta.json": "87c1a9c26b6c1028decad9499badf8419a914a73925340604ac6cecf4aa84248",
+    "boundary.csv.meta.json": "e27b96492b3cb9437b60095dba91c941f5b5c2f376bd68003c12f6aabbdeb766",
+    "brake.csv.meta.json": "bd012e02797fe2439f2a475092c50fab121023448c9a086b22c10986a73f23a0",
+    "brake_high.csv.meta.json": "f4c19359ef642ceeb68c683bd79a8c139d5b06b86023680ccc41c1d5513a17f2",
+    "disturbance.csv.meta.json": "cd5a21b3fbbd6fb33ddaf937275467db540d30f930c5ed0f8a8203352188af5d",
+    "drive.csv.meta.json": "835f6233fdfc42bab50da87fa571a64642dcb9e3fdda0ce1004e65441c88c965",
+    "refine_025ms.csv.meta.json": "f44fa46175cf08a91bb2082f19ca270b35589539bfbba6e095317f2250868247",
+    "refine_05ms.csv.meta.json": "df6295408810ad161d639be44e4c7cc3a53bd4846037947b7a939d6381ab54f0",
+    "refine_1ms.csv.meta.json": "c9833aa61a37ab27e663f6fba9787eb599c42a4af56d80db7ffbcb313c2c93d5",
+    "spin.csv.meta.json": "5cf743629174844a6ebc0c984361b9ab89c9f96c934d7b2efec22e82086cd8e8",
+    "static.csv.meta.json": "6ed31f9f28b749aee7c32b08e1789fa039e0ecb69897e30285ce5cab97110f18",
+    "unload.csv.meta.json": "442f8074239f11dbcf2f8c1299d4d4fd6551af8f4617bae4461c412c52537413"
+  },
+  "patch_sha256": "2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610",
+  "performance": {
+    "benchmark": {
+      "physical_duration_s": 5.0000000000003375,
+      "process_and_csv_runtime_s": 0.1736742509820033,
+      "recorded_steps": 5000,
+      "steps_per_wall_second_including_startup_and_csv": 28789.529661009547,
+      "warmup_steps": 1000
+    },
+    "native_mechanical_us": {
+      "mean_us": 12.0633858,
+      "median_us": 11.236,
+      "p95_us": 12.289,
+      "p99_us": 30.184,
+      "samples": 5000,
+      "worst_us": 367.641
+    },
+    "tire_update_us": {
+      "mean_us": 0.4680736,
+      "median_us": 0.441,
+      "p95_us": 0.531,
+      "p99_us": 0.981,
+      "samples": 5000,
+      "worst_us": 68.04
+    },
+    "total_step_us": {
+      "mean_us": 12.703482399999999,
+      "median_us": 11.7975,
+      "p95_us": 12.919,
+      "p99_us": 31.746,
+      "samples": 5000,
+      "worst_us": 368.472
+    }
+  },
+  "runtime": {
+    "binary": "/tmp/m23-build/corner",
+    "binary_sha256": "31e7fc188529c3f735512a62dc42aa0ab9141213ba41f609bea8c67e954c870e",
+    "chrono_original_cpp_sha256": "4e254282b6e45eeb17e7206d08eb512b08f1c5e20402b198b26de7026b93322a",
+    "chrono_source_head": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+    "cpu_lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+    "cxx_compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+    "linked_libraries": "\tlinux-vdso.so.1 (0x00007f402e519000)\n\tlibChrono_vehicle.so => /tmp/m22-variant/lib/libChrono_vehicle.so (0x00007f402dee1000)\n\tlibChrono_core.so => /tmp/m21-build/lib/libChrono_core.so (0x00007f402d28e000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f402d005000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f402cf15000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f402cee6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f402ccf2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f402e51b000)\n",
+    "machine": "x86_64",
+    "numpy": "2.3.5",
+    "patched_vehicle_library": "/tmp/m22-variant/lib/libChrono_vehicle.so",
+    "patched_vehicle_library_sha256": "dd95b45f7131196ce818434f3bd822bae45954bba9731c487b2b18a7c5a61d20",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "processor": "",
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+  },
+  "source_file_hashes": {
+    "CMakeLists.txt": "0a2f1957c4bd5b5326d61be76e74a73e97ce37de0fb9e15f0e2d1fc78650574d",
+    "first_sprung_corner.cpp": "4864278c68188d263f2cbd85c296c78db3720837deedce7855f91f81a9d8ad04",
+    "parameters.json": "5e7a9e3d81225e648ee898ce05be8e7c793b879e4d6c8470bcc561585f866434",
+    "run_experiments.py": "1ec832192025c52574b24febdcd78f75cd820a41dfca3a8bd9b3c7b6c22557ff"
+  },
+  "timestep_convergence": {
+    "refine_05ms": {
+      "common_samples": 1000,
+      "final_energy_residual_J": "-4.267031171362019e-12",
+      "state_errors_vs_0.25ms": {
+        "Fx_N": {
+          "max_abs": 12.197607359663039,
+          "rms": 1.2276510801150486
+        },
+        "body_z_m": {
+          "max_abs": 0.0,
+          "rms": 0.0
+        },
+        "carrier_z_m": {
+          "max_abs": 2.55351295663786e-15,
+          "rms": 4.660490927961624e-16
+        },
+        "normal_N": {
+          "max_abs": 4.845333023695275e-09,
+          "rms": 1.1631642151737032e-09
+        },
+        "relative_omega_rad_s": {
+          "max_abs": 0.0011241825495842683,
+          "rms": 0.00025964075487088027
+        },
+        "wheel_z_m": {
+          "max_abs": 5.551115123125783e-16,
+          "rms": 1.5691108440466028e-16
+        }
+      }
+    },
+    "refine_1ms": {
+      "common_samples": 500,
+      "final_energy_residual_J": "-1.5342838103910033e-11",
+      "state_errors_vs_0.25ms": {
+        "Fx_N": {
+          "max_abs": 37.061555541391954,
+          "rms": 3.7180249421820095
+        },
+        "body_z_m": {
+          "max_abs": 0.0,
+          "rms": 0.0
+        },
+        "carrier_z_m": {
+          "max_abs": 1.049160758270773e-14,
+          "rms": 1.9080725848391353e-15
+        },
+        "normal_N": {
+          "max_abs": 1.1249994713580236e-08,
+          "rms": 2.357322389993488e-09
+        },
+        "relative_omega_rad_s": {
+          "max_abs": 0.0034821662764645683,
+          "rms": 0.0007968749507229493
+        },
+        "wheel_z_m": {
+          "max_abs": 2.220446049250313e-15,
+          "rms": 4.195849941696801e-16
+        }
+      }
+    }
+  },
+  "trace_hashes": {
+    "bench.csv.gz": "89893cbf8c2bd510bcea422c90f691a5a59f8b66f2449c7ef24421e7c1d83be9",
+    "boundary.csv.gz": "4eca851872f48bdbe3cc7aa0dce0160e37e5fdf52a2ce6ac5eca66639b0d6a47",
+    "brake.csv.gz": "7da6be1ba62810c211d3980e09ee38237f4ad4c581375630af0f57a034191134",
+    "brake_high.csv.gz": "c066a17ac1a1922a463de18d2c696a61da014c8863d764af60e7d589480653ac",
+    "disturbance.csv.gz": "074bf1eb10e3338b4c151eee5b38df12cf9ec895825cb7e9384026b113a95a4f",
+    "drive.csv.gz": "f3d8f517d62c15f5e0e5c312d01b22eea72e771fde2822d9e75734a33a17a58a",
+    "refine_025ms.csv.gz": "5ce2aa24b4fd176da86000cf22ec76a9b73c140c95459713dc76d92c49b37475",
+    "refine_05ms.csv.gz": "fd9f03b2bf08191cd11b4e76a2b303c968e3d64454387a67dd8dfa1e45458758",
+    "refine_1ms.csv.gz": "68721640f2612eadee284922bdee2b9f9010d361a277d1ae15869c623f92d472",
+    "spin.csv.gz": "0ddd61b5e4c3c17f39dbab7176a92e8a7e699c2677976193776b715d59e03b81",
+    "static.csv.gz": "960e42d68d2cbc7120422869834b6fa95ae41c453fd2db6615795ad0c41be90f",
+    "unload.csv.gz": "36a33e79fafd021ba68f1c9060d1fee77ea999db442ecd766eaf2d6db1075b2b"
+  },
+  "trace_sizes_bytes": {
+    "bench.csv.gz": 1104330,
+    "boundary.csv.gz": 21801,
+    "brake.csv.gz": 78502,
+    "brake_high.csv.gz": 78930,
+    "disturbance.csv.gz": 899925,
+    "drive.csv.gz": 361145,
+    "refine_025ms.csv.gz": 859606,
+    "refine_05ms.csv.gz": 434946,
+    "refine_1ms.csv.gz": 221527,
+    "spin.csv.gz": 85396,
+    "static.csv.gz": 1762670,
+    "unload.csv.gz": 885102
+  },
+  "workspace_dirty_during_run": true
+}

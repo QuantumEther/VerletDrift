@@ -1,0 +1,23 @@
+{
+  "experiment_id": "M23-CORNER-001",
+  "upstream_chrono_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "research_patch_sha256": "2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610",
+  "coordinates": "ISO right handed: x forward, y left, z up",
+  "gravity_m_s2": 9.81,
+  "sprung_mass_kg": 280.0,
+  "carrier_mass_kg": 12.0,
+  "carrier_inertia_kg_m2": [0.2, 0.2, 0.2],
+  "wheel_mass_kg": 18.0,
+  "wheel_inertia_kg_m2": [0.4634, 0.6243, 0.4634],
+  "tire_mass_kg": 37.6,
+  "tire_inertia_kg_m2": [3.84, 6.69, 3.84],
+  "wheel_tire_assembly_mass_kg": 55.6,
+  "wheel_tire_assembly_inertia_kg_m2": [4.3034, 7.3143, 4.3034],
+  "spring_rate_N_m": 30000.0,
+  "damper_coefficient_N_s_m": 2000.0,
+  "master_timestep_s": 0.001,
+  "solver": "Chrono MINRES, maximum 50 iterations",
+  "tire": "Generic_TMeasyTire source fixture; original Generic wheel and tire mass/inertia",
+  "road": "FlatTerrain z=0, friction=0.8",
+  "limits": "No physical bump stops; finite-duration test inputs; no wheel lock constraint"
+}

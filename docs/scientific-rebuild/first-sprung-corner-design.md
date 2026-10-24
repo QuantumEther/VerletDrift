@@ -1,0 +1,13 @@
+# Mission 23 — first sprung corner design
+
+Experiment `M23-CORNER-001` is an isolated native Chrono quarter-corner bench on branch `scientific-rebuild/10-first-sprung-corner`, based on `e75a0650cd0001f13192aead8a416fca7189dd4d`. Its native dependencies are pinned Chrono `9a5072b5324e012a66d9fb7eaac0c679b8465e73` and the Mission 22 research-only `Fn <= 0` variant (patch SHA-256 `2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610`). Chrono source itself is unmodified.
+
+The sprung quarter body (280 kg) is attached to ground by a vertical prismatic guide. A separate 12 kg carrier has a vertical prismatic guide relative to the sprung body. A revolute joint attaches the wheel spindle to the carrier, leaving one real wheel-spin coordinate. The tire is Chrono `Generic_TMeasyTire` on `FlatTerrain`, with the native wheel and tire mass registered once on the spindle. The final spindle mass is 55.6 kg and inertia is `(4.3034, 7.3143, 4.3034) kg m²`; the free axle inertia is 7.3143 kg m². The assembly therefore has three mechanical coordinates: sprung heave, carrier heave, and wheel rotation. Longitudinal/lateral translation and other rotations remain constrained by the declared guides.
+
+Native TSDA suspension connects the sprung body and carrier at 30 kN/m and 2 kN·s/m. Tire depth is initialized from the native elastic normal law to support 3409.956 N, equal to the full fixture weight. Spring free length is set for static support of the sprung body at the chosen ride height. These are reproducible fixture choices, not calibration data for a production vehicle.
+
+Wheel shaft torque and brake torque are applied to the free revolute coordinate; Chrono supplies the opposite housing reaction. The brake is a bounded torque opposing spin and does not impose wheel lock. No engine, clutch, gearbox, differential, road vehicle acceleration, tire correction, or bump stop is present.
+
+At each fixed step the harness clears tire accumulators, synchronizes the snapshot, advances the native tire by `h`, applies the resulting hub wrench and shaft torque, calls `ChSystem::ForceUpdate()`, then calls `DoStepDynamics(h)`. The explicit force-cache invalidation is essential: without it, this Chrono assembly could consume a newly calculated contact or shaft input one step late. Every run records the tire evaluation time separately from the post-integration state time.
+
+See [the harness README](../../research/scientific-rebuild/first-sprung-corner/README.md), [parameters](../../research/scientific-rebuild/first-sprung-corner/parameters.json), and [saved results](../../research/scientific-rebuild/first-sprung-corner/results/).

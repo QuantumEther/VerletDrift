@@ -1,0 +1,9 @@
+# Mission 23 decision
+
+**Mechanical assembly: VERIFIED for the declared constrained fixture.** The system contains independent sprung heave, carrier heave, and wheel-spin coordinates. Native tire force reaches its constrained support, the revolute shaft torque produces the expected angular-momentum change, static support balances, and the sampled torque/brake work checks close. All 24 automated checks passed, including native step acceptance and timestep refinement.
+
+**Contact safety and energy: PARTIALLY VERIFIED.** The tested load reduction, near-zero unloading, separation, finite bristle history, and recontact traces remain finite with the Mission 22 patch. The assembled contact transform reaches a raw support of `-4.55e-13 N`, not a bit-exact zero; exact zero remains covered by the Mission 22 tire-level test. Transient energy ledgers involving internal bristle state and contact transitions remain incomplete. The fixture does not establish global passivity or real tire fidelity.
+
+**Vehicle-level behavior: NOT TESTED.** Longitudinal and lateral chassis coordinates remain constrained. No acceleration, steering, engine, clutch, gearbox, differential, or multi-wheel behavior is claimed. Production VerletDrift and all historical experiments remain unchanged.
+
+The single next experiment should release only the sprung body's longitudinal guide while keeping lateral translation and attitude constrained, then verify from rest that tire shaft torque creates the measured chassis acceleration and equal-and-opposite momentum/work exchange at 1, 0.5, and 0.25 ms. Keep the same tire, masses, contact parameters, and ports; stop if force direction, momentum balance, energy ledger, or convergence fails. This adds one chassis coordinate and is the smallest test of whether the present validated load path can move a sprung mass.

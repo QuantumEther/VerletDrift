@@ -1,0 +1,21 @@
+{
+  "experiment_id": "M23-CORNER-001",
+  "case": "refine",
+  "chrono_commit": "9a5072b5324e012a66d9fb7eaac0c679b8465e73",
+  "mission22_patch_sha256": "2f67a210a741588d10ff0a1c548d29daf5889a488bc4e5a2fef64d8c05a86610",
+  "master_step_s": 0.001,
+  "sprung_mass_kg": 280,
+  "carrier_mass_kg": 12,
+  "wheel_tire_mass_kg": 55.600000000000001,
+  "wheel_tire_inertia_kg_m2": [4.3033999999999999,7.3143000000000002,4.3033999999999999],
+  "target_static_normal_N": 3409.9560000000006,
+  "initial_static_depth_m": 0.0082942895853570404,
+  "local_tire_vertical_stiffness_N_m": 411120.92420985393,
+  "tire_vertical_damping_N_s_m": 3931.6849759750526,
+  "spring_rate_N_m": 30000,
+  "suspension_damping_N_s_m": 2000,
+  "wheel_tire_axle_inertia_kg_m2": 7.3143000000000002,
+  "solver": "MINRES max 50 iterations, tolerance 1e-10",
+  "tire_update_order": "Synchronize, Advance(h), Wheel::Synchronize, ForceUpdate, DoStepDynamics(h)",
+  "warmup_steps": 0
+}
