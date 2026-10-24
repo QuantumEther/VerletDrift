@@ -1,0 +1,163 @@
+{
+  "step_s": 0.001,
+  "duration_s": 1,
+  "ratio": 4,
+  "results": [
+    {
+      "scenario": "free",
+      "mode": "open",
+      "engine_rad_s": 66.66666666666801,
+      "shaft_rad_s": 0,
+      "clutchState": "disengaged",
+      "torque_Nm": 0,
+      "heat_J": 0,
+      "rear_rad_s": [
+        0,
+        0
+      ]
+    },
+    {
+      "scenario": "free",
+      "mode": "locked",
+      "engine_rad_s": 66.66666666666801,
+      "shaft_rad_s": 0,
+      "clutchState": "disengaged",
+      "torque_Nm": 0,
+      "heat_J": 0,
+      "rear_rad_s": [
+        0,
+        0
+      ]
+    },
+    {
+      "scenario": "engage",
+      "mode": "open",
+      "engine_rad_s": 66.66666666666806,
+      "shaft_rad_s": 66.66666666666806,
+      "clutchState": "locked",
+      "torque_Nm": 0,
+      "heat_J": 500.0000000000087,
+      "rear_rad_s": [
+        16.666666666667016,
+        16.666666666667016
+      ]
+    },
+    {
+      "scenario": "engage",
+      "mode": "locked",
+      "engine_rad_s": 66.66666666666806,
+      "shaft_rad_s": 66.66666666666806,
+      "clutchState": "locked",
+      "torque_Nm": 0,
+      "heat_J": 500.0000000000087,
+      "rear_rad_s": [
+        16.666666666667016,
+        16.666666666667016
+      ]
+    },
+    {
+      "scenario": "static",
+      "mode": "open",
+      "engine_rad_s": 44.4444444444443,
+      "shaft_rad_s": 44.4444444444443,
+      "clutchState": "locked",
+      "torque_Nm": 6.666666666666668,
+      "heat_J": 0,
+      "rear_rad_s": [
+        11.111111111111075,
+        11.111111111111075
+      ]
+    },
+    {
+      "scenario": "static",
+      "mode": "locked",
+      "engine_rad_s": 44.4444444444443,
+      "shaft_rad_s": 44.4444444444443,
+      "clutchState": "locked",
+      "torque_Nm": 6.666666666666668,
+      "heat_J": 0,
+      "rear_rad_s": [
+        11.111111111111075,
+        11.111111111111075
+      ]
+    },
+    {
+      "scenario": "overload",
+      "mode": "open",
+      "engine_rad_s": 323.333333333328,
+      "shaft_rad_s": 19.99999999999966,
+      "clutchState": "slipping",
+      "torque_Nm": 3,
+      "heat_J": 454.9999999999963,
+      "rear_rad_s": [
+        4.999999999999916,
+        4.999999999999916
+      ]
+    },
+    {
+      "scenario": "overload",
+      "mode": "locked",
+      "engine_rad_s": 323.333333333328,
+      "shaft_rad_s": 19.99999999999966,
+      "clutchState": "slipping",
+      "torque_Nm": 3,
+      "heat_J": 454.9999999999963,
+      "rear_rad_s": [
+        4.999999999999916,
+        4.999999999999916
+      ]
+    },
+    {
+      "scenario": "backdrive",
+      "mode": "open",
+      "engine_rad_s": 13.333333333333298,
+      "shaft_rad_s": 13.333333333333298,
+      "clutchState": "locked",
+      "torque_Nm": 0,
+      "heat_J": 79.9999999999997,
+      "rear_rad_s": [
+        3.3333333333333246,
+        3.3333333333333246
+      ]
+    },
+    {
+      "scenario": "backdrive",
+      "mode": "locked",
+      "engine_rad_s": 13.333333333333298,
+      "shaft_rad_s": 13.333333333333298,
+      "clutchState": "locked",
+      "torque_Nm": 0,
+      "heat_J": 79.9999999999997,
+      "rear_rad_s": [
+        3.3333333333333246,
+        3.3333333333333246
+      ]
+    },
+    {
+      "scenario": "turn",
+      "mode": "open",
+      "engine_rad_s": 15.690530289243943,
+      "shaft_rad_s": 15.690530289243943,
+      "clutchState": "locked",
+      "torque_Nm": 15.317038314537731,
+      "heat_J": 1.6570320723301068e-15,
+      "rear_rad_s": [
+        3.585953511924582,
+        4.25931163269739
+      ]
+    },
+    {
+      "scenario": "turn",
+      "mode": "locked",
+      "engine_rad_s": 14.869670903634782,
+      "shaft_rad_s": 14.869670903634782,
+      "clutchState": "locked",
+      "torque_Nm": 15.63719864773816,
+      "heat_J": 5.325509379126207e-17,
+      "rear_rad_s": [
+        3.7174177259086956,
+        3.7174177259086956
+      ]
+    }
+  ]
+}
