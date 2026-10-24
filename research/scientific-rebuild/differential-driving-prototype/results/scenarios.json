@@ -1,0 +1,217 @@
+{
+  "configuration": "1 ms, 2 s; rear torque 20 Nm; turn steer .3 rad; support retract .5–1.0 s",
+  "results": [
+    {
+      "scenario": "uniform",
+      "mode": "independent",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8735716914241008,
+      "rear_rad_s": [
+        2.7345962009623173,
+        2.7345962009623173
+      ],
+      "output_Nm": [
+        10,
+        10
+      ],
+      "peakDifference_rad_s": 5.551115123125783e-17,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 4.515485207967629e-15
+    },
+    {
+      "scenario": "uniform",
+      "mode": "open",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8503188948520235,
+      "rear_rad_s": [
+        2.661806698989534,
+        2.661806698989534
+      ],
+      "output_Nm": [
+        9.734212204975535,
+        9.734212204975535
+      ],
+      "peakDifference_rad_s": 5.551115123125783e-17,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 5.2111093218343285e-15
+    },
+    {
+      "scenario": "uniform",
+      "mode": "locked",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8503188948520238,
+      "rear_rad_s": [
+        2.6618066989895346,
+        2.6618066989895346
+      ],
+      "output_Nm": [
+        9.73421220497557,
+        9.734212204975575
+      ],
+      "peakDifference_rad_s": 0,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 5.7055055124877185e-15
+    },
+    {
+      "scenario": "turn",
+      "mode": "independent",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8300686226938223,
+      "rear_rad_s": [
+        2.36758189286796,
+        2.8297052182326725
+      ],
+      "output_Nm": [
+        10,
+        10
+      ],
+      "peakDifference_rad_s": 0.46212332536471257,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 4.728856195512776e-15
+    },
+    {
+      "scenario": "turn",
+      "mode": "open",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8088628876345103,
+      "rear_rad_s": [
+        2.3069947564560818,
+        2.757524317430626
+      ],
+      "output_Nm": [
+        9.74882453049989,
+        9.74882453049989
+      ],
+      "peakDifference_rad_s": 0.4505295609745441,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 5.001207781241135e-15
+    },
+    {
+      "scenario": "turn",
+      "mode": "locked",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.4838677203280612,
+      "rear_rad_s": [
+        1.550163958573466,
+        1.550163958573466
+      ],
+      "output_Nm": [
+        71.62622974900505,
+        -51.85413861943093
+      ],
+      "peakDifference_rad_s": 0,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 1.883042333172824e-15
+    },
+    {
+      "scenario": "asymmetric",
+      "mode": "independent",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.7744758867138621,
+      "rear_rad_s": [
+        6.95936124022367,
+        2.4269198696367926
+      ],
+      "output_Nm": [
+        10,
+        10
+      ],
+      "peakDifference_rad_s": 4.532441370586877,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 1.1129985821867194e-14
+    },
+    {
+      "scenario": "asymmetric",
+      "mode": "open",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.7547499822685655,
+      "rear_rad_s": [
+        6.106987371642298,
+        2.3646899742826344
+      ],
+      "output_Nm": [
+        9.576647626473685,
+        9.576647626473685
+      ],
+      "peakDifference_rad_s": 3.742297397359664,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 8.642392357316453e-15
+    },
+    {
+      "scenario": "asymmetric",
+      "mode": "locked",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8500868484775769,
+      "rear_rad_s": [
+        2.6656280904823277,
+        2.6656280904823277
+      ],
+      "output_Nm": [
+        7.834291339210965,
+        11.633540832887967
+      ],
+      "peakDifference_rad_s": 0,
+      "minimumRL_N": 255.06000000000003,
+      "maxRotorEnergyResidual_J": 5.8945903713691905e-15
+    },
+    {
+      "scenario": "unload",
+      "mode": "independent",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8735700062439848,
+      "rear_rad_s": [
+        2.734590934774455,
+        2.734590934774455
+      ],
+      "output_Nm": [
+        10,
+        10
+      ],
+      "peakDifference_rad_s": 4.626331719486622,
+      "minimumRL_N": 0,
+      "maxRotorEnergyResidual_J": 5.842548667089886e-15
+    },
+    {
+      "scenario": "unload",
+      "mode": "open",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.8503175653699667,
+      "rear_rad_s": [
+        2.6618025443581064,
+        2.6618025443581064
+      ],
+      "output_Nm": [
+        9.734212204975568,
+        9.734212204975568
+      ],
+      "peakDifference_rad_s": 4.177713789335198,
+      "minimumRL_N": 0,
+      "maxRotorEnergyResidual_J": 5.5164206536062466e-15
+    },
+    {
+      "scenario": "unload",
+      "mode": "locked",
+      "time_s": 1.9999999999998905,
+      "speed_m_s": 0.850312877865492,
+      "rear_rad_s": [
+        2.6617878959066235,
+        2.6617878959066235
+      ],
+      "output_Nm": [
+        9.734212204975606,
+        9.734212204975606
+      ],
+      "peakDifference_rad_s": 0,
+      "minimumRL_N": 0,
+      "maxRotorEnergyResidual_J": 4.829470157119431e-15
+    }
+  ],
+  "anomaly": {
+    "time_s": 0.1410000000000001,
+    "frontNormal_N": 0,
+    "rearPerWheel_N": 270.1029964028519,
+    "tireCompression_m": 0.0046126537340076545,
+    "frontHubVerticalVelocity_m_s": 1.147543414578494,
+    "pitch_rad": 0.010521410394307412
+  }
+}
