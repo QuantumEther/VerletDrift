@@ -1,0 +1,150 @@
+{
+  "comparisons": 2299500,
+  "openClutchComparisons": 464,
+  "maxBrowserNodeDifference": 0,
+  "candidates": [
+    {
+      "pressurePa": 40000,
+      "hz": 50,
+      "to810": 5.88,
+      "maxResidual": 3.126388037344441e-13
+    },
+    {
+      "pressurePa": 40000,
+      "hz": 100,
+      "to810": 5.88,
+      "maxResidual": 3.126388037344441e-13
+    },
+    {
+      "pressurePa": 40000,
+      "hz": 200,
+      "to810": 5.885,
+      "maxResidual": 3.872457909892546e-13
+    },
+    {
+      "pressurePa": 40000,
+      "hz": 400,
+      "to810": 5.89,
+      "maxResidual": 3.8813396940895473e-13
+    },
+    {
+      "pressurePa": 65000,
+      "hz": 50,
+      "to810": 5.12,
+      "maxResidual": 3.126388037344441e-13
+    },
+    {
+      "pressurePa": 65000,
+      "hz": 100,
+      "to810": 5.13,
+      "maxResidual": 3.019806626980426e-13
+    },
+    {
+      "pressurePa": 65000,
+      "hz": 200,
+      "to810": 5.135,
+      "maxResidual": 3.3928415632544784e-13
+    },
+    {
+      "pressurePa": 65000,
+      "hz": 400,
+      "to810": 5.135,
+      "maxResidual": 3.1796787425264483e-13
+    },
+    {
+      "pressurePa": 85000,
+      "hz": 50,
+      "to810": 4.64,
+      "maxResidual": 2.3447910280083306e-13
+    },
+    {
+      "pressurePa": 85000,
+      "hz": 100,
+      "to810": 4.66,
+      "maxResidual": 3.126388037344441e-13
+    },
+    {
+      "pressurePa": 85000,
+      "hz": 200,
+      "to810": 4.67,
+      "maxResidual": 3.7125857943465235e-13
+    },
+    {
+      "pressurePa": 85000,
+      "hz": 400,
+      "to810": 4.67,
+      "maxResidual": 3.4994229736184934e-13
+    }
+  ],
+  "convergence": [
+    {
+      "hz": 50,
+      "maxCurveErrorRpm": 3.2562016602096264
+    },
+    {
+      "hz": 100,
+      "maxCurveErrorRpm": 1.575748601341047
+    },
+    {
+      "hz": 200,
+      "maxCurveErrorRpm": 0.7353862750790086
+    },
+    {
+      "hz": 400,
+      "maxCurveErrorRpm": 0.3151734455002497
+    }
+  ],
+  "core": [
+    {
+      "name": "legacy",
+      "individual": {
+        "meanUs": 0.3095823999997947,
+        "p95Us": 0.48100000003614696,
+        "worstUs": 98.48599999997987
+      },
+      "batchMean": {
+        "meanUs": 0.10558669600000029,
+        "p95Us": 0.1702972000000045,
+        "worstUs": 0.6339703999999984
+      },
+      "stepsPerWallSecond": 9470890.15835856
+    },
+    {
+      "name": "candidate",
+      "individual": {
+        "meanUs": 0.1899608999999373,
+        "p95Us": 0.20099999994727114,
+        "worstUs": 12.939000000073975
+      },
+      "batchMean": {
+        "meanUs": 0.1540089220000016,
+        "p95Us": 0.18842420000000856,
+        "worstUs": 1.3199784000000137
+      },
+      "stepsPerWallSecond": 6493130.313580077
+    }
+  ],
+  "evaluation": [
+    {
+      "name": "legacy",
+      "meanUs": 0.12024075999962407,
+      "p95Us": 0.17099999990932702,
+      "worstUs": 79.58799999983057
+    },
+    {
+      "name": "candidate",
+      "meanUs": 0.22723053999904097,
+      "p95Us": 0.3300000000763248,
+      "worstUs": 198.3349999998154
+    }
+  ],
+  "checksum": 18556248.152503286,
+  "untouchedProductionFiles": 96,
+  "runtime": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "notes": [
+    "Individual timings include timer overhead and scheduling outliers. Batch means amortize timer cost.",
+    "Evaluator receives reusable output: no source-level per-evaluation allocation. Engine sync retains existing impulse-object allocations.",
+    "Microbenchmark is not full simulator FPS. No heavy browser/test job runs concurrently."
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "baseline": "3870cc9",
+  "historicalExactParity": false,
+  "reason": "Intentional engine torque change; original exact-parity assertion retained unchanged.",
+  "comparisons": [
+    {
+      "name": "gentle-launch",
+      "differentFields": 20006,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 1202.6406991993058,
+        "candidate": 1199.5740838146155
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "upshift",
+      "differentFields": 23472,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 3570.478413336567,
+        "candidate": 3570.511244313515
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "engine-braking",
+      "differentFields": 23126,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 3518.658439819905,
+        "candidate": 3511.3206768405416
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "hard-brake",
+      "differentFields": 15905,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 5841.846711905055,
+        "candidate": 5832.9198518353605
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "steering-reversal",
+      "differentFields": 17487,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 3518.658439819905,
+        "candidate": 3511.3206768405416
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "steering-release",
+      "differentFields": 23600,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 3518.658439819905,
+        "candidate": 3511.3206768405416
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    },
+    {
+      "name": "handbrake",
+      "differentFields": 23466,
+      "first": {
+        "tick": 1,
+        "column": "rpm",
+        "baseline": 3549.750423929902,
+        "candidate": 3547.127835958092
+      },
+      "baselineAnomalies": [],
+      "candidateAnomalies": []
+    }
+  ]
+}

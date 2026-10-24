@@ -1,3 +1,4 @@
+import {validateEngineTorqueParameters} from '../physics/engine-torque.js';
 import {SMOKE_MATERIAL_DEFAULTS} from '../renderer/smoke-material-controls.js';
 import {SMOKE_AIRFLOW_DEFAULTS} from '../renderer/vehicle-airflow.js';
 import { SCENE_DEFAULTS, LIGHT_PRESETS } from '../renderer/environment.js';
@@ -131,6 +132,7 @@ export function importSettings(data) {
  const candidate = binding => staged.find(x=>x.target===binding.scope&&x.key===binding.key)?.value ?? binding.scope[binding.key];
  for(const [lowId,highId] of pairs)if(candidate(controlBindings.get(lowId))>candidate(controlBindings.get(highId)))throw Error(`${lowId} must not exceed ${highId}.`);
  if(staged.some(x=>x.key==='smokeLockedThreshold'&&(x.value < -1 || x.value > 0)))throw Error('Smoke lock threshold must be between -1 and 0.');
+ validateEngineTorqueParameters({...state.params,...Object.fromEntries(staged.filter(x=>x.target===state.params).map(x=>[x.key,x.value]))});
  // No mutations before the entire file has passed validation.
  for(const item of staged) {
   if(item.binding)writeBinding(item.binding,item.value);

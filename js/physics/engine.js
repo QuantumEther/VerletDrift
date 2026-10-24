@@ -2,10 +2,13 @@
 // Tick: engine external impulse -> shaft-aware tire contacts -> finite clutch impulse.
 import { physicsState as state } from '../state.js';
 import { updateEngineSound as soundUpdate, triggerGearChange as soundGearChange } from '../sound.js';
-import { TORQUE_PEAK_RPM, TAU } from '../constants.js';
+import { TAU } from '../constants.js';
 import { clamp, gearRatio, clutchImpulse, frictionImpulse, clutchBrakeImpulse } from './drivetrain-rotation.js';
 import { computeWheelBrakeCapacity } from './wheel.js';
 import { eventBuffer } from '../debug/events.js';
+
+import {engineTorques} from './engine-torque.js';
+const torqueScratch={};
 
 const rpmOf = omega => Math.abs(omega) * 60 / TAU;
 function prepare() {
@@ -91,23 +94,34 @@ export function updateEngine(dt) {
   e.revMatchTimer=0; // No driver-assistance rev matching.
   checkStall();
   const throttle=input.mouseThrottleActive?input.mouseThrottleAmount:input.throttleKeyHeld?1:0;
-  const signedRpm=e.omega*60/TAU;
-  const drag=p.peakEngineTorqueNm*.035+Math.abs(e.omega)*.01;
-  const governor=clamp(drag+(p.idleRpm-signedRpm)*.05,0,p.peakEngineTorqueNm*.25);
-  const curve=Math.max(0,1-2.5*((signedRpm-TORQUE_PEAK_RPM)/(p.redlineRpm-p.idleRpm))**2);
-  const combustion=e.mode==='running'&&e.omega>0&&signedRpm<p.redlineRpm
-    ? p.peakEngineTorqueNm*curve*throttle+governor : 0;
-  const starter=e.mode==='starting'?p.starterTorqueNm:0;
+  const t=engineTorques(e.omega,throttle,e.mode,p,torqueScratch);
   const old=e.omega, Ie=p.engineInertiaKgM2;
-  // Backward Euler viscous drag and bounded Coulomb friction: no reverse kick
-  // from drag at rest, no clamp suppressing mechanically backwards rotation.
-  const free=(old+(combustion+starter)*dt/Ie)/(1+.01*dt/Ie);
-  e.omega=Math.sign(free)*Math.max(0,Math.abs(free)-p.peakEngineTorqueNm*.035*dt/Ie/(1+.01*dt/Ie));
-  const midpoint=(old+e.omega)/2;
-  e.combustionTorqueNm=combustion; e.starterTorqueNm=starter;
-  e.starterWorkJ+=starter*midpoint*dt;
-  e.externalWorkJ=(combustion+starter)*midpoint*dt;
-  e.dragWorkJ=e.externalWorkJ-.5*Ie*(e.omega**2-old**2);
+  const drive=t.combustion+t.idle+t.starter;
+  // Same bounded BE free-engine update as before, with explicit physical loss
+  // components. This changes neither clutch/contact integration nor crank inertia.
+  const accelerated=old+drive*dt/Ie;
+  const denominator=1+t.viscous*dt/Ie;
+  const free=accelerated/denominator;
+  const constant=t.coulomb+t.pumping;
+  e.omega=Math.sign(free)*Math.max(0,Math.abs(free)-constant*dt/Ie/denominator);
+  // Work uses each operator's own midpoint. Passive stages cannot create energy,
+  // including starter-driven crank reversal; do not multiply all by one midpoint.
+  const driveMid=(old+accelerated)/2;
+  const viscousWork=.5*Ie*(accelerated**2-free**2);
+  const constantWork=.5*Ie*(free**2-e.omega**2);
+  const fraction=constant>0?t.pumping/constant:0;
+  const constantTorque=Ie*(free-e.omega)/dt;
+  e.indicatedTorqueNm=t.combustion; e.idleTorqueNm=t.idle;
+  e.combustionTorqueNm=t.combustion+t.idle; // Existing consumers include idle torque.
+  e.starterTorqueNm=t.starter;e.fuelCut=t.fuelCut;e.limiterFraction=t.limiter;
+  e.pumpingTorqueNm=constantTorque*fraction;
+  e.frictionTorqueNm=Ie*(accelerated-free)/dt+constantTorque*(1-fraction);
+  e.combustionWorkJ=t.combustion*driveMid*dt;e.idleWorkJ=t.idle*driveMid*dt;
+  e.starterWorkJ+=t.starter*driveMid*dt;
+  e.externalWorkJ=drive*driveMid*dt;
+  e.pumpingWorkJ=constantWork*fraction;
+  e.frictionWorkJ=viscousWork+constantWork*(1-fraction);
+  e.dragWorkJ=e.frictionWorkJ+e.pumpingWorkJ;
   e.netEngineImpulse=Ie*(e.omega-old);
   e.transmittedTorqueNm=0;
   if(e.mode==='starting'&&e.omega>=p.starterFiringRpm*TAU/60)e.mode='running';

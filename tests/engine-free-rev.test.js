@@ -1,10 +1,13 @@
 import {describe,it,expect,vi} from 'vitest';
 vi.hoisted(()=>{globalThis.localStorage={getItem:()=>null,setItem:()=>{}};});
+// Preserve all legacy coefficient-specific assertions against the frozen Mission 8
+// implementation. Mission 9 production behavior has its own independent suite.
+vi.mock('../js/physics/engine.js',()=>import('../research/engine-torque-model/legacy-engine.mjs'));
 import {reset,step,run,scenarios} from '../research/engine-free-rev/harness.mjs';
 import capture from '../docs/engine-free-rev-data/parameters.json';
 const p=capture.parameters;
 const rates=[50,100,200,400];
-describe('isolated production engine using captured browser defaults',()=>{
+describe('preserved Mission 8 engine using captured browser defaults',()=>{
  it.each(rates)('holds neutral idle without wheel access at %i Hz',hz=>{
    reset(p);for(let i=0;i<hz*5;i++){const r=step(1/hz);expect(r.rpm).toBeCloseTo(800,8);expect(r.clutchTorque).toBe(0);}
  });

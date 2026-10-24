@@ -1,3 +1,4 @@
+import {ENGINE_TORQUE_DEFAULTS} from './physics/engine-torque.js';
 import {SMOKE_MATERIAL_DEFAULTS} from './renderer/smoke-material-controls.js';
 import {SMOKE_AIRFLOW_DEFAULTS} from './renderer/vehicle-airflow.js';
 // =============================================================
@@ -515,7 +516,8 @@ const state = {
     clutchBiteCurve:  1.8,
     clutchEngageTime: 0.30,
 
-    // --- Engine & Drivetrain (new sliders) ---
+    // --- Engine & Drivetrain (physical coefficients plus existing controls) ---
+    ...ENGINE_TORQUE_DEFAULTS,
     peakEngineTorqueNm: PEAK_ENGINE_TORQUE_NM,
     engineInertiaKgM2:   ENGINE_INERTIA_KG_M2,
     gearboxInputInertiaKgM2: .02, // Lumped input shaft; assumed, not vehicle calibrated.
