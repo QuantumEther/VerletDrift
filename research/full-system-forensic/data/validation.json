@@ -1,0 +1,25 @@
+{
+  "sourceRevision": "ec72edfb4b9ffcbcf8f875177a4549e68f1ef6d4",
+  "productionChanges": false,
+  "existingUnitSuite": {
+    "command": "npm test",
+    "passed": 335,
+    "failed": 7,
+    "failureGroups": [
+      "4 static-clutch heat assertions",
+      "3 wheel-omega audit expectations"
+    ]
+  },
+  "auditChecks": {
+    "command": "node research/full-system-forensic/check.mjs",
+    "passed": 2,
+    "failed": 4,
+    "results": "checks.json"
+  },
+  "browserOwnership": {
+    "command": "CORNERING_SOFTWARE_GPU=1 node node_modules/@playwright/test/cli.js test -c research/cornering-performance/playwright.config.mjs tests/e2e/steering-render-paths.spec.js",
+    "passed": 2,
+    "failed": 0
+  },
+  "hardwareLimit": "Cloud Canvas/software WebGPU; no RTX 5090 or physical high-refresh presentation measurements."
+}

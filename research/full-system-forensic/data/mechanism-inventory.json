@@ -1,0 +1,1097 @@
+[
+  {
+    "file": "js/main.js",
+    "line": 24,
+    "source": "//  14.  applySleepIfNeeded()         [PHASE 3b: new sleep rule]"
+  },
+  {
+    "file": "js/main.js",
+    "line": 69,
+    "source": "applySleepIfNeeded,"
+  },
+  {
+    "file": "js/main.js",
+    "line": 419,
+    "source": "const wallFrameTime = Math.min("
+  },
+  {
+    "file": "js/main.js",
+    "line": 444,
+    "source": "const maxSubstepsPerFrame = Math.max(1, Math.round(state.params.maxSubstepsPerFrame || 6));"
+  },
+  {
+    "file": "js/main.js",
+    "line": 467,
+    "source": "// Stabilizer #1 \u2014 hard-cap backlog: once we hit the per-frame substep cap,"
+  },
+  {
+    "file": "js/main.js",
+    "line": 473,
+    "source": "const droppedSubsteps = Math.floor(state.loop.accumulator / physicsWallDt);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 474,
+    "source": "state.loop.droppedSubsteps += droppedSubsteps;"
+  },
+  {
+    "file": "js/main.js",
+    "line": 475,
+    "source": "state.loop.droppedSubstepsLastFrame = droppedSubsteps;"
+  },
+  {
+    "file": "js/main.js",
+    "line": 478,
+    "source": "state.loop.droppedSubstepsLastFrame = 0;"
+  },
+  {
+    "file": "js/main.js",
+    "line": 483,
+    "source": "state.loop.droppedSubstepsLastFrame = 0;"
+  },
+  {
+    "file": "js/main.js",
+    "line": 484,
+    "source": "// Fire one-shot freeze event (no-ops after first call until resetFaultState())"
+  },
+  {
+    "file": "js/main.js",
+    "line": 536,
+    "source": "// Reset frame flags"
+  },
+  {
+    "file": "js/main.js",
+    "line": 541,
+    "source": "performance.now() - profileStart, state.loop.droppedSubstepsLastFrame);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 554,
+    "source": "state.input.handbrakeValue = Math.min(1.0, (state.input.handbrakeValue || 0) + dt / 0.25);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 556,
+    "source": "state.input.handbrakeValue = Math.max(0.0, (state.input.handbrakeValue || 0) - dt / 0.15);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 574,
+    "source": "// to work with. See Deep Research Report: \"Derived-state reset bug\"."
+  },
+  {
+    "file": "js/main.js",
+    "line": 598,
+    "source": "//   3.0 \u2192 sporty stability control"
+  },
+  {
+    "file": "js/main.js",
+    "line": 599,
+    "source": "//   5.0 \u2192 heavy stability assist"
+  },
+  {
+    "file": "js/main.js",
+    "line": 621,
+    "source": "// 12. Do not clamp displacement history: distance-per-step clamping changes"
+  },
+  {
+    "file": "js/main.js",
+    "line": 636,
+    "source": "// === PHASE 3b: SLEEP RULE ==="
+  },
+  {
+    "file": "js/main.js",
+    "line": 637,
+    "source": "// Apply sleep/settle rule to prevent micro-drifting at very low speeds."
+  },
+  {
+    "file": "js/main.js",
+    "line": 640,
+    "source": "applySleepIfNeeded();"
+  },
+  {
+    "file": "js/main.js",
+    "line": 667,
+    "source": "Math.max(state.tractionState.lateralSpeed || 0, state.driftIntensity * 12.0)"
+  },
+  {
+    "file": "js/main.js",
+    "line": 847,
+    "source": "const maxGhosts = Math.max(1, (state.params.motionBlurSamples || 6));"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1024,
+    "source": "skidFadeState[wheelName] = Math.min(1.0, skidFadeState[wheelName] + fadeRate * dt);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1026,
+    "source": "skidFadeState[wheelName] = Math.max(0.0, skidFadeState[wheelName] - fadeRate * dt);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1046,
+    "source": "// Track contact duration (reset when decal index changes)"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1063,
+    "source": "const normalLoad = Math.min(wheelLoad / 8000, 1.5);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1064,
+    "source": "const contactB   = Math.min(tp.contactDuration * 1.5, 1.0);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1065,
+    "source": "const rate       = pickupRate * normalLoad * contactB * Math.max(d.alpha, 0.1);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1069,
+    "source": "tp.saturation = Math.min(satPickupRate * dt * rate * 4, 1.0);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1073,
+    "source": "tp.saturation = Math.min(tp.saturation + satPickupRate * rate * dt, 1.0);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1075,
+    "source": "d.alpha = Math.max(0.01, d.alpha - decalDepletion * dt);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1080,
+    "source": "tp.saturation = Math.max(0, tp.saturation - dt * depletionRate * (0.5 + driftIntensity * 0.5));"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1099,
+    "source": "const excessUtilization = Math.max(0, u - skidUtilThreshold);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1102,
+    "source": "const jerkBoost = Math.min((body.jerkMagnitude || 0) / 300, jerkBoostMax);"
+  },
+  {
+    "file": "js/main.js",
+    "line": 1103,
+    "source": "const alpha     = Math.min(baseAlpha * fade + jerkBoost, 0.95);"
+  },
+  {
+    "file": "js/state.js",
+    "line": 445,
+    "source": "droppedSubsteps:   0, // number of sub-steps dropped due to per-frame cap"
+  },
+  {
+    "file": "js/state.js",
+    "line": 446,
+    "source": "droppedSubstepsLastFrame: 0, // sub-steps dropped in the most recent render frame"
+  },
+  {
+    "file": "js/state.js",
+    "line": 869,
+    "source": "// SAT (Self-Aligning Torque) clamp state tracking"
+  },
+  {
+    "file": "js/state.js",
+    "line": 870,
+    "source": "satClamped: false,"
+  },
+  {
+    "file": "js/state.js",
+    "line": 871,
+    "source": "satClampCount: 0,"
+  },
+  {
+    "file": "js/input.js",
+    "line": 288,
+    "source": "// Clamp so the visual doesn't spin forever with large drags."
+  },
+  {
+    "file": "js/input.js",
+    "line": 299,
+    "source": "state.input.mouseThrottleAmount = Math.max(0, Math.min(1, normalisedDrag));"
+  },
+  {
+    "file": "js/input.js",
+    "line": 312,
+    "source": "// Do NOT reset mouseThrottleAmount here \u2014 let physics read the last value"
+  },
+  {
+    "file": "js/input.js",
+    "line": 314,
+    "source": "// Actually, we do want to reset it so the car doesn't hold throttle if the"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 464,
+    "source": "const scale = Math.min("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 466,
+    "source": "Math.sqrt(renderQuality.maxPixels / Math.max(1, width * height)),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 467,
+    "source": "limit / Math.max(1, width),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 468,
+    "source": "limit / Math.max(1, height),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 470,
+    "source": "width = Math.max(1, Math.floor(width * scale));"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 471,
+    "source": "height = Math.max(1, Math.floor(height * scale));"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 478,
+    "source": "const a = s * Math.min(l, 1 - l);"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 481,
+    "source": "out[offset + i] = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 543,
+    "source": "const elapsed = Math.max("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 545,
+    "source": "Math.min(0.1, state.loop.simulationTime - lastSimTime),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 553,
+    "source": "const speedNorm = Math.max("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 556,
+    "source": "Math.max(1, 40 - (p.motionBlurThreshold ?? 10)),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 558,
+    "source": "const clamp = (v) => Math.max(0, Math.min(1, v));"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 559,
+    "source": "const target = clamp("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 560,
+    "source": "clamp(speedNorm * speedNorm) * (p.blurSpeedWeight ?? 0.5) +"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 562,
+    "source": "clamp(Math.abs(body.angularVelocity) / 2.5) *"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 564,
+    "source": "clamp("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 587,
+    "source": "active ? Math.min(body.speed * 0.24 * blur, p.blurMaxOffset ?? 5) : 0,"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 588,
+    "source": "active ? Math.min(p.motionBlurSamples ?? 6, 32) : 1,"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 603,
+    "source": "Math.max(0, 1 - a.age / a.lifespan),"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 626,
+    "source": "const t = Math.min(1, f - 1);"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 653,
+    "source": "index < (proceduralVisuals?0:Math.min(state.splatParticles.length, MAX_PARTICLES));"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 668,
+    "source": "renderStats.omittedSplats = Math.max("
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 703,
+    "source": "const dx=-sun[0]/Math.max(.25,sun[2])*.65,dy=-sun[1]/Math.max(.25,sun[2])*.65;"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 733,
+    "source": "const shadowX=p.sceneLightingEnabled===false?.12:-environmentData[0]/Math.max(.25,environmentData[2])*.7;"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 734,
+    "source": "const shadowY=p.sceneLightingEnabled===false?.18:-environmentData[1]/Math.max(.25,environmentData[2])*.7;"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 736,
+    "source": "if (!visible(b.x,b.y,b.radius*1.2+Math.abs(shadowX),Math.max(b.radius*2+.18,b.radius*.7+Math.abs(shadowY)))) {"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 814,
+    "source": "lo = Math.min(lo, i);"
+  },
+  {
+    "file": "js/gpu-renderer.js",
+    "line": 815,
+    "source": "hi = Math.max(hi, i);"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 6,
+    "source": "//   constraints.js  \u2014 solveRigidBodyConstraints, clampParticleDisplacements,"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 8,
+    "source": "//   suspension.js   \u2014 updateSuspension, resetSuspension"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 11,
+    "source": "//   engine.js       \u2014 updateEngine, handleGearChange, applySleepIfNeeded, updateEngineSound"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 17,
+    "source": "export { solveRigidBodyConstraints, clampParticleDisplacements,"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 21,
+    "source": "export { updateEngine, synchronizeEngineWithWheels, handleGearChange, applySleepIfNeeded,"
+  },
+  {
+    "file": "js/physics/index.js",
+    "line": 26,
+    "source": "export { updateSuspension, resetSuspension } from './suspension.js';"
+  },
+  {
+    "file": "js/physics/drivetrain-rotation.js",
+    "line": 3,
+    "source": "export const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));"
+  },
+  {
+    "file": "js/physics/drivetrain-rotation.js",
+    "line": 14,
+    "source": "const impulse = clamp(required, -capacity * dt, capacity * dt);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 6,
+    "source": "import { clamp, gearRatio, clutchImpulse, frictionImpulse, clutchBrakeImpulse } from './drivetrain-rotation.js';"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 29,
+    "source": "e.rpm=rpmOf(e.omega);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 60,
+    "source": "const load=Math.min(Math.abs(e.transmittedTorqueNm),p.clutchCapacityNm*e.clutchEngagement);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 89,
+    "source": "const travel=dt/Math.max(p.clutchEngageTime,1e-4);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 90,
+    "source": "e.clutchPedalPosition+=clamp(target-e.clutchPedalPosition,-travel,travel);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 91,
+    "source": "e.clutchEngagement=Math.pow(clamp((e.clutchPedalPosition-p.clutchBitePoint)/p.clutchBiteRange,0,1),p.clutchBiteCurve);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 106,
+    "source": "e.omega=Math.sign(free)*Math.max(0,Math.abs(free)-constant*dt/Ie/denominator);"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 151,
+    "source": "e.omega=result.crank; e.inputOmega=result.input;"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 162,
+    "source": "// SLEEP RULE (Phase 3b)"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 165,
+    "source": "// Applies a sleep/settle rule to prevent micro-drifting at very low speeds."
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 170,
+    "source": "export function applySleepIfNeeded() {"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 178,
+    "source": "const vSleep = 0.02;   // m/s (2 cm/s \u2014 imperceptible to player)"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 179,
+    "source": "const wSleep = 0.02;   // rad/s"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 181,
+    "source": "// When speed and yaw are below sleep thresholds and there's no input,"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 183,
+    "source": "if (noInput && v < vSleep && w < wSleep) {"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 185,
+    "source": "wheel.prevX = wheel.x;"
+  },
+  {
+    "file": "js/physics/engine.js",
+    "line": 186,
+    "source": "wheel.prevY = wheel.y;"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 18,
+    "source": "function clamp(value, minimum, maximum) {"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 19,
+    "source": "return Math.max(minimum, Math.min(maximum, value));"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 22,
+    "source": "function clamp01(value) {"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 54,
+    "source": "steering.prevAngularVelocity = steering.angularVelocity;"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 60,
+    "source": "const normalisedSteering = clamp("
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 69,
+    "source": "steering.angularVelocity = (steering.frontWheelAngle - prevAngle) / dt;"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 100,
+    "source": "const speedFactor = clamp01(state.body.speed / 3.0); // ramps 0\u21921 over 0\u21923 m/s"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 132,
+    "source": "steering.angularVelocity = (steering.angularVelocity + (explicitTorque / I) * dt) / viscImplicitDenom;"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 135,
+    "source": "// Clamp to physical limits."
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 139,
+    "source": "if (steering.angularVelocity > 0) steering.angularVelocity = 0;"
+  },
+  {
+    "file": "js/physics/steering.js",
+    "line": 142,
+    "source": "if (steering.angularVelocity < 0) steering.angularVelocity = 0;"
+  },
+  {
+    "file": "js/physics/integrator.js",
+    "line": 28,
+    "source": "wheel.prevX = wheel.x;"
+  },
+  {
+    "file": "js/physics/integrator.js",
+    "line": 29,
+    "source": "wheel.prevY = wheel.y;"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 9,
+    "source": "if(name.startsWith('rear'))force+=params.brakeForce*.5*Math.max(0,Math.min(1,input.handbrakeValue||0));"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 10,
+    "source": "return Math.max(0,force)*radius;"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 38,
+    "source": "// The contact-force bound supplies a physical bracket, not a speed clamp."
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 40,
+    "source": "let low = Math.min(0, freeOmega - excursion);"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 41,
+    "source": "let high = Math.max(0, freeOmega + excursion);"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 96,
+    "source": "const speedTolerance = 1e-4 + 1e-3 * Math.max(Math.abs(speed), Math.abs(second.omega));"
+  },
+  {
+    "file": "js/physics/wheel.js",
+    "line": 97,
+    "source": "const forceTolerance = 0.1 + 1e-3 * Math.max(frictionLimit, Math.abs(force));"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 8,
+    "source": "//   Low-speed lateral fade: clamp01(totalSpeed / 2.0)"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 29,
+    "source": "function clamp(value, minimum, maximum) {"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 30,
+    "source": "return Math.max(minimum, Math.min(maximum, value));"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 33,
+    "source": "function clamp01(value) {"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 44,
+    "source": "const safePeakSlip = Math.max(Math.abs(peakSlipValue), 1e-4);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 67,
+    "source": "const angularVelocity = body.angularVelocity;"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 98,
+    "source": "const peakSlipAngleRad = Math.max(params.peakSlipAngleDeg * DEG_TO_RAD, 1e-4);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 99,
+    "source": "const safePeakSlipRatio = Math.max(Math.abs(params.peakSlipRatio), 1e-4);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 181,
+    "source": "const slipDenom = Math.max(Math.abs(vLong), minSlipDenom);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 192,
+    "source": "// At near-zero speed, slip angle math hits the denominator clamp and"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 197,
+    "source": "const lowSpeedFade = clamp01(totalSpeed / LOW_SPEED_FADE_END);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 204,
+    "source": "const denominator = Math.max(Math.abs(surfaceSpeed), Math.abs(wheelLongitudinalSpeed), 0.5);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 205,
+    "source": "return clamp((surfaceSpeed - wheelLongitudinalSpeed) / denominator, -1, 1);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 220,
+    "source": "? Math.max(params.tireRelaxationLength, 0.02) : 0.3;"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 221,
+    "source": "const vLongAbs = Math.max(Math.abs(wheelLongitudinalSpeed), 0.5);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 222,
+    "source": "const tireRelaxTau = Math.max(relaxationLength / vLongAbs, 1e-4);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 246,
+    "source": "const blendStart = Math.min(safePeakSlipRatio, 0.95);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 247,
+    "source": "const t = clamp01((Math.abs(slipAtOmega(omega)) - blendStart) / (1 - blendStart));"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 252,
+    "source": "const slidingLimit = frictionLimit * clamp01(params.tireSlidingFrictionRatio ?? 0.85);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 275,
+    "source": "// Preserve the torque-balanced result. A universal speed clamp hides"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 294,
+    "source": "state.wheelFrictionUtil[name] = clamp01(utilization);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 312,
+    "source": "const simplifiedGrip = clamp01(1.0 - lateralSaturation);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 435,
+    "source": "const lateralComponent = clamp01(maxLateralWheelSpeed / 12.0);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 436,
+    "source": "const angularComponent = clamp01(Math.abs(body.angularVelocity) / 3.0);"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 439,
+    "source": "const slipAngle = Math.abs(Math.atan2(bodyLateral, Math.max(Math.abs(bodyLongitudinal), 0.25)));"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 440,
+    "source": "const slipAngleComponent = clamp01(slipAngle / (Math.PI / 4));"
+  },
+  {
+    "file": "js/physics/tires.js",
+    "line": 469,
+    "source": "// The exponential trail (above) naturally limits peak SAT; no hard clamp needed."
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 9,
+    "source": "import { resetSuspension } from './suspension.js';"
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 36,
+    "source": "resetSuspension();"
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 55,
+    "source": "wheel.prevX = wheel.x;"
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 56,
+    "source": "wheel.prevY = wheel.y;"
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 62,
+    "source": "state.camera.prevX = worldCenterX;"
+  },
+  {
+    "file": "js/physics/kinematics.js",
+    "line": 63,
+    "source": "state.camera.prevY = worldCenterY;"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 12,
+    "source": "function clamp(value, minimum, maximum) {"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 13,
+    "source": "return Math.max(minimum, Math.min(maximum, value));"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 45,
+    "source": "// Clamp to \u00b12 g to prevent constraint-solver transients from causing runaway"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 47,
+    "source": "const clampedLongAccel = clamp(body.longitudinalAccel, -2 * GRAVITY, 2 * GRAVITY);"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 51,
+    "source": "const longitudinalTransfer = clamp("
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 52,
+    "source": "massKg * clampedLongAccel * cogHeight / wheelbase,"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 59,
+    "source": "const clampedLatAccel = clamp(body.lateralAccel, -2 * GRAVITY, 2 * GRAVITY);"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 63,
+    "source": "const lateralTransfer = clamp("
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 64,
+    "source": "massKg * clampedLatAccel * cogHeight / (2 * trackWidth),"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 65,
+    "source": "-Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,"
+  },
+  {
+    "file": "js/physics/weight.js",
+    "line": 66,
+    "source": "Math.min(halfWeight - longitudinalTransfer, halfWeight + longitudinalTransfer) * 0.5,"
+  },
+  {
+    "file": "js/physics/tire-load.js",
+    "line": 5,
+    "source": "const exponent = 1 - Math.max(0, Math.min(0.3, sensitivity));"
+  },
+  {
+    "file": "js/physics/tire-load.js",
+    "line": 6,
+    "source": "const ratio = load / Math.max(1, referenceLoad);"
+  },
+  {
+    "file": "js/physics/tire-load.js",
+    "line": 8,
+    "source": "const loadFactor = Math.max(0.5, Math.min(1.5, ratio ** (exponent - 1)));"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 11,
+    "source": "const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 15,
+    "source": "const mass = Math.max(100, p.carMassKg);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 16,
+    "source": "const wheelMass = clamp(p.unsprungMassPerWheel, 0, mass / 8);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 20,
+    "source": "const height = Math.max(0.05, (mass * p.cogHeight"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 22,
+    "source": "const frontRC = clamp(p.rollCenterFront, 0, height);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 23,
+    "source": "const rearRC = clamp(p.rollCenterRear, 0, height);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 31,
+    "source": "export function resetSuspension() {"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 40,
+    "source": "const k = Math.max(1000, state.params['springRate' + axle]);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 52,
+    "source": "if (!s.initialized || s.wasEnabled !== p.suspensionEnabled) resetSuspension();"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 59,
+    "source": "const ax = clamp(state.body.longitudinalAccel, -2 * GRAVITY, 2 * GRAVITY);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 60,
+    "source": "const ay = clamp(state.body.lateralAccel, -2 * GRAVITY, 2 * GRAVITY);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 67,
+    "source": "const k = Math.max(1000, p['springRate' + axle]);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 68,
+    "source": "const damping = Math.max(0, p['damperRate' + axle]);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 69,
+    "source": "const bar = Math.max(0, p['antiRollStiffness' + axle]); // axle torque/radian"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 75,
+    "source": "const bump = Math.max(0, displacement - p.suspensionBumpTravel);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 76,
+    "source": "const droop = Math.min(0, displacement + p.suspensionDroopTravel);"
+  },
+  {
+    "file": "js/physics/suspension.js",
+    "line": 86,
+    "source": "const normal = Math.max(0, elastic + geometric + unsprung);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 3,
+    "source": "// Jakobsen rigid-body constraint solver and anti-tunnelling clamp."
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 9,
+    "source": "//   cd = clamp(constraintDamping, 0.05, 1.0)                          (0.05 floor is intentional)"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 11,
+    "source": "//   Verlet bounce: prevX = x - (-velocityX * bounciness)              (double-negative intentional)"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 25,
+    "source": "function clamp(value, minimum, maximum) {"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 26,
+    "source": "return Math.max(minimum, Math.min(maximum, value));"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 67,
+    "source": "// Stabilizer #2 \u2014 keep nonzero damping floor so Jakobsen corrections never"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 69,
+    "source": "const cd = clamp(state.params.constraintDamping, 0.05, 1.0);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 94,
+    "source": "// Stabilizer #2 \u2014 iteration clamp by mode."
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 98,
+    "source": "const iters = clamp(Math.round(state.params.constraintIterations || 1), 1, modeCap);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 100,
+    "source": "// Reset metrics for this frame"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 132,
+    "source": "constraintMetrics.maxCorrectionMagnitude = Math.max(constraintMetrics.maxCorrectionMagnitude, magnitude);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 142,
+    "source": "// Strategy: clamp each particle independently, then run the constraint"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 155,
+    "source": "wheel.prevX = wheel.x; // place prevX at current position"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 157,
+    "source": "wheel.prevX = wheel.x - (-velocityX * bounciness); // reflect velocity"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 163,
+    "source": "wheel.prevX = wheel.x;"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 165,
+    "source": "wheel.prevX = wheel.x - (-velocityX * bounciness);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 171,
+    "source": "wheel.prevY = wheel.y;"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 173,
+    "source": "wheel.prevY = wheel.y - (-velocityY * bounciness);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 179,
+    "source": "wheel.prevY = wheel.y;"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 181,
+    "source": "wheel.prevY = wheel.y - (-velocityY * bounciness);"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 187,
+    "source": "// Clamps each wheel particle's displacement in a single sub-step to prevent"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 192,
+    "source": "export function clampParticleDisplacements() {"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 200,
+    "source": "// Adjust prevX/Y so that the stored velocity is clamped."
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 201,
+    "source": "wheel.prevX = wheel.x - displacementX * scale;"
+  },
+  {
+    "file": "js/physics/constraints.js",
+    "line": 202,
+    "source": "wheel.prevY = wheel.y - displacementY * scale;"
+  },
+  {
+    "file": "js/physics/camera.js",
+    "line": 53,
+    "source": "cam.prevX = cam.x;"
+  },
+  {
+    "file": "js/physics/camera.js",
+    "line": 54,
+    "source": "cam.prevY = cam.y;"
+  },
+  {
+    "file": "js/physics/camera.js",
+    "line": 60,
+    "source": "const speedAboveThreshold = Math.max(0, speedKph - CAMERA_ZOOM_SPEED_THRESHOLD_KPH);"
+  },
+  {
+    "file": "js/physics/camera.js",
+    "line": 61,
+    "source": "cam.targetZoom = Math.max("
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 15,
+    "source": "const clamp01=x=>Math.max(0,Math.min(1,x));"
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 16,
+    "source": "const smooth=x=>{const t=clamp01(x);return t*t*(3-2*t);};"
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 19,
+    "source": "const n=Math.abs(omega)*60/TAU,u=clamp01(throttle),k=p.engineDisplacementM3/(4*Math.PI);"
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 28,
+    "source": "const brake=p.peakEngineTorqueNm*Math.max(0,1-2.5*((n-TORQUE_PEAK_RPM)/(p.redlineRpm-p.idleRpm))**2);"
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 33,
+    "source": "const idle=running?Math.min((1-u)*p.peakEngineTorqueNm*.25,"
+  },
+  {
+    "file": "js/physics/engine-torque.js",
+    "line": 34,
+    "source": "Math.max(0,friction+pumping-u*friction+p.engineIdleGainNmPerRpm*(p.idleRpm-n)))*idleGate*limiter:0;"
+  }
+]

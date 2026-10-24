@@ -1,0 +1,8 @@
+{
+  "straightSymmetry": false,
+  "rearOrderInvariance": false,
+  "passiveSeparatingBalloon": false,
+  "derivedSpeedAfterBalloon": false,
+  "repeatDeterminism": true,
+  "finiteScenarios": true
+}

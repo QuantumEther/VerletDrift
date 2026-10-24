@@ -1,0 +1,23 @@
+{
+  "before": {
+    "centerX": 100,
+    "centerY": 100,
+    "heading": 0,
+    "velocityX": 0,
+    "velocityY": -9.999999999999432,
+    "angularVelocity": 0,
+    "cachedSpeed": 9.999999999999432
+  },
+  "after": {
+    "centerX": 100,
+    "centerY": 100,
+    "heading": 0,
+    "velocityX": 0.44061968174560207,
+    "velocityY": -10.667723218151082,
+    "angularVelocity": 0,
+    "cachedSpeed": 9.999999999999432
+  },
+  "popped": true,
+  "kineticChange": 8396.67861781959,
+  "scope": "Balloon overlaps rear wheel while vehicle already moves away; no approach-velocity test."
+}

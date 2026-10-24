@@ -1,0 +1,16 @@
+import {writeFileSync} from 'node:fs';
+globalThis.localStorage={getItem:()=>null,setItem:()=>{}};
+const state=(await import('../../js/state.js')).default;
+const {initializeCarBody,computeBodyDerivedState}=await import('../../js/physics/kinematics.js');
+const {readPlanarMotion}=await import('../../js/physics/planar-motion.js');
+const {checkBalloonCollisions}=await import('../../js/balloon.js');
+globalThis.window={};
+initializeCarBody(100,100);for(const w of Object.values(state.wheels))w.prevY=w.y+.1;
+computeBodyDerivedState(.01);const rear=state.wheels.rearLeft;
+state.balloons=[{x:rear.x,y:rear.y,radius:.5,hue:0,isPopped:false,deformTime:0}];
+const before={...readPlanarMotion(.01),cachedSpeed:state.body.speed};
+checkBalloonCollisions(.01,0);
+const after={...readPlanarMotion(.01),cachedSpeed:state.body.speed};
+const energy=v=>.5*state.params.carMassKg*(v.velocityX**2+v.velocityY**2);
+const result={before,after,popped:state.balloons[0].isPopped,kineticChange:energy(after)-energy(before),scope:'Balloon overlaps rear wheel while vehicle already moves away; no approach-velocity test.'};
+writeFileSync('research/full-system-forensic/data/balloon-probe.json',JSON.stringify(result,null,2));console.log(result);
