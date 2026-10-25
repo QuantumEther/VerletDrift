@@ -1,0 +1,52 @@
+{
+  "step_s": 0.001,
+  "initial": "movingSecond: v=1.6 m/s; engine/input=10 rad/s; rear=5 rad/s; phase=1.86 rad",
+  "results": [
+    {
+      "scenario": "missed-blip",
+      "actual": "1",
+      "time_s": 0.2600000000000002,
+      "impactLoss_J": 1.9247593787612247,
+      "contacts": 1,
+      "engine_rad_s": 10,
+      "input_rad_s": 14.923206107398048
+    },
+    {
+      "scenario": "double-declutch",
+      "actual": "1",
+      "time_s": 0.36200000000000027,
+      "impactLoss_J": 0.00028944965611485066,
+      "contacts": 1,
+      "engine_rad_s": 17.602306984521935,
+      "input_rad_s": 17.53159933762609
+    },
+    {
+      "worn": false,
+      "hold": false,
+      "actual": "2",
+      "selector_m": -0.02500139133483085,
+      "driverWork_J": 3.824817716078198
+    },
+    {
+      "worn": false,
+      "hold": true,
+      "actual": "2",
+      "selector_m": -0.03181818181818182,
+      "driverWork_J": 3.824817716078198
+    },
+    {
+      "worn": true,
+      "hold": false,
+      "actual": "N",
+      "selector_m": 0.01657644804952604,
+      "driverWork_J": 3.668806167152529
+    },
+    {
+      "worn": true,
+      "hold": true,
+      "actual": "2",
+      "selector_m": -0.031237697113315182,
+      "driverWork_J": 3.5787274912991287
+    }
+  ]
+}

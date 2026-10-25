@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unsynchronized gearbox</title>
+  <style>
+    :root { color-scheme: dark; font: 16px system-ui, sans-serif; background: #111820; color: #e8eef4; }
+    body { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.4rem; }
+    .layout { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(210px, .7fr); gap: 1.5rem; align-items: center; }
+    canvas { width: 100%; background: #18232e; border: 1px solid #405266; border-radius: 8px; }
+    dl { display: grid; grid-template-columns: 1fr auto; gap: .45rem 1rem; }
+    dt { color: #aebdca; } dd { margin: 0; font-variant-numeric: tabular-nums; }
+    label { display: block; margin: .7rem 0; }
+    input { width: 7rem; }
+    .panels dl { grid-template-columns: 1fr 1fr; }
+    section { padding: 1rem; background:#1b2a35; border-radius:8px; }
+    button, select { padding:.4rem; margin:.25rem; }
+    #mechanism { margin-top:1rem; }
+    .help { color: #afbdc8; line-height: 1.5; }
+    @media (max-width: 650px) { .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<h1>Unsynchronized gearbox</h1><label>Clutch engagement <input id="engagement" type="range" min="0" max="1" step="0.01" value="0"></label><button id="coast">Reset coasting: 3 m/s, flywheel stopped</button><p>W applies motor torque; clutch slider controls transmission. Forward gears 1=3.5, 2=2.0. No combustion engine or synchronizer.</p><div class="panels"><div><button data-selector="1">Hold toward 1</button><button data-selector="n">Hold neutral</button><button data-selector="2">Hold toward 2</button><button id="moving-second">Start moving in second (initial condition)</button></div><p>Hold keyboard 1 / 2 to apply selector force; hold N to center the lever. Release to let the detents and mechanism act. Clutch remains under your control.</p><label><input id="worn" type="checkbox"> Worn second-gear dogs/detents (resets)</label><label><input id="audio" type="checkbox"> Enable mechanical audio</label><label>Volume <input id="volume" type="range" min="0" max="0.3" step="0.01" value="0.1"></label><p id="actual-gear"></p><canvas id="selector" width="700" height="100"></canvas><details id="inspection"><summary>Developer / scientific inspection</summary><p id="gearbox-status"></p><section id="clutch-status"><h2>Engine / clutch</h2><dl><dt>Engine</dt><dd id="engine-rpm"></dd><dt>Input shaft</dt><dd id="input-rpm"></dd><dt>Slip speed</dt><dd id="slip"></dd><dt>State</dt><dd id="clutch-state"></dd><dt>Transmitted torque</dt><dd id="torque"></dd><dt>Capacity</dt><dd id="capacity"></dd><dt>Slip power</dt><dd id="heat-power"></dd><dt>Heat</dt><dd id="heat"></dd><dt>Power direction</dt><dd id="flow"></dd></dl></section></div></details><button id="rest">Reset from rest</button><button id="spin">Reset flywheel spinning</button><button data-engagement="0">Disengaged</button><button data-engagement="0.3">Partial</button><button data-engagement="1">Full</button><canvas id="mechanism" width="700" height="310"></canvas><label>Drive mode (resets experiment) <select id="differential"><option value="independent">Independent rear drive</option><option value="open">Open differential</option><option value="locked">Locked differential</option></select></label><label>Scenario (resets experiment) <select id="scenario"><option value="uniform">Uniform grip</option><option value="asymmetric">Low-grip rear left</option><option value="unload">Retract rear-left support from 0.5–1.0 s</option></select></label><p>Switching mode/scenario resets to rest, discarding prior state and its energy. Drive W; hold A/D for turning comparison.</p><details><summary>Differential inspection</summary><section id="drivetrain"><h2>Differential</h2><dl><dt>Mode</dt><dd id="drive-mode"></dd><dt>Carrier/input boundary</dt><dd id="carrier-speed"></dd><dt>RL / RR speed</dt><dd id="rear-speeds"></dd><dt>RL / RR torque</dt><dd id="outputs"></dd><dt>Speed difference</dt><dd id="difference"></dd><dt>Power residual</dt><dd id="power-residual"></dd></dl></section></details><p>W motor torque · S both brakes · R reset · Space upward chassis impulse · B place an 8 cm bump ahead.</p>
+<p>1 ms fixed step. Small-angle chassis pitch; shared horizontal translation. Front axle is on the right.</p>
+<label>View <select id="view"><option value="top">Top driving view</option><option value="3d">3D perspective</option><option value="side">Side suspension view</option></select></label><p>A / D steer left / right. Four tire contacts. Axle normal loads split equally left/right; no roll.</p><h2>Vehicle</h2><p id="planar"></p><details><summary>Raw wheel and suspension data</summary><pre>Wheel | ω rad/s | slip m/s | α deg | Fx N | Fy N | N | steer deg</pre><pre id="FL"></pre><pre id="FR"></pre><pre id="RL"></pre><pre id="RR"></pre></details><canvas id="wheel" width="620" height="360"></canvas>
+<label>3D inspection <select id="cutaway"><option value="normal">Normal vehicle</option><option value="xray">Transparent chassis</option><option value="driveline">Driveline and wheels</option></select></label><canvas id="perspective" width="620" height="360" hidden style="height:360px;touch-action:none"></canvas><button id="reset-camera" hidden>Reset camera</button><button id="focus-clutch">Focus clutch (3D)</button><p>3D camera: drag to orbit, scroll to zoom.</p><label>External motor torque (Nm) <input id="drive" type="number" value="20"></label>
+<dl><dt>Speed</dt><dd id="speed"></dd><dt>Position</dt><dd id="position"></dd><dt>Chassis pitch</dt><dd id="pitch"></dd></dl>
+<h2>Front</h2><p id="front"></p><h2>Rear</h2><p id="rear"></p><p id="warning"></p>
+<script type="module" src="./src/main.js"></script></body></html>
