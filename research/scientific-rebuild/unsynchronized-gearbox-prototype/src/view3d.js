@@ -1,143 +1,177 @@
-import {visualState} from './visual-state.js';
 import * as THREE from '../vendor/three.module.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {roadAt} from './vehicle.js';
+import {GEOMETRY} from './gearbox.js';
+import {mechanicalPresentation,AXIS_DISTANCE,PRIMARY,GEAR_PAIRS,DOG_RADIUS,DOG_FACE,SLEEVE_HALF} from './mechanical-layout.js';
+import {gearGeometry,dogGeometry} from './mechanical-geometry.js';
 
-// Read-only visualization. Simulation axes are retained: x forward, y left, z up.
-export function createView3D(canvas,resetButton){
- const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
- renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
- const scene=new THREE.Scene();scene.background=new THREE.Color('#131c23');scene.fog=new THREE.Fog(0x131c23,18,65);
- const camera=new THREE.PerspectiveCamera(45,620/360,.05,150);camera.up.set(0,0,1);
- const controls=new OrbitControls(camera,canvas);controls.enablePan=true;controls.minDistance=2;controls.maxDistance=30;
- const desiredPosition=new THREE.Vector3(-3.6,-4.2,2.5),desiredTarget=new THREE.Vector3(0,0,.5);let transitioning=false;
- function resetCamera(){desiredPosition.set(-3.6,-4.2,2.5);desiredTarget.set(0,0,.5);transitioning=true;}
- const focus=()=>{desiredPosition.set(1.15,-1.45,1.05);desiredTarget.set(.25,-.15,.55);transitioning=true;};
- const inspection=()=>{if(document.querySelector('#cutaway').value==='driveline')focus();else resetCamera();};
- document.querySelector('#focus-clutch').addEventListener('click',focus);document.querySelector('#cutaway').addEventListener('change',inspection);
- const stopTransition=()=>transitioning=false;controls.addEventListener('start',stopTransition);
- resetButton.addEventListener('click',resetCamera);camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);controls.update();
- scene.add(new THREE.HemisphereLight(0xffffff,0x304050,2));
- const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(3,-4,7);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-5;sun.shadow.camera.right=5;sun.shadow.camera.top=5;sun.shadow.camera.bottom=-5;sun.shadow.normalBias=.03;scene.add(sun);
- const rimLight=new THREE.DirectionalLight(0xaac7df,2);rimLight.position.set(-4,3,4);scene.add(rimLight);
- const studio=new THREE.Scene();const studioGeo=new THREE.BoxGeometry(8,2,1),studioMat=new THREE.MeshBasicMaterial({color:0xffffff});
- for(const [x,y,z]of [[0,0,5],[-4,0,2],[4,0,2]]){const panel=new THREE.Mesh(studioGeo,studioMat);panel.position.set(x,y,z);studio.add(panel);}
- const pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(studio,.08);scene.environment=environment.texture;studioGeo.dispose();studioMat.dispose();pmrem.dispose();
- const gold=new THREE.MeshStandardMaterial({color:0xb79759,metalness:.85,roughness:.28});
- const dark=new THREE.MeshStandardMaterial({color:0x182129,roughness:1});
- const metal=new THREE.MeshStandardMaterial({color:0xb7c2c7,metalness:.95,roughness:.25});
- const body=new THREE.Group(),chassis=new THREE.Mesh(new THREE.BoxGeometry(2.3,1,.18),gold.clone());body.add(chassis);scene.add(body);
- const paint=new THREE.MeshStandardMaterial({color:0x233a3b,metalness:.55,roughness:.3});
- function block(parent,size,pos,material){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),material);m.position.set(...pos);parent.add(m);return m;}
- const exterior=new THREE.Group();body.add(exterior);
- block(exterior,[.85,.92,.28],[.55,0,.22],paint);block(exterior,[.35,1.08,.12],[1.12,0,.12],metal);
- for(const y of [-.48,.48]){block(exterior,[2.05,.09,.22],[0,y,.13],paint);block(exterior,[1.9,.055,.055],[0,y,.3],gold);}
- block(exterior,[.5,.85,.15],[-.7,0,.18],paint);block(exterior,[.08,.85,.35],[-.4,0,.25],paint);
- // White nose marks positive x, independent of camera orientation.
- const nose=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.02),metal);nose.position.set(1.05,0,.1);body.add(nose);
- const axle=new THREE.Group();
- const shaft=new THREE.Mesh(new THREE.BoxGeometry(.06,1.2,.06),metal);axle.add(shaft);
- const housing=new THREE.Mesh(new THREE.BoxGeometry(.24,.24,.20),gold.clone());axle.add(housing);scene.add(axle);
- const driveline=new THREE.Group();scene.add(driveline);
- const cylinderGeometries=new Map();
- function cylinder(radius,length,color){const key=radius+':'+length;if(!cylinderGeometries.has(key))cylinderGeometries.set(key,new THREE.CylinderGeometry(radius,radius,length,24));const mesh=new THREE.Mesh(cylinderGeometries.get(key),new THREE.MeshStandardMaterial({color,metalness:.9,roughness:.24}));mesh.rotation.z=-Math.PI/2;return mesh;}
- function disk(color){const group=new THREE.Group();const plate=cylinder(.21,.06,color);group.add(plate);const marker=new THREE.Mesh(new THREE.BoxGeometry(.07,.3,.035),metal);marker.position.z=.04;group.add(marker);driveline.add(group);return group;}
- const housingCage=cylinder(.27,.55,0x8293a1);housingCage.position.x=.5;housingCage.material.wireframe=true;housingCage.material.transparent=true;housingCage.material.opacity=.25;driveline.add(housingCage);
- const flywheel=disk(0xdfb65d),inputDisk=disk(0xabb6b9),outputDisk=disk(0x98694b);
- const transmission=cylinder(.04,.7,0xb7c5ce);transmission.position.x=-.05;driveline.add(transmission);
- const propeller=cylinder(.035,.5,0x55d6be);propeller.position.x=-.65;driveline.add(propeller);
- const carrier=new THREE.Group();carrier.add(cylinder(.13,.23,0xdfb65d));const carrierMark=new THREE.Mesh(new THREE.BoxGeometry(.24,.025,.025),metal);carrierMark.position.z=.13;carrier.add(carrierMark);carrier.position.x=0;axle.add(carrier);
- const halfShafts=[1,-1].map(side=>{const g=new THREE.Group();const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.6,12),metal);g.add(shaft);const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.3,.02),gold);g.add(m);g.position.set(0,side*.3,0);axle.add(g);return g;});
- const driveShaft=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0x55d6be}));scene.add(driveShaft);
- const gearboxHousing=new THREE.Mesh(new THREE.BoxGeometry(.55,.65,.55),new THREE.MeshStandardMaterial({color:0x8293a1,transparent:true,opacity:.12,wireframe:true}));gearboxHousing.position.set(0,-.13,0);driveline.add(gearboxHousing);
- const pairs=[3.5,2].map((ratio,i)=>{
-  const x=.13-i*.27,rin=i===0?.06:.09,rout=rin*ratio;
-  const input=new THREE.Group(),output=new THREE.Group();
-  input.add(cylinder(rin,.05,0x9cabb8));output.add(cylinder(rout,.05,0x9cabb8));
-  for(const group of [input,output]){const marker=new THREE.Mesh(new THREE.BoxGeometry(.055,.08,.015),metal);marker.position.z=.04;group.add(marker);driveline.add(group);}
-  input.position.set(x,0,0);output.position.set(x,-.27,0);
-  const collar=new THREE.Mesh(new THREE.BoxGeometry(.08,.12,.12),new THREE.MeshStandardMaterial({color:0x55d6be}));collar.position.set(x,-.27,0);driveline.add(collar);
-  return {input,output,collar,ratio};
+// All dimensions below belong to the exhibit. The scene never writes physics.
+export const CAMERA_PRESETS={
+ normal:{position:[-2.8,-3.5,2.45],target:[0,0,.65]},
+ driver:{position:[-3.8,-.8,1.65],target:[.7,0,.65]},
+ xray:{position:[2.7,-3.2,2.7],target:[0,0,.6]},
+ driveline:{position:[.65,1.7,1.65],target:[.04,.13,.65]},
+ clutch:{position:[.75,-1.3,1.35],target:[.92,0,.65]},
+ exploded:{position:[1.8,-2,2],target:[.4,.25,.75]}
+};
+export function createView3D(canvas,resetButton) {
+ const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ const scene=new THREE.Scene();scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,16,60);
+ const camera=new THREE.PerspectiveCamera(40,1,.025,100);camera.up.set(0,0,1);
+ const controls=new OrbitControls(camera,canvas);controls.enablePan=true;controls.minDistance=.35;controls.maxDistance=15;controls.maxPolarAngle=Math.PI*.49;
+ const desiredPosition=new THREE.Vector3(),desiredTarget=new THREE.Vector3();let transitioning=false,mode='normal',disposed=false;
+ const setCamera=()=>{const preset=CAMERA_PRESETS[mode]||CAMERA_PRESETS.normal;desiredPosition.fromArray(preset.position);desiredTarget.fromArray(preset.target);transitioning=true;};
+ function resetCamera(){setCamera();}
+ const cutaway=document.querySelector('#cutaway'),focusButton=document.querySelector('#focus-clutch');
+ const choose=()=>{mode=cutaway.value;setCamera();};
+ const focus=()=>{cutaway.value='clutch';cutaway.dispatchEvent(new Event('change'));};
+ cutaway.addEventListener('change',choose);focusButton.addEventListener('click',focus);resetButton.addEventListener('click',resetCamera);
+ const stop=()=>transitioning=false;controls.addEventListener('start',stop);choose();camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);controls.update();
+ scene.add(new THREE.HemisphereLight(0xffeed5,0x36483d,2));
+ const sun=new THREE.DirectionalLight(0xffebd0,3);sun.position.set(3,-4,7);sun.castShadow=true;sun.shadow.mapSize.set(512,512);Object.assign(sun.shadow.camera,{left:-4,right:4,top:4,bottom:-4});sun.shadow.normalBias=.015;scene.add(sun);
+ const rim=new THREE.DirectionalLight(0xc1d5dd,2);rim.position.set(-3,3,4);scene.add(rim);
+ const studio=new THREE.Scene(),panelGeo=new THREE.BoxGeometry(7,2,.2),panelMat=new THREE.MeshBasicMaterial({color:0xffffff});
+ for(const p of [[0,0,5],[-4,0,2],[3,2,3]]){const panel=new THREE.Mesh(panelGeo,panelMat);panel.position.set(...p);studio.add(panel);}
+ studio.background=new THREE.Color(0x5c625c);
+ const pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(studio,.12);scene.environment=environment.texture;pmrem.dispose();panelGeo.dispose();panelMat.dispose();
+ const material=(color,metalness,roughness,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
+ const steel=material(0xaaaead,.88,.29),chrome=material(0xd5dad7,.95,.18),brass=material(0xb79454,.83,.33),cast=material(0x414b46,.65,.7),rubber=material(0x191c19,.05,.95),friction=material(0x554b39,.1,.95),paint=material(0x294c37,.55,.3);
+ const gearBody=material(0x58615c,.85,.4),free=material(0x8a9290,.85,.3),engaged=material(0xd5b87b,.85,.29),shock=material(0xb77647,.65,.3,{emissive:0x351409});
+ const glass=material(0x9eb7ab,.1,.14,{transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide});
+ const housingMat=material(0x5b6258,.65,.58,{transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide});
+ const boxes=new Map(),cylinders=new Map();
+ function mesh(parent,geometry,mat,pos=[0,0,0]){const m=new THREE.Mesh(geometry,mat);m.position.set(...pos);parent.add(m);return m;}
+ function box(parent,size,pos,mat){const k=size.join();if(!boxes.has(k))boxes.set(k,new THREE.BoxGeometry(...size));return mesh(parent,boxes.get(k),mat,pos);}
+ function cyl(parent,r,length,pos,mat,axis='x'){
+  const k=[r,length].join();if(!cylinders.has(k))cylinders.set(k,new THREE.CylinderGeometry(r,r,length,32));const m=mesh(parent,cylinders.get(k),mat,pos);
+  if(axis==='x')m.rotation.z=-Math.PI/2;if(axis==='z')m.rotation.x=Math.PI/2;return m;
+ }
+ function ring(parent,r,t,pos,mat,axis='x'){const m=mesh(parent,new THREE.TorusGeometry(r,t,8,40),mat,pos);if(axis==='x')m.rotation.y=Math.PI/2;if(axis==='y')m.rotation.x=Math.PI/2;return m;}
+ function group(parent,pos=[0,0,0]){const g=new THREE.Group();g.position.set(...pos);parent.add(g);return g;}
+ function instanced(parent,geometry,mat,transforms){const m=new THREE.InstancedMesh(geometry,mat,transforms.length),o=new THREE.Object3D();transforms.forEach((fn,i)=>{o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);fn(o,i);o.updateMatrix();m.setMatrixAt(i,o.matrix);});parent.add(m);return m;}
+ const body=group(scene),exterior=group(body),frame=group(body);
+ for(const y of [-.38,.38])box(frame,[2.6,.075,.12],[0,y,-.1],cast);
+ for(const x of [-.85,.25,.9])box(frame,[.08,.84,.08],[x,0,-.1],steel);
+ function coachPanel(size,pos,mat){
+  const [a,b,c]=size,r=.06,shape=new THREE.Shape();shape.moveTo(-a/2+r,-b/2);shape.lineTo(a/2-r,-b/2);shape.quadraticCurveTo(a/2,-b/2,a/2,-b/2+r);shape.lineTo(a/2,b/2-r);shape.quadraticCurveTo(a/2,b/2,a/2-r,b/2);shape.lineTo(-a/2+r,b/2);shape.quadraticCurveTo(-a/2,b/2,-a/2,b/2-r);shape.lineTo(-a/2,-b/2+r);shape.quadraticCurveTo(-a/2,-b/2,-a/2+r,-b/2);
+  const g=new THREE.ExtrudeGeometry(shape,{depth:c-.04,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.02,bevelThickness:.02,curveSegments:4});g.translate(0,0,-c/2+.02);return mesh(exterior,g,mat,pos);
+ }
+ coachPanel([.94,.74,.30],[.65,0,.12],paint);coachPanel([.42,.8,.21],[-.85,0,.1],paint);
+ for(const side of [-1,1])instanced(exterior,new THREE.BoxGeometry(.012,.012,.15),cast,Array.from({length:9},(_,i)=>o=>o.position.set(.46+i*.055,side*.387,.12)));
+ box(exterior,[.1,.78,.4],[-.25,0,.16],paint);box(exterior,[.5,.6,.07],[-.48,0,.04],friction);
+ const windscreen=box(exterior,[.025,.78,.28],[.13,0,.39],glass);windscreen.rotation.y=-.18;
+ for(const y of [-.43,.43]){box(exterior,[2.45,.055,.11],[0,y,-.02],paint);box(exterior,[2.3,.02,.025],[0,y,.04],brass);}
+ box(exterior,[.09,.72,.38],[1.17,0,.1],chrome);box(exterior,[.1,.65,.3],[1.22,0,.1],cast);
+ instanced(exterior,new THREE.BoxGeometry(.015,.014,.27),chrome,Array.from({length:15},(_,i)=>o=>o.position.set(1.28,(i-7)*.039,.1)));
+ for(const y of [-.4,.4])cyl(exterior,.095,.1,[1.15,y,.16],chrome);
+ const archShape=new THREE.Shape();archShape.absarc(0,0,.39,0,Math.PI,false);archShape.absarc(0,0,.35,Math.PI,0,true);archShape.closePath();
+ const archGeometry=new THREE.ExtrudeGeometry(archShape,{depth:.22,bevelEnabled:false,curveSegments:24});archGeometry.translate(0,0,-.11);archGeometry.rotateX(Math.PI/2);
+ for(const x of [-1,1])for(const y of [-.59,.59])mesh(exterior,archGeometry,paint,[x,y,-.44]);
+ const powertrain=group(scene),clutch=group(powertrain),gearbox=group(powertrain),lay=group(gearbox,[0,AXIS_DISTANCE,0]);
+ const engine=group(clutch,[.985,0,0]),disc=group(clutch,[.94,0,0]),pressure=group(clutch,[.88,0,0]);
+ cyl(engine,.235,.065,[0,0,0],steel);ring(engine,.21,.01,[.035,0,0],chrome);
+ cyl(disc,.19,.024,[0,0,0],friction);cyl(disc,.07,.038,[0,0,0],steel);
+ cyl(pressure,.218,.04,[0,0,0],steel);ring(pressure,.18,.012,[-.026,0,0],chrome);
+ const boltsGeo=new THREE.SphereGeometry(.013,6,4);
+ for(const rotor of [engine,pressure])instanced(rotor,boltsGeo,brass,Array.from({length:8},(_,i)=>o=>o.position.set(-.04,.15*Math.cos(i*Math.PI/4),.15*Math.sin(i*Math.PI/4))));
+ instanced(pressure,new THREE.BoxGeometry(.025,.11,.012),chrome,Array.from({length:12},(_,i)=>o=>{const a=i*Math.PI/6;o.position.set(-.035,.1*Math.cos(a),.1*Math.sin(a));o.rotation.x=a;}));
+ const bell=group(clutch);cyl(bell,.27,.30,[.97,0,0],housingMat);
+ const input=group(gearbox);cyl(input,.026,.48,[.80,0,0],steel);
+ instanced(input,new THREE.BoxGeometry(.22,.009,.009),chrome,Array.from({length:12},(_,i)=>o=>{const a=i*Math.PI/6;o.position.set(.87,.029*Math.cos(a),.029*Math.sin(a));o.rotation.x=a;}));
+ const output=group(gearbox);cyl(output,.026,.99,[-.16,0,0],steel);
+ const layshaft=group(lay);cyl(layshaft,.024,1.04,[.13,0,0],steel);
+ const gearCache=new Map();
+ function gear(parent,teeth,pos){if(!gearCache.has(teeth))gearCache.set(teeth,gearGeometry(teeth));const g=group(parent,pos);const teethMesh=mesh(g,gearCache.get(teeth),[gearBody,chrome]);cyl(g,teeth*.008/2*.72,.058,[0,0,0],gearBody);cyl(g,.039,.074,[0,0,0],chrome);return {node:g,teeth:teethMesh};}
+ gear(input,PRIMARY.teeth,[PRIMARY.x,0,0]);
+ gear(layshaft,PRIMARY.teeth,[PRIMARY.x,0,0]);
+ const sleeve=group(gearbox);cyl(sleeve,.087,.1,[0,0,0],steel);ring(sleeve,.088,.006,[0,0,0],chrome);
+ // Sleeve dogs fit the source's angular openings. Gear dogs occupy the rest of
+ // each 60-degree period; phase=0 aligns sleeve teeth with the open windows.
+ const period=2*Math.PI/GEOMETRY.teeth,dogWidth=GEOMETRY.gap*.5;
+ const sleeveDog=dogGeometry(DOG_RADIUS-.013,DOG_RADIUS+.013,dogWidth,.035);
+ const gearDog=dogGeometry(DOG_RADIUS-.013,DOG_RADIUS+.013,period-GEOMETRY.gap-dogWidth,.1125);
+ for(const side of [-1,1])instanced(sleeve,sleeveDog,chrome,Array.from({length:6},(_,i)=>o=>{o.position.x=side*(SLEEVE_HALF-.0175);o.rotation.x=i*period;}));
+ const pairs=GEAR_PAIRS.map(p=>{
+  const driven=gear(gearbox,p.drivenTeeth,[p.x,0,0]),driver=gear(layshaft,p.driverTeeth,[p.x,0,0]),dogs=group(gearbox,[Math.sign(p.x)*(DOG_FACE+.05625),0,0]);
+  instanced(dogs,gearDog,chrome,Array.from({length:6},(_,i)=>o=>{o.rotation.x=(i+.5)*period;}));
+  // Bronze bushing makes the free gear / output shaft separation legible.
+  ring(driven.node,.046,.005,[0,0,0],brass);return {driven,driver,dogs};
  });
- const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.06,12),new THREE.MeshStandardMaterial({color:0x9cabb8}));sleeve.rotation.z=-Math.PI/2;driveline.add(sleeve);
- for(let i=0;i<6;i++){const tooth=new THREE.Mesh(new THREE.BoxGeometry(.04,.06,.04),metal);tooth.position.set(.12*Math.cos(i*Math.PI/3),.05,.12*Math.sin(i*Math.PI/3));sleeve.add(tooth);}
- const linkage=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0xe8eef4}));driveline.add(linkage);
- for(const pair of pairs){for(let tooth=0;tooth<6;tooth++){const dog=new THREE.Mesh(new THREE.BoxGeometry(.045,.04,.04),metal);const angle=tooth*Math.PI/3;dog.position.set(.04,.12*Math.cos(angle),.12*Math.sin(angle));pair.output.add(dog);}}
- const fork=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,8,32,Math.PI*1.5),gold);fork.rotation.y=Math.PI/2;driveline.add(fork);
- const toothGeometry=new THREE.BoxGeometry(.05,.035,.035);
- for(const pair of pairs)for(const gear of [pair.input,pair.output]){
-  const radius=gear.children[0].geometry.parameters.radiusTop;
-  for(let t=0;t<20;t++){const tooth=new THREE.Mesh(toothGeometry,metal);const angle=t*Math.PI/10;tooth.position.set(0,Math.cos(angle)*(radius+.01),Math.sin(angle)*(radius+.01));tooth.rotation.x=angle;gear.add(tooth);}
- }
- const housingPaint=new THREE.MeshStandardMaterial({color:0x626c69,metalness:.65,roughness:.65,transparent:true,opacity:.22});
- gearboxHousing.material.dispose();gearboxHousing.material=housingPaint;housingCage.material.wireframe=false;housingCage.material.opacity=.12;
- const shaftTube=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,1,16),metal);scene.add(shaftTube);const shaftDirection=new THREE.Vector3(),shaftAxis=new THREE.Vector3(0,1,0);
- const tireGeometry=new THREE.CylinderGeometry(1,1,.22,24),rimGeometry=new THREE.CylinderGeometry(.65,.65,.225,16),sidewallGeometry=new THREE.TorusGeometry(.83,.08,8,24),boltGeometry=new THREE.SphereGeometry(.055,8,6),spokeGeometry=new THREE.BoxGeometry(1.7,.235,.09);
- const hubs=[],rotors=[],links=[];
+ const fork=group(gearbox);ring(fork,.109,.013,[0,0,0],brass);box(fork,[.035,.027,.16],[0,0,.18],brass);cyl(gearbox,.013,.8,[0,0,.26],steel);
+ const lever=group(fork);box(lever,[.022,.024,.16],[0,0,.34],steel);cyl(lever,.035,.06,[0,0,.43],brass,'z');
+ const casing=group(gearbox);box(casing,[1.06,.64,.54],[.12,.14,-.015],housingMat);
+ for(const x of [-.39,.66])for(const y of [0,AXIS_DISTANCE]){ring(gearbox,.046,.012,[x,y,0],chrome);box(gearbox,[.045,.10,.08],[x,y,-.075],cast);}
+ const axle=group(scene),carrier=group(axle),halfShafts=[];
+ cyl(axle,.155,.31,[0,0,0],housingMat,'y');cyl(carrier,.12,.24,[0,0,0],brass,'y');
+ for(const side of [-1,1]){const shaft=group(axle);cyl(shaft,.028,.58,[0,side*.30,0],steel,'y');cyl(shaft,.078,.04,[0,side*.13,0],chrome,'y');box(shaft,[.015,.035,.14],[0,side*.15,0],brass);halfShafts.push(shaft);}
+ ring(carrier,.135,.016,[0,0,0],chrome,'y');box(carrier,[.2,.025,.025],[0,0,.1],steel);
+ const shaftTube=cyl(scene,.025,1,[0,0,0],steel,'y'),shaftAxis=new THREE.Vector3(0,1,0),dir=new THREE.Vector3(),start=new THREE.Vector3(),end=new THREE.Vector3();
+ box(shaftTube,[.005,.9,.005],[.025,0,0],brass);
+ const hubs=[],rotors=[],springs=[],dampers=[];
+ const tireGeo=new THREE.CylinderGeometry(1,1,.22,48),rimGeo=new THREE.CylinderGeometry(.67,.67,.226,32),treadGeo=new THREE.BoxGeometry(.045,.21,.012);
+ const springPoints=Array.from({length:97},(_,i)=>{const t=i/96,a=t*12*Math.PI;return new THREE.Vector3(.035*Math.cos(a),.035*Math.sin(a),t);});
+ const springGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(springPoints),96,.006,5,false);
  for(let i=0;i<4;i++){
-  const hub=new THREE.Group(),rotor=new THREE.Group();hub.add(rotor);scene.add(hub);
-  const tire=new THREE.Mesh(tireGeometry,dark);rotor.add(tire);
-  const rim=new THREE.Mesh(rimGeometry,metal);rotor.add(rim);
-  for(const side of [-1,1]){const sidewall=new THREE.Mesh(sidewallGeometry,dark);sidewall.rotation.x=Math.PI/2;sidewall.position.y=side*.105;rotor.add(sidewall);}
-  for(let bolt=0;bolt<6;bolt++){const stud=new THREE.Mesh(boltGeometry,gold);stud.position.set(Math.cos(bolt*Math.PI/3)*.35,.12,Math.sin(bolt*Math.PI/3)*.35);rotor.add(stud);}
-  const spoke=new THREE.Mesh(spokeGeometry,gold);rotor.add(spoke);
-  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0xdfb65d}));scene.add(line);
-  hubs.push(hub);rotors.push(rotor);links.push(line);
+  const hub=group(scene),rotor=group(hub);mesh(rotor,tireGeo,rubber);mesh(rotor,rimGeo,cast);
+  instanced(rotor,treadGeo,rubber,Array.from({length:48},(_,j)=>o=>{const a=j*Math.PI/24;o.position.set(Math.cos(a),0,Math.sin(a));o.rotation.y=-a+Math.PI/2;}));
+  for(const side of [-1,1]){ring(rotor,.82,.025,[0,side*.113,0],rubber,'y');ring(rotor,.62,.035,[0,side*.12,0],chrome,'y');
+   instanced(rotor,new THREE.BoxGeometry(1.22,.014,.025),chrome,Array.from({length:12},(_,j)=>o=>{o.position.y=side*.118;o.rotation.y=j*Math.PI/12;}));
+  }
+  cyl(rotor,.17,.25,[0,0,0],brass,'y');hubs.push(hub);rotors.push(rotor);springs.push(mesh(scene,springGeo,brass));dampers.push(cyl(scene,.017,1,[0,0,0],chrome,'z'));
  }
- const geometry=new THREE.PlaneGeometry(40,40,160,20);
- const ground=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x30444b,side:THREE.DoubleSide,roughness:1}));scene.add(ground);
- const grid=new THREE.GridHelper(40,40,0x78919a,0x4a636d);grid.rotation.x=Math.PI/2;scene.add(grid);
- scene.traverse(o=>{if(o.isMesh){o.castShadow=o===chassis||o===housing||(o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.radiusTop>=.25);o.receiveShadow=true;}});ground.castShadow=false;
- const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),hits=[];
- const inspectables=[sleeve,flywheel.children[0],inputDisk.children[0],outputDisk.children[0],housing,...pairs.flatMap(p=>[p.input.children[0],p.output.children[0]])];let highlighted;
- const hover=e=>{if(highlighted)highlighted.material.emissive.setHex(0);highlighted=null;const rect=canvas.getBoundingClientRect();pointer.set(2*(e.clientX-rect.left)/rect.width-1,1-2*(e.clientY-rect.top)/rect.height);ray.setFromCamera(pointer,camera);hits.length=0;ray.intersectObjects(inspectables,false,hits);if(hits[0]){highlighted=hits[0].object;highlighted.material.emissive.setHex(0x30220d);}};
- const leave=()=>{if(highlighted)highlighted.material.emissive.setHex(0);highlighted=null;};canvas.addEventListener('pointermove',hover);canvas.addEventListener('pointerleave',leave);
+ const groundGeo=new THREE.PlaneGeometry(40,40,160,20),ground=mesh(scene,groundGeo,material(0x303a32,.05,1));ground.receiveShadow=true;
+ const grid=new THREE.GridHelper(40,40,0x7b7961,0x485146);grid.rotation.x=Math.PI/2;scene.add(grid);
+ // Silhouette casters only. Rim spokes, tread instances, lamps and trim do not
+ // need separate shadow passes; the solid tire and coachwork already occlude them.
+ exterior.traverse(o=>{if(o.isMesh){const p=o.geometry.parameters||{};o.castShadow=o.geometry.type==='ExtrudeGeometry'||(p.width*p.height*p.depth>.015);o.receiveShadow=true;}});
+ hubs.forEach(h=>h.traverse(o=>{if(o.isMesh)o.castShadow=o.geometry===tireGeo;}));
+ const inspectables=[{object:engine,name:'Flywheel · engine angle'},{object:disc,name:'Friction disc · input shaft'},{object:sleeve,name:'Dog sleeve · output angle / selector q'},...pairs.map((p,i)=>({object:p.driven.node,name:`Gear ${i+1} · free on output until dogs engage`}))];
+ const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let hovered;
+ const hover=e=>{const r=canvas.getBoundingClientRect();pointer.set(2*(e.clientX-r.left)/r.width-1,1-2*(e.clientY-r.top)/r.height);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(inspectables.map(v=>v.object),true)[0];hovered=hit&&inspectables.find(v=>{let o=hit.object;while(o){if(o===v.object)return true;o=o.parent;}return false;});canvas.title=hovered?.name||'Orbit · drag | Pan · right-drag | Zoom · wheel';};
+ const focusComponent=()=>{if(hovered){hovered.object.getWorldPosition(desiredTarget);desiredPosition.copy(desiredTarget).add(new THREE.Vector3(.8,-.85,.65));transitioning=true;}};
+ canvas.addEventListener('pointermove',hover);canvas.addEventListener('dblclick',focusComponent);
  const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);});
- let terrainKey='',disposed=false;
+ // Include both alternate dog materials before the first update.
+ for(const m of [free,engaged,shock])materials.add(m);
+ let terrainKey='',lastMapping;
  function draw(state){
   if(disposed)throw new Error('Renderer disposed');
-  const width=canvas.clientWidth,height=canvas.clientHeight;
+  const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);
   if(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio())){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
-  const v=visualState(state),mode=document.querySelector('#cutaway').value;
-  exterior.visible=mode==='normal';
-  body.visible=mode!=='driveline';chassis.material.transparent=mode==='xray';chassis.material.opacity=mode==='xray'?.18:1;chassis.material.depthWrite=mode!=='xray';
+  const v=mechanicalPresentation(state,mode==='exploded');lastMapping=v;
+  const inspection=['driveline','clutch','exploded'].includes(mode),xray=mode==='xray';
+  // The bench hides every shadow caster; avoid clearing a needless shadow map.
+  sun.castShadow=!inspection;
+  body.visible=!inspection;axle.visible=!inspection;shaftTube.visible=!inspection;hubs.forEach(h=>h.visible=!inspection);springs.forEach(h=>h.visible=!inspection);dampers.forEach(h=>h.visible=!inspection);
+  if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.12:1;paint.depthWrite=!xray;exterior.visible=true;
+  frame.visible=true;bell.visible=mode==='normal'||mode==='xray'||mode==='driver';casing.visible=mode!=='clutch';casing.position.z=v.offsets.casing;
+  clutch.position.x=v.offsets.clutch;lay.position.y=AXIS_DISTANCE+v.offsets.layshaft;
+  engine.rotation.x=v.engineAngle;pressure.rotation.x=v.engineAngle;disc.rotation.x=v.inputAngle;
+  engine.position.x=.985+v.offsets.clutch*.45;disc.position.x=.94-v.clutchGap*.15+v.offsets.clutch*.12;pressure.position.x=.908-v.clutchGap-v.offsets.clutch*.12;pressure.children[0].material=v.heating?shock:steel;
+  input.rotation.x=v.inputAngle;layshaft.rotation.x=v.layshaftAngle;output.rotation.x=v.outputAngle;
+  pairs.forEach((pair,i)=>{pair.driven.node.rotation.x=v.pairs[i].drivenAngle;pair.dogs.rotation.x=v.pairs[i].freeAngle;pair.driven.teeth.material=[gearBody,v.pairs[i].engaged?engaged:free];});
+  sleeve.position.x=v.selectorX;sleeve.rotation.x=v.outputAngle;fork.position.x=v.selectorX;sleeve.children[0].material=v.impact?shock:steel;
   const p=state.planar,co=Math.cos(p.heading),si=Math.sin(p.heading);
-  driveline.position.set(0,0,state.z-.18);driveline.rotation.set(0,-state.pitch,p.heading,'ZYX');
-  flywheel.position.x=.72;inputDisk.position.x=.45;outputDisk.position.x=.39-v.gap*.18;
-  flywheel.rotation.x=v.engineAngle;inputDisk.rotation.x=v.engineAngle;outputDisk.rotation.x=v.shaftAngle;
-  outputDisk.children[0].material.color.setHex(v.heating?0xbb6037:v.state==='locked'?0xbda66b:0x98694b);
-  fork.position.set(state.gearbox.q*5.3,-.27,0);
-  sleeve.position.set(state.gearbox.q*5.3,-.27,0);sleeve.rotation.x=v.carrierAngle;
-  const lever=linkage.geometry.attributes.position;lever.setXYZ(0,state.gearbox.q*5.3,-.27,.05);lever.setXYZ(1,state.gearbox.q*8,-.27,.5);lever.needsUpdate=true;
-  sleeve.material.color.setHex(state.time-(state.gearbox.lastEventTime??-1)<.15&&(state.gearbox.lastEventEnergy||0)>.01?0xe98042:0x9cabb8);
-  pairs.forEach((pair,i)=>{pair.input.rotation.x=v.shaftAngle;pair.output.rotation.x=v.shaftAngle/pair.ratio;pair.collar.visible=v.gear===String(i+1);pair.output.children[0].material.color.setHex(pair.collar.visible?0xbda66b:0x657886);});
-  transmission.rotation.x=v.shaftAngle;propeller.rotation.x=v.carrierAngle;carrier.rotation.x=v.carrierAngle;
-  // Half-shaft axes are local y; each marker follows its actual rear rotor.
-  halfShafts.forEach((shaft,i)=>shaft.rotation.y=v.rearAngles[i]);
-  propeller.visible=false;
-  const shaftPoints=driveShaft.geometry.attributes.position;
-  shaftPoints.setXYZ(0,-.4*co,-.4*si,state.z-.18-.4*state.pitch);shaftPoints.setXYZ(1,-co,-si,state.corners[1].z);shaftPoints.needsUpdate=true;
-  shaftDirection.set(-co-(-.4*co),-si-(-.4*si),state.corners[1].z-(state.z-.18-.4*state.pitch));shaftTube.position.set(-.7*co,-.7*si,(state.corners[1].z+state.z-.18-.4*state.pitch)/2);shaftTube.scale.y=shaftDirection.length();shaftTube.quaternion.setFromUnitVectors(shaftAxis,shaftDirection.normalize());driveShaft.visible=false;
-  axle.position.set(-co,-si,state.corners[1].z);axle.rotation.z=p.heading;
   body.position.set(0,0,state.z);body.rotation.set(0,-state.pitch,p.heading,'ZYX');
-  state.wheels.forEach((w,i)=>{
-   const x=co*w.x-si*w.y,y=si*w.x+co*w.y,z=state.corners[w.axle].z;
-   hubs[i].position.set(x,y,z);hubs[i].rotation.z=p.heading+(w.steering||0);
-   rotors[i].scale.set(w.radius,1,w.radius);rotors[i].rotation.y=w.angle;
-   const a=links[i].geometry.attributes.position;
-   a.setXYZ(0,x,y,state.z+w.x*state.pitch);a.setXYZ(1,x,y,z);a.needsUpdate=true;
+  // Inspection cameras follow a local bench frame. Vehicle modes show actual yaw/pitch/heave.
+  powertrain.position.set(0,0,inspection?.65:state.z-.18);powertrain.rotation.set(0,inspection?0:-state.pitch,inspection?0:p.heading,'ZYX');
+  const rearX=state.corners[1].arm;axle.position.set(rearX*co,rearX*si,state.corners[1].z);axle.rotation.z=p.heading;carrier.rotation.y=v.carrierAngle;
+  halfShafts.forEach((shaft,i)=>shaft.rotation.y=v.rearAngles[i]);
+  start.set(-.65,0,0);powertrain.localToWorld(start);end.copy(axle.position);dir.subVectors(end,start);shaftTube.position.copy(start).add(end).multiplyScalar(.5);shaftTube.scale.y=dir.length();shaftTube.quaternion.setFromUnitVectors(shaftAxis,dir.normalize());shaftTube.rotateY(v.carrierAngle);
+  state.wheels.forEach((w,i)=>{const x=co*w.x-si*w.y,y=si*w.x+co*w.y,z=state.corners[w.axle].z,top=state.z+w.x*state.pitch;
+   hubs[i].position.set(x,y,z);hubs[i].rotation.z=p.heading+(w.steering||0);rotors[i].rotation.y=w.angle;rotors[i].scale.set(w.radius,1,w.radius);
+   springs[i].position.set(x,y,z);springs[i].scale.z=top-z;dampers[i].position.set(x+.055*co,y+.055*si,(top+z)/2);dampers[i].scale.y=top-z;
   });
-  const offsetX=Math.floor(p.x),offsetY=Math.floor(p.y);
-  ground.position.set(offsetX-p.x,offsetY-p.y,0);
-  const vertices=geometry.attributes.position;
-  const key=offsetX+':'+state.bump;
-  if(key!==terrainKey){terrainKey=key;
-  for(let i=0;i<vertices.count;i++)vertices.setZ(i,roadAt(state,vertices.getX(i)+offsetX).height);
-  vertices.needsUpdate=true;geometry.computeVertexNormals();}
-  grid.position.set(offsetX-p.x,offsetY-p.y,.002);
-  if(transitioning){camera.position.lerp(desiredPosition,.12);controls.target.lerp(desiredTarget,.12);if(camera.position.distanceTo(desiredPosition)<.002)transitioning=false;}
+  const ox=Math.floor(p.x),oy=Math.floor(p.y);ground.position.set(ox-p.x,oy-p.y,0);grid.position.set(ox-p.x,oy-p.y,.002);
+  const key=ox+':'+state.bump;if(key!==terrainKey){terrainKey=key;const a=groundGeo.attributes.position;for(let i=0;i<a.count;i++)a.setZ(i,roadAt(state,a.getX(i)+ox).height);a.needsUpdate=true;groundGeo.computeVertexNormals();}
+  if(transitioning){camera.position.lerp(desiredPosition,.16);controls.target.lerp(desiredTarget,.16);if(camera.position.distanceTo(desiredPosition)<.0001){camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}}
   controls.update();renderer.render(scene,camera);
  }
- return {draw,resetCamera,info:()=>({geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('pointerleave',leave);document.querySelector('#focus-clutch').removeEventListener('click',focus);document.querySelector('#cutaway').removeEventListener('change',inspection);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stopTransition);controls.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}};
+ return {draw,resetCamera,
+  info:()=>({geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
+  snapshot:()=>({mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
+  dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
+ };
 }

@@ -10,7 +10,7 @@ const server = createServer(async (request, response) => {
     const path = request.url === '/' ? 'index.html' : request.url.slice(1);
     const file = new URL(path, root);
     if (!file.href.startsWith(root.href)) throw new Error('Invalid path');
-    response.setHeader('Content-Type', path.endsWith('.js') ? 'text/javascript' : 'text/html');
+    response.setHeader('Content-Type', path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html');
     response.end(await readFile(file));
   } catch { response.writeHead(404); response.end(); }
 });

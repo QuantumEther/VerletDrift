@@ -120,3 +120,93 @@ Executed: 13/13 current Node tests (all ten original mechanical/preservation tes
 Limits: this does not claim a unique cause for every intermittent hang. Single expensive solver steps, GPU stalls and first-time shader compilation remain indivisible browser work. No invalid physics state is repaired or automatically resumed. Existing material, contact and drivetrain approximations remain documented above.
 
 All 72 predecessor Node tests were also rerun unchanged and passed (85 total including this exhibit). The final renderer benchmark was refreshed after geometry sharing and material changes; raw JSON is authoritative for this run.
+
+# Mission 37 — The Grand Mechanical Laboratory
+
+Branch: `feature/vintage-mechanical-laboratory`. Baseline: `607adb1ebcf16fe359cd5fdde964e7a85600117d` (Mission 36, descended from the scientific-rebuild prototype). This preserves the reliability work before adding the new presentation. Changes are confined to this exhibit. Physics, contact audio, selector-force input and the 1 ms bounded scheduler remain byte-identical; the preservation test checks them against that commit. Earlier exhibits and production are unchanged.
+
+## Opening and operating the laboratory
+
+Run `python3 serve.py` at the repository root and open:
+
+<http://localhost:8000/research/scientific-rebuild/unsynchronized-gearbox-prototype/>
+
+The supplied `VerletDrift_30s_MOCKUP.html` informed the enamel/brass/ivory layout, not the mechanics. Fonts use local Georgia/system fallbacks; no web font, asset service or new package is required. The left desk applies torque, clutch capacity and selector **force**; the separate right indicator reports actual engagement. Initial conditions, grip/worn experiments and opt-in audio are under **Experimental conditions & audio**. All original keyboard controls remain. Drive/Brake also have holdable pointer buttons.
+
+Choose Workshop, Driver, X-ray, Gearbox, Clutch or Exploded from the inspection menu. Orbit with left drag, pan with right drag, zoom with the wheel; reset returns to the active preset. Double-click an identified component to focus. The other presentation menu retains the top/side experiments and adds the engineering section. Mechanical records remain visible; detailed impulses, work residuals, contact forces and timing are in the collapsed scientific panel.
+
+## Shared mechanical presentation
+
+`mechanical-layout.js` is the read-only dimensional/kinematic contract consumed by both `schematic.js` and `view3d.js`. This is a **two-parallel-axis longitudinal gearbox**, with distinct coaxial input and output shaft segments and a layshaft. A derived, massless 36:36 input mesh reverses the layshaft; the second external mesh restores the source's positive 3.5:1 and 2:1 ratios. No extra rotational degree of freedom, inertia, friction or torque enters the solver.
+
+| Part | Authoritative state / mapping |
+| --- | --- |
+| Flywheel, pressure assembly | `flywheel.angle`; pressure separation derives from existing clutch engagement/lock state |
+| Friction disc, input splines | `shaftState(state).angle` (includes captured phase and worn ramp coupling) |
+| Layshaft | minus input angle, plus fixed half-tooth assembly phase |
+| First free gear | input angle / 3.5; 16:56 teeth |
+| Second free gear | input angle / 2; 24:48 teeth |
+| Output shaft / sleeve | mean of rear wheel angles; independent of free-gear rotation in neutral |
+| Sleeve and fork travel | physical selector `q × 8` for visible axial travel; no gear command animation |
+| Gear dog phase | input angle / ratio relative to output angle; six dogs with the source angular clearance |
+| Engaged gear finish | `gearbox.selected`; a moved lever alone does not change engagement coloring |
+| Contact cue / audio | actual recorded impact time/energy / existing event-driven audio |
+| Rear carrier, half-shafts | average rear angle / individual rear-left and rear-right angles |
+| Wheels and steering | each physical wheel angle and front steering angle |
+| Vehicle pose / springs | chassis yaw, pitch, height and the two axle vertical coordinates |
+
+All gear pairs use module 0.008 and tooth sums 72: pitch radii sum to 0.288 in exhibit units. The initial 36:36 pair uses the same centre distance. Fixed tooth assembly phases put a tooth opposite a gap; pitch-line velocities are equal/opposite at each mesh. Decorative teeth use a sampled 20-degree involute outline built once in `mechanical-geometry.js`. Gear teeth/body faces, friction composite, cast housing, bearings, nickel shafts and brass details use separate roughness/metalness treatments. Tread, spokes, fasteners and dogs use instancing; repeated geometry/materials are shared. A local PMREM studio, restrained lights, ACES tone mapping and sRGB output need only WebGL. A 512-pixel shadow map uses vehicle silhouette casters; tiny trim, tread and spokes do not each cast additional shadows. Bench modes disable the empty shadow pass. Disposal includes instanced matrix buffers as well as geometry/material/environment/shadow resources.
+
+The engineering section projects the same shaft axes, radii and selector travel. Its end-on insets show actual signed gear rotations; indexed lines in the longitudinal projection indicate shaft motion. Free gears are supported on the output shaft rather than being shown rigidly attached to it. Bronze bushings and engagement coloring distinguish those states.
+
+`instruments.js` converts actual rad/s to RPM and planar speed magnitude to km/h. Needle and hub are children of one SVG-local origin at (120,120); the needle rotates about (0,0) inside that group. Tick/needle range is -135° to +135°. Only the pointer saturates outside its engraved scale; signed digital readings retain the real value and say **off scale**. This is not a rev limiter. These are prescribed motor/flywheel measurements, not a newly implemented combustion engine.
+
+Inspection cameras use a stable local bench frame; vehicle modes show actual chassis yaw/pitch/heave. Exploded mode translates the clutch components axially, layshaft laterally and casing vertically. It changes only scene nodes. It introduces no state or separation in the real mechanism. Snapshot checks compare the complete physics state before/after every mode.
+
+## Schematic boundaries
+
+The source does not specify a manufactured gearbox or clutch geometry. Housing, bearings, tooth profile, clutch release travel, steering appearance and exterior proportions are educational geometry. Axial selector travel is magnified eightfold; dog radius is magnified 2.5-fold. The displayed slot clearance follows the abstract source clearance, but the meshes are not a collision solver or a manufacturing drawing. Worn ramp work and phase remain in the source mechanics; the exhibit does not reproduce microscopic wear geometry or tooth deformation.
+
+The differential carrier/outputs illustrate existing reduced kinematics; there is no new resolved bevel-tooth contact or final-drive ratio. In independent-rear-drive mode the carrier is an average-speed reference, not an asserted mechanical torque constraint. Springs retain shared front/rear axle heave: no independent left/right articulation, roll, camber or steering-column dynamics is invented. Pressure-plate separation represents the clutch's capacity control; no new axial clutch equation is implied. Inspection of a mechanism deliberately crops distant unrelated parts; orbit/zoom remain available.
+
+## Reproduction and evidence
+
+```bash
+node --test research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/*.test.js
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/browser-reliability.mjs
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/browser-laboratory.mjs
+# Screenshots + JSON default to /tmp/mission37-browser; override ARTIFACT_DIR if needed.
+# Comparable CPU frame-submission replay (absolute exhibit directory):
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/render-benchmark.mjs "$PWD/research/scientific-rebuild/unsynchronized-gearbox-prototype"
+```
+
+The existing browser harnesses now serve the extracted stylesheet with its correct MIME type. The laboratory harness tests SVG pivots at five RPM values and three viewport widths; actual render-node angles, steering/heave, independent outputs, engaged/free finishes, clutch travel, selector travel, exploded isolation, orbit/reset, resource stability and renderer recreation. Screenshots cover vehicle, X-ray, gearbox, clutch, exploded, schematic and narrow layout. Controlled RAF stepping is a reproducibility aid in this harness, not the application scheduler. Its repeated paused-frame resource run is not an interactive FPS benchmark.
+
+Executed validation: **90 Node tests pass** (18 here and 72 unchanged predecessor tests). Browser reliability and laboratory checks pass with no uncaught exceptions. Gauge pivots were checked at 0/1500/3000/4500/6000 RPM and viewport widths 390/760/1500. A turning, second-gear fixture verified unequal rear-wheel angles, actual selector position and engaged/free render finishes. Complete snapshots remained unchanged by views, cameras or explosion. A 1200-frame paused rendering stress held resource counts stable; renderer recreation preserved scene counts. This is bounded evidence, not a proof against every future resource leak. The reliability harness includes fault/reset, held/repeated keys, release outside buttons, pointer cancellation, blur, resizing and hidden-tab lifecycle. Headless Chromium kept a real second tab's visibility as `visible`, so hidden lifecycle was additionally exercised by explicit visibility-event injection.
+
+Final screenshots were inspected, including a correction to Three.js shader invalidation when entering X-ray (opacity alone left the previously compiled opaque shader active). Images are generated in `/tmp/mission37-browser`; their hashes and reproducible commands are recorded with the measured results. The final shadow-only optimization does not change the depicted geometry or mappings. The original screenshot set uses the preceding 1024-pixel shadow map; the reliability harness regenerates vehicle/clutch captures using the final 512-pixel map.
+
+Saved measurements: `results/mission37-browser.json`, `results/mission37-reliability.json`, `results/mission37-performance.json`. CPU timings are render submissions, not GPU completion or FPS. Baseline and current runs use the same host (AMD EPYC 9V74, 5 exposed logical CPUs, Node 24.19.0, Chromium 154.0.8037.57). The fixed 800×450 replay uses identical requested inputs/timing; accepted physical time can differ because the unchanged scheduler records overload as slow time.
+
+**Performance limitation remains:** actual real-RAF driving on this environment's ANGLE/Vulkan SwiftShader software renderer is slow. At a 1280×850 page viewport, the baseline observed 4.36 frames/s and 150.13 physics steps/s; the upgraded view observed 2.36 frames/s and 89.20 steps/s. Over 6.367 s of measured wall time it simulated 0.568 s and explicitly recorded 5.767 s of slow wall time (the remainder involves debt/sample boundaries). CPU callbacks averaged 7.21 ms, while RAF intervals averaged 355.94 ms. Reducing small-part shadow work did **not** materially improve this software-rendering bottleneck. The layouts' canvas dimensions differ in this real-page comparison; the separate replay fixes canvas dimensions. These observations do not isolate a unique GPU bottleneck or establish performance on accelerated desktop hardware. No numerical fault occurred; the JSON's runtime `PASS` is **not a playability/FPS acceptance**. Hardware-accelerated desktop performance remains unverified, and the software-rendering usability gate is not met. The slowdown is visible and no simulation time is silently represented as completed. No physics change was used to hide it.
+
+For the real-clock observation (2 s warmup, nominal 5 s sample with actual elapsed time recorded):
+
+```bash
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/browser-performance.mjs
+# The same script accepts an extracted baseline exhibit directory as its argument.
+```
+
+Final 100-frame CPU replay (800×450 CSS canvas):
+
+| Metric | Mission 36 baseline | Mission 37 final |
+| --- | ---: | ---: |
+| Mean callback | 9.99 ms | 10.88 ms |
+| p95 callback | 24.60 ms | 29.00 ms |
+| Worst callback | 29.90 ms | 43.40 ms |
+| After injected 1 s stall | 8.30 ms | 13.40 ms |
+| Initial renderer/shader setup | 969.10 ms | 768.50 ms |
+| Mean accepted steps/frame | 14.99 | 15.70 |
+| Maximum accepted steps/frame | 32 | 32 |
+
+These short runs include JIT/timing variability and different accepted physics work under the fixed budget; they are not evidence of a solver speedup. Final resource counts: 98 scene geometries, 15 materials, 2 GPU textures after all modes. Final shadow captures are also copied to `/tmp/mission37-browser/final-vehicle.png` and `final-clutch.png`.
