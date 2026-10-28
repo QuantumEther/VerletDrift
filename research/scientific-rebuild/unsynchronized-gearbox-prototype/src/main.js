@@ -1,3 +1,4 @@
+import {SimulationClock} from './clock.js';
 import {shaftState,dogState} from './gearbox.js';
 import {selectorInputForce} from './selector-input.js';
 import {movingSecond} from './initial-state.js';
@@ -9,36 +10,42 @@ import {createView3D} from './view3d.js';
 import {createVehicle,stepVehicle,cornerForces,roadAt} from './vehicle.js';
 const canvas=document.querySelector('#wheel'),ctx=canvas.getContext('2d');
 let state=createVehicle(),accumulator=0,last=performance.now();
-const keys=new Set();
+const keys=new Set(),pointers=new Map(),ignoredKeys=new Set();
+const clock=new SimulationClock();let intentionalPause=false;
+let renderMs=0,lastDiagnostics=-Infinity;
+function clearInputs(){for(const key of keys)ignoredKeys.add(key);keys.clear();for(const [id,button]of pointers){if(button.hasPointerCapture(id))button.releasePointerCapture(id);}pointers.clear();}
+function recover(){clock.reset();last=performance.now();clearInputs();document.querySelector('#warning').textContent='';}
 let trail=[];
 let view3d;
 const canvas3d=document.querySelector('#perspective');
 function selectView(){const active=document.querySelector('#view').value==='3d';canvas.hidden=active;canvas3d.hidden=!active;document.querySelector('#reset-camera').hidden=!active;}
-document.querySelector('#view').addEventListener('change',selectView);
+document.querySelector('#view').addEventListener('change',()=>{clearInputs();selectView();});
 selectView();
+document.querySelector('#pause').addEventListener('click',()=>{intentionalPause=!intentionalPause;clearInputs();document.querySelector('#pause').textContent=intentionalPause?'Resume':'Pause';});
 const audio=createMechanicalAudio(document.querySelector('#audio'),document.querySelector('#volume'));
 for(const button of document.querySelectorAll('[data-selector]')){
- const clear=()=>keys.delete(button.dataset.selector);
- button.addEventListener('pointerdown',e=>{button.setPointerCapture(e.pointerId);keys.add(button.dataset.selector);});
- button.addEventListener('pointerup',clear);button.addEventListener('pointercancel',clear);
+ const clear=e=>pointers.delete(e.pointerId);
+ button.addEventListener('pointerdown',e=>{button.setPointerCapture(e.pointerId);pointers.set(e.pointerId,button);});
+ button.addEventListener('pointerup',clear);button.addEventListener('pointercancel',clear);button.addEventListener('lostpointercapture',clear);
 }
 document.querySelector('#worn').addEventListener('change',()=>resetExhibit());
-document.querySelector('#moving-second').addEventListener('click',()=>{state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});document.querySelector('#engagement').value=0;accumulator=0;trail=[];keys.clear();});
-function resetExhibit(){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];keys.clear();}
+document.querySelector('#moving-second').addEventListener('click',()=>{state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});document.querySelector('#engagement').value=0;accumulator=0;trail=[];recover();});
+function resetExhibit(){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];recover();}
 document.querySelector('#rest').addEventListener('click',resetExhibit);
 document.querySelector('#spin').addEventListener('click',()=>{resetExhibit();state.flywheel.omega=60;document.querySelector('#engagement').value=0;});
 for(const button of document.querySelectorAll('[data-engagement]'))button.addEventListener('click',()=>document.querySelector('#engagement').value=button.dataset.engagement);
 document.querySelector('#coast').addEventListener('click',()=>{
- state=createVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);accumulator=0;trail=[];keys.clear();
+ state=createVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);accumulator=0;trail=[];recover();
 });
-for(const id of ['differential','scenario'])document.querySelector('#'+id).addEventListener('change',()=>{state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];keys.clear();});
+for(const id of ['differential','scenario'])document.querySelector('#'+id).addEventListener('change',()=>{state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];recover();});
 window.addEventListener('keydown',e=>{
-  const key=e.key.toLowerCase();
+  const key=e.key.toLowerCase();if(ignoredKeys.has(key)&&e.repeat)return;ignoredKeys.delete(key);if(e.target.matches?.('input[type=number],textarea'))return;
   if(['w','s','r','b',' ','a','d','1','2','n'].includes(key))e.preventDefault();
-  if(!e.repeat){if(key==='r'){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];}if(key===' ')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
+  if(!e.repeat){if(key==='r'){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});accumulator=0;trail=[];recover();}if(key===' ')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
   keys.add(key);
 });
-window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
+window.addEventListener('keyup',e=>{keys.delete(e.key.toLowerCase());ignoredKeys.delete(e.key.toLowerCase());});window.addEventListener('blur',clearInputs);document.addEventListener('visibilitychange',()=>{clearInputs();if(!document.hidden){const unseen=Math.max(0,(performance.now()-last)/1000);clock.wall+=unseen;clock.pausedWall+=unseen;last=performance.now();}});
+window.addEventListener('error',e=>{clock.fail(e.error||new Error(e.message),state);clearInputs();});
 function draw(){
  if(document.querySelector('#view').value==='3d'){view3d??=createView3D(canvas3d,document.querySelector('#reset-camera'));view3d.draw(state);return;}
  if(document.querySelector('#view').value==='top'){drawTop();return;}
@@ -86,10 +93,24 @@ function diagnostics(){
  document.querySelector('#pitch').textContent=`${(state.pitch*180/Math.PI).toFixed(3)}°; rate ${state.pitchRate.toFixed(4)} rad/s; height ${state.z.toFixed(4)} m`;
  for(const [i,c] of state.corners.entries()) {const f=cornerForces(state,c);document.querySelector(i===0?'#front':'#rear').textContent=`ω ${c.omega.toFixed(3)} rad/s | slip ${(c.radius*c.omega-state.v).toFixed(3)} m/s | Fx ${c.fx.toFixed(2)} N | N ${f.normal.toFixed(2)} N | compression ${f.compression.toFixed(4)} m | contact ${f.contact} | drive ${c.drive.toFixed(1)} / brake ${c.brake.toFixed(1)} Nm`;}
 }
-function frame(now){accumulator+=(now-last)/1000;last=now;
- try{let steps=0;while(accumulator>=.001&&steps<1000){state.flywheel.engagement=Number(document.querySelector('#engagement').value);state.gearbox.driverForce=selectorInputForce(state.gearbox,keys);stepVehicle(state,{drive:keys.has('w')?Number(document.querySelector('#drive').value):0,brake:keys.has('s')?8:0,steer:(Number(keys.has('a'))-Number(keys.has('d')))*.4});audio.update(state.gearbox);accumulator-=.001;steps++;if(steps%20===0){trail.push([state.planar.x,state.planar.y]);if(trail.length>1000)trail.shift();}}draw();diagnostics();requestAnimationFrame(frame);}catch(e){document.querySelector('#warning').textContent=`Paused: ${e.message}; t=${state.time}`;console.error(e);}
+function frame(now){
+ try {
+ const elapsed=(now-last)/1000;last=now;
+ const held=new Set([...keys,...[...pointers.values()].map(b=>b.dataset.selector)]);
+ const engagement=Number(document.querySelector('#engagement').value),motor=Number(document.querySelector('#drive').value);
+ clock.frame(elapsed,h=>{state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,brake:held.has('s')?8:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
+ if(clock.fault){clearInputs();document.querySelector('#warning').textContent='Simulation paused: '+clock.fault.message+' — Reset to restart.';}
+ const start=performance.now();
+ try{draw();if(now-lastDiagnostics>100){diagnostics();lastDiagnostics=now;}if(document.querySelector('#inspection').open)document.querySelector('#performance').textContent=JSON.stringify({status:clock.status,frameIntervalMs:elapsed*1000,rejected:clock.rejected,wall:clock.wall,simulated:clock.simulated,slowMotionWall:clock.dilated,pausedWall:clock.pausedWall,debt:clock.debt,physicsMs:clock.physicsMs,stepsThisFrame:clock.frameSteps,accepted:clock.accepted,candidates:clock.candidates,eventTrials:clock.searches,worstStepMs:clock.worstStepMs,renderMs},null,2);}catch(e){clock.fail(e,state);view3d?.dispose();view3d=undefined;document.querySelector('#view').value='top';selectView();}
+ renderMs=performance.now()-start;
+ }catch(e){clock.fail(e,state);clearInputs();document.querySelector('#warning').textContent='Simulation paused: '+clock.fault.message+' — Reset to restart.';}finally{requestAnimationFrame(frame);}
 }
 requestAnimationFrame(frame);
 
 // Read-only diagnostic snapshot, also used to verify camera isolation.
 export function simulationSnapshot(){return structuredClone(state);}
+
+export function runtimeSnapshot(){const {now,...data}=clock;return {clock:structuredClone(data),keys:[...keys],pointers:pointers.size,renderMs};}
+
+export function rendererInfo(){return view3d?.info();}
+export function recreateRenderer(){view3d?.dispose();view3d=undefined;}
