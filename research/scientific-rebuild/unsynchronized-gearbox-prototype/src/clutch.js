@@ -1,3 +1,4 @@
+import {advancePressurePlate} from './pressure-plate.js';
 import {gradient,shaftState} from './gearbox.js';
 export function createFlywheel(){return {inertia:.3,omega:0,angle:0,ratio:4,ratedTorque:30,engagement:0,heat:0,state:'disengaged',torque:0,slip:0,heatingPower:0};}
 export function gaussian(a,b){const m=a.map((row,i)=>[...row,b[i]]),n=b.length;for(let j=0;j<n;j++){let pivot=j;for(let i=j+1;i<n;i++)if(Math.abs(m[i][j])>Math.abs(m[pivot][j]))pivot=i;[m[j],m[pivot]]=[m[pivot],m[j]];const d=m[j][j];if(Math.abs(d)<1e-14)throw new Error('Singular clutch system');for(let k=j;k<=n;k++)m[j][k]/=d;for(let i=0;i<n;i++)if(i!==j){const f=m[i][j];for(let k=j;k<=n;k++)m[i][k]-=f*m[j][k];}}return m.map(row=>row[n]);}
@@ -13,7 +14,7 @@ export function solveCoupled(A,rhs,limits,B,wheels,p,motor,ports,h){
  const slip0=p.omega-(neutral?shaft0:g.reduce((sum,x,i)=>sum+x*(i<4?wheels[i].omega:gear.velocity),0));
  const loadAcc=B.map(row=>row.reduce((sum,b,j)=>sum+b*ports[j],0));
  const slipFree=slip0+(neutral?shaft0-shaftFree:0)+h*(motor/p.inertia-g.reduce((sum,v,i)=>sum+v*loadAcc[i],0));
- const capacity=p.engagement*p.ratedTorque;
+ const capacity=p.actuator?advancePressurePlate(p.actuator,p.engagement,h).capacity:p.engagement*p.ratedTorque;
  const candidates=capacity>0?['locked',1,-1]:[0];
  p.gearbox.lastSolveCases=0;
  let result;

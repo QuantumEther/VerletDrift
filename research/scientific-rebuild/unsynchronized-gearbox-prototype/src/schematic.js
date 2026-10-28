@@ -14,7 +14,7 @@ export function drawDrivetrain(canvas,state) {
  // Input terminates at the primary pinion; the coaxial output is a separate member.
  line(X(1.16),Y(0),X(1.04),Y(0),gold,7);line(X(.96),Y(0),X(.55),Y(0),steel,6);line(X(.34),Y(0),X(-.78),Y(0),steel,6);
  line(X(.65),Y(AXIS_DISTANCE),X(-.39),Y(AXIS_DISTANCE),steel,6);
- plate(.985,.235,.065,steel,v.engineAngle);plate(.94-v.clutchGap*.15,.19,.024,gold,v.inputAngle);plate(.908-v.clutchGap,.218,.04,steel,v.engineAngle);
+ plate(.985,.235,.065,steel,v.engineAngle);plate(.94-v.clutchGap*.15+v.plateCompression/2,.19,.024-v.plateCompression,gold,v.inputAngle);plate(.908-v.clutchGap+v.plateCompression,.218,.04,steel,v.engineAngle);
  plate(PRIMARY.x,PRIMARY.radius,.055,steel,v.inputAngle);plate(PRIMARY.x,PRIMARY.radius,.055,steel,v.layshaftAngle,AXIS_DISTANCE);
  v.pairs.forEach(p=>{plate(p.x,p.drivenRadius,.055,p.engaged?gold:steel,p.drivenAngle);plate(p.x,p.driverRadius,.055,steel,p.driverAngle,AXIS_DISTANCE);label(`FREE ${p.gear} · ${p.ratio}:1`,X(p.x),Y(0)-p.drivenRadius*420-3);if(p.engaged)label('DOGS ENGAGED',X(p.x),Y(0)-p.drivenRadius*420-32);
   const sign=Math.sign(p.x);line(X(sign*DOG_FACE),Y(0)-42,X(p.x),Y(0)-42,p.engaged?gold:dim,8);line(X(sign*DOG_FACE),Y(0)+42,X(p.x),Y(0)+42,p.engaged?gold:dim,8);

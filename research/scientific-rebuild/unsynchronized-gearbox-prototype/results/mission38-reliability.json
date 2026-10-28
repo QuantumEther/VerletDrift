@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "realTabVisibility": "visible",
+  "runtime": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0,
+      "wall": 39.82309999999107,
+      "simulated": 0,
+      "dilated": 0,
+      "pausedWall": 39.82309999999107,
+      "status": "paused",
+      "fault": null,
+      "accepted": 0,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 0,
+      "candidates": 0,
+      "searches": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 2.6000000089406967
+  },
+  "memory": {
+    "geometries": 98,
+    "textures": 2,
+    "sceneGeometries": 98,
+    "materials": 15
+  }
+}

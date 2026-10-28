@@ -29,7 +29,7 @@ export function mechanicalPresentation(state, exploded=false) {
   }));
   return {...v,pairs,inputAngle:v.shaftAngle,layshaftAngle:-v.shaftAngle+Math.PI/PRIMARY.teeth,
     outputAngle:v.carrierAngle,selectorX:q*SELECTOR_SCALE,
-    clutchGap:v.gap*.10,impact:state.time-(state.gearbox.lastEventTime??-Infinity)<.15 && (state.gearbox.lastEventEnergy||0)>.01,
+    clutchGap:v.gap*.10,plateCompression:state.flywheel.actuator?Math.max(0,state.flywheel.actuator.x)*8:0,impact:state.time-(state.gearbox.lastEventTime??-Infinity)<.15 && (state.gearbox.lastEventEnergy||0)>.01,
     // Exploded offsets belong exclusively to render groups. Shaft angles never change.
     offsets:exploded?{clutch:.38,layshaft:.35,casing:.52}:{clutch:0,layshaft:0,casing:0}
   };

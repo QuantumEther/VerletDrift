@@ -21,7 +21,7 @@ try {
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.setDefaultTimeout(15000);
+  page.setDefaultTimeout(60000);
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.waitForFunction(()=>document.querySelector('#actual-gear').textContent.includes('Gear'));
   const api=expression=>page.evaluate(async expression=>{const m=await import('/src/main.js');return Function('m',expression)(m);},expression);

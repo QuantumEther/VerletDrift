@@ -1,3 +1,4 @@
+import {createPressurePlate} from './pressure-plate.js';
 import {createInstrument,instrumentValues} from './instruments.js';
 import {SimulationClock} from './clock.js';
 import {shaftState,dogState} from './gearbox.js';
@@ -102,7 +103,7 @@ function diagnostics(){
  const dog=dogState(state);
  document.querySelector('#gearbox-status').textContent=`Selector ${g.q.toFixed(5)} m / ${g.velocity.toFixed(3)} m/s | driver ${g.driverForce.toFixed(1)} N | detent ${g.detentReaction.toFixed(2)} N | relative dog speed ${dog.relativeSpeed.toFixed(3)} rad/s | phase ${dog.phase.toFixed(3)} rad | depth ${Math.max(0,Math.abs(g.q)-.010).toFixed(4)} m | contact ${g.contactForce.toFixed(1)} N | impulse ${g.lastImpulse.toFixed(4)} Ns | angular impulse ${(g.lastAngularImpulse||0).toFixed(5)} Nms | impact loss ${g.lastImpactEnergy.toFixed(5)} J / total ${g.impactHeat.toFixed(4)} J | input ΔL ${(g.inputMomentumChange||0).toFixed(5)} Nms | cam force ${(g.camForce||0).toFixed(2)} N | rotor/selector work residual ${(g.rotationalWorkResidual||0).toExponential(2)} J | driver work ${(g.driverWork||0).toFixed(3)} J`;
  const display=(id,value)=>document.querySelector('#'+id).textContent=value;
- display('engine-rpm',visual.engineRPM.toFixed(1)+' rpm');display('input-rpm',visual.shaftRPM.toFixed(1)+' rpm');display('slip',visual.slip.toFixed(3)+' rad/s');display('clutch-state',visual.state);display('torque',visual.torque.toFixed(3)+' Nm');display('capacity',visual.capacity.toFixed(1)+' Nm');display('heat-power',visual.heatPower.toFixed(3)+' W');display('heat',visual.heat.toFixed(4)+' J');display('flow',visual.flow);
+ display('engine-rpm',visual.engineRPM.toFixed(1)+' rpm');display('input-rpm',visual.shaftRPM.toFixed(1)+' rpm');display('slip',visual.slip.toFixed(3)+' rad/s');display('clutch-state',visual.state);display('torque',visual.torque.toFixed(3)+' Nm');display('capacity',visual.capacity.toFixed(1)+' Nm'+(f.actuator?` | command ${(f.engagement*100).toFixed(0)}% | plate ${(f.actuator.x*1000).toFixed(3)} mm | normal ${f.actuator.normal.toFixed(1)} N | axial energy ${f.actuator.energy.toFixed(4)} J | actuator work ${f.actuator.commandWork.toFixed(4)} J | damper ${f.actuator.dampingHeat.toFixed(4)} J | numerical loss ${f.actuator.numericalLoss.toFixed(4)} J`:''));display('heat-power',visual.heatPower.toFixed(3)+' W');display('heat',visual.heat.toFixed(4)+' J');display('flow',visual.flow);
  drawSelector(document.querySelector('#selector'),state);
 
 
@@ -122,7 +123,7 @@ function frame(now){
  const elapsed=(now-last)/1000;last=now;
  const held=new Set([...keys,...[...pointers.values()].map(b=>b.dataset.selector)]);
  const engagement=Number(document.querySelector('#engagement').value),motor=Number(document.querySelector('#drive').value);
- clock.frame(elapsed,h=>{state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,brake:held.has('s')?8:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
+ clock.frame(elapsed,h=>{state.flywheel.actuator??=createPressurePlate();state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,brake:held.has('s')?8:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
  if(clock.fault){clearInputs();document.querySelector('#warning').textContent='Simulation paused: '+clock.fault.message+' — Reset to restart.';}
  const start=performance.now();
  try{draw();if(now-lastDiagnostics>100){diagnostics();lastDiagnostics=now;}if(document.querySelector('#inspection').open)document.querySelector('#performance').textContent=JSON.stringify({status:clock.status,frameIntervalMs:elapsed*1000,rejected:clock.rejected,wall:clock.wall,simulated:clock.simulated,slowMotionWall:clock.dilated,pausedWall:clock.pausedWall,debt:clock.debt,physicsMs:clock.physicsMs,stepsThisFrame:clock.frameSteps,accepted:clock.accepted,candidates:clock.candidates,eventTrials:clock.searches,worstStepMs:clock.worstStepMs,renderMs},null,2);}catch(e){clock.fail(e,state);view3d?.dispose();view3d=undefined;document.querySelector('#view').value='top';selectView();}

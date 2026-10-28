@@ -210,3 +210,67 @@ Final 100-frame CPU replay (800×450 CSS canvas):
 | Maximum accepted steps/frame | 32 | 32 |
 
 These short runs include JIT/timing variability and different accepted physics work under the fixed budget; they are not evidence of a solver speedup. Final resource counts: 98 scene geometries, 15 materials, 2 GPU textures after all modes. Final shadow captures are also copied to `/tmp/mission37-browser/final-vehicle.png` and `final-clutch.png`.
+
+# Mission 38 — physical clutch engagement
+
+Base: `11deb5c292927fd1f2115716f6d703474004faf1`; branch `fix/clutch-lockup-physical-engagement`.
+
+## Diagnosis and independent benchmark
+
+The original static-friction branch is not an unexplained magnetic attraction. In neutral with zero bearing drag, its required capture torque is slip/(h*(1/Ie+1/Is)), adjusted for external torque. Static capture is accepted only within available capacity and the coupled tire constraints. Large mismatches require proportionally large torque; no minimum pedal percentage is appropriate. At Ie=0.3, Is=0.1 kg m², initial speeds 60/0 rad/s and capacity 3 Nm, analytical synchronization is 1.5 s, final speed 45 rad/s, momentum 18 Nms and heat 135 J. Tests at 1/0.5/0.25 ms reproduce this within one step, momentum within 1e-9 Nms and energy+heat within 1e-8 J. Near-zero mismatch legitimately captures within a step. Static lock subsequently produces no friction heat, and overload releases it. No benchmark evidence justified changing the active-set ordering, static constraint or adding RPM blending. Existing tests retain dog-impact losses, worn ejection, differential constraints and double-declutch behavior.
+
+Two actual representation omissions were confirmed: capacity changed instantly with the slider, with no moving axial assembly; and the visualization inferred zero plate gap from static lock. Neither is proof of a rotational momentum defect. The rigid model also lacks clutch-hub torsional compliance, so synchronization can have a sharply changing acceleration even when fully physical. No universal no-chatter claim is made outside the tested domain.
+
+## Optional axial model, enabled in the laboratory
+
+The existing `engagement` field remains the driver's command. The browser attaches `flywheel.actuator`; headless fixtures without that field retain the original instantaneous-capacity solver as an executable reference. Thus old research equations remain directly testable, rather than being silently replaced. To run the new model headlessly, attach `createPressurePlate()` before stepping. The solver advances the axial state on each coherent trial stage, including cloned dog-event trials; no extra wall-clock update exists.
+
+Let x<0 mean plate separation and x>0 contact-spring compression:
+
+`m*xDDot = ks*(target-x) - c*xDot - kc*max(x,0)`
+
+`target = -openTravel + command*(openTravel+commandTravel)`
+
+`N = kc*max(x,0); capacity = faces*mu*effectiveRadius*N`.
+
+Parameters are an **illustrative, uncalibrated research assembly**, not measured vehicle data: effective axial mass 0.08 kg; actuator/linkage spring ks=100000 N/m; contact spring kc=500000 N/m; damping c=440 Ns/m (approximately critical for the loaded combined stiffness); open clearance 1 mm; full-command target 6 mm; two friction faces; mu=0.3; effective friction radius 0.1 m. Full-command equilibrium gives x=1 mm, N=500 N and 30 Nm capacity. The clearance creates physical free travel, not a lock threshold or driver assistance. At command 0.1 this particular assembly never reaches contact; command 0.228571... gives the old model's 3 Nm steady capacity. This choice is explicit and must not be interpreted as a calibrated pedal bite point. A different real assembly requires measured geometry, stiffness and clamp-force data.
+
+Backward Euler solves the open and contact linear branches (at most two scalar candidates), accepts the consistent sign of x, and has no root search or hidden substeps. It is first-order and introduces separately reported numerical dissipation. It avoids a stiff explicit stability restriction at the fixed 1 ms clock. The axial ledger includes mass kinetic energy, actuator spring energy and unilateral contact-spring energy; moving the commanded spring anchor does measured external work, the damper dissipates c*h*vNew², and the remaining nonnegative loss is integration dissipation. This is separate from clutch rotational friction heat. No spring energy is silently assigned to the rotor ledger. The simplified contact spring has no deformation-dependent torsional coupling or thermal evolution.
+
+The same Coulomb coefficient is retained for static and kinetic friction: no calibration evidence justifies a coefficient split or a speed-dependent curve here. Holding torque remains a solved reaction; capacity is only its bound. Friction and actuator damping are separately dissipative. Opening the command can leave transient residual clamp force until the actual plate releases; a fully separated plate transmits zero torque.
+
+## Visualization and limitations
+
+Actual actuator capacity is displayed in scientific inspection alongside command, signed axial displacement, normal force, axial stored energy, anchor work, damping and numerical loss. The pressure assembly and friction-disc separation read the simulated gap (magnified for inspection), independent of whether the rotors are locked or slipping. Their rotations still read engine/input angles. No new interface layout, target RPM, arcade bite indicator or automatic matching was added. Existing reference-only fixtures without an actuator use command-based illustrative travel and explicitly remain the older reference representation.
+
+No hub spring was inserted: placing a spring in series with friction requires a distinct hub coordinate (and justified inertia or a verified algebraic reduction), rotor work and dog-impact coupling. A massless visual twist or a parallel extra torque path would be incorrect. That extension is deferred. Current spring parameters are not experimental validation; a smoother trace does not establish realism. Full rigid housing/chassis reaction dynamics and the inherited tire/suspension approximations remain outside scope. The software-rendering limitation measured in Mission 37 is not repaired by this clutch work.
+
+## Reproduction and recorded comparisons
+
+```bash
+# Run from repository root (the preservation test uses repository-relative paths):
+node --test research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/*.test.js
+node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/clutch-experiments.mjs
+MPLCONFIGDIR=/tmp/verlet-mpl python3 research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/plot-clutch.py
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/browser-reliability.mjs
+CHROMIUM_PATH=/usr/bin/chromium node research/scientific-rebuild/unsynchronized-gearbox-prototype/tests/browser-laboratory.mjs
+```
+
+`results/mission38-clutch-traces.csv.gz` records every 1 ms step of four reduced scenarios, before/after: engine/input speed and acceleration, slip, command, capacity, actual torque, state, rotational energy, heat, momentum/work residuals and axial ledger. `mission38-clutch-comparison.svg` plots RPM and capacity/transmitted torque in separate panels, generated with offline matplotlib (not a runtime dependency). `mission38-clutch-summary.json` adds 72 bounded whole-vehicle trials: 36 disclosed index-defined configurations with/without axial actuation, varying gear, differential, speed, engine/input speed, torque and ramp/step input. These are bounded diagnostics, not an exhaustive parameter sweep; the matrix stores summaries, while the four reduced cases retain full traces.
+
+| Experiment | Original lock time | Axial-model lock time |
+| --- | ---: | ---: |
+| Same 10% command | 1.500 s | No contact in 2 s |
+| Matched 3 Nm steady capacity | 1.500 s | 1.506 s |
+| Slow ramp to 60%, 5 Nm motor | 1.150 s | 1.589 s |
+| Step to 60%, 20 Nm motor | 0.116 s | 0.140 s |
+
+The matched-capacity experiment ends at 45 rad/s with 135 J friction heat in both models. Differences in the other two driven experiments include different capacity curves and motor work during prolonged slip, not just actuation lag. The recorded reduced rotor work residual stays below 8e-13 J per step. Synchronization remains possible at partial engagement and is not delayed by a scripted timer.
+
+The independently solved loaded axial step has roots -2500 and -3000 s⁻¹ and displacement x(t)=0.001−0.006 exp(−2500t)+0.005 exp(−3000t) m for x0=v0=0. At t=4 ms, displacement errors at 1/0.5/0.25 ms are 20.210/5.616/1.650 micrometres respectively (`mission38-convergence.json`). This documents finite timestep sensitivity rather than claiming an exact actuator response at 1 ms. The contact-free/open segment and contact crossing are additionally exercised by the release/energy tests. Axial numerical loss is exposed, not counted as friction heat.
+
+The drawing additionally maps positive contact-spring compression into pressure travel and friction-disc thickness (8× displacement); the flywheel face stays fixed. Negative-gap travel remains magnified 100× as in the existing exhibit. These are explicitly visual scale factors, not two new physical plate coordinates. No rotational lock flag controls either gap or compression.
+
+Executed: 29 current Node tests and 72 unchanged predecessor tests pass (101 total), including an actuated double-declutch sequence applying actual selector forces. The 72 whole-vehicle comparisons remain finite, maximum active-set count 235 and maximum rotor work residual 4.64e-13 J. `tests/clutch-cost.mjs` records a separate 1000-step CPU sample after 500 warmup steps: reference mean/p95/worst 0.542/0.674/22.47 ms, actuated 0.334/0.457/18.68 ms; both used at most 82 active-set cases. These sequential measurements include JIT and host-load variability and are not a claimed speedup; the extra axial work is structurally at most two scalar branches per core attempt.
+
+The existing real-browser laboratory harness passed with actual axial actuation, view-state isolation, steering and unequal rear rotation, no console exceptions, and stable resources over 1200 paused frames (98 scene geometries, 15 materials). The final compression visualization was then checked by the reliability run. One initial concurrent browser reliability run timed out during screenshot capture; it is not counted as a passing run. Capturing on software WebGL remains slow; the capture timeout is increased to 60 s and reruns are sequential. Browser captures are temporary test artifacts rather than historical scientific records. Matplotlib is used only to generate the offline comparison figure, not by the browser.

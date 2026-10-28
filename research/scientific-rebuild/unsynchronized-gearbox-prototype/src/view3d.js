@@ -149,7 +149,7 @@ export function createView3D(canvas,resetButton) {
   frame.visible=true;bell.visible=mode==='normal'||mode==='xray'||mode==='driver';casing.visible=mode!=='clutch';casing.position.z=v.offsets.casing;
   clutch.position.x=v.offsets.clutch;lay.position.y=AXIS_DISTANCE+v.offsets.layshaft;
   engine.rotation.x=v.engineAngle;pressure.rotation.x=v.engineAngle;disc.rotation.x=v.inputAngle;
-  engine.position.x=.985+v.offsets.clutch*.45;disc.position.x=.94-v.clutchGap*.15+v.offsets.clutch*.12;pressure.position.x=.908-v.clutchGap-v.offsets.clutch*.12;pressure.children[0].material=v.heating?shock:steel;
+  engine.position.x=.985+v.offsets.clutch*.45;disc.position.x=.94-v.clutchGap*.15+v.plateCompression/2+v.offsets.clutch*.12;disc.children[0].scale.y=1-v.plateCompression/.024;pressure.position.x=.908-v.clutchGap+v.plateCompression-v.offsets.clutch*.12;pressure.children[0].material=v.heating?shock:steel;
   input.rotation.x=v.inputAngle;layshaft.rotation.x=v.layshaftAngle;output.rotation.x=v.outputAngle;
   pairs.forEach((pair,i)=>{pair.driven.node.rotation.x=v.pairs[i].drivenAngle;pair.dogs.rotation.x=v.pairs[i].freeAngle;pair.driven.teeth.material=[gearBody,v.pairs[i].engaged?engaged:free];});
   sleeve.position.x=v.selectorX;sleeve.rotation.x=v.outputAngle;fork.position.x=v.selectorX;sleeve.children[0].material=v.impact?shock:steel;

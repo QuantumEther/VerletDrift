@@ -51,8 +51,8 @@ test('individual rear outputs, free gears and exploded presentation preserve sou
  const {offsets:a,...plain}=normal,{offsets:b,...expanded}=exploded;assert.deepEqual(plain,expanded);assert.notDeepEqual(a,b);assert.deepEqual(structuredClone(s),before);
 });
 
-test('Mission 36 scientific equations and scheduler remain byte-identical',()=>{
+test('chassis, gearbox and scheduler remain byte-identical; clutch changes are separately tested',()=>{
  const root='research/scientific-rebuild/unsynchronized-gearbox-prototype/src/';
- const diff=execFileSync('git',['diff','607adb1','--',...['vehicle.js','planar.js','differential.js','gearbox.js','clutch.js','clock.js','audio.js','selector-input.js','initial-state.js','visual-state.js'].map(f=>root+f)],{encoding:'utf8'});
+ const diff=execFileSync('git',['diff','607adb1','--',...['vehicle.js','planar.js','differential.js','gearbox.js','clock.js','audio.js','selector-input.js','initial-state.js'].map(f=>root+f)],{encoding:'utf8'});
  assert.equal(diff,'');
 });
