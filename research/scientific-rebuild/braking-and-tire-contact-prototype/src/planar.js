@@ -5,7 +5,7 @@ import {solveContacts,tireForce} from './contact-solver.js';
 export {createPlanar,tireLateral,contactVelocity,yawMoment} from './planar-reference.js';
 export {tireForce};
 export const BRAKES={front:100,rear:70,handbrake:160}; // Nm PER wheel, 59:41 service bias.
-export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0}={},h=.001,diff=createDifferential(),f){
+export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,brakeMechanism}={},h=.001,diff=createDifferential(),f){
  if(!f)throw Error('Persistent flywheel required');
  if(!(h>0&&mass>0&&f.engagement>=0&&f.engagement<=1))throw Error('Invalid contact timestep/mass/clutch command');
  const g=f.gearbox,G=f.ratio,grad=gradient(g),neutral=g.selected==='N',R=rotorSystem(w,diff,g),old=w.map(c=>c.omega),oldEngine=f.omega,oldInput=shaftState({gearbox:g,wheels:w}).omega,oldSelector=g.velocity;
@@ -13,15 +13,22 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  const oldRotorE=rotorE(),oldEnergy=oldRotorE+.5*mass*(p.u*p.u+p.v*p.v)+.5*p.Iz*p.r*p.r;
  const capacity=f.actuator?advancePressurePlate(f.actuator,f.engagement,h).capacity:f.engagement*f.ratedTorque;
  const target=Math.max(-.45,Math.min(.45,steer));p.steering+=Math.max(-1.2*h,Math.min(1.2*h,target-p.steering));
+ if(steeringAngles)p.steering=(steeringAngles[0]+steeringAngles[1])/2;
  g.faceBlocked=neutral&&dogState({gearbox:g,wheels:w}).blocked;
  const selector=selectorForces(g),v0=[...old,g.velocity,f.omega,neutral?g.neutralOmega:0,p.u,p.v,p.r];
  const inverse=Array.from({length:10},()=>Array(10).fill(0));for(let i=0;i<5;i++)for(let j=0;j<5;j++)inverse[i][j]=R[i][j];
  inverse[5][5]=1/f.inertia;inverse[6][6]=neutral?1/(g.inputInertia+h*g.bearingDrag):0;inverse[7][7]=inverse[8][8]=1/mass;inverse[9][9]=1/p.Iz;
  const external=[0,0,0,0,selector,drive,0,0,0,0],free=v0.map((v,i)=>v+h*inverse[i].reduce((s,b,j)=>s+b*external[j],0));if(neutral)free[6]=g.neutralOmega*g.inputInertia*inverse[6][6];
  const rows=[],groups=[],geometry=[];
- w.forEach((c,i)=>{const delta=c.axle===0?p.steering:0,cos=Math.cos(delta),sin=Math.sin(delta),j=Array(10).fill(0),k=Array(10).fill(0);j[i]=-c.radius;j[7]=cos;j[8]=sin;j[9]=c.x*sin-c.y*cos;k[7]=-sin;k[8]=cos;k[9]=c.x*cos+c.y*sin;const start=rows.length;rows.push({j,compliance:1/(h*800)},{j:k,compliance:1/(h*800)});groups.push({indices:[start,start+1],limit:h*c.mu*Math.max(0,loads[i])});geometry.push({cos,sin,j,k,delta});});
+ w.forEach((c,i)=>{const delta=c.axle===0?(steeringAngles?.[i]??p.steering):0,cos=Math.cos(delta),sin=Math.sin(delta),j=Array(10).fill(0),k=Array(10).fill(0);j[i]=-c.radius;j[7]=cos;j[8]=sin;j[9]=c.x*sin-c.y*cos;k[7]=-sin;k[8]=cos;k[9]=c.x*cos+c.y*sin;const start=rows.length;rows.push({j,compliance:1/(h*800)},{j:k,compliance:1/(h*800)});groups.push({indices:[start,start+1],limit:h*c.mu*Math.max(0,loads[i])});geometry.push({cos,sin,j,k,delta});});
  const brakeStart=rows.length;
- w.forEach((c,i)=>{const cap=Math.max(0,brake)+Math.max(0,Math.min(1,serviceBrake))*(i<2?BRAKES.front:BRAKES.rear)+(i>=2?Math.max(0,Math.min(1,handbrake))*BRAKES.handbrake:0),j=Array(10).fill(0);j[i]=1;rows.push({j});groups.push({indices:[rows.length-1],limit:h*cap});c.serviceBrakeCapacity=Math.max(0,brake)+Math.max(0,Math.min(1,serviceBrake))*(i<2?BRAKES.front:BRAKES.rear);c.handbrakeCapacity=i>=2?Math.max(0,Math.min(1,handbrake))*BRAKES.handbrake:0;c.brakeCapacity=cap;});
+ w.forEach((c,i)=>{
+  const mechanism=brakeMechanism?.wheels[i];
+  const service=mechanism?mechanism.serviceCapacity:Math.max(0,brake)+Math.max(0,Math.min(1,serviceBrake))*(i<2?BRAKES.front:BRAKES.rear);
+  const hand=mechanism?mechanism.handCapacity:(i>=2?Math.max(0,Math.min(1,handbrake))*BRAKES.handbrake:0);
+  const cap=service+hand,j=Array(10).fill(0);j[i]=1;rows.push({j});groups.push({indices:[rows.length-1],limit:h*cap});
+  c.serviceBrakeCapacity=service;c.handbrakeCapacity=hand;c.brakeCapacity=cap;
+ });
  const cj=Array(10).fill(0);cj[5]=1;if(neutral)cj[6]=-1;else grad.forEach((a,i)=>cj[i]=-a);rows.push({j:cj});groups.push({indices:[rows.length-1],limit:h*capacity});
  let result,v,z,clutch,slipOld=oldEngine-oldInput,slipNew,heat,acceptedMode,totalIterations=0;
  for(const mode of capacity>0?['locked',1,-1]:[0]){

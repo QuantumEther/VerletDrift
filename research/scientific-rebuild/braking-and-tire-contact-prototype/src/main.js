@@ -1,3 +1,5 @@
+import {createSteering} from './steering.js';
+import {brakeActuation} from './brakes.js';
 import {reducedKineticEnergy} from './diagnostics.js';
 import {createPressurePlate} from './pressure-plate.js';
 import {createInstrument,instrumentValues} from './instruments.js';
@@ -12,7 +14,9 @@ import {drawDrivetrain} from './schematic.js';
 import {createView3D} from './view3d.js';
 import {createVehicle,stepVehicle,cornerForces,roadAt} from './vehicle.js';
 const canvas=document.querySelector('#wheel'),ctx=canvas.getContext('2d');
-let state=createVehicle(),last=performance.now();
+const isAutomobile=()=>document.querySelector('#power-mode').value==='automobile';
+function newVehicle(options={}){const s=createVehicle({...options,automobile:true});if(!isAutomobile())delete s.engine;return s;}
+let state=newVehicle(),last=performance.now();
 const gauges={engine:createInstrument(document.querySelector('#engine-dial'),{label:'ENGINE',unit:'rpm',max:6000}),input:createInstrument(document.querySelector('#input-dial'),{label:'INPUT SHAFT',unit:'rpm',max:3000}),speed:createInstrument(document.querySelector('#speed-dial'),{label:'ROAD SPEED',unit:'km/h',max:80,divisions:4})};
 const keys=new Set(),pointers=new Map(),ignoredKeys=new Set();
 const clock=new SimulationClock();let intentionalPause=false;
@@ -27,7 +31,7 @@ function selectView(){
  canvas.hidden=active||mode==='schematic';canvas3d.hidden=!active;document.querySelector('#mechanism').hidden=mode!=='schematic';
  for(const id of ['reset-camera','focus-clutch','cutaway'])document.querySelector('#'+id).hidden=!active;
  document.querySelector('#mechanism-key').hidden=!(mode==='schematic'||active&&['driveline','clutch','exploded'].includes(document.querySelector('#cutaway').value));
- const names={normal:'The touring chassis',driver:'From the driver’s seat',xray:'Beneath the coachwork',driveline:'The unsynchronized gearbox',clutch:'The friction connection',exploded:'Anatomy of the mechanism'};
+ const names={engine:'The carbureted engine',brakes:'The hydraulic drum brake',handbrake:'The rear cable brake',column:'The steering wheel & column',steeringbox:'The worm & sector',linkage:'The closed steering linkage',contact:'At the tire–road interface',normal:'The touring chassis',driver:'From the driver’s seat',xray:'Beneath the coachwork',driveline:'The unsynchronized gearbox',clutch:'The friction connection',exploded:'Anatomy of the mechanism'};
  document.querySelector('#view-title').textContent=active?names[document.querySelector('#cutaway').value]:({top:'The path of motion',side:'The sprung chassis',schematic:'The engineering section'})[mode];
  document.querySelector('#view-note').textContent=active?'Drag to orbit · right-drag to pan · scroll to zoom · double-click a component to focus':mode==='schematic'?'Steel: free-running · brass: dog-coupled · index marks follow real shaft angles':'W drive · S brake · A/D steer · B bump';
 }
@@ -42,20 +46,21 @@ for(const button of document.querySelectorAll('[data-selector]')){
  button.addEventListener('pointerup',clear);button.addEventListener('pointercancel',clear);button.addEventListener('lostpointercapture',clear);
 }
 document.querySelector('#worn').addEventListener('change',()=>resetExhibit());
-document.querySelector('#moving-second').addEventListener('click',()=>{state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});document.querySelector('#engagement').value=0;trail=[];recover();});
-function resetExhibit(){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}
+document.querySelector('#moving-second').addEventListener('click',()=>{document.querySelector('#power-mode').value='laboratory';state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});state.steering=createSteering(state.wheelbase,state.track);state.brakes=brakeActuation();document.querySelector('#engagement').value=0;trail=[];recover();});
+function resetExhibit(){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}
 document.querySelector('#rest').addEventListener('click',resetExhibit);
-document.querySelector('#spin').addEventListener('click',()=>{resetExhibit();state.flywheel.omega=60;document.querySelector('#engagement').value=0;});
+document.querySelector('#ignition').addEventListener('click',()=>{if(state.engine)state.engine.ignition=!state.engine.ignition;});
+document.querySelector('#spin').addEventListener('click',()=>{document.querySelector('#power-mode').value='laboratory';resetExhibit();state.flywheel.omega=60;document.querySelector('#engagement').value=0;});
 for(const button of document.querySelectorAll('[data-engagement]'))button.addEventListener('click',()=>document.querySelector('#engagement').value=button.dataset.engagement);
 document.querySelector('#coast').addEventListener('click',()=>{
- state=createVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);trail=[];recover();
+ state=newVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);trail=[];recover();
 });
 document.querySelector('#brake-trial').addEventListener('click',()=>{resetExhibit();state.v=8;state.wheels.forEach(w=>w.omega=8/w.radius);document.querySelector('#engagement').value=0;});
-for(const id of ['differential','scenario'])document.querySelector('#'+id).addEventListener('change',()=>{state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();});
+for(const id of ['differential','scenario','power-mode'])document.querySelector('#'+id).addEventListener('change',()=>{state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();});
 window.addEventListener('keydown',e=>{
   const key=e.key.toLowerCase();if(ignoredKeys.has(key)&&e.repeat)return;ignoredKeys.delete(key);if(e.target.matches?.('input[type=number],textarea'))return;
-  if(['w','s','r','b',' ','h','a','d','1','2','n'].includes(key))e.preventDefault();
-  if(!e.repeat){if(key==='r'){state=createVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}if(key==='h')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
+  if(['w','s','r','b',' ','h','e','i','a','d','1','2','n'].includes(key))e.preventDefault();
+  if(!e.repeat){if(key==='r'){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}if(key==='i'&&state.engine)state.engine.ignition=!state.engine.ignition;if(key==='h')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
   keys.add(key);
 });
 window.addEventListener('keyup',e=>{keys.delete(e.key.toLowerCase());ignoredKeys.delete(e.key.toLowerCase());});window.addEventListener('blur',clearInputs);document.addEventListener('visibilitychange',()=>{clearInputs();if(!document.hidden){const unseen=Math.max(0,(performance.now()-last)/1000);clock.wall+=unseen;clock.pausedWall+=unseen;last=performance.now();}});
@@ -89,6 +94,12 @@ function drawTop(){
 }
 function diagnostics(){
  const visual=visualState(state),f=state.flywheel,g=state.gearbox;
+ const e=state.engine,b=state.brakes,t=state.steering;
+ document.querySelector('#engine-live').textContent=e?`${e.mode} · ignition ${e.ignition?'ON':'OFF'} · accelerator ${(e.throttle*100).toFixed(0)}% · throttle ${(e.throttleOpening*90).toFixed(1)}° · net ${e.netTorque.toFixed(2)} Nm`:'Prescribed-torque laboratory · no combustion model';
+ document.querySelector('#ignition').textContent=e?.ignition?'Ignition ON':'Ignition OFF';
+ document.querySelector('#automobile-record').textContent=JSON.stringify({engine:e||'laboratory',brakes:b||'direct torque fixture',steering:t||'parallel fixture'},null,2);
+ document.querySelector('#actuation-live').textContent=b?`Drums · ${(b.pressure/1e6).toFixed(2)} MPa · rear cable ${b.perRearCable.toFixed(0)} N`:'Direct brake-capacity experiment';
+ document.querySelector('#steering-live').textContent=t?`Column ${(t.wheelAngle*180/Math.PI).toFixed(0)}° · knuckles ${(t.leftAngle*180/Math.PI).toFixed(1)}° / ${(t.rightAngle*180/Math.PI).toFixed(1)}°`:'Parallel-angle laboratory fixture';
  const values=instrumentValues(state);for(const name of ['engine','input','speed'])gauges[name](values[name]);
  document.querySelector('#engagement-value').textContent=Math.round(Number(document.querySelector('#engagement').value)*100)+'%';
  document.querySelector('#selector-force').textContent=`Driver force: ${g.driverForce.toFixed(1)} N · q ${(g.q*1000).toFixed(2)} mm`;
@@ -126,7 +137,7 @@ function frame(now){
  const elapsed=(now-last)/1000;last=now;
  const held=new Set([...keys,...[...pointers.values()].map(b=>b.dataset.selector)]);
  const engagement=Number(document.querySelector('#engagement').value),motor=Number(document.querySelector('#drive').value);
- clock.frame(elapsed,h=>{state.flywheel.actuator??=createPressurePlate();state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,serviceBrake:held.has('s')?1:0,handbrake:held.has(' ')?1:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
+ clock.frame(elapsed,h=>{state.flywheel.actuator??=createPressurePlate();state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,throttle:held.has('w')?1:0,starter:held.has('e'),serviceBrake:held.has('s')?1:0,handbrake:held.has(' ')?1:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
  if(clock.fault){clearInputs();document.querySelector('#warning').textContent='Simulation paused: '+clock.fault.message+' — Reset to restart.';}
  const start=performance.now();
  try{draw();if(now-lastDiagnostics>100){diagnostics();lastDiagnostics=now;}if(document.querySelector('#inspection').open)document.querySelector('#performance').textContent=JSON.stringify({status:clock.status,frameIntervalMs:elapsed*1000,rejected:clock.rejected,wall:clock.wall,simulated:clock.simulated,slowMotionWall:clock.dilated,pausedWall:clock.pausedWall,debt:clock.debt,physicsMs:clock.physicsMs,stepsThisFrame:clock.frameSteps,accepted:clock.accepted,convexIterationsIncludingTrials:clock.candidates,eventTrials:clock.searches,worstStepMs:clock.worstStepMs,renderMs},null,2);}catch(e){clock.fail(e,state);view3d?.dispose();view3d=undefined;document.querySelector('#view').value='top';selectView();}

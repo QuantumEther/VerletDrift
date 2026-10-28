@@ -1,0 +1,54 @@
+{
+  "runtimeStatus": "PASS",
+  "workload": "Default 3D workshop, 8 m/s rolling fixture, held A, clutch open, stopped engine; actual RAF",
+  "wallSeconds": 3.283,
+  "frames": 10,
+  "framesPerWallSecond": 3.045994517209869,
+  "stepsPerWallSecond": 75.54066402680475,
+  "simulatedSeconds": 0.24800000000000016,
+  "explicitSlowWall": 3.0411,
+  "callbackMs": {
+    "mean": 9.849999998509883,
+    "p95": 10.900000005960464,
+    "worst": 10.900000005960464
+  },
+  "rafIntervalMs": {
+    "mean": 325.9111111111112,
+    "p95": 383.2999999999993,
+    "worst": 383.2999999999993
+  },
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "viewport": {
+    "width": 1280,
+    "height": 850
+  },
+  "runtime": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0.02399999999999998,
+      "wall": 9.749600000000003,
+      "simulated": 0.5870000000000004,
+      "dilated": 9.138599999999999,
+      "pausedWall": 0,
+      "status": "overloaded",
+      "fault": null,
+      "accepted": 587,
+      "rejected": 0,
+      "frameSteps": 26,
+      "physicsMs": 6.100000008940697,
+      "worstStepMs": 18.200000002980232,
+      "candidates": 3976,
+      "searches": 0
+    },
+    "keys": [
+      "a"
+    ],
+    "pointers": 0,
+    "renderMs": 3.199999988079071
+  },
+  "performanceStatus": "NOT_REAL_TIME on software WebGL; accelerated desktop NOT_TESTED",
+  "browser": "154.0.8037.57",
+  "errors": []
+}

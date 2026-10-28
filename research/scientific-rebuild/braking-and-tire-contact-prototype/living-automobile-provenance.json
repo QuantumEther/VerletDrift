@@ -1,0 +1,8 @@
+{
+  "sourceBranch": "scientific-rebuild/12-braking-and-tire-contact",
+  "sourceCommit": "7fca4a488306b7aad44e7202ce7d1f987b248fba",
+  "sourceDirectory": "research/scientific-rebuild/braking-and-tire-contact-prototype",
+  "earlierPredecessorCommit": "012423a1ca092bf44495f344564653936d2ba480",
+  "earlierPredecessorDirectory": "research/scientific-rebuild/unsynchronized-gearbox-prototype",
+  "notes": "Existing sibling extended in place; no branch or directory was created. Source README archived as BRAKING-BASELINE-README.md. Previous result files preserved. New measurements use living-automobile-* names."
+}

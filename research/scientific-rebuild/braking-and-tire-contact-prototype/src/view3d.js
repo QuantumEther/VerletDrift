@@ -1,3 +1,4 @@
+import {createAutomobileView} from './automobile-view.js';
 import * as THREE from '../vendor/three.module.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {roadAt} from './vehicle.js';
@@ -7,6 +8,13 @@ import {gearGeometry,dogGeometry} from './mechanical-geometry.js';
 
 // All dimensions below belong to the exhibit. The scene never writes physics.
 export const CAMERA_PRESETS={
+ engine:{position:[1.8,-1.15,1.5],target:[1.13,0,.78]},
+ brakes:{position:[1.35,1.35,.65],target:[1,.6,.32]},
+ handbrake:{position:[-1.9,-1.4,1.1],target:[-.75,0,.48]},
+ column:{position:[-.9,1.2,1.25],target:[-.15,.15,.8]},
+ steeringbox:{position:[.9,-.95,.9],target:[.65,-.15,.46]},
+ linkage:{position:[1.4,-1.6,1.4],target:[.85,0,.45]},
+ contact:{position:[1.55,.95,.35],target:[1,.6,.07]},
  normal:{position:[-2.8,-3.5,2.45],target:[0,0,.65]},
  driver:{position:[-3.8,-.8,1.65],target:[.7,0,.65]},
  xray:{position:[2.7,-3.2,2.7],target:[0,0,.6]},
@@ -21,8 +29,14 @@ export function createView3D(canvas,resetButton) {
  const scene=new THREE.Scene();scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,16,60);
  const camera=new THREE.PerspectiveCamera(40,1,.025,100);camera.up.set(0,0,1);
  const controls=new OrbitControls(camera,canvas);controls.enablePan=true;controls.minDistance=.35;controls.maxDistance=15;controls.maxPolarAngle=Math.PI*.49;
- const desiredPosition=new THREE.Vector3(),desiredTarget=new THREE.Vector3();let transitioning=false,mode='normal',disposed=false;
- const setCamera=()=>{const preset=CAMERA_PRESETS[mode]||CAMERA_PRESETS.normal;desiredPosition.fromArray(preset.position);desiredTarget.fromArray(preset.target);transitioning=true;};
+ const desiredPosition=new THREE.Vector3(),desiredTarget=new THREE.Vector3();let transitioning=false,mode='normal',disposed=false,lastState;
+ const setCamera=()=>{const preset=CAMERA_PRESETS[mode]||CAMERA_PRESETS.normal;desiredPosition.fromArray(preset.position);desiredTarget.fromArray(preset.target);
+  if(lastState&&['brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode)){
+   const s=lastState,angle=s.planar.heading,co=Math.cos(angle),si=Math.sin(angle),offset=desiredPosition.clone().sub(desiredTarget);
+   const points={brakes:[s.wheels[0].x,s.wheels[0].y,s.corners[0].z],contact:[s.wheels[0].x,s.wheels[0].y,.04],handbrake:[-.65,0,s.z-.04],column:[-.35,.25,s.corners[0].z+.69],steeringbox:[.65,-.15,s.corners[0].z+.14],linkage:[.85,0,s.corners[0].z+.14]};
+   const [x,y,z]=points[mode];desiredTarget.set(co*x-si*y,si*x+co*y,z);desiredPosition.set(co*offset.x-si*offset.y,si*offset.x+co*offset.y,offset.z).add(desiredTarget);
+  }
+  transitioning=true;};
  function resetCamera(){setCamera();}
  const cutaway=document.querySelector('#cutaway'),focusButton=document.querySelector('#focus-clutch');
  const choose=()=>{mode=cutaway.value;setCamera();};
@@ -121,6 +135,7 @@ export function createView3D(canvas,resetButton) {
   }
   cyl(rotor,.17,.25,[0,0,0],brass,'y');hubs.push(hub);rotors.push(rotor);springs.push(mesh(scene,springGeo,brass));dampers.push(cyl(scene,.017,1,[0,0,0],chrome,'z'));
  }
+ const automobile=createAutomobileView(scene,powertrain,hubs);
  const arrows=Array.from({length:4},()=>[0xbba575,0xa5b6b2].map(color=>{const a=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),1,color,.05,.025);scene.add(a);return a;}));
  const groundGeo=new THREE.PlaneGeometry(40,40,160,20),ground=mesh(scene,groundGeo,material(0x303a32,.05,1));ground.receiveShadow=true;
  const grid=new THREE.GridHelper(40,40,0x7b7961,0x485146);grid.rotation.x=Math.PI/2;scene.add(grid);
@@ -138,14 +153,17 @@ export function createView3D(canvas,resetButton) {
  for(const m of [free,engaged,shock])materials.add(m);
  let terrainKey='',lastMapping;
  function draw(state){
-  if(disposed)throw new Error('Renderer disposed');
+  if(disposed)throw new Error('Renderer disposed');const initial=!lastState;lastState=state;
+  if(initial&&['brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode)){setCamera();camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}
   const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);
   if(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio())){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
   const v=mechanicalPresentation(state,mode==='exploded');lastMapping=v;
-  const inspection=['driveline','clutch','exploded'].includes(mode),xray=mode==='xray';
+  const inspection=['driveline','clutch','exploded','engine'].includes(mode),xray=['xray','brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode);
   // The bench hides every shadow caster; avoid clearing a needless shadow map.
   sun.castShadow=!inspection;
-  body.visible=!inspection;axle.visible=!inspection;shaftTube.visible=!inspection;hubs.forEach(h=>h.visible=!inspection);springs.forEach(h=>h.visible=!inspection);dampers.forEach(h=>h.visible=!inspection);
+  const mechanismCloseup=['brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode);
+  powertrain.visible=!['column','steeringbox','linkage'].includes(mode);
+  body.visible=!inspection&&!mechanismCloseup;axle.visible=!inspection;shaftTube.visible=!inspection;hubs.forEach(h=>h.visible=!inspection);springs.forEach(h=>h.visible=!inspection);dampers.forEach(h=>h.visible=!inspection);
   if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.12:1;paint.depthWrite=!xray;exterior.visible=true;
   frame.visible=true;bell.visible=mode==='normal'||mode==='xray'||mode==='driver';casing.visible=mode!=='clutch';casing.position.z=v.offsets.casing;
   clutch.position.x=v.offsets.clutch;lay.position.y=AXIS_DISTANCE+v.offsets.layshaft;
@@ -162,9 +180,12 @@ export function createView3D(canvas,resetButton) {
   halfShafts.forEach((shaft,i)=>shaft.rotation.y=v.rearAngles[i]);
   start.set(-.65,0,0);powertrain.localToWorld(start);end.copy(axle.position);dir.subVectors(end,start);shaftTube.position.copy(start).add(end).multiplyScalar(.5);shaftTube.scale.y=dir.length();shaftTube.quaternion.setFromUnitVectors(shaftAxis,dir.normalize());shaftTube.rotateY(v.carrierAngle);
   state.wheels.forEach((w,i)=>{const x=co*w.x-si*w.y,y=si*w.x+co*w.y,z=state.corners[w.axle].z,top=state.z+w.x*state.pitch;
+   rotors[i].visible=!((mode==='brakes'&&i===0)||(mode==='handbrake'&&i===2));
+   if(mode==='brakes'&&i===0){springs[i].visible=false;dampers[i].visible=false;}
    hubs[i].position.set(x,y,z);hubs[i].rotation.z=p.heading+(w.steering||0);rotors[i].rotation.y=w.angle;rotors[i].scale.set(w.radius,1,w.radius);
    springs[i].position.set(x,y,z);springs[i].scale.z=top-z;dampers[i].position.set(x+.055*co,y+.055*si,(top+z)/2);dampers[i].scale.y=top-z;
   });
+  automobile.draw(state,mode);
   const overlay=document.querySelector('#contact-overlay').checked&&!inspection;
   state.wheels.forEach((w,i)=>{const angle=w.forceHeading??(p.heading+(w.steering||0)),ca=Math.cos(angle),sa=Math.sin(angle);for(let k=0;k<2;k++){const a=arrows[i][k],x=k?(w.slipX||0):w.fx,y=k?(w.slipY||0):(w.fy||0),scale=k?.1:.001,length=Math.hypot(x,y)*scale;a.visible=overlay&&w.normal>0&&length>1e-8;if(a.visible){a.position.copy(hubs[i].position);a.position.z=.04;a.setDirection(new THREE.Vector3(ca*x-sa*y,sa*x+ca*y,0).normalize());a.setLength(length,Math.min(.05,length*.25),Math.min(.025,length*.12));}}});
   const ox=Math.floor(p.x),oy=Math.floor(p.y);ground.position.set(ox-p.x,oy-p.y,0);grid.position.set(ox-p.x,oy-p.y,.002);
@@ -174,7 +195,7 @@ export function createView3D(canvas,resetButton) {
  }
  return {draw,resetCamera,
   info:()=>({geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
-  snapshot:()=>({mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
+  snapshot:()=>({automobile:automobile.snapshot(),mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
   dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
  };
 }

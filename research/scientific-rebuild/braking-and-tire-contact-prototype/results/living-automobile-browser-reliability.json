@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "realTabVisibility": "visible",
+  "runtime": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0,
+      "wall": 46.45760000000896,
+      "simulated": 0,
+      "dilated": 0,
+      "pausedWall": 46.45760000000896,
+      "status": "paused",
+      "fault": null,
+      "accepted": 0,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 0,
+      "candidates": 0,
+      "searches": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 4.299999997019768
+  },
+  "memory": {
+    "geometries": 152,
+    "textures": 2,
+    "sceneGeometries": 154,
+    "materials": 39
+  },
+  "baseCommit": "7fca4a488306b7aad44e7202ce7d1f987b248fba",
+  "test": "browser-reliability.mjs; input/focus clearing, explicit error recovery, camera isolation, renderer recreation; real OS tab hiding not observed"
+}
