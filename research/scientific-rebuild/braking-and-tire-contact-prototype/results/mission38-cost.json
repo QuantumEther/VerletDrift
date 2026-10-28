@@ -1,0 +1,24 @@
+{
+  "node": "v24.19.0",
+  "method": "Sequential CPU runs, open differential, second gear, 40% command, 20 Nm; JIT/host-load dependent, not a speedup or FPS claim. Axial branch count at most two per core attempt.",
+  "rows": [
+    {
+      "actuated": false,
+      "samples": 1000,
+      "warmup": 500,
+      "meanMs": 0.5416150460000019,
+      "p95Ms": 0.6740310000000136,
+      "worstMs": 22.46792199999993,
+      "maxActiveCases": 82
+    },
+    {
+      "actuated": true,
+      "samples": 1000,
+      "warmup": 500,
+      "meanMs": 0.3344907819999994,
+      "p95Ms": 0.4567490000001726,
+      "worstMs": 18.678034000000025,
+      "maxActiveCases": 82
+    }
+  ]
+}

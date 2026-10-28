@@ -1,0 +1,184 @@
+{
+  "status": "PASS",
+  "resourceStressCanvas": "320x180 CSS pixels, 1200 submitted paused frames",
+  "browser": "154.0.8037.57",
+  "pivots": [
+    {
+      "viewport": {
+        "width": 1500,
+        "height": 1050
+      },
+      "measurements": [
+        {
+          "value": 0,
+          "angle": "rotate(-135)",
+          "pivotError": 0
+        },
+        {
+          "value": 1500,
+          "angle": "rotate(-67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 3000,
+          "angle": "rotate(0)",
+          "pivotError": 0
+        },
+        {
+          "value": 4500,
+          "angle": "rotate(67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 6000,
+          "angle": "rotate(135)",
+          "pivotError": 0
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "viewport": {
+        "width": 760,
+        "height": 1000
+      },
+      "measurements": [
+        {
+          "value": 0,
+          "angle": "rotate(-135)",
+          "pivotError": 0
+        },
+        {
+          "value": 1500,
+          "angle": "rotate(-67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 3000,
+          "angle": "rotate(0)",
+          "pivotError": 0
+        },
+        {
+          "value": 4500,
+          "angle": "rotate(67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 6000,
+          "angle": "rotate(135)",
+          "pivotError": 0
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measurements": [
+        {
+          "value": 0,
+          "angle": "rotate(-135)",
+          "pivotError": 0
+        },
+        {
+          "value": 1500,
+          "angle": "rotate(-67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 3000,
+          "angle": "rotate(0)",
+          "pivotError": 0
+        },
+        {
+          "value": 4500,
+          "angle": "rotate(67.5)",
+          "pivotError": 0
+        },
+        {
+          "value": 6000,
+          "angle": "rotate(135)",
+          "pivotError": 0
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "memory": {
+    "geometries": 98,
+    "textures": 2,
+    "sceneGeometries": 98,
+    "materials": 15
+  },
+  "rebuilt": {
+    "geometries": 37,
+    "textures": 1,
+    "sceneGeometries": 98,
+    "materials": 15
+  },
+  "sustained": {
+    "frames": 1200,
+    "meanMs": 0.6261666666343808,
+    "p95Ms": 1.1000000089406967,
+    "worstMs": 15.5
+  },
+  "views": {
+    "normal": {
+      "drawCalls": 151,
+      "triangles": 52624,
+      "camera": [
+        -2.7999999999999985,
+        -3.4999999999999947,
+        2.449999999999997
+      ]
+    },
+    "xray": {
+      "drawCalls": 151,
+      "triangles": 52624,
+      "camera": [
+        2.7000000000000006,
+        -3.1999999999999886,
+        2.699999999999993
+      ]
+    },
+    "driveline": {
+      "drawCalls": 62,
+      "triangles": 27960,
+      "camera": [
+        0.6499999999999999,
+        1.6999999999999997,
+        1.6499999999999986
+      ]
+    },
+    "clutch": {
+      "drawCalls": 42,
+      "triangles": 21588,
+      "camera": [
+        0.75,
+        -1.299999999999995,
+        1.3499999999999974
+      ]
+    },
+    "exploded": {
+      "drawCalls": 62,
+      "triangles": 27960,
+      "camera": [
+        1.8000000000000034,
+        -1.9999999999999902,
+        1.999999999999992
+      ]
+    },
+    "driver": {
+      "drawCalls": 151,
+      "triangles": 52624,
+      "camera": [
+        -3.8,
+        -0.7999999999999999,
+        1.65
+      ]
+    }
+  },
+  "errors": []
+}

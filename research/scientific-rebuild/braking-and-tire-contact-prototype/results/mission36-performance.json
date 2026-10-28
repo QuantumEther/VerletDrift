@@ -1,0 +1,34 @@
+{
+  "runtime": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "baselineCommit": "8e8c1b2428b1f28859e3539cf1873a0534a63fab",
+  "old": {
+    "steps": 2000,
+    "meanStepMs": 0.6379982410000021,
+    "p95StepMs": 1.9501540000001114,
+    "worstStepMs": 19.37544200000002,
+    "first1000BatchMs": 732.9521220000015,
+    "maxActiveCandidatesPerStep": 2360,
+    "eventTrials": 1522
+  },
+  "fresh": {
+    "steps": 2000,
+    "meanStepMs": 0.5328122779999961,
+    "p95StepMs": 1.481387999999697,
+    "worstStepMs": 13.361679000000095,
+    "first1000BatchMs": 553.805224999998,
+    "maxActiveCandidatesPerStep": 2360,
+    "eventTrials": 1522
+  },
+  "boundedFrameReplay": {
+    "frames": 200,
+    "suppliedFrameDelta_s": 0.016,
+    "maxPhysicsBlockMs": 17.05519400000003,
+    "maxDebt_s": 0.046,
+    "accepted": 2979,
+    "simulated_s": 2.978999999999783,
+    "slowWall_s": 0.2069999999999989,
+    "remainingDebt_s": 0.013999999999999804,
+    "requestedWall_s": 3.2000000000000024
+  }
+}
