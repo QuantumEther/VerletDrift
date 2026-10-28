@@ -1,0 +1,170 @@
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "clock": "Controlled RAF functional test, not wall-clock performance",
+  "rolling": {
+    "capacityPerWheel": 1024,
+    "markCount": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pathCount": [
+      58,
+      58,
+      58,
+      58
+    ],
+    "centerCount": 58,
+    "eventBytes": 16384,
+    "revision": 0,
+    "generation": 0,
+    "acceptedStages": 575,
+    "acceptedTime": 0.5750000000000004,
+    "totalSlipWork": [
+      5.8045552745539294e-27,
+      5.8045552745539294e-27,
+      -5.033708743494712e-80,
+      5.033708743494712e-80
+    ]
+  },
+  "lockedSpeed": 6.507012924587622,
+  "lockedWheelSpeeds": [
+    0,
+    0
+  ],
+  "history": {
+    "capacityPerWheel": 1024,
+    "markCount": [
+      86,
+      174,
+      145,
+      187
+    ],
+    "pathCount": [
+      135,
+      171,
+      165,
+      189
+    ],
+    "centerCount": 158,
+    "eventBytes": 16384,
+    "revision": 592,
+    "generation": 0,
+    "acceptedStages": 1975,
+    "acceptedTime": 1.9749999999998933,
+    "totalSlipWork": [
+      159.9158356379121,
+      284.7850179540252,
+      1171.6571549136095,
+      1488.2482027709761
+    ]
+  },
+  "first": {
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 129,
+    "textures": 2,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "views": {
+    "normal": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "driver": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "xray": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "contact": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "road": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 592,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    }
+  },
+  "afterClear": {
+    "tracks": {
+      "updates": 2,
+      "uploadedVertices": 49152,
+      "bytes": 937984,
+      "activePrimitives": 0,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": false,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 129,
+    "textures": 2,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "errors": []
+}

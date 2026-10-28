@@ -1,0 +1,241 @@
+{
+  "baselineCommit": "607adb1ebcf16fe359cd5fdde964e7a85600117d",
+  "branch": "feature/vintage-mechanical-laboratory",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCPUs": 5,
+    "platform": "linux"
+  },
+  "method": "CPU callbacks are submissions, not GPU completion. Replay requests identical 16 ms frames and includes a 1 s stall. Real RAF uses 2 s warmup and a nominal 5 s observation; elapsed time is measured. No speedup claim. Runtime PASS means absence of faults, not a performance acceptance.",
+  "cpuReplay": {
+    "baseline": {
+      "frames": 100,
+      "canvas": "800x450 CSS pixels, headless software WebGL",
+      "initMs": 969.0999999940395,
+      "meanCPUFrameMs": 9.99000000052154,
+      "p95CPUFrameMs": 24.600000001490116,
+      "worstCPUFrameMs": 29.900000005960464,
+      "postStallCPUFrameMs": 8.300000004470348,
+      "simulatedDuringReplay_s": 1.5249999999999302,
+      "meanStepsPerFrame": 14.99,
+      "worstStepsPerFrame": 32
+    },
+    "current": {
+      "frames": 100,
+      "canvas": "800x450 CSS pixels, headless software WebGL",
+      "initMs": 768.5,
+      "meanCPUFrameMs": 10.882000000476838,
+      "p95CPUFrameMs": 29,
+      "worstCPUFrameMs": 43.3999999910593,
+      "postStallCPUFrameMs": 13.399999991059303,
+      "simulatedDuringReplay_s": 1.5889999999999114,
+      "meanStepsPerFrame": 15.7,
+      "worstStepsPerFrame": 32
+    }
+  },
+  "realRAF": {
+    "baseline": {
+      "browser": "154.0.8037.57",
+      "warmupSeconds": 2,
+      "workload": "Moving in second, clutch closed, held W+A, default workshop view; real RAF",
+      "wallSeconds": 5.72840000000596,
+      "observedFrames": 25,
+      "framesPerWallSecond": 4.364220375667549,
+      "stepsPerWallSecond": 150.12918092296368,
+      "simulatedSeconds": 0.8599999999999502,
+      "slowWallSeconds": 4.923099999999998,
+      "cpuCallbackMs": {
+        "mean": 8.043999999761581,
+        "p95": 21.399999991059303,
+        "worst": 21.5
+      },
+      "rafIntervalMs": {
+        "mean": 206.9333333333333,
+        "p95": 233.39999999999964,
+        "worst": 250
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "runtime": {
+        "clock": {
+          "budgetMs": 6,
+          "maxSteps": 32,
+          "maxDebt": 0.05,
+          "debt": 0.017999999999999974,
+          "wall": 9.849499999999997,
+          "simulated": 1.4539999999999507,
+          "dilated": 8.377499999999998,
+          "pausedWall": 0,
+          "status": "overloaded",
+          "fault": null,
+          "accepted": 1454,
+          "rejected": 0,
+          "frameSteps": 32,
+          "physicsMs": 3.699999988079071,
+          "worstStepMs": 18.400000005960464,
+          "candidates": 1454,
+          "searches": 0
+        },
+        "keys": [
+          "w",
+          "a"
+        ],
+        "pointers": 0,
+        "renderMs": 1.7000000029802322
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 850
+      },
+      "status": "PASS"
+    },
+    "current": {
+      "browser": "154.0.8037.57",
+      "warmupSeconds": 2,
+      "workload": "Moving in second, clutch closed, held W+A, default workshop view; real RAF",
+      "wallSeconds": 6.3674000000059605,
+      "observedFrames": 15,
+      "framesPerWallSecond": 2.355749599520363,
+      "stepsPerWallSecond": 89.20438483517107,
+      "simulatedSeconds": 0.5679999999999695,
+      "slowWallSeconds": 5.767099999999996,
+      "cpuCallbackMs": {
+        "mean": 7.213333333532016,
+        "p95": 10.900000005960464,
+        "worst": 10.900000005960464
+      },
+      "rafIntervalMs": {
+        "mean": 355.9428571428572,
+        "p95": 400,
+        "worst": 400
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "runtime": {
+        "clock": {
+          "budgetMs": 6,
+          "maxSteps": 32,
+          "maxDebt": 0.05,
+          "debt": 0.017999999999999974,
+          "wall": 15.116100000000001,
+          "simulated": 1.27799999999997,
+          "dilated": 13.820099999999995,
+          "pausedWall": 0,
+          "status": "overloaded",
+          "fault": null,
+          "accepted": 1278,
+          "rejected": 0,
+          "frameSteps": 32,
+          "physicsMs": 3.2000000029802322,
+          "worstStepMs": 19.100000008940697,
+          "candidates": 1278,
+          "searches": 0
+        },
+        "keys": [
+          "w",
+          "a"
+        ],
+        "pointers": 0,
+        "renderMs": 2.7999999970197678
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 850
+      },
+      "status": "PASS"
+    },
+    "beforeShadowReduction": {
+      "browser": "154.0.8037.57",
+      "warmupSeconds": 2,
+      "workload": "Moving in second, clutch closed, held W+A, default workshop view; real RAF",
+      "wallSeconds": 6.2795,
+      "observedFrames": 15,
+      "framesPerWallSecond": 2.388725216975874,
+      "stepsPerWallSecond": 91.24930328847839,
+      "simulatedSeconds": 0.572999999999967,
+      "slowWallSeconds": 5.6258,
+      "cpuCallbackMs": {
+        "mean": 7.906666667262713,
+        "p95": 9.700000002980232,
+        "worst": 9.700000002980232
+      },
+      "rafIntervalMs": {
+        "mean": 344.0285714285715,
+        "p95": 416.7000000000007,
+        "worst": 416.7000000000007
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "runtime": {
+        "clock": {
+          "budgetMs": 6,
+          "maxSteps": 32,
+          "maxDebt": 0.05,
+          "debt": 0.018999999999999975,
+          "wall": 14.249399999999994,
+          "simulated": 1.3009999999999675,
+          "dilated": 12.929399999999998,
+          "pausedWall": 0,
+          "status": "overloaded",
+          "fault": null,
+          "accepted": 1301,
+          "rejected": 0,
+          "frameSteps": 31,
+          "physicsMs": 7.799999997019768,
+          "worstStepMs": 18.799999997019768,
+          "candidates": 1301,
+          "searches": 0
+        },
+        "keys": [
+          "w",
+          "a"
+        ],
+        "pointers": 0,
+        "renderMs": 2.8999999910593033
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 850
+      },
+      "status": "PASS"
+    }
+  },
+  "screenshots": {
+    "normal": {
+      "generatedPath": "/tmp/mission37-browser/normal.png",
+      "sha256": "c213964b9b49e5dfc96fdcfed9ef710f82c91ac041ff8c83d399125ef8755daf"
+    },
+    "xray": {
+      "generatedPath": "/tmp/mission37-browser/xray.png",
+      "sha256": "e02902747e34b74dc340c67eaa28d5d1324593727f38bb68f666c7943549b061"
+    },
+    "driveline": {
+      "generatedPath": "/tmp/mission37-browser/driveline.png",
+      "sha256": "1812ad4243fe090091d6a23ab77de969805ea49c25edb6c099ea1b89c3423919"
+    },
+    "clutch": {
+      "generatedPath": "/tmp/mission37-browser/clutch.png",
+      "sha256": "6a996856779c5e378f977458f79ba342a6630b9d37bb74e3f92ced200635856e"
+    },
+    "exploded": {
+      "generatedPath": "/tmp/mission37-browser/exploded.png",
+      "sha256": "994474fb687cf9799f8953cf0f8b52501a691f7ae231ee22a47de9cb35ab6900"
+    },
+    "schematic": {
+      "generatedPath": "/tmp/mission37-browser/schematic.png",
+      "sha256": "b2453adb09f772d6293a71b7316085bdb06aa8d6fe8dcdbeb0d4f84929c7ff6f"
+    },
+    "small": {
+      "generatedPath": "/tmp/mission37-browser/small.png",
+      "sha256": "27fae3bffd4f21cae603d3f3e13b066885fdf618a7f1185ed019f241a95e9ab2"
+    },
+    "final-vehicle": {
+      "generatedPath": "/tmp/mission37-browser/final-vehicle.png",
+      "sha256": "9e3eab5e41a5f9d567d05fa40df6b415111baabf3ebee67d099690604e7037a8"
+    },
+    "final-clutch": {
+      "generatedPath": "/tmp/mission37-browser/final-clutch.png",
+      "sha256": "117e8e9ddc9469220347f0d47887401679166a14c84e96e4ce4d2702575ca5b9"
+    }
+  },
+  "finalShadowResolution": 512,
+  "screenshotNote": "Full-layout screenshot set captured before final shadow-only optimization (1024 map). Final vehicle/clutch captures use 512 map; geometry and state mapping unchanged."
+}

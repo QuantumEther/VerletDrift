@@ -1,0 +1,263 @@
+{
+  "sourceCommit": "d419189dda7fc698d5364e0a1f91d2c9718c9113",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCPUs": 5,
+  "method": "Each work unit stated separately. Physics: 500 warm-up + 2000 timed 1 ms master steps. Telemetry stress and CPU geometry packing are NOT ODE steps and do NOT measure GPU execution. Timing is host/JIT/GC dependent; no speedup claim.",
+  "physics": [
+    {
+      "observer": false,
+      "h": 0.001,
+      "count": 2000,
+      "meanMs": 0.23688134200000158,
+      "medianMs": 0.20199999999999818,
+      "p95Ms": 0.4136930000000234,
+      "p99Ms": 0.5941510000000108,
+      "worstMs": 2.0223480000000222,
+      "tracks": null
+    },
+    {
+      "observer": true,
+      "h": 0.001,
+      "count": 2000,
+      "meanMs": 0.23099620500000026,
+      "medianMs": 0.1965309999998226,
+      "p95Ms": 0.4025970000000143,
+      "p99Ms": 0.6087629999999535,
+      "worstMs": 1.6467509999999947,
+      "tracks": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          0,
+          45,
+          181,
+          229
+        ],
+        "pathCount": [
+          110,
+          146,
+          135,
+          162
+        ],
+        "centerCount": 131,
+        "eventBytes": 16384,
+        "revision": 456,
+        "generation": 0,
+        "acceptedStages": 2500,
+        "acceptedTime": 2.4999999999998357,
+        "totalSlipWork": [
+          45.566626591497474,
+          120.98185682661052,
+          1409.1671148375024,
+          1796.5660478995057
+        ]
+      }
+    }
+  ],
+  "telemetry": [
+    {
+      "mode": "rolling",
+      "synthetic": true,
+      "warmupStages": 30000,
+      "measuredStages": 200000,
+      "record": {
+        "count": 200000,
+        "meanMs": 0.0008347865550001211,
+        "medianMs": 0.0005310000001372828,
+        "p95Ms": 0.0017130000001088774,
+        "p99Ms": 0.003505000000131986,
+        "worstMs": 1.8189770000001317
+      },
+      "geometryPacking": {
+        "count": 12500,
+        "meanMs": 0.0005594321599994145,
+        "medianMs": 0.00018000000000029104,
+        "p95Ms": 0.0006909999999606953,
+        "p99Ms": 0.0015720000001238077,
+        "worstMs": 1.9797659999999269
+      },
+      "gcAvailable": true,
+      "heapBefore": 8480144,
+      "heapAfter": 8530544,
+      "heapDelta": 50400,
+      "history": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pathCount": [
+          2048,
+          2048,
+          2048,
+          2048
+        ],
+        "centerCount": 2048,
+        "eventBytes": 16384,
+        "revision": 0,
+        "generation": 0,
+        "acceptedStages": 230000,
+        "acceptedTime": 230.00000000073416,
+        "totalSlipWork": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "renderer": {
+        "updates": 3,
+        "uploadedVertices": 73728,
+        "bytes": 937984,
+        "activePrimitives": 0,
+        "maxPrimitives": 4096,
+        "maxVertices": 24576,
+        "visible": false,
+        "origin": [
+          2000,
+          0
+        ]
+      },
+      "sceneGeometryCount": 1,
+      "sceneMaterialCount": 1
+    },
+    {
+      "mode": "sliding",
+      "synthetic": true,
+      "warmupStages": 30000,
+      "measuredStages": 200000,
+      "record": {
+        "count": 200000,
+        "meanMs": 0.0012742088949996718,
+        "medianMs": 0.0007010000001628214,
+        "p95Ms": 0.0024730000000090513,
+        "p99Ms": 0.0041959999998653075,
+        "worstMs": 5.05260300000009
+      },
+      "geometryPacking": {
+        "count": 12500,
+        "meanMs": 0.01256649072000051,
+        "medianMs": 0.007340999999996711,
+        "p95Ms": 0.014691999999968175,
+        "p99Ms": 0.03960899999992762,
+        "worstMs": 7.636895000000095
+      },
+      "gcAvailable": true,
+      "heapBefore": 10520000,
+      "heapAfter": 10544832,
+      "heapDelta": 24832,
+      "history": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "pathCount": [
+          2048,
+          2048,
+          2048,
+          2048
+        ],
+        "centerCount": 2048,
+        "eventBytes": 16384,
+        "revision": 184000,
+        "generation": 0,
+        "acceptedStages": 230000,
+        "acceptedTime": 230.00000000073416,
+        "totalSlipWork": [
+          413999.9999983198,
+          413999.9999983198,
+          413999.9999983198,
+          413999.9999983198
+        ]
+      },
+      "renderer": {
+        "updates": 12500,
+        "uploadedVertices": 1033464,
+        "bytes": 937984,
+        "activePrimitives": 4096,
+        "maxPrimitives": 4096,
+        "maxVertices": 24576,
+        "visible": true,
+        "origin": [
+          2000,
+          0
+        ]
+      },
+      "sceneGeometryCount": 1,
+      "sceneMaterialCount": 1
+    },
+    {
+      "mode": "stationary",
+      "synthetic": true,
+      "warmupStages": 30000,
+      "measuredStages": 200000,
+      "record": {
+        "count": 200000,
+        "meanMs": 0.0008842920249998997,
+        "medianMs": 0.000661000000036438,
+        "p95Ms": 0.0010219999999208085,
+        "p99Ms": 0.00277399999959016,
+        "worstMs": 1.0634829999999056
+      },
+      "geometryPacking": {
+        "count": 12500,
+        "meanMs": 0.0006662223200018343,
+        "medianMs": 0.0005310000001372828,
+        "p95Ms": 0.0007709999999860884,
+        "p99Ms": 0.001772999999957392,
+        "worstMs": 1.0454200000003766
+      },
+      "gcAvailable": true,
+      "heapBefore": 6724360,
+      "heapAfter": 6754120,
+      "heapDelta": 29760,
+      "history": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "pathCount": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "centerCount": 1,
+        "eventBytes": 16384,
+        "revision": 84,
+        "generation": 0,
+        "acceptedStages": 230000,
+        "acceptedTime": 230.00000000073416,
+        "totalSlipWork": [
+          413999.9999983198,
+          413999.9999983198,
+          413999.9999983198,
+          413999.9999983198
+        ]
+      },
+      "renderer": {
+        "updates": 1,
+        "uploadedVertices": 24576,
+        "bytes": 937984,
+        "activePrimitives": 4,
+        "maxPrimitives": 4096,
+        "maxVertices": 24576,
+        "visible": true,
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "sceneGeometryCount": 1,
+      "sceneMaterialCount": 1
+    }
+  ]
+}

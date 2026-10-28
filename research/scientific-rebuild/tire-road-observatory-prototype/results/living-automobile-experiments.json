@@ -1,0 +1,1930 @@
+{
+  "sourceCommit": "7fca4a488306b7aad44e7202ce7d1f987b248fba",
+  "runtime": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCPUs": 5,
+  "units": "SI; rpm explicitly labelled",
+  "clock": "fixed simulation h; CPU timings measured separately",
+  "cases": [
+    {
+      "id": "engine-start-idle-rev-close",
+      "h": 0.001,
+      "warm": {
+        "time": 6.000000000000338,
+        "engineOmega": 49.172286280778756,
+        "rpm": 469.56074548294373,
+        "engineMode": "running",
+        "throttle": 0,
+        "engineTorque": 1.1483007728547023,
+        "combustion": 4.380900865310358,
+        "friction": 1.8108983631262239,
+        "pumping": 1.4217017293294316,
+        "engineWork": {
+          "combustion": 751.6415166654522,
+          "starter": 142.68465717937354,
+          "loss": 531.5578227272706
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 362.68706071182936,
+          "work": 0.05646457433925092,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 2.1976577749018475e-06,
+          "energyResidual": 3.2865007102474836e-14,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "rev": {
+        "time": 8.000000000001005,
+        "engineOmega": 214.6256068714275,
+        "rpm": 2049.5235748611326,
+        "engineMode": "running",
+        "throttle": 0.9999999999861119,
+        "engineTorque": 21.047551835698343,
+        "combustion": 27.023919237269382,
+        "friction": 5.97636740154563,
+        "pumping": 2.5407811305176363e-11,
+        "engineWork": {
+          "combustion": 8424.09321037834,
+          "starter": 142.68465717937354,
+          "loss": 1654.9763150073004
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 6909.622668739282,
+          "work": 4.517343585894585,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0007383323971271693,
+          "energyResidual": 3.431665758849012e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "closed": {
+        "time": 9.000000000000451,
+        "engineOmega": 198.7198374847324,
+        "rpm": 1897.6346655667965,
+        "engineMode": "running",
+        "throttle": 3.726653172026914e-06,
+        "engineTorque": -6.17781536962231,
+        "combustion": 1.0990858080577175,
+        "friction": 5.45977309228792,
+        "pumping": 1.8171280853921075,
+        "engineWork": {
+          "combustion": 9001.452377752623,
+          "starter": 142.68465717937354,
+          "loss": 3218.4484036027534
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 5923.436071493769,
+          "work": -1.2276544662620277,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 6.360900456862995e-05,
+          "energyResidual": 3.5742298064387473e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "engine-start-idle-rev-close",
+      "h": 0.0005,
+      "warm": {
+        "time": 5.999999999999394,
+        "engineOmega": 49.17035764465788,
+        "rpm": 469.54232836461995,
+        "engineMode": "running",
+        "throttle": 0,
+        "engineTorque": 1.1483016606009764,
+        "combustion": 4.3809013788732685,
+        "friction": 1.810898112706483,
+        "pumping": 1.421701605565809,
+        "engineWork": {
+          "combustion": 751.5673256123546,
+          "starter": 142.6227671235236,
+          "loss": 531.490844951137
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 362.6586106355348,
+          "work": 0.028231201667852274,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 5.494152932256972e-07,
+          "energyResidual": -1.309735060257654e-14,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "rev": {
+        "time": 7.999999999998286,
+        "engineOmega": 214.60124839864338,
+        "rpm": 2049.290968580147,
+        "engineMode": "running",
+        "throttle": 0.9999999999861116,
+        "engineTorque": 21.04677310730846,
+        "combustion": 27.02349922759414,
+        "friction": 5.976726120260269,
+        "pumping": 2.540852890271506e-11,
+        "engineWork": {
+          "combustion": 8421.076418977469,
+          "starter": 142.6227671235236,
+          "loss": 1654.5555468166358
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 6908.054372138436,
+          "work": 2.2583318917956956,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0001845694409294025,
+          "energyResidual": 6.323026141303451e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "closed": {
+        "time": 8.999999999999508,
+        "engineOmega": 198.71955965580392,
+        "rpm": 1897.6320124959584,
+        "engineMode": "running",
+        "throttle": 3.726653172026912e-06,
+        "engineTorque": -6.177376130049979,
+        "combustion": 1.0991791468304997,
+        "friction": 5.459436032426141,
+        "pumping": 1.8171192444543383,
+        "engineWork": {
+          "combustion": 8999.823087504443,
+          "starter": 142.6227671235236,
+          "loss": 3217.900162345516
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 5923.419508469492,
+          "work": -0.6137827321959031,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 1.589998993838737e-05,
+          "energyResidual": -6.03136210273374e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "engine-start-idle-rev-close",
+      "h": 0.00025,
+      "warm": {
+        "time": 6.000000000001587,
+        "engineOmega": 49.171098092081444,
+        "rpm": 469.5493991166735,
+        "engineMode": "running",
+        "throttle": 0,
+        "engineTorque": 1.14819986315313,
+        "combustion": 4.380842488644771,
+        "friction": 1.8109268283575006,
+        "pumping": 1.4217157971341405,
+        "engineWork": {
+          "combustion": 751.5994184421825,
+          "starter": 142.5914774196458,
+          "loss": 531.5010434195142
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 362.66953313716425,
+          "work": 0.014114562025104261,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 1.3732947143090227e-07,
+          "energyResidual": -8.369782397422424e-14,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "rev": {
+        "time": 8.00000000000403,
+        "engineOmega": 214.5902398292524,
+        "rpm": 2049.1858444860504,
+        "engineMode": "running",
+        "throttle": 0.9999999999861119,
+        "engineTorque": 21.04629877536587,
+        "combustion": 27.023243396374973,
+        "friction": 5.976944620983695,
+        "pumping": 2.5407985502660096e-11,
+        "engineWork": {
+          "combustion": 8419.708165572561,
+          "starter": 142.5914774196458,
+          "loss": 1654.4093990383262
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 6907.345654496409,
+          "work": 1.129082575430966,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 4.614028043140479e-05,
+          "energyResidual": 2.0331398917954394e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "closed": {
+        "time": 9.0000000000017,
+        "engineOmega": 198.7204405934206,
+        "rpm": 1897.6404248305332,
+        "engineMode": "running",
+        "throttle": 3.7266531720269172e-06,
+        "engineTorque": -6.177198894924906,
+        "combustion": 1.0992168124903365,
+        "friction": 5.459300030557582,
+        "pumping": 1.8171156768576604,
+        "engineWork": {
+          "combustion": 8999.149691254182,
+          "starter": 142.5914774196458,
+          "loss": 3217.7060745071403
+        },
+        "u": 0,
+        "v": 0,
+        "yaw": 0,
+        "heading": 0,
+        "pitch": 0,
+        "steering": {
+          "column": 0,
+          "left": -4.440892098500626e-16,
+          "right": 4.440892098500626e-16
+        },
+        "wheels": [
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 0,
+            "angle": 0,
+            "fx": 0,
+            "fy": 0,
+            "normal": 255.06000000000003,
+            "slipX": 0,
+            "slipY": 0,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 1,
+          "acceptedCandidateIterations": 1,
+          "residual": 0,
+          "prePolishResidual": 0,
+          "forceLawResidual": 0,
+          "constitutiveImpulseResidual": 0,
+          "energy": 5923.47202644648,
+          "work": -0.306883921508167,
+          "tireDissipation": 0,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 3.974769394521395e-06,
+          "energyResidual": -9.646723303930729e-14,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": 0,
+          "ay": 0
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "steer--1-hand-0",
+      "h": 0.001,
+      "handAppliedAt": 0.5,
+      "result": {
+        "time": 1.9999999999998905,
+        "engineOmega": 0,
+        "rpm": 0,
+        "engineMode": "stopped",
+        "throttle": 0,
+        "engineTorque": 0,
+        "combustion": 0,
+        "friction": 0,
+        "pumping": 0,
+        "engineWork": {
+          "combustion": 0,
+          "starter": 0,
+          "loss": 0
+        },
+        "u": 7.867923515757562,
+        "v": -0.3855260187471026,
+        "yaw": -0.5238765087999971,
+        "heading": -1.0127420210263902,
+        "pitch": 0,
+        "steering": {
+          "column": -3.5,
+          "left": -0.12745662492305154,
+          "right": -0.138162390432218
+        },
+        "wheels": [
+          {
+            "omega": 25.72637810465747,
+            "angle": 51.68711105571269,
+            "fx": 0.5155389430736188,
+            "fy": -107.13647700421728,
+            "normal": 255.06000000000003,
+            "slipX": -0.0006444236761054545,
+            "slipY": 0.13392059630770703,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 23.77445403872943,
+            "angle": 47.93811055421389,
+            "fx": 0.47630448770564654,
+            "fy": -108.36716150729788,
+            "normal": 255.06000000000003,
+            "slipX": -0.0005953806065359668,
+            "slipY": 0.13545895193799973,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 25.571286657036204,
+            "angle": 51.39586522379636,
+            "fx": 0.6122855108031389,
+            "fy": -107.38297823157653,
+            "normal": 255.06000000000003,
+            "slipX": -0.0007653568919292475,
+            "slipY": 0.1342287228416401,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 23.606595842580425,
+            "angle": 47.62206568713003,
+            "fx": 0.5728854580514782,
+            "fy": -107.38297823157654,
+            "normal": 255.06000000000003,
+            "slipX": -0.0007161068260770342,
+            "slipY": 0.1342287228416401,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 5,
+          "acceptedCandidateIterations": 5,
+          "residual": 3.743136356426646e-11,
+          "prePolishResidual": 3.743136356426646e-11,
+          "forceLawResidual": 4.317301477753958e-08,
+          "constitutiveImpulseResidual": 4.3173014777539584e-11,
+          "energy": 4575.02147571781,
+          "work": 0,
+          "tireDissipation": 57.85633772697681,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0008861470710069906,
+          "energyResidual": 7.622532162757101e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": -0.2536028429211967,
+          "ay": -4.12018286204352
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "steer-1-hand-0",
+      "h": 0.001,
+      "handAppliedAt": 0.5,
+      "result": {
+        "time": 1.9999999999998905,
+        "engineOmega": 0,
+        "rpm": 0,
+        "engineMode": "stopped",
+        "throttle": 0,
+        "engineTorque": 0,
+        "combustion": 0,
+        "friction": 0,
+        "pumping": 0,
+        "engineWork": {
+          "combustion": 0,
+          "starter": 0,
+          "loss": 0
+        },
+        "u": 7.857633801552712,
+        "v": 0.4001003098575584,
+        "yaw": 0.5434594993608082,
+        "heading": 1.0501007166711969,
+        "pitch": 0,
+        "steering": {
+          "column": 3.5,
+          "left": 0.14370284168548642,
+          "right": 0.13214602780723927
+        },
+        "wheels": [
+          {
+            "omega": 23.71902206069405,
+            "angle": 47.85493684470739,
+            "fx": 0.5113974159651187,
+            "fy": 112.39480922576281,
+            "normal": 255.06000000000003,
+            "slipX": -0.0006392467663159096,
+            "slipY": -0.1404935115934406,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 25.742888007350963,
+            "angle": 51.73961799174748,
+            "fx": 0.5551887855472027,
+            "fy": 110.96389076271267,
+            "normal": 255.06000000000003,
+            "slipX": -0.0006939859787329916,
+            "slipY": -0.13870486351280892,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 23.537838410062175,
+            "angle": 47.51394642250844,
+            "fx": 0.6150303616129406,
+            "fy": 111.27115440546022,
+            "normal": 255.06000000000003,
+            "slipX": -0.0007687879561338318,
+            "slipY": -0.13908894306595987,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 25.5759833711946,
+            "angle": 51.42694441077848,
+            "fx": 0.6590210252211751,
+            "fy": 111.27115440546024,
+            "normal": 255.06000000000003,
+            "slipX": -0.0008237762855395903,
+            "slipY": -0.13908894306595987,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          }
+        ],
+        "contact": {
+          "iterations": 5,
+          "acceptedCandidateIterations": 5,
+          "residual": 4.253516983077077e-11,
+          "prePolishResidual": 4.253516983077077e-11,
+          "forceLawResidual": 4.907615525330448e-08,
+          "constitutiveImpulseResidual": 4.907615525330448e-11,
+          "energy": 4565.122787066776,
+          "work": 0,
+          "tireDissipation": 62.13687519226802,
+          "brakeDissipation": 0,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 0,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0009513720668306453,
+          "energyResidual": 3.5137984102234787e-13,
+          "serviceBrake": 0,
+          "handbrake": 0,
+          "ax": -0.27294416744982897,
+          "ay": 4.268475388890414
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "steer--1-hand-1",
+      "h": 0.001,
+      "handAppliedAt": 0.5,
+      "result": {
+        "time": 1.9999999999998905,
+        "engineOmega": 0,
+        "rpm": 0,
+        "engineMode": "stopped",
+        "throttle": 0,
+        "engineTorque": 0,
+        "combustion": 0,
+        "friction": 0,
+        "pumping": 0,
+        "engineWork": {
+          "combustion": 0,
+          "starter": 0,
+          "loss": 0
+        },
+        "u": 0.8928438336173519,
+        "v": 0.41000503178027375,
+        "yaw": -0.4636576394437457,
+        "heading": -2.4064151229785447,
+        "pitch": 0,
+        "steering": {
+          "column": -3.5,
+          "left": -0.12745662492305154,
+          "right": -0.138162390432218
+        },
+        "wheels": [
+          {
+            "omega": 3.845465955207381,
+            "angle": 37.799249673434524,
+            "fx": 49.558974823653244,
+            "fy": -76.19912719008022,
+            "normal": 255.06000000000003,
+            "slipX": -0.06194871852949613,
+            "slipY": 0.09524890898734739,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 1.9447773388264238,
+            "angle": 28.7724243084592,
+            "fx": 4.721774499078955,
+            "fy": -24.900999333052138,
+            "normal": 255.06000000000003,
+            "slipX": -0.005902218124361341,
+            "slipY": 0.031126249165919218,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 2.891205793294468e-19,
+            "angle": 17.40415658254595,
+            "fx": -184.03259267673744,
+            "fy": -137.21167497220512,
+            "normal": 255.06000000000003,
+            "slipX": 1.1712284232709127,
+            "slipY": 0.8732486533034518,
+            "brake": -58.89042965655599,
+            "capacity": 157.7211394302849,
+            "mode": "sliding"
+          },
+          {
+            "omega": 6.3606527452482886e-18,
+            "angle": 15.903201001421417,
+            "fx": -132.1543837986686,
+            "fy": -187.6972502696676,
+            "normal": 255.06000000000003,
+            "slipX": 0.6148392559384177,
+            "slipY": 0.8732486533034518,
+            "brake": -42.289402815573936,
+            "capacity": 157.7211394302849,
+            "mode": "sliding"
+          }
+        ],
+        "contact": {
+          "iterations": 29,
+          "acceptedCandidateIterations": 29,
+          "residual": 1.18742793375759e-11,
+          "prePolishResidual": 8.402419038322506e-11,
+          "forceLawResidual": 1.606254517416904e-08,
+          "constitutiveImpulseResidual": 1.606254517416904e-11,
+          "energy": 65.92849619388329,
+          "work": 0,
+          "tireDissipation": 591.6551301340968,
+          "brakeDissipation": 2.8601464125305456e-16,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": 2.8601464125305456e-16,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0018146587429317465,
+          "energyResidual": 1.255137486999569e-14,
+          "serviceBrake": 0,
+          "handbrake": 1,
+          "ax": -2.6487353910688016,
+          "ay": -4.154841306628298
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    },
+    {
+      "id": "steer-1-hand-1",
+      "h": 0.001,
+      "handAppliedAt": 0.5,
+      "result": {
+        "time": 1.9999999999998905,
+        "engineOmega": 0,
+        "rpm": 0,
+        "engineMode": "stopped",
+        "throttle": 0,
+        "engineTorque": 0,
+        "combustion": 0,
+        "friction": 0,
+        "pumping": 0,
+        "engineWork": {
+          "combustion": 0,
+          "starter": 0,
+          "loss": 0
+        },
+        "u": 0.826806174871402,
+        "v": -0.38484988888401356,
+        "yaw": 0.4348776054457067,
+        "heading": 2.4576010209185366,
+        "pitch": 0,
+        "steering": {
+          "column": 3.5,
+          "left": 0.14370284168548642,
+          "right": 0.13214602780723927
+        },
+        "wheels": [
+          {
+            "omega": 1.78838234893377,
+            "angle": 28.45852286370155,
+            "fx": 3.8832621731580144,
+            "fy": 24.955944201489427,
+            "normal": 255.06000000000003,
+            "slipX": -0.0048540777171088845,
+            "slipY": -0.031194930251346897,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": 3.5842593159435236,
+            "angle": 37.68608892667441,
+            "fx": 49.52703151234299,
+            "fy": 74.71649399225859,
+            "normal": 255.06000000000003,
+            "slipX": -0.06190878939034028,
+            "slipY": -0.09339561748998743,
+            "brake": 0,
+            "capacity": 0,
+            "mode": "rolling/creep"
+          },
+          {
+            "omega": -5.782411586589439e-19,
+            "angle": 15.86198405536378,
+            "fx": -130.47616167386775,
+            "fy": 188.8677054206323,
+            "normal": 255.06000000000003,
+            "slipX": 0.5660468960146531,
+            "slipY": -0.8193678984604351,
+            "brake": -41.75237173563768,
+            "capacity": 157.7211394302849,
+            "mode": "sliding"
+          },
+          {
+            "omega": -1.4456028966473357e-18,
+            "angle": 17.415780972627797,
+            "fx": -183.36428349061788,
+            "fy": 138.10350631309947,
+            "normal": 255.06000000000003,
+            "slipX": 1.0879000225495012,
+            "slipY": -0.8193678984604351,
+            "brake": -58.67657071699774,
+            "capacity": 157.7211394302849,
+            "mode": "sliding"
+          }
+        ],
+        "contact": {
+          "iterations": 29,
+          "acceptedCandidateIterations": 29,
+          "residual": 1.547215133790303e-11,
+          "prePolishResidual": 9.981945131576353e-11,
+          "forceLawResidual": 2.094412260313427e-08,
+          "constitutiveImpulseResidual": 2.094412260313427e-11,
+          "energy": 56.945499251033525,
+          "work": 0,
+          "tireDissipation": 552.0890493301716,
+          "brakeDissipation": -1.0896596040299823e-16,
+          "serviceDissipation": 0,
+          "handbrakeDissipation": -1.0896596040299823e-16,
+          "clutchEndPower": 0,
+          "bearingEndPower": 0,
+          "numericalLoss": 0.0018275797771996254,
+          "energyResidual": -1.2748265984519058e-14,
+          "serviceBrake": 0,
+          "handbrake": 1,
+          "ax": -2.637698757184892,
+          "ay": 4.161700773008259
+        }
+      },
+      "traceFile": "living-automobile-traces.json.gz"
+    }
+  ],
+  "idleEquilibrium": {
+    "omega": 68.46575630623933,
+    "rpm": 653.7998129197856,
+    "residual": 1.3322676295501878e-15,
+    "torques": {
+      "combustion": 3.7038147105746853,
+      "friction": 2.1559670650013296,
+      "pumping": 1.5478476455733543,
+      "starterTorque": 0,
+      "netTorque": 1.3322676295501878e-15,
+      "indicatedMeanPressure": 77572.51389999491
+    },
+    "parameters": {
+      "displacement": 0.0006,
+      "peakGrossTorque": 32,
+      "idleStop": 0.17,
+      "closedFlowSpeed": 100,
+      "openFlowSpeed": 500,
+      "coulomb": 1.1,
+      "viscous": 0.012,
+      "quadratic": 5e-05,
+      "pumping": 2,
+      "frictionSpeed": 5,
+      "fireSpeed": 22,
+      "extinctionSpeed": 12,
+      "extinctionDelay": 0.08,
+      "starterTorque": 8,
+      "starterNoLoad": 45,
+      "throttleTime": 0.08
+    }
+  },
+  "previousTorqueFixture": {
+    "h": 0.001,
+    "seconds": 2,
+    "drive": 20,
+    "result": {
+      "time": 1.9999999999998905,
+      "engineOmega": 133.3333333333309,
+      "rpm": 1273.2395447351394,
+      "engineMode": "prescribed torque",
+      "engineWork": null,
+      "u": 0,
+      "v": 0,
+      "yaw": 0,
+      "heading": 0,
+      "pitch": 0,
+      "steering": null,
+      "wheels": [
+        {
+          "omega": 0,
+          "angle": 0,
+          "fx": 0,
+          "fy": 0,
+          "normal": 255.06000000000003,
+          "slipX": 0,
+          "slipY": 0,
+          "brake": 0,
+          "capacity": 0,
+          "mode": "rolling/creep"
+        },
+        {
+          "omega": 0,
+          "angle": 0,
+          "fx": 0,
+          "fy": 0,
+          "normal": 255.06000000000003,
+          "slipX": 0,
+          "slipY": 0,
+          "brake": 0,
+          "capacity": 0,
+          "mode": "rolling/creep"
+        },
+        {
+          "omega": 0,
+          "angle": 0,
+          "fx": 0,
+          "fy": 0,
+          "normal": 255.06000000000003,
+          "slipX": 0,
+          "slipY": 0,
+          "brake": 0,
+          "capacity": 0,
+          "mode": "rolling/creep"
+        },
+        {
+          "omega": 0,
+          "angle": 0,
+          "fx": 0,
+          "fy": 0,
+          "normal": 255.06000000000003,
+          "slipX": 0,
+          "slipY": 0,
+          "brake": 0,
+          "capacity": 0,
+          "mode": "rolling/creep"
+        }
+      ],
+      "contact": {
+        "iterations": 1,
+        "acceptedCandidateIterations": 1,
+        "residual": 0,
+        "prePolishResidual": 0,
+        "forceLawResidual": 0,
+        "constitutiveImpulseResidual": 0,
+        "energy": 2666.666666666569,
+        "work": 2.666666666666618,
+        "tireDissipation": 0,
+        "brakeDissipation": 0,
+        "serviceDissipation": 0,
+        "handbrakeDissipation": 0,
+        "clutchEndPower": 0,
+        "bearingEndPower": 0,
+        "numericalLoss": 0.0006666666666665908,
+        "energyResidual": 2.1582486232213371e-13,
+        "serviceBrake": 0,
+        "handbrake": 0,
+        "ax": 0,
+        "ay": 0
+      }
+    },
+    "equation": "No combustion/loss ports: J*omegaDot=20-clutch; omega is not speed governed."
+  },
+  "steering": [
+    {
+      "column": -7,
+      "left": -0.24437010266551962,
+      "right": -0.28914754373771645,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.2472629942770086,
+      "outerError": -0.002892891611488979
+    },
+    {
+      "column": -6,
+      "left": -0.21188580429785198,
+      "right": -0.24418015432556173,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.2134478785360006,
+      "outerError": -0.0015620742381486363
+    },
+    {
+      "column": -5,
+      "left": -0.17868697885029183,
+      "right": -0.20080799696200913,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.17944594435369016,
+      "outerError": -0.0007589655033983234
+    },
+    {
+      "column": -4,
+      "left": -0.14473299374370052,
+      "right": -0.15875916123456071,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.14504824973246472,
+      "outerError": -0.0003152559887641959
+    },
+    {
+      "column": -3,
+      "left": -0.10997009008448978,
+      "right": -0.1178194626849085,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.11007187609614633,
+      "outerError": -0.00010178601165654333
+    },
+    {
+      "column": -2,
+      "left": -0.07432753805321957,
+      "right": -0.07781262831796587,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.07434818053054326,
+      "outerError": -2.064247732369573e-05
+    },
+    {
+      "column": -1,
+      "left": -0.03771212234091692,
+      "right": -0.038586162287639336,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.037713455234622356,
+      "outerError": -1.332893705435767e-06
+    },
+    {
+      "column": 0,
+      "left": -4.440892098500626e-16,
+      "right": 4.440892098500626e-16,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0,
+      "outerError": 0
+    },
+    {
+      "column": 1,
+      "left": 0.03897574757851796,
+      "right": 0.038084154115315634,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.03808554073414764,
+      "outerError": -1.3866188320055262e-06
+    },
+    {
+      "column": 2,
+      "left": 0.07944497367755243,
+      "right": 0.07581492249186939,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.0758372926857026,
+      "outerError": -2.237019383322103e-05
+    },
+    {
+      "column": 3,
+      "left": 0.12173387616580511,
+      "right": 0.11336783332883948,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.11348313069003481,
+      "outerError": -0.00011529736119532397
+    },
+    {
+      "column": 4,
+      "left": 0.16632515970121897,
+      "right": 0.15097216740412248,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.15134771278477913,
+      "outerError": -0.00037554538065665
+    },
+    {
+      "column": 5,
+      "left": 0.2139766149093889,
+      "right": 0.1889614028228883,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.18992184575757226,
+      "outerError": -0.0009604429346839471
+    },
+    {
+      "column": 6,
+      "left": 0.2659863857445601,
+      "right": 0.2278840459960412,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.23001974672163064,
+      "outerError": -0.00213570072558944
+    },
+    {
+      "column": 7,
+      "left": 0.3249128296689485,
+      "right": 0.26880307955844307,
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "idealOuter": 0.2732090809778489,
+      "outerError": -0.004406001419405836
+    }
+  ],
+  "steeringGeometry": {
+    "wheelbase": 2,
+    "track": 1.2,
+    "left": [
+      1,
+      0.6
+    ],
+    "right": [
+      1,
+      -0.6
+    ],
+    "al": [
+      -0.1966642168486985,
+      -0.09860621588565341
+    ],
+    "ar": [
+      -0.1966642168486985,
+      0.09860621588565341
+    ],
+    "lp": [
+      0.8033357831513015,
+      0.5013937841143465
+    ],
+    "rp": [
+      0.8033357831513015,
+      -0.5013937841143465
+    ],
+    "box": [
+      0.65,
+      -0.15
+    ],
+    "pitman": [
+      -0.14,
+      0
+    ],
+    "tip": [
+      0.51,
+      -0.15
+    ],
+    "arm": 0.22,
+    "tieLength": 1.002787568228693,
+    "dragLength": 0.7143946693948628,
+    "ratio": 24,
+    "columnLimit": 7,
+    "columnRate": 32
+  },
+  "brakes": {
+    "released": {
+      "pedal": 0,
+      "lever": 0,
+      "pressure": 0,
+      "cableTension": 0,
+      "perRearCable": 0,
+      "masterTravel": 0,
+      "pedalTravel": 0,
+      "handAngle": 0,
+      "cableTravel": 0,
+      "wheels": [
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        }
+      ]
+    },
+    "service": {
+      "pedal": 1,
+      "lever": 0,
+      "pressure": 3183098.8618379063,
+      "cableTension": 0,
+      "perRearCable": 0,
+      "masterTravel": 0.001698782260869565,
+      "pedalTravel": 0.00679512904347826,
+      "handAngle": 0,
+      "cableTravel": 0,
+      "wheels": [
+        {
+          "normalPerShoe": 997.6011994002995,
+          "shoeTravel": 0.00024988005997001497,
+          "hydraulicForce": 1020.0999999999996,
+          "cableForce": 0,
+          "serviceCapacity": 99.76011994002995,
+          "handCapacity": 0,
+          "returnForce": 22.49880059970015
+        },
+        {
+          "normalPerShoe": 997.6011994002995,
+          "shoeTravel": 0.00024988005997001497,
+          "hydraulicForce": 1020.0999999999996,
+          "cableForce": 0,
+          "serviceCapacity": 99.76011994002995,
+          "handCapacity": 0,
+          "returnForce": 22.49880059970015
+        },
+        {
+          "normalPerShoe": 700.1499250374814,
+          "shoeTravel": 0.0002350074962518741,
+          "hydraulicForce": 722.5,
+          "cableForce": 0,
+          "serviceCapacity": 70.01499250374813,
+          "handCapacity": 0,
+          "returnForce": 22.35007496251874
+        },
+        {
+          "normalPerShoe": 700.1499250374814,
+          "shoeTravel": 0.0002350074962518741,
+          "hydraulicForce": 722.5,
+          "cableForce": 0,
+          "serviceCapacity": 70.01499250374813,
+          "handCapacity": 0,
+          "returnForce": 22.35007496251874
+        }
+      ]
+    },
+    "hand": {
+      "pedal": 0,
+      "lever": 1,
+      "pressure": 0,
+      "cableTension": 800,
+      "perRearCable": 400,
+      "masterTravel": 0.0008059070464767616,
+      "pedalTravel": 0.0032236281859070464,
+      "handAngle": 0.37051474262868567,
+      "cableTravel": 0.01111544227886057,
+      "wheels": [
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 1577.2113943028487,
+          "shoeTravel": 0.00027886056971514244,
+          "hydraulicForce": 0,
+          "cableForce": 1600,
+          "serviceCapacity": 0,
+          "handCapacity": 157.7211394302849,
+          "returnForce": 22.788605697151425
+        },
+        {
+          "normalPerShoe": 1577.2113943028487,
+          "shoeTravel": 0.00027886056971514244,
+          "hydraulicForce": 0,
+          "cableForce": 1600,
+          "serviceCapacity": 0,
+          "handCapacity": 157.7211394302849,
+          "returnForce": 22.788605697151425
+        }
+      ]
+    },
+    "both": {
+      "pedal": 1,
+      "lever": 1,
+      "pressure": 3183098.8618379063,
+      "cableTension": 800,
+      "perRearCable": 400,
+      "masterTravel": 0.0019298667186406792,
+      "pedalTravel": 0.007719466874562717,
+      "handAngle": 0.37532900216558385,
+      "cableTravel": 0.011259870064967516,
+      "wheels": [
+        {
+          "normalPerShoe": 997.6011994002995,
+          "shoeTravel": 0.00024988005997001497,
+          "hydraulicForce": 1020.0999999999996,
+          "cableForce": 0,
+          "serviceCapacity": 99.76011994002995,
+          "handCapacity": 0,
+          "returnForce": 22.49880059970015
+        },
+        {
+          "normalPerShoe": 997.6011994002995,
+          "shoeTravel": 0.00024988005997001497,
+          "hydraulicForce": 1020.0999999999996,
+          "cableForce": 0,
+          "serviceCapacity": 99.76011994002995,
+          "handCapacity": 0,
+          "returnForce": 22.49880059970015
+        },
+        {
+          "normalPerShoe": 2299.3503248375814,
+          "shoeTravel": 0.0003149675162418791,
+          "hydraulicForce": 722.5,
+          "cableForce": 1600,
+          "serviceCapacity": 71.52984325921003,
+          "handCapacity": 158.40518922454817,
+          "returnForce": 23.14967516241879
+        },
+        {
+          "normalPerShoe": 2299.3503248375814,
+          "shoeTravel": 0.0003149675162418791,
+          "hydraulicForce": 722.5,
+          "cableForce": 1600,
+          "serviceCapacity": 71.52984325921003,
+          "handCapacity": 158.40518922454817,
+          "returnForce": 23.14967516241879
+        }
+      ]
+    }
+  },
+  "performance": [
+    {
+      "automobile": false,
+      "scenario": "neutral",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.2749300525000417,
+      "medianMs": 0.2068859999999404,
+      "p95Ms": 0.24681599999894388,
+      "p99Ms": 0.3343849999982922,
+      "worstMs": 22.48389700000189,
+      "stepsPerWallSecond": 3637.288797301809,
+      "maxIterations": 1,
+      "maxEnergyResidualJ": 0,
+      "maxForceErrorN": 0,
+      "rejected": 0
+    },
+    {
+      "automobile": false,
+      "scenario": "steer",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.27882266300004993,
+      "medianMs": 0.23937499999738066,
+      "p95Ms": 0.2902890000004845,
+      "p99Ms": 0.619366999999329,
+      "worstMs": 22.46206499999971,
+      "stepsPerWallSecond": 3586.5090349553866,
+      "maxIterations": 8,
+      "maxEnergyResidualJ": 2.8825739538385076e-12,
+      "maxForceErrorN": 1.8098768778217407e-08,
+      "rejected": 0
+    },
+    {
+      "automobile": false,
+      "scenario": "handbrake",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.305878216000061,
+      "medianMs": 0.19429699999818695,
+      "p95Ms": 0.4661500000001979,
+      "p99Ms": 0.6630120000008901,
+      "worstMs": 22.38196600000083,
+      "stepsPerWallSecond": 3269.274984916875,
+      "maxIterations": 41,
+      "maxEnergyResidualJ": 1.3133890676420013e-12,
+      "maxForceErrorN": 1.2821004037929674e-07,
+      "rejected": 0
+    },
+    {
+      "automobile": true,
+      "scenario": "neutral",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.26590312900000024,
+      "medianMs": 0.15667200000098092,
+      "p95Ms": 0.2828989999979967,
+      "p99Ms": 1.4628459999985353,
+      "worstMs": 24.32685599999968,
+      "stepsPerWallSecond": 3760.76808031845,
+      "maxIterations": 1,
+      "maxEnergyResidualJ": 9.121471085945412e-17,
+      "maxForceErrorN": 1.9889165955628172e-29,
+      "rejected": 0
+    },
+    {
+      "automobile": true,
+      "scenario": "steer",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.26892332500002886,
+      "medianMs": 0.1676789999983157,
+      "p95Ms": 0.29868200000055367,
+      "p99Ms": 1.2346179999985907,
+      "worstMs": 22.49696699999913,
+      "stepsPerWallSecond": 3718.5320388251657,
+      "maxIterations": 5,
+      "maxEnergyResidualJ": 3.0269250647640966e-12,
+      "maxForceErrorN": 5.1059056253731186e-08,
+      "rejected": 0
+    },
+    {
+      "automobile": true,
+      "scenario": "handbrake",
+      "warmupSteps": 500,
+      "steps": 2000,
+      "h": 0.001,
+      "meanMs": 0.4002903575000073,
+      "medianMs": 0.34723400000075344,
+      "p95Ms": 0.42383799999879557,
+      "p99Ms": 0.9278639999974985,
+      "worstMs": 22.60859100000016,
+      "stepsPerWallSecond": 2498.186581973766,
+      "maxIterations": 41,
+      "maxEnergyResidualJ": 1.5046484024006102e-12,
+      "maxForceErrorN": 1.06606164307158e-07,
+      "rejected": 0
+    }
+  ]
+}

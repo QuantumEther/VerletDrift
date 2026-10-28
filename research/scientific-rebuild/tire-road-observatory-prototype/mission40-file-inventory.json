@@ -1,0 +1,247 @@
+{
+  "startingCommit": "d419189dda7fc698d5364e0a1f91d2c9718c9113",
+  "target": "research/scientific-rebuild/tire-road-observatory-prototype",
+  "selfExcluded": "mission40-file-inventory.json",
+  "unchangedCopiedFiles": [
+    "BRAKING-BASELINE-README.md",
+    "SOURCE-README.md",
+    "laboratory.css",
+    "living-automobile-provenance.json",
+    "results/living-automobile-browser-braking.json",
+    "results/living-automobile-browser-performance.json",
+    "results/living-automobile-browser-reliability.json",
+    "results/living-automobile-browser.json",
+    "results/living-automobile-engine-steering.svg",
+    "results/living-automobile-experiments.json",
+    "results/living-automobile-predecessor-browser.json",
+    "results/living-automobile-traces.json.gz",
+    "results/mission36-baseline-browser.json",
+    "results/mission36-browser-after.json",
+    "results/mission36-browser-before.json",
+    "results/mission36-performance.json",
+    "results/mission37-browser.json",
+    "results/mission37-performance.json",
+    "results/mission37-reliability.json",
+    "results/mission38-browser.json",
+    "results/mission38-clutch-comparison.svg",
+    "results/mission38-clutch-summary.json",
+    "results/mission38-clutch-traces.csv.gz",
+    "results/mission38-convergence.json",
+    "results/mission38-cost.json",
+    "results/mission38-reliability.json",
+    "results/mission39-browser-braking.json",
+    "results/mission39-browser-laboratory.json",
+    "results/mission39-browser-reliability.json",
+    "results/mission39-comparison.svg",
+    "results/mission39-performance.json",
+    "results/mission39-predecessor-browser.json",
+    "results/mission39-results.json",
+    "results/mission39-shift-transients.json",
+    "results/mission39-traces.csv.gz",
+    "results/scenarios.json",
+    "source-provenance.json",
+    "src/audio.js",
+    "src/automobile-view.js",
+    "src/brakes.js",
+    "src/clock.js",
+    "src/clutch.js",
+    "src/contact-solver.js",
+    "src/diagnostics.js",
+    "src/differential.js",
+    "src/engine.js",
+    "src/gearbox.js",
+    "src/initial-state.js",
+    "src/instruments.js",
+    "src/mechanical-geometry.js",
+    "src/mechanical-layout.js",
+    "src/planar-reference.js",
+    "src/planar.js",
+    "src/pressure-plate.js",
+    "src/schematic.js",
+    "src/selector-input.js",
+    "src/selector-view.js",
+    "src/steering.js",
+    "src/visual-state.js",
+    "tests/automobile.test.js",
+    "tests/baseline-browser.mjs",
+    "tests/benchmark.mjs",
+    "tests/braking-baseline.test.js",
+    "tests/braking.test.js",
+    "tests/browser-3d.mjs",
+    "tests/browser-laboratory.mjs",
+    "tests/browser-living-performance.mjs",
+    "tests/browser-performance.mjs",
+    "tests/browser-selector.mjs",
+    "tests/clock.test.js",
+    "tests/clutch-cost.mjs",
+    "tests/clutch-engagement.test.js",
+    "tests/clutch-experiments.mjs",
+    "tests/contact-experiments.mjs",
+    "tests/living-experiments.mjs",
+    "tests/performance.mjs",
+    "tests/plot-clutch.py",
+    "tests/plot-contact.py",
+    "tests/plot-living.py",
+    "tests/preservation.test.js",
+    "tests/render-benchmark.mjs",
+    "tests/scenarios.mjs",
+    "tests/selector.test.js",
+    "tests/shift-transients.mjs",
+    "vendor/LICENSE.three",
+    "vendor/OrbitControls.js",
+    "vendor/three.module.js"
+  ],
+  "modifiedCopiedFiles": [
+    {
+      "path": "README.md",
+      "sourceSHA256": "9064b82c6d085abd23f3a51a0420e3f4fff9ffdc170a99a65e022e26b770a599",
+      "SHA256": "1590b097a9b8646e4cad530f87a71e72d66bc2c5ef061414822fc0d3145573d9"
+    },
+    {
+      "path": "index.html",
+      "sourceSHA256": "936b02cfa6e54b7153dda23900a4250ff6124c75a4725cf48018a977555e90fe",
+      "SHA256": "fcf89c907fff4087eb767862b3e755cfbe47f916fff8bfe29c042fe3bf339967"
+    },
+    {
+      "path": "src/main.js",
+      "sourceSHA256": "de160e8c34e89e36af26dff291cf57f7f0de8c0bef0fab8ea185808bf2e16161",
+      "SHA256": "9ccd36a6828c41f3ae6bfc22db8a4c18ddcb329a907790b21262d01f8d91c646"
+    },
+    {
+      "path": "src/vehicle.js",
+      "sourceSHA256": "61669059d3929a230bb0024f2c7c80c552983370c29a6fdc1ff7b9230c001856",
+      "SHA256": "8034b0cb1c3fda9a89887119b1ec71aa6b10c2936efcb1b16f6209ab2b41565e"
+    },
+    {
+      "path": "src/view3d.js",
+      "sourceSHA256": "56caec222cc61625e80c85ad5af25e585d18cfdd30b38577f68fecff3dbbe9d7",
+      "SHA256": "0ce6ee49e9573f808a979e846db6c3d863ac1a87b82556e1806d917d98197eb3"
+    },
+    {
+      "path": "tests/browser-braking.mjs",
+      "sourceSHA256": "960423da799116dc2a133256585f0617f84f2e2b5d7e2e39b3ff2a4e3dc31c8a",
+      "SHA256": "4592667d8eff3d086d771b8ee37325f10d35e25d6bb1e3ae6ab3987677223691"
+    },
+    {
+      "path": "tests/browser-living.mjs",
+      "sourceSHA256": "a6ea0c4eaccf4d7d942e5009ba4b85b5b3555064765e462191493d568db5e55b",
+      "SHA256": "e34a2f40623f579da398856c07b4ab1c4262d1ca820d37e71f55c7084d508b50"
+    },
+    {
+      "path": "tests/browser-reliability.mjs",
+      "sourceSHA256": "db0ea51eab27c3c7e3cc8921313551e6251bba54ab61099582f11a306ebc7aad",
+      "SHA256": "51f526c16bb47efcf202e22e5a49a48d43f72d592647091d0db54da4e83bb631"
+    },
+    {
+      "path": "tests/presentation.test.js",
+      "sourceSHA256": "2bde66c57bace725c003190bbb13bce58ba6d8dfe2f333c48e6c55cc0e3b62d1",
+      "SHA256": "1c7410ca8c723ec81709ff73771b61bb4d0d8cc40a389fb1b420a09694ed2151"
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "SOURCE-LIVING-AUTOMOBILE-README.md",
+      "SHA256": "9064b82c6d085abd23f3a51a0420e3f4fff9ffdc170a99a65e022e26b770a599"
+    },
+    {
+      "path": "full-size-parameter-proposal.md",
+      "SHA256": "48c309fd78a4901505fdc53361d25576c13593ff05b41fc25ca5696cefebd531"
+    },
+    {
+      "path": "mission40-provenance.json",
+      "SHA256": "6a887ca30d305ed1b5a0db4d4f72ea2cf786d81188277d9826844544510f5c5d"
+    },
+    {
+      "path": "results/mission40-browser.json",
+      "SHA256": "bd82bd2eef19ff5c895bc07b3ff3595067495a1f838aa3daae9f19ae6996bc75"
+    },
+    {
+      "path": "results/mission40-friction-circles.png",
+      "SHA256": "40f3992aa85ba9ffa0a8930c7a741f345cf73660798bf55e369f4c0030b8a4d9"
+    },
+    {
+      "path": "results/mission40-handling.json",
+      "SHA256": "c6ee78e50cbd10c6675b9e50308eef007ffe3f31b56961d92fcc21cfca0d90f9"
+    },
+    {
+      "path": "results/mission40-handling.svg",
+      "SHA256": "5db50b64ce0ec6876c2c04e4120f5d073683e61c452c65c740b615510786e05d"
+    },
+    {
+      "path": "results/mission40-living-regression.json",
+      "SHA256": "e1597e10214b1625a4c18dab4281edd57d92b7958f81725924d4e4077fd0aa4e"
+    },
+    {
+      "path": "results/mission40-performance-browser.json",
+      "SHA256": "c4a51a054f3c4b949ba8b02ae98968c3c0153f8120f1549e25992c8e01d70f73"
+    },
+    {
+      "path": "results/mission40-performance-node.json",
+      "SHA256": "bc063837a8103a78319372f7a71bb441d9beaefe03dc63c8ea2d433ee5bf9f2d"
+    },
+    {
+      "path": "results/mission40-reliability.json",
+      "SHA256": "baeae4964001f2a6ca266e3810da6be116c087344de17a9bc5f97b3584b5b0cc"
+    },
+    {
+      "path": "results/mission40-road-3d.png",
+      "SHA256": "83eee757b8fb5ad9dc8371867f1c834ef5957980eb29d40443e23bb3023903d8"
+    },
+    {
+      "path": "results/mission40-top.png",
+      "SHA256": "e42612056388b04bc4b3c1de0c28f419bb2bc984614225786a7127c6415e1ed3"
+    },
+    {
+      "path": "results/mission40-traces.json.gz",
+      "SHA256": "cda8eff17b3f3f5481eb8fa4456d6d57804b2c464101b351ba6c25beb915f44b"
+    },
+    {
+      "path": "src/contact-observation.js",
+      "SHA256": "d3ed169d230f08cac8604337217390fe54ed8277edad7e76f1379c069f713289"
+    },
+    {
+      "path": "src/observatory-panel.js",
+      "SHA256": "dd5e496c060bc2b4d3f48e9e86e7ec918580cce62a090d4325201b111181fd9a"
+    },
+    {
+      "path": "src/track-view.js",
+      "SHA256": "0db7b9fad196c4a26b59eb367dd9834c92a6a055149367a8b3f6ea660485e4a8"
+    },
+    {
+      "path": "src/tracks.js",
+      "SHA256": "55290459f329a755990d7d51b36472241001f766922301057903a63d59fb4b9e"
+    },
+    {
+      "path": "tests/browser-observatory.mjs",
+      "SHA256": "757ac6ef9cf1c4333342da9bf4d77da0ceb7549b1515bb96debda0bc9f8e0b7e"
+    },
+    {
+      "path": "tests/browser-track-performance.mjs",
+      "SHA256": "e4ff8ab8d07166e990291ea592b847380bdb173805ce82631d982a7016550578"
+    },
+    {
+      "path": "tests/handling-experiments.mjs",
+      "SHA256": "86ce04cb150c8183d66c33298aaa84dddde23f389290c2dfa69a4613f62c8892"
+    },
+    {
+      "path": "tests/observatory-benchmark.mjs",
+      "SHA256": "d6797ed8dbc391f846e93cdf0463201cc2c9a97adc8b4a638c77758733f6a41b"
+    },
+    {
+      "path": "tests/observatory.test.js",
+      "SHA256": "35984046dfc90709deefe95e686631761b3fa5b35f545453a57769cf2378b7e3"
+    },
+    {
+      "path": "tests/plot-observatory.py",
+      "SHA256": "1791cfb3b035913ab4ed28b2c0d73099abeff09254f190e271741bcde6c301d8"
+    },
+    {
+      "path": "tests/track-stress.mjs",
+      "SHA256": "74e4e4e5b44726e29bb8c986e7920e8547abebc0b60ba563661d5874616af0dc"
+    },
+    {
+      "path": "vehicle-realism-audit.md",
+      "SHA256": "6782971193e1c3c6509324ff6a39bef57180c092f93c3fd76c2724eabb0148ba"
+    }
+  ]
+}

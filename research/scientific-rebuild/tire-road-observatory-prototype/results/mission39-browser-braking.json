@@ -1,0 +1,40 @@
+{
+  "clockMode": "Controlled RAF timestamps: requested elapsed intervals, not measured wall throughput",
+  "status": "PASS",
+  "beforeSpeed": 7.402824848363279,
+  "lockSpeed": 6.370421436642154,
+  "rearSpeeds": [
+    0,
+    0
+  ],
+  "lockedYaw": 1.106500185243485,
+  "afterRelease": [
+    14.439332252479009,
+    16.63963421217603
+  ],
+  "runtime": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0,
+      "wall": 1.660000000000001,
+      "simulated": 1.5209999999999433,
+      "dilated": 0.03899999999999991,
+      "pausedWall": 0.1,
+      "status": "paused",
+      "fault": null,
+      "accepted": 1521,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 6.100000008940697,
+      "candidates": 16553,
+      "searches": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 3.2999999970197678
+  },
+  "errors": []
+}

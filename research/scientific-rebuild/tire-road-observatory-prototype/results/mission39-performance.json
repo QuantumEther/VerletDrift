@@ -1,0 +1,24 @@
+{
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCPUs": 5,
+  "method": "2000-step deterministic worn/alternating-selector workload. Different contact laws change event histories. CPU timing is host/JIT dependent, not a GPU/FPS or speedup claim. New maxCases counts convex iterations; reference counts active-set candidates: not comparable operation units.",
+  "reference": {
+    "steps": 2000,
+    "meanMs": 0.484467509,
+    "p95Ms": 1.2686490000000106,
+    "worstMs": 11.622198999999995,
+    "slowest1000StepsMs": 499.51600499999864,
+    "maxCases": 2360,
+    "eventSearchTrials": 1522
+  },
+  "current": {
+    "steps": 2000,
+    "meanMs": 0.7748236260000008,
+    "p95Ms": 1.8468940000000202,
+    "worstMs": 23.183883999999807,
+    "slowest1000StepsMs": 802.6190030000008,
+    "maxCases": 3312,
+    "eventSearchTrials": 1558
+  }
+}
