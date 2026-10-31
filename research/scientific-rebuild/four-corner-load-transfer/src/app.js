@@ -1,0 +1,10 @@
+import {createExperiment,stepExperiment} from './vehicle.js';
+let s=createExperiment(),running=false,last=performance.now(),debt=0;const $=id=>document.getElementById(id),ctx=$('vehicle').getContext('2d'),names=['FL','FR','RL','RR'];
+export const snapshot=()=>structuredClone(s);
+function render(){ctx.clearRect(0,0,1000,430);ctx.strokeStyle='#8ca49a';ctx.strokeRect(260,70,480,280);const q=s.vertical.q,view=$('view').value;
+ s.vertical.corners.forEach(([x,y],i)=>{let px=500+x*210,py=210-y*170;if(view==='side'){px=500+x*210;py=330-s.vertical.q[i+3]*180;}if(view==='front'){px=500+y*330;py=330-s.vertical.q[i+3]*180;}ctx.fillStyle=i<2?'#dbbe7a':'#a5d1c5';ctx.fillRect(px-22,py-12,44,24);ctx.fillStyle='#c2d69b';ctx.fillRect(px-15,py-25-s.loads[i]*.18,30,s.loads[i]*.18);ctx.fillStyle='white';ctx.fillText(names[i],px-10,py+35);});
+ if(view!=='top'){const slope=view==='side'?q[1]:q[2];ctx.strokeStyle='#e0bd72';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(220,220+slope*250);ctx.lineTo(780,220-slope*250);ctx.stroke();ctx.lineWidth=1;}
+ $('readings').innerHTML=names.map((name,i)=>`<tr><th>${name}</th><td data-load="${i}">${s.loads[i].toFixed(3)}</td><td>${(100*s.utilization[i]).toFixed(2)}</td><td>${s.travel[i].toFixed(5)}</td></tr>`).join('');$('state').textContent=`Time ${s.time.toFixed(3)} s | speed ${s.horizontal[0].toFixed(3)} m/s\nPitch ${(q[1]*180/Math.PI).toFixed(3)}° | Roll ${(q[2]*180/Math.PI).toFixed(3)}°\nAccumulated splitting/vertical-work residual ${s.energyResidual.toExponential(3)} J | contact residual ${s.contactResidual.toExponential(3)} J`;
+}
+function reset(){s=createExperiment($('scenario').value);debt=0;render();}$('reset').onclick=reset;$('scenario').onchange=reset;$('pause').onclick=()=>{running=!running;$('pause').textContent=running?'Pause':'Run';};$('view').onchange=render;
+function frame(now){debt+=running?Math.min((now-last)/1000,.02):0;last=now;try{let n=0;while(debt>=.001&&n++<20&&s.time<2){stepExperiment(s);debt-=.001;}if(s.time>=2){running=false;debt=0;$('pause').textContent='Run';}render();}catch(e){running=false;$('error').textContent=e.message;}requestAnimationFrame(frame);}render();requestAnimationFrame(frame);

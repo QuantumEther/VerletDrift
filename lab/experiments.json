@@ -70,5 +70,13 @@
     "description": "The initial JavaScript driving prototype.",
     "entry": "research/scientific-rebuild/javascript-driving-prototype/index.html",
     "sequence": 1
+  },
+  {
+    "id": "load-transfer",
+    "title": "Four-corner load transfer",
+    "category": "Contact",
+    "description": "Independent suspension, wheel loads and reduced braking/cornering transfer.",
+    "entry": "research/scientific-rebuild/four-corner-load-transfer/index.html",
+    "sequence": 10
   }
 ]
