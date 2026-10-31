@@ -81,3 +81,29 @@ export function stepTerrainVehicle(vehicle,ports={},h=.001,observer=null){
  if(observer)observer.accept(candidate.accepted);
  return vehicle;
 }
+
+// Entire-vehicle respawn, not preservation of a loaded/running drivetrain.
+// Curved-terrain initialization is a declared transient, not static equilibrium.
+export function respawnTerrain(vehicle,settings,history=null,terrainOverride=null){
+ try{
+  const next=createTerrainVehicle(settings);if(terrainOverride)next.terrain=terrainOverride;const vs=next.state.vertical,heights=sampleWheelTerrain(next).map(c=>c.height),base=vs.q.slice();
+  vs.q[0]+=heights.reduce((a,b)=>a+b,0)/4;
+  vs.q[1]=heights.reduce((a,z,i)=>a+z*vs.corners[i][0],0)/vs.corners.reduce((a,[x])=>a+x*x,0);
+  vs.q[2]=heights.reduce((a,z,i)=>a+z*vs.corners[i][1],0)/vs.corners.reduce((a,[,y])=>a+y*y,0);
+  for(let i=0;i<4;i++)vs.q[3+i]=base[3+i]+heights[i];
+  next.state.z=vs.q[0];next.state.pitch=vs.q[1];next.state.roll=vs.q[2];
+  // Validate private advancement before publishing the respawn. Validation
+  // time/history does not become part of the returned initial state.
+  const balance=wrapper=>{
+   const st=wrapper.state,e=evaluateSuspension(st.vertical),forces=[...e.force],terrain=wrapper.terrain||createTerrain(wrapper.terrainSettings);let elastic=0;
+   for(const c of sampleWheelTerrain(wrapper)){const n=evaluateTerrainNormal(terrain,[...c.world,c.wheelHeight],st.wheels[c.wheel].radius,st.vertical.kt);elastic+=n.elasticEnergy;forces[3+c.wheel]+=n.force[2];forces[1]+=.5*n.force[0];forces[2]+=.5*n.force[1];}
+   return {generalizedVerticalForces:forces,maxResidual:Math.max(...forces.map(Math.abs)),energy:e.energy+elastic,tireElasticEnergy:elastic};
+  };
+  const initialBalance=balance(next),probe={...next,state:cloneMechanical(next.state)};let maxEnergyResidual=0,maxIterations=0;
+  for(let i=0;i<100;i++){stepTerrainVehicle(probe);maxEnergyResidual=Math.max(maxEnergyResidual,Math.abs(probe.state.terrainLedger?.residual||0));maxIterations=Math.max(maxIterations,probe.state.terrainLedger?.iterations||0);}
+  const afterValidationBalance=balance(probe);
+  const contacts=sampleWheelTerrain(next);history?.clear();
+  vehicle.state=next.state;vehicle.terrainSettings=next.terrainSettings;if(terrainOverride)vehicle.terrain=terrainOverride;else delete vehicle.terrain;vehicle.contacts=contacts;
+  return {success:true,validatedSteps:100,initialBalance,afterValidationBalance,maxEnergyResidual,maxIterations};
+ }catch(error){return {success:false,message:error.message};}
+}

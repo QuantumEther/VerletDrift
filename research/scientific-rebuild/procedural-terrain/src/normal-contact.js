@@ -24,10 +24,16 @@ export function discreteTerrainNormal(terrain,start,end,radius,stiffness){
  const a=evaluateTerrainNormal(terrain,start,radius,stiffness),b=evaluateTerrainNormal(terrain,end,radius,stiffness);
  const [x,y,z]=start,[X,Y,Z]=end,dx=X-x,dy=Y-y;
  const h00=a.sample.height,h11=b.sample.height,h10=terrain.sample(X,y).height,h01=terrain.sample(x,Y).height;
- const gx=dx!==0?((h10-h00)+(h11-h01))/(2*dx):(terrain.sample(x,y).gradient[0]+terrain.sample(x,Y).gradient[0])/2;
- const gy=dy!==0?((h01-h00)+(h11-h10))/(2*dy):(terrain.sample(x,y).gradient[1]+terrain.sample(X,y).gradient[1])/2;
+ // Near zero displacement, height/energy subtraction loses relative digits.
+ // Use analytic terrain derivatives in the roundoff-dominated regime (the
+ // cube-root-epsilon scale balances secant truncation and cancellation). The
+ // quadratic potential secant is evaluated in factored form, not by subtracting
+ // two nearly equal energies. Solver limits and work gates are unchanged.
+ const tinyX=Math.cbrt(Number.EPSILON)*Math.max(1,Math.abs(x),Math.abs(X)),tinyY=Math.cbrt(Number.EPSILON)*Math.max(1,Math.abs(y),Math.abs(Y));
+ const gx=Math.abs(dx)>tinyX?((h10-h00)+(h11-h01))/(2*dx):(terrain.sample(x,y).gradient[0]+terrain.sample(x,Y).gradient[0])/2;
+ const gy=Math.abs(dy)>tinyY?((h01-h00)+(h11-h10))/(2*dy):(terrain.sample(x,y).gradient[1]+terrain.sample(X,y).gradient[1])/2;
  const gap0=radius+h00-z,gap1=radius+h11-Z;
- const pressure=gap1!==gap0?(b.elasticEnergy-a.elasticEnergy)/(gap1-gap0):stiffness*Math.max(0,gap0);
+ const pressure=gap0>=0&&gap1>=0?stiffness*(gap0+gap1)/2:gap0<=0&&gap1<=0?0:stiffness*(Math.max(0,gap1)-Math.max(0,gap0))*(Math.max(0,gap1)+Math.max(0,gap0))/(2*(gap1-gap0));
  const force=[-pressure*gx,-pressure*gy,pressure],displacement=end.map((v,i)=>v-start[i]);
  const work=force.reduce((s,f,i)=>s+f*displacement[i],0);
  return {force,pressure,work,energyBefore:a.elasticEnergy,energyAfter:b.elasticEnergy,residual:b.elasticEnergy-a.elasticEnergy+work};
