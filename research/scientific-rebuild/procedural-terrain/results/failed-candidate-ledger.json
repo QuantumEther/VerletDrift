@@ -1,0 +1,1139 @@
+{
+  "accepted": false,
+  "iteration": 3,
+  "error": 1.326716514427062e-14,
+  "vError": 2.65224908008177e-11,
+  "workIdentity": 4.532724022510148e-15,
+  "residual": 0.02200968483862198,
+  "initial": {
+    "mass": 80,
+    "inertia": 45,
+    "gravity": 9.81,
+    "x": 0,
+    "v": 0,
+    "z": 0.809147,
+    "vz": 0,
+    "pitch": 0,
+    "pitchRate": 0,
+    "time": 0,
+    "bump": null,
+    "corners": [
+      {
+        "arm": 1,
+        "mass": 12,
+        "radius": 0.32,
+        "inertia": 2,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0
+      },
+      {
+        "arm": -1,
+        "mass": 12,
+        "radius": 0.32,
+        "inertia": 2,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0
+      }
+    ],
+    "planar": {
+      "x": 0,
+      "y": 0,
+      "heading": 0,
+      "u": 0,
+      "v": 0,
+      "r": 0,
+      "Iz": 60,
+      "steering": 0
+    },
+    "drivetrain": {
+      "mode": "independent",
+      "carrierInertia": 0,
+      "additionalCarrierInertia": 0
+    },
+    "flywheel": {
+      "inertia": 0.3,
+      "omega": 0,
+      "angle": 0,
+      "ratio": 0,
+      "ratedTorque": 30,
+      "engagement": 0,
+      "heat": 0,
+      "state": "disengaged",
+      "torque": 0,
+      "slip": 0,
+      "heatingPower": 0,
+      "gearbox": {
+        "selected": "N",
+        "inputInertia": 0.1,
+        "bearingDrag": 0.005,
+        "neutralOmega": 0,
+        "neutralAngle": 0,
+        "phase": 0,
+        "q": 0,
+        "velocity": 0,
+        "selectorMass": 0.25,
+        "driverForce": 0,
+        "worn": false,
+        "impactCount": 0,
+        "impactHeat": 0,
+        "lastImpulse": 0,
+        "lastImpactEnergy": 0,
+        "detentReaction": 0,
+        "contactForce": 0
+      }
+    },
+    "scenario": "uniform",
+    "wheelbase": 2,
+    "track": 1.2,
+    "wheels": [
+      {
+        "arm": 1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0,
+        "name": "FL",
+        "x": 1,
+        "y": 0.6,
+        "axle": 0
+      },
+      {
+        "arm": 1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0,
+        "name": "FR",
+        "x": 1,
+        "y": -0.6,
+        "axle": 0
+      },
+      {
+        "arm": -1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0,
+        "name": "RL",
+        "x": -1,
+        "y": 0.6,
+        "axle": 1
+      },
+      {
+        "arm": -1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0,
+        "name": "RR",
+        "x": -1,
+        "y": -0.6,
+        "axle": 1
+      }
+    ],
+    "engine": {
+      "mode": "stopped",
+      "ignition": true,
+      "throttle": 0,
+      "throttleOpening": 0.17,
+      "lowSpeedTime": 0,
+      "starter": false,
+      "starterAngle": 0,
+      "combustion": 0,
+      "friction": 0,
+      "pumping": 0,
+      "starterTorque": 0,
+      "netTorque": 0,
+      "combustionWork": 0,
+      "starterWork": 0,
+      "lossWork": 0
+    },
+    "steering": {
+      "geometry": {
+        "wheelbase": 2,
+        "track": 1.2,
+        "left": [
+          1,
+          0.6
+        ],
+        "right": [
+          1,
+          -0.6
+        ],
+        "al": [
+          -0.1966642168486985,
+          -0.09860621588565341
+        ],
+        "ar": [
+          -0.1966642168486985,
+          0.09860621588565341
+        ],
+        "lp": [
+          0.8033357831513015,
+          0.5013937841143465
+        ],
+        "rp": [
+          0.8033357831513015,
+          -0.5013937841143465
+        ],
+        "box": [
+          0.65,
+          -0.15
+        ],
+        "pitman": [
+          -0.14,
+          0
+        ],
+        "tip": [
+          0.51,
+          -0.15
+        ],
+        "arm": 0.22,
+        "tieLength": 1.002787568228693,
+        "dragLength": 0.7143946693948628,
+        "ratio": 24,
+        "columnLimit": 7,
+        "columnRate": 32
+      },
+      "wheelAngle": 0,
+      "boxAngle": 0,
+      "tip": [
+        0.51,
+        -0.15
+      ],
+      "leftAngle": -4.440892098500626e-16,
+      "rightAngle": 4.440892098500626e-16,
+      "leftPin": [
+        1,
+        0.6
+      ],
+      "rightPin": [
+        1,
+        -0.6
+      ],
+      "leftEnd": [
+        0.8033357831513015,
+        0.5013937841143467
+      ],
+      "rightEnd": [
+        0.8033357831513015,
+        -0.5013937841143467
+      ],
+      "box": [
+        0.65,
+        -0.15
+      ],
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "stopped": false,
+      "dynamics": {
+        "inertia": 0.025,
+        "damping": 0.25,
+        "friction": 0.15,
+        "trail": 0.08
+      },
+      "angularVelocity": 0,
+      "driverTorque": 0,
+      "driverTorqueLimit": 8
+    },
+    "brakes": {
+      "pedal": 0,
+      "lever": 0,
+      "pressure": 0,
+      "cableTension": 0,
+      "perRearCable": 0,
+      "masterTravel": 0,
+      "pedalTravel": 0,
+      "handAngle": 0,
+      "cableTravel": 0,
+      "wheels": [
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        }
+      ]
+    },
+    "gearbox": {
+      "selected": "N",
+      "inputInertia": 0.1,
+      "bearingDrag": 0.005,
+      "neutralOmega": 0,
+      "neutralAngle": 0,
+      "phase": 0,
+      "q": 0,
+      "velocity": 0,
+      "selectorMass": 0.25,
+      "driverForce": 0,
+      "worn": false,
+      "impactCount": 0,
+      "impactHeat": 0,
+      "lastImpulse": 0,
+      "lastImpactEnergy": 0,
+      "detentReaction": 0,
+      "contactForce": 0
+    },
+    "vertical": {
+      "mass": 80,
+      "pitchInertia": 45,
+      "rollInertia": 20,
+      "g": 9.81,
+      "ks": 2000,
+      "kt": 20000,
+      "damping": 80,
+      "radius": 0.32,
+      "length": 0.6,
+      "wheelMass": 6,
+      "corners": [
+        [
+          1,
+          0.6
+        ],
+        [
+          1,
+          -0.6
+        ],
+        [
+          -1,
+          0.6
+        ],
+        [
+          -1,
+          -0.6
+        ]
+      ],
+      "q": [
+        0.809147,
+        0,
+        0,
+        0.307247,
+        0.307247,
+        0.307247,
+        0.307247
+      ],
+      "v": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "roll": 0,
+    "rollRate": 0,
+    "verticalLedger": {
+      "residual": 0,
+      "dampingWork": 0
+    }
+  },
+  "trial": {
+    "mass": 80,
+    "inertia": 45,
+    "gravity": 9.81,
+    "x": -9.396411661025781e-9,
+    "v": -0.000009396411661025781,
+    "z": 0.809147,
+    "vz": 0,
+    "pitch": 0,
+    "pitchRate": 0,
+    "time": 0,
+    "bump": null,
+    "corners": [
+      {
+        "arm": 1,
+        "mass": 12,
+        "radius": 0.32,
+        "inertia": 2,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0
+      },
+      {
+        "arm": -1,
+        "mass": 12,
+        "radius": 0.32,
+        "inertia": 2,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": 0,
+        "angle": 0,
+        "fx": 0,
+        "drive": 0,
+        "brake": 0
+      }
+    ],
+    "planar": {
+      "x": -9.396411661025781e-9,
+      "y": 3.4089345483273074e-28,
+      "heading": 2.815528377143783e-26,
+      "u": -0.000009396411661025781,
+      "v": 3.408937193913675e-25,
+      "r": 2.815528377143783e-23,
+      "Iz": 60,
+      "steering": 0,
+      "contactImpulse": [
+        -0.000008289656248029811,
+        -4.036261054419236e-21,
+        -0.000008289656248029811,
+        4.0134624025744415e-21,
+        -0.000013215057159576178,
+        -7.905399235479069e-24,
+        -0.00001321505715957618,
+        -4.7488682223306235e-24,
+        0,
+        0,
+        0,
+        0,
+        -6.987577710378053e-25,
+        0,
+        0,
+        0
+      ],
+      "contactImpulseH": 0.001,
+      "contact": {
+        "iterations": 9,
+        "acceptedCandidateIterations": 9,
+        "residual": 2.0905363520200369e-13,
+        "prePolishResidual": 2.0905363520200369e-13,
+        "forceLawResidual": 2.4301796512637974e-10,
+        "constitutiveImpulseResidual": 2.430179651263797e-13,
+        "energy": 745.8297868052152,
+        "work": 0.0005559390776745035,
+        "steeringLoss": 1.5014690381840907e-60,
+        "tireDissipation": 6.083903381347976e-7,
+        "brakeDissipation": 0,
+        "serviceDissipation": 0,
+        "handbrakeDissipation": 0,
+        "clutchEndPower": 0,
+        "bearingEndPower": 0,
+        "numericalLoss": 0.02181816083076411,
+        "energyResidual": 5.100433964067008e-14,
+        "serviceBrake": 0,
+        "handbrake": 0,
+        "ax": -0.009396411661025781,
+        "ay": 3.408934548327307e-22
+      }
+    },
+    "drivetrain": {
+      "mode": "independent",
+      "carrierInertia": 0,
+      "additionalCarrierInertia": 0,
+      "carrierSpeed": -0.0000042288182910643775,
+      "inputTorque": 0,
+      "outputs": [
+        0,
+        0
+      ],
+      "powerResidual": 0,
+      "energyResidual": 9.693522803355793e-27,
+      "constraintResidual": 0,
+      "lockReaction": 0
+    },
+    "flywheel": {
+      "inertia": 0.3,
+      "omega": 0,
+      "angle": 0,
+      "ratio": 0,
+      "ratedTorque": 30,
+      "engagement": 0,
+      "heat": 0,
+      "state": "disengaged",
+      "torque": 0,
+      "slip": 0,
+      "heatingPower": 0,
+      "gearbox": {
+        "selected": "N",
+        "inputInertia": 0.1,
+        "bearingDrag": 0.005,
+        "neutralOmega": 0,
+        "neutralAngle": 0,
+        "phase": 0,
+        "q": 0,
+        "velocity": 0,
+        "selectorMass": 0.25,
+        "driverForce": 0,
+        "worn": false,
+        "impactCount": 0,
+        "impactHeat": 0,
+        "lastImpulse": 0,
+        "lastImpactEnergy": 0,
+        "detentReaction": 0,
+        "contactForce": 0,
+        "faceBlocked": false,
+        "inputTorque": 0,
+        "inputPower": 0,
+        "outputPower": 0,
+        "camForce": 0,
+        "camPower": 0,
+        "driverWork": 0,
+        "rotationalWorkResidual": 9.693522803355793e-27,
+        "lastSolveCases": 9
+      },
+      "contactCandidates": [
+        {
+          "mode": 0,
+          "slip": 0,
+          "torque": 0,
+          "endpointWork": 0,
+          "midpointWork": 0
+        }
+      ],
+      "capacity": 0,
+      "midpointClutchWork": 0,
+      "motorTorque": 0,
+      "transmissionSpeed": 0,
+      "gearHousingTorque": 0
+    },
+    "scenario": "uniform",
+    "wheelbase": 2,
+    "track": 1.2,
+    "wheels": [
+      {
+        "arm": 1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": -0.0000026526899993695396,
+        "angle": -2.6526899993695398e-9,
+        "fx": 0.008289656248029811,
+        "drive": 0,
+        "brake": 0,
+        "name": "FL",
+        "x": 1,
+        "y": 0.6,
+        "axle": 0,
+        "serviceBrakeCapacity": 0,
+        "handbrakeCapacity": 0,
+        "brakeCapacity": 0,
+        "steering": -4.440892098500626e-16,
+        "forceHeading": -4.440892098500626e-16,
+        "fy": 4.0362610544192356e-18,
+        "normal": 275.0425389418154,
+        "serviceBrakeTorque": 0,
+        "handbrakeTorque": 0,
+        "slipX": -0.000010362070613809721,
+        "slipY": -4.949716823761071e-21,
+        "slip": 0.000010362070613809721,
+        "alpha": -9.899433647522142e-21,
+        "utilization": 0.00003348838037895686,
+        "contactMode": "rolling/creep",
+        "brakeHeld": false
+      },
+      {
+        "arm": 1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": -0.0000026526899993695396,
+        "angle": -2.6526899993695398e-9,
+        "fx": 0.008289656248029811,
+        "drive": 0,
+        "brake": 0,
+        "name": "FR",
+        "x": 1,
+        "y": -0.6,
+        "axle": 0,
+        "serviceBrakeCapacity": 0,
+        "handbrakeCapacity": 0,
+        "brakeCapacity": 0,
+        "steering": 4.440892098500626e-16,
+        "forceHeading": 4.440892098500626e-16,
+        "fy": -4.013462402574441e-18,
+        "normal": 275.0425389418154,
+        "serviceBrakeTorque": 0,
+        "handbrakeTorque": 0,
+        "slipX": -0.000010362070613809721,
+        "slipY": 5.007595501196179e-21,
+        "slip": 0.000010362070613809721,
+        "alpha": 1.0015191002392358e-20,
+        "utilization": 0.00003348838037895686,
+        "contactMode": "rolling/creep",
+        "brakeHeld": false
+      },
+      {
+        "arm": -1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": -0.0000042288182910643775,
+        "angle": -4.2288182910643775e-9,
+        "fx": 0.013215057159576177,
+        "drive": 0,
+        "brake": 0,
+        "name": "RL",
+        "x": -1,
+        "y": 0.6,
+        "axle": 1,
+        "serviceBrakeCapacity": 0,
+        "handbrakeCapacity": 0,
+        "brakeCapacity": 0,
+        "steering": 0,
+        "forceHeading": 0,
+        "fy": 7.90539923547907e-21,
+        "normal": 235.07582453295961,
+        "serviceBrakeTorque": 0,
+        "handbrakeTorque": 0,
+        "slipX": -0.00001651882114659775,
+        "slipY": -2.737122882532255e-23,
+        "slip": 0.00001651882114659775,
+        "alpha": -5.47424576506451e-23,
+        "utilization": 0.00006246238579890546,
+        "contactMode": "rolling/creep",
+        "brakeHeld": false
+      },
+      {
+        "arm": -1,
+        "mass": 6,
+        "radius": 0.32,
+        "inertia": 1,
+        "ks": 4000,
+        "cs": 160,
+        "kt": 40000,
+        "ct": 180,
+        "L0": 0.6,
+        "mu": 0.9,
+        "slipStiffness": 18000,
+        "z": 0.307247,
+        "vz": 0,
+        "omega": -0.0000042288182910643775,
+        "angle": -4.2288182910643775e-9,
+        "fx": 0.01321505715957618,
+        "drive": 0,
+        "brake": 0,
+        "name": "RR",
+        "x": -1,
+        "y": -0.6,
+        "axle": 1,
+        "serviceBrakeCapacity": 0,
+        "handbrakeCapacity": 0,
+        "brakeCapacity": 0,
+        "steering": 0,
+        "forceHeading": 0,
+        "fy": 4.7488682223306235e-21,
+        "normal": 235.07582453295961,
+        "serviceBrakeTorque": 0,
+        "handbrakeTorque": 0,
+        "slipX": -0.00001651882114659775,
+        "slipY": -2.737122882532255e-23,
+        "slip": 0.00001651882114659775,
+        "alpha": -5.47424576506451e-23,
+        "utilization": 0.00006246238579890548,
+        "contactMode": "rolling/creep",
+        "brakeHeld": false
+      }
+    ],
+    "engine": {
+      "mode": "stopped",
+      "ignition": true,
+      "throttle": 0,
+      "throttleOpening": 0.17,
+      "lowSpeedTime": 0,
+      "starter": false,
+      "starterAngle": 0,
+      "combustion": 0,
+      "friction": 0,
+      "pumping": 0,
+      "starterTorque": 0,
+      "netTorque": 0,
+      "combustionWork": 0,
+      "starterWork": 0,
+      "lossWork": 0,
+      "indicatedMeanPressure": 0
+    },
+    "steering": {
+      "geometry": {
+        "wheelbase": 2,
+        "track": 1.2,
+        "left": [
+          1,
+          0.6
+        ],
+        "right": [
+          1,
+          -0.6
+        ],
+        "al": [
+          -0.1966642168486985,
+          -0.09860621588565341
+        ],
+        "ar": [
+          -0.1966642168486985,
+          0.09860621588565341
+        ],
+        "lp": [
+          0.8033357831513015,
+          0.5013937841143465
+        ],
+        "rp": [
+          0.8033357831513015,
+          -0.5013937841143465
+        ],
+        "box": [
+          0.65,
+          -0.15
+        ],
+        "pitman": [
+          -0.14,
+          0
+        ],
+        "tip": [
+          0.51,
+          -0.15
+        ],
+        "arm": 0.22,
+        "tieLength": 1.002787568228693,
+        "dragLength": 0.7143946693948628,
+        "ratio": 24,
+        "columnLimit": 7,
+        "columnRate": 32
+      },
+      "wheelAngle": -2.148769001816018e-41,
+      "boxAngle": -8.953204174233408e-43,
+      "tip": [
+        0.51,
+        -0.15
+      ],
+      "leftAngle": -4.440892098500626e-16,
+      "rightAngle": 4.440892098500626e-16,
+      "leftPin": [
+        1,
+        0.6
+      ],
+      "rightPin": [
+        1,
+        -0.6
+      ],
+      "leftEnd": [
+        0.8033357831513015,
+        0.5013937841143467
+      ],
+      "rightEnd": [
+        0.8033357831513015,
+        -0.5013937841143467
+      ],
+      "box": [
+        0.65,
+        -0.15
+      ],
+      "tieLength": 1.002787568228693,
+      "dragLength": 0.7143946693948628,
+      "stopped": false,
+      "dynamics": {
+        "inertia": 0.025,
+        "damping": 0.25,
+        "friction": 0.15,
+        "trail": 0.08
+      },
+      "angularVelocity": -2.1487690018160179e-38,
+      "driverTorque": 0,
+      "driverTorqueLimit": 8,
+      "last": {
+        "tireTorque": -6.987577710378075e-23,
+        "driverTorque": 0,
+        "frictionTorque": 6.987577710378054e-23,
+        "stopTorque": 0,
+        "dampingTorque": 5.3719225045400446e-39,
+        "torqueResidual": -3.3451034073478055e-37
+      }
+    },
+    "brakes": {
+      "pedal": 0,
+      "lever": 0,
+      "pressure": 0,
+      "cableTension": 0,
+      "perRearCable": 0,
+      "masterTravel": 0,
+      "pedalTravel": 0,
+      "handAngle": 0,
+      "cableTravel": 0,
+      "wheels": [
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        },
+        {
+          "normalPerShoe": 0,
+          "shoeTravel": 0,
+          "hydraulicForce": 0,
+          "cableForce": 0,
+          "serviceCapacity": 0,
+          "handCapacity": 0,
+          "returnForce": 0
+        }
+      ]
+    },
+    "gearbox": {
+      "selected": "N",
+      "inputInertia": 0.1,
+      "bearingDrag": 0.005,
+      "neutralOmega": 0,
+      "neutralAngle": 0,
+      "phase": 0,
+      "q": 0,
+      "velocity": 0,
+      "selectorMass": 0.25,
+      "driverForce": 0,
+      "worn": false,
+      "impactCount": 0,
+      "impactHeat": 0,
+      "lastImpulse": 0,
+      "lastImpactEnergy": 0,
+      "detentReaction": 0,
+      "contactForce": 0,
+      "faceBlocked": false,
+      "inputTorque": 0,
+      "inputPower": 0,
+      "outputPower": 0,
+      "camForce": 0,
+      "camPower": 0,
+      "driverWork": 0,
+      "rotationalWorkResidual": 9.693522803355793e-27,
+      "lastSolveCases": 9
+    },
+    "vertical": {
+      "mass": 80,
+      "pitchInertia": 45,
+      "rollInertia": 20,
+      "g": 9.81,
+      "ks": 2000,
+      "kt": 20000,
+      "damping": 80,
+      "radius": 0.32,
+      "length": 0.6,
+      "wheelMass": 6,
+      "corners": [
+        [
+          1,
+          0.6
+        ],
+        [
+          1,
+          -0.6
+        ],
+        [
+          -1,
+          0.6
+        ],
+        [
+          -1,
+          -0.6
+        ]
+      ],
+      "q": [
+        0.8091469716056816,
+        -5.429037848592674e-9,
+        4.431614912825499e-28,
+        0.30724875984853695,
+        0.30724875984853695,
+        0.3072454292910786,
+        0.3072454292910786
+      ],
+      "v": [
+        -0.00008523326164888859,
+        -0.000010858075697185347,
+        8.863229825651e-25,
+        0.0036145124905461756,
+        0.0036145124905461756,
+        -0.0030466024261391615,
+        -0.0030466024261391615
+      ]
+    },
+    "roll": 0,
+    "rollRate": 0,
+    "verticalLedger": {
+      "residual": 0,
+      "dampingWork": 0
+    }
+  },
+  "begin": [
+    [
+      1,
+      0.6,
+      0.307247
+    ],
+    [
+      1,
+      -0.6,
+      0.307247
+    ],
+    [
+      -1,
+      0.6,
+      0.307247
+    ],
+    [
+      -1,
+      -0.6,
+      0.307247
+    ]
+  ],
+  "end": [
+    [
+      0.9999999906035885,
+      0.6,
+      0.3072487598485502
+    ],
+    [
+      0.9999999906035885,
+      -0.6,
+      0.3072487598485502
+    ],
+    [
+      -1.0000000093964116,
+      0.6,
+      0.30724542929108994
+    ],
+    [
+      -1.0000000093964116,
+      -0.6,
+      0.30724542929108994
+    ]
+  ],
+  "acceptedPositions": [
+    [
+      0.9999999906035884,
+      0.6,
+      0.30724875984853695
+    ],
+    [
+      0.9999999906035884,
+      -0.6,
+      0.30724875984853695
+    ],
+    [
+      -1.0000000093964116,
+      0.6,
+      0.3072454292910786
+    ],
+    [
+      -1.0000000093964116,
+      -0.6,
+      0.3072454292910786
+    ]
+  ],
+  "reaction": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    -1.0202362180571958,
+    0,
+    0,
+    6.509105877574373e-28,
+    0,
+    -0.5101181090285979,
+    0,
+    275.0424014206472,
+    275.0424014206472,
+    235.0757069951367,
+    235.0757069951367
+  ],
+  "velocity": [
+    -0.000009396411661025781,
+    3.408937193913675e-25,
+    2.815528377143783e-23,
+    -0.00008523326164888859,
+    -0.000010858075697185347,
+    8.863229825651e-25,
+    0.0036145124905461756,
+    0.0036145124905461756,
+    -0.0030466024261391615,
+    -0.0030466024261391615,
+    -0.0000026526899993695396,
+    -0.0000026526899993695396,
+    -0.0000042288182910643775,
+    -0.0000042288182910643775,
+    0,
+    -2.1487690018160179e-38
+  ],
+  "elasticChange": -0.00022960451432840756,
+  "suspensionCoordinateEnergyChange": 0.02168334668965599,
+  "suspensionResidual": 3.585562295883209e-9,
+  "contactResidual": 5.100433964067008e-14,
+  "normalEndpointWork": 0.0005559390776745035,
+  "coordinateComponents": {
+    "gravity": 0.00500425885434197,
+    "spring": 0.01667908783534955,
+    "kinetic": 0
+  }
+}
