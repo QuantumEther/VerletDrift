@@ -29,7 +29,7 @@ export class SimulationClock extends PreviousClock {
    const begin=this.now(),h=this.timestep;
    while(this.debt>=h-1e-12&&this.frameSteps<this.maxSteps&&this.now()-begin<this.budgetMs){
     const start=this.now();try{const info=step(h)||{};this.candidates+=info.lastStepCases||0;this.searches+=info.eventIterations||0;}
-    catch(e){this.rejected++;this.fail(e,snapshot());break;}
+    catch(e){this.lastStepMs=this.now()-start;this.worstStepMs=Math.max(this.worstStepMs,this.lastStepMs);this.rejected++;this.fail(e,snapshot());break;}
     this.lastStepMs=this.now()-start;this.acceptedPhysicsMs+=this.lastStepMs;this.worstStepMs=Math.max(this.worstStepMs,this.lastStepMs);
     this.debt=Math.max(0,this.debt-h);this.simulated+=h;this.frameSteps++;this.accepted++;
    }

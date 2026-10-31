@@ -19,3 +19,6 @@ test('terrain default budget improves bounded throughput without changing the ti
 test('all selectable frequencies advance actual physical time and preserve wall accounting on switching',()=>{
  for(const hz of [1000,500,250,200,100]){let cpu=0;const c=new SimulationClock({now:()=>cpu});c.setFrequency(hz);let time=0;for(let i=0;i<100;i++)c.frame(.01,h=>{assert.equal(h,1/hz);time+=h;cpu+=.01;},()=>({}));assert.ok(Math.abs(time-1)<1e-9);assert.ok(Math.abs(c.simulated-time)<1e-9);assert.ok(Math.abs(c.realtimeRatio-1)<1e-9);c.frame(.0003,()=>assert.fail(),()=>({}));const before=c.simulated;c.setFrequency(1000);assert.equal(c.simulated,before);assert.equal(c.debt,0);assert.ok(Math.abs(c.wall-c.simulated-c.debt-c.dilated)<1e-9);c.reset();assert.equal(c.frequency,1000);}
 });
+test('expensive rejected steps retain measured cost without claiming accepted physical time',()=>{
+ let cpu=0;const c=new SimulationClock({now:()=>cpu});c.setFrequency(100);c.frame(.01,()=>{cpu+=25;throw Error('Terrain endpoint iteration failed to converge');},()=>({}));assert.equal(c.lastStepMs,25);assert.equal(c.worstStepMs,25);assert.equal(c.acceptedPhysicsMs,0);assert.equal(c.simulated,0);assert.equal(c.rejected,1);assert.equal(c.debt,.01);
+});
