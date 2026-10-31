@@ -1,3 +1,4 @@
+import {suspensionDiagnostics} from './suspension-diagnostics.js';
 import {TireObservatory} from './tracks.js';
 import {drawTracks2D} from './track-view.js';
 import {updateObservatory} from './observatory-panel.js';
@@ -101,6 +102,7 @@ function drawTop(){
 }
 function diagnostics(){
  const visual=visualState(state),f=state.flywheel,g=state.gearbox;
+ if(document.querySelector('#suspension-diagnostics').open)document.querySelector('#suspension-readings').textContent=JSON.stringify(suspensionDiagnostics(state),null,2);
  document.querySelector('#corner-state').textContent=JSON.stringify({heave:state.vertical.q[0],pitch:state.pitch,roll:state.roll,heights:state.vertical.q.slice(3),springCompression:state.vertical.corners.map(([x,y],i)=>state.vertical.length-(state.vertical.q[0]+x*state.vertical.q[1]+y*state.vertical.q[2]-state.vertical.q[3+i])),normalLoads:state.wheels.map(w=>w.normal),verticalLedger:state.verticalLedger},null,2);
  if(document.querySelector('#observatory').open){updateObservatory(document.querySelector('#tire-readings'),document.querySelector('#friction-circles'),observatory,state);document.querySelector('#track-summary').textContent=JSON.stringify(observatory.stats(),null,2);}
  const e=state.engine,b=state.brakes,t=state.steering;
