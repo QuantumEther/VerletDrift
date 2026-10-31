@@ -15,3 +15,20 @@ export function mapNormalReaction(contact,pointRows,velocity){
  const reaction=Array(18).fill(0);for(let i=0;i<18;i++)for(let k=0;k<3;k++)reaction[i]+=pointRows[k][i]*contact.force[k];
  return {reaction,power:reaction.reduce((sum,f,i)=>sum+f*velocity[i],0)};
 }
+
+// Symmetric coordinate-increment discrete gradient of the SAME vertical-gap
+// potential. This is a force evaluator for an implicit update, not another
+// vehicle/contact solver. At finite displacement its direction is a discrete
+// terrain gradient; it converges to the local normal as displacement vanishes.
+export function discreteTerrainNormal(terrain,start,end,radius,stiffness){
+ const a=evaluateTerrainNormal(terrain,start,radius,stiffness),b=evaluateTerrainNormal(terrain,end,radius,stiffness);
+ const [x,y,z]=start,[X,Y,Z]=end,dx=X-x,dy=Y-y;
+ const h00=a.sample.height,h11=b.sample.height,h10=terrain.sample(X,y).height,h01=terrain.sample(x,Y).height;
+ const gx=dx!==0?((h10-h00)+(h11-h01))/(2*dx):(terrain.sample(x,y).gradient[0]+terrain.sample(x,Y).gradient[0])/2;
+ const gy=dy!==0?((h01-h00)+(h11-h10))/(2*dy):(terrain.sample(x,y).gradient[1]+terrain.sample(X,y).gradient[1])/2;
+ const gap0=radius+h00-z,gap1=radius+h11-Z;
+ const pressure=gap1!==gap0?(b.elasticEnergy-a.elasticEnergy)/(gap1-gap0):stiffness*Math.max(0,gap0);
+ const force=[-pressure*gx,-pressure*gy,pressure],displacement=end.map((v,i)=>v-start[i]);
+ const work=force.reduce((s,f,i)=>s+f*displacement[i],0);
+ return {force,pressure,work,energyBefore:a.elasticEnergy,energyAfter:b.elasticEnergy,residual:b.elasticEnergy-a.elasticEnergy+work};
+}
