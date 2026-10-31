@@ -4,62 +4,71 @@
     "title": "Braking & tire contact",
     "category": "Contact",
     "description": "Coupled braking, steering and tire contact.",
-    "entry": "research/scientific-rebuild/braking-and-tire-contact-prototype/index.html"
+    "entry": "research/scientific-rebuild/braking-and-tire-contact-prototype/index.html",
+    "sequence": 8
   },
   {
     "id": "observatory",
     "title": "Tire-road observatory",
     "category": "Contact",
     "description": "Inspect tire forces, slip and accepted-stage trails.",
-    "entry": "research/scientific-rebuild/tire-road-observatory-prototype/index.html"
+    "entry": "research/scientific-rebuild/tire-road-observatory-prototype/index.html",
+    "sequence": 9
   },
   {
     "id": "gearbox",
     "title": "Manual gearbox",
     "category": "Transmission",
     "description": "Explore manual selection and mechanical engagement.",
-    "entry": "research/scientific-rebuild/manual-gearbox-prototype/index.html"
+    "entry": "research/scientific-rebuild/manual-gearbox-prototype/index.html",
+    "sequence": 6
   },
   {
     "id": "unsynchronized",
     "title": "Unsynchronized gearbox",
     "category": "Transmission",
     "description": "Study dog engagement and speed matching.",
-    "entry": "research/scientific-rebuild/unsynchronized-gearbox-prototype/index.html"
+    "entry": "research/scientific-rebuild/unsynchronized-gearbox-prototype/index.html",
+    "sequence": 7
   },
   {
     "id": "differential",
     "title": "Differential dynamics",
     "category": "Transmission",
     "description": "Compare independent wheel and differential motion.",
-    "entry": "research/scientific-rebuild/differential-driving-prototype/index.html"
+    "entry": "research/scientific-rebuild/differential-driving-prototype/index.html",
+    "sequence": 3
   },
   {
     "id": "clutch",
     "title": "Clutch laboratory",
     "category": "Transmission",
     "description": "Explore friction coupling and engagement.",
-    "entry": "research/scientific-rebuild/clutch-driving-prototype/index.html"
+    "entry": "research/scientific-rebuild/clutch-driving-prototype/index.html",
+    "sequence": 4
   },
   {
     "id": "drivetrain",
     "title": "Drivetrain anatomy",
     "category": "Transmission",
     "description": "Inspect the mechanical power path.",
-    "entry": "research/scientific-rebuild/drivetrain-visualization-prototype/index.html"
+    "entry": "research/scientific-rebuild/drivetrain-visualization-prototype/index.html",
+    "sequence": 5
   },
   {
     "id": "four-wheel",
     "title": "Four-wheel vehicle",
     "category": "Foundations",
     "description": "Explore the four-wheel research vehicle.",
-    "entry": "research/scientific-rebuild/four-wheel-driving-prototype/index.html"
+    "entry": "research/scientific-rebuild/four-wheel-driving-prototype/index.html",
+    "sequence": 2
   },
   {
     "id": "driving",
     "title": "Driving foundation",
     "category": "Foundations",
     "description": "The initial JavaScript driving prototype.",
-    "entry": "research/scientific-rebuild/javascript-driving-prototype/index.html"
+    "entry": "research/scientific-rebuild/javascript-driving-prototype/index.html",
+    "sequence": 1
   }
 ]

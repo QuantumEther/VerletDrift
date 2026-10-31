@@ -30,3 +30,5 @@ All routes are relative to `https://quantumether.github.io/VerletDrift/`:
 - `lab/driving/` — Driving foundation
 
 These are prepared public paths, not a claim of live deployment. The registry includes only existing HTML experiment entry points. It excludes headless reference models, native research and static reports.
+
+Sequence numbers are permanent registry fields; add new experiments using a new number, regenerate launch pages, and include the updated `lab/` files in the reviewed Pages overlay. The actual Pages source is not verified by this checkout; branch changes alone do not publish it.
