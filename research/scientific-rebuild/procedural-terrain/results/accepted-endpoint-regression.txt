@@ -1,0 +1,98 @@
+✔ actual flat candidate is private until acceptance and observer emission is deferred (15.996131ms)
+✔ invalid non-flat candidate preserves original state and observers (1.115391ms)
+✔ normal generalized forces enter the actual eighteen-velocity solve once with work accounted (8.143282ms)
+✔ flat frame reproduces horizontal tire rows with spin isolated from normal (1.526132ms)
+✔ inclined frame produces downhill normal reaction and exact virtual work (1.154028ms)
+{
+  h: 0.002,
+  maxResidual: 9.769962616701378e-15,
+  z: 0.40401910835587573,
+  v: 1.1547005383792537
+}
+{
+  h: 0.001,
+  maxResidual: 2.842170943040401e-14,
+  z: 0.40404543343807436,
+  v: 1.1547005383792515
+}
+{
+  h: 0.0005,
+  maxResidual: 2.042810365310288e-14,
+  z: 0.40405194736553474,
+  v: 1.1547005383792532
+}
+✔ nonlinear terrain discrete work closes across contact opening and closing (1.830454ms)
+✔ implicit release of compressed tire conserves elastic plus kinetic energy (31.430646ms)
+{
+  velocity: -0.001924781861031181,
+  residual: 1.0074500912324313e-12,
+  loads: [
+    262.0360384606999,
+    262.0360384606999,
+    248.08090959074977,
+    248.08090959074977
+  ],
+  ledger: {
+    residual: 8.318060460256807e-13,
+    accumulatedResidual: 1.0212145117321973e-11,
+    iterations: 5,
+    forceWork: -0.0003430745492969281,
+    potentialChange: 0.000264126182095481,
+    springChange: 0.00003061115322111618,
+    gravityChange: 0.0000033270848689426202,
+    terrainChange: 0.00023018794117568575,
+    damping: 0.00007894837084622144,
+    numericalLoss: 0.00002545169910814026,
+    elasticEnergy: 6.510460456425967
+  }
+}
+{
+  values: [
+    -0.0018368028630529054,
+    -0.0018578966113688815,
+    -0.0018686454945106453
+  ]
+}
+✔ production adapter advances downhill on incline with consistent full work (317.378069ms)
+✔ incline refinement and invalid-step rollback (323.983952ms)
+{
+  before: 0.02200968483862198,
+  after: {
+    residual: -4.620540883294743e-14,
+    accumulatedResidual: -4.620540883294743e-14,
+    iterations: 6,
+    forceWork: 0.0002588006565595868,
+    potentialChange: -0.0002622252375505951,
+    springChange: 4.3138847161117155e-8,
+    gravityChange: 1.0118128557223827e-10,
+    terrainChange: -0.0002622684766278027,
+    damping: 0.000003424580047102209,
+    numericalLoss: 0.00012940029639121667,
+    elasticEnergy: 6.545298091523387
+  }
+}
+✔ same historical inclined initial state now accepts with potential work accounted (24.833145ms)
+✔ drivetrain steering and brake constraints remain active on the incline (682.182229ms)
+✔ unloaded corner recontacts on the production inclined path (374.110662ms)
+✔ flat normal force and potential exactly match the predecessor law (1.383319ms)
+✔ inclined and curved terrain forces are negative potential gradients (0.731049ms)
+✔ mapped normal reaction preserves instantaneous contact work (1.210372ms)
+✔ flat ground is exact and deterministic seeds replay (1.936462ms)
+✔ analytic terrain gradients and unit normals agree with independent finite differences (9.505539ms)
+✔ graded corridor has asphalt contact parameters and continuous shoulder heights (0.246046ms)
+✔ flat adapter advances actual mature vehicle bit-identically (122.709558ms)
+✔ four world samples drive independent terrain loads (15.177071ms)
+{ coarse: 0.000003012835656425938, fine: 1.890673921231805e-7 }
+✔ only flat normal force and elastic tire energy are removed (1.701863ms)
+✔ suspension reactions cancel internally, damping is passive and no ground force remains (2.562394ms)
+✔ unloaded assembly free falls with correct gravitational work (5.213291ms)
+✔ spring/damper energy residual converges without tire reactions (6.298395ms)
+✔ historical first-step work mismatch is reproducible and does not mutate the vehicle (22.86151ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1853.470065
