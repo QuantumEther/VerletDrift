@@ -1,3 +1,4 @@
+import {createSteeringContact} from './steering-contact-foundation.js';
 // Massless planar worm/sector -> Pitman -> drag link -> steering arms/tie rod.
 // Circle intersections close actual fixed-length links, no iterative steering solve.
 const rot=(p,a)=>[p[0]*Math.cos(a)-p[1]*Math.sin(a),p[0]*Math.sin(a)+p[1]*Math.cos(a)];
@@ -29,9 +30,27 @@ export function linkage(column,g=steeringGeometry()){
  return {wheelAngle,boxAngle,tip,leftAngle,rightAngle,leftPin:g.left,rightPin:g.right,leftEnd:lp,rightEnd:rp,box:g.box,
  tieLength:g.tieLength,dragLength:g.dragLength,stopped:Math.abs(wheelAngle)===g.columnLimit};
 }
-export function createSteering(wheelbase=2,track=1.2){const geometry=steeringGeometry(wheelbase,track);return {geometry,...linkage(0,geometry)};}
+// Column-referred reference inertia/friction. The planar projected mechanical
+// trail uses the same force/velocity Jacobian as the contact foundation.
+export function createSteering(wheelbase=2,track=1.2){
+ const geometry=steeringGeometry(wheelbase,track);
+ const {inertia,damping,friction,trail}=createSteeringContact({inertia:.025,damping:.25,friction:.15});
+ const dynamics={inertia,damping,friction,trail};
+ return {geometry,...linkage(0,geometry),dynamics,angularVelocity:0,driverTorque:0,driverTorqueLimit:8};
+}
+export function steeringJacobian(s){
+ const e=1e-5,q=s.wheelAngle,g=s.geometry;
+ const lo=linkage(Math.max(-g.columnLimit,q-e),g),hi=linkage(Math.min(g.columnLimit,q+e),g);
+ const span=hi.wheelAngle-lo.wheelAngle;
+ return [(hi.leftAngle-lo.leftAngle)/span,(hi.rightAngle-lo.rightAngle)/span];
+}
+// Input is a torque request, not a position target. Integration belongs solely
+// to stepPlanar's coupled solve; this function never changes the angle.
 export function advanceSteering(s,command,h){
- const target=Math.max(-1,Math.min(1,command))*s.geometry.columnLimit;
- Object.assign(s,linkage(s.wheelAngle+Math.max(-s.geometry.columnRate*h,Math.min(s.geometry.columnRate*h,target-s.wheelAngle)),s.geometry));
+ s.driverTorque=Math.max(-1,Math.min(1,command))*s.driverTorqueLimit;
  return [s.leftAngle,s.rightAngle];
+}
+export function finishSteering(s,omega,h){
+ s.angularVelocity=omega;
+ Object.assign(s,linkage(s.wheelAngle+h*omega,s.geometry));
 }

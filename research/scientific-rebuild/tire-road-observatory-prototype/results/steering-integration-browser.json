@@ -1,0 +1,183 @@
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "clock": "controlled RAF; not GPU throughput",
+  "poseFrames": 2,
+  "cameraPolicy": "recreate and focus on first frame",
+  "afterStartRPM": 332.0416831650797,
+  "revRPM": 1662.6150128837971,
+  "firstGearLaunchSpeed": 0.7947087823720304,
+  "views": {
+    "normal": {
+      "camera": [
+        -2.8,
+        -3.4999999999999973,
+        2.4499999999999984
+      ],
+      "drawCalls": 210,
+      "triangles": 57392
+    },
+    "engine": {
+      "camera": [
+        1.7999999999999998,
+        -1.1499999999999988,
+        1.4999999999999993
+      ],
+      "drawCalls": 56,
+      "triangles": 20232
+    },
+    "brakes": {
+      "camera": [
+        0.6460306894599228,
+        1.7965645961879395,
+        0.637247
+      ],
+      "drawCalls": 115,
+      "triangles": 37996
+    },
+    "handbrake": {
+      "camera": [
+        -1.0318237202766405,
+        -2.033553493339792,
+        1.389147
+      ],
+      "drawCalls": 148,
+      "triangles": 48728
+    },
+    "column": {
+      "camera": [
+        -1.5490921825774338,
+        0.7073283607190382,
+        1.4472469999999995
+      ],
+      "drawCalls": 92,
+      "triangles": 29336
+    },
+    "steeringbox": {
+      "camera": [
+        1.2190159142498862,
+        -0.4759203723371304,
+        0.8872469999999999
+      ],
+      "drawCalls": 63,
+      "triangles": 23100
+    },
+    "linkage": {
+      "camera": [
+        1.9483287595080876,
+        -0.8508907361545763,
+        1.3972469999999988
+      ],
+      "drawCalls": 67,
+      "triangles": 24396
+    },
+    "contact": {
+      "camera": [
+        0.9974131412453969,
+        1.519923361775517,
+        0.31999999999999973
+      ],
+      "drawCalls": 70,
+      "triangles": 27548
+    },
+    "xray": {
+      "camera": [
+        2.7000000000000006,
+        -3.199999999999998,
+        2.699999999999998
+      ],
+      "drawCalls": 210,
+      "triangles": 57392
+    },
+    "clutch": {
+      "camera": [
+        0.75,
+        -1.2999999999999994,
+        1.35
+      ],
+      "drawCalls": 32,
+      "triangles": 17732
+    },
+    "driveline": {
+      "camera": [
+        0.6499999999999999,
+        1.6999999999999997,
+        1.649999999999999
+      ],
+      "drawCalls": 57,
+      "triangles": 26884
+    },
+    "exploded": {
+      "camera": [
+        1.7999999999999998,
+        -1.9999999999999982,
+        1.9999999999999987
+      ],
+      "drawCalls": 63,
+      "triangles": 28340
+    }
+  },
+  "memory": {
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 190,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "rebuilt": {
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 190,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "runtimeAfterLaboratoryReset": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0,
+      "wall": 0,
+      "simulated": 0,
+      "dilated": 0,
+      "pausedWall": 0,
+      "status": "running",
+      "fault": null,
+      "accepted": 0,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 0,
+      "candidates": 0,
+      "searches": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 0.5
+  },
+  "errors": []
+}

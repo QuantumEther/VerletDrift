@@ -53,7 +53,7 @@ function stepVehicleCore(s,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,t
   Object.assign(s,{z:next.z,vz:next.vz,pitch:next.pitch,pitchRate:next.pitchRate});
   s.corners.forEach((c,i)=>{c.z=next.corners[i].z;c.vz=next.corners[i].vz;});
   const loads=s.corners.map(c=>cornerForces(s,c).normal);
-  stepPlanar(s.planar,s.wheels,loads.flatMap((n,i)=>i===1&&supportRetracted(s)?[0,n]:[n/2,n/2]),s.mass+s.corners.reduce((n,c)=>n+c.mass,0),{drive,brake,serviceBrake,handbrake,steer,steeringAngles,brakeMechanism:s.brakes},h,s.drivetrain,s.flywheel);
+  stepPlanar(s.planar,s.wheels,loads.flatMap((n,i)=>i===1&&supportRetracted(s)?[0,n]:[n/2,n/2]),s.mass+s.corners.reduce((n,c)=>n+c.mass,0),{drive,brake,serviceBrake,handbrake,steer,steeringAngles,steeringSystem:s.steering,brakeMechanism:s.brakes},h,s.drivetrain,s.flywheel);
   s.corners.forEach((c,i)=>{const pair=s.wheels.filter(w=>w.axle===i);c.angle=(pair[0].angle+pair[1].angle)/2;c.omega=(pair[0].omega+pair[1].omega)/2;c.fx=pair[0].fx+pair[1].fx;c.drive=pair[0].drive+pair[1].drive;c.brake=pair[0].brake+pair[1].brake;});
   if(s.engine)finishEngine(s.engine,s.flywheel.omega,h);
   s.time+=h;

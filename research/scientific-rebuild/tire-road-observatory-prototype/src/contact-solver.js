@@ -5,9 +5,9 @@ export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tol
  const n=rows.length,d=rows.map(a=>rows.map(b=>a.j.reduce((s,v,i)=>s+v*inverse[i].reduce((q,m,k)=>q+m*b.j[k],0),0)));
  rows.forEach((a,i)=>d[i][i]+=a.compliance||0);
  const variables=groups.filter(g=>g.fixed===undefined&&g.limit>0).flatMap(g=>g.indices);
- const rhs=rows.map(a=>a.j.reduce((s,v,i)=>s+v*free[i],0)),L=variables.length?Math.max(...variables.map(i=>variables.reduce((s,j)=>s+Math.abs(d[i][j]),0))):1;
+ const rhs=rows.map(a=>a.j.reduce((s,v,i)=>s+v*free[i],a.bias||0)),L=variables.length?Math.max(...variables.map(i=>variables.reduce((s,j)=>s+Math.abs(d[i][j]),0))):1;
  if(!(L>0&&Number.isFinite(L)))throw Error('Invalid contact Hessian');
- const project=x=>{for(const g of groups){if(g.fixed!==undefined){x[g.indices[0]]=g.fixed;continue;}const norm=Math.hypot(...g.indices.map(i=>x[i]));if(norm>g.limit)for(const i of g.indices)x[i]*=g.limit/norm;}return x;};
+ const project=x=>{for(const g of groups){if(g.fixed!==undefined){x[g.indices[0]]=g.fixed;continue;}if(g.lower!==undefined){x[g.indices[0]]=Math.max(g.lower,Math.min(g.upper,x[g.indices[0]]));continue;}const norm=Math.hypot(...g.indices.map(i=>x[i]));if(norm>g.limit)for(const i of g.indices)x[i]*=g.limit/norm;}return x;};
  let z=project(initial?.length===n?[...initial]:Array(n).fill(0)),y=[...z],t=1,residual=Infinity,iterations=0;
  for(;iterations<maxIterations;iterations++){
   const next=project(y.map((v,i)=>v+(rhs[i]-d[i].reduce((s,a,j)=>s+a*y[j],0))/L));
@@ -21,7 +21,7 @@ export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tol
  // Resolve interior scalar friction constraints with a small linear KKT
  // polish. Corrections are reaction impulses, not assigned wheel velocities.
  const active=[];
- for(const group of groups)if(group.indices.length===1&&group.fixed===undefined&&group.limit>0&&Math.abs(z[group.indices[0]])<group.limit-1e-9){
+ for(const group of groups)if(group.indices.length===1&&group.fixed===undefined&&group.limit>0&&Math.abs(z[group.indices[0]])<group.limit-1e-9&&(group.lower===undefined||(z[group.indices[0]]>group.lower+1e-9&&z[group.indices[0]]<group.upper-1e-9))){
   const candidate=[...active,group.indices[0]];
   try{gaussian(candidate.map(i=>candidate.map(j=>d[i][j])),candidate.map(()=>0));active.push(group.indices[0]);}catch{/* redundant locked-differential constraint */}
  }

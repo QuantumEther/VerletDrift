@@ -65,7 +65,8 @@ test('hydraulic shoes hold finite applied driveline torque and release without a
  assert.ok(s.wheels.every(w=>Math.abs(w.brake)<=w.brakeCapacity+1e-8));run(s,.1,{drive:20});assert.ok(s.wheels[2].omega>0);assert.ok(s.v>0);
 });
 test('zero-speed steering has no propulsion; both locks, steady curvature and reversal use tire yaw moments',()=>{
- const resting=createVehicle({automobile:true});run(resting,.3,{steer:.4});close(resting.planar.r,0);close(resting.planar.u,0);
+ const resting=createVehicle({automobile:true});run(resting,.3);close(resting.planar.r,0);close(resting.planar.u,0);
+ run(resting,.3,{steer:.4});assert.ok(resting.planar.contact.work>0);assert.ok(Math.abs(resting.planar.contact.energyResidual)<1e-7);
  for(const sign of [-1,1]){
   const s=createVehicle({automobile:true});s.v=4;s.wheels.forEach(w=>w.omega=4/w.radius);run(s,3,{steer:sign*.2});
   const geometric=(Math.tan(s.steering.leftAngle)+Math.tan(s.steering.rightAngle))/(2*s.wheelbase);

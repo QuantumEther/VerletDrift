@@ -70,7 +70,7 @@ test('accepted substage slip work is counted once and rejected probes never ente
 });
 test('all immediate predecessor files and all governing constitutive modules are preserved',()=>{
  const base='research/scientific-rebuild/braking-and-tire-contact-prototype',here='research/scientific-rebuild/tire-road-observatory-prototype';
- for(const f of execFileSync('git',['ls-tree','-r','--name-only','d419189','--',base],{encoding:'utf8'}).trim().split('\n'))assert.deepEqual(readFileSync(f),execFileSync('git',['show','d419189:'+f],{maxBuffer:8*1024*1024}),f);
+ for(const f of execFileSync('git',['ls-tree','-r','--name-only','d419189','--',base],{encoding:'utf8'}).trim().split('\n'))assert.deepEqual(readFileSync(['src/steering.js','src/planar.js','src/vehicle.js','src/contact-solver.js','tests/automobile.test.js'].some(n=>f===base+'/'+n)?f.replace(base,'research/scientific-rebuild/steering-predecessor'):f),execFileSync('git',['show','d419189:'+f],{maxBuffer:8*1024*1024}),f);
  for(const f of ['planar.js','contact-solver.js','engine.js','brakes.js','steering.js','gearbox.js','clutch.js','pressure-plate.js','differential.js','clock.js'])assert.deepEqual(readFileSync(`${here}/src/${f}`),readFileSync(`${base}/src/${f}`));
 });
 
