@@ -78,5 +78,13 @@
     "description": "Independent suspension, wheel loads and reduced braking/cornering transfer.",
     "entry": "research/scientific-rebuild/four-corner-load-transfer/index.html",
     "sequence": 10
+  },
+  {
+    "id": "terrain",
+    "title": "Procedural Terrain & Road Surfaces",
+    "category": "Terrain",
+    "description": "Inherited automobile laboratory with work-consistent terrain contact and conservative, validated terrain presets.",
+    "entry": "research/scientific-rebuild/procedural-terrain/index.html",
+    "sequence": 11
   }
 ]

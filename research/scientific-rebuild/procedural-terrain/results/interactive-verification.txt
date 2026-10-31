@@ -1,0 +1,208 @@
+Experiment 11 interactive verification (Chromium 154.0.8037.57)
+
+Numerical commands: node --test --test-isolation=none <experiment>/tests/*.test.mjs
+Experiment 11: 32 passed, 0 failed.
+Experiment 10: 24 passed, 0 failed (including unchanged 12 s mixed driving at 2/1/0.5 ms).
+Original experiment implementations and root application unchanged.
+
+Final terrain browser run:
+PASS flat
+PASS hills
+PASS rough
+PASS road
+PASS powered terrain driving 0.005855062110132175
+PASS: mature page, all terrain presets, regenerated vehicle and terrain mesh height agreement
+
+Navigator run:
+PASS navigator desktop/mobile, 11 chronological routes, terrain filter, iframe launch, refresh and return
+
+Inherited application (flat reference) detailed report:
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "clock": "controlled RAF; not GPU throughput",
+  "poseFrames": 2,
+  "cameraPolicy": "recreate and focus on first frame",
+  "afterStartRPM": 300.56265771276304,
+  "revRPM": 1188.45620666605,
+  "firstGearLaunchSpeed": 0.6138280741498459,
+  "views": {
+    "normal": {
+      "camera": [
+        -2.8,
+        -3.4999999999999973,
+        2.4499999999999984
+      ],
+      "drawCalls": 210,
+      "triangles": 57108
+    },
+    "engine": {
+      "camera": [
+        1.7999999999999998,
+        -1.1499999999999988,
+        1.4999999999999993
+      ],
+      "drawCalls": 56,
+      "triangles": 19948
+    },
+    "brakes": {
+      "camera": [
+        1.10993385199895,
+        1.5533984820987725,
+        0.6351769885135432
+      ],
+      "drawCalls": 111,
+      "triangles": 35928
+    },
+    "handbrake": {
+      "camera": [
+        -1.545610266383759,
+        -1.6766302229320338,
+        1.3891469999999995
+      ],
+      "drawCalls": 148,
+      "triangles": 48444
+    },
+    "column": {
+      "camera": [
+        -1.2985813283841723,
+        1.10167442267305,
+        1.445176988513543
+      ],
+      "drawCalls": 91,
+      "triangles": 28908
+    },
+    "steeringbox": {
+      "camera": [
+        1.0438112960306603,
+        -0.7892768704825912,
+        0.8851769885135431
+      ],
+      "drawCalls": 64,
+      "triangles": 22960
+    },
+    "linkage": {
+      "camera": [
+        1.6437809910727887,
+        -1.3483263897839264,
+        1.3951769885135428
+      ],
+      "drawCalls": 67,
+      "triangles": 24112
+    },
+    "contact": {
+      "camera": [
+        1.3729161923172737,
+        1.1916799607583561,
+        0.31999999999999984
+      ],
+      "drawCalls": 71,
+      "triangles": 27408
+    },
+    "xray": {
+      "camera": [
+        2.7000000000000006,
+        -3.199999999999998,
+        2.699999999999998
+      ],
+      "drawCalls": 210,
+      "triangles": 57108
+    },
+    "clutch": {
+      "camera": [
+        0.75,
+        -1.2999999999999994,
+        1.35
+      ],
+      "drawCalls": 32,
+      "triangles": 17448
+    },
+    "driveline": {
+      "camera": [
+        0.6499999999999999,
+        1.6999999999999997,
+        1.649999999999999
+      ],
+      "drawCalls": 57,
+      "triangles": 26600
+    },
+    "exploded": {
+      "camera": [
+        1.7999999999999998,
+        -1.9999999999999982,
+        1.9999999999999987
+      ],
+      "drawCalls": 63,
+      "triangles": 28056
+    }
+  },
+  "memory": {
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 48,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "rebuilt": {
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 48,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "runtimeAfterLaboratoryReset": {
+    "clock": {
+      "budgetMs": 6,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "debt": 0,
+      "wall": 0,
+      "simulated": 0,
+      "dilated": 0,
+      "pausedWall": 0,
+      "status": "running",
+      "fault": null,
+      "accepted": 0,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 0,
+      "candidates": 0,
+      "searches": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 6.5
+  },
+  "errors": []
+}
+
+All terrain UI settings: seed 42, amplitude 0.001 m, roughness 0.1.
+Mesh sampled elevations agree with analytic physics sampler within 1e-7 m; rendered wheel heights within 1e-9 m.
+Powered road-preset driving is a short session using the explicit stationary first-gear setup. Non-flat steering and service braking were also applied without clock fault.
+Controlled RAF checks interaction/state correspondence, not real-time throughput.
+Public deployment was not performed or verified.
