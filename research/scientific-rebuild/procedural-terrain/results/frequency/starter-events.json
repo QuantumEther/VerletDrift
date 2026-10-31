@@ -1,0 +1,205 @@
+[
+  {
+    "hz": 4000,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.00025,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.006666666666666667
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.82175,
+        "observedStateTime": 1.822,
+        "thresholdCrossingBracket": [
+          1.8215,
+          1.82175
+        ],
+        "omega": 22.005711390771253
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.05510564079253
+  },
+  {
+    "hz": 2000,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.0005,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.013333333333333334
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.822,
+        "observedStateTime": 1.8225,
+        "thresholdCrossingBracket": [
+          1.8215,
+          1.822
+        ],
+        "omega": 22.01387654309761
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.0577201430338
+  },
+  {
+    "hz": 1000,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.001,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.02666666666666667
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.822,
+        "observedStateTime": 1.823,
+        "thresholdCrossingBracket": [
+          1.821,
+          1.822
+        ],
+        "omega": 22.027450986199664
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.0792708870747
+  },
+  {
+    "hz": 500,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.002,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.05333333333333334
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.822,
+        "observedStateTime": 1.824,
+        "thresholdCrossingBracket": [
+          1.82,
+          1.822
+        ],
+        "omega": 22.05459691463601
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.12238750817284
+  },
+  {
+    "hz": 250,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.004,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.10666666666666667
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.82,
+        "observedStateTime": 1.824,
+        "thresholdCrossingBracket": [
+          1.816,
+          1.82
+        ],
+        "omega": 22.09789068946607
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.2739155221807
+  },
+  {
+    "hz": 200,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.005,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.13333333333333333
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.82,
+        "observedStateTime": 1.825,
+        "thresholdCrossingBracket": [
+          1.815,
+          1.82
+        ],
+        "omega": 22.125035751451236
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.3170875579801
+  },
+  {
+    "hz": 100,
+    "events": [
+      {
+        "from": "stopped",
+        "to": "starting",
+        "decisionTime": 0,
+        "observedStateTime": 0.01,
+        "thresholdCrossingBracket": [
+          0,
+          0
+        ],
+        "omega": 0.26666666666666666
+      },
+      {
+        "from": "starting",
+        "to": "running",
+        "decisionTime": 1.82,
+        "observedStateTime": 1.83,
+        "thresholdCrossingBracket": [
+          1.81,
+          1.82
+        ],
+        "omega": 22.26070174610669
+      }
+    ],
+    "fault": null,
+    "finalRPM": 437.53300509488554
+  }
+]

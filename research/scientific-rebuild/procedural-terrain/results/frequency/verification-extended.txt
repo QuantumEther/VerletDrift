@@ -1,0 +1,336 @@
+Experiment 11
+✔ application facade retains mature flat trajectory and state aliases (29.084781ms)
+✔ application regeneration retains failed terrain and advances accepted terrain (98.392383ms)
+✔ open suspension diagnostics report actual terrain loads and accepted work without mutation (71.397567ms)
+✔ actual flat candidate is private until acceptance and observer emission is deferred (2.531198ms)
+✔ invalid non-flat candidate preserves original state and observers (0.809205ms)
+✔ overload is bounded and throughput reports real accepted time at unchanged 1 ms steps (0.841472ms)
+✔ gear event rejection is distinguishable from nonconvergence and overload (1.236541ms)
+✔ terrain default budget improves bounded throughput without changing the timestep (0.953208ms)
+✔ all selectable frequencies advance actual physical time and preserve wall accounting on switching (1.462937ms)
+✔ expensive rejected steps retain measured cost without claiming accepted physical time (0.304794ms)
+✔ nominal time, accepted internal steps and rejected trial work remain distinct (0.316511ms)
+✔ normal generalized forces enter the actual eighteen-velocity solve once with work accounted (0.989944ms)
+✔ flat frame reproduces horizontal tire rows with spin isolated from normal (0.245135ms)
+✔ inclined frame produces downhill normal reaction and exact virtual work (0.621104ms)
+✔ allocation-reduced contact implementation exactly matches inherited constrained solves (51.569158ms)
+✔ nonlinear terrain discrete work closes across contact opening and closing (0.411122ms)
+{
+  h: 0.002,
+  maxResidual: 7.105427357601002e-15,
+  z: 0.40401910835587573,
+  v: 1.1547005383792532
+}
+{
+  h: 0.001,
+  maxResidual: 2.9753977059954195e-14,
+  z: 0.40404543343807436,
+  v: 1.1547005383792515
+}
+{
+  h: 0.0005,
+  maxResidual: 2.2648549702353193e-14,
+  z: 0.40405194736553474,
+  v: 1.1547005383792506
+}
+✔ implicit release of compressed tire conserves elastic plus kinetic energy (34.3648ms)
+✔ near-equilibrium quadratic pressure avoids cancellation (0.28176ms)
+✔ neutral starter transition has consistent physical outcome at 500 and 100 Hz (760.135687ms)
+{
+  velocity: -0.0019247818610686562,
+  residual: 1.3438182858149794e-12,
+  loads: [
+    262.03603846072565,
+    262.03603846072565,
+    248.0809095907093,
+    248.0809095907093
+  ],
+  ledger: {
+    contactIterations: 21,
+    normalWorkResidual: 6.3954917750574936e-15,
+    endpointPositionError: 9.514611321037592e-14,
+    endpointVelocityError: 9.518504213990031e-11,
+    residual: 6.332704814097229e-13,
+    accumulatedResidual: 1.0140448113190132e-11,
+    iterations: 5,
+    forceWork: -0.0003430745492987737,
+    potentialChange: 0.0002641261818396856,
+    springChange: 0.0000306111531997999,
+    gravityChange: 0.0000033270847552557825,
+    terrainChange: 0.00023018794120410746,
+    damping: 0.00007894837084673688,
+    numericalLoss: 0.00002545169910831215,
+    elasticEnergy: 6.510460456426033
+  }
+}
+✔ production adapter advances downhill on incline with consistent full work (77.101312ms)
+{
+  values: [
+    -0.0018368028631709668,
+    -0.001857896611424696,
+    -0.001868645494287484
+  ]
+}
+✔ incline refinement and invalid-step rollback (114.498786ms)
+{
+  before: 0.02200968483862198,
+  after: {
+    contactIterations: 27,
+    normalWorkResidual: 2.430564430278004e-15,
+    endpointPositionError: 1.1157741397482823e-14,
+    endpointVelocityError: 1.1139509020069438e-11,
+    residual: -4.5690542397057747e-14,
+    accumulatedResidual: -4.5690542397057747e-14,
+    iterations: 6,
+    forceWork: 0.00025880065655999805,
+    potentialChange: -0.0002622252375505951,
+    springChange: 4.3138847161117155e-8,
+    gravityChange: 1.0118128557223827e-10,
+    terrainChange: -0.0002622684766278027,
+    damping: 0.0000034245800474171484,
+    numericalLoss: 0.00012940029639142808,
+    elasticEnergy: 6.545298091523387
+  }
+}
+✔ same historical inclined initial state now accepts with potential work accounted (3.672256ms)
+✔ drivetrain steering and brake constraints remain active on the incline (178.97801ms)
+✔ unloaded corner recontacts on the production inclined path (104.221238ms)
+{
+  preset: 'flat',
+  status: {
+    success: true,
+    validatedSteps: 100,
+    initialBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 2.2737367544323206e-13,
+      energy: 752.3567996400001,
+      tireElasticEnergy: 6.505560360000014
+    },
+    afterValidationBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 1.0231815394945443e-12,
+      energy: 752.3567996400001,
+      tireElasticEnergy: 6.505560360000014
+    },
+    maxEnergyResidual: 0,
+    maxIterations: 0
+  },
+  ledger: undefined
+}
+{
+  preset: 'hills',
+  status: {
+    success: true,
+    validatedSteps: 100,
+    initialBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.027242291340954856,
+      energy: 753.576832506435,
+      tireElasticEnergy: 6.505561839291671
+    },
+    afterValidationBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.022481764384903763,
+      energy: 753.5768324326982,
+      tireElasticEnergy: 6.505560901291954
+    },
+    maxEnergyResidual: 4.532234802211692e-13,
+    maxIterations: 4
+  },
+  ledger: {
+    contactIterations: 15,
+    normalWorkResidual: 8.075484544710987e-15,
+    endpointPositionError: 3.2585045772748344e-14,
+    endpointVelocityError: 3.259199460263989e-11,
+    residual: 1.0080218940771254e-13,
+    accumulatedResidual: 2.2007708260569625e-13,
+    iterations: 3,
+    forceWork: 8.244564891621456e-10,
+    potentialChange: -8.439871024279455e-10,
+    springChange: -1.7640424232467922e-8,
+    gravityChange: 4.785988494404592e-9,
+    terrainChange: 1.2010242578242014e-8,
+    damping: 1.9749461187654826e-11,
+    numericalLoss: 4.981402738436079e-13,
+    elasticEnergy: 6.505560901291954
+  }
+}
+{
+  preset: 'rough',
+  status: {
+    success: true,
+    validatedSteps: 100,
+    initialBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.002189490697567283,
+      energy: 752.6161770820365,
+      tireElasticEnergy: 6.5055603687711
+    },
+    afterValidationBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.001806874112062939,
+      energy: 752.6161770814946,
+      tireElasticEnergy: 6.505560363208285
+    },
+    maxEnergyResidual: 3.06705994531995e-13,
+    maxIterations: 3
+  },
+  ledger: {
+    contactIterations: 7,
+    normalWorkResidual: 7.742883495518262e-15,
+    endpointPositionError: 6.494804694057166e-15,
+    endpointVelocityError: 6.533592158862035e-12,
+    residual: 1.0575359879099825e-13,
+    accumulatedResidual: 3.6950479565393504e-14,
+    iterations: 3,
+    forceWork: 4.748302847697554e-12,
+    potentialChange: -4.796163466380676e-12,
+    springChange: -1.0398082395113306e-10,
+    gravityChange: 2.8194335754960775e-11,
+    terrainChange: 7.09059477799201e-11,
+    damping: 1.5415664428775896e-13,
+    numericalLoss: 6.259300629333335e-14,
+    elasticEnergy: 6.505560363208285
+  }
+}
+{
+  preset: 'road',
+  status: {
+    success: true,
+    validatedSteps: 100,
+    initialBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.0035987218895908286,
+      energy: 753.4820670399836,
+      tireElasticEnergy: 6.505560383940011
+    },
+    afterValidationBalance: {
+      generalizedVerticalForces: [Array],
+      maxResidual: 0.0012716006884324535,
+      energy: 753.4820670378625,
+      tireElasticEnergy: 6.505560368808404
+    },
+    maxEnergyResidual: 4.401794254112198e-13,
+    maxIterations: 3
+  },
+  ledger: {
+    contactIterations: 6,
+    normalWorkResidual: 8.600084550526203e-15,
+    endpointPositionError: 7.716050021144838e-15,
+    endpointVelocityError: 7.688027982251832e-12,
+    residual: 6.210702572805821e-14,
+    accumulatedResidual: -2.2216028347313311e-13,
+    iterations: 3,
+    forceWork: 3.8422806136136266e-11,
+    potentialChange: -4.11164435831779e-11,
+    springChange: -2.957492029054265e-10,
+    gravityChange: 6.548361852765083e-11,
+    terrainChange: 1.8918377975296607e-10,
+    damping: 2.695024036125924e-12,
+    numericalLoss: 1.821557003565454e-13,
+    elasticEnergy: 6.505560368808404
+  }
+}
+✔ conservative terrain respawns and 100 production steps accept deterministically (716.51569ms)
+✔ unsupported settings fail without changing state or history (0.505362ms)
+✔ inclined sampler respawn passes 100 private and 100 accepted steps (92.444069ms)
+✔ respawn explicitly resets drivetrain and clears incompatible histories once (44.239579ms)
+{
+  peak: 1.450100102167177e-9,
+  peakNormalWork: 5.446621750620703e-14,
+  maxIterations: 4,
+  after: 140.01200000030448
+}
+✔ 139.912 s work-gate stall is corrected without relaxing endpoint or energy limits (170.827047ms)
+{ coarse: 0.00018064979581463095, fine: 0.00006117552977121116 }
+✔ long-drive checkpoint converges at 2/1/0.5 ms with unchanged work checks (55.598846ms)
+✔ flat normal force and potential exactly match the predecessor law (0.222972ms)
+✔ inclined and curved terrain forces are negative potential gradients (0.340347ms)
+✔ mapped normal reaction preserves instantaneous contact work (0.199357ms)
+{
+  hz: 1000,
+  substeps: 500,
+  maxQ: 0.032249316792367796,
+  finalQ: 0.03181818181818182
+}
+{
+  hz: 500,
+  substeps: 499,
+  maxQ: 0.03181818181818181,
+  finalQ: 0.03181818181818181
+}
+{
+  hz: 250,
+  substeps: 500,
+  maxQ: 0.032106427188109264,
+  finalQ: 0.03181818181818182
+}
+{
+  hz: 200,
+  substeps: 500,
+  maxQ: 0.03195245362302125,
+  finalQ: 0.03181818181818182
+}
+{
+  hz: 100,
+  substeps: 500,
+  maxQ: 0.03195245362302125,
+  finalQ: 0.03181818181818182
+}
+✔ selector stop uses bounded stable substeps without changing the requested duration (1190.031723ms)
+✔ coarse unsafe candidate rejects and later failed substep publishes neither state nor observations (98.7268ms)
+✔ accepted substep observations cover the nominal interval exactly once (49.915049ms)
+✔ selected dogs cannot jump across the entire release interval unnoticed (44.787047ms)
+✔ subdivision matches sequential coupled reference steps and sums work in every differential mode (214.12942ms)
+✔ record copier preserves native snapshot values, cycles, aliases and isolated kinematic getters (5.0183ms)
+✔ endpoint trials operate with a deeply frozen private basis in all differential modes (698.136248ms)
+✔ ordinary first-selector force reproduces an explicit rollback-safe gear limitation at 6 ms (71.888193ms)
+{ hz: 1000, cachedSamples: 10544, uncachedSamples: 16544 }
+{ hz: 500, cachedSamples: 6200, uncachedSamples: 9800 }
+{ hz: 250, cachedSamples: 4056, uncachedSamples: 6456 }
+{ hz: 200, cachedSamples: 3704, uncachedSamples: 5888 }
+{ hz: 100, cachedSamples: 3400, uncachedSamples: 5440 }
+✔ same-endpoint terrain samples reduce queries with bit-identical coupled results at every rate (1768.571486ms)
+✔ flat ground is exact and deterministic seeds replay (0.332735ms)
+✔ analytic terrain gradients and unit normals agree with independent finite differences (2.985975ms)
+✔ graded corridor has asphalt contact parameters and continuous shoulder heights (0.130144ms)
+✔ flat adapter advances actual mature vehicle bit-identically (80.348031ms)
+✔ four world samples drive independent terrain loads (1.726199ms)
+✔ only flat normal force and elastic tire energy are removed (0.302461ms)
+✔ suspension reactions cancel internally, damping is passive and no ground force remains (0.671219ms)
+✔ unloaded assembly free falls with correct gravitational work (1.905256ms)
+{ coarse: 0.000003012835656425938, fine: 1.890673921231805e-7 }
+✔ spring/damper energy residual converges without tire reactions (2.81537ms)
+✔ historical first-step work mismatch is reproducible and does not mutate the vehicle (3.456796ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6904.667226
+
+Experiment 10
+✔ conservative oscillation energy converges under refinement (3.455003ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84772.732364
+Browser selector, interval accounting and held stop
+PASS bounded selector-stop substeps reported through actual UI
+PASS frequency selector, unchanged state on switching, and actual flat/road advancement at all five rates
+
+Final real-RAF 100 Hz engine/driving/selector session
+road stationary 0.4000000000000002 ok
+road starter 2.299999999999995 ok
+road accelerate-steer 2.7999999999999843 ok
+road brake 2.9899999999999802 ok
+road selector 3.1199999999999695 ok
+/tmp/frequency-live-100-final.json
+
+Independent modal work identity and production low/high fit checks passed.

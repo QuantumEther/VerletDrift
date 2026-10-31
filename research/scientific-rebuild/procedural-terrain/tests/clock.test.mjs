@@ -22,3 +22,7 @@ test('all selectable frequencies advance actual physical time and preserve wall 
 test('expensive rejected steps retain measured cost without claiming accepted physical time',()=>{
  let cpu=0;const c=new SimulationClock({now:()=>cpu});c.setFrequency(100);c.frame(.01,()=>{cpu+=25;throw Error('Terrain endpoint iteration failed to converge');},()=>({}));assert.equal(c.lastStepMs,25);assert.equal(c.worstStepMs,25);assert.equal(c.acceptedPhysicsMs,0);assert.equal(c.simulated,0);assert.equal(c.rejected,1);assert.equal(c.debt,.01);
 });
+test('nominal time, accepted internal steps and rejected trial work remain distinct',()=>{
+ let cpu=0;const c=new SimulationClock({now:()=>cpu});c.setFrequency(100);c.frame(.01,h=>{assert.equal(h,.01);cpu+=1;return {internalSubsteps:6};},()=>({}));assert.equal(c.simulated,.01);assert.equal(c.internalSubsteps,6);assert.equal(c.attemptedSubsteps,6);
+ c.frame(.01,()=>{cpu+=2;throw Object.assign(Error('gear event'),{integration:{attemptedSubsteps:4,publishedSubsteps:0}});},()=>({}));assert.equal(c.simulated,.01);assert.equal(c.internalSubsteps,6);assert.equal(c.attemptedSubsteps,10);assert.equal(c.fault.integration.attemptedSubsteps,4);
+});

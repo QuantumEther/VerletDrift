@@ -7,4 +7,9 @@ await page.evaluate(async()=>{window.app=await import('/procedural-terrain/src/m
 
 const before=await page.evaluate(()=>app.simulationSnapshot());
 for(const hz of [1000,500,250,200,100]){await page.selectOption('#physics-frequency',String(hz));const runtime=await page.evaluate(()=>app.runtimeSnapshot());assert.equal(runtime.clock.frequency,hz);assert.equal(runtime.clock.timestep,1/hz);assert.deepEqual(await page.evaluate(()=>app.simulationSnapshot()),before);}
-console.log('PASS frequency selector and unchanged mechanical state');}finally{await browser?.close();server.close();}
+for(const preset of ['flat','road'])for(const hz of [1000,500,250,200,100]){
+ await page.selectOption('#physics-frequency',String(hz));await page.selectOption('#terrain',preset);await page.locator('#regenerate').click();await page.evaluate(()=>tick(10));
+ const state=await page.evaluate(()=>app.simulationSnapshot()),runtime=await page.evaluate(()=>app.runtimeSnapshot());assert.equal(runtime.clock.frequency,hz);assert.equal(runtime.clock.fault,null);assert.ok(runtime.clock.accepted>0);assert.ok(Math.abs(state.time-runtime.clock.accepted/hz)<1e-9);assert.ok(runtime.clock.debt<=.05);assert.deepEqual(errors,[]);
+}
+await page.selectOption('#physics-frequency','100');await page.locator('#parked-first').click();await page.keyboard.down('1');await page.evaluate(()=>tick(40));await page.keyboard.up('1');const held=await page.evaluate(()=>({state:app.simulationSnapshot(),clock:app.runtimeSnapshot().clock}));assert.equal(held.clock.fault,null);assert.ok(held.state.gearbox.q>.03&&held.state.gearbox.q<.034);assert.ok(held.clock.internalSubsteps>held.clock.accepted);console.log('PASS bounded selector-stop substeps reported through actual UI');
+console.log('PASS frequency selector, unchanged state on switching, and actual flat/road advancement at all five rates');}finally{await browser?.close();server.close();}

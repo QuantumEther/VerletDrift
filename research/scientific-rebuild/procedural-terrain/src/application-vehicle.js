@@ -30,6 +30,7 @@ export function stepVehicle(state,ports,h,observer){
  stepTerrainVehicle(vehicle,ports,h,observer);
  Object.assign(state,vehicle.state);
  state.flywheel.gearbox=state.gearbox;
+ return vehicle.integration;
 }
 export function regenerate(state,next,history,options={}){
  const vehicle={state,terrainSettings:settings,contacts:[]};

@@ -6,7 +6,7 @@ import {terrainContactFrame} from './contact-frame.js';
 import {stepPlanar} from './combined-planar.js';
 import {advanceSteering,steeringJacobian} from '../../tire-road-observatory-prototype/src/steering.js';
 import {prepareEngine,finishEngine} from '../../tire-road-observatory-prototype/src/engine.js';
-import {GEOMETRY} from '../../tire-road-observatory-prototype/src/gearbox.js';
+import {GEOMETRY,selectorForces} from '../../tire-road-observatory-prototype/src/gearbox.js';
 import {brakeActuation} from '../../tire-road-observatory-prototype/src/brakes.js';
 // Experiment-11 adapter. Geometry observations are external to the mechanical
 // state so the inherited clone/rollback path never encounters sampler functions.
@@ -52,8 +52,29 @@ function freezeRecords(value,seen=new Set()){
  if(!value||typeof value!=='object'||seen.has(value))return;
  seen.add(value);for(const child of Object.values(value))freezeRecords(child,seen);Object.freeze(value);
 }
-export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
+// Estimate the linear stop coefficients from the authoritative inherited law.
+// No alternate selector force is applied here. Bare selector mass is conservative
+// when a worn cam adds reflected inertia. Jury stability: h²*k/m+2*h*c/m<4.
+// Also require h*c/m<1 so explicit viscous drag cannot reverse velocity alone.
+const selectorStopCoefficients=[false,true].map(worn=>{
+ const force=(q,v)=>selectorForces({selected:'1',worn,q,velocity:v,driverForce:0});
+ const q=GEOMETRY.stop+.0001,f=force(q,0);
+ return {k:-(force(q+.00001,0)-f)/.00001,c:-(force(q,.001)-f)/.001};
+});
+export function selectorSubsteps(state,h){
  if(!(Number.isFinite(h)&&h>0))throw Error('Invalid candidate timestep');
+ const g=state.gearbox,{k,c}=selectorStopCoefficients[Number(!!g.worn)],m=g.selectorMass;
+ if(!(m>0&&Number.isFinite(m)))throw Error('Invalid selector inertia');
+ const safe=.9*Math.min(4*m/(Math.sqrt(c*c+4*k*m)+c),c>0?m/c:Infinity);
+ if(h<=safe)return 1;
+ const force=selectorForces({...g}),reach=Math.abs(g.q)+h*Math.abs(g.velocity)+h*h*Math.abs(force)/m;
+ if(reach<GEOMETRY.stop&&!(g.worn&&g.selected==='2'))return 1;
+ const count=Math.ceil(h/safe);
+ if(count>16)throw Error('Selector stop subdivision limit exceeded');
+ return count;
+}
+export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
+ if(selectorSubsteps(vehicle.state,h)>1)throw Error('Selector stop requires timestep subdivision');
  let lastMark=vehicle.profile?performance.now():0;
  const mark=vehicle.profile?name=>{const now=performance.now();vehicle.profile(name,now-lastMark);lastMark=now;}:null;
  const terrain=vehicle.terrain||createTerrain(vehicle.terrainSettings),context={...vehicle,terrain};
@@ -61,7 +82,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
  const nonflat=start.some(c=>Math.abs(c.height)>1e-12||Math.abs(c.normal[0])+Math.abs(c.normal[1])>1e-12||c.friction!==.9);
  if(nonflat){
   const initial=vehicle.state,vs=initial.vertical;
-  const positions=s=>sampleWheelTerrain({...context,state:s}).map((c,i)=>[...c.world,s.vertical.q[3+i]]),begin=start.map(c=>[...c.world,c.wheelHeight]);
+  const begin=start.map(c=>[...c.world,c.wheelHeight]);
   const startContacts=begin.map((point,i)=>evaluateTerrainNormal(terrain,point,initial.wheels[i].radius,vs.kt));
   const before=evaluateSuspension(initial.vertical),co=Math.cos(initial.planar.heading),si=Math.sin(initial.planar.heading),sj=steeringJacobian(initial.steering);
   const pointRows=initial.wheels.map((w,i)=>{const rows=Array.from({length:3},()=>Array(18).fill(0));
@@ -71,7 +92,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
   });
   const basis=cloneMechanical(initial);
   if(vehicle.verifyIsolation)freezeRecords(basis);
-  let guess=initial,guessPositions=begin,prior=null,lastConvergence=null,contactIterations=0;
+  let guess=initial,guessPositions=begin,guessContacts=start,prior=null,lastConvergence=null,contactIterations=0;
   mark?.('setup');
   // Backward-Euler kinematics: q1=q0+h*v1. Linear spring forces use
   // endpoint-averaged compression (exact discrete spring gradient); damping
@@ -83,7 +104,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    const reaction=Array(18).fill(0),end=guessPositions,frames=[],loads=[];let U0=0,U1=0,identity=0,damping=0;
    reaction[11]=-vs.mass*vs.g;for(let i=0;i<4;i++)reaction[14+i]=-vs.wheelMass*vs.g;
    vs.corners.forEach(([x,y],i)=>{const compression=z=>vs.length-z[0]-x*z[1]-y*z[2]+z[3+i],rate=guess.vertical.v[0]+x*guess.vertical.v[1]+y*guess.vertical.v[2]-guess.vertical.v[3+i];const force=vs.ks*(compression(vs.q)+compression(guess.vertical.q))/2-vs.damping*rate;reaction[11]+=force;reaction[12]+=x*force;reaction[13]+=y*force;reaction[14+i]-=force;damping+=h*vs.damping*rate*rate;});
-   q.wheels.forEach((w,i)=>{const contact=discreteTerrainNormal(terrain,begin[i],end[i],w.radius,vs.kt,startContacts[i]),sample=terrain.sample(end[i][0],end[i][1]),rows=pointRows[i];
+   q.wheels.forEach((w,i)=>{const contact=discreteTerrainNormal(terrain,begin[i],end[i],w.radius,vs.kt,startContacts[i],vehicle.disableTerrainCache?null:guessContacts[i]),sample=vehicle.disableTerrainCache?terrain.sample(end[i][0],end[i][1]):guessContacts[i],rows=pointRows[i];
     for(let j=0;j<18;j++)for(let k=0;k<3;k++)reaction[j]+=rows[k][j]*contact.force[k];
     const angle=i===0?q.steering.leftAngle:i===1?q.steering.rightAngle:0;frames.push(terrainContactFrame(sample,initial.planar.heading+angle,rows,i,w.radius));loads.push(Math.hypot(...contact.force));w.mu=sample.friction;U0+=contact.energyBefore;U1+=contact.energyAfter;identity=Math.max(identity,Math.abs(contact.residual));
    });
@@ -101,21 +122,21 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    // Use pre-yaw-rotation body velocities for the impulse-work identity.
    const turn=q.planar.heading-initial.planar.heading;velocity[7]=Math.cos(turn)*q.planar.u-Math.sin(turn)*q.planar.v;velocity[8]=Math.sin(turn)*q.planar.u+Math.cos(turn)*q.planar.v;
    const forceWork=h*reaction.reduce((n,f,i)=>n+f*velocity[i],0),potentialChange=after.springEnergy+after.gravityEnergy-before.springEnergy-before.gravityEnergy+U1-U0;
-   const pos=positions(q),actualElastic=pos.reduce((sum,point,i)=>sum+evaluateTerrainNormal(terrain,point,q.wheels[i].radius,vs.kt).elasticEnergy,0);
+   const endpointContacts=sampleWheelTerrain({...context,state:q}),pos=endpointContacts.map(c=>[...c.world,c.wheelHeight]),actualElastic=pos.reduce((sum,point,i)=>sum+evaluateTerrainNormal(terrain,point,q.wheels[i].radius,vs.kt,vehicle.disableTerrainCache?null:endpointContacts[i]).elasticEnergy,0);
    const residual=q.planar.contact.energyResidual+forceWork+potentialChange+(actualElastic-U1)+damping;
    const error=Math.max(...pos.flatMap((r,i)=>r.map((v,k)=>Math.abs(v-end[i][k])))),vError=prior?Math.max(...velocity.map((v,i)=>Math.abs(v-prior[i]))):Infinity;
    lastConvergence={iterations:iteration+1,error,vError,identity,residual};
    mark?.('energy-and-endpoint');
    if(error<1e-11&&vError<1e-10&&identity<1e-9){
     if(Math.abs(residual)>1e-7)throw Object.assign(Error('Terrain candidate energy mismatch'),{candidate:{accepted:false,residual,forceWork,potentialChange,damping,error,vError}});
-    if((q.gearbox.selected==='N'&&Math.abs(q.gearbox.q)>=GEOMETRY.mouth-1e-9)||(q.gearbox.selected!=='N'&&Math.abs(q.gearbox.q)<GEOMETRY.release))throw Error('Terrain step crosses a gear event: subdivision is required');
+    if((q.gearbox.selected==='N'&&Math.abs(q.gearbox.q)>=GEOMETRY.mouth-1e-9)||(q.gearbox.selected!=='N'&&(Math.abs(q.gearbox.q)<GEOMETRY.release||q.gearbox.q*initial.gearbox.q<0)))throw Error('Terrain step crosses a gear event: subdivision is required');
     q.gearbox.lastStepCases=contactIterations;
     q.time+=h;q.z=q.vertical.q[0];q.vz=q.vertical.v[0];q.pitch=q.vertical.q[1];q.roll=q.vertical.q[2];q.pitchRate=q.vertical.v[1];q.rollRate=q.vertical.v[2];if(q.engine)finishEngine(q.engine,q.flywheel.omega,h);
     q.terrainLedger={contactIterations,normalWorkResidual:identity,endpointPositionError:error,endpointVelocityError:vError,residual,accumulatedResidual:(initial.terrainLedger?.accumulatedResidual||0)+residual,iterations:iteration+1,forceWork,potentialChange,springChange:after.springEnergy-before.springEnergy,gravityChange:after.gravityEnergy-before.gravityEnergy,terrainChange:actualElastic-U0,damping,numericalLoss:q.planar.contact.numericalLoss,elasticEnergy:actualElastic};
     const accepted=observer?[{start:observer.capture(cloneMechanical(initial)),end:observer.capture(cloneMechanical(q)),h}]:[];
-    return {state:q,contacts:sampleWheelTerrain({...context,state:q}),accepted,energyResidual:residual};
+    return {state:q,contacts:endpointContacts,accepted,energyResidual:residual};
    }
-   guess=q;guessPositions=pos;prior=velocity;
+   guess=q;guessPositions=pos;guessContacts=endpointContacts;prior=velocity;
   }
   throw Object.assign(Error('Terrain endpoint iteration failed to converge'),{candidate:lastConvergence});
 
@@ -128,9 +149,35 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
  return {state:trial.state,contacts:trial.contacts,accepted,energyResidual:trial.state.planar.contact.energyResidual};
 }
 export function stepTerrainVehicle(vehicle,ports={},h=.001,observer=null){
- const candidate=candidateTerrainStep(vehicle,ports,h,observer);
- vehicle.state=candidate.state;vehicle.contacts=candidate.contacts;
- if(observer)observer.accept(candidate.accepted);
+ let count;
+ try{count=selectorSubsteps(vehicle.state,h);}catch(error){error.integration={requestedH:h,attemptedSubsteps:0,publishedSubsteps:0};throw error;}
+ if(count===1){
+  const candidate=candidateTerrainStep(vehicle,ports,h,observer);
+  vehicle.state=candidate.state;vehicle.contacts=candidate.contacts;
+  vehicle.integration={substeps:1,requestedH:h,internalH:h,energyResidual:candidate.energyResidual,absoluteEnergyResidual:Math.abs(candidate.energyResidual)};
+  if(observer)observer.accept(candidate.accepted);
+  return vehicle;
+ }
+ const innerH=h/count,staged={...vehicle},accepted=[];
+ const sumFields=['residual','forceWork','potentialChange','springChange','gravityChange','terrainChange','damping','numericalLoss','iterations','contactIterations','normalWorkResidual'];
+ const totals=Object.fromEntries(sumFields.map(k=>[k,0]));let energyResidual=0,absoluteEnergyResidual=0,cases=0,searches=0;
+ let attempted=0;
+ try{for(let i=0;i<count;i++){
+  attempted++;
+  const candidate=candidateTerrainStep(staged,ports,innerH,observer);
+  staged.state=candidate.state;staged.contacts=candidate.contacts;accepted.push(...candidate.accepted);
+  energyResidual+=candidate.energyResidual;absoluteEnergyResidual+=Math.abs(candidate.energyResidual);cases+=staged.state.gearbox.lastStepCases||0;searches+=staged.state.gearbox.eventIterations||0;
+  if(staged.state.terrainLedger)for(const key of sumFields)totals[key]+=staged.state.terrainLedger[key]||0;
+ }
+ }catch(error){error.integration={requestedH:h,plannedSubsteps:count,attemptedSubsteps:attempted,publishedSubsteps:0};throw error;}
+ if(absoluteEnergyResidual>1e-7||totals.normalWorkResidual>1e-9)throw Object.assign(Error('Subdivided terrain work check failed'),{candidate:{residual:energyResidual,absoluteEnergyResidual,normalWorkResidual:totals.normalWorkResidual},integration:{requestedH:h,plannedSubsteps:count,attemptedSubsteps:count,publishedSubsteps:0}});
+ if(count>1){
+  if(staged.state.terrainLedger)Object.assign(staged.state.terrainLedger,totals,{internalSubsteps:count});
+  staged.state.gearbox.lastStepCases=cases;staged.state.gearbox.eventIterations=searches;
+ }
+ vehicle.state=staged.state;vehicle.contacts=staged.contacts;
+ vehicle.integration={substeps:count,requestedH:h,internalH:innerH,energyResidual,absoluteEnergyResidual};
+ if(observer)observer.accept(accepted);
  return vehicle;
 }
 

@@ -9,6 +9,7 @@ try{
  const path=kind==='e10'?'four-corner-load-transfer':'procedural-terrain',page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>{window.frameTimes=[];const raf=requestAnimationFrame.bind(window);let previous;window.requestAnimationFrame=callback=>raf(t=>{if(previous!==undefined)frameTimes.push(t-previous);previous=t;callback(t);});});
  await page.goto(`http://127.0.0.1:${server.address().port}/${path}/index.html`);await page.evaluate(async path=>window.app=await import(`/${path}/src/main.js`),path);
+ if(kind!=='e10'&&process.env.PHYSICS_HZ)await page.selectOption('#physics-frequency',process.env.PHYSICS_HZ);
  if(kind==='road'){await page.selectOption('#terrain','road');await page.locator('#parked-first').click();}
  const session=await page.context().newCDPSession(page);await session.send('Profiler.enable');await session.send('Performance.enable');if(profiling)await session.send('HeapProfiler.startSampling',{samplingInterval:32768,includeObjectsCollectedByMajorGC:true,includeObjectsCollectedByMinorGC:true});if(profiling)await session.send('Profiler.start');
  for(const phase of ['stationary','starter','accelerate-steer','brake','selector']){

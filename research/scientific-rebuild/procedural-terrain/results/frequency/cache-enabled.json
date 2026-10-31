@@ -1,0 +1,24 @@
+{
+  "count": 1000,
+  "report": [
+    {
+      "model": "road",
+      "mode": "accelerate-steer",
+      "terrainCache": true,
+      "stages": {},
+      "steps": 1000,
+      "simulated": 1.0000000000000007,
+      "wallMs": 1499.85754,
+      "medianMs": 1.0198179999999866,
+      "p95Ms": 3.3564859999999612,
+      "worstMs": 23.78139900000002,
+      "meanMs": 1.4984881759999975,
+      "endpointIterations": 4.874,
+      "contactIterations": 2.324,
+      "allEndpointContactIterations": 203.961,
+      "heapDelta": 2879112,
+      "maxResidual": 1.4969466110779895e-11,
+      "fault": null
+    }
+  ]
+}

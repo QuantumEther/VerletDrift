@@ -8,7 +8,7 @@ The iteration is bounded at 80 attempts, with 1e-11 m contact-position, 1e-10 ge
 
 ## Verified results
 
-`node --test research/scientific-rebuild/procedural-terrain/tests/*.test.mjs` passes 42 tests (use `--test-isolation=none` to report individual tests in this environment). They include the preserved historical failure, actual production inclined stepping, powered drivetrain/steering/braking, exact flat-state compatibility, unilateral opening/recontact, seeded small-amplitude terrain advancement and rejected-step rollback.
+`node --test research/scientific-rebuild/procedural-terrain/tests/*.test.mjs` passes 52 tests (use `--test-isolation=none` to report individual tests in this environment). They include the preserved historical failure, actual production inclined stepping, powered drivetrain/steering/braking, exact flat-state compatibility, unilateral opening/recontact, seeded small-amplitude terrain advancement and rejected-step rollback.
 
 For the same historical 1 ms inclined initial state, residual changes from 0.02200968484 J to -4.62054e-14 J. The accepted spring/gravity/terrain changes are +4.31388e-8 / +1.01181e-10 / -2.62268477e-4 J. Generalized conservative/damper force work is +2.58800657e-4 J; physical damper work is +3.42458e-6 J. Backward-Euler numerical loss remains separately reported by the contact ledger.
 
@@ -105,3 +105,7 @@ remain exposed rather than bypassed.
 ## Performance and early driving stalls
 
 See [measured performance report](results/performance/README.md) for the optimized contact algebra, isolated timings, 180-second driving trace, corrected large-coordinate work-gate failure, raw browser profiles and bounded 12 ms frame budget. Non-flat selector events remain explicitly unsupported. Real-time GPU performance is not established by this cloud software renderer.
+
+Frequency follow-up: [180-second driving, measured numerical damping and default recommendation](results/frequency/extended-study.md); [GPU/worker assessment](results/frequency/compute-feasibility.md). The 1000 Hz reference default is retained. Lower rates are experimental and change transient response despite passing the tested work checks.
+
+Coarse selector-stop stability now uses [bounded, atomic coupled subdivision](results/frequency/selector-stop-study.md). The display distinguishes nominal ticks from accepted/attempted internal work. Actual non-flat gear engagement/release events remain explicitly unsupported.
