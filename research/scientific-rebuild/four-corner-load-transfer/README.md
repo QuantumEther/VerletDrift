@@ -34,3 +34,5 @@ Bump terrain and forced rear-unload fixtures are not adapted: the combined solve
 Publishing requires this directory plus its unchanged Experiment 9 dependencies and regenerated lab files. Pages source access previously returned Forbidden; repository settings and public deployment are separate from the committed/browser-tested implementation.
 
 Suspension characterization, reproducible traces, rendering corrections and the detected long-session clutch fault are documented in `docs/scientific-rebuild/suspension-response-calibration.md`. Run `node research/scientific-rebuild/four-corner-load-transfer/tests/measure-suspension.mjs` to reproduce the recorded scenarios. A failed mixed session is explicitly marked incomplete; do not describe it as passing prolonged-driving validation.
+
+The historical mixed-session clutch failure is corrected by endpoint-consistent backward-Euler clutch mode selection. See `docs/scientific-rebuild/clutch-contact-transition.md` for exact replay, heat/work interpretation, 12 s refinement and 24 s mixed/selector/engagement results. Historical suspension traces remain unchanged as baseline evidence.

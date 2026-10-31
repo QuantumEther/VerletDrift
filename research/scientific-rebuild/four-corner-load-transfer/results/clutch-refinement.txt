@@ -1,0 +1,121 @@
+{
+  name: 'mixed',
+  h: 0.002,
+  duration: 12,
+  completed: true,
+  acceptedTime: 12.000000000000677,
+  fault: null,
+  maxPitch: 0.03340231685037462,
+  maxRoll: 0.08460468398985303,
+  maxPitchRate: 0.21823408843991482,
+  maxRollRate: 0.16905410300999843,
+  maxTravel: 0.14895820496686024,
+  maxRelativeVelocity: 0.27110012836378483,
+  minNormal: 148.39428289225464,
+  maxNormal: 361.72571710775037,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.64934460414729,
+  maxContactResidual: 2.8038864632873306e-12,
+  verticalResidual: 0.026558620204956754,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+{
+  name: 'mixed',
+  h: 0.001,
+  duration: 12,
+  completed: true,
+  acceptedTime: 11.999999999998789,
+  fault: null,
+  maxPitch: 0.033410967487494364,
+  maxRoll: 0.08466621983235215,
+  maxPitchRate: 0.21629134458308558,
+  maxRollRate: 0.1697855299181863,
+  maxTravel: 0.14897270923250772,
+  maxRelativeVelocity: 0.27023615820540803,
+  minNormal: 148.31259043131317,
+  maxNormal: 361.8074095686874,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.440156755697867,
+  maxContactResidual: 2.5360199508960013e-12,
+  verticalResidual: 0.006635093564534004,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+{
+  name: 'mixed',
+  h: 0.0005,
+  duration: 12,
+  completed: true,
+  acceptedTime: 12.000000000003174,
+  fault: null,
+  maxPitch: 0.03341494141190969,
+  maxRoll: 0.08469624051241156,
+  maxPitchRate: 0.215321907719645,
+  maxRollRate: 0.1701600671542694,
+  maxTravel: 0.14897842024566155,
+  maxRelativeVelocity: 0.2697980613913379,
+  minNormal: 148.2728892320062,
+  maxNormal: 361.84711076799323,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.342670592999152,
+  maxContactResidual: 2.5237421202341237e-12,
+  verticalResidual: 0.001658247068304553,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+✔ positive and negative near-zero slip preserve capacity, heat and coupled work checks (1056.888118ms)
+✔ unchanged mixed driving completes at three timestep sizes (77693.299759ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78822.740416

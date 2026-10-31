@@ -46,17 +46,24 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
   for(const sign of [1,-1]){const j=Array(n).fill(0);j[10]=sign*.1;rows.push({j,bias:.1*(sign*st.wheelAngle-st.geometry.columnLimit)/h});groups.push({indices:[rows.length-1],lower:0,upper:1e6,limit:1e6});}
  }
  const cj=Array(n).fill(0);cj[5]=1;if(neutral)cj[6]=-1;else grad.forEach((a,i)=>cj[i]=-a);rows.push({j:cj});groups.push({indices:[rows.length-1],limit:h*capacity});
+ // All contact constraints use backward Euler: kinetic friction opposes
+ // END-stage slip; static capture has zero end-stage slip within capacity.
+ // Midpoint work is retained for the rotor identity, not used as a friction
+ // admissibility test or a thermal quantity. Numerical loss is separate.
+ const clutchCandidates=[];
  let result,v,z,clutch,slipOld=oldEngine-oldInput,slipNew,heat,acceptedMode,totalIterations=0;
  for(const mode of capacity>0?['locked',1,-1]:[0]){
   const last=groups.at(-1);delete last.fixed;if(mode!=='locked')last.fixed=mode*h*capacity;
   const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:p.contactImpulse?.map(a=>a*h/p.contactImpulseH)});totalIterations+=trial.iterations;
   const speed=cj.reduce((s,a,i)=>s+a*trial.velocity[i],0),torque=trial.z.at(-1)/h,loss=h*torque*(slipOld+speed)/2;
-  if((mode==='locked'?Math.abs(speed)<1e-8:mode===0||mode*(slipOld+speed)>=-1e-9)&&loss>=-1e-10){result=trial;v=trial.velocity;z=trial.z;clutch=torque;slipNew=speed;heat=Math.max(0,loss);acceptedMode=mode;break;}
+  clutchCandidates.push({mode,slip:speed,torque,endpointWork:h*torque*speed,midpointWork:loss});
+  if((mode==='locked'?Math.abs(speed)<1e-8:mode===0||mode*speed>=-1e-9)&&h*torque*speed>=-1e-10){result=trial;v=trial.velocity;z=trial.z;clutch=torque;slipNew=speed;heat=Math.max(0,h*torque*speed);acceptedMode=mode;break;}
  }
  if(!result)throw Error(`Clutch/contact modes unresolved: h=${h}, slip=${slipOld}, capacity=${capacity}, motor=${drive}`);
+ f.contactCandidates=clutchCandidates;
  vs.v=v.slice(11,18);
  p.contactImpulse=[...z];p.contactImpulseH=h;
- f.omega=v[5];f.angle+=h*f.omega;f.torque=clutch;f.capacity=capacity;f.slip=slipNew;f.state=capacity===0?'disengaged':acceptedMode==='locked'?'locked':'slipping';f.heatingPower=Math.max(0,heat)/h;f.heat+=Math.max(0,heat);f.motorTorque=drive;
+ f.omega=v[5];f.angle+=h*f.omega;f.torque=clutch;f.capacity=capacity;f.slip=slipNew;f.state=capacity===0?'disengaged':acceptedMode==='locked'?'locked':'slipping';f.midpointClutchWork=h*clutch*(slipOld+slipNew)/2;f.heatingPower=Math.max(0,heat)/h;f.heat+=Math.max(0,heat);f.motorTorque=drive;
  g.velocity=v[4];g.q+=h*g.velocity;if(neutral){g.neutralOmega=v[6];g.neutralAngle+=h*v[6];}
  let tireDissipation=0,brakeDissipation=0,serviceDissipation=0,handbrakeDissipation=0,forceLawResidual=0;w.forEach((c,i)=>{const a=geometry[i];c.omega=v[i];c.angle+=h*c.omega;c.steering=a.delta;c.forceHeading=p.heading+a.delta;c.fx=-z[2*i]/h;c.fy=-z[2*i+1]/h;c.normal=loads[i];c.brake=-z[brakeStart+i]/h;c.serviceBrakeTorque=c.brakeCapacity?c.brake*c.serviceBrakeCapacity/c.brakeCapacity:0;c.handbrakeTorque=c.brakeCapacity?c.brake*c.handbrakeCapacity/c.brakeCapacity:0;c.drive=i>=2?G*clutch/2:0;c.slipX=a.j.reduce((s,b,j)=>s+b*v[j],0);c.slipY=a.k.reduce((s,b,j)=>s+b*v[j],0);c.slip=-c.slipX;c.alpha=Math.atan2(c.slipY,Math.max(Math.abs(a.j[7]*v[7]+a.j[8]*v[8]+a.j[9]*v[9]),.5));c.utilization=loads[i]>0?Math.hypot(c.fx,c.fy)/(c.mu*loads[i]):0;c.contactMode=loads[i]<=0?'unloaded':c.utilization>1-1e-6?'sliding':'rolling/creep';c.brakeHeld=c.brakeCapacity>0&&Math.abs(z[brakeStart+i])<h*c.brakeCapacity-1e-9;const constitutive=tireForce(c.slipX,c.slipY,loads[i],c.mu);forceLawResidual=Math.max(forceLawResidual,Math.hypot(c.fx-constitutive.fx,c.fy-constitutive.fy));tireDissipation+=-(c.fx*c.slipX+c.fy*c.slipY);brakeDissipation+=-c.brake*c.omega;serviceDissipation-=c.serviceBrakeTorque*c.omega;handbrakeDissipation-=c.handbrakeTorque*c.omega;});
  let steeringLoss=0;
@@ -72,7 +79,7 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  w[2].drive=diff.outputs[0];w[3].drive=diff.outputs[1];
  g.inputTorque=G?delivered/G:0;g.inputPower=g.inputTorque*inputNew;g.outputPower=delivered*(w[2].omega+w[3].omega)/2;g.camForce=grad[4]*g.inputTorque;g.camPower=g.camForce*g.velocity;g.driverWork=(g.driverWork||0)+h*g.driverForce*(oldSelector+g.velocity)/2;
  const midWork=h*(drive*(oldEngine+f.omega)/2+selector*(oldSelector+g.velocity)/2+w.reduce((s,c,i)=>s+(c.brake-c.radius*c.fx)*(old[i]+c.omega)/2,0)),bearing=neutral?h*g.bearingDrag*inputNew*(oldInput+inputNew)/2:0;
- g.rotationalWorkResidual=rotorE()-oldRotorE-midWork+Math.max(0,heat)+bearing;f.transmissionSpeed=inputNew;f.gearHousingTorque=(1-G)*g.inputTorque;
+ g.rotationalWorkResidual=rotorE()-oldRotorE-midWork+h*clutch*(slipOld+slipNew)/2+bearing;f.transmissionSpeed=inputNew;f.gearHousingTorque=(1-G)*g.inputTorque;
  const co=Math.cos(p.heading),si=Math.sin(p.heading),wx=co*v[7]-si*v[8],wy=si*v[7]+co*v[8];p.r=v[9];p.heading+=h*p.r;p.x+=h*wx;p.y+=h*wy;const cn=Math.cos(p.heading),sn=Math.sin(p.heading);p.u=cn*wx+sn*wy;p.v=-sn*wx+cn*wy;
  const energy=verticalEnergy()+steeringEnergy()+rotorE()+.5*mass*(p.u*p.u+p.v*p.v)+.5*p.Iz*p.r*p.r,work=h*(drive*f.omega+selector*g.velocity+(st?st.driverTorque*v[10]:0)),clutchEnd=clutch*slipNew,bearingEnd=neutral?g.bearingDrag*inputNew**2:0;
  const numericalLoss=vm.reduce((sum,m,i)=>sum+.5*m*(v[11+i]-oldVertical[i])**2,0)+(st ? .5*sd.inertia*(v[10]-oldSteering)**2 : 0)+rotorEnergy(w,diff,w.map((c,i)=>c.omega-old[i]))+.5*f.inertia*(f.omega-oldEngine)**2+.5*g.inputInertia*(inputNew-oldInput)**2+.5*g.selectorMass*(g.velocity-oldSelector)**2+.5*mass*((v[7]-v0[7])**2+(v[8]-v0[8])**2)+.5*p.Iz*(v[9]-v0[9])**2;
