@@ -9,3 +9,7 @@ RK4 integrates this smooth piecewise-elastic subsystem. Four deterministic tests
 Run: node research/scientific-rebuild/four-corner-load-transfer/tests/vertical.test.mjs
 
 Driving coupling remains unfinished. Existing steering, drivetrain, brake and tangential contact modules will be reused through their ports; none is duplicated or connected yet. There is no longitudinal/lateral load-transfer fidelity claim, load-sensitive tire model, driving UI or track renderer in this stage. Future integration must close the horizontal/vertical reaction-work ledger before enabling driving scenarios. Prior experiments are unchanged.
+
+## Contact-port extension
+
+`src/contact-port.js` now defines an independently tested linearized virtual-work interface for horizontal contact forces. It maps contact velocities and reactions through the same Jacobian, including yaw and reference-CG-height pitch/roll moments. The three tests check every generalized velocity basis, braking/acceleration and lateral sign reversal, and zero-height limits. This is an interface foundation, not an enabled vehicle coupling: no tire forces are yet passed through it and it does not demonstrate driving load transfer. It linearizes around fixed reference geometry; finite pitch/roll and changing contact height require consistent kinematics rather than simply inserting this moment into the existing planar update. The coupled solver must include these Jacobian terms in slip velocities and the inertia matrix before forces are applied. Applying only the reaction moment would violate work balance.
