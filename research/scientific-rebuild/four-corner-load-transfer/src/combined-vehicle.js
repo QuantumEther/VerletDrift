@@ -21,7 +21,7 @@ export function createVehicle({mode='independent',scenario='uniform',worn=false,
   if(scenario==='asymmetric')s.wheels[2].mu=.08;
   if(automobile){s.engine=createEngine();s.steering=createSteering(s.wheelbase,s.track);s.brakes=brakeActuation();}
   s.gearbox=createGearbox();s.gearbox.worn=worn;syncGearParameters(s);
-  s.vertical=createVertical();s.verticalLedger={residual:0,dampingWork:0};
+  s.vertical=createVertical();s.roll=0;s.rollRate=0;s.verticalLedger={residual:0,dampingWork:0};
   return s;
 }
 export function roadAt(s,x) {
@@ -30,14 +30,12 @@ export function roadAt(s,x) {
   return u>0&&u<1?{height:.08*Math.sin(Math.PI*u)**2,slope:.08*Math.PI/.8*Math.sin(2*Math.PI*u)}:{height:0,slope:0};
 }
 export function supportRetracted(s){return s.scenario==='unload'&&s.time>=.5&&s.time<1;}
-export function cornerForces(s,c) {
-  const road=roadAt(s,s.x+c.arm*Math.cos(s.planar.heading));
-  const compression=c.L0-(s.z+c.arm*s.pitch-c.z);
-  const spring=c.ks*compression,damper=-c.cs*(s.vz+c.arm*s.pitchRate-c.vz);
-  const delta=Math.max(0,c.radius+road.height-c.z);
-  const normal=delta>0?Math.max(0,c.kt*delta-c.ct*(c.vz-road.slope*(s.planar.u*Math.cos(s.planar.heading)-s.planar.v*Math.sin(s.planar.heading)-c.arm*Math.sin(s.planar.heading)*s.planar.r))):0;
-  const supportedNormal=normal*(c.arm<0&&supportRetracted(s)?.5:1);
-  return {compression,spring,damper,suspension:spring+damper,delta,normal:supportedNormal,contact:supportedNormal>0,road};
+// Read-only legacy diagnostic aggregate; dynamics use four independent states.
+export function cornerForces(s,c){
+ const e=evaluate(s.vertical),axle=c.arm>0?0:1,ids=[2*axle,2*axle+1];
+ const compression=ids.reduce((n,i)=>{const [x,y]=s.vertical.corners[i];return n+s.vertical.length-(s.vertical.q[0]+x*s.vertical.q[1]+y*s.vertical.q[2]-s.vertical.q[3+i]);},0)/2;
+ const normal=ids.reduce((n,i)=>n+e.normal[i],0),suspension=ids.reduce((n,i)=>n+e.spring[i],0),spring=2*s.vertical.ks*compression;
+ return {compression,normal,suspension,spring,damper:suspension-spring,contact:normal>0,road:{height:0,slope:0}};
 }
 const vector=s=>[...s.vertical.q,...s.vertical.v];
 function stepVehicleCore(s,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,throttle=0,starter=false}={},h=.001) {

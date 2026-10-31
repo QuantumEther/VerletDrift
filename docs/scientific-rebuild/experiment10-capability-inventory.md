@@ -2,7 +2,7 @@
 
 Current state after b4f7f61: the reduced interactive page is not a complete successor to Experiment 9. The governing cumulative-development rule is in research/scientific-rebuild/AGENTS.md.
 
-| Capability | Experiment 9 | Experiment 10 current |
+| Capability | Experiment 9 | Experiment 10 at b4f7f61 |
 | --- | --- | --- |
 | Interactive 3D vehicle, cutaways, orbit/focus cameras | Present | Missing |
 | Engine, starter, ignition and throttle | Present | Missing |
@@ -23,3 +23,7 @@ Experiment 9 `src/planar.js` owns an eleven-velocity solve with non-diagonal dri
 The next implementation must create an Experiment-10-specific extension of the mature solver, retaining its first eleven velocity coordinates and rotor block, and append seven vertical velocities. Embed the contact-port pitch/roll coefficients into each tire row, respecting road-wheel rotation and the existing trail/steering coefficient; include those velocities in slip and reaction work. Replace only the axle-level RK step with the seven-coordinate vertical step. Map its four end-stage normal loads directly to tire limits; extend kinetic/potential/damping and numerical-loss accounting. Retain gear-event cloning and accepted-substage observer emission. Do not call the reduced tire solve on top of this extended solver.
 
 Only after the combined solve passes rotor, steering, contact, energy and refinement tests should the mature application and 3D scene be adapted: four physical corner heights must drive hubs and suspension artwork, while any two-axle summary is display-only. Then enable inherited continuous controls and compare actual drivetrain sessions and tracks with Experiment 9. This inventory records inspected interfaces, not completed integration or new validation evidence.
+
+## Current integrated application
+
+The normal Experiment 10 entry now runs the mature combined vehicle, not the reduced fixture. Engine/clutch/gearbox/differential, dynamic steering, brakes/handbrake, continuous flat-ground driving, 3D mechanical cameras/cutaways, gauges/audio and bounded accepted-stage marks are restored through unchanged predecessor modules and local four-corner adapters. Browser assertions cover all twelve inspection modes, real corner heights, steering, engine/first-gear launch, track visibility/clear and renderer recreation. Flat terrain remains the explicit compatibility boundary: bump and forced unload fixtures are not enabled. The physical contact port remains small-angle/reference-height; see the current experiment README for numerical residuals and remaining scientific validation gates.

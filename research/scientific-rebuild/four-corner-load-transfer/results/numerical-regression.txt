@@ -1,0 +1,76 @@
+{
+  contactResidual: 6.762832481521652e-13,
+  verticalLedger: { residual: 0.0004299235023129356, dampingWork: 1.7033235056509033 },
+  loads: [
+    310.0813621251197,
+    334.2369975428472,
+    175.8830024571534,
+    200.0386378748775
+  ]
+}
+{
+  pitch: [
+    -0.031228976465807034,
+    -0.03133003875537543,
+    -0.031380314289966474
+  ],
+  residual: [
+    0.0008260382998959747,
+    0.00020801980516279553,
+    0.00005218962666506553
+  ]
+}
+✔ zero-height contact reduction preserves predecessor drivetrain and steering solve (28.453116ms)
+✔ braking and dynamic steering exchange work with four independent corners (573.969366ms)
+✔ engine, clutch and differential transmit load in the combined vehicle (3491.818089ms)
+✔ accepted observer emission is detached and diagnostics do not affect state (231.477638ms)
+✔ pitch and vertical work residual converge under refinement; reverse remains finite (1079.492824ms)
+✔ failed stage emits no samples or partial vertical state (1.100238ms)
+✔ gear-event search reports accepted split stages once (513.156811ms)
+✔ virtual work equals contact power for independent generalized velocities (2.151622ms)
+✔ actual contact moment signs mirror braking, acceleration and turn direction (0.815143ms)
+✔ zero reference height has no longitudinal/lateral pitch or roll moment (0.795434ms)
+✔ locked wheels couple braking force to actual pitch velocity with closed impulse work (3.684964ms)
+✔ lateral contact impulses mirror roll and zero load removes contact (3.544375ms)
+{
+  brakingLoads: [
+    323.4639430077091,
+    323.4639430077091,
+    186.6560569922904,
+    186.6560569922904
+  ],
+  accelerationLoads: [
+    251.70506388487723,
+    251.70506388487723,
+    258.4149361151245,
+    258.4149361151245
+  ],
+  energyResidual: 0.0004484825406251983
+}
+{
+  pitch: [ -0.03804367571948389, -0.038051890709078655, -0.03805552501445777 ],
+  energy: [
+    0.001787878049430404,
+    0.0004484825406251983,
+    0.00011230486310240105
+  ]
+}
+✔ integrated static equilibrium and signed braking/acceleration transfer (927.765206ms)
+✔ left/right load and roll mirror with bounded energy residual (533.584426ms)
+✔ step refinement and reverse remain finite (882.695329ms)
+{
+  coarseEnergyError: 0.0000015823507055756636,
+  fineEnergyError: 4.9726850193110295e-8
+}
+✔ static four-corner equilibrium and total weight (35.898376ms)
+✔ unilateral independent contact and moment balance (0.299325ms)
+✔ symmetric heave stays symmetric; damping dissipates (70.400245ms)
+✔ conservative oscillation energy converges under refinement (4.885411ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6081.544829
