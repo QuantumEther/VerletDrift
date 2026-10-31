@@ -14,7 +14,7 @@ def read(name):
     return json.loads(gzip.decompress((root / (name + '.json.gz')).read_bytes()))
 def csvout(name, rows):
     with (root / name).open('w', newline='') as out:
-        writer = csv.DictWriter(out, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(out, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 def percentile(values, p):
