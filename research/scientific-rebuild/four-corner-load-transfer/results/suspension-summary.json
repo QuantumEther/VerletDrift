@@ -1,0 +1,500 @@
+[
+  {
+    "name": "heave",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0,
+    "maxRoll": 0,
+    "maxPitchRate": 0,
+    "maxRollRate": 0,
+    "maxTravel": 0.10332444653728629,
+    "maxRelativeVelocity": 0.08951942572794777,
+    "minNormal": 227.49490297483078,
+    "maxNormal": 268.5771303377482,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": 0.664999999999939,
+    "observedHz": 1.5037593984963786,
+    "dampingRatio": 0.17317628563443518,
+    "settlingTolerance": 0.0002,
+    "settlingTime": 2.360999999999851,
+    "oppositePeak": -0.0057441404880947955,
+    "damperEnergy": 0.4000000172128843,
+    "maxContactResidual": 0,
+    "verticalResidual": 1.804736879673031e-8,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "pitch",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.004999558587811614,
+    "maxRoll": 4.6243978578785236e-23,
+    "maxPitchRate": 0.04475869055223492,
+    "maxRollRate": 4.271452674209957e-22,
+    "maxTravel": 0.10309873117143992,
+    "maxRelativeVelocity": 0.0515147024703702,
+    "minNormal": 242.13399387722822,
+    "maxNormal": 267.9860061227723,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": 0.5449999999999569,
+    "observedHz": 1.8348623853212462,
+    "dampingRatio": 0.22205483783071814,
+    "settlingTolerance": 0.0001,
+    "settlingTime": 1.4309999999999532,
+    "oppositePeak": -0.0024384869536661848,
+    "damperEnergy": 0.09667665369502909,
+    "maxContactResidual": 2.692543120302971e-13,
+    "verticalResidual": 3.4292587851034793e-7,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "roll",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 7.578265039233206e-17,
+    "maxRoll": 0.004999642294583339,
+    "maxPitchRate": 9.713979304775868e-16,
+    "maxRollRate": 0.02858023511154972,
+    "maxTravel": 0.10109928870256024,
+    "maxRelativeVelocity": 0.021662227691429975,
+    "minNormal": 246.7868663727657,
+    "maxNormal": 263.33313362723374,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": 0.8599999999999112,
+    "observedHz": 1.1627906976745388,
+    "dampingRatio": 0.20831487541293733,
+    "settlingTolerance": 0.0001,
+    "settlingTime": 2.270999999999861,
+    "oppositePeak": -0.002625964649556413,
+    "damperEnergy": 0.025690258657640394,
+    "maxContactResidual": 1.9809269617388654e-13,
+    "verticalResidual": 4.54203329630714e-7,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "corner-release",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.0017619858014966017,
+    "maxRoll": 0.00190548312369497,
+    "maxPitchRate": 0.038786225218537224,
+    "maxRollRate": 0.037935347243289376,
+    "maxTravel": 0.1180745081003699,
+    "maxRelativeVelocity": 0.9358014822609023,
+    "minNormal": 0,
+    "maxNormal": 523.660559218323,
+    "unloadedSamples": 17,
+    "recontacts": 1,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0004,
+    "settlingTime": 0.5410000000000004,
+    "oppositePeak": -0.013424479569435044,
+    "damperEnergy": 3.8413456962376853,
+    "maxContactResidual": 3.520054685039754e-13,
+    "verticalResidual": -0.000052873511350130824,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "progressive-braking",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.026663229816310207,
+    "maxRoll": 1.1283632546443692e-16,
+    "maxPitchRate": 0.17825911296398692,
+    "maxRollRate": 8.952806441023916e-16,
+    "maxTravel": 0.12233285280313572,
+    "maxRelativeVelocity": 0.16128127756433852,
+    "minNormal": 206.15121103538914,
+    "maxNormal": 303.96878896461146,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0002,
+    "settlingTime": null,
+    "oppositePeak": 0,
+    "damperEnergy": 1.8826976977349918,
+    "maxContactResidual": 5.021820090843343e-13,
+    "verticalResidual": 0.0009319390696072412,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "emergency-braking",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.07339191986755993,
+    "maxRoll": 7.83092493570167e-18,
+    "maxPitchRate": 0.45151186555225153,
+    "maxRollRate": 1.0229599600873204e-17,
+    "maxTravel": 0.16476614778561172,
+    "maxRelativeVelocity": 0.4193872140352913,
+    "minNormal": 112.40462238608417,
+    "maxNormal": 397.7153776139175,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0002,
+    "settlingTime": null,
+    "oppositePeak": 0,
+    "damperEnergy": 13.221045646833508,
+    "maxContactResidual": 5.719175133478416e-13,
+    "verticalResidual": 0.0023761345201153195,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "acceleration",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.017042424661779892,
+    "maxRoll": 9.427285091126498e-17,
+    "maxPitchRate": 0.17110883882718303,
+    "maxRollRate": 5.641874044681442e-16,
+    "maxTravel": 0.11359049362081386,
+    "maxRelativeVelocity": 0.1579964944039261,
+    "minNormal": 220.27662802744595,
+    "maxNormal": 289.8433719725546,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0002,
+    "settlingTime": null,
+    "oppositePeak": 0,
+    "damperEnergy": 1.7514251867239452,
+    "maxContactResidual": 3.828979613842293e-12,
+    "verticalResidual": 0.0004041730393472392,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "reversal",
+    "h": 0.001,
+    "duration": 6,
+    "completed": true,
+    "acceptedTime": 6.000000000000338,
+    "fault": null,
+    "maxPitch": 0.0031906823958034094,
+    "maxRoll": 0.0649690304804885,
+    "maxPitchRate": 0.023480073983376586,
+    "maxRollRate": 0.33164679438754885,
+    "maxTravel": 0.13639198379616696,
+    "maxRelativeVelocity": 0.19631376225842462,
+    "minNormal": 175.15926748942866,
+    "maxNormal": 334.9607325105697,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0002,
+    "settlingTime": null,
+    "oppositePeak": 0,
+    "damperEnergy": 3.854634028768592,
+    "maxContactResidual": 9.967257596533996e-13,
+    "verticalResidual": 0.003195241179704575,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  },
+  {
+    "name": "mixed",
+    "h": 0.001,
+    "duration": 12,
+    "completed": false,
+    "acceptedTime": 10.80699999999945,
+    "fault": {
+      "time": 10.80699999999945,
+      "message": "Clutch/contact modes unresolved: h=0.001, slip=0.010685618244927753, capacity=15, motor=1.8959173940245495"
+    },
+    "maxPitch": 0.033410967487494364,
+    "maxRoll": 0.08466621983235215,
+    "maxPitchRate": 0.21629134458308558,
+    "maxRollRate": 0.1697855299181863,
+    "maxTravel": 0.14897270923250772,
+    "maxRelativeVelocity": 0.27023615820540803,
+    "minNormal": 148.31259043131317,
+    "maxNormal": 361.8074095686874,
+    "unloadedSamples": 0,
+    "recontacts": 0,
+    "period": null,
+    "observedHz": null,
+    "dampingRatio": null,
+    "settlingTolerance": 0.0002,
+    "settlingTime": null,
+    "oppositePeak": 0,
+    "damperEnergy": 18.37533968887898,
+    "maxContactResidual": 2.5360199508960013e-12,
+    "verticalResidual": 0.006361609185414516,
+    "reference": [
+      [
+        1.5155576319931985,
+        9.64955264907698
+      ],
+      [
+        2.018662812163525,
+        9.659498736496023
+      ],
+      [
+        1.8176181712284796,
+        9.655132234562464
+      ]
+    ],
+    "dampingReference": [
+      [
+        0.17224886840620807,
+        0.11589032089705298
+      ],
+      [
+        0.22845178080923972,
+        0.12068432467968995
+      ],
+      [
+        0.2060873063310787,
+        0.11857022041662466
+      ]
+    ]
+  }
+]

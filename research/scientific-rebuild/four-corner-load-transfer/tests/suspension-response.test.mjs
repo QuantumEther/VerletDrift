@@ -1,0 +1,2 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {measure} from './measure-suspension.mjs';
+test('coupled heave decay agrees with lightly damped two-mass reference',()=>{const a=measure('heave',.001,3).summary,b=measure('heave',.001,3).summary;assert.deepEqual(a,b);assert.ok(a.completed);const f=a.reference[0][0],z=a.dampingReference[0][0],predicted=f*Math.sqrt(1-z*z);assert.ok(Math.abs(a.observedHz-predicted)/predicted<.03);assert.ok(Math.abs(a.dampingRatio-z)<.02);assert.ok(a.damperEnergy>0);assert.equal(a.unloadedSamples,0);});
