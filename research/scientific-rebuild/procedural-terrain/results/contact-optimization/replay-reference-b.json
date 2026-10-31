@@ -1,0 +1,10 @@
+{
+  "runtime": "v24.19.0",
+  "cases": 84,
+  "states": 1680,
+  "differingFields": 0,
+  "maxMechanical": 0,
+  "maxMechanicalField": null,
+  "maxDiagnostic": 0,
+  "first": null
+}

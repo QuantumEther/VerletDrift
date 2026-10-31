@@ -116,3 +116,10 @@ The optional headless speed-normalized anisotropic law passes the tested
 constitutive and numerical gates but fails the 10% CPU-overhead retention gate.
 Its inherited flat-ground dispatch is explicitly unsupported; no UI selector or
 historical experiment changes are included.
+
+Mission 13: [contact optimization, conditioning and preservation](results/contact-optimization/README.md).
+Reference A now reuses identical matrices within each clutch-mode loop and remains
+bit-exact. Headless B additionally uses a private preceding-mode warm seed;
+controlled recovery ablations reduce its CPU cost by about 17%, but B still
+fails the 10% retention target against optimized A. The safeguarded-Newton
+diagnostic stays experimental; A remains the application default.

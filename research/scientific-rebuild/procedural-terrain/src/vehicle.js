@@ -80,6 +80,8 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
  const mark=vehicle.profile?name=>{const now=performance.now();vehicle.profile(name,now-lastMark);lastMark=now;}:null;
  const terrain=vehicle.terrain||createTerrain(vehicle.terrainSettings),context={...vehicle,terrain};
  const strategy=vehicle.tireStrategy?createTireStrategy(vehicle.tireStrategy):REFERENCE;
+ const optimization=vehicle.contactOptimization||(strategy.id==='reference'?'matrix':'warm-matrix');
+ if(!['reference','diagnostic','warm','matrix','warm-matrix','all'].includes(optimization))throw Error('Invalid contact optimization');
  const start=sampleWheelTerrain(context);
  const nonflat=start.some(c=>Math.abs(c.height)>1e-12||Math.abs(c.normal[0])+Math.abs(c.normal[1])>1e-12||c.friction!==.9);
  if(!nonflat&&strategy.id!=='reference')throw Error('Experimental tire strategy does not support the inherited flat-ground path');
@@ -125,7 +127,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    // A prior endpoint impulse is only an optimization seed. Original physical
    // velocities/inertia remain intact and the same KKT/work gates still apply.
    if(guess!==initial){q.planar.contactImpulse=guess.planar.contactImpulse;q.planar.contactImpulseH=guess.planar.contactImpulseH;}
-   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
+   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,contactProfile:vehicle.contactProfile,contactCapture:vehicle.contactCapture,contactOptimization:optimization,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
    contactIterations+=q.planar.contact.iterations;
    mark?.('unified-solve');
    q.vertical.q=vs.q.map((v,i)=>v+h*q.vertical.v[i]);

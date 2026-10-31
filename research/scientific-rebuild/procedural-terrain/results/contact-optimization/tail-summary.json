@@ -1,0 +1,44 @@
+[
+  {
+    "id": "reference",
+    "metric": "cpuMs",
+    "ratio": 1.0322681597252672,
+    "low": 0.8975335129592096,
+    "high": 1.1096745912623218
+  },
+  {
+    "id": "reference",
+    "metric": "p95Ms",
+    "ratio": 0.9462688636647226,
+    "low": 0.8195725265692796,
+    "high": 1.1103989849348688
+  },
+  {
+    "id": "reference",
+    "metric": "p99Ms",
+    "ratio": 1.0219323653017396,
+    "low": 0.8511568336831661,
+    "high": 1.2401489382304125
+  },
+  {
+    "id": "speed-normalized-anisotropic",
+    "metric": "cpuMs",
+    "ratio": 0.8985954285606177,
+    "low": 0.8505579460573071,
+    "high": 1.0232391597393846
+  },
+  {
+    "id": "speed-normalized-anisotropic",
+    "metric": "p95Ms",
+    "ratio": 0.8981751495368695,
+    "low": 0.8315826987292956,
+    "high": 1.0719858727049956
+  },
+  {
+    "id": "speed-normalized-anisotropic",
+    "metric": "p99Ms",
+    "ratio": 0.9440579817640486,
+    "low": 0.8141203066495788,
+    "high": 1.0349158582726188
+  }
+]

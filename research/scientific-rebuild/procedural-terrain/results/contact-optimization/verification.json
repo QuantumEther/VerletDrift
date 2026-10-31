@@ -1,0 +1,81 @@
+{
+  "baselineCommit": "59a6ed8",
+  "runtime": "v24.19.0",
+  "tests": {
+    "experiment11": {
+      "passed": 70,
+      "failed": 0,
+      "skipped": 0
+    },
+    "experiment10": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "A": {
+    "historicalBaselineCommit": "9eb20e4",
+    "acceptedStatesPerReplay": 1080,
+    "defaultReplay": "bit-exact",
+    "explicitReferenceReplay": "bit-exact"
+  },
+  "BReferenceReplay": {
+    "runtime": "v24.19.0",
+    "cases": 84,
+    "states": 1680,
+    "differingFields": 0,
+    "maxMechanical": 0,
+    "maxMechanicalField": null,
+    "maxDiagnostic": 0,
+    "first": null
+  },
+  "BOptimizedReplay": {
+    "runtime": "v24.19.0",
+    "cases": 84,
+    "states": 1680,
+    "differingFields": 267891,
+    "maxMechanical": 1.2839700858080505e-08,
+    "maxMechanicalField": "$.state.wheels.1.fy",
+    "maxDiagnostic": 2124,
+    "first": {
+      "scenario": "acceleration",
+      "h": 0.001,
+      "floor": 0.25,
+      "step": 0,
+      "expected": [
+        "$.integration.absoluteEnergyResidual",
+        "f64",
+        "3d3c6a90d2c24000"
+      ],
+      "actual": [
+        "$.integration.absoluteEnergyResidual",
+        "f64",
+        "3d3c73939b4c0000"
+      ]
+    }
+  },
+  "longComparisons": {
+    "runs": 198,
+    "faults": 0,
+    "A_JSONFinalStatesEqual": 99,
+    "BMaximumPositionDifference_m": 9.54014645060397e-13,
+    "BMaximumForceDifference_N": 1.4854984797807447e-08
+  },
+  "curves": {
+    "points": 608,
+    "A_BForceValues": "unchanged vs Mission 12"
+  },
+  "browser": {
+    "status": "PASS",
+    "version": "154.0.8037.57",
+    "errors": []
+  },
+  "selectedBackends": {
+    "A": "matrix",
+    "B": "warm-matrix"
+  },
+  "retention": "FAIL",
+  "tails": "A targeted p99 inconclusive; no universal tail certificate",
+  "unchanged": "Experiments 1\u201310, renderer, UI and lab registry",
+  "scientificGuards": "unchanged"
+}

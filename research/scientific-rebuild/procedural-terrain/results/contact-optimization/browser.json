@@ -1,0 +1,208 @@
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "clock": "controlled RAF; not GPU throughput",
+  "poseFrames": 2,
+  "cameraPolicy": "recreate and focus on first frame",
+  "afterStartRPM": 333.59768607868705,
+  "revRPM": 1660.0300982802048,
+  "firstGearLaunchSpeed": 0.7533572909783812,
+  "views": {
+    "normal": {
+      "camera": [
+        -2.8,
+        -3.4999999999999973,
+        2.4499999999999984
+      ],
+      "drawCalls": 210,
+      "triangles": 57590
+    },
+    "engine": {
+      "camera": [
+        1.7999999999999998,
+        -1.1499999999999988,
+        1.4999999999999993
+      ],
+      "drawCalls": 56,
+      "triangles": 20430
+    },
+    "brakes": {
+      "camera": [
+        0.2940036283590875,
+        1.8864150833026359,
+        0.6298539742005757
+      ],
+      "drawCalls": 120,
+      "triangles": 38462
+    },
+    "handbrake": {
+      "camera": [
+        -0.6279176459519018,
+        -2.1921951167499256,
+        1.389147
+      ],
+      "drawCalls": 148,
+      "triangles": 48926
+    },
+    "column": {
+      "camera": [
+        -1.6550353608350026,
+        0.40107100915642124,
+        1.4398539742005751
+      ],
+      "drawCalls": 93,
+      "triangles": 29662
+    },
+    "steeringbox": {
+      "camera": [
+        1.2870991565525638,
+        -0.23638054319609003,
+        0.8798539742005752
+      ],
+      "drawCalls": 63,
+      "triangles": 23298
+    },
+    "linkage": {
+      "camera": [
+        2.0742387126800335,
+        -0.4664051487917735,
+        1.3898539742005749
+      ],
+      "drawCalls": 67,
+      "triangles": 24594
+    },
+    "contact": {
+      "camera": [
+        0.6914289336590004,
+        1.6813464930522728,
+        0.31999999999999973
+      ],
+      "drawCalls": 70,
+      "triangles": 27878
+    },
+    "xray": {
+      "camera": [
+        2.7000000000000006,
+        -3.199999999999998,
+        2.699999999999998
+      ],
+      "drawCalls": 210,
+      "triangles": 57590
+    },
+    "clutch": {
+      "camera": [
+        0.75,
+        -1.2999999999999994,
+        1.35
+      ],
+      "drawCalls": 32,
+      "triangles": 17930
+    },
+    "driveline": {
+      "camera": [
+        0.6499999999999999,
+        1.6999999999999997,
+        1.649999999999999
+      ],
+      "drawCalls": 57,
+      "triangles": 27082
+    },
+    "exploded": {
+      "camera": [
+        1.7999999999999998,
+        -1.9999999999999982,
+        1.9999999999999987
+      ],
+      "drawCalls": 63,
+      "triangles": 28538
+    }
+  },
+  "memory": {
+    "terrain": {
+      "updates": 1,
+      "lastUpdateMs": 0,
+      "vertices": 3381
+    },
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 289,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "rebuilt": {
+    "terrain": {
+      "updates": 1,
+      "lastUpdateMs": 0,
+      "vertices": 3381
+    },
+    "tracks": {
+      "updates": 1,
+      "uploadedVertices": 24576,
+      "bytes": 937984,
+      "activePrimitives": 289,
+      "maxPrimitives": 4096,
+      "maxVertices": 24576,
+      "visible": true,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "geometries": 43,
+    "textures": 1,
+    "sceneGeometries": 155,
+    "materials": 40
+  },
+  "runtimeAfterLaboratoryReset": {
+    "clock": {
+      "budgetMs": 12,
+      "maxSteps": 32,
+      "maxDebt": 0.05,
+      "frequency": 1000,
+      "timestep": 0.001,
+      "debt": 0,
+      "wall": 0,
+      "simulated": 0,
+      "dilated": 0,
+      "pausedWall": 0,
+      "status": "running",
+      "fault": null,
+      "accepted": 0,
+      "rejected": 0,
+      "frameSteps": 0,
+      "physicsMs": 0,
+      "worstStepMs": 0,
+      "candidates": 0,
+      "searches": 0,
+      "fps": 0,
+      "stepsPerSecond": 0,
+      "realtimeRatio": 0,
+      "lastStepMs": 0,
+      "acceptedPhysicsMs": 0,
+      "rateWall": 0,
+      "rateFrames": 0,
+      "rateSteps": 0,
+      "internalSubsteps": 0,
+      "attemptedSubsteps": 0,
+      "frameSubsteps": 0,
+      "rateSubsteps": 0,
+      "substepsPerSecond": 0
+    },
+    "keys": [],
+    "pointers": 0,
+    "renderMs": 3.0999999940395355
+  },
+  "errors": []
+}

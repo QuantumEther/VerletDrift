@@ -1,4 +1,4 @@
-import {anisotropicForce,tireCompliance,frictionImpulseLimit,tireForce} from './tire-strategy.js';
+import {anisotropicForce,anisotropicForceReference,tireCompliance,frictionImpulseLimit,tireForce} from './tire-strategy.js';
 import {evaluateSuspension as evaluate} from './vertical.js';
 import {trailContactJacobian} from '../../tire-road-observatory-prototype/src/steering-contact-foundation.js';
 import {steeringJacobian,finishSteering} from '../../tire-road-observatory-prototype/src/steering.js';
@@ -9,7 +9,8 @@ import {solveContacts} from './contact-solver.js';
 export {createPlanar,tireLateral,contactVelocity,yawMoment} from '../../tire-road-observatory-prototype/src/planar-reference.js';
 export {tireForce};
 export const BRAKES={front:100,rear:70,handbrake:160}; // Nm PER wheel, 59:41 service bias.
-export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
+export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,contactProfile=null,contactCapture=null,contactOptimization='reference',normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
+ const preparationStart=contactProfile?performance.now():0;
  if(!vs||!st)throw Error('Combined solve requires vertical state and dynamic steering');
  const vm=[vs.mass,vs.pitchInertia,vs.rollInertia,...Array(4).fill(vs.wheelMass)],oldVertical=[...vs.v],verticalEnergy=()=>evaluate(vs).energy;
  if(!f)throw Error('Persistent flywheel required');
@@ -31,6 +32,7 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  const external=[0,0,0,0,selector,drive,0,0,0,0,st.driverTorque,...Array(7).fill(0)],free=v0.map((v,i)=>v+h*inverse[i].reduce((s,b,j)=>s+b*(external[j]+normalReaction[j]),0));if(neutral)free[6]=g.neutralOmega*g.inputInertia*inverse[6][6];
  if(st)free[10]=(sd.inertia*oldSteering+h*(st.driverTorque+normalReaction[10]))*inverse[10][10];
  const sj=st?steeringJacobian(st):[0,0];
+ const rowStart=contactProfile?performance.now():0;contactProfile?.({stage:'inertia-free',ms:rowStart-preparationStart});
  const rows=[],groups=[],geometry=[];
  w.forEach((c,i)=>{const delta=c.axle===0?(steeringAngles?.[i]??p.steering):0,cos=Math.cos(delta),sin=Math.sin(delta),j=Array(n).fill(0),k=Array(n).fill(0);j[i]=-c.radius;j[7]=cos;j[8]=sin;const front=st&&c.axle===0,trail=front?sd.trail:0,x=c.x+trail*(1-cos),y=c.y-trail*sin;j[9]=x*sin-y*cos;k[7]=-sin;k[8]=cos;k[9]=x*cos+y*sin;if(front)k[10]=trailContactJacobian(trail,sj[i]);j[12]=contactHeight*cos;j[13]=contactHeight*sin;k[12]=-contactHeight*sin;k[13]=contactHeight*cos;if(terrainFrames){j.splice(0,18,...terrainFrames[i].rows[0]);k.splice(0,18,...terrainFrames[i].rows[1]);}const start=rows.length;rows.push({j,compliance:tireCompliance(h,tireCoefficients?.[i].kx)},{j:k,compliance:tireCompliance(h,tireCoefficients?.[i].ky)});groups.push({indices:[start,start+1],limit:frictionImpulseLimit(h,c.mu,loads[i])});geometry.push({cos,sin,j,k,delta});});
  const brakeStart=rows.length;
@@ -51,11 +53,21 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  // END-stage slip; static capture has zero end-stage slip within capacity.
  // Midpoint work is retained for the rotor identity, not used as a friction
  // admissibility test or a thermal quantity. Numerical loss is separate.
+ contactProfile?.({stage:'rows',ms:performance.now()-rowStart});
+ // Cache is scoped to this one planar call: only clutch group bounds change.
+ const prepared=['matrix','warm-matrix','all'].includes(contactOptimization)?{}:null;
+ const warmModes=!!tireCoefficients&&['warm','warm-matrix','all'].includes(contactOptimization),fastDiagnostic=['diagnostic','all'].includes(contactOptimization);
+ let modeWarm=null;
  const clutchCandidates=[];
  let result,v,z,clutch,slipOld=oldEngine-oldInput,slipNew,heat,acceptedMode,totalIterations=0;
  for(const mode of capacity>0?['locked',1,-1]:[0]){
   const last=groups.at(-1);delete last.fixed;if(mode!=='locked')last.fixed=mode*h*capacity;
-  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:p.contactImpulse?.map(a=>a*h/p.contactImpulseH)});totalIterations+=trial.iterations;
+  const warmStart=contactProfile?performance.now():0;
+  const seed=warmModes&&modeWarm?modeWarm:p.contactImpulse?.map(a=>a*h/p.contactImpulseH);
+  contactProfile?.({stage:'initial-impulse',ms:performance.now()-warmStart});
+  if(warmModes&&modeWarm)contactProfile?.({stage:'mode-warm',ms:0});
+  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:seed,prepared,profile:contactProfile?e=>contactProfile({...e,mode}):null,capture:contactCapture?e=>contactCapture({...e,mode}):null});totalIterations+=trial.iterations;
+  if(warmModes)modeWarm=trial.z;
   const speed=cj.reduce((s,a,i)=>s+a*trial.velocity[i],0),torque=trial.z.at(-1)/h,loss=h*torque*(slipOld+speed)/2;
   clutchCandidates.push({mode,slip:speed,torque,endpointWork:h*torque*speed,midpointWork:loss});
   if((mode==='locked'?Math.abs(speed)<1e-8:mode===0||mode*speed>=-1e-9)&&h*torque*speed>=-1e-10){result=trial;v=trial.velocity;z=trial.z;clutch=torque;slipNew=speed;heat=Math.max(0,h*torque*speed);acceptedMode=mode;break;}
@@ -66,7 +78,10 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  p.contactImpulse=[...z];p.contactImpulseH=h;
  f.omega=v[5];f.angle+=h*f.omega;f.torque=clutch;f.capacity=capacity;f.slip=slipNew;f.state=capacity===0?'disengaged':acceptedMode==='locked'?'locked':'slipping';f.midpointClutchWork=h*clutch*(slipOld+slipNew)/2;f.heatingPower=Math.max(0,heat)/h;f.heat+=Math.max(0,heat);f.motorTorque=drive;
  g.velocity=v[4];g.q+=h*g.velocity;if(neutral){g.neutralOmega=v[6];g.neutralAngle+=h*v[6];}
- let tireDissipation=0,brakeDissipation=0,serviceDissipation=0,handbrakeDissipation=0,forceLawResidual=0;w.forEach((c,i)=>{const a=geometry[i];c.omega=v[i];c.angle+=h*c.omega;c.steering=a.delta;c.forceHeading=p.heading+a.delta;c.fx=-z[2*i]/h;c.fy=-z[2*i+1]/h;c.normal=loads[i];c.brake=-z[brakeStart+i]/h;c.serviceBrakeTorque=c.brakeCapacity?c.brake*c.serviceBrakeCapacity/c.brakeCapacity:0;c.handbrakeTorque=c.brakeCapacity?c.brake*c.handbrakeCapacity/c.brakeCapacity:0;c.drive=i>=2?G*clutch/2:0;c.slipX=a.j.reduce((s,b,j)=>s+b*v[j],0);c.slipY=a.k.reduce((s,b,j)=>s+b*v[j],0);c.slip=-c.slipX;c.alpha=Math.atan2(c.slipY,Math.max(Math.abs(a.j[7]*v[7]+a.j[8]*v[8]+a.j[9]*v[9]),.5));c.utilization=loads[i]>0?Math.hypot(c.fx,c.fy)/(c.mu*loads[i]):0;c.contactMode=loads[i]<=0?'unloaded':c.utilization>1-1e-6?'sliding':'rolling/creep';c.brakeHeld=c.brakeCapacity>0&&Math.abs(z[brakeStart+i])<h*c.brakeCapacity-1e-9;const constitutive=tireCoefficients?anisotropicForce(c.slipX,c.slipY,loads[i],c.mu,tireCoefficients[i]):tireForce(c.slipX,c.slipY,loads[i],c.mu);forceLawResidual=Math.max(forceLawResidual,Math.hypot(c.fx-constitutive.fx,c.fy-constitutive.fy));tireDissipation+=-(c.fx*c.slipX+c.fy*c.slipY);brakeDissipation+=-c.brake*c.omega;serviceDissipation-=c.serviceBrakeTorque*c.omega;handbrakeDissipation-=c.handbrakeTorque*c.omega;});
+ const diagnosticStart=contactProfile?performance.now():0;
+ let tireDissipation=0,brakeDissipation=0,serviceDissipation=0,handbrakeDissipation=0,forceLawResidual=0;w.forEach((c,i)=>{const a=geometry[i];c.omega=v[i];c.angle+=h*c.omega;c.steering=a.delta;c.forceHeading=p.heading+a.delta;c.fx=-z[2*i]/h;c.fy=-z[2*i+1]/h;c.normal=loads[i];c.brake=-z[brakeStart+i]/h;c.serviceBrakeTorque=c.brakeCapacity?c.brake*c.serviceBrakeCapacity/c.brakeCapacity:0;c.handbrakeTorque=c.brakeCapacity?c.brake*c.handbrakeCapacity/c.brakeCapacity:0;c.drive=i>=2?G*clutch/2:0;c.slipX=a.j.reduce((s,b,j)=>s+b*v[j],0);c.slipY=a.k.reduce((s,b,j)=>s+b*v[j],0);c.slip=-c.slipX;c.alpha=Math.atan2(c.slipY,Math.max(Math.abs(a.j[7]*v[7]+a.j[8]*v[8]+a.j[9]*v[9]),.5));c.utilization=loads[i]>0?Math.hypot(c.fx,c.fy)/(c.mu*loads[i]):0;c.contactMode=loads[i]<=0?'unloaded':c.utilization>1-1e-6?'sliding':'rolling/creep';c.brakeHeld=c.brakeCapacity>0&&Math.abs(z[brakeStart+i])<h*c.brakeCapacity-1e-9;const constitutive=tireCoefficients?(fastDiagnostic?anisotropicForce:anisotropicForceReference)(c.slipX,c.slipY,loads[i],c.mu,tireCoefficients[i],contactProfile):tireForce(c.slipX,c.slipY,loads[i],c.mu);forceLawResidual=Math.max(forceLawResidual,Math.hypot(c.fx-constitutive.fx,c.fy-constitutive.fy));tireDissipation+=-(c.fx*c.slipX+c.fy*c.slipY);brakeDissipation+=-c.brake*c.omega;serviceDissipation-=c.serviceBrakeTorque*c.omega;handbrakeDissipation-=c.handbrakeTorque*c.omega;});
+ contactProfile?.({stage:'tire-observations',ms:performance.now()-diagnosticStart});
+ const ledgerStart=contactProfile?performance.now():0;
  let steeringLoss=0;
  if(st){
   const tireTorque=normalReaction[10]+w.slice(0,2).reduce((sum,c,i)=>sum+(terrainFrames?terrainFrames[i].rows[0][10]*c.fx+terrainFrames[i].rows[1][10]*c.fy:-sd.trail*sj[i]*c.fy),0),frictionTorque=-.1*z[steeringStart]/h,stopTorque=.1*(-z[steeringStart+1]+z[steeringStart+2])/h;
@@ -88,4 +103,5 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  g.lastSolveCases=totalIterations; // counts convex iterations, NOT legacy active-set candidates
  if(tireCoefficients)p.contact.tireRows=Object.freeze({compliance:Object.freeze(rows.slice(0,8).map(r=>r.compliance)),limit:Object.freeze(groups.slice(0,4).map(g=>g.limit))});
  if(![...v,energy,numericalLoss].every(Number.isFinite)||h*forceLawResidual>2e-8||Math.abs(p.contact.energyResidual)>1e-7||numericalLoss< -1e-7||tireDissipation< -1e-7||brakeDissipation< -1e-7)throw Error(`Contact energy/domain violation: residual=${p.contact.energyResidual}, constitutiveImpulse=${h*forceLawResidual}, tirePower=${tireDissipation}, brakePower=${brakeDissipation}, numericLoss=${numericalLoss}`);
+ contactProfile?.({stage:'contact-ledger',ms:performance.now()-ledgerStart});
 }

@@ -1,0 +1,1 @@
+[{"scenario": "acceleration", "h": "0.004", "floor": "0.25", "id": "reference", "p95_after_over_before": "1.161167379931487", "p99_after_over_before": "1.6644402992406542"}, {"scenario": "acceleration", "h": "0.002", "floor": "1", "id": "speed-normalized-anisotropic", "p95_after_over_before": "1.0562453948122184", "p99_after_over_before": "1.3201077210236571"}]
