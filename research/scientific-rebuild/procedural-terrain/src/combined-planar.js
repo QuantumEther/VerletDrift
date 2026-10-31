@@ -4,7 +4,7 @@ import {steeringJacobian,finishSteering} from '../../tire-road-observatory-proto
 import {rotorSystem,selectorForces,gradient,dogState,shaftState} from '../../tire-road-observatory-prototype/src/gearbox.js';
 import {createDifferential,recordDifferential,rotorEnergy} from '../../tire-road-observatory-prototype/src/differential.js';
 import {advancePressurePlate} from '../../tire-road-observatory-prototype/src/pressure-plate.js';
-import {solveContacts,tireForce} from '../../tire-road-observatory-prototype/src/contact-solver.js';
+import {solveContacts,tireForce} from './contact-solver.js';
 export {createPlanar,tireLateral,contactVelocity,yawMoment} from '../../tire-road-observatory-prototype/src/planar-reference.js';
 export {tireForce};
 export const BRAKES={front:100,rear:70,handbrake:160}; // Nm PER wheel, 59:41 service bias.

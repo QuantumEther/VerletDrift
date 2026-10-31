@@ -1,0 +1,48 @@
+{
+  "count": 1000,
+  "report": [
+    {
+      "model": "road",
+      "mode": "accelerate-steer",
+      "stages": {
+        "setup": {
+          "totalMs": 78.75778700000151,
+          "maxMs": 1.1839929999999868,
+          "count": 1000
+        },
+        "trial-copy": {
+          "totalMs": 88.77190599999798,
+          "maxMs": 0.8402410000001055,
+          "count": 4874
+        },
+        "terrain-and-reactions": {
+          "totalMs": 154.68933499999525,
+          "maxMs": 1.1616790000000492,
+          "count": 4874
+        },
+        "unified-solve": {
+          "totalMs": 787.775268000002,
+          "maxMs": 1.875612000000018,
+          "count": 4874
+        },
+        "energy-and-endpoint": {
+          "totalMs": 68.0902960000015,
+          "maxMs": 1.2024889999999857,
+          "count": 4874
+        }
+      },
+      "steps": 1000,
+      "simulated": 1.0000000000000007,
+      "wallMs": 1187.516169,
+      "medianMs": 1.0795570000000225,
+      "p95Ms": 1.8998080000000073,
+      "worstMs": 3.9197840000000213,
+      "meanMs": 1.1864106919999997,
+      "endpointIterations": 4.874,
+      "contactIterations": 2.324,
+      "heapDelta": 19604048,
+      "maxResidual": 1.4969466110779895e-11,
+      "fault": null
+    }
+  ]
+}

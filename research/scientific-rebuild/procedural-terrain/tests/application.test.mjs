@@ -14,3 +14,7 @@ test('application regeneration retains failed terrain and advances accepted terr
  const good=regenerate(original,{...settings,preset:'road'},history,{mode:'open'});assert.equal(good.status.success,true);assert.equal(clears,1);assert.equal(terrainSampler().settings.preset,'road');
  for(let i=0;i<10;i++)stepVehicle(good.state,{},.001);assert.ok(good.state.time>0);assert.ok(good.state.wheels.every(w=>w.normal>=0));assert.ok(Math.abs(good.state.terrainLedger.residual)<1e-7);setEnvironment(settings);
 });
+test('open suspension diagnostics report actual terrain loads and accepted work without mutation',async()=>{
+ const {suspensionDiagnostics}=await import('../src/suspension-diagnostics.js');setEnvironment(settings);const next=regenerate(createVehicle(),{...settings,preset:'road'},null);assert.ok(next.status.success);stepVehicle(next.state,{},.001);
+ const before=structuredClone(next.state),d=suspensionDiagnostics(next.state);assert.deepEqual(d.corners.map(c=>c.normal),next.state.wheels.map(w=>w.normal));assert.equal(d.ledger,next.state.terrainLedger);assert.ok(d.terrainElasticEnergy>=0);assert.deepEqual(structuredClone(next.state),before);setEnvironment(settings);
+});

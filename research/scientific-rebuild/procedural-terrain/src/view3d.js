@@ -156,7 +156,8 @@ export function createView3D(canvas,resetButton) {
  const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);});
  // Include both alternate dog materials before the first update.
  for(const m of [free,engaged,shock])materials.add(m);
- let terrainKey='',lastMapping;
+ let terrainSource=null,terrainX=NaN,terrainY=NaN,terrainUpdates=0,terrainUpdateMs=0,lastMapping;
+ const terrainColors={asphalt:new THREE.Color(0x44494d),gravel:new THREE.Color(0x8b8172),dirt:new THREE.Color(0x756044),grass:new THREE.Color(0x547448)};
  function draw(state,observatory){
   if(disposed)throw new Error('Renderer disposed');const initial=!lastState;lastState=state;lastObservatory=observatory;
   if(initial&&['road','brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode)){setCamera();camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}
@@ -194,13 +195,22 @@ export function createView3D(canvas,resetButton) {
   const overlay=document.querySelector('#contact-overlay').checked&&!inspection;
   state.wheels.forEach((w,i)=>{const angle=w.forceHeading??(p.heading+(w.steering||0)),ca=Math.cos(angle),sa=Math.sin(angle);for(let k=0;k<2;k++){const a=arrows[i][k],x=k?(w.slipX||0):w.fx,y=k?(w.slipY||0):(w.fy||0),scale=k?.1:.001,length=Math.hypot(x,y)*scale;a.visible=overlay&&w.normal>0&&length>1e-8;if(a.visible){a.position.copy(hubs[i].position);a.position.z=.04;a.setDirection(new THREE.Vector3(ca*x-sa*y,sa*x+ca*y,0).normalize());a.setLength(length,Math.min(.05,length*.25),Math.min(.025,length*.12));}}});
   const ox=Math.floor(p.x),oy=Math.floor(p.y);ground.position.set(ox-p.x,oy-p.y,0);grid.position.set(ox-p.x,oy-p.y,.002);
-  const key=ox+':'+oy+':'+JSON.stringify(terrainSampler().settings);if(key!==terrainKey){terrainKey=key;const a=groundGeo.attributes.position;for(let i=0;i<a.count;i++)a.setZ(i,terrainSampler().sample(a.getX(i)+ox,a.getY(i)+oy).height);a.needsUpdate=true;const colors=groundGeo.attributes.color;for(let i=0;i<a.count;i++){const surface=terrainSampler().sample(a.getX(i)+ox,a.getY(i)+oy).surface;const color=new THREE.Color(surface==='asphalt'?0x44494d:surface==='gravel'?0x8b8172:surface==='dirt'?0x756044:0x547448);colors.setXYZ(i,color.r,color.g,color.b);}colors.needsUpdate=true;groundGeo.computeVertexNormals();}
+  const sampler=terrainSampler();terrainUpdateMs=0;
+  if(ox!==terrainX||oy!==terrainY||sampler!==terrainSource){
+   const begin=performance.now(),a=groundGeo.attributes.position,colors=groundGeo.attributes.color;
+   terrainX=ox;terrainY=oy;terrainSource=sampler;
+   for(let i=0;i<a.count;i++){
+    const sample=sampler.sample(a.getX(i)+ox,a.getY(i)+oy),color=terrainColors[sample.surface]||terrainColors.grass;
+    a.setZ(i,sample.height);colors.setXYZ(i,color.r,color.g,color.b);
+   }
+   a.needsUpdate=true;colors.needsUpdate=true;groundGeo.computeVertexNormals();terrainUpdates++;terrainUpdateMs=performance.now()-begin;
+  }
   tracks.draw(state,observatory,document.querySelector('#show-marks').checked);
   if(transitioning){camera.position.lerp(desiredPosition,.16);controls.target.lerp(desiredTarget,.16);if(camera.position.distanceTo(desiredPosition)<.0001){camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}}
   controls.update();renderer.render(scene,camera);
  }
  return {draw,resetCamera,
-  info:()=>({tracks:tracks.info(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
+  info:()=>({terrain:{updates:terrainUpdates,lastUpdateMs:terrainUpdateMs,vertices:groundGeo.attributes.position.count},tracks:tracks.info(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
   snapshot:()=>({terrainSamples:[0,80,160].map(i=>({x:groundGeo.attributes.position.getX(i)+ground.position.x+lastState.planar.x,y:groundGeo.attributes.position.getY(i)+ground.position.y+lastState.planar.y,z:groundGeo.attributes.position.getZ(i)})),chassisRoll:body.rotation.x,powertrainRoll:powertrain.rotation.x,suspensionEndpoints:springs.map(m=>[new THREE.Vector3(0,0,0).applyMatrix4(m.matrixWorld).toArray(),new THREE.Vector3(0,0,1).applyMatrix4(m.matrixWorld).toArray()]),tracks:tracks.info(),automobile:automobile.snapshot(),mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
   dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();tracks.geometry.dispose();tracks.material.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
  };
