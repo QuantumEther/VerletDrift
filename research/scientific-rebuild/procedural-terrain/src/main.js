@@ -26,7 +26,8 @@ let state=newVehicle(),last=performance.now();
 const gauges={engine:createInstrument(document.querySelector('#engine-dial'),{label:'ENGINE',unit:'rpm',max:6000}),input:createInstrument(document.querySelector('#input-dial'),{label:'INPUT SHAFT',unit:'rpm',max:3000}),speed:createInstrument(document.querySelector('#speed-dial'),{label:'ROAD SPEED',unit:'km/h',max:80,divisions:4})};
 const observatory=new TireObservatory();
 const keys=new Set(),pointers=new Map(),ignoredKeys=new Set();
-const clock=new SimulationClock();let intentionalPause=false;
+const clock=new SimulationClock();
+document.querySelector('#physics-frequency').addEventListener('change',e=>{clock.setFrequency(Number(e.target.value));last=performance.now();clearInputs();});let intentionalPause=false;
 let renderMs=0,lastDiagnostics=-Infinity;
 function clearInputs(){for(const key of keys)ignoredKeys.add(key);keys.clear();for(const [id,button]of pointers){if(button.hasPointerCapture(id))button.releasePointerCapture(id);}pointers.clear();}
 function recover(){observatory.breakContinuity();clock.reset();last=performance.now();clearInputs();document.querySelector('#warning').textContent='';}
@@ -104,7 +105,7 @@ function drawTop(){
 }
 function diagnostics(){
  const visual=visualState(state),f=state.flywheel,g=state.gearbox;
- document.querySelector('#live-performance').textContent=`${clock.fps.toFixed(1)} render FPS · ${clock.stepsPerSecond.toFixed(0)} physics steps/s · ${clock.realtimeRatio.toFixed(2)}× real time · ${(clock.debt*1000).toFixed(1)} ms pending · ${clock.dilated.toFixed(2)} s discarded wall debt · ${clock.status}`;
+ document.querySelector('#live-performance').textContent=`${clock.frequency} Hz · ${(clock.timestep*1000).toFixed(1)} ms · ${clock.fps.toFixed(1)} render FPS · ${clock.stepsPerSecond.toFixed(0)} physics steps/s · ${clock.realtimeRatio.toFixed(2)}× real time · ${(clock.debt*1000).toFixed(1)} ms pending · ${clock.dilated.toFixed(2)} s discarded wall debt · ${clock.status}`;
  if(document.querySelector('#terrain-diagnostics').open)document.querySelector('#terrain-readings').textContent=JSON.stringify(terrainContacts(state).map((t,i)=>({wheel:i,...t,normalLoad:state.wheels[i].normal,slipX:state.wheels[i].slipX,slipY:state.wheels[i].slipY,utilization:state.wheels[i].mu*state.wheels[i].normal>0?Math.hypot(state.wheels[i].fx,state.wheels[i].fy)/(state.wheels[i].mu*state.wheels[i].normal):null,springCompression:state.vertical.length-(state.z+state.vertical.corners[i][0]*state.pitch+state.vertical.corners[i][1]*state.roll-state.vertical.q[3+i])})),null,2);
  if(document.querySelector('#suspension-diagnostics').open)document.querySelector('#suspension-readings').textContent=JSON.stringify(suspensionDiagnostics(state),null,2);
  document.querySelector('#corner-state').textContent=JSON.stringify({heave:state.vertical.q[0],pitch:state.pitch,roll:state.roll,heights:state.vertical.q.slice(3),springCompression:state.vertical.corners.map(([x,y],i)=>state.vertical.length-(state.vertical.q[0]+x*state.vertical.q[1]+y*state.vertical.q[2]-state.vertical.q[3+i])),normalLoads:state.wheels.map(w=>w.normal),verticalLedger:state.verticalLedger,terrainLedger:state.terrainLedger},null,2);

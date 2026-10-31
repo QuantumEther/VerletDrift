@@ -16,3 +16,6 @@ test('terrain default budget improves bounded throughput without changing the ti
  for(let i=0;i<60;i++)c.frame(1/60,h=>{assert.equal(h,.001);cpu+=.5;calls++;},()=>({}));
  assert.ok(c.realtimeRatio>.95);assert.ok(c.frameSteps<=24);assert.ok(c.debt<=.05);assert.ok(Math.abs(c.simulated-calls*.001)<1e-10);assert.equal(c.budgetMs,12);
 });
+test('all selectable frequencies advance actual physical time and preserve wall accounting on switching',()=>{
+ for(const hz of [1000,500,250,200,100]){let cpu=0;const c=new SimulationClock({now:()=>cpu});c.setFrequency(hz);let time=0;for(let i=0;i<100;i++)c.frame(.01,h=>{assert.equal(h,1/hz);time+=h;cpu+=.01;},()=>({}));assert.ok(Math.abs(time-1)<1e-9);assert.ok(Math.abs(c.simulated-time)<1e-9);assert.ok(Math.abs(c.realtimeRatio-1)<1e-9);c.frame(.0003,()=>assert.fail(),()=>({}));const before=c.simulated;c.setFrequency(1000);assert.equal(c.simulated,before);assert.equal(c.debt,0);assert.ok(Math.abs(c.wall-c.simulated-c.debt-c.dilated)<1e-9);c.reset();assert.equal(c.frequency,1000);}
+});
