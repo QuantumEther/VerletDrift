@@ -1,0 +1,34 @@
+{
+  "runtime": "v24.19.0",
+  "baselineCommit": "9eb20e4",
+  "baselineFixtures": 36,
+  "acceptedStatesPerReplay": 1080,
+  "defaultReplay": "PASS",
+  "explicitReferenceReplay": "PASS",
+  "experiment11": {
+    "tests": 63,
+    "failed": 0,
+    "skipped": 0
+  },
+  "experiment10": {
+    "tests": 24,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "result": "PASS",
+    "version": "154.0.8037.57",
+    "artifact": "browser.json"
+  },
+  "numericalRuns": 198,
+  "numericalFaults": 0,
+  "timingRuns": 162,
+  "profileRuns": 12,
+  "cpuRetention": "FAIL",
+  "productionDefault": "reference",
+  "unsupported": [
+    "B inherited flat-ground dispatch",
+    "non-flat gear-selector event crossings"
+  ],
+  "scope": "All source changes local to Experiment 11"
+}

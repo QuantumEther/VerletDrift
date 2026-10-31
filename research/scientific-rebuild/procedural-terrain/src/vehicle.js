@@ -1,3 +1,4 @@
+import {createTireStrategy,freezeTireCoefficients,REFERENCE} from './tire-strategy.js';
 import {createVehicle,stepVehicle} from '../../four-corner-load-transfer/src/combined-vehicle.js';
 import {createTerrain} from './terrain.js';
 import {evaluateSuspension} from './vertical.js';
@@ -78,8 +79,10 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
  let lastMark=vehicle.profile?performance.now():0;
  const mark=vehicle.profile?name=>{const now=performance.now();vehicle.profile(name,now-lastMark);lastMark=now;}:null;
  const terrain=vehicle.terrain||createTerrain(vehicle.terrainSettings),context={...vehicle,terrain};
+ const strategy=vehicle.tireStrategy?createTireStrategy(vehicle.tireStrategy):REFERENCE;
  const start=sampleWheelTerrain(context);
  const nonflat=start.some(c=>Math.abs(c.height)>1e-12||Math.abs(c.normal[0])+Math.abs(c.normal[1])>1e-12||c.friction!==.9);
+ if(!nonflat&&strategy.id!=='reference')throw Error('Experimental tire strategy does not support the inherited flat-ground path');
  if(nonflat){
   const initial=vehicle.state,vs=initial.vertical;
   const begin=start.map(c=>[...c.world,c.wheelHeight]);
@@ -90,6 +93,14 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
     if(i<2){const angle=i===0?initial.steering.leftAngle:initial.steering.rightAngle,t=initial.steering.dynamics.trail,dx=t*Math.sin(angle)*sj[i],dy=-t*Math.cos(angle)*sj[i];rows[0][10]=co*dx-si*dy;rows[1][10]=si*dx+co*dy;}
     return rows;
   });
+  // Accepted-entry contact-point ground velocity, excluding wheel rotation.
+  // Rows include chassis yaw, steering trail and vertical pitch/roll terms.
+  const entryVelocity=strategy.id==='reference'?null:[0,0,0,0,initial.gearbox.velocity,initial.flywheel.omega,0,initial.planar.u,initial.planar.v,initial.planar.r,initial.steering.angularVelocity,...vs.v];
+  const tireCoefficients=strategy.id==='reference'?null:Object.freeze(initial.wheels.map((w,i)=>{
+   const angle=i===0?initial.steering.leftAngle:i===1?initial.steering.rightAngle:0;
+   const frame=terrainContactFrame(start[i],initial.planar.heading+angle,pointRows[i],i,w.radius);
+   return freezeTireCoefficients(strategy,frame.rows[0].reduce((sum,a,j)=>sum+a*entryVelocity[j],0));
+  }));
   const basis=cloneMechanical(initial);
   if(vehicle.verifyIsolation)freezeRecords(basis);
   let guess=initial,guessPositions=begin,guessContacts=start,prior=null,lastConvergence=null,contactIterations=0;
@@ -114,7 +125,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    // A prior endpoint impulse is only an optimization seed. Original physical
    // velocities/inertia remain intact and the same KKT/work gates still apply.
    if(guess!==initial){q.planar.contactImpulse=guess.planar.contactImpulse;q.planar.contactImpulseH=guess.planar.contactImpulseH;}
-   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
+   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
    contactIterations+=q.planar.contact.iterations;
    mark?.('unified-solve');
    q.vertical.q=vs.q.map((v,i)=>v+h*q.vertical.v[i]);
@@ -132,6 +143,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
     if((q.gearbox.selected==='N'&&Math.abs(q.gearbox.q)>=GEOMETRY.mouth-1e-9)||(q.gearbox.selected!=='N'&&(Math.abs(q.gearbox.q)<GEOMETRY.release||q.gearbox.q*initial.gearbox.q<0)))throw Error('Terrain step crosses a gear event: subdivision is required');
     q.gearbox.lastStepCases=contactIterations;
     q.time+=h;q.z=q.vertical.q[0];q.vz=q.vertical.v[0];q.pitch=q.vertical.q[1];q.roll=q.vertical.q[2];q.pitchRate=q.vertical.v[1];q.rollRate=q.vertical.v[2];if(q.engine)finishEngine(q.engine,q.flywheel.omega,h);
+    if(tireCoefficients)q.planar.contact.tireStrategy=Object.freeze({id:strategy.id,corneringStiffness:strategy.corneringStiffness,minSpeed:strategy.minSpeed,coefficients:tireCoefficients});
     q.terrainLedger={contactIterations,normalWorkResidual:identity,endpointPositionError:error,endpointVelocityError:vError,residual,accumulatedResidual:(initial.terrainLedger?.accumulatedResidual||0)+residual,iterations:iteration+1,forceWork,potentialChange,springChange:after.springEnergy-before.springEnergy,gravityChange:after.gravityEnergy-before.gravityEnergy,terrainChange:actualElastic-U0,damping,numericalLoss:q.planar.contact.numericalLoss,elasticEnergy:actualElastic};
     const accepted=observer?[{start:observer.capture(cloneMechanical(initial)),end:observer.capture(cloneMechanical(q)),h}]:[];
     return {state:q,contacts:endpointContacts,accepted,energyResidual:residual};
@@ -158,7 +170,7 @@ export function stepTerrainVehicle(vehicle,ports={},h=.001,observer=null){
   if(observer)observer.accept(candidate.accepted);
   return vehicle;
  }
- const innerH=h/count,staged={...vehicle},accepted=[];
+ const innerH=h/count,staged={...vehicle,tireStrategy:vehicle.tireStrategy?createTireStrategy(vehicle.tireStrategy):undefined},accepted=[];
  const sumFields=['residual','forceWork','potentialChange','springChange','gravityChange','terrainChange','damping','numericalLoss','iterations','contactIterations','normalWorkResidual'];
  const totals=Object.fromEntries(sumFields.map(k=>[k,0]));let energyResidual=0,absoluteEnergyResidual=0,cases=0,searches=0;
  let attempted=0;
@@ -185,7 +197,7 @@ export function stepTerrainVehicle(vehicle,ports={},h=.001,observer=null){
 // Curved-terrain initialization is a declared transient, not static equilibrium.
 export function respawnTerrain(vehicle,settings,history=null,terrainOverride=null){
  try{
-  const next=createTerrainVehicle(settings);if(terrainOverride)next.terrain=terrainOverride;const vs=next.state.vertical,heights=sampleWheelTerrain(next).map(c=>c.height),base=vs.q.slice();
+  const next=createTerrainVehicle(settings);if(vehicle.tireStrategy)next.tireStrategy=createTireStrategy(vehicle.tireStrategy);if(terrainOverride)next.terrain=terrainOverride;const vs=next.state.vertical,heights=sampleWheelTerrain(next).map(c=>c.height),base=vs.q.slice();
   vs.q[0]+=heights.reduce((a,b)=>a+b,0)/4;
   vs.q[1]=heights.reduce((a,z,i)=>a+z*vs.corners[i][0],0)/vs.corners.reduce((a,[x])=>a+x*x,0);
   vs.q[2]=heights.reduce((a,z,i)=>a+z*vs.corners[i][1],0)/vs.corners.reduce((a,[,y])=>a+y*y,0);

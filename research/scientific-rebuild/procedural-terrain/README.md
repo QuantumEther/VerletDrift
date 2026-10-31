@@ -109,3 +109,10 @@ See [measured performance report](results/performance/README.md) for the optimiz
 Frequency follow-up: [180-second driving, measured numerical damping and default recommendation](results/frequency/extended-study.md); [GPU/worker assessment](results/frequency/compute-feasibility.md). The 1000 Hz reference default is retained. Lower rates are experimental and change transient response despite passing the tested work checks.
 
 Coarse selector-stop stability now uses [bounded, atomic coupled subdivision](results/frequency/selector-stop-study.md). The display distinguishes nominal ticks from accepted/attempted internal work. Actual non-flat gear engagement/release events remain explicitly unsupported.
+
+Mission 12: [tire-strategy A/B measurements and reproduction](results/tire-strategy-ab/README.md).
+The reference tire law remains bit-exact and is still the application default.
+The optional headless speed-normalized anisotropic law passes the tested
+constitutive and numerical gates but fails the 10% CPU-overhead retention gate.
+Its inherited flat-ground dispatch is explicitly unsupported; no UI selector or
+historical experiment changes are included.
