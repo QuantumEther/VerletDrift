@@ -70,12 +70,12 @@ test('accepted substage slip work is counted once and rejected probes never ente
 });
 test('all immediate predecessor files and all governing constitutive modules are preserved',()=>{
  const base='research/scientific-rebuild/braking-and-tire-contact-prototype',here='research/scientific-rebuild/tire-road-observatory-prototype';
- for(const f of execFileSync('git',['ls-tree','-r','--name-only','d419189','--',base],{encoding:'utf8'}).trim().split('\n'))assert.deepEqual(readFileSync(['src/steering.js','src/planar.js','src/vehicle.js','src/contact-solver.js','tests/automobile.test.js'].some(n=>f===base+'/'+n)?f.replace(base,'research/scientific-rebuild/steering-predecessor'):f),execFileSync('git',['show','d419189:'+f],{maxBuffer:8*1024*1024}),f);
+ for(const f of execFileSync('git',['ls-tree','-r','--name-only','d419189','--',base],{encoding:'utf8'}).trim().split('\n'))assert.deepEqual(readFileSync(['index.html','src/main.js','src/view3d.js','src/steering.js','src/planar.js','src/vehicle.js','src/contact-solver.js','tests/automobile.test.js'].some(n=>f===base+'/'+n)?f.replace(base,'research/scientific-rebuild/steering-predecessor'):f),execFileSync('git',['show','d419189:'+f],{maxBuffer:8*1024*1024}),f);
  for(const f of ['planar.js','contact-solver.js','engine.js','brakes.js','steering.js','gearbox.js','clutch.js','pressure-plate.js','differential.js','clock.js'])assert.deepEqual(readFileSync(`${here}/src/${f}`),readFileSync(`${base}/src/${f}`));
 });
 
 test('source COM trail is unpopulated; accepted physics now records a separate trajectory',()=>{
- const source=readFileSync('research/scientific-rebuild/braking-and-tire-contact-prototype/src/main.js','utf8');assert.ok(source.includes('let trail=[]'));assert.ok(!source.includes('trail.push('));
+ const source=readFileSync('research/scientific-rebuild/braking-and-tire-contact-prototype/src/main.js','utf8');assert.ok(source.includes('new TireObservatory()'));assert.ok(!source.includes('trail.push('));
  const s=createVehicle(),o=new TireObservatory();s.v=4;s.wheels.forEach(w=>w.omega=4/w.radius);for(let i=0;i<100;i++)stepVehicle(s,{},.001,o);assert.ok(o.center.count>1);assert.ok(o.marks.every(r=>r.count===0));
 });
 

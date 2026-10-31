@@ -61,7 +61,8 @@ function stepVehicleCore(s,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,t
 }
 
 function cloneState(s){const c=structuredClone(s);Object.defineProperties(c,{x:{enumerable:true,get(){return this.planar.x;},set(v){this.planar.x=v;}},v:{enumerable:true,get(){return this.planar.u;},set(v){this.planar.u=v;}}});c.flywheel.gearbox=c.gearbox;return c;}
-export function stepVehicle(s,ports={},h=.001){
+export function stepVehicle(s,ports={},h=.001,observer=null){
+ const begin=observer?.capture(s);let accepted=[];
  let work=0;const core=(q,p,dt)=>{stepVehicleCore(q,p,dt);work+=q.gearbox.lastSolveCases;};
  const g=s.gearbox;g.eventIterations=0;g.lastAngularImpulse=0;g.inputMomentumChange=0;g.lastImpulse=0;g.lastImpactEnergy=0;g.contactForce=0;
  if(g.selected==='N'&&Math.abs(g.q)>=GEOMETRY.mouth-1e-9&&dogState(s).blocked)faceImpact(s);
@@ -69,9 +70,13 @@ export function stepVehicle(s,ports={},h=.001){
  if(g.selected==='N'&&Math.abs(start)<=GEOMETRY.mouth+1e-8&&Math.abs(trial.gearbox.q)>GEOMETRY.mouth+1e-10){
   let lo=0,hi=h,t=h,best=trial;
   for(let i=0;i<24;i++){t=(lo+hi)/2;best=cloneState(s);core(best,ports,t);best.gearbox.eventIterations=i+1;if(Math.abs(Math.abs(best.gearbox.q)-GEOMETRY.mouth)<1e-9)break;if(Math.abs(best.gearbox.q)<GEOMETRY.mouth)lo=t;else hi=t;}
-  Object.assign(s,best);if(dogState(s).blocked)faceImpact(s);if(h-t>1e-12)core(s,ports,h-t);
- }else Object.assign(s,trial);
+  Object.assign(s,best);const middle=observer?.capture(s);
+  if(observer)accepted.push({start:begin,end:middle,h:t});
+  if(dogState(s).blocked)faceImpact(s);
+  if(h-t>1e-12){core(s,ports,h-t);if(observer)accepted.push({start:middle,end:observer.capture(s),h:h-t});}
+ }else {Object.assign(s,trial);if(observer)accepted.push({start:begin,end:observer.capture(s),h});}
  if(s.gearbox.selected==='N'&&Math.abs(s.gearbox.q)>=GEOMETRY.seat&&!dogState(s).blocked)engageDogs(s,dogState(s).target);
  else if(s.gearbox.selected!=='N'&&Math.abs(s.gearbox.q)<GEOMETRY.release)releaseDogs(s);
  s.gearbox.lastStepCases=work;
+ if(observer)observer.accept(accepted);
 }

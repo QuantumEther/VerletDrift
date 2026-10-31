@@ -1,1 +1,2 @@
 These five files preserve the d419189 braking-prototype steering/contact implementation and automobile regression before the authorized dynamic-steering integration. The observatory preservation test verifies their bytes directly against that Git revision. They are an archive, not a runnable second vehicle. Other predecessor files and historical results remain at their original paths.
+The original index, main and 3D view are also archived here for the subsequent tire-track integration; they are checked against the same d419189 revision.

@@ -1,3 +1,4 @@
+import {createTrackView} from './track-view.js';
 import {createAutomobileView} from './automobile-view.js';
 import * as THREE from '../vendor/three.module.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
@@ -137,6 +138,7 @@ export function createView3D(canvas,resetButton) {
  }
  const automobile=createAutomobileView(scene,powertrain,hubs);
  const arrows=Array.from({length:4},()=>[0xbba575,0xa5b6b2].map(color=>{const a=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),1,color,.05,.025);scene.add(a);return a;}));
+ const tracks=createTrackView(scene);
  const groundGeo=new THREE.PlaneGeometry(40,40,160,20),ground=mesh(scene,groundGeo,material(0x303a32,.05,1));ground.receiveShadow=true;
  const grid=new THREE.GridHelper(40,40,0x7b7961,0x485146);grid.rotation.x=Math.PI/2;scene.add(grid);
  // Silhouette casters only. Rim spokes, tread instances, lamps and trim do not
@@ -152,7 +154,7 @@ export function createView3D(canvas,resetButton) {
  // Include both alternate dog materials before the first update.
  for(const m of [free,engaged,shock])materials.add(m);
  let terrainKey='',lastMapping;
- function draw(state){
+ function draw(state,observatory){
   if(disposed)throw new Error('Renderer disposed');const initial=!lastState;lastState=state;
   if(initial&&['brakes','handbrake','column','steeringbox','linkage','contact'].includes(mode)){setCamera();camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}
   const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);
@@ -190,12 +192,13 @@ export function createView3D(canvas,resetButton) {
   state.wheels.forEach((w,i)=>{const angle=w.forceHeading??(p.heading+(w.steering||0)),ca=Math.cos(angle),sa=Math.sin(angle);for(let k=0;k<2;k++){const a=arrows[i][k],x=k?(w.slipX||0):w.fx,y=k?(w.slipY||0):(w.fy||0),scale=k?.1:.001,length=Math.hypot(x,y)*scale;a.visible=overlay&&w.normal>0&&length>1e-8;if(a.visible){a.position.copy(hubs[i].position);a.position.z=.04;a.setDirection(new THREE.Vector3(ca*x-sa*y,sa*x+ca*y,0).normalize());a.setLength(length,Math.min(.05,length*.25),Math.min(.025,length*.12));}}});
   const ox=Math.floor(p.x),oy=Math.floor(p.y);ground.position.set(ox-p.x,oy-p.y,0);grid.position.set(ox-p.x,oy-p.y,.002);
   const key=ox+':'+state.bump;if(key!==terrainKey){terrainKey=key;const a=groundGeo.attributes.position;for(let i=0;i<a.count;i++)a.setZ(i,roadAt(state,a.getX(i)+ox).height);a.needsUpdate=true;groundGeo.computeVertexNormals();}
+  tracks.draw(state,observatory,document.querySelector('#show-marks').checked);
   if(transitioning){camera.position.lerp(desiredPosition,.16);controls.target.lerp(desiredTarget,.16);if(camera.position.distanceTo(desiredPosition)<.0001){camera.position.copy(desiredPosition);controls.target.copy(desiredTarget);transitioning=false;}}
   controls.update();renderer.render(scene,camera);
  }
  return {draw,resetCamera,
-  info:()=>({geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
-  snapshot:()=>({automobile:automobile.snapshot(),mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
-  dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
+  info:()=>({tracks:tracks.info(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
+  snapshot:()=>({tracks:tracks.info(),automobile:automobile.snapshot(),mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
+  dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();tracks.geometry.dispose();tracks.material.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
  };
 }

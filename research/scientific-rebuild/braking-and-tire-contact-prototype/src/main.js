@@ -1,3 +1,5 @@
+import {TireObservatory} from './tracks.js';
+import {drawTracks2D} from './track-view.js';
 import {createSteering} from './steering.js';
 import {brakeActuation} from './brakes.js';
 import {reducedKineticEnergy} from './diagnostics.js';
@@ -22,8 +24,8 @@ const keys=new Set(),pointers=new Map(),ignoredKeys=new Set();
 const clock=new SimulationClock();let intentionalPause=false;
 let renderMs=0,lastDiagnostics=-Infinity;
 function clearInputs(){for(const key of keys)ignoredKeys.add(key);keys.clear();for(const [id,button]of pointers){if(button.hasPointerCapture(id))button.releasePointerCapture(id);}pointers.clear();}
-function recover(){clock.reset();last=performance.now();clearInputs();document.querySelector('#warning').textContent='';}
-let trail=[];
+function recover(){observatory.breakContinuity();clock.reset();last=performance.now();clearInputs();document.querySelector('#warning').textContent='';}
+const observatory=new TireObservatory();
 let view3d;
 const canvas3d=document.querySelector('#perspective');
 function selectView(){
@@ -46,27 +48,27 @@ for(const button of document.querySelectorAll('[data-selector]')){
  button.addEventListener('pointerup',clear);button.addEventListener('pointercancel',clear);button.addEventListener('lostpointercapture',clear);
 }
 document.querySelector('#worn').addEventListener('change',()=>resetExhibit());
-document.querySelector('#moving-second').addEventListener('click',()=>{document.querySelector('#power-mode').value='laboratory';state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});state.steering=createSteering(state.wheelbase,state.track);state.brakes=brakeActuation();document.querySelector('#engagement').value=0;trail=[];recover();});
-function resetExhibit(){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}
+document.querySelector('#moving-second').addEventListener('click',()=>{document.querySelector('#power-mode').value='laboratory';state=movingSecond({mode:document.querySelector('#differential').value,worn:document.querySelector('#worn').checked});state.steering=createSteering(state.wheelbase,state.track);state.brakes=brakeActuation();document.querySelector('#engagement').value=0;recover();});
+function resetExhibit(){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});recover();}
 document.querySelector('#rest').addEventListener('click',resetExhibit);
 document.querySelector('#ignition').addEventListener('click',()=>{if(state.engine)state.engine.ignition=!state.engine.ignition;});
 document.querySelector('#spin').addEventListener('click',()=>{document.querySelector('#power-mode').value='laboratory';resetExhibit();state.flywheel.omega=60;document.querySelector('#engagement').value=0;});
 for(const button of document.querySelectorAll('[data-engagement]'))button.addEventListener('click',()=>document.querySelector('#engagement').value=button.dataset.engagement);
 document.querySelector('#coast').addEventListener('click',()=>{
- state=newVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);trail=[];recover();
+ state=newVehicle({mode:document.querySelector('#differential').value});state.v=3;state.wheels.forEach(w=>w.omega=3/w.radius);recover();
 });
 document.querySelector('#brake-trial').addEventListener('click',()=>{resetExhibit();state.v=8;state.wheels.forEach(w=>w.omega=8/w.radius);document.querySelector('#engagement').value=0;});
-for(const id of ['differential','scenario','power-mode'])document.querySelector('#'+id).addEventListener('change',()=>{state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();});
+for(const id of ['differential','scenario','power-mode'])document.querySelector('#'+id).addEventListener('change',()=>{state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});recover();});
 window.addEventListener('keydown',e=>{
   const key=e.key.toLowerCase();if(ignoredKeys.has(key)&&e.repeat)return;ignoredKeys.delete(key);if(e.target.matches?.('input[type=number],textarea'))return;
   if(['w','s','r','b',' ','h','e','i','a','d','1','2','n'].includes(key))e.preventDefault();
-  if(!e.repeat){if(key==='r'){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});trail=[];recover();}if(key==='i'&&state.engine)state.engine.ignition=!state.engine.ignition;if(key==='h')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
+  if(!e.repeat){if(key==='r'){state=newVehicle({mode:document.querySelector('#differential').value,scenario:document.querySelector('#scenario').value,worn:document.querySelector('#worn').checked});recover();}if(key==='i'&&state.engine)state.engine.ignition=!state.engine.ignition;if(key==='h')state.vz+=.5;if(key==='b')state.bump=state.x+1.3;}
   keys.add(key);
 });
 window.addEventListener('keyup',e=>{keys.delete(e.key.toLowerCase());ignoredKeys.delete(e.key.toLowerCase());});window.addEventListener('blur',clearInputs);document.addEventListener('visibilitychange',()=>{clearInputs();if(!document.hidden){const unseen=Math.max(0,(performance.now()-last)/1000);clock.wall+=unseen;clock.pausedWall+=unseen;last=performance.now();}});
 window.addEventListener('error',e=>{clock.fail(e.error||new Error(e.message),state);clearInputs();});
 function draw(){
- if(document.querySelector('#view').value==='3d'){view3d??=createView3D(canvas3d,document.querySelector('#reset-camera'));view3d.draw(state);return;}
+ if(document.querySelector('#view').value==='3d'){view3d??=createView3D(canvas3d,document.querySelector('#reset-camera'));view3d.draw(state,observatory);return;}
  if(document.querySelector('#view').value==='schematic'){drawDrivetrain(document.querySelector('#mechanism'),state);return;}
  if(document.querySelector('#view').value==='top'){drawTop();return;}
  const scale=120,ground=canvas.height*.85,xscreen=x=>canvas.width/2+(x-state.x)*scale,zscreen=z=>ground-z*scale;
@@ -82,10 +84,10 @@ function draw(){
 }
 function drawTop(){
  const p=state.planar,scale=85,cx=canvas.width/2,cy=canvas.height/2;
- ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#424a3b';ctx.lineWidth=1;
+ ctx.fillStyle='#788174';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#626c5d';ctx.lineWidth=1;
  for(let x=Math.floor(p.x-5);x<p.x+5;x++){ctx.beginPath();ctx.moveTo(cx+(x-p.x)*scale,0);ctx.lineTo(cx+(x-p.x)*scale,canvas.height);ctx.stroke();}
  for(let y=Math.floor(p.y-4);y<p.y+4;y++){ctx.beginPath();ctx.moveTo(0,cy-(y-p.y)*scale);ctx.lineTo(canvas.width,cy-(y-p.y)*scale);ctx.stroke();}
- ctx.strokeStyle='#b8c2a1';ctx.beginPath();trail.forEach((point,i)=>{const x=cx+(point[0]-p.x)*scale,y=cy-(point[1]-p.y)*scale;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+ drawTracks2D(ctx,observatory,p,{marks:document.querySelector('#show-marks').checked,center:document.querySelector('#show-center').checked,paths:document.querySelector('#show-paths').checked,slips:document.querySelector('#show-slip').checked},scale,canvas.width,canvas.height);
  ctx.save();ctx.translate(cx,cy);ctx.rotate(-p.heading);ctx.fillStyle='#dfb65d';ctx.fillRect(-scale,-.25*scale,2*scale,.5*scale);
  for(const c of state.wheels){ctx.save();ctx.translate(c.x*scale,-c.y*scale);ctx.rotate(-(c.steering||0));ctx.fillStyle=c.normal>0?'#b8c2a1':'#eb9265';ctx.fillRect(-22,-7,44,14);ctx.fillStyle='#10232e';const spin=Math.sin(c.angle)*17;ctx.fillRect(spin-2,-7,4,14);ctx.restore();}
  ctx.strokeStyle='white';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1.3*scale,0);ctx.stroke();ctx.restore();
@@ -137,7 +139,7 @@ function frame(now){
  const elapsed=(now-last)/1000;last=now;
  const held=new Set([...keys,...[...pointers.values()].map(b=>b.dataset.selector)]);
  const engagement=Number(document.querySelector('#engagement').value),motor=Number(document.querySelector('#drive').value);
- clock.frame(elapsed,h=>{state.flywheel.actuator??=createPressurePlate();state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,throttle:held.has('w')?1:0,starter:held.has('e'),serviceBrake:held.has('s')?1:0,handbrake:held.has(' ')?1:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
+ clock.frame(elapsed,h=>{state.flywheel.actuator??=createPressurePlate();state.flywheel.engagement=engagement;state.gearbox.driverForce=selectorInputForce(state.gearbox,held);stepVehicle(state,{drive:held.has('w')?motor:0,throttle:held.has('w')?1:0,starter:held.has('e'),serviceBrake:held.has('s')?1:0,handbrake:held.has(' ')?1:0,steer:(Number(held.has('a'))-Number(held.has('d')))*.4},h,document.querySelector('#record-contacts').checked?observatory:null);audio.update(state.gearbox);return state.gearbox;},()=>state,document.hidden||intentionalPause);
  if(clock.fault){clearInputs();document.querySelector('#warning').textContent='Simulation paused: '+clock.fault.message+' — Reset to restart.';}
  const start=performance.now();
  try{draw();if(now-lastDiagnostics>100){diagnostics();lastDiagnostics=now;}if(document.querySelector('#inspection').open)document.querySelector('#performance').textContent=JSON.stringify({status:clock.status,frameIntervalMs:elapsed*1000,rejected:clock.rejected,wall:clock.wall,simulated:clock.simulated,slowMotionWall:clock.dilated,pausedWall:clock.pausedWall,debt:clock.debt,physicsMs:clock.physicsMs,stepsThisFrame:clock.frameSteps,accepted:clock.accepted,convexIterationsIncludingTrials:clock.candidates,eventTrials:clock.searches,worstStepMs:clock.worstStepMs,renderMs},null,2);}catch(e){clock.fail(e,state);view3d?.dispose();view3d=undefined;document.querySelector('#view').value='top';selectView();}
@@ -155,3 +157,7 @@ export function rendererInfo(){return view3d?.info();}
 export function recreateRenderer(){view3d?.dispose();view3d=undefined;}
 
 export function presentationSnapshot(){return view3d?.snapshot();}
+
+document.querySelector('#clear-tracks').addEventListener('click',()=>observatory.clear());
+document.querySelector('#record-contacts').addEventListener('change',()=>observatory.breakContinuity());
+export function observatorySnapshot(includeGeometry=false){return {stats:observatory.stats(),latest:structuredClone(observatory.latest),...(includeGeometry?{marks:observatory.marks.map(r=>structuredClone([...r.values()])),paths:observatory.paths.map(r=>structuredClone([...r.values()])),center:structuredClone([...observatory.center.values()])}:{})};}

@@ -3,7 +3,9 @@ import {roadAt} from './vehicle.js';
 // before the next instantaneous dog impulse. Positions are end-stage positions.
 export function contactWorld(s,w){
  const p=s.planar,c=Math.cos(p.heading),t=Math.sin(p.heading);
- const x=p.x+c*w.x-t*w.y,y=p.y+t*w.x+c*w.y;
+ const delta=w.axle===0 ? (w.steering||0) : 0, trail=w.axle===0 ? (s.steering?.dynamics?.trail||0) : 0;
+ const wx=w.x+trail*(1-Math.cos(delta)),wy=w.y-trail*Math.sin(delta);
+ const x=p.x+c*wx-t*wy,y=p.y+t*wx+c*wy;
  return {x,y,z:roadAt(s,x).height};
 }
 export function captureContacts(s){
