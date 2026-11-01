@@ -1,9 +1,10 @@
+import {contactIterates} from './contact-iteration.js';
 import {gaussian} from '../../tire-road-observatory-prototype/src/clutch.js';
 export {tireForce} from '../../tire-road-observatory-prototype/src/contact-solver.js';
 // The inherited convex backward-Euler algorithm, with the same FISTA/KKT
 // criteria and scalar polish. Form M^-1 J^T once instead of once per row pair;
 // reuse iteration buffers. No persistent workspace is shared across candidates.
-export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tolerance=1e-10,initial,profile=null,capture=null,prepared=null}={}){
+export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tolerance=1e-10,initial,profile=null,capture=null,prepared=null,kernel='isolated'}={}){
  const started=profile?performance.now():0;
  const n=rows.length,m=free.length;
  // Private caller-owned scope, never a cross-step/global workspace.
@@ -41,11 +42,16 @@ export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tol
  };
  let z=project(initial?.length===n?[...initial]:Array(n).fill(0));
  const warm=capture?[...z]:null,history=capture?[]:null;
- const y=[...z],check=Array(n).fill(0);let next=Array(n).fill(0),t=1,residual=Infinity,iterations=0;
+ // Detailed per-operation microtiming uses the exact reference loop below.
+ // Low-overhead CPU sampling and throughput runs use the selected fast path.
+ const fast=kernel==='isolated'&&!profile;
+ const y=fast?null:[...z],check=Array(n).fill(0);let next=fast?null:Array(n).fill(0),t=1,residual=Infinity,iterations=0;
  const optimizationStart=profile?performance.now():0;
  profile?.({stage:'bound-warm',ms:optimizationStart-matrixEnd});
+ if(!['dense','isolated'].includes(kernel))throw Error('Invalid contact arithmetic kernel');
  inIteration=true;
- for(;iterations<maxIterations;iterations++){
+ if(fast){({z,residual,iterations}=contactIterates(d,rhs,L,groups,z,maxIterations,tolerance,history,check));}
+ else for(;iterations<maxIterations;iterations++){
   gradientStep(y,next);gradientStep(next,check);const stamp=profile?performance.now():0;residual=0;
   for(let i=0;i<n;i++)residual=Math.max(residual,Math.abs(check[i]-next[i]));
   if(profile)residualMs+=performance.now()-stamp;
@@ -56,7 +62,7 @@ export function solveContacts(inverse,free,rows,groups,h,{maxIterations=2000,tol
   const old=z;z=next;next=old;t=nt;
  }
  inIteration=false;const optimizationEnd=profile?performance.now():0;
- profile?.({stage:'optimization',ms:optimizationEnd-optimizationStart,iterations,residual,failed:residual>=tolerance,projectionMs,residualMs,gradientMs,projections});
+ profile?.({stage:'optimization',ms:optimizationEnd-optimizationStart,iterations,residual,backend:fast?'interior-fast':'reference-instrumented',failed:residual>=tolerance,projectionMs,residualMs,gradientMs,projections});
  if(residual>=tolerance)throw Object.assign(Error(`Contact solve did not converge: h=${h}, iterations=${iterations}, residual=${residual}`),{iterations,residual});
  const active=[];
  for(const group of groups)if(group.indices.length===1&&group.fixed===undefined&&group.limit>0&&Math.abs(z[group.indices[0]])<group.limit-1e-9&&(group.lower===undefined||(z[group.indices[0]]>group.lower+1e-9&&z[group.indices[0]]<group.upper-1e-9))){

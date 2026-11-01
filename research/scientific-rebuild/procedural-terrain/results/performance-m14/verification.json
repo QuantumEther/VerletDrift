@@ -1,0 +1,78 @@
+{
+  "baseCommit": "bf4505252f615beacfdb177cf5c53f37f9d3739e",
+  "branch": "scientific-rebuild/12-braking-and-tire-contact",
+  "codeIdentity": "source-sha256.json; committed code as identified by final response commit",
+  "checks": [
+    {
+      "command": "node --test --test-isolation=none research/scientific-rebuild/procedural-terrain/tests/*.test.mjs",
+      "result": "PASS 76/76",
+      "evidence": "experiment11-tests.txt"
+    },
+    {
+      "command": "node --test --test-isolation=none research/scientific-rebuild/four-corner-load-transfer/tests/*.test.mjs",
+      "result": "PASS 24/24",
+      "evidence": "experiment10-tests.txt"
+    },
+    {
+      "command": "node tools/tire-baseline.mjs [and --explicit]",
+      "result": "PASS each 1080 bit-exact accepted states plus initial and rejected-state isolation",
+      "evidence": [
+        "a-replay.txt",
+        "a-explicit-replay.txt"
+      ]
+    },
+    {
+      "command": "VARIANT=reference node tools/contact-replay.mjs; VARIANT=matrix node tools/contact-replay.mjs",
+      "result": "PASS each 1680 bit-exact B states",
+      "evidence": [
+        "b-reference-replay.json",
+        "b-matrix-replay.json"
+      ]
+    },
+    {
+      "command": "node tools/contact-replay.mjs --equivalent",
+      "result": "PASS selected B vs historical pre-warm B physical bound; not bit-exact relative to that older fixture",
+      "evidence": "b-equivalent-replay.json"
+    },
+    {
+      "command": "CHROMIUM_PATH=/usr/bin/chromium QUICK=1 node tests/browser-inherited.mjs",
+      "result": "PASS engine/start/clutch/gear propulsion, brakes, steering, 12 views, recreation, marks, state invariance",
+      "evidence": "browser-inherited.json"
+    },
+    {
+      "command": "CHROMIUM_PATH=/usr/bin/chromium node tests/browser-terrain.mjs",
+      "result": "PASS four presets, mesh/physical agreement, bounded powered motion, rejection diagnosis/reset",
+      "evidence": "browser-terrain.txt"
+    },
+    {
+      "command": "CHROMIUM_PATH=/usr/bin/chromium node tests/browser-navigation.mjs",
+      "result": "PASS desktop/mobile, eleven routes, filter, launch/refresh/return",
+      "evidence": "browser-navigation.txt"
+    },
+    {
+      "command": "node --check each source and M14 JavaScript tool/test",
+      "result": "PASS",
+      "evidence": "syntax-checks.json"
+    },
+    {
+      "command": "node tools/replay-browser-faults-m14.mjs",
+      "result": "PASS identical base/new rejection and rollback from four captured failing states; original sustained coarse-rate driving remains FAIL",
+      "evidence": "browser-fault-replay.json"
+    }
+  ],
+  "preservation": {
+    "trackedChangesOutsideExperiment11": [],
+    "experiments1to10": "unchanged byte for byte against bf45052; no original fixture or historical result regenerated",
+    "defaultStrategy": "A",
+    "newBranches": false,
+    "merged": false,
+    "physicsTolerancesChanged": false
+  },
+  "limitations": [
+    "2x physics target not achieved",
+    "B CPU retention FAIL 41/84 short repeated combinations",
+    "No demonstrated overall SwiftShader 3D FPS improvement or hardware GPU measurement",
+    "Sustained coarse-rate maximum steering faults in both base/new; subsequent brake phase not executed",
+    "Original broad-sweep GC event samples missing; corrected separate GC recovery benchmark supplies counts"
+  ]
+}

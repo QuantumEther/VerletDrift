@@ -1,0 +1,158 @@
+{
+  "source": "bf4505252f615beacfdb177cf5c53f37f9d3739e",
+  "runtime": "Node v24.19.0",
+  "note": "Sampled baseline ran alongside baseline unit tests. Use for hotspot attribution, not uncontended throughput. Its raw benchmark timings are baseline.json, not the before/after acceptance denominator.",
+  "samples": 39720,
+  "top": [
+    {
+      "function": "solveContacts",
+      "file": "contact-solver.js",
+      "samples": 10507,
+      "fraction": 0.26452668680765357
+    },
+    {
+      "function": "",
+      "file": "contact-solver.js",
+      "samples": 5089,
+      "fraction": 0.12812185297079556
+    },
+    {
+      "function": "project",
+      "file": "contact-solver.js",
+      "samples": 4042,
+      "fraction": 0.10176233635448137
+    },
+    {
+      "function": "stepPlanar",
+      "file": "combined-planar.js",
+      "samples": 2173,
+      "fraction": 0.0547079556898288
+    },
+    {
+      "function": "copyRecord",
+      "file": "vehicle.js",
+      "samples": 2081,
+      "fraction": 0.052391742195367574
+    },
+    {
+      "function": "endpointTrial",
+      "file": "vehicle.js",
+      "samples": 1875,
+      "fraction": 0.04720543806646526
+    },
+    {
+      "function": "",
+      "file": "vehicle.js",
+      "samples": 1715,
+      "fraction": 0.043177240684793554
+    },
+    {
+      "function": "landscape",
+      "file": "terrain.js",
+      "samples": 1553,
+      "fraction": 0.039098690835850956
+    },
+    {
+      "function": "",
+      "file": "combined-planar.js",
+      "samples": 1464,
+      "fraction": 0.036858006042296075
+    },
+    {
+      "function": "candidateTerrainStep",
+      "file": "vehicle.js",
+      "samples": 1216,
+      "fraction": 0.030614300100704935
+    },
+    {
+      "function": "terrainContactFrame",
+      "file": "contact-frame.js",
+      "samples": 1097,
+      "fraction": 0.027618328298086605
+    },
+    {
+      "function": "",
+      "file": "gearbox.js",
+      "samples": 603,
+      "fraction": 0.015181268882175226
+    },
+    {
+      "function": "(garbage collector)",
+      "file": "",
+      "samples": 575,
+      "fraction": 0.014476334340382679
+    },
+    {
+      "function": "evaluateSuspension",
+      "file": "vertical.js",
+      "samples": 423,
+      "fraction": 0.010649546827794561
+    },
+    {
+      "function": "",
+      "file": "contact-frame.js",
+      "samples": 380,
+      "fraction": 0.009566968781470292
+    },
+    {
+      "function": "sample",
+      "file": "terrain.js",
+      "samples": 342,
+      "fraction": 0.008610271903323263
+    },
+    {
+      "function": "intersection",
+      "file": "steering.js",
+      "samples": 338,
+      "fraction": 0.00850956696878147
+    },
+    {
+      "function": "",
+      "file": "vertical.js",
+      "samples": 292,
+      "fraction": 0.007351460221550856
+    },
+    {
+      "function": "sub",
+      "file": "steering.js",
+      "samples": 262,
+      "fraction": 0.006596173212487412
+    },
+    {
+      "function": "gradientStep",
+      "file": "contact-solver.js",
+      "samples": 260,
+      "fraction": 0.006545820745216516
+    },
+    {
+      "function": "normalized",
+      "file": "contact-frame.js",
+      "samples": 216,
+      "fraction": 0.005438066465256798
+    },
+    {
+      "function": "discreteTerrainNormal",
+      "file": "normal-contact.js",
+      "samples": 206,
+      "fraction": 0.005186304128902316
+    },
+    {
+      "function": "rotorSystem",
+      "file": "gearbox.js",
+      "samples": 205,
+      "fraction": 0.005161127895266868
+    },
+    {
+      "function": "brakeActuation",
+      "file": "brakes.js",
+      "samples": 203,
+      "fraction": 0.005110775427995972
+    },
+    {
+      "function": "",
+      "file": "steering.js",
+      "samples": 197,
+      "fraction": 0.004959718026183283
+    }
+  ]
+}

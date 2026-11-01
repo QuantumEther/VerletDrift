@@ -9,14 +9,14 @@ import {solveContacts} from './contact-solver.js';
 export {createPlanar,tireLateral,contactVelocity,yawMoment} from '../../tire-road-observatory-prototype/src/planar-reference.js';
 export {tireForce};
 export const BRAKES={front:100,rear:70,handbrake:160}; // Nm PER wheel, 59:41 service bias.
-export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,contactProfile=null,contactCapture=null,contactOptimization='reference',normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
+export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,contactProfile=null,contactCapture=null,contactOptimization='reference',contactKernel='isolated',contactOperators=null,normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
  const preparationStart=contactProfile?performance.now():0;
  if(!vs||!st)throw Error('Combined solve requires vertical state and dynamic steering');
- const vm=[vs.mass,vs.pitchInertia,vs.rollInertia,...Array(4).fill(vs.wheelMass)],oldVertical=[...vs.v],verticalEnergy=()=>evaluate(vs).energy;
+ const vm=contactOperators?.vm||[vs.mass,vs.pitchInertia,vs.rollInertia,...Array(4).fill(vs.wheelMass)],oldVertical=[...vs.v],verticalEnergy=()=>evaluate(vs).energy;
  if(!f)throw Error('Persistent flywheel required');
  if(!(h>0&&mass>0&&f.engagement>=0&&f.engagement<=1))throw Error('Invalid contact timestep/mass/clutch command');
  const n=18,sd=st?.dynamics,oldSteering=st?.angularVelocity||0,steeringEnergy=()=>st ? .5*sd.inertia*st.angularVelocity**2 : 0;
- const g=f.gearbox,G=f.ratio,grad=gradient(g),neutral=g.selected==='N',R=rotorSystem(w,diff,g),old=w.map(c=>c.omega),oldEngine=f.omega,oldInput=shaftState({gearbox:g,wheels:w}).omega,oldSelector=g.velocity;
+ const g=f.gearbox,G=f.ratio,grad=contactOperators?.grad||gradient(g),neutral=g.selected==='N',R=contactOperators?.R||rotorSystem(w,diff,g),old=w.map(c=>c.omega),oldEngine=f.omega,oldInput=shaftState({gearbox:g,wheels:w}).omega,oldSelector=g.velocity;
  const rotorE=()=>rotorEnergy(w,diff)+.5*f.inertia*f.omega**2+.5*g.inputInertia*shaftState({gearbox:g,wheels:w}).omega**2+.5*g.selectorMass*g.velocity**2;
  const oldRotorE=rotorE(),oldEnergy=verticalEnergy()+steeringEnergy()+oldRotorE+.5*mass*(p.u*p.u+p.v*p.v)+.5*p.Iz*p.r*p.r;
  const capacity=f.actuator?advancePressurePlate(f.actuator,f.engagement,h).capacity:f.engagement*f.ratedTorque;
@@ -25,14 +25,17 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
  if(steeringAngles)p.steering=(steeringAngles[0]+steeringAngles[1])/2;
  g.faceBlocked=neutral&&dogState({gearbox:g,wheels:w}).blocked;
  const selector=selectorForces(g),v0=[...old,g.velocity,f.omega,neutral?g.neutralOmega:0,p.u,p.v,p.r,oldSteering,...oldVertical];
- const inverse=Array.from({length:n},()=>Array(n).fill(0));for(let i=0;i<5;i++)for(let j=0;j<5;j++)inverse[i][j]=R[i][j];
+ const operatorReused=!!contactOperators?.inverse;
+ const inverse=contactOperators?.inverse||Array.from({length:n},()=>Array(n).fill(0));if(!contactOperators?.inverse){for(let i=0;i<5;i++)for(let j=0;j<5;j++)inverse[i][j]=R[i][j];
  inverse[5][5]=1/f.inertia;inverse[6][6]=neutral?1/(g.inputInertia+h*g.bearingDrag):0;inverse[7][7]=inverse[8][8]=1/mass;inverse[9][9]=1/p.Iz;
  if(st)inverse[10][10]=1/(sd.inertia+h*sd.damping);
  vm.forEach((m,i)=>inverse[11+i][11+i]=1/m);
+ if(contactOperators)Object.assign(contactOperators,{vm,grad,R,inverse});
+ }
  const external=[0,0,0,0,selector,drive,0,0,0,0,st.driverTorque,...Array(7).fill(0)],free=v0.map((v,i)=>v+h*inverse[i].reduce((s,b,j)=>s+b*(external[j]+normalReaction[j]),0));if(neutral)free[6]=g.neutralOmega*g.inputInertia*inverse[6][6];
  if(st)free[10]=(sd.inertia*oldSteering+h*(st.driverTorque+normalReaction[10]))*inverse[10][10];
  const sj=st?steeringJacobian(st):[0,0];
- const rowStart=contactProfile?performance.now():0;contactProfile?.({stage:'inertia-free',ms:rowStart-preparationStart});
+ const rowStart=contactProfile?performance.now():0;contactProfile?.({stage:'inertia-free',ms:rowStart-preparationStart,operatorReused});
  const rows=[],groups=[],geometry=[];
  w.forEach((c,i)=>{const delta=c.axle===0?(steeringAngles?.[i]??p.steering):0,cos=Math.cos(delta),sin=Math.sin(delta),j=Array(n).fill(0),k=Array(n).fill(0);j[i]=-c.radius;j[7]=cos;j[8]=sin;const front=st&&c.axle===0,trail=front?sd.trail:0,x=c.x+trail*(1-cos),y=c.y-trail*sin;j[9]=x*sin-y*cos;k[7]=-sin;k[8]=cos;k[9]=x*cos+y*sin;if(front)k[10]=trailContactJacobian(trail,sj[i]);j[12]=contactHeight*cos;j[13]=contactHeight*sin;k[12]=-contactHeight*sin;k[13]=contactHeight*cos;if(terrainFrames){j.splice(0,18,...terrainFrames[i].rows[0]);k.splice(0,18,...terrainFrames[i].rows[1]);}const start=rows.length;rows.push({j,compliance:tireCompliance(h,tireCoefficients?.[i].kx)},{j:k,compliance:tireCompliance(h,tireCoefficients?.[i].ky)});groups.push({indices:[start,start+1],limit:frictionImpulseLimit(h,c.mu,loads[i])});geometry.push({cos,sin,j,k,delta});});
  const brakeStart=rows.length;
@@ -66,7 +69,7 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
   const seed=warmModes&&modeWarm?modeWarm:p.contactImpulse?.map(a=>a*h/p.contactImpulseH);
   contactProfile?.({stage:'initial-impulse',ms:performance.now()-warmStart});
   if(warmModes&&modeWarm)contactProfile?.({stage:'mode-warm',ms:0});
-  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:seed,prepared,profile:contactProfile?e=>contactProfile({...e,mode}):null,capture:contactCapture?e=>contactCapture({...e,mode}):null});totalIterations+=trial.iterations;
+  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:seed,prepared,kernel:contactKernel,profile:contactProfile?e=>contactProfile({...e,mode}):null,capture:contactCapture?e=>contactCapture({...e,mode}):null});totalIterations+=trial.iterations;
   if(warmModes)modeWarm=trial.z;
   const speed=cj.reduce((s,a,i)=>s+a*trial.velocity[i],0),torque=trial.z.at(-1)/h,loss=h*torque*(slipOld+speed)/2;
   clutchCandidates.push({mode,slip:speed,torque,endpointWork:h*torque*speed,midpointWork:loss});

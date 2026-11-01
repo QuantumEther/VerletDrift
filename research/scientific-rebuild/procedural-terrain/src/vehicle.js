@@ -105,6 +105,11 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
   }));
   const basis=cloneMechanical(initial);
   if(vehicle.verifyIsolation)freezeRecords(basis);
+  // Every endpoint trial starts from this same basis: masses, inertias,
+  // selector configuration, timestep and steering inertia are unchanged.
+  // Geometry-dependent contact rows/free velocities are never cached here.
+  // The workspace dies with this candidate, including rollback and subdivision.
+  const contactOperators=vehicle.disableOperatorCache?null:{};
   let guess=initial,guessPositions=begin,guessContacts=start,prior=null,lastConvergence=null,contactIterations=0;
   mark?.('setup');
   // Backward-Euler kinematics: q1=q0+h*v1. Linear spring forces use
@@ -127,7 +132,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    // A prior endpoint impulse is only an optimization seed. Original physical
    // velocities/inertia remain intact and the same KKT/work gates still apply.
    if(guess!==initial){q.planar.contactImpulse=guess.planar.contactImpulse;q.planar.contactImpulseH=guess.planar.contactImpulseH;}
-   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,contactProfile:vehicle.contactProfile,contactCapture:vehicle.contactCapture,contactOptimization:optimization,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
+   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,contactProfile:vehicle.contactProfile,contactCapture:vehicle.contactCapture,contactOptimization:optimization,contactKernel:vehicle.contactKernel,contactOperators,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
    contactIterations+=q.planar.contact.iterations;
    mark?.('unified-solve');
    q.vertical.q=vs.q.map((v,i)=>v+h*q.vertical.v[i]);

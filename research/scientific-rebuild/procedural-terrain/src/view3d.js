@@ -1,3 +1,4 @@
+import {batchRigidChildren} from './render-batching.js';
 import {terrainSampler} from './application-vehicle.js';
 import {createTrackView} from './track-view.js';
 import {createAutomobileView} from './automobile-view.js';
@@ -154,6 +155,10 @@ export function createView3D(canvas,resetButton) {
  const focusComponent=()=>{if(hovered){hovered.object.getWorldPosition(desiredTarget);desiredPosition.copy(desiredTarget).add(new THREE.Vector3(.8,-.85,.65));transitioning=true;}};
  canvas.addEventListener('pointermove',hover);canvas.addEventListener('dblclick',focusComponent);
  const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);});
+ // Batch only rigid decorative siblings. Per-wheel rotor parents and their
+ // physics-driven transforms remain independent; transparent coachwork stays sorted.
+ const batching=[];
+ if(!new URLSearchParams(location.search).has('unbatched'))for(const parent of [exterior,frame,...rotors])batching.push(batchRigidChildren(parent,geometries,[paint]));
  // Include both alternate dog materials before the first update.
  for(const m of [free,engaged,shock])materials.add(m);
  let terrainSource=null,terrainX=NaN,terrainY=NaN,terrainUpdates=0,terrainUpdateMs=0,lastMapping;
@@ -210,7 +215,7 @@ export function createView3D(canvas,resetButton) {
   controls.update();renderer.render(scene,camera);
  }
  return {draw,resetCamera,
-  info:()=>({terrain:{updates:terrainUpdates,lastUpdateMs:terrainUpdateMs,vertices:groundGeo.attributes.position.count},tracks:tracks.info(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
+  info:()=>({batching,terrain:{updates:terrainUpdates,lastUpdateMs:terrainUpdateMs,vertices:groundGeo.attributes.position.count},tracks:tracks.info(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,sceneGeometries:geometries.size,materials:materials.size}),
   snapshot:()=>({terrainSamples:[0,80,160].map(i=>({x:groundGeo.attributes.position.getX(i)+ground.position.x+lastState.planar.x,y:groundGeo.attributes.position.getY(i)+ground.position.y+lastState.planar.y,z:groundGeo.attributes.position.getZ(i)})),chassisRoll:body.rotation.x,powertrainRoll:powertrain.rotation.x,suspensionEndpoints:springs.map(m=>[new THREE.Vector3(0,0,0).applyMatrix4(m.matrixWorld).toArray(),new THREE.Vector3(0,0,1).applyMatrix4(m.matrixWorld).toArray()]),tracks:tracks.info(),automobile:automobile.snapshot(),mode,bodyOpacity:paint.opacity,bodyTransparent:paint.transparent,camera:camera.position.toArray(),target:controls.target.toArray(),mapping:structuredClone(lastMapping),sleeveX:sleeve.position.x,forkX:fork.position.x,engineAngle:engine.rotation.x,inputAngle:input.rotation.x,outputAngle:output.rotation.x,layshaftAngle:layshaft.rotation.x,gearAngles:pairs.map(p=>p.driven.node.rotation.x),dogAngles:pairs.map(p=>p.dogs.rotation.x),engagedMaterials:pairs.map(p=>p.driven.teeth.material[1]===engaged),halfShaftAngles:halfShafts.map(s=>s.rotation.y),wheelAngles:rotors.map(r=>r.rotation.y),steering:hubs.map(h=>h.rotation.z),wheelHeights:hubs.map(h=>h.position.z),chassisHeight:body.position.z,chassisPitch:-body.rotation.y,chassisYaw:body.rotation.z,layshaftY:lay.position.y,pressureX:pressure.position.x,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles}),
   dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('pointermove',hover);canvas.removeEventListener('dblclick',focusComponent);cutaway.removeEventListener('change',choose);focusButton.removeEventListener('click',focus);resetButton.removeEventListener('click',resetCamera);controls.removeEventListener('start',stop);controls.dispose();tracks.geometry.dispose();tracks.material.dispose();scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.dispose();environment.dispose();renderer.dispose();}
  };

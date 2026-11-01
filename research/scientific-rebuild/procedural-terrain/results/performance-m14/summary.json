@@ -1,0 +1,1611 @@
+{
+  "base": "bf4505252f615beacfdb177cf5c53f37f9d3739e",
+  "runs": 630,
+  "faults": 0,
+  "overallAggregatePhysicsSpeedup": 1.1371872706654367,
+  "twoTimesTargetMet": false,
+  "pairedCpuRatios": [
+    {
+      "strategy": "reference",
+      "control": "dense",
+      "candidate": "interior",
+      "median": 0.8881320022667971,
+      "bootstrap95": [
+        0.8826364081847508,
+        0.9067208574556671
+      ],
+      "pairs": 84
+    },
+    {
+      "strategy": "reference",
+      "control": "interior",
+      "candidate": "isolated",
+      "median": 0.9576377432702923,
+      "bootstrap95": [
+        0.9510567206306426,
+        0.9666262141479828
+      ],
+      "pairs": 84
+    },
+    {
+      "strategy": "reference",
+      "control": "dense",
+      "candidate": "isolated",
+      "median": 0.8507620889756954,
+      "bootstrap95": [
+        0.8339437673892176,
+        0.8725608777889633
+      ],
+      "pairs": 84
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "control": "dense",
+      "candidate": "interior",
+      "median": 0.8911783066819519,
+      "bootstrap95": [
+        0.8778508495342426,
+        0.909971507694521
+      ],
+      "pairs": 84
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "control": "interior",
+      "candidate": "isolated",
+      "median": 0.9745824509708318,
+      "bootstrap95": [
+        0.9643036728668033,
+        0.9861651470995709
+      ],
+      "pairs": 84
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "control": "dense",
+      "candidate": "isolated",
+      "median": 0.866815227934721,
+      "bootstrap95": [
+        0.8535381753580665,
+        0.877991729966124
+      ],
+      "pairs": 84
+    }
+  ],
+  "perRateCosts": [
+    {
+      "strategy": "reference",
+      "hz": 1000,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1233.2119999999993,
+      "wallMsPerSimSecond": 1154.1141563571407,
+      "medianOfRunMedianMs": 0.9015184999998382,
+      "medianOfRunP95Ms": 1.4689269999980752,
+      "medianOfRunP99Ms": 1.9166435000006459,
+      "worstMs": 27.203863000002457,
+      "convexIterationsPerTick": 283.5394285714286,
+      "endpointIterationsPerTick": 5.123714285714286,
+      "medianHeapDelta": 17308732.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 1000,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1119.3370714285707,
+      "wallMsPerSimSecond": 1049.2281369285656,
+      "medianOfRunMedianMs": 0.8320510000048671,
+      "medianOfRunP95Ms": 1.3503689999997732,
+      "medianOfRunP99Ms": 1.7943810000019766,
+      "worstMs": 14.226434000011068,
+      "convexIterationsPerTick": 283.5394285714286,
+      "endpointIterationsPerTick": 5.123714285714286,
+      "medianHeapDelta": 2081776.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 1000,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1076.4179285714279,
+      "wallMsPerSimSecond": 1006.3436622142873,
+      "medianOfRunMedianMs": 0.8193345000036061,
+      "medianOfRunP95Ms": 1.3542264999850886,
+      "medianOfRunP99Ms": 1.7911130000138655,
+      "worstMs": 16.498644999985117,
+      "convexIterationsPerTick": 283.5394285714286,
+      "endpointIterationsPerTick": 5.123714285714286,
+      "medianHeapDelta": 15626192.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 500,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 788.1369999999995,
+      "wallMsPerSimSecond": 764.03390371429,
+      "medianOfRunMedianMs": 1.3508435000003374,
+      "medianOfRunP95Ms": 2.0972504999954253,
+      "medianOfRunP99Ms": 2.743615999992471,
+      "worstMs": 7.06441900000209,
+      "convexIterationsPerTick": 622.1142857142858,
+      "endpointIterationsPerTick": 6.249142857142857,
+      "medianHeapDelta": 12844796.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 500,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 706.6427857142852,
+      "wallMsPerSimSecond": 692.797924785713,
+      "medianOfRunMedianMs": 1.2151755000013509,
+      "medianOfRunP95Ms": 1.9029719999962253,
+      "medianOfRunP99Ms": 2.4471970000013243,
+      "worstMs": 94.34420700000192,
+      "convexIterationsPerTick": 622.1142857142858,
+      "endpointIterationsPerTick": 6.249142857142857,
+      "medianHeapDelta": 25049232.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 500,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 677.9583571428567,
+      "wallMsPerSimSecond": 666.458721428566,
+      "medianOfRunMedianMs": 1.1594465000016498,
+      "medianOfRunP95Ms": 1.9361779999962891,
+      "medianOfRunP99Ms": 2.5086034999985714,
+      "worstMs": 9.40335700000287,
+      "convexIterationsPerTick": 622.1142857142858,
+      "endpointIterationsPerTick": 6.249142857142857,
+      "medianHeapDelta": 13867368.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 250,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 751.4197142857138,
+      "wallMsPerSimSecond": 742.5094781428593,
+      "medianOfRunMedianMs": 2.216455499999938,
+      "medianOfRunP95Ms": 3.080050000004121,
+      "medianOfRunP99Ms": 3.8831294999999955,
+      "worstMs": 190.15291299999808,
+      "convexIterationsPerTick": 1414.481142857143,
+      "endpointIterationsPerTick": 8.13942857142857,
+      "medianHeapDelta": 9297436.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 250,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 647.8829285714282,
+      "wallMsPerSimSecond": 632.5160827857151,
+      "medianOfRunMedianMs": 1.891566000000239,
+      "medianOfRunP95Ms": 2.8324945000058506,
+      "medianOfRunP99Ms": 3.5463110000000597,
+      "worstMs": 178.25987700000405,
+      "convexIterationsPerTick": 1414.481142857143,
+      "endpointIterationsPerTick": 8.13942857142857,
+      "medianHeapDelta": 11685932.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": 250,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 619.6644285714282,
+      "wallMsPerSimSecond": 606.7008459999942,
+      "medianOfRunMedianMs": 1.826767499997004,
+      "medianOfRunP95Ms": 2.689484000002267,
+      "medianOfRunP99Ms": 3.27705799999967,
+      "worstMs": 234.1800360000052,
+      "convexIterationsPerTick": 1414.481142857143,
+      "endpointIterationsPerTick": 8.13942857142857,
+      "medianHeapDelta": 4042520.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": "all",
+      "kernel": "dense",
+      "runs": 84,
+      "cpuMsPerSimSecond": 924.2562380952376,
+      "wallMsPerSimSecond": 886.8858460714299,
+      "medianOfRunMedianMs": 1.3943614999880083,
+      "medianOfRunP95Ms": 2.206967500009341,
+      "medianOfRunP99Ms": 2.891396499995608,
+      "worstMs": 190.15291299999808,
+      "convexIterationsPerTick": 541.8382040816326,
+      "endpointIterationsPerTick": 5.876081632653062,
+      "medianHeapDelta": 15585544.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": "all",
+      "kernel": "interior",
+      "runs": 84,
+      "cpuMsPerSimSecond": 824.620928571428,
+      "wallMsPerSimSecond": 791.5140481666645,
+      "medianOfRunMedianMs": 1.2414244999963557,
+      "medianOfRunP95Ms": 2.022135500010336,
+      "medianOfRunP99Ms": 2.7352314999916416,
+      "worstMs": 178.25987700000405,
+      "convexIterationsPerTick": 541.8382040816326,
+      "endpointIterationsPerTick": 5.876081632653062,
+      "medianHeapDelta": 9813680.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "reference",
+      "hz": "all",
+      "kernel": "isolated",
+      "runs": 84,
+      "cpuMsPerSimSecond": 791.3469047619042,
+      "wallMsPerSimSecond": 759.8344098809491,
+      "medianOfRunMedianMs": 1.1918109999824082,
+      "medianOfRunP95Ms": 2.029811000003974,
+      "medianOfRunP99Ms": 2.731498500015732,
+      "worstMs": 234.1800360000052,
+      "convexIterationsPerTick": 541.8382040816326,
+      "endpointIterationsPerTick": 5.876081632653062,
+      "medianHeapDelta": 13537444.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 1000,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1341.6370714285706,
+      "wallMsPerSimSecond": 1311.416041000002,
+      "medianOfRunMedianMs": 1.0155289999966044,
+      "medianOfRunP95Ms": 1.6044965000037337,
+      "medianOfRunP99Ms": 2.2228309999918565,
+      "worstMs": 17.835083999991184,
+      "convexIterationsPerTick": 441.6345714285714,
+      "endpointIterationsPerTick": 5.132,
+      "medianHeapDelta": 3479204.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 1000,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1220.6734999999992,
+      "wallMsPerSimSecond": 1174.0083352142842,
+      "medianOfRunMedianMs": 0.9368404999986524,
+      "medianOfRunP95Ms": 1.4915019999898504,
+      "medianOfRunP99Ms": 2.020127499999944,
+      "worstMs": 107.14681499998551,
+      "convexIterationsPerTick": 441.6345714285714,
+      "endpointIterationsPerTick": 5.132,
+      "medianHeapDelta": 1358420.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 1000,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 1295.2821428571422,
+      "wallMsPerSimSecond": 1214.0967511428614,
+      "medianOfRunMedianMs": 0.903918000003614,
+      "medianOfRunP95Ms": 1.4921160000012605,
+      "medianOfRunP99Ms": 2.1633959999962826,
+      "worstMs": 150.913292000012,
+      "convexIterationsPerTick": 441.6345714285714,
+      "endpointIterationsPerTick": 5.132,
+      "medianHeapDelta": 10229288.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 500,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 957.4984999999994,
+      "wallMsPerSimSecond": 944.6856941428556,
+      "medianOfRunMedianMs": 1.4495474999930593,
+      "medianOfRunP95Ms": 2.321614500000578,
+      "medianOfRunP99Ms": 3.2022850000139442,
+      "worstMs": 79.91246200000751,
+      "convexIterationsPerTick": 835.416,
+      "endpointIterationsPerTick": 6.2457142857142856,
+      "medianHeapDelta": 7174788.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 500,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 831.3427857142852,
+      "wallMsPerSimSecond": 810.9436850000004,
+      "medianOfRunMedianMs": 1.3007419999994454,
+      "medianOfRunP95Ms": 2.064419500013173,
+      "medianOfRunP99Ms": 3.035845499987772,
+      "worstMs": 24.5909039999824,
+      "convexIterationsPerTick": 835.416,
+      "endpointIterationsPerTick": 6.2457142857142856,
+      "medianHeapDelta": 14539632.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 500,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 804.5364285714281,
+      "wallMsPerSimSecond": 787.6728562142786,
+      "medianOfRunMedianMs": 1.2264159999976982,
+      "medianOfRunP95Ms": 1.8955034999962663,
+      "medianOfRunP99Ms": 2.685744499998691,
+      "worstMs": 16.954518999991706,
+      "convexIterationsPerTick": 835.416,
+      "endpointIterationsPerTick": 6.2457142857142856,
+      "medianHeapDelta": 6774916.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 250,
+      "kernel": "dense",
+      "runs": 28,
+      "cpuMsPerSimSecond": 690.4103571428568,
+      "wallMsPerSimSecond": 687.2338869285708,
+      "medianOfRunMedianMs": 2.3042425000021467,
+      "medianOfRunP95Ms": 3.2107820000019274,
+      "medianOfRunP99Ms": 3.9735235000116518,
+      "worstMs": 13.465109000040684,
+      "convexIterationsPerTick": 1647.3474285714285,
+      "endpointIterationsPerTick": 8.134857142857143,
+      "medianHeapDelta": 15257472.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 250,
+      "kernel": "interior",
+      "runs": 28,
+      "cpuMsPerSimSecond": 615.8159285714282,
+      "wallMsPerSimSecond": 601.9773343571436,
+      "medianOfRunMedianMs": 2.009462500005611,
+      "medianOfRunP95Ms": 2.989183999998204,
+      "medianOfRunP99Ms": 3.694539000003715,
+      "worstMs": 11.491555000015069,
+      "convexIterationsPerTick": 1647.3474285714285,
+      "endpointIterationsPerTick": 8.134857142857143,
+      "medianHeapDelta": 18436004.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": 250,
+      "kernel": "isolated",
+      "runs": 28,
+      "cpuMsPerSimSecond": 593.3049285714283,
+      "wallMsPerSimSecond": 581.2866196428585,
+      "medianOfRunMedianMs": 1.933648500002164,
+      "medianOfRunP95Ms": 2.889662999987195,
+      "medianOfRunP99Ms": 3.90975349999826,
+      "worstMs": 17.601642000001448,
+      "convexIterationsPerTick": 1647.3474285714285,
+      "endpointIterationsPerTick": 8.134857142857143,
+      "medianHeapDelta": 11007568.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": "all",
+      "kernel": "dense",
+      "runs": 84,
+      "cpuMsPerSimSecond": 996.5153095238089,
+      "wallMsPerSimSecond": 981.1118740238093,
+      "medianOfRunMedianMs": 1.7727060000033816,
+      "medianOfRunP95Ms": 2.6519164999990608,
+      "medianOfRunP99Ms": 3.3515445000011823,
+      "worstMs": 79.91246200000751,
+      "convexIterationsPerTick": 726.3882448979592,
+      "endpointIterationsPerTick": 5.879183673469388,
+      "medianHeapDelta": 10438132.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": "all",
+      "kernel": "interior",
+      "runs": 84,
+      "cpuMsPerSimSecond": 889.2774047619041,
+      "wallMsPerSimSecond": 862.3097848571426,
+      "medianOfRunMedianMs": 1.4898339999926975,
+      "medianOfRunP95Ms": 2.403983000000153,
+      "medianOfRunP99Ms": 3.06106649999856,
+      "worstMs": 107.14681499998551,
+      "convexIterationsPerTick": 726.3882448979592,
+      "endpointIterationsPerTick": 5.879183673469388,
+      "medianHeapDelta": 17781168.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "hz": "all",
+      "kernel": "isolated",
+      "runs": 84,
+      "cpuMsPerSimSecond": 897.7078333333327,
+      "wallMsPerSimSecond": 861.0187423333327,
+      "medianOfRunMedianMs": 1.5040369999915129,
+      "medianOfRunP95Ms": 2.2158890000027895,
+      "medianOfRunP99Ms": 2.8395775000099093,
+      "worstMs": 150.913292000012,
+      "convexIterationsPerTick": 726.3882448979592,
+      "endpointIterationsPerTick": 5.879183673469388,
+      "medianHeapDelta": 10485544.0,
+      "gcCount": null,
+      "gcDurationMs": null,
+      "gcStatus": "Missing in original paired sweep: delayed listener delivery discarded events; use gc-recovery.json"
+    }
+  ],
+  "iterationTotalsIdentical": true,
+  "maximumEnergyResidualJ": 1.0939267866549862e-08,
+  "maximumConstitutiveImpulseResidualNs": 3.6615316678815626e-11,
+  "uncertainty": "Bootstrap intervals resample paired run ratios, seed14; samples share scenarios/host and are not universal latency guarantees. Quantiles are medians of run quantiles, not pooled individual ticks.",
+  "bRetention": {
+    "runs": 504,
+    "faults": 0,
+    "combinations": 84,
+    "passes": 43,
+    "fails": 41,
+    "maximumCpuRatio": 2.1013483277234077,
+    "passesAll": false,
+    "cases": [
+      {
+        "scenario": "acceleration",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.1357573125408575,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.393343937605829,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.9441497549837085,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.2276309975811222,
+        "pass": false
+      },
+      {
+        "scenario": "braking",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.5449365067009524,
+        "pass": false
+      },
+      {
+        "scenario": "braking",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.6985916890634691,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.3114881948648554,
+        "pass": false
+      },
+      {
+        "scenario": "steering",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.2233823099357428,
+        "pass": false
+      },
+      {
+        "scenario": "steering",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.9181665756522169,
+        "pass": true
+      },
+      {
+        "scenario": "combined",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.136671664064692,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.1186169914263444,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.2120145863988225,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 2.0574952803173323,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.4698233818520354,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 2.1013483277234077,
+        "pass": false
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.9074740166759157,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.9448001964158325,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 0.8601700274946574,
+        "pass": true
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.001,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.7502972898949174,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.002,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.2970690899624908,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.004,
+        "floor": 0.25,
+        "cpuRatioBtoA": 1.4650436793422403,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.2419885651850386,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.1362059062527297,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 0.9386754293650624,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0106079930189045,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 0.9920609820618391,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0708913047945912,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0608928080913376,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0714191735258827,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0445121644927415,
+        "pass": true
+      },
+      {
+        "scenario": "combined",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.2014060681756362,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.1055372169789395,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0609148657522118,
+        "pass": true
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.2770017484486633,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.2789678482445084,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.320467028389485,
+        "pass": false
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.096086211756543,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.0163906489325445,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 0.9594068969117916,
+        "pass": true
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.001,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.6156800216136415,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.002,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.6415515299094072,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.004,
+        "floor": 0.5,
+        "cpuRatioBtoA": 1.4850510879788097,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.034035822065977,
+        "pass": true
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2958131595048004,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 0.9275607368514728,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.025746612361901,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 0.9520917963597996,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 1.4185285221742323,
+        "pass": false
+      },
+      {
+        "scenario": "steering",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.0787837455712834,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.063744241881196,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 0.9306012587457271,
+        "pass": true
+      },
+      {
+        "scenario": "combined",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2714076043405533,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.1699036162995722,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 1.0625784539400553,
+        "pass": true
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.4394286989381084,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2793059009721908,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2145891690009338,
+        "pass": false
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 0.9260372985716113,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.1232258836584383,
+        "pass": false
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 0.9888385071503315,
+        "pass": true
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.001,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2579287268843702,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.002,
+        "floor": 1,
+        "cpuRatioBtoA": 1.203359419272602,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.004,
+        "floor": 1,
+        "cpuRatioBtoA": 1.2884846729875379,
+        "pass": false
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0688761990207056,
+        "pass": true
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 0.7927139334344223,
+        "pass": true
+      },
+      {
+        "scenario": "acceleration",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0022640089754182,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0136531789691594,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0300975037561526,
+        "pass": true
+      },
+      {
+        "scenario": "braking",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 0.8117052716525986,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0167253232666813,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 0.9429951070985317,
+        "pass": true
+      },
+      {
+        "scenario": "steering",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0658819413373524,
+        "pass": true
+      },
+      {
+        "scenario": "combined",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.1157013354165046,
+        "pass": false
+      },
+      {
+        "scenario": "combined",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0273398310736965,
+        "pass": true
+      },
+      {
+        "scenario": "combined",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0659796895845333,
+        "pass": true
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.1550266541134218,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 1.1131467550373721,
+        "pass": false
+      },
+      {
+        "scenario": "recovery",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0675988567707388,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0151327616184833,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 1.0484761943070136,
+        "pass": true
+      },
+      {
+        "scenario": "drift-recovery",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 0.9645807379525319,
+        "pass": true
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.001,
+        "floor": 2,
+        "cpuRatioBtoA": 1.11347841048092,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.002,
+        "floor": 2,
+        "cpuRatioBtoA": 1.3623383484707254,
+        "pass": false
+      },
+      {
+        "scenario": "recontact",
+        "h": 0.004,
+        "floor": 2,
+        "cpuRatioBtoA": 1.093027037846313,
+        "pass": true
+      }
+    ],
+    "limitation": "Two measured repeats per combination; descriptive retention screen, not tight confidence intervals. No gate thresholds relaxed."
+  },
+  "gcRecovery": [
+    {
+      "strategy": "reference",
+      "kernel": "isolated",
+      "measuredRuns": 2,
+      "simulatedSeconds": 2.0000000000000013,
+      "events": 82,
+      "totalGCDurationMs": 31.20211288332939,
+      "medianHeapDelta": 19952136.0,
+      "faults": 0
+    },
+    {
+      "strategy": "reference",
+      "kernel": "dense",
+      "measuredRuns": 2,
+      "simulatedSeconds": 2.0000000000000013,
+      "events": 90,
+      "totalGCDurationMs": 34.127437114715576,
+      "medianHeapDelta": 26037740.0,
+      "faults": 0
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "kernel": "isolated",
+      "measuredRuns": 2,
+      "simulatedSeconds": 2.0000000000000013,
+      "events": 44,
+      "totalGCDurationMs": 21.741942912340164,
+      "medianHeapDelta": -9125188.0,
+      "faults": 0
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "kernel": "dense",
+      "measuredRuns": 2,
+      "simulatedSeconds": 2.0000000000000013,
+      "events": 50,
+      "totalGCDurationMs": 21.06568294763565,
+      "medianHeapDelta": 11770480.0,
+      "faults": 0
+    }
+  ],
+  "rendering": [
+    {
+      "mode": "normal",
+      "batched": false,
+      "samples": 33,
+      "fps": 2.064719573541557,
+      "frameMedianMs": 483.2999999999993,
+      "frameP95Ms": 583.3000000000011,
+      "frameP99Ms": 583.4000000000015,
+      "callbackMedianMs": 4.4000000059604645,
+      "callbackP95Ms": 7.5999999940395355,
+      "drawCalls": 209,
+      "triangles": 57012,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "frozenStateChecks": "PASS"
+    },
+    {
+      "mode": "normal",
+      "batched": true,
+      "samples": 33,
+      "fps": 2.0647454106340644,
+      "frameMedianMs": 483.2999999999993,
+      "frameP95Ms": 599.9000000000005,
+      "frameP99Ms": 633.1999999999989,
+      "callbackMedianMs": 3.5999999940395355,
+      "callbackP95Ms": 6.199999988079071,
+      "drawCalls": 182,
+      "triangles": 57012,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "frozenStateChecks": "PASS"
+    },
+    {
+      "mode": "xray",
+      "batched": false,
+      "samples": 31,
+      "fps": 1.8182564680074844,
+      "frameMedianMs": 533.2999999999956,
+      "frameP95Ms": 666.6000000000022,
+      "frameP99Ms": 733.2000000000007,
+      "callbackMedianMs": 3.5999999940395355,
+      "callbackP95Ms": 5.9000000059604645,
+      "drawCalls": 209,
+      "triangles": 57012,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "frozenStateChecks": "PASS"
+    },
+    {
+      "mode": "xray",
+      "batched": true,
+      "samples": 31,
+      "fps": 1.8750718273482248,
+      "frameMedianMs": 516.6000000000058,
+      "frameP95Ms": 683.3000000000029,
+      "frameP99Ms": 700,
+      "callbackMedianMs": 3.399999976158142,
+      "callbackP95Ms": 5.700000017881393,
+      "drawCalls": 182,
+      "triangles": 57012,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "frozenStateChecks": "PASS"
+    }
+  ],
+  "browserDriving": [
+    {
+      "kind": "before",
+      "hz": 1000,
+      "phase": "acceleration",
+      "wallSeconds": 2.0279000000059604,
+      "simulatedSeconds": 1.5979999999998242,
+      "fps": 60.16075743362169,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.80000000000109,
+      "physicsCpuWallMs": 1532.000000089407,
+      "stepsPerWallSecond": 788.00729818793,
+      "convexIterations": 261723,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 1000,
+      "phase": "steering",
+      "wallSeconds": 2.016300000011921,
+      "simulatedSeconds": 1.1260000000001709,
+      "fps": 60.01091107438606,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.80000000000109,
+      "physicsCpuWallMs": 1539.5999999046326,
+      "stepsPerWallSecond": 558.4486435517248,
+      "convexIterations": 302656,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 1000,
+      "phase": "braking",
+      "wallSeconds": 2.0637000000178816,
+      "simulatedSeconds": 0.7150000000002388,
+      "fps": 54.756020738974115,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 33.29999999999927,
+      "frameP99Ms": 33.400000000001455,
+      "physicsCpuWallMs": 1594.5999999642372,
+      "stepsPerWallSecond": 346.46508697669464,
+      "convexIterations": 502544,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 500,
+      "phase": "acceleration",
+      "wallSeconds": 2.012399999976158,
+      "simulatedSeconds": 2.015999999999787,
+      "fps": 60.12721129071434,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 1206.499999910593,
+      "stepsPerWallSecond": 500.89445438876083,
+      "convexIterations": 366692,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 500,
+      "phase": "steering",
+      "wallSeconds": 2.0086000000238418,
+      "simulatedSeconds": 0.6259999999999315,
+      "fps": 60.240963854706635,
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.80000000000291,
+      "physicsCpuWallMs": 496.60000002384186,
+      "stepsPerWallSecond": 155.82993129358,
+      "convexIterations": 195914,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.573999999999718,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0002337771464285e-07,
+          "forceWork": -0.00012980539157008789,
+          "potentialChange": -0.000445862399782726,
+          "damping": 0.0005755677660594877,
+          "error": 2.0872192862952943e-14,
+          "vError": 1.0424986394974578e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 500,
+      "phase": "braking",
+      "wallSeconds": 2.015799999982119,
+      "simulatedSeconds": 0.0,
+      "fps": 60.02579621047392,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 0.0,
+      "stepsPerWallSecond": 0.0,
+      "convexIterations": 0,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.573999999999718,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0002337771464285e-07,
+          "forceWork": -0.00012980539157008789,
+          "potentialChange": -0.000445862399782726,
+          "damping": 0.0005755677660594877,
+          "error": 2.0872192862952943e-14,
+          "vError": 1.0424986394974578e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 250,
+      "phase": "acceleration",
+      "wallSeconds": 2.0075999999940395,
+      "simulatedSeconds": 2.0200000000000014,
+      "fps": 60.27097031299026,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 928.0,
+      "stepsPerWallSecond": 251.5441322980172,
+      "convexIterations": 412482,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 250,
+      "phase": "steering",
+      "wallSeconds": 2.0104000000059603,
+      "simulatedSeconds": 0.26399999999997625,
+      "fps": 56.7051333066365,
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 50,
+      "physicsCpuWallMs": 250.79999992251396,
+      "stepsPerWallSecond": 32.82928770384218,
+      "convexIterations": 92419,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.211999999999979,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0294028659129859e-07,
+          "forceWork": -0.00931212198900691,
+          "potentialChange": 0.00756070043024426,
+          "damping": 0.0017513186138678372,
+          "error": 1.5420997812043424e-13,
+          "vError": 3.85553403439709e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "before",
+      "hz": 250,
+      "phase": "braking",
+      "wallSeconds": 2.0144000000059603,
+      "simulatedSeconds": 0.0,
+      "fps": 59.0746624303256,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000291,
+      "physicsCpuWallMs": 0.0,
+      "stepsPerWallSecond": 0.0,
+      "convexIterations": 0,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.211999999999979,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0294028659129859e-07,
+          "forceWork": -0.00931212198900691,
+          "potentialChange": 0.00756070043024426,
+          "damping": 0.0017513186138678372,
+          "error": 1.5420997812043424e-13,
+          "vError": 3.85553403439709e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 1000,
+      "phase": "acceleration",
+      "wallSeconds": 2.0169000000059603,
+      "simulatedSeconds": 1.6059999999998233,
+      "fps": 59.00143784999174,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000109,
+      "physicsCpuWallMs": 1518.1000000536442,
+      "stepsPerWallSecond": 796.271505773838,
+      "convexIterations": 263106,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 1000,
+      "phase": "steering",
+      "wallSeconds": 2.0158000000119207,
+      "simulatedSeconds": 1.3510000000002527,
+      "fps": 60.02579620958649,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000109,
+      "physicsCpuWallMs": 1523.6000001430511,
+      "stepsPerWallSecond": 670.2053775136475,
+      "convexIterations": 353457,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 1000,
+      "phase": "braking",
+      "wallSeconds": 2.0165999999940394,
+      "simulatedSeconds": 0.9360000000003126,
+      "fps": 59.50609937536184,
+      "frameMedianMs": 16.69999999999891,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000109,
+      "physicsCpuWallMs": 1574.5999998748302,
+      "stepsPerWallSecond": 464.1475751278224,
+      "convexIterations": 644527,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 500,
+      "phase": "acceleration",
+      "wallSeconds": 2.0142000000178815,
+      "simulatedSeconds": 2.017999999999789,
+      "fps": 60.07347830350799,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 998.799999922514,
+      "stepsPerWallSecond": 500.9433025474344,
+      "convexIterations": 366929,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 500,
+      "phase": "steering",
+      "wallSeconds": 2.0070999999940393,
+      "simulatedSeconds": 0.6259999999999315,
+      "fps": 60.2859847543019,
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000291,
+      "physicsCpuWallMs": 459.7000000476837,
+      "stepsPerWallSecond": 155.94639031484706,
+      "convexIterations": 195944,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.55799999999972,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0005822505992131e-07,
+          "forceWork": -0.00012842270675358764,
+          "potentialChange": -0.00044837986284118614,
+          "damping": 0.0005767025124008818,
+          "error": 2.0872192862952943e-14,
+          "vError": 1.0445752986545931e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 500,
+      "phase": "braking",
+      "wallSeconds": 2.012800000011921,
+      "simulatedSeconds": 0.0,
+      "fps": 60.11526232078863,
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 0.0,
+      "stepsPerWallSecond": 0.0,
+      "convexIterations": 0,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.55799999999972,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0005822505992131e-07,
+          "forceWork": -0.00012842270675358764,
+          "potentialChange": -0.00044837986284118614,
+          "damping": 0.0005767025124008818,
+          "error": 2.0872192862952943e-14,
+          "vError": 1.0445752986545931e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 250,
+      "phase": "acceleration",
+      "wallSeconds": 2.0100999999940394,
+      "simulatedSeconds": 2.016000000000002,
+      "fps": 60.19601014892732,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.700000000000728,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 802.2999998629093,
+      "stepsPerWallSecond": 250.73379433933363,
+      "convexIterations": 414001,
+      "fault": null,
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 250,
+      "phase": "steering",
+      "wallSeconds": 2.118,
+      "simulatedSeconds": 0.26399999999997625,
+      "fps": 56.18508026440038,
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 16.80000000000291,
+      "physicsCpuWallMs": 139.19999995827675,
+      "stepsPerWallSecond": 31.1614730878187,
+      "convexIterations": 92373,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.211999999999979,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0318936944113052e-07,
+          "forceWork": -0.009179723561371513,
+          "potentialChange": 0.007455562072521182,
+          "damping": 0.0017240582932463275,
+          "error": 1.5265566588595902e-13,
+          "vError": 3.815679196217392e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    },
+    {
+      "kind": "after",
+      "hz": 250,
+      "phase": "braking",
+      "wallSeconds": 2.011699999988079,
+      "simulatedSeconds": 0.0,
+      "fps": 60.14813341985237,
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.700000000004366,
+      "frameP99Ms": 16.799999999999272,
+      "physicsCpuWallMs": 0.0,
+      "stepsPerWallSecond": 0.0,
+      "convexIterations": 0,
+      "fault": {
+        "message": "Terrain candidate energy mismatch",
+        "at": 4.211999999999979,
+        "candidate": {
+          "accepted": false,
+          "residual": -1.0318936944113052e-07,
+          "forceWork": -0.009179723561371513,
+          "potentialChange": 0.007455562072521182,
+          "damping": 0.0017240582932463275,
+          "error": 1.5265566588595902e-13,
+          "vError": 3.815679196217392e-11
+        },
+        "kind": "energy-check"
+      },
+      "errors": []
+    }
+  ]
+}

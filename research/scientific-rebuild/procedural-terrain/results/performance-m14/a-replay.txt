@@ -1,0 +1,1 @@
+PASS bit-exact baseline: 36 driving fixtures, 1080 accepted states and rejected-step isolation, runtime v24.19.0

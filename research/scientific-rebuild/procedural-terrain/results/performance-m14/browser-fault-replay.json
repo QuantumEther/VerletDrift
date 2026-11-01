@@ -1,0 +1,150 @@
+{
+  "base": "bf45052",
+  "status": "PASS matched-failure classification, not a passing driving experiment",
+  "results": [
+    {
+      "capturedFrom": "before",
+      "hz": 500,
+      "time": 4.573999999999718,
+      "classification": "pre-existing bounded-domain energy rejection; exact same failure and rollback from identical inputs",
+      "outcomes": [
+        {
+          "name": "base",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0002337771464285e-7,
+            "forceWork": -0.00012980539157008789,
+            "potentialChange": -0.000445862399782726,
+            "damping": 0.0005755677660594877,
+            "error": 2.0872192862952943e-14,
+            "vError": 1.0424986394974578e-11
+          }
+        },
+        {
+          "name": "optimized",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0002337771464285e-7,
+            "forceWork": -0.00012980539157008789,
+            "potentialChange": -0.000445862399782726,
+            "damping": 0.0005755677660594877,
+            "error": 2.0872192862952943e-14,
+            "vError": 1.0424986394974578e-11
+          }
+        }
+      ]
+    },
+    {
+      "capturedFrom": "before",
+      "hz": 250,
+      "time": 4.211999999999979,
+      "classification": "pre-existing bounded-domain energy rejection; exact same failure and rollback from identical inputs",
+      "outcomes": [
+        {
+          "name": "base",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0294028659129859e-7,
+            "forceWork": -0.00931212198900691,
+            "potentialChange": 0.00756070043024426,
+            "damping": 0.0017513186138678372,
+            "error": 1.5420997812043424e-13,
+            "vError": 3.85553403439709e-11
+          }
+        },
+        {
+          "name": "optimized",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0294028659129859e-7,
+            "forceWork": -0.00931212198900691,
+            "potentialChange": 0.00756070043024426,
+            "damping": 0.0017513186138678372,
+            "error": 1.5420997812043424e-13,
+            "vError": 3.85553403439709e-11
+          }
+        }
+      ]
+    },
+    {
+      "capturedFrom": "after",
+      "hz": 500,
+      "time": 4.55799999999972,
+      "classification": "pre-existing bounded-domain energy rejection; exact same failure and rollback from identical inputs",
+      "outcomes": [
+        {
+          "name": "base",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0005822505992131e-7,
+            "forceWork": -0.00012842270675358764,
+            "potentialChange": -0.00044837986284118614,
+            "damping": 0.0005767025124008818,
+            "error": 2.0872192862952943e-14,
+            "vError": 1.0445752986545931e-11
+          }
+        },
+        {
+          "name": "optimized",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0005822505992131e-7,
+            "forceWork": -0.00012842270675358764,
+            "potentialChange": -0.00044837986284118614,
+            "damping": 0.0005767025124008818,
+            "error": 2.0872192862952943e-14,
+            "vError": 1.0445752986545931e-11
+          }
+        }
+      ]
+    },
+    {
+      "capturedFrom": "after",
+      "hz": 250,
+      "time": 4.211999999999979,
+      "classification": "pre-existing bounded-domain energy rejection; exact same failure and rollback from identical inputs",
+      "outcomes": [
+        {
+          "name": "base",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0318894254845133e-7,
+            "forceWork": -0.009179723561340135,
+            "potentialChange": 0.007455562072518518,
+            "damping": 0.0017240582932360785,
+            "error": 1.5260015473472777e-13,
+            "vError": 3.8156337464623213e-11
+          }
+        },
+        {
+          "name": "optimized",
+          "accepted": false,
+          "message": "Terrain candidate energy mismatch",
+          "candidate": {
+            "accepted": false,
+            "residual": -1.0318894254845133e-7,
+            "forceWork": -0.009179723561340135,
+            "potentialChange": 0.007455562072518518,
+            "damping": 0.0017240582932360785,
+            "error": 1.5260015473472777e-13,
+            "vError": 3.8156337464623213e-11
+          }
+        }
+      ]
+    }
+  ]
+}

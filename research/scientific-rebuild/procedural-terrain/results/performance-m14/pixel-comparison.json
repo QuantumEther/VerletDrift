@@ -1,0 +1,24 @@
+{
+  "normal": {
+    "dimensions": [
+      501,
+      800,
+      3
+    ],
+    "meanAbsoluteChannelError255": 0.0003551230871590153,
+    "p99ChannelError255": 0.0,
+    "fractionPixelsDifferingOver5": 2.7445109780439123e-05,
+    "interpretation": "display comparison of separately started frozen applications; same physical snapshot is checked within each, not a physics tolerance"
+  },
+  "xray": {
+    "dimensions": [
+      501,
+      800,
+      3
+    ],
+    "meanAbsoluteChannelError255": 0.0004174983366600133,
+    "p99ChannelError255": 0.0,
+    "fractionPixelsDifferingOver5": 4.7405189620758485e-05,
+    "interpretation": "display comparison of separately started frozen applications; same physical snapshot is checked within each, not a physics tolerance"
+  }
+}
