@@ -1,3 +1,4 @@
+import {numericalSettings,STRICT_NUMERICS,velocityConverged} from './numerical-settings.js';
 import {createTireStrategy,freezeTireCoefficients,REFERENCE} from './tire-strategy.js';
 import {createVehicle,stepVehicle} from '../../four-corner-load-transfer/src/combined-vehicle.js';
 import {createTerrain} from './terrain.js';
@@ -86,6 +87,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
  const nonflat=start.some(c=>Math.abs(c.height)>1e-12||Math.abs(c.normal[0])+Math.abs(c.normal[1])>1e-12||c.friction!==.9);
  if(!nonflat&&strategy.id!=='reference')throw Error('Experimental tire strategy does not support the inherited flat-ground path');
  if(nonflat){
+  const numerics=numericalSettings(vehicle.numerics);
   const initial=vehicle.state,vs=initial.vertical;
   const begin=start.map(c=>[...c.world,c.wheelHeight]);
   const startContacts=begin.map((point,i)=>evaluateTerrainNormal(terrain,point,initial.wheels[i].radius,vs.kt));
@@ -132,7 +134,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    // A prior endpoint impulse is only an optimization seed. Original physical
    // velocities/inertia remain intact and the same KKT/work gates still apply.
    if(guess!==initial){q.planar.contactImpulse=guess.planar.contactImpulse;q.planar.contactImpulseH=guess.planar.contactImpulseH;}
-   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,contactProfile:vehicle.contactProfile,contactCapture:vehicle.contactCapture,contactOptimization:optimization,contactKernel:vehicle.contactKernel,contactOperators,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
+   stepPlanar(q.planar,q.wheels,loads,q.mass+4*vs.wheelMass,{...ports,drive,steeringAngles:angles,steeringSystem:q.steering,verticalState:q.vertical,terrainFrames:frames,tireCoefficients,contactProfile:vehicle.contactProfile,contactCapture:vehicle.contactCapture,contactOptimization:optimization,contactKernel:vehicle.contactKernel,contactOperators,contactTolerance:numerics.contactTolerance,normalReaction:reaction,brakeMechanism:q.brakes},h,q.drivetrain,q.flywheel);
    contactIterations+=q.planar.contact.iterations;
    mark?.('unified-solve');
    q.vertical.q=vs.q.map((v,i)=>v+h*q.vertical.v[i]);
@@ -145,7 +147,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
    const error=Math.max(...pos.flatMap((r,i)=>r.map((v,k)=>Math.abs(v-end[i][k])))),vError=prior?Math.max(...velocity.map((v,i)=>Math.abs(v-prior[i]))):Infinity;
    lastConvergence={iterations:iteration+1,error,vError,identity,residual};
    mark?.('energy-and-endpoint');
-   if(error<1e-11&&vError<1e-10&&identity<1e-9){
+   if(error<numerics.positionTolerance&&velocityConverged(prior,velocity,vError,numerics)&&identity<1e-9){
     if(Math.abs(residual)>1e-7)throw Object.assign(Error('Terrain candidate energy mismatch'),{candidate:{accepted:false,residual,forceWork,potentialChange,damping,error,vError}});
     if((q.gearbox.selected==='N'&&Math.abs(q.gearbox.q)>=GEOMETRY.mouth-1e-9)||(q.gearbox.selected!=='N'&&(Math.abs(q.gearbox.q)<GEOMETRY.release||q.gearbox.q*initial.gearbox.q<0)))throw Error('Terrain step crosses a gear event: subdivision is required');
     q.gearbox.lastStepCases=contactIterations;
@@ -160,6 +162,7 @@ export function candidateTerrainStep(vehicle,ports={},h=.001,observer=null){
   throw Object.assign(Error('Terrain endpoint iteration failed to converge'),{candidate:lastConvergence});
 
  }
+ if(numericalSettings(vehicle.numerics)!==STRICT_NUMERICS)throw Error('Experimental numerics require non-flat terrain path');
  const trial={...context,state:cloneMechanical(vehicle.state)},accepted=[];
  const proxy=observer?{capture:s=>observer.capture(cloneMechanical(s)),accept:ss=>accepted.push(...structuredClone(ss))}:null;
  stepVehicle(trial.state,ports,h,proxy);

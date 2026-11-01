@@ -1,0 +1,73 @@
+{
+  "base": "2caf5f45f989b04f6de282b880837b1a29069622",
+  "branch": "scientific-rebuild/12-braking-and-tire-contact",
+  "codeIdentity": "source-sha256.json; commit reported in final response",
+  "defaultNumerics": "strict; unchanged",
+  "selectedOptIn": "NUMERICAL_EXPERIMENTS.balanced",
+  "checks": [
+    {
+      "command": "node --test --test-isolation=none research/scientific-rebuild/procedural-terrain/tests/*.test.mjs",
+      "result": "PASS 82/82",
+      "evidence": "experiment11-tests.txt"
+    },
+    {
+      "command": "node --test --test-isolation=none research/scientific-rebuild/four-corner-load-transfer/tests/*.test.mjs",
+      "result": "PASS 24/24",
+      "evidence": "experiment10-tests.txt"
+    },
+    {
+      "command": "node tools/tire-baseline.mjs [also --explicit]",
+      "result": "PASS 1080 bit-exact accepted states each, initial and rollback fixtures",
+      "evidence": [
+        "a-default.txt",
+        "a-explicit.txt"
+      ]
+    },
+    {
+      "command": "VARIANT=reference node tools/contact-replay.mjs; VARIANT=matrix node tools/contact-replay.mjs",
+      "result": "PASS 1680 bit-exact states each",
+      "evidence": [
+        "b-reference.json",
+        "b-matrix.json"
+      ]
+    },
+    {
+      "command": "node tools/contact-replay.mjs --equivalent",
+      "result": "PASS default B against older pre-warm fixture, unchanged existing differences",
+      "evidence": "b-equivalent.json"
+    },
+    {
+      "command": "CHROMIUM_PATH=/usr/bin/chromium node tests/browser-terrain.mjs",
+      "result": "PASS bounded default browser terrain, engine, motion, steering/braking, reset and guard diagnosis",
+      "evidence": "browser-terrain.txt"
+    },
+    {
+      "command": "node --check new/modified JavaScript",
+      "result": "PASS",
+      "evidence": "syntax-checks.json"
+    },
+    {
+      "command": "saved trace finite checks",
+      "result": "PASS all stored accepted-stage values finite; uncomputed initial forces explicitly null"
+    }
+  ],
+  "preservation": {
+    "protectedTrackedChanges": [],
+    "noBranchesCreated": true,
+    "noMerge": true,
+    "productionUnchanged": true,
+    "experiments1to10Unchanged": true,
+    "scientificReferenceUnchanged": true,
+    "historicalFixturesAndBenchmarksUnchanged": true,
+    "physicalSafetyChecksUnchanged": true
+  },
+  "failuresAndLimits": [
+    "Contact 1e-8 and 1e-7 screening rejects invalid results",
+    "Contact 1e-9 fails additional 4ms cases; not the selected preset",
+    "2/4ms large-slip energy guard exits also occur with strict settings; partial trajectories not validated completions",
+    "Countersteer heading refinement is not monotone on these grids; cause unresolved",
+    "Worst observed timing outlier regressed despite improved p95/p99",
+    "No physical subsystem update rate was lowered; input-reuse prototype rejected and archived as patch",
+    "No browser opt-in performance or real-car validation claim"
+  ]
+}

@@ -9,7 +9,7 @@ import {solveContacts} from './contact-solver.js';
 export {createPlanar,tireLateral,contactVelocity,yawMoment} from '../../tire-road-observatory-prototype/src/planar-reference.js';
 export {tireForce};
 export const BRAKES={front:100,rear:70,handbrake:160}; // Nm PER wheel, 59:41 service bias.
-export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,contactProfile=null,contactCapture=null,contactOptimization='reference',contactKernel='isolated',contactOperators=null,normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
+export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbrake=0,steer=0,steeringAngles,steeringSystem:st,verticalState:vs,contactHeight=.5,terrainFrames=null,tireCoefficients=null,contactProfile=null,contactCapture=null,contactOptimization='reference',contactKernel='isolated',contactOperators=null,contactTolerance=1e-12,normalReaction=Array(18).fill(0),brakeMechanism}={},h=.001,diff=createDifferential(),f){
  const preparationStart=contactProfile?performance.now():0;
  if(!vs||!st)throw Error('Combined solve requires vertical state and dynamic steering');
  const vm=contactOperators?.vm||[vs.mass,vs.pitchInertia,vs.rollInertia,...Array(4).fill(vs.wheelMass)],oldVertical=[...vs.v],verticalEnergy=()=>evaluate(vs).energy;
@@ -69,7 +69,7 @@ export function stepPlanar(p,w,loads,mass,{drive=0,brake=0,serviceBrake=0,handbr
   const seed=warmModes&&modeWarm?modeWarm:p.contactImpulse?.map(a=>a*h/p.contactImpulseH);
   contactProfile?.({stage:'initial-impulse',ms:performance.now()-warmStart});
   if(warmModes&&modeWarm)contactProfile?.({stage:'mode-warm',ms:0});
-  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?1e-12:1e-10,initial:seed,prepared,kernel:contactKernel,profile:contactProfile?e=>contactProfile({...e,mode}):null,capture:contactCapture?e=>contactCapture({...e,mode}):null});totalIterations+=trial.iterations;
+  const trial=solveContacts(inverse,free,rows,groups,h,{maxIterations:st?20000:2000,tolerance:st?contactTolerance:1e-10,initial:seed,prepared,kernel:contactKernel,profile:contactProfile?e=>contactProfile({...e,mode}):null,capture:contactCapture?e=>contactCapture({...e,mode}):null});totalIterations+=trial.iterations;
   if(warmModes)modeWarm=trial.z;
   const speed=cj.reduce((s,a,i)=>s+a*trial.velocity[i],0),torque=trial.z.at(-1)/h,loss=h*torque*(slipOld+speed)/2;
   clutchCandidates.push({mode,slip:speed,torque,endpointWork:h*torque*speed,midpointWork:loss});

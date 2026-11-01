@@ -1,0 +1,26 @@
+[
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/src/numerical-settings.js",
+    "exitCode": 0
+  },
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/src/vehicle.js",
+    "exitCode": 0
+  },
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/src/combined-planar.js",
+    "exitCode": 0
+  },
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/tests/precision-m15.test.mjs",
+    "exitCode": 0
+  },
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/tools/precision-m15.mjs",
+    "exitCode": 0
+  },
+  {
+    "path": "research/scientific-rebuild/procedural-terrain/tools/residuals-m15.mjs",
+    "exitCode": 0
+  }
+]

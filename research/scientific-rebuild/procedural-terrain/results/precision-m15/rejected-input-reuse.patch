@@ -1,0 +1,59 @@
+--- a/research/scientific-rebuild/procedural-terrain/src/vehicle.js
++++ b/research/scientific-rebuild/procedural-terrain/src/vehicle.js
+@@ -112,6 +112,15 @@
+   // Geometry-dependent contact rows/free velocities are never cached here.
+   // The workspace dies with this candidate, including rollback and subdivision.
+   const contactOperators=vehicle.disableOperatorCache?null:{};
++  // Optional exact reuse: these functions see the same entry state, input and
++  // h in every endpoint trial. No sample is held across a physical timestep.
++  let preparedInputs=null;
++  if(vehicle.reuseCandidateInputs){
++   const steering={...basis.steering},angles=advanceSteering(steering,(ports.steer||0)/.4,h),engine=basis.engine?{...basis.engine}:null;
++   const drive=engine?prepareEngine(engine,basis.flywheel.omega,{throttle:ports.throttle||0,starter:ports.starter||false},h):ports.drive||0;
++   preparedInputs={angles,driverTorque:steering.driverTorque,engine,drive,brakes:brakeActuation(ports.serviceBrake||0,ports.handbrake||0)};
++   if(contactOperators)contactOperators.steeringJacobian=sj;
++  }
+   let guess=initial,guessPositions=begin,guessContacts=start,prior=null,lastConvergence=null,contactIterations=0;
+   mark?.('setup');
+   // Backward-Euler kinematics: q1=q0+h*v1. Linear spring forces use
+@@ -130,7 +139,9 @@
+    });
+    mark?.('terrain-and-reactions');
+    q.gearbox.eventIterations=0;q.gearbox.lastAngularImpulse=0;q.gearbox.inputMomentumChange=0;q.gearbox.lastImpulse=0;q.gearbox.lastImpactEnergy=0;q.gearbox.contactForce=0;
+-   const angles=advanceSteering(q.steering,(ports.steer||0)/.4,h);q.brakes=brakeActuation(ports.serviceBrake||0,ports.handbrake||0);let drive=ports.drive||0;if(q.engine)drive=prepareEngine(q.engine,q.flywheel.omega,{throttle:ports.throttle||0,starter:ports.starter||false},h);
++   let angles,drive;
++   if(preparedInputs){angles=preparedInputs.angles;drive=preparedInputs.drive;q.steering.driverTorque=preparedInputs.driverTorque;q.brakes=preparedInputs.brakes;if(q.engine)q.engine={...preparedInputs.engine};}
++   else{angles=advanceSteering(q.steering,(ports.steer||0)/.4,h);q.brakes=brakeActuation(ports.serviceBrake||0,ports.handbrake||0);drive=ports.drive||0;if(q.engine)drive=prepareEngine(q.engine,q.flywheel.omega,{throttle:ports.throttle||0,starter:ports.starter||false},h);}
+    // A prior endpoint impulse is only an optimization seed. Original physical
+    // velocities/inertia remain intact and the same KKT/work gates still apply.
+    if(guess!==initial){q.planar.contactImpulse=guess.planar.contactImpulse;q.planar.contactImpulseH=guess.planar.contactImpulseH;}
+--- a/research/scientific-rebuild/procedural-terrain/src/combined-planar.js
++++ b/research/scientific-rebuild/procedural-terrain/src/combined-planar.js
+@@ -34,7 +34,7 @@
+  }
+  const external=[0,0,0,0,selector,drive,0,0,0,0,st.driverTorque,...Array(7).fill(0)],free=v0.map((v,i)=>v+h*inverse[i].reduce((s,b,j)=>s+b*(external[j]+normalReaction[j]),0));if(neutral)free[6]=g.neutralOmega*g.inputInertia*inverse[6][6];
+  if(st)free[10]=(sd.inertia*oldSteering+h*(st.driverTorque+normalReaction[10]))*inverse[10][10];
+- const sj=st?steeringJacobian(st):[0,0];
++ const sj=contactOperators?.steeringJacobian||(st?steeringJacobian(st):[0,0]);
+  const rowStart=contactProfile?performance.now():0;contactProfile?.({stage:'inertia-free',ms:rowStart-preparationStart,operatorReused});
+  const rows=[],groups=[],geometry=[];
+  w.forEach((c,i)=>{const delta=c.axle===0?(steeringAngles?.[i]??p.steering):0,cos=Math.cos(delta),sin=Math.sin(delta),j=Array(n).fill(0),k=Array(n).fill(0);j[i]=-c.radius;j[7]=cos;j[8]=sin;const front=st&&c.axle===0,trail=front?sd.trail:0,x=c.x+trail*(1-cos),y=c.y-trail*sin;j[9]=x*sin-y*cos;k[7]=-sin;k[8]=cos;k[9]=x*cos+y*sin;if(front)k[10]=trailContactJacobian(trail,sj[i]);j[12]=contactHeight*cos;j[13]=contactHeight*sin;k[12]=-contactHeight*sin;k[13]=contactHeight*cos;if(terrainFrames){j.splice(0,18,...terrainFrames[i].rows[0]);k.splice(0,18,...terrainFrames[i].rows[1]);}const start=rows.length;rows.push({j,compliance:tireCompliance(h,tireCoefficients?.[i].kx)},{j:k,compliance:tireCompliance(h,tireCoefficients?.[i].ky)});groups.push({indices:[start,start+1],limit:frictionImpulseLimit(h,c.mu,loads[i])});geometry.push({cos,sin,j,k,delta});});
+--- a/research/scientific-rebuild/procedural-terrain/tests/precision-m15.test.mjs
++++ b/research/scientific-rebuild/procedural-terrain/tests/precision-m15.test.mjs
+@@ -10,6 +10,16 @@
+  for(const id of ['reference','speed-normalized-anisotropic']){
+   const a=fixture(id,.5,'recontact',.1),b=fixture(id,.5,'recontact',.1);b.v.numerics={...STRICT_NUMERICS};
+   for(let i=0;i<20;i++){stepTerrainVehicle(a.v,{},.001);stepTerrainVehicle(b.v,{},.001);assert.deepEqual(b.v.state,a.v.state);}
++ }
++});
++test('candidate-only engine/brake/Jacobian reuse is exact through changing inputs and rates',()=>{
++ for(const id of ['reference','speed-normalized-anisotropic'])for(const mode of ['acceleration','combined','recontact']){
++  const a=fixture(id,.5,mode,.1),b=fixture(id,.5,mode,.1);a.v.reuseCandidateInputs=false;b.v.reuseCandidateInputs=true;
++  for(let i=0;i<24;i++){
++   const h=[.001,.002,.004][i%3],ports={throttle:i<8?.2:.05,starter:i%2===0,serviceBrake:i<12?0:.3,handbrake:i>=18?.2:0,steer:i<12?.01:-.01};
++   for(const v of [a.v,b.v])v.state.engine.ignition=i<16;
++   stepTerrainVehicle(a.v,ports,h);stepTerrainVehicle(b.v,ports,h);assert.deepEqual(b.v.state,a.v.state);assert.deepEqual(b.v.contacts,a.v.contacts);
++  }
+  }
+ });
+ test('scaled velocity criterion handles mixed units explicitly and demands every component',()=>{

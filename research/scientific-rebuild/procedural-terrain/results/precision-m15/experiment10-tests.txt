@@ -1,0 +1,204 @@
+{
+  name: 'mixed',
+  h: 0.002,
+  duration: 12,
+  completed: true,
+  acceptedTime: 12.000000000000677,
+  fault: null,
+  maxPitch: 0.03340231685037462,
+  maxRoll: 0.08460468398985303,
+  maxPitchRate: 0.21823408843991482,
+  maxRollRate: 0.16905410300999843,
+  maxTravel: 0.14895820496686024,
+  maxRelativeVelocity: 0.27110012836378483,
+  minNormal: 148.39428289225464,
+  maxNormal: 361.72571710775037,
+  negativeMidpointCaptures: 1,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.64934460414729,
+  maxContactResidual: 2.8038864632873306e-12,
+  verticalResidual: 0.026558620204956754,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+{
+  name: 'mixed',
+  h: 0.001,
+  duration: 12,
+  completed: true,
+  acceptedTime: 11.999999999998789,
+  fault: null,
+  maxPitch: 0.033410967487494364,
+  maxRoll: 0.08466621983235215,
+  maxPitchRate: 0.21629134458308558,
+  maxRollRate: 0.1697855299181863,
+  maxTravel: 0.14897270923250772,
+  maxRelativeVelocity: 0.27023615820540803,
+  minNormal: 148.31259043131317,
+  maxNormal: 361.8074095686874,
+  negativeMidpointCaptures: 1,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.440156755697867,
+  maxContactResidual: 2.5360199508960013e-12,
+  verticalResidual: 0.006635093564534004,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+{
+  name: 'mixed',
+  h: 0.0005,
+  duration: 12,
+  completed: true,
+  acceptedTime: 12.000000000003174,
+  fault: null,
+  maxPitch: 0.03341494141190969,
+  maxRoll: 0.08469624051241156,
+  maxPitchRate: 0.215321907719645,
+  maxRollRate: 0.1701600671542694,
+  maxTravel: 0.14897842024566155,
+  maxRelativeVelocity: 0.2697980613913379,
+  minNormal: 148.2728892320062,
+  maxNormal: 361.84711076799323,
+  negativeMidpointCaptures: 1,
+  unloadedSamples: 0,
+  recontacts: 0,
+  period: null,
+  observedHz: null,
+  dampingRatio: null,
+  settlingTolerance: 0.0002,
+  settlingTime: null,
+  oppositePeak: 0,
+  damperEnergy: 21.342670592999152,
+  maxContactResidual: 2.5237421202341237e-12,
+  verticalResidual: 0.001658247068304553,
+  reference: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  dampingReference: [
+    [ 0.17224886840620807, 0.11589032089705298 ],
+    [ 0.22845178080923972, 0.12068432467968995 ],
+    [ 0.2060873063310787, 0.11857022041662466 ]
+  ]
+}
+✔ positive and negative near-zero slip preserve capacity, heat and coupled work checks (1683.103403ms)
+✔ unchanged mixed driving completes at three timestep sizes (129188.827186ms)
+✔ historical failing state captures statically despite negative signed midpoint work (12.59801ms)
+✔ zero-height contact reduction preserves predecessor drivetrain and steering solve (13.360248ms)
+{
+  contactResidual: 6.762832481521652e-13,
+  verticalLedger: { residual: 0.0004299235023129356, dampingWork: 1.7033235056509033 },
+  loads: [
+    310.0813621251197,
+    334.2369975428472,
+    175.8830024571534,
+    200.0386378748775
+  ]
+}
+✔ braking and dynamic steering exchange work with four independent corners (424.973139ms)
+✔ engine, clutch and differential transmit load in the combined vehicle (4088.302093ms)
+✔ accepted observer emission is detached and diagnostics do not affect state (272.511579ms)
+{
+  pitch: [
+    -0.031228976465807034,
+    -0.03133003875537543,
+    -0.031380314289966474
+  ],
+  residual: [
+    0.0008260382998959747,
+    0.00020801980516279553,
+    0.00005218962666506553
+  ]
+}
+✔ pitch and vertical work residual converge under refinement; reverse remains finite (1139.073527ms)
+✔ failed stage emits no samples or partial vertical state (1.053434ms)
+✔ gear-event search reports accepted split stages once (525.800755ms)
+✔ virtual work equals contact power for independent generalized velocities (0.384093ms)
+✔ actual contact moment signs mirror braking, acceleration and turn direction (0.090398ms)
+✔ zero reference height has no longitudinal/lateral pitch or roll moment (0.087483ms)
+✔ locked wheels couple braking force to actual pitch velocity with closed impulse work (1.758256ms)
+✔ lateral contact impulses mirror roll and zero load removes contact (1.95736ms)
+{
+  sag: 0.09809999999999997,
+  modalHz: [
+    [ 1.5155576319931985, 9.64955264907698 ],
+    [ 2.018662812163525, 9.659498736496023 ],
+    [ 1.8176181712284796, 9.655132234562464 ]
+  ],
+  springEnergy: 38.49443999999997
+}
+✔ live diagnostic forces match equilibrium and relative-velocity work (0.492235ms)
+✔ coupled heave decay agrees with lightly damped two-mass reference (7288.892595ms)
+{
+  brakingLoads: [
+    323.4639430077091,
+    323.4639430077091,
+    186.6560569922904,
+    186.6560569922904
+  ],
+  accelerationLoads: [
+    251.70506388487723,
+    251.70506388487723,
+    258.4149361151245,
+    258.4149361151245
+  ],
+  energyResidual: 0.0004484825406251983
+}
+✔ integrated static equilibrium and signed braking/acceleration transfer (532.139033ms)
+✔ left/right load and roll mirror with bounded energy residual (347.143859ms)
+{
+  pitch: [ -0.03804367571948389, -0.038051890709078655, -0.03805552501445777 ],
+  energy: [
+    0.001787878049430404,
+    0.0004484825406251983,
+    0.00011230486310240105
+  ]
+}
+✔ step refinement and reverse remain finite (805.948897ms)
+✔ static four-corner equilibrium and total weight (21.318659ms)
+✔ unilateral independent contact and moment balance (0.154963ms)
+✔ symmetric heave stays symmetric; damping dissipates (20.203887ms)
+{
+  coarseEnergyError: 0.0000015823507055756636,
+  fineEnergyError: 4.9726850193110295e-8
+}
+✔ conservative oscillation energy converges under refinement (3.419422ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 146435.818346

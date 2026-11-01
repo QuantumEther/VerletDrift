@@ -1,0 +1,9 @@
+{
+  "research/scientific-rebuild/procedural-terrain/src/numerical-settings.js": "788dd3b5cf1b59c64e6f7853b5cb0b463d7b1830fbc1ef8e7aa828eea409d7e7",
+  "research/scientific-rebuild/procedural-terrain/src/vehicle.js": "23a53b1e7bdf230f5cf3308e25f22272b250061489fad185b6e290bcc3e12776",
+  "research/scientific-rebuild/procedural-terrain/src/combined-planar.js": "c262cfebe8f6a0f98ec8437925f3d1438ed816344f4b89195cb9b312be498dba",
+  "research/scientific-rebuild/procedural-terrain/tests/precision-m15.test.mjs": "2fb18eeadcb0cbe6b8c457c4e31efc66310c0150b5218471542ff3dc79df58d1",
+  "research/scientific-rebuild/procedural-terrain/tools/precision-m15.mjs": "af9a8c3793a5a66cc14e4a72db6647313ee76da901a2ec4c4f15d2e7a878349a",
+  "research/scientific-rebuild/procedural-terrain/tools/residuals-m15.mjs": "5799ac1946e5827e390f410f649faa454b85aa80b12f4d24d122ac7f4d926c68",
+  "research/scientific-rebuild/procedural-terrain/tools/summarize-precision-m15.py": "dc6f8416d4a7f503b3891ce0ba79ff1c92fac9733123d65bdfc26f8b53dcd366"
+}
