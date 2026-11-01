@@ -1,0 +1,26 @@
+[
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/capture.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/check.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/experiment.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/newton.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/prepare.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/contact-solver-challenge/test.mjs",
+    "exitCode": 0
+  }
+]

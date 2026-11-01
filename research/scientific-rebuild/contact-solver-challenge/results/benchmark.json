@@ -1,0 +1,3252 @@
+{
+  "runtime": "v24.19.0",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCPUs": 5,
+  "protocol": {
+    "repeats": 9,
+    "warmups": 2,
+    "passesPerBatch": 3,
+    "tolerances": {
+      "strict": 1e-12,
+      "balanced": 1e-10
+    },
+    "newton": {
+      "maxIterations": 40,
+      "lineSearchLimit": 12,
+      "directionRegularization": 1e-12
+    },
+    "equivalence": {
+      "strict": {
+        "objectiveJ": 1e-10,
+        "velocity": 1e-8
+      },
+      "balanced": {
+        "objectiveJ": 1e-8,
+        "velocity": 0.000001
+      }
+    },
+    "gate": "All full-solve solutions must converge and pass independent feasibility/KKT/equivalence. At least 5x aggregate full-contact CPU speedup at BOTH accuracies and no worse observed full-solve worst latency. Core timings alone cannot pass."
+  },
+  "notes": "CPU includes common scalar bookkeeping; per-call wall timings include allocation/GC. Pure optimizer omits reconstruction and original scalar polish; do not mix work units. No hardware GPU involved.",
+  "activeSignatures": 9,
+  "activeSetTransitionsInCaptureOrder": 131,
+  "certified": 264,
+  "totalCertificates": 264,
+  "summaries": [
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "cpuSpeedup": 2.7357578851286757,
+      "fistaCpuMs": 632.4060000000001,
+      "newtonCpuMs": 231.163,
+      "fistaWorstMs": 2.2652759999999716,
+      "newtonWorstMs": 1.0557369999999082,
+      "newtonFailedCalls": 0,
+      "solvesPerSolver": 2772
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "cpuSpeedup": 10.559355776758753,
+      "fistaCpuMs": 944.1120000000001,
+      "newtonCpuMs": 89.41,
+      "fistaWorstMs": 3.8775020000000495,
+      "newtonWorstMs": 0.47496600000022227,
+      "newtonFailedCalls": 0,
+      "solvesPerSolver": 2772
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "cpuSpeedup": 5.9628348458484846,
+      "fistaCpuMs": 1144.5900000000001,
+      "newtonCpuMs": 191.95400000000004,
+      "fistaWorstMs": 5.372180999999728,
+      "newtonWorstMs": 3.8812120000002324,
+      "newtonFailedCalls": 0,
+      "solvesPerSolver": 2772
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "cpuSpeedup": 6.8226275537682675,
+      "fistaCpuMs": 570.051,
+      "newtonCpuMs": 83.553,
+      "fistaWorstMs": 3.3315279999997074,
+      "newtonWorstMs": 0.5014619999992647,
+      "newtonFailedCalls": 0,
+      "solvesPerSolver": 2772
+    }
+  ],
+  "decision": "STOP — gate failed; no further rescue or production integration",
+  "runs": [
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 102.639,
+      "wallMs": 89.41475000000003,
+      "meanMs": 0.2250691742424237,
+      "medianMs": 0.1261559999999804,
+      "p95Ms": 0.6299360000000434,
+      "p99Ms": 1.4672370000000114,
+      "worstMs": 1.832082000000014,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 12.735301999999962,
+          "worstMs": 0.47052099999999086
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 13.337687999999957,
+          "worstMs": 0.5078440000000057
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 10.475727000000006,
+          "worstMs": 0.5056549999999902
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 43.076974999999976,
+          "worstMs": 1.832082000000014
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.501700999999883,
+          "worstMs": 0.48426299999999856
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 76.46,
+      "wallMs": 38.904336,
+      "meanMs": 0.09772013131313223,
+      "medianMs": 0.07114100000001145,
+      "p95Ms": 0.22776700000002847,
+      "p99Ms": 0.5427850000000376,
+      "worstMs": 0.9700019999999654,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.682565000000011,
+          "worstMs": 0.9311720000000037
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 6.323146999999722,
+          "worstMs": 0.31868300000002137
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 6.210862000000077,
+          "worstMs": 0.2783309999999801
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 12.554878000000429,
+          "worstMs": 0.9700019999999654
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.925720000000126,
+          "worstMs": 0.39916399999998475
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 36.729,
+      "wallMs": 33.791349999999966,
+      "meanMs": 0.08479210606060578,
+      "medianMs": 0.06010700000001634,
+      "p95Ms": 0.1830730000000358,
+      "p99Ms": 0.4773240000000101,
+      "worstMs": 1.2674449999999524,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 6.957233999999971,
+          "worstMs": 1.2674449999999524
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 4.325411000000088,
+          "worstMs": 0.4535890000000222
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 10.5256770000002,
+          "worstMs": 0.34410700000000816
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 5.131717999999978,
+          "worstMs": 0.2134189999999876
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 6.63763399999965,
+          "worstMs": 0.5495500000000106
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 84.161,
+      "wallMs": 82.617818,
+      "meanMs": 0.20815880303030285,
+      "medianMs": 0.10796300000004067,
+      "p95Ms": 0.6980689999999754,
+      "p99Ms": 1.4633849999999597,
+      "worstMs": 1.550217000000032,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.22438800000009,
+          "worstMs": 0.5593860000000177
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.302596999999764,
+          "worstMs": 0.693712000000005
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 40.940796000000375,
+          "worstMs": 1.550217000000032
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 10.258660999999961,
+          "worstMs": 0.7517819999999915
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 12.70444399999974,
+          "worstMs": 0.8689889999999991
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 120.252,
+      "wallMs": 89.30173700000006,
+      "meanMs": 0.2248535202020196,
+      "medianMs": 0.12300700000002962,
+      "p95Ms": 0.6437459999999646,
+      "p99Ms": 1.5101430000000278,
+      "worstMs": 2.027881999999977,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 16.00415399999929,
+          "worstMs": 2.027881999999977
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 11.056366000000196,
+          "worstMs": 0.49079599999993206
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 43.49261900000005,
+          "worstMs": 1.8698650000000043
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.987415000000112,
+          "worstMs": 0.6414359999999988
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.501440000000116,
+          "worstMs": 0.297678000000019
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 31.579,
+      "wallMs": 28.759484000000043,
+      "meanMs": 0.0721698535353569,
+      "medianMs": 0.05604100000005019,
+      "p95Ms": 0.1504610000000639,
+      "p99Ms": 0.2928540000000339,
+      "worstMs": 0.6901210000000901,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.819935000000555,
+          "worstMs": 0.3154660000000149
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 6.414243999999826,
+          "worstMs": 0.6901210000000901
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.476478000000043,
+          "worstMs": 0.28078599999992093
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.963045000000193,
+          "worstMs": 0.2026580000000422
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.905560000000719,
+          "worstMs": 0.2928540000000339
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 56.52,
+      "wallMs": 33.748173000000065,
+      "meanMs": 0.08445371717171457,
+      "medianMs": 0.0636059999999361,
+      "p95Ms": 0.2102429999999913,
+      "p99Ms": 0.37738500000000386,
+      "worstMs": 1.0557369999999082,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 11.259918000000084,
+          "worstMs": 0.37738500000000386
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 6.063223999999536,
+          "worstMs": 0.3560619999999517
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.551952999999571,
+          "worstMs": 0.1388210000000072
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.352093999999738,
+          "worstMs": 1.0557369999999082
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.2164830000000393,
+          "worstMs": 0.21346700000003693
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 92.673,
+      "wallMs": 86.75928699999997,
+      "meanMs": 0.21860764393939247,
+      "medianMs": 0.11453099999994265,
+      "p95Ms": 0.6796970000000329,
+      "p99Ms": 1.9011090000000195,
+      "worstMs": 2.1035300000000916,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 44.66929500000049,
+          "worstMs": 2.1035300000000916
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 10.087481999999454,
+          "worstMs": 0.5321370000000343
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 13.422155000000089,
+          "worstMs": 0.6475729999999658
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.13516099999947,
+          "worstMs": 0.5133170000000291
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.254533999999921,
+          "worstMs": 0.6796970000000329
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 84.733,
+      "wallMs": 81.15429599999993,
+      "meanMs": 0.2044074166666678,
+      "medianMs": 0.09307400000000143,
+      "p95Ms": 0.6698499999999967,
+      "p99Ms": 1.2959230000000161,
+      "worstMs": 1.8027199999999084,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.063275999999746,
+          "worstMs": 0.5437920000000531
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 10.155730000000403,
+          "worstMs": 0.5918300000000727
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 40.694225000000756,
+          "worstMs": 1.8027199999999084
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.847195999999258,
+          "worstMs": 0.4524830000000293
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 12.184910000000286,
+          "worstMs": 0.9686799999999494
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 31.28,
+      "wallMs": 27.44542100000001,
+      "meanMs": 0.06886313636363872,
+      "medianMs": 0.0560849999999391,
+      "p95Ms": 0.14421500000003107,
+      "p99Ms": 0.22413700000004155,
+      "worstMs": 0.2924670000001015,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.433413000000428,
+          "worstMs": 0.2924670000001015
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.601591000000326,
+          "worstMs": 0.16402100000004793
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 10.27561600000081,
+          "worstMs": 0.238379000000009
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.434677999999167,
+          "worstMs": 0.22885299999995823
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.524504000000206,
+          "worstMs": 0.20083999999997104
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 25.577,
+      "wallMs": 25.417171000000053,
+      "meanMs": 0.06368112626262734,
+      "medianMs": 0.054341999999905966,
+      "p95Ms": 0.10412799999994604,
+      "p99Ms": 0.25333100000000286,
+      "worstMs": 0.3804680000000644,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.130790999999476,
+          "worstMs": 0.1896039999999175
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.894693000000075,
+          "worstMs": 0.3005599999999049
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 8.928080999999793,
+          "worstMs": 0.18884800000000723
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.2873170000009395,
+          "worstMs": 0.25333100000000286
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.976844000000142,
+          "worstMs": 0.3804680000000644
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 82.79,
+      "wallMs": 82.74227899999994,
+      "meanMs": 0.2084974292929264,
+      "medianMs": 0.09308899999996356,
+      "p95Ms": 0.6706250000000864,
+      "p99Ms": 1.333099000000061,
+      "worstMs": 2.2652759999999716,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 9.815562999999884,
+          "worstMs": 0.5883509999999887
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 10.05535199999997,
+          "worstMs": 0.8693179999999074
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 41.70995999999968,
+          "worstMs": 2.2652759999999716
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.957865999999626,
+          "worstMs": 0.514534000000026
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.026240999999686,
+          "worstMs": 0.5723590000000058
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 87.103,
+      "wallMs": 82.32039599999996,
+      "meanMs": 0.20731563131313246,
+      "medianMs": 0.11080700000002253,
+      "p95Ms": 0.6278760000000148,
+      "p99Ms": 1.391896000000088,
+      "worstMs": 1.8316409999999905,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 41.61921500000051,
+          "worstMs": 1.8316409999999905
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.850220000000036,
+          "worstMs": 0.6278760000000148
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 9.348827999999799,
+          "worstMs": 0.4817409999999427
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.541920999999888,
+          "worstMs": 0.4191720000000032
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 12.736806000000229,
+          "worstMs": 0.5068719999999303
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 29.5,
+      "wallMs": 26.80888799999991,
+      "meanMs": 0.06721960858586204,
+      "medianMs": 0.05445700000018405,
+      "p95Ms": 0.14588899999989735,
+      "p99Ms": 0.246255999999903,
+      "worstMs": 0.3180529999999635,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.501742999999692,
+          "worstMs": 0.3180529999999635
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.997455000000059,
+          "worstMs": 0.246255999999903
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.884756000000266,
+          "worstMs": 0.2667500000000018
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.752595000000383,
+          "worstMs": 0.21372100000007777
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.482416000000967,
+          "worstMs": 0.19691600000010112
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 27.894,
+      "wallMs": 26.98745800000006,
+      "meanMs": 0.06790735858585391,
+      "medianMs": 0.05573899999990317,
+      "p95Ms": 0.13624700000013945,
+      "p99Ms": 0.2266069999998308,
+      "worstMs": 0.3329960000000938,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 5.221683999998277,
+          "worstMs": 0.3329960000000938
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.047072000000071,
+          "worstMs": 0.31341599999996106
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.309314999998378,
+          "worstMs": 0.2266069999998308
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.645380000000841,
+          "worstMs": 0.20665899999994508
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.66786300000058,
+          "worstMs": 0.28117599999995946
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 84.84,
+      "wallMs": 80.81292200000007,
+      "meanMs": 0.20382820707069724,
+      "medianMs": 0.09682500000008076,
+      "p95Ms": 0.6167729999999665,
+      "p99Ms": 1.414213000000018,
+      "worstMs": 2.16260299999999,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 9.649123999999802,
+          "worstMs": 0.434552000000167
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 8.702143999999407,
+          "worstMs": 0.4230259999999362
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 41.65003399999773,
+          "worstMs": 2.16260299999999
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.824031000000787,
+          "worstMs": 0.5033539999999448
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.890636999998378,
+          "worstMs": 0.5077939999998762
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 80.015,
+      "wallMs": 79.61893200000009,
+      "meanMs": 0.20081602272727417,
+      "medianMs": 0.09182999999984531,
+      "p95Ms": 0.6219189999999344,
+      "p99Ms": 1.3740629999999783,
+      "worstMs": 1.7714290000001256,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.165878999999904,
+          "worstMs": 0.4197180000001026
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.569165999999313,
+          "worstMs": 0.611953000000085
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 10.254645000000892,
+          "worstMs": 0.6219189999999344
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 40.765363000001116,
+          "worstMs": 1.7714290000001256
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 8.768091999999342,
+          "worstMs": 0.45373799999993025
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "full-contact",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 28.813,
+      "wallMs": 29.027229000000034,
+      "meanMs": 0.07297352020201964,
+      "medianMs": 0.0562560000000758,
+      "p95Ms": 0.12652500000012878,
+      "p99Ms": 0.23189099999990503,
+      "worstMs": 1.0542900000000373,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.797350000000506,
+          "worstMs": 0.1597910000000411
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.692594999999301,
+          "worstMs": 0.23189099999990503
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 5.770422000000963,
+          "worstMs": 1.0542900000000373
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 10.56965799999898,
+          "worstMs": 0.3782579999999598
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.0674890000000232,
+          "worstMs": 0.20677599999999074
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 163.65,
+      "wallMs": 146.7620589999999,
+      "meanMs": 0.3701288661616206,
+      "medianMs": 0.16750499999989188,
+      "p95Ms": 1.326345000000174,
+      "p99Ms": 3.1228320000000167,
+      "worstMs": 5.281470000000127,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 17.94186200000081,
+          "worstMs": 1.6373029999999744
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.071793999999727,
+          "worstMs": 0.9780920000000606
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 15.659559000000172,
+          "worstMs": 1.1414480000000822
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 76.0297420000013,
+          "worstMs": 5.281470000000127
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.868073999999751,
+          "worstMs": 1.326345000000174
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 15.239,
+      "wallMs": 15.15834000000018,
+      "meanMs": 0.03796197979797818,
+      "medianMs": 0.025669999999990978,
+      "p95Ms": 0.049322000000074695,
+      "p99Ms": 0.21199699999988297,
+      "worstMs": 2.4663000000000466,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.4818400000001475,
+          "worstMs": 2.4663000000000466
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.106473000000051,
+          "worstMs": 0.21199699999988297
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.2954079999994974,
+          "worstMs": 0.327494999999999
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.521228999999948,
+          "worstMs": 0.3697869999998602
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.6279939999997168,
+          "worstMs": 0.12533499999995001
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 14.165,
+      "wallMs": 14.033546000000115,
+      "meanMs": 0.034861684343431044,
+      "medianMs": 0.02550999999994019,
+      "p95Ms": 0.0862609999999222,
+      "p99Ms": 0.22398299999986193,
+      "worstMs": 0.3894719999998415,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.497080000000551,
+          "worstMs": 0.3471089999998185
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.7723080000005211,
+          "worstMs": 0.11157300000013493
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.459886999998389,
+          "worstMs": 0.22398299999986193
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.9936479999992116,
+          "worstMs": 0.3894719999998415
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.082304000000022,
+          "worstMs": 0.1210280000000239
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 133.25,
+      "wallMs": 133.52411400000005,
+      "meanMs": 0.3367753030302996,
+      "medianMs": 0.14501000000018394,
+      "p95Ms": 1.0602060000001075,
+      "p99Ms": 2.8137960000001385,
+      "worstMs": 3.1591460000001916,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 13.733744999998635,
+          "worstMs": 0.5612460000002102
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.286061000000473,
+          "worstMs": 0.8969629999999142
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 70.23320100000024,
+          "worstMs": 3.1591460000001916
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.234477999999399,
+          "worstMs": 0.7265529999999671
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 19.8755349999999,
+          "worstMs": 1.0487769999999728
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 135.056,
+      "wallMs": 135.40856000000008,
+      "meanMs": 0.3414778459595946,
+      "medianMs": 0.1540019999999913,
+      "p95Ms": 1.2624550000000454,
+      "p99Ms": 2.6235370000001694,
+      "worstMs": 3.2637070000000676,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 19.130371999998943,
+          "worstMs": 0.9725119999998242
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.680895000000646,
+          "worstMs": 0.9131619999998293
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 72.65324899999905,
+          "worstMs": 3.2637070000000676
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.740045000000237,
+          "worstMs": 1.1273120000000745
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 13.020666000000574,
+          "worstMs": 0.5342710000002171
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.832,
+      "wallMs": 12.811562000000094,
+      "meanMs": 0.03187677525252035,
+      "medianMs": 0.02612600000020393,
+      "p95Ms": 0.050028000000111206,
+      "p99Ms": 0.13845199999991564,
+      "worstMs": 0.23374300000000403,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.060010999999122,
+          "worstMs": 0.11315899999999601
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.058124999999336,
+          "worstMs": 0.10703499999999622
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.569792000000234,
+          "worstMs": 0.23374300000000403
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.6758669999990161,
+          "worstMs": 0.14060399999993933
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.2594080000003487,
+          "worstMs": 0.1261979999999312
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.749,
+      "wallMs": 12.696525999999949,
+      "meanMs": 0.03175278282828293,
+      "medianMs": 0.025421999999934997,
+      "p95Ms": 0.05220200000007935,
+      "p99Ms": 0.16766899999993257,
+      "worstMs": 0.3016460000001189,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.758090000000493,
+          "worstMs": 0.3016460000001189
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.9675960000004125,
+          "worstMs": 0.09557500000005348
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.0501030000000355,
+          "worstMs": 0.12134500000001935
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.22663099999977,
+          "worstMs": 0.22489199999995435
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.5716819999993277,
+          "worstMs": 0.07365400000003319
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 135.979,
+      "wallMs": 136.23097700000017,
+      "meanMs": 0.34347818181818884,
+      "medianMs": 0.14726900000005116,
+      "p95Ms": 1.1637329999998656,
+      "p99Ms": 2.9853719999998702,
+      "worstMs": 3.8775020000000495,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 70.85046400000192,
+          "worstMs": 3.8775020000000495
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.188051999999743,
+          "worstMs": 0.6780989999999747
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.69251600000007,
+          "worstMs": 1.202729999999974
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 15.417035000001079,
+          "worstMs": 0.8510149999999612
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 14.86929299999997,
+          "worstMs": 0.76748600000019
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 136.742,
+      "wallMs": 137.25412499999993,
+      "meanMs": 0.3461231742424244,
+      "medianMs": 0.15056400000003123,
+      "p95Ms": 1.2462780000000748,
+      "p99Ms": 2.589873000000125,
+      "worstMs": 3.4368189999997867,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.352772999999615,
+          "worstMs": 0.8973170000001573
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.583357999999862,
+          "worstMs": 0.8015089999998963
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 71.69688199999905,
+          "worstMs": 3.4368189999997867
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 14.49370100000101,
+          "worstMs": 0.7553029999999126
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.93806300000051,
+          "worstMs": 1.302116000000069
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 13.049,
+      "wallMs": 12.99288700000011,
+      "meanMs": 0.03250159848485078,
+      "medianMs": 0.025697999999920285,
+      "p95Ms": 0.05660299999999552,
+      "p99Ms": 0.18124600000010105,
+      "worstMs": 0.256460000000061,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.5884209999996983,
+          "worstMs": 0.07100399999990259
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.386900000000196,
+          "worstMs": 0.19935500000019601
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.440597000002981,
+          "worstMs": 0.24689300000000003
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.4656239999983427,
+          "worstMs": 0.256460000000061
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 1.9890909999996893,
+          "worstMs": 0.12223900000003596
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.622,
+      "wallMs": 12.545390999999881,
+      "meanMs": 0.03136674494949159,
+      "medianMs": 0.025341000000025815,
+      "p95Ms": 0.05028299999980845,
+      "p99Ms": 0.18557299999997667,
+      "worstMs": 0.24185699999998178,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.202352000000019,
+          "worstMs": 0.24185699999998178
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.7741639999992458,
+          "worstMs": 0.22896399999990535
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.967869999998584,
+          "worstMs": 0.12052500000004329
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.5760070000005726,
+          "worstMs": 0.19230700000002798
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 1.900838000000249,
+          "worstMs": 0.050629000000071755
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 133.568,
+      "wallMs": 133.524089,
+      "meanMs": 0.3367830075757585,
+      "medianMs": 0.13540199999988545,
+      "p95Ms": 1.1403030000001309,
+      "p99Ms": 2.931991999999809,
+      "worstMs": 3.6224969999998393,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.047102999999652,
+          "worstMs": 0.6781750000000102
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 14.748967000000675,
+          "worstMs": 0.7809760000000097
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 71.55249800000047,
+          "worstMs": 3.6224969999998393
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 18.64344700000038,
+          "worstMs": 0.868677999999818
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 14.3740559999992,
+          "worstMs": 0.8489989999998215
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 133.519,
+      "wallMs": 133.75817499999994,
+      "meanMs": 0.33726060353535675,
+      "medianMs": 0.15528700000004392,
+      "p95Ms": 1.0947980000000825,
+      "p99Ms": 2.70332099999996,
+      "worstMs": 3.7359019999998964,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 70.79099600000109,
+          "worstMs": 3.7359019999998964
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.15756699999838,
+          "worstMs": 0.7560429999998632
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.472834000001967,
+          "worstMs": 0.8631890000001476
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 13.591482999998789,
+          "worstMs": 0.6332929999998669
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 19.542319000001044,
+          "worstMs": 1.0035349999998289
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.601,
+      "wallMs": 12.582450000000335,
+      "meanMs": 0.03146816919193135,
+      "medianMs": 0.025494999999864376,
+      "p95Ms": 0.05311200000005556,
+      "p99Ms": 0.14965399999982765,
+      "worstMs": 0.25572600000032253,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.085847000001195,
+          "worstMs": 0.12271499999997104
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.6924080000007962,
+          "worstMs": 0.14965399999982765
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.3136340000019118,
+          "worstMs": 0.25572600000032253
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.367949000001772,
+          "worstMs": 0.1790080000000671
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.0015569999991385,
+          "worstMs": 0.11168599999973594
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.287,
+      "wallMs": 12.227154000000155,
+      "meanMs": 0.03057910353535213,
+      "medianMs": 0.025267999999869062,
+      "p95Ms": 0.04818999999997686,
+      "p99Ms": 0.17756999999983236,
+      "worstMs": 0.2406989999999496,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.9474470000004658,
+          "worstMs": 0.07677400000011403
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.2553699999989476,
+          "worstMs": 0.2406989999999496
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.03841599999987,
+          "worstMs": 0.14601799999991272
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 1.8663820000001579,
+          "worstMs": 0.04941199999984747
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.0017100000000028,
+          "worstMs": 0.0945440000000417
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 133.323,
+      "wallMs": 133.51915800000006,
+      "meanMs": 0.3367423888889008,
+      "medianMs": 0.1347329999998692,
+      "p95Ms": 1.2873309999999947,
+      "p99Ms": 2.441534000000047,
+      "worstMs": 3.460273000000143,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 14.072471999998925,
+          "worstMs": 0.7928649999998925
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 14.772297999999864,
+          "worstMs": 0.7889679999998407
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 71.35089000000244,
+          "worstMs": 3.460273000000143
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.096811000003072,
+          "worstMs": 1.109161000000313
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 13.057515000000421,
+          "worstMs": 0.5648209999999381
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 135.925,
+      "wallMs": 135.90367500000002,
+      "meanMs": 0.3427287702020409,
+      "medianMs": 0.16706500000009328,
+      "p95Ms": 1.1556659999996555,
+      "p99Ms": 2.390828000000056,
+      "worstMs": 3.735638000000108,
+      "iterations": 104313,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 13.72934000000123,
+          "worstMs": 0.589324999999917
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.721149999999852,
+          "worstMs": 1.067953999999645
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 15.09133800000427,
+          "worstMs": 0.8437210000001869
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 70.88997300000119,
+          "worstMs": 3.735638000000108
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 15.28879200000165,
+          "worstMs": 0.8662250000002132
+        }
+      }
+    },
+    {
+      "accuracy": "strict",
+      "unit": "prepared-optimizer",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 13.27,
+      "wallMs": 13.247408999999607,
+      "meanMs": 0.033159547979791586,
+      "medianMs": 0.02594500000031985,
+      "p95Ms": 0.04947700000002442,
+      "p99Ms": 0.24969199999986813,
+      "worstMs": 0.47496600000022227,
+      "iterations": 432,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.5838739999999234,
+          "worstMs": 0.47496600000022227
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.0823499999992237,
+          "worstMs": 0.17245899999988978
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.314808999998604,
+          "worstMs": 0.31298199999991994
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.575317000000268,
+          "worstMs": 0.2611989999995785
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.574830999999449,
+          "worstMs": 0.06583899999986897
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 169.08,
+      "wallMs": 160.13375700000006,
+      "meanMs": 0.40317277777777843,
+      "medianMs": 0.21966400000019348,
+      "p95Ms": 1.2846639999997933,
+      "p99Ms": 3.038630000000012,
+      "worstMs": 3.7322809999996025,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 16.10665299999846,
+          "worstMs": 0.6235260000003109
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 23.249225999998544,
+          "worstMs": 1.2983360000002904
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 16.84047500000088,
+          "worstMs": 0.9413010000002942
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 84.10272400000304,
+          "worstMs": 3.7322809999996025
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 19.357341999999335,
+          "worstMs": 1.2846639999997933
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 35.132,
+      "wallMs": 28.338427000000138,
+      "meanMs": 0.07107755050505277,
+      "medianMs": 0.05474000000003798,
+      "p95Ms": 0.16933800000015253,
+      "p99Ms": 0.24264499999981126,
+      "worstMs": 0.2959920000002967,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 6.130131999999321,
+          "worstMs": 0.2488559999997051
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.372035000001233,
+          "worstMs": 0.20124400000031528
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.366835000000265,
+          "worstMs": 0.19913399999995818
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.926968999999644,
+          "worstMs": 0.2959920000002967
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.3507390000004307,
+          "worstMs": 0.1689409999999043
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 25.194,
+      "wallMs": 25.07518200000004,
+      "meanMs": 0.06298346464644863,
+      "medianMs": 0.0534509999997681,
+      "p95Ms": 0.13033099999984188,
+      "p99Ms": 0.2563669999999547,
+      "worstMs": 0.3145179999996799,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.075271999999131,
+          "worstMs": 0.16280600000027334
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.9269950000007157,
+          "worstMs": 0.1763840000003256
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 8.85888799999475,
+          "worstMs": 0.2984120000000985
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.634960999997475,
+          "worstMs": 0.3145179999996799
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.445336000001589,
+          "worstMs": 0.2758910000002288
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 151.098,
+      "wallMs": 151.26591400000007,
+      "meanMs": 0.38126123484849156,
+      "medianMs": 0.17442699999992328,
+      "p95Ms": 1.2149689999996554,
+      "p99Ms": 2.8968340000001263,
+      "worstMs": 3.4999620000003233,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 16.370495000000574,
+          "worstMs": 0.8679849999998623
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 18.535709999999654,
+          "worstMs": 1.1323929999998654
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 78.17946100000063,
+          "worstMs": 3.4999620000003233
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 16.76102000000128,
+          "worstMs": 1.7822179999998298
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.132763000000523,
+          "worstMs": 0.9035930000000008
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 205.588,
+      "wallMs": 158.46653800000013,
+      "meanMs": 0.399369633838398,
+      "medianMs": 0.1952379999997902,
+      "p95Ms": 1.2746299999998882,
+      "p99Ms": 2.889353999999912,
+      "worstMs": 3.168274999999994,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 22.839805000001434,
+          "worstMs": 1.0586240000002363
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 18.004262000000836,
+          "worstMs": 2.290139000000181
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 81.85389599999917,
+          "worstMs": 3.168274999999994
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 19.62141000000156,
+          "worstMs": 1.174673999999868
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 15.831002000002627,
+          "worstMs": 0.7217940000000453
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 24.593,
+      "wallMs": 24.542464999999993,
+      "meanMs": 0.061457252525263524,
+      "medianMs": 0.053585000000111904,
+      "p95Ms": 0.1186600000000908,
+      "p99Ms": 0.2197040000000925,
+      "worstMs": 0.43013599999994767,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.454291999999441,
+          "worstMs": 0.32170300000007046
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.026836000000458,
+          "worstMs": 0.2197040000000925
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 8.821712999999818,
+          "worstMs": 0.43013599999994767
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.8721740000000864,
+          "worstMs": 0.1829459999999017
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.162057000004552,
+          "worstMs": 0.12026200000036624
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 27.247,
+      "wallMs": 27.075442999999723,
+      "meanMs": 0.06804928030304827,
+      "medianMs": 0.05494899999985137,
+      "p95Ms": 0.14338099999986298,
+      "p99Ms": 0.3700739999999314,
+      "worstMs": 0.5349150000001828,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.616044000001693,
+          "worstMs": 0.5349150000001828
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.311524000002009,
+          "worstMs": 0.2353280000002087
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 5.054268000002139,
+          "worstMs": 0.3486699999998564
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.501931000000695,
+          "worstMs": 0.3700739999999314
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.463748000000578,
+          "worstMs": 0.4079580000002352
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 156.56,
+      "wallMs": 154.62913799999978,
+      "meanMs": 0.39002404040403266,
+      "medianMs": 0.19127900000012232,
+      "p95Ms": 1.2420870000000832,
+      "p99Ms": 2.744822000000113,
+      "worstMs": 3.173341999999593,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 78.79724699999997,
+          "worstMs": 3.173341999999593
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 15.335159000000203,
+          "worstMs": 0.6739050000001043
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.43028299999696,
+          "worstMs": 1.1782290000001012
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 18.4305539999973,
+          "worstMs": 0.8373649999998634
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 20.4562770000025,
+          "worstMs": 1.4143460000000232
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 161.344,
+      "wallMs": 151.75227700000005,
+      "meanMs": 0.3827394267676709,
+      "medianMs": 0.19414800000004107,
+      "p95Ms": 1.2270509999998467,
+      "p99Ms": 2.6630150000000867,
+      "worstMs": 3.3157020000003286,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 20.17590700000028,
+          "worstMs": 1.2571619999998802
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 16.19390899999962,
+          "worstMs": 0.7528819999997722
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 76.6917789999984,
+          "worstMs": 3.3157020000003286
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 16.78481600000032,
+          "worstMs": 0.8170000000000073
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.71840199999906,
+          "worstMs": 1.023410999999669
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 27.349,
+      "wallMs": 27.271897999999965,
+      "meanMs": 0.06832770959596074,
+      "medianMs": 0.05556399999977657,
+      "p95Ms": 0.14209699999992154,
+      "p99Ms": 0.2313640000002124,
+      "worstMs": 0.41067199999997683,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.007999999999811,
+          "worstMs": 0.20107800000005227
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.563313000000562,
+          "worstMs": 0.20718699999997625
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.53727600000093,
+          "worstMs": 0.41067199999997683
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 5.164826999998695,
+          "worstMs": 0.1936769999997523
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.784357000000455,
+          "worstMs": 0.26159000000006927
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 24.447,
+      "wallMs": 24.38477200000034,
+      "meanMs": 0.061352366161603444,
+      "medianMs": 0.054755000000113796,
+      "p95Ms": 0.11367799999970885,
+      "p99Ms": 0.19888200000013967,
+      "worstMs": 0.2399529999997867,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.182471999998143,
+          "worstMs": 0.23553900000024441
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.7609449999995377,
+          "worstMs": 0.1669739999997546
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 8.566339999998036,
+          "worstMs": 0.2093470000004345
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.488354000000072,
+          "worstMs": 0.19888200000013967
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.297425999999177,
+          "worstMs": 0.2399529999997867
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 151.393,
+      "wallMs": 151.24107500000036,
+      "meanMs": 0.38142959343432986,
+      "medianMs": 0.16804099999990285,
+      "p95Ms": 1.1797340000002805,
+      "p99Ms": 2.9097679999999855,
+      "worstMs": 4.02270499999986,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 15.697117999999136,
+          "worstMs": 0.950865000000249
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 20.093826000001172,
+          "worstMs": 1.2870200000002114
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 78.08984299999838,
+          "worstMs": 4.02270499999986
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.20043399999895,
+          "worstMs": 0.9578070000002299
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 16.964897999996992,
+          "worstMs": 0.7439059999996971
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 152.789,
+      "wallMs": 152.9053939999999,
+      "meanMs": 0.3856400176767587,
+      "medianMs": 0.20065699999986464,
+      "p95Ms": 1.2068260000000919,
+      "p99Ms": 2.9149489999999787,
+      "worstMs": 4.23542499999985,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 78.81581300000153,
+          "worstMs": 4.23542499999985
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 19.487636999999268,
+          "worstMs": 1.2068260000000919
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 16.07739500000025,
+          "worstMs": 0.8442979999999807
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 16.753585999997995,
+          "worstMs": 0.7175720000000183
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.57901599999741,
+          "worstMs": 0.9935239999999794
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 32.885,
+      "wallMs": 32.155549000000065,
+      "meanMs": 0.08092249747473507,
+      "medianMs": 0.05566799999996874,
+      "p95Ms": 0.14524600000004284,
+      "p99Ms": 0.2534339999997428,
+      "worstMs": 3.8812120000002324,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 13.394701999997778,
+          "worstMs": 3.8812120000002324
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.5921499999990374,
+          "worstMs": 0.24887300000000323
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 5.048942999999326,
+          "worstMs": 0.2534339999997428
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.471921999998358,
+          "worstMs": 0.24526800000012372
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 5.537592000000586,
+          "worstMs": 0.2601279999998951
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 29.746,
+      "wallMs": 29.649281999999857,
+      "meanMs": 0.07440058838382485,
+      "medianMs": 0.056446000000050844,
+      "p95Ms": 0.1487329999999929,
+      "p99Ms": 0.34716400000024805,
+      "worstMs": 0.4938959999999497,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.569381999998768,
+          "worstMs": 0.19431600000007165
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.431466000000455,
+          "worstMs": 0.2240759999999682
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 10.828520999996726,
+          "worstMs": 0.4938959999999497
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.817297999999482,
+          "worstMs": 0.17315899999994144
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 5.815965999999207,
+          "worstMs": 0.31147999999984677
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 167.863,
+      "wallMs": 160.77115200000026,
+      "meanMs": 0.4054590732323183,
+      "medianMs": 0.19656199999963064,
+      "p95Ms": 1.271668999999747,
+      "p99Ms": 2.909095999999863,
+      "worstMs": 5.372180999999728,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 16.337348999999904,
+          "worstMs": 0.8640599999998813
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 20.309491000000435,
+          "worstMs": 1.1941959999999199
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 84.62815800000044,
+          "worstMs": 5.372180999999728
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 21.549047999996674,
+          "worstMs": 0.9111969999999019
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 17.73774700000058,
+          "worstMs": 0.9073440000001938
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 149.053,
+      "wallMs": 149.11443199999985,
+      "meanMs": 0.3761069570707203,
+      "medianMs": 0.1717659999994794,
+      "p95Ms": 1.2059039999994638,
+      "p99Ms": 2.551416999999674,
+      "worstMs": 3.464566999999988,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 14.972606000000269,
+          "worstMs": 0.6350290000000314
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 20.435356000003594,
+          "worstMs": 0.8169780000007449
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 15.346512999999504,
+          "worstMs": 0.9169910000000527
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 79.0894330000001,
+          "worstMs": 3.464566999999988
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 19.094447000001765,
+          "worstMs": 0.9631879999997182
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "full-contact",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 25.687,
+      "wallMs": 25.599034000000756,
+      "meanMs": 0.06440024747475624,
+      "medianMs": 0.05519999999978609,
+      "p95Ms": 0.13346799999999348,
+      "p99Ms": 0.2088850000000093,
+      "worstMs": 0.30387899999914225,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 4.572492000001148,
+          "worstMs": 0.2088850000000093
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 4.210162000003038,
+          "worstMs": 0.15431699999953707
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 4.358672999997907,
+          "worstMs": 0.21994499999982509
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 9.101900000003297,
+          "worstMs": 0.30387899999914225
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 3.25927099999808,
+          "worstMs": 0.188242000000173
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 78.151,
+      "wallMs": 78.15204699999958,
+      "meanMs": 0.19690301515151756,
+      "medianMs": 0.0860450000000128,
+      "p95Ms": 0.6352870000000621,
+      "p99Ms": 1.6984130000000732,
+      "worstMs": 1.8515479999996387,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.668630999997731,
+          "worstMs": 0.4734260000004724
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 10.491171000003305,
+          "worstMs": 0.413195000000087
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.60698599999705,
+          "worstMs": 0.5028559999991558
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 40.882087000000865,
+          "worstMs": 1.8515479999996387
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 10.324719000002005,
+          "worstMs": 0.701242000000093
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 0,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 11.005,
+      "wallMs": 10.92864499999996,
+      "meanMs": 0.027118537878807573,
+      "medianMs": 0.024967000000287953,
+      "p95Ms": 0.04324999999971624,
+      "p99Ms": 0.10899200000039855,
+      "worstMs": 0.24568300000009913,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.2056329999941227,
+          "worstMs": 0.24568300000009913
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 1.8746290000053705,
+          "worstMs": 0.09848099999999249
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.6017460000039137,
+          "worstMs": 0.052995000000009895
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.357702000002064,
+          "worstMs": 0.11921600000005128
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.699231000002328,
+          "worstMs": 0.12293200000021898
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.059,
+      "wallMs": 12.013130999999703,
+      "meanMs": 0.03012768181818299,
+      "medianMs": 0.024798999999802618,
+      "p95Ms": 0.08189799999945535,
+      "p99Ms": 0.16673199999968347,
+      "worstMs": 0.2230119999994713,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.787267999998221,
+          "worstMs": 0.2230119999994713
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.7034200000016426,
+          "worstMs": 0.1791800000000876
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.4398380000029647,
+          "worstMs": 0.11824199999955454
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.0065139999987878,
+          "worstMs": 0.20912800000041898
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 1.9935219999988476,
+          "worstMs": 0.11059099999965838
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 1,
+      "warmup": true,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 81.046,
+      "wallMs": 81.04732199999944,
+      "meanMs": 0.20436571969700404,
+      "medianMs": 0.09068100000058621,
+      "p95Ms": 0.692164999999477,
+      "p99Ms": 1.5707940000002054,
+      "worstMs": 1.8680100000001403,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.141863000002559,
+          "worstMs": 0.43437900000026275
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 10.275358999998389,
+          "worstMs": 0.5117799999998169
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 42.61767200000759,
+          "worstMs": 1.8680100000001403
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.695416000004116,
+          "worstMs": 0.36606900000060705
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.198515000000953,
+          "worstMs": 0.692164999999477
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 82.878,
+      "wallMs": 83.10572200000024,
+      "meanMs": 0.20959235858585676,
+      "medianMs": 0.08774100000027829,
+      "p95Ms": 0.7224430000005668,
+      "p99Ms": 1.8650020000004588,
+      "worstMs": 3.3315279999997074,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 10.848999999993794,
+          "worstMs": 0.4960090000004129
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.3713959999995495,
+          "worstMs": 0.49367999999958556
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 45.76554300000498,
+          "worstMs": 3.3315279999997074
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.989816000002975,
+          "worstMs": 0.5615859999998065
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.02281899999798,
+          "worstMs": 0.498967000000448
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 2,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.29,
+      "wallMs": 12.258724999999686,
+      "meanMs": 0.03074233333333925,
+      "medianMs": 0.025936000000001513,
+      "p95Ms": 0.05715599999984988,
+      "p99Ms": 0.20502900000064983,
+      "worstMs": 0.32142599999951926,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.528665000001638,
+          "worstMs": 0.32142599999951926
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.661932999997589,
+          "worstMs": 0.06511500000033266
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.795925000005809,
+          "worstMs": 0.24769999999989523
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.9328169999953388,
+          "worstMs": 0.25173799999993207
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.254624000001968,
+          "worstMs": 0.14016500000070664
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 11.283,
+      "wallMs": 11.30954600000041,
+      "meanMs": 0.02815938383839992,
+      "medianMs": 0.025352000000566477,
+      "p95Ms": 0.04785799999990559,
+      "p99Ms": 0.11017199999969307,
+      "worstMs": 0.13050999999995838,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.873158000008516,
+          "worstMs": 0.13050999999995838
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.6701419999963036,
+          "worstMs": 0.10254999999961001
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 1.9855490000036298,
+          "worstMs": 0.08822599999984959
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 1.9857540000011795,
+          "worstMs": 0.10086899999987509
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.6365129999967394,
+          "worstMs": 0.12685999999939668
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 3,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 83.724,
+      "wallMs": 83.71176600000035,
+      "meanMs": 0.21112347474749957,
+      "medianMs": 0.09750400000029913,
+      "p95Ms": 0.6932569999999032,
+      "p99Ms": 1.7620340000003125,
+      "worstMs": 2.322519000000284,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 44.51994700000341,
+          "worstMs": 2.322519000000284
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.8611779999991995,
+          "worstMs": 0.5842120000006616
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.105786000008266,
+          "worstMs": 0.4958679999999731
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.677920999997696,
+          "worstMs": 0.37948099999994156
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 11.440064000001257,
+          "worstMs": 0.8618289999994886
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 80.356,
+      "wallMs": 80.35620599999947,
+      "meanMs": 0.2026702095959678,
+      "medianMs": 0.08845999999994092,
+      "p95Ms": 0.7189400000006572,
+      "p99Ms": 1.5600759999997535,
+      "worstMs": 1.9948569999996835,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 10.629950000001372,
+          "worstMs": 0.7805820000003223
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 8.088667000002715,
+          "worstMs": 0.8695859999997992
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 42.59316199999739,
+          "worstMs": 1.9948569999996835
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.640142999999625,
+          "worstMs": 0.593007000000398
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 10.305481000002146,
+          "worstMs": 0.39518300000054296
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 4,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.096,
+      "wallMs": 12.245625999999902,
+      "meanMs": 0.030712914141421414,
+      "medianMs": 0.02556700000059209,
+      "p95Ms": 0.053664999999455176,
+      "p99Ms": 0.23040000000037253,
+      "worstMs": 0.3286210000005667,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.8217320000039763,
+          "worstMs": 0.23908200000005309
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.1265649999986636,
+          "worstMs": 0.2566980000001422
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.5116520000010496,
+          "worstMs": 0.1620939999993425
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.370191999999406,
+          "worstMs": 0.16636300000027404
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.3321729999997842,
+          "worstMs": 0.3286210000005667
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 11.205,
+      "wallMs": 11.177188999999998,
+      "meanMs": 0.028031262626246195,
+      "medianMs": 0.025278000000071188,
+      "p95Ms": 0.04291899999952875,
+      "p99Ms": 0.12054400000033638,
+      "worstMs": 0.20059300000048097,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.5874730000005002,
+          "worstMs": 0.047837999999501335
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.6078389999993306,
+          "worstMs": 0.12787799999932759
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.5620370000006005,
+          "worstMs": 0.20059300000048097
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.022977999999057,
+          "worstMs": 0.12054400000033638
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.3200529999940045,
+          "worstMs": 0.13643099999990227
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 5,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 81.94,
+      "wallMs": 81.94054200000028,
+      "meanMs": 0.20664361363634096,
+      "medianMs": 0.08853999999973894,
+      "p95Ms": 0.7264660000000731,
+      "p99Ms": 1.72175900000002,
+      "worstMs": 1.8946740000001228,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.578199999999924,
+          "worstMs": 0.39513799999986077
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 11.165254000002278,
+          "worstMs": 0.8149909999992815
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 42.568383999991056,
+          "worstMs": 1.8946740000001228
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.155210999996598,
+          "worstMs": 0.5416569999997591
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 9.363822000001164,
+          "worstMs": 0.8050720000001093
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 79.714,
+      "wallMs": 79.88728899999933,
+      "meanMs": 0.201487964646462,
+      "medianMs": 0.08748800000012125,
+      "p95Ms": 0.6907680000003893,
+      "p99Ms": 1.7088860000003478,
+      "worstMs": 2.1214910000007876,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 43.64990299999863,
+          "worstMs": 2.1214910000007876
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.98929600000065,
+          "worstMs": 0.5314950000001772
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.430598000001737,
+          "worstMs": 0.43452999999954045
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.36563699999624,
+          "worstMs": 0.46615099999962695
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 10.353800000001684,
+          "worstMs": 0.44236499999988155
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 6,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.086,
+      "wallMs": 12.055183000000397,
+      "meanMs": 0.030234603535362368,
+      "medianMs": 0.02571500000067317,
+      "p95Ms": 0.052655999999842606,
+      "p99Ms": 0.10774300000048243,
+      "worstMs": 0.3513469999998051,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.582379000005858,
+          "worstMs": 0.29804299999977957
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.9051419999987047,
+          "worstMs": 0.3334230000000389
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 2.056495000000723,
+          "worstMs": 0.3513469999998051
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.3204309999982797,
+          "worstMs": 0.10774300000048243
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.108455999999933,
+          "worstMs": 0.08852100000058272
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.538,
+      "wallMs": 12.481494999999995,
+      "meanMs": 0.03126335606060535,
+      "medianMs": 0.02552700000069308,
+      "p95Ms": 0.05903000000034808,
+      "p99Ms": 0.14420799999970768,
+      "worstMs": 0.5014619999992647,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.7596119999980147,
+          "worstMs": 0.10184300000037183
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 2.3752359999971304,
+          "worstMs": 0.5014619999992647
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 4.090216000002329,
+          "worstMs": 0.29069499999968684
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.214288000001943,
+          "worstMs": 0.14420799999970768
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 1.9409370000003037,
+          "worstMs": 0.05903000000034808
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 7,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 78.518,
+      "wallMs": 78.766525,
+      "meanMs": 0.19867275252525618,
+      "medianMs": 0.08726999999998952,
+      "p95Ms": 0.6359290000000328,
+      "p99Ms": 1.7200300000004063,
+      "worstMs": 2.42905299999984,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "braking": {
+          "solves": 72,
+          "totalMs": 7.452808000002733,
+          "worstMs": 0.39918799999941257
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 9.930356000000756,
+          "worstMs": 0.5183560000004945
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 41.27447299999949,
+          "worstMs": 2.42905299999984
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 11.099357000000055,
+          "worstMs": 0.45895799999925657
+        },
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.917415999998411,
+          "worstMs": 0.4214750000001004
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "fista",
+      "solves": 396,
+      "cpuMs": 82.921,
+      "wallMs": 83.13172699999996,
+      "meanMs": 0.20964947727272393,
+      "medianMs": 0.09716599999956088,
+      "p95Ms": 0.7427869999992254,
+      "p99Ms": 1.629624000000149,
+      "worstMs": 2.1389479999998002,
+      "iterations": 62589,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 8.584870000001501,
+          "worstMs": 0.3569469999993089
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 10.485880999998699,
+          "worstMs": 0.3897919999999431
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 8.510826999995516,
+          "worstMs": 0.517135999999482
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 43.898887999999715,
+          "worstMs": 2.1389479999998002
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 11.540727000003244,
+          "worstMs": 1.5571650000001682
+        }
+      }
+    },
+    {
+      "accuracy": "balanced",
+      "unit": "prepared-optimizer",
+      "repeat": 8,
+      "warmup": false,
+      "solver": "newton",
+      "solves": 396,
+      "cpuMs": 12.055,
+      "wallMs": 12.00709999999981,
+      "meanMs": 0.03011785101010432,
+      "medianMs": 0.02617499999996653,
+      "p95Ms": 0.056591999999909604,
+      "p99Ms": 0.12547799999993003,
+      "worstMs": 0.30111699999997654,
+      "iterations": 378,
+      "failures": 0,
+      "byScenario": {
+        "acceleration": {
+          "solves": 72,
+          "totalMs": 2.0223369999994247,
+          "worstMs": 0.05595599999924161
+        },
+        "recovery": {
+          "solves": 72,
+          "totalMs": 2.4362200000032317,
+          "worstMs": 0.30111699999997654
+        },
+        "braking": {
+          "solves": 72,
+          "totalMs": 1.7113649999982954,
+          "worstMs": 0.09588799999983166
+        },
+        "recontact": {
+          "solves": 144,
+          "totalMs": 3.8923860000004424,
+          "worstMs": 0.23282800000015413
+        },
+        "near-steady": {
+          "solves": 36,
+          "totalMs": 1.8643609999999171,
+          "worstMs": 0.12596299999950133
+        }
+      }
+    }
+  ]
+}

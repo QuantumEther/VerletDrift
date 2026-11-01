@@ -1,0 +1,25 @@
+{
+  "repeats": 9,
+  "warmups": 2,
+  "passesPerBatch": 3,
+  "tolerances": {
+    "strict": 1e-12,
+    "balanced": 1e-10
+  },
+  "newton": {
+    "maxIterations": 40,
+    "lineSearchLimit": 12,
+    "directionRegularization": 1e-12
+  },
+  "equivalence": {
+    "strict": {
+      "objectiveJ": 1e-10,
+      "velocity": 1e-8
+    },
+    "balanced": {
+      "objectiveJ": 1e-8,
+      "velocity": 0.000001
+    }
+  },
+  "gate": "All full-solve solutions must converge and pass independent feasibility/KKT/equivalence. At least 5x aggregate full-contact CPU speedup at BOTH accuracies and no worse observed full-solve worst latency. Core timings alone cannot pass."
+}

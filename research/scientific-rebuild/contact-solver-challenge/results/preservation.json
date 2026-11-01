@@ -1,0 +1,10 @@
+{
+  "base": "1844f08318d1f61dff76cce14165ecbdc5e580fc",
+  "branch": "scientific-rebuild/12-braking-and-tire-contact",
+  "originalTrackedFilesChanged": [],
+  "productionIntegration": false,
+  "originalAReplay": "PASS 1080 bit-exact states plus rollback",
+  "tests": "PASS 5/5 isolated tests",
+  "decision": "STOP \u2014 strict full-contact speedup below 5x; no rescue/tuning continuation",
+  "sourceIdentity": "source-sha256.json; included in commit reported in final response"
+}

@@ -1,0 +1,8 @@
+{
+  "research/scientific-rebuild/contact-solver-challenge/capture.mjs": "bf715d53a3620f3f5df2c2fecddfef7b9d24a23e17101d3de5aa79fa8bc460c5",
+  "research/scientific-rebuild/contact-solver-challenge/check.js": "c6fb28beb81592f5855dcd27c060d54af646cc996c9a1f149713458a85de2dad",
+  "research/scientific-rebuild/contact-solver-challenge/experiment.mjs": "e2545d2d38bbc603a5f4ca5ad40a3fc54aac4ae8405e6c1786bf694eb861886e",
+  "research/scientific-rebuild/contact-solver-challenge/newton.js": "65e3278996e32efde822d8c4328f25046d7bce6a233aa2d5f638986b9604cff2",
+  "research/scientific-rebuild/contact-solver-challenge/prepare.js": "31fd2f64126b5f8769e95117aa25d459fc17504dc67710b598af32bb23eb950e",
+  "research/scientific-rebuild/contact-solver-challenge/test.mjs": "f686f78cb72daac92c24213852fcddd4331b77eb393654dbb2d6e4df040b9644"
+}
