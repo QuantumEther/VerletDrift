@@ -159,3 +159,62 @@ GPU timer-query execution time. No forced synchronization is introduced. Browser
 DevTools performance/GPU traces are needed if submission or scheduling remains
 ambiguous. Record browser version, display refresh, driver, OS and power settings
 alongside the downloaded files. Avoid background tabs or changing settings mid-run.
+
+## Isolating WebGL presentation at 240 Hz
+
+Use the same visible window, canvas CSS size, selected render scale, device pixel
+ratio, terrain, camera, browser flags and physics state for every capture. The
+JSON records context attributes, CSS and drawing-buffer dimensions, render scale,
+GPU/backend string, browser, selected components and whether settings changed or
+the page became hidden. Discard any run marked changed/hidden. Fix the display at
+240 Hz manually if appropriate; the laboratory does not change OS settings.
+
+In Chromium **and** Firefox, warm the page for several seconds, open Frame-rate
+diagnostics and take at least three 10-second recordings of each configuration:
+
+1. Full laboratory, all three earlier stage switches enabled.
+2. Minimal WebGL clear: same renderer-owned canvas, WebGL context, framebuffer
+   configuration and drawing-buffer size. This directly clears color/depth/stencil
+   and resets Three.js state; it does not draw a triangle or submit a Three scene.
+3. Empty Three.js scene: the same renderer and camera render only the same scene
+   background; no vehicle, terrain or scene objects are submitted.
+4. Incremental scene: turn all five components off, then add terrain, lighting,
+   vehicle, tracks and other in that order. Capture after each addition. Tracks
+   require recorded marks and the existing marks toggle; force vectors require the
+   existing vector toggle. Repeat with a reproducible driving/track workload.
+5. Existing submission-off control, for the rAF/browser scheduling baseline.
+
+Repeat the sequence once with physics paused and once with the same running
+workload. Do not alter resolution to obtain the result. Download every JSON and
+record OS, browser build, GPU driver, display refresh and whether the display is
+connected directly to the NVIDIA GPU. `estimatedDroppedPercent` counts estimated
+missed refresh slots by rounding frame intervals against a **declared 240 Hz**;
+it is not an OS present counter and is invalid for a different refresh rate or
+variable refresh scheduling. Compare median, p95, p99 and mean frame intervals
+and CPU `webgl` time; 4.167 ms is a 240 Hz interval. Instrumentation itself has
+cost. The first stage to reproduce missed intervals is the next target for a
+browser compositor/GPU trace, not automatic proof of the underlying root cause.
+
+Optional asynchronous GPU timing uses `EXT_disjoint_timer_query_webgl2` when
+exposed. It measures GPU elapsed execution around the clear or render submission,
+not present/compositor latency or CPU time. Queries are bounded to eight in flight
+and polled without waiting; unsupported, pending, dropped and disjoint counts are
+reported. GPU samples can be missing; a disjoint run has no valid aggregate.
+Queries are not drained after the 10 s endpoint; pending samples are reported.
+`gpu.raw[].frame` is the original zero-based frame index before the initial frame
+without an interval is removed from `raw`. Query instrumentation changes the
+workload: capture primary frame pacing with GPU timing off, then run it separately
+on. Firefox may not expose the extension. Never use GPU timing availability as
+proof that all rendering or presentation work was measured.
+
+To rerun the browser mode smoke check, use `node research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/webgl-modes-smoke.mjs` from the repository root.
+
+Local check: Chromium with the SwiftShader software renderer loaded all four
+modes and completed a timed run; its timer extension was unavailable. This is a
+functional test only, not evidence about the RTX 5090 or the 240 Hz bottleneck.
+The existing RTX 5090 recordings show rendering submission correlates with missed
+presentation intervals; these new modes require measurements on that machine to
+identify the first triggering operation. If even minimal WebGL reproduces the
+problem in both browsers, compare direct-NVIDIA versus hybrid routing and inspect
+browser GPU/compositor traces and VSync manually; do not change system settings
+without deliberately testing and recording them.

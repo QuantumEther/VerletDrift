@@ -12,7 +12,7 @@ export function createView3D(canvas,terrain,quality='auto'){
  const scene=new THREE.Scene();scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,20,55);
  const camera=new THREE.PerspectiveCamera(40,1,.025,100);camera.up.set(0,0,1);
  const controls=new OrbitControls(camera,canvas);controls.minDistance=.6;controls.maxDistance=30;controls.maxPolarAngle=Math.PI*.49;
- scene.add(new THREE.HemisphereLight(0xffeed5,0x36483d,2));const sun=new THREE.DirectionalLight(0xffebd0,3);sun.position.set(3,-4,7);scene.add(sun);
+ const hemisphere=new THREE.HemisphereLight(0xffeed5,0x36483d,2);scene.add(hemisphere);const sun=new THREE.DirectionalLight(0xffebd0,3);sun.position.set(3,-4,7);scene.add(sun);
  const material=(color,metalness,roughness,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
  const steel=material(0xaaaead,.88,.29),chrome=material(0xd5dad7,.95,.18),brass=material(0xb79454,.83,.33),cast=material(0x414b46,.65,.7),rubber=material(0x191c19,.05,.95),friction=material(0x554b39,.1,.95),paint=material(0x294c37,.55,.3),glass=material(0x9eb7ab,.1,.14,{transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide});
  const boxes=new Map(),cylinders=new Map();
@@ -61,22 +61,32 @@ export function createView3D(canvas,terrain,quality='auto'){
  const grid=new THREE.GridHelper(40,40,0x7a795b,0x444b38);grid.rotation.x=Math.PI/2;grid.position.z=.003;scene.add(grid);
  const presets={normal:[[-2.8,-3.5,2.45],[0,0,.65]],driver:[[-3.8,-.8,1.65],[.7,0,.65]],top:[[0,-.01,9],[0,0,.4]],side:[[0,-6,1.8],[0,0,.5]],contact:[[1.6,1.5,.8],[1,.6,.32]]};
  let mode='normal',ox=NaN,oy=NaN,last,terrainUpdates=0;
+ const emptyScene=new THREE.Scene();emptyScene.background=scene.background;
+ const contextAttributes=gl.getContextAttributes(),ext=gl.getExtension('EXT_disjoint_timer_query_webgl2'),pending=[];let gpuEpoch=0,gpuDropped=0;
+ function clearGpu(){gpuEpoch++;for(const q of pending)gl.deleteQuery(q.query);pending.length=0;gpuDropped=0;}
+ function pollGpu(){const samples=[];if(!ext)return samples;if(gl.getParameter(ext.GPU_DISJOINT_EXT)){clearGpu();return samples;}while(pending.length&&gl.getQueryParameter(pending[0].query,gl.QUERY_RESULT_AVAILABLE)){const q=pending.shift();samples.push({frame:q.frame,ms:gl.getQueryParameter(q.query,gl.QUERY_RESULT)/1e6});gl.deleteQuery(q.query);}return samples;}
+ function submit(sceneToDraw,kind,frame,timing){let q=null;if(timing&&ext&&pending.length<8){q=gl.createQuery();gl.beginQuery(ext.TIME_ELAPSED_EXT,q);}else if(timing&&ext)gpuDropped++;try{if(kind==='minimal'){renderer.resetState();gl.clearColor(.06,.09,.08,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);renderer.resetState();}else renderer.render(sceneToDraw,camera);}finally{if(q){gl.endQuery(ext.TIME_ELAPSED_EXT);pending.push({query:q,frame,epoch:gpuEpoch});}}}
+ function gpuStatus(){return {supported:!!ext,extension:ext?'EXT_disjoint_timer_query_webgl2':null,pending:pending.length,dropped:gpuDropped,epoch:gpuEpoch};}
+
  function resetCamera(next=mode){mode=next;const [position,target]=presets[mode];camera.position.fromArray(position);controls.target.fromArray(target);controls.update();}resetCamera();
- function draw(p,observatory,{marks=true,vectors=false,xray=false,sceneUpdates=true,submission=true,timings=null}={}){
-  const start=performance.now();
-  if(!sceneUpdates){if(submission)renderer.render(scene,camera);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-start;}return;}
+ function draw(p,observatory,{marks=true,vectors=false,xray=false,sceneUpdates=true,submission=true,timings=null,diagnostic={mode:'full'},frameId=0,gpuTiming=false}={}){
+  const start=performance.now(),d=diagnostic,incremental=d.mode==='incremental';
+  const enabled=k=>!incremental||!!d[k];
+  body.visible=enabled('vehicle');hubs.forEach(x=>x.visible=enabled('vehicle'));springs.forEach(x=>x.visible=enabled('vehicle'));dampers.forEach(x=>x.visible=enabled('vehicle'));arrows.forEach(x=>x.visible=enabled('other')&&x.visible);hemisphere.visible=sun.visible=enabled('lighting');
+  if(!sceneUpdates){const t=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-t;}return;}
+
   last=p;const width=canvas.clientWidth,height=canvas.clientHeight;if(width>0&&height>0&&(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio()))){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
   body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;
   const basis=new THREE.Matrix4(),from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),axis=new THREE.Vector3(0,1,0);
   p.wheels.forEach((w,i)=>{
    const x=w.position[0]-p.planar.x,y=w.position[1]-p.planar.y,z=w.position[2];hubs[i].position.set(x,y,z);basis.makeBasis(new THREE.Vector3(...w.tangent),new THREE.Vector3(...w.lateral),new THREE.Vector3(...w.normalAxis));hubs[i].quaternion.setFromRotationMatrix(basis);rotors[i].rotation.y=w.angle;rotors[i].scale.set(w.radius,1,w.radius);
    from.set(x,y,z);to.set(w.mount[0]-p.planar.x,w.mount[1]-p.planar.y,w.mount[2]);direction.subVectors(to,from);springs[i].position.copy(from);springs[i].quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),direction.clone().normalize());springs[i].scale.z=direction.length();dampers[i].position.copy(from).add(to).multiplyScalar(.5);dampers[i].position.x+=.055;dampers[i].quaternion.setFromUnitVectors(axis,direction.clone().normalize());dampers[i].scale.y=direction.length();
-   const F=new THREE.Vector3(...w.worldForce),length=F.length()*.001;arrows[i].visible=vectors&&w.normal>0&&length>1e-8;if(arrows[i].visible){arrows[i].position.set(x,y,w.roadHeight+.04);arrows[i].setDirection(F.normalize());arrows[i].setLength(length);}
+   const F=new THREE.Vector3(...w.worldForce),length=F.length()*.001;arrows[i].visible=enabled('other')&&vectors&&w.normal>0&&length>1e-8;if(arrows[i].visible){arrows[i].position.set(x,y,w.roadHeight+.04);arrows[i].setDirection(F.normalize());arrows[i].setLength(length);}
   });
-  const nx=Math.floor(p.planar.x),ny=Math.floor(p.planar.y);ground.position.set(nx-p.planar.x,ny-p.planar.y,0);grid.position.set(nx-p.planar.x,ny-p.planar.y,.002);grid.visible=terrain.settings.preset==='flat';
+  const nx=Math.floor(p.planar.x),ny=Math.floor(p.planar.y);ground.position.set(nx-p.planar.x,ny-p.planar.y,0);grid.position.set(nx-p.planar.x,ny-p.planar.y,.002);ground.visible=enabled('terrain');grid.visible=enabled('other')&&terrain.settings.preset==='flat';
   if(nx!==ox||ny!==oy){ox=nx;oy=ny;const a=groundGeo.attributes.position,col=groundGeo.attributes.color,colors={asphalt:0x44494d,gravel:0x8b8172,dirt:0x756044,grass:0x547448};for(let i=0;i<a.count;i++){const s=terrain.sample(a.getX(i)+ox,a.getY(i)+oy),color=new THREE.Color(colors[s.surface]??colors.grass);a.setZ(i,s.height);col.setXYZ(i,color.r,color.g,color.b);}a.needsUpdate=col.needsUpdate=true;groundGeo.computeVertexNormals();terrainUpdates++;}
-  const trackStart=performance.now();tracks.draw(p,observatory,marks);const trackEnd=performance.now();controls.update();const submitStart=performance.now();if(submission)renderer.render(scene,camera);const end=performance.now();if(timings){timings.scene=submitStart-start-(trackEnd-trackStart);timings.tracks=trackEnd-trackStart;timings.webgl=end-submitStart;}
+  const trackStart=performance.now();tracks.draw(p,observatory,marks&&enabled('tracks'));const trackEnd=performance.now();controls.update();const submitStart=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);const end=performance.now();if(timings){timings.scene=submitStart-start-(trackEnd-trackStart);timings.tracks=trackEnd-trackStart;timings.webgl=end-submitStart;}
  }
  function snapshot(){const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info');return {renderScale,backend:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,terrainUpdates,batching,mode,camera:camera.position.toArray(),wheelPositions:hubs.map(h=>h.position.toArray()),wheelAngles:rotors.map(r=>r.rotation.y),wheelQuaternions:hubs.map(h=>h.quaternion.toArray()),chassis:[body.position.z,body.rotation.x,-body.rotation.y,body.rotation.z],tracks:tracks.info(),time:last?.time};}
- return {draw,resetCamera,snapshot,setQuality,dispose(){controls.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();}};
+ return {draw,resetCamera,snapshot,setQuality,clearGpu,pollGpu,gpuStatus,contextInfo:()=>({attributes:contextAttributes,drawingBuffer:[gl.drawingBufferWidth,gl.drawingBufferHeight],cssSize:[canvas.clientWidth,canvas.clientHeight],devicePixelRatio,renderScale}),dispose(){clearGpu();controls.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();}};
 }
