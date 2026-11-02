@@ -134,3 +134,28 @@ confidence intervals. No GPU hardware browser was available. The preview is
 interactive on this software backend; native-resolution performance is not
 certified. The early scheduling/graphics observations above explain why software
 preview is explicit rather than being confused with desktop GPU performance.
+
+## Frame-rate diagnosis on the RTX 5090
+
+Open **Frame-rate diagnostics**. Keep the browser window visible, use the same
+camera, terrain, window size and render scale, and allow several seconds of
+warm-up. Pause physics for a stationary comparison, then repeat while driving.
+For each configuration click **Start 10-second measurement**, wait for the result,
+and use **Download JSON**. Collect: all enabled; rendering submission off; scene
+updates off with submission on; dashboard off; and all three off. The animation
+loop stays active in every mode. The no-scene mode renders the last scene if
+submission remains on. Disabling submission does not wait for pending GPU work.
+
+Compare `interval` mean/p95/p99 in milliseconds: 240 Hz corresponds to 4.167 ms
+per frame. The raw samples allow calculation of the fraction of intervals meeting
+that threshold; an average alone cannot establish sustained 240 Hz. Compare the
+other columns to identify which switch changes the distribution: physics,
+contact recording, presentation conversion, scene transforms, track updates,
+WebGL submission and dashboard. `callback` includes all measured and unmeasured
+JavaScript within the callback. The difference between frame interval and callback
+is not proof of GPU time: it includes browser scheduling, compositor, VSync,
+driver queuing and other work. WebGL timing is CPU elapsed time in `render`, not
+GPU timer-query execution time. No forced synchronization is introduced. Browser
+DevTools performance/GPU traces are needed if submission or scheduling remains
+ambiguous. Record browser version, display refresh, driver, OS and power settings
+alongside the downloaded files. Avoid background tabs or changing settings mid-run.

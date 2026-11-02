@@ -62,7 +62,9 @@ export function createView3D(canvas,terrain,quality='auto'){
  const presets={normal:[[-2.8,-3.5,2.45],[0,0,.65]],driver:[[-3.8,-.8,1.65],[.7,0,.65]],top:[[0,-.01,9],[0,0,.4]],side:[[0,-6,1.8],[0,0,.5]],contact:[[1.6,1.5,.8],[1,.6,.32]]};
  let mode='normal',ox=NaN,oy=NaN,last,terrainUpdates=0;
  function resetCamera(next=mode){mode=next;const [position,target]=presets[mode];camera.position.fromArray(position);controls.target.fromArray(target);controls.update();}resetCamera();
- function draw(p,observatory,{marks=true,vectors=false,xray=false}={}){
+ function draw(p,observatory,{marks=true,vectors=false,xray=false,sceneUpdates=true,submission=true,timings=null}={}){
+  const start=performance.now();
+  if(!sceneUpdates){if(submission)renderer.render(scene,camera);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-start;}return;}
   last=p;const width=canvas.clientWidth,height=canvas.clientHeight;if(width>0&&height>0&&(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio()))){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
   body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;
   const basis=new THREE.Matrix4(),from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),axis=new THREE.Vector3(0,1,0);
@@ -73,7 +75,7 @@ export function createView3D(canvas,terrain,quality='auto'){
   });
   const nx=Math.floor(p.planar.x),ny=Math.floor(p.planar.y);ground.position.set(nx-p.planar.x,ny-p.planar.y,0);grid.position.set(nx-p.planar.x,ny-p.planar.y,.002);grid.visible=terrain.settings.preset==='flat';
   if(nx!==ox||ny!==oy){ox=nx;oy=ny;const a=groundGeo.attributes.position,col=groundGeo.attributes.color,colors={asphalt:0x44494d,gravel:0x8b8172,dirt:0x756044,grass:0x547448};for(let i=0;i<a.count;i++){const s=terrain.sample(a.getX(i)+ox,a.getY(i)+oy),color=new THREE.Color(colors[s.surface]??colors.grass);a.setZ(i,s.height);col.setXYZ(i,color.r,color.g,color.b);}a.needsUpdate=col.needsUpdate=true;groundGeo.computeVertexNormals();terrainUpdates++;}
-  tracks.draw(p,observatory,marks);controls.update();renderer.render(scene,camera);
+  const trackStart=performance.now();tracks.draw(p,observatory,marks);const trackEnd=performance.now();controls.update();const submitStart=performance.now();if(submission)renderer.render(scene,camera);const end=performance.now();if(timings){timings.scene=submitStart-start-(trackEnd-trackStart);timings.tracks=trackEnd-trackStart;timings.webgl=end-submitStart;}
  }
  function snapshot(){const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info');return {renderScale,backend:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,terrainUpdates,batching,mode,camera:camera.position.toArray(),wheelPositions:hubs.map(h=>h.position.toArray()),wheelAngles:rotors.map(r=>r.rotation.y),wheelQuaternions:hubs.map(h=>h.quaternion.toArray()),chassis:[body.position.z,body.rotation.x,-body.rotation.y,body.rotation.z],tracks:tracks.info(),time:last?.time};}
  return {draw,resetCamera,snapshot,setQuality,dispose(){controls.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();}};

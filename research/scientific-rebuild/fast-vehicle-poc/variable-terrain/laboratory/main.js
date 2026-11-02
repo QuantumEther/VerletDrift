@@ -7,6 +7,10 @@ import {drawFrictionCircles} from '../../../tire-road-observatory-prototype/src/
 import {setEnvironment} from '../../../procedural-terrain/src/application-vehicle.js';
 const $=id=>document.getElementById(id),clock=new SimulationClock({budgetMs:20,maxSteps:128,maxDebt:Infinity}),observatory=new TireObservatory();
 let lab,view,previous,last=performance.now(),paused=false,lastPanel=0,renderMs=0,lastPhysicsMs=0,totalPhysicsMs=0,stepTimes=[],maxIterations=0,attemptedInput=null;
+let measurement=null,report=null,framePhysics=0,frameRecording=0,previousFrame=null;
+$('diag-start').onclick=()=>{measurement={start:performance.now(),settings:{submission:$('diag-submit').checked,scene:$('diag-scene').checked,dashboard:$('diag-panel').checked,paused,terrain:lab.terrain.settings},frames:[]};previousFrame=null;$('diag-output').textContent='Measuring…';};
+$('diag-download').onclick=()=>{if(!report)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));a.download='frame-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
+function summarize(values){const sorted=values.slice().sort((a,b)=>a-b),n=sorted.length;return {mean:n?values.reduce((a,b)=>a+b,0)/n:0,p95:sorted[Math.max(0,Math.ceil(n*.95)-1)]??0,p99:sorted[Math.max(0,Math.ceil(n*.99)-1)]??0};}
 const gauges={engine:createInstrument($('engine-dial'),{label:'ENGINE',unit:'rpm',max:3000}),input:createInstrument($('input-dial'),{label:'FIXED GEAR INPUT',unit:'rpm',max:3000}),speed:createInstrument($('speed-dial'),{label:'ROAD SPEED',unit:'km/h',max:60})};
 const controls=bindControls(document,()=>reset());
 function reset(speed=0){
@@ -25,8 +29,8 @@ $('camera').addEventListener('change',()=>view?.resetCamera($('camera').value));
 for(const key of ['throttle','engagement'])$(key).addEventListener('input',()=>$(key+'-value').textContent=Math.round(100*$(key).value)+'%');for(const b of document.querySelectorAll('[data-clutch]'))b.addEventListener('click',()=>{$('engagement').value=b.dataset.clutch;$('engagement').dispatchEvent(new Event('input'));});
 document.addEventListener('visibilitychange',()=>{controls.clear();const now=performance.now();clock.pausedWall+=Math.max(0,(now-last)/1000);clock.wall+=Math.max(0,(now-last)/1000);last=now;});
 function physicalStep(h){
- const input=controls.sample(h);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);lastPhysicsMs=performance.now()-begin;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
- const end=capture(lab,h);if($('record-contacts')?.checked!==false)observatory.record({start:previous,end,h});previous=end;return {};
+ const input=controls.sample(h);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);lastPhysicsMs=performance.now()-begin;framePhysics+=lastPhysicsMs;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
+ const recordStart=performance.now(),end=capture(lab,h);if($('record-contacts')?.checked!==false)observatory.record({start:previous,end,h});previous=end;frameRecording+=performance.now()-recordStart;return {};
 }
 function panel(p){
  const sorted=stepTimes.slice().sort((a,b)=>a-b),q=f=>sorted[Math.max(0,Math.ceil(sorted.length*f)-1)]??0,mean=stepTimes.reduce((a,x)=>a+x,0)/(stepTimes.length||1),s=lab.state.consistency;
@@ -39,8 +43,11 @@ function panel(p){
  if(clock.fault)$('warning').textContent=`PAUSED: ${clock.fault.message}. Last accepted state retained; reset to retry. Snapshot available via runtimeSnapshot().clock.fault.`;
 }
 function loop(now){
+ const frameStart=performance.now(),interval=previousFrame===null?null:now-previousFrame;previousFrame=now;framePhysics=frameRecording=0;
  const elapsed=(now-last)/1000;last=now;clock.frame(elapsed,physicalStep,()=>({state:lab?.state,angles:lab?.angles,input:attemptedInput??lab?.lastInput,terrain:lab?.terrain.settings}),paused||document.hidden);
- if(lab&&view){try{const p=presentation(lab),begin=performance.now();view.draw(p,observatory,{marks:$('show-marks').checked,vectors:$('contact-overlay').checked,xray:$('xray').checked});renderMs=performance.now()-begin;if(now-lastPanel>=200){panel(p);lastPanel=now;}}catch(e){clock.fail(e,lab.state);$('warning').textContent=e.message;}}
+ let conversion=0,dashboard=0,stages={scene:0,tracks:0,webgl:0};
+ if(lab&&view){try{let begin=performance.now();const p=presentation(lab);conversion=performance.now()-begin;begin=performance.now();view.draw(p,observatory,{marks:$('show-marks').checked,vectors:$('contact-overlay').checked,xray:$('xray').checked,sceneUpdates:$('diag-scene').checked,submission:$('diag-submit').checked,timings:stages});renderMs=performance.now()-begin;if($('diag-panel').checked&&now-lastPanel>=200){begin=performance.now();panel(p);dashboard=performance.now()-begin;lastPanel=now;}}catch(e){clock.fail(e,lab.state);$('warning').textContent=e.message;}}
+ if(measurement){measurement.frames.push({interval,physics:framePhysics,recording:frameRecording,conversion,scene:stages.scene,tracks:stages.tracks,webgl:stages.webgl,dashboard,callback:performance.now()-frameStart,steps:clock.frameSteps});if(performance.now()-measurement.start>=10000){const rows=measurement.frames.filter(f=>f.interval!==null),keys=['interval','physics','recording','conversion','scene','tracks','webgl','dashboard','callback'];report={settings:measurement.settings,backend:view.snapshot().backend,userAgent:navigator.userAgent,visibility:document.visibilityState,frames:rows.length,meanFps:rows.length?1000/(rows.reduce((a,f)=>a+f.interval,0)/rows.length):0,percentIntervalsAtOrBelow4167ms:rows.length?100*rows.filter(f=>f.interval<=1000/240+.01).length/rows.length:0,stats:Object.fromEntries(keys.map(k=>[k,summarize(rows.map(f=>f[k]))])),raw:rows};$('diag-output').textContent=JSON.stringify({settings:report.settings,backend:report.backend,frames:report.frames,meanFps:report.meanFps,percentIntervalsAtOrBelow4167ms:report.percentIntervalsAtOrBelow4167ms,stats:report.stats},null,2);measurement=null;}}
  requestAnimationFrame(loop);
 }
 export const simulationSnapshot=()=>structuredClone(lab.state);
