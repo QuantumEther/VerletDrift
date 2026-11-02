@@ -931,10 +931,14 @@
   <section class="controls hybrid-controls" aria-label="Hybrid audio experiment">
     <div class="control-row"><label for="audioMode">Audio</label><div class="select-wrap"><select id="audioMode"><option value="procedural">Procedural · original synthesis</option><option value="sample">Sample · REC194 recording</option><option value="hybrid" selected>Hybrid · recording + synthesis</option></select></div></div>
     <div class="control-row"><label for="synthVersion">Synthesis</label><div class="select-wrap"><select id="synthVersion"><option value="original">Original</option><option value="refined" selected>Refined</option></select></div></div>
-    <details><summary>Procedural component gains</summary><p>Gain changes are smoothed inside the audio worklet.</p><label>Exhaust <input type="range" id="gainExhaust" min="0" max="1" step=".01" value="1"></label><label>Intake <input type="range" id="gainIntake" min="0" max="1" step=".01" value="1"></label><label>Mechanical <input type="range" id="gainMechanical" min="0" max="1" step=".01" value="1"></label><label>Pops <input type="range" id="gainPops" min="0" max="1" step=".01" value="1"></label></details>
-    <div class="control-row"><label for="hybridMix">Recorded</label><input id="hybridMix" type="range" min="0" max="1" step=".01" value=".65" aria-label="Recorded share in hybrid mode"><output id="hybridMixValue">65%</output></div>
+    <details><summary>Procedural component gains</summary><p>Gain changes are smoothed inside the audio worklet.</p><label>Exhaust <input type="range" id="gainExhaust" min="0" max="1" step=".01" value="1"></label><label>Intake <input type="range" id="gainIntake" min="0" max="1" step=".01" value="1"></label><label>Mechanical <input type="range" id="gainMechanical" min="0" max="1" step=".01" value="1"></label><label>Pops <input type="range" id="gainPops" min="0" max="1" step=".01" value="0"></label></details>
+    <div class="control-row"><label for="hybridMix">Recorded</label><input id="hybridMix" type="range" min="0" max="1" step=".01" value=".85" aria-label="Recorded share in hybrid mode"><output id="hybridMixValue">85%</output></div>
     <p id="sampleStatus" role="status">REC194 loads when audio starts. One idle-like recording; full-range timbre is not captured.</p>
-    <details><summary>Recording reference and limitations</summary><p>Reference RPM is an unverified pitch calibration, not measured metadata. The same recording is used for every profile; profile-specific firing, intake and exhaust remain procedural.</p><label for="sampleRPM">Reference RPM </label><input id="sampleRPM" type="number" min="400" max="3000" step="5" value="775"><p>Hybrid fades to procedural outside the useful pitch band. Sample-only mode follows RPM exactly and can sound unnaturally transposed. No recorded starter or shutdown transient. For file:// or a failed download, select the supplied REC194.wav:</p><input id="sampleFile" type="file" accept="audio/wav,.wav" aria-label="Select REC194 WAV file"></details>
+    <div class="control-row"><label for="recording">Recording</label><div class="select-wrap"><select id="recording"><option value="REC194">REC194 · original</option><option value="REC25">REC25 · alternative</option></select></div></div>
+    <div class="control-row"><label for="revAmount">Rev clip</label><input id="revAmount" type="range" min="0" max="1" step=".01" value=".25" aria-label="Recorded rev transient"><output id="revAmountValue">25%</output></div><div class="control-row"><label for="revSegment">Rev section</label><div class="select-wrap"><select id="revSegment"><option value="1.05">Early · 1.05–3.85 s</option><option value="3.7">Middle · 3.7–6.5 s</option><option value="7">Late · 7.0–9.8 s</option></select></div></div><p id="revStatus" role="status">Rev recording loads when audio starts.</p>
+    <div class="control-row"><label for="sampleRange">Sample range</label><div class="select-wrap"><select id="sampleRange"><option value="conservative">Conservative (less pitch distortion)</option><option value="extended">Extended (more recording)</option><option value="full" selected>Full RPM (audible to redline)</option></select></div></div>
+    <div class="control-row"><label for="sampleTexture">Texture</label><input id="sampleTexture" type="range" min="0" max="1" step=".01" value="0" aria-label="Additional recorded high-frequency texture"><output id="sampleTextureValue">0%</output></div><p>Texture blends a high-pass version of the same recording into Hybrid. Full RPM keeps the recording audible to redline; heavy pitch shifting may sound unnatural.</p>
+    <details><summary>Recording reference and limitations</summary><p>Reference RPM is an unverified pitch calibration, not measured metadata. The same recording is used for every profile; profile-specific firing, intake and exhaust remain procedural.</p><label for="sampleRPM">Reference RPM </label><input id="sampleRPM" type="number" min="400" max="3000" step="5" value="775"><p>Conservative and Extended modes fade to procedural outside their selected pitch range; Full RPM retains the recording but can sound unnaturally transposed. There is no recorded starter or shutdown transient. For file:// or a failed download, select the chosen WAV:</p><input id="sampleFile" type="file" accept="audio/wav,.wav" aria-label="Select recording WAV file"></details>
   </section>
 
   <section class="transmission" aria-label="Gearbox controls">
@@ -1260,7 +1264,7 @@ class EngineProcessor extends AudioWorkletProcessor {
     this.locked = false;
     this.pulseBuf = [new Float32Array(128), new Float32Array(128)];
     this.pulseIdx = 0;
-    this.refined = true; this.layers = [1,1,1,1]; this.layerTargets = [1,1,1,1]; this.refineAmount = 1;
+    this.refined = true; this.layers = [1,1,1,0]; this.layerTargets = [1,1,1,0]; this.refineAmount = 1;
     this.bankDrift = [0, 0];
 
     this.flowBp = new Biquad();
@@ -2014,14 +2018,14 @@ class EngineProcessor extends AudioWorkletProcessor {
         m2 * 0.56 + m3 * 0.30 + edge + spark + imp * 0.72;
       const mid = this.exMidHp[b].process(body + imp * 1.1);
       const originalShaped = asymClip((body + mid * 1.15) * (1.55 + open * 1.2 + this.soundLoad * 0.28)) * 0.56;
-      const gentleShaped = asymClip((body + mid * 0.65) * (0.85 + open * 0.35 + this.soundLoad * 0.12)) * 0.70;
+      const gentleShaped = (body + mid * 0.22) * (0.42 + open * 0.16 + this.soundLoad * 0.06);
       const shaped = lerp(originalShaped, gentleShaped, this.refineAmount);
       const n = b === 0 ? n1 : n2;
       const raspGain = 0.0012 + noiseEnv * (0.075 + open * 0.34 * (0.35 + 0.65 * x) + this.soundLoad * 0.10);
       const rasp = (this.raspBp.process(n * 0.63) * 0.46 +
         this.raspLp.process(n * 0.9) * 0.08) * raspGain;
       const crack = this.exCrackHp[b].process(n * 0.8) * this.exCrackEnv[b] * 0.22;
-      const value = this.exHp[b].process(shaped + rasp * (1 - .55 * this.refineAmount) + crack * (1 - .70 * this.refineAmount) + flow + flowLow);
+      const value = this.exHp[b].process(shaped + rasp * (1 - .90 * this.refineAmount) + crack * (1 - .98 * this.refineAmount) + flow + flowLow);
       if (b === 0) exL = value;
       else exR = value;
     }
@@ -2132,8 +2136,8 @@ class EngineProcessor extends AudioWorkletProcessor {
     this.refineAmount += ((this.refined ? 1 : 0) - this.refineAmount) * smoothing;
     for (let i=0;i<4;i++) this.layers[i] += (this.layerTargets[i] - this.layers[i]) * smoothing;
     const popGain = this.layers[3] * (1 - .65 * this.refineAmount);
-    let l = exMixL * this.layers[0] + intake * 0.92 * this.layers[1] + tick * 0.72 * this.layers[2] + pop * popGain + turbo * 0.8 + starter + gearWhine + clunk;
-    let r = exMixR * this.layers[0] + intake * 0.72 * this.layers[1] + tick * 0.72 * this.layers[2] + pop * popGain + turbo * 0.8 + starter + gearWhine + clunk;
+    let l = exMixL * this.layers[0] + intake * 0.92 * this.layers[1] + tick * (0.72 - 0.42 * this.refineAmount) * this.layers[2] + pop * popGain + turbo * 0.8 + starter + gearWhine + clunk;
+    let r = exMixR * this.layers[0] + intake * 0.72 * this.layers[1] + tick * (0.72 - 0.42 * this.refineAmount) * this.layers[2] + pop * popGain + turbo * 0.8 + starter + gearWhine + clunk;
 
     /* A tiny amount of bank crosstalk and mechanical common-mode. */
     if (this.mode === 'off') {
@@ -2152,8 +2156,8 @@ class EngineProcessor extends AudioWorkletProcessor {
     mixL = this.outLpL.process(mixL + body + presence);
     mixR = this.outLpR.process(mixR + body + presence);
     const gain = p.outputGain || 0.63;
-    this.outL = softClip(mixL * gain);
-    this.outR = softClip(mixR * gain);
+    this.outL = lerp(softClip(mixL * gain), Math.tanh(mixL * gain * 0.65), this.refineAmount);
+    this.outR = lerp(softClip(mixR * gain), Math.tanh(mixR * gain * 0.65), this.refineAmount);
 
     if (!finite(this.outL)) this.outL = 0;
     if (!finite(this.outR)) this.outR = 0;
@@ -2362,7 +2366,7 @@ registerProcessor('apex-engine', EngineProcessor);
   var ANALYSER_DATA = null;
   var AUDIO_PROMISE = null;
   var SCOPE_GAIN = 1;
-  var HYBRID = { mode:'hybrid', blend:.65, baseRPM:775, ready:false, error:'', source:null, sampleGain:null, proceduralGain:null, output:null, loop:null, rate:1, quality:0, sampleTarget:0, proceduralTarget:1, loadSerial:0 }; 
+  var HYBRID = { mode:'hybrid', blend:.85, baseRPM:775, ready:false, error:'', source:null, sampleGain:null, textureGain:null, texture:0, proceduralGain:null, output:null, loop:null, rate:1, quality:0, sampleTarget:0, proceduralTarget:1, loadSerial:0, recording:'REC194', revBuffer:null, revActive:null, revAmount:.25, revError:'', revCount:0 };
   var pendingTransmission = null;
 
   /* ------------------------------------------------------------------
@@ -2441,9 +2445,9 @@ registerProcessor('apex-engine', EngineProcessor);
   /* Sample transport is native Web Audio. One prepared circular overlap-add loop,
      one source, no grains, per-frame scheduling, or DSP changes to the worklet. */
   function hybridSmooth(a,b,x) { var t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t); }
-  function prepareRecording(ctx, decoded) {
+  function prepareRecording(ctx, decoded, recording) {
     if(decoded.numberOfChannels<1 || decoded.duration<4.79) throw new Error('Use the supplied 5.02 s REC194 recording.');
-    var sr=decoded.sampleRate,a=Math.round(.760*sr),b=Math.round(4.780*sr),fade=Math.round(.120*sr),length=b-a-fade;
+    var sr=decoded.sampleRate,end=recording==='REC25'?4.102:4.780,a=Math.round(.760*sr),b=Math.round(end*sr),fade=Math.round(.120*sr),length=b-a-fade;
     var loop=ctx.createBuffer(decoded.numberOfChannels,length,sr),sum=0,peak=0;
     for(var ch=0;ch<decoded.numberOfChannels;ch++) {
       var input=decoded.getChannelData(ch),out=loop.getChannelData(ch),mean=0;
@@ -2455,29 +2459,54 @@ registerProcessor('apex-engine', EngineProcessor);
     var rms=Math.sqrt(sum/(length*decoded.numberOfChannels));
     if(!Number.isFinite(rms)||rms<.001)throw new Error('Recording is silent or invalid.');
     var normalisation=Math.min(4,.010/rms),first=loop.getChannelData(0);
-    HYBRID.loop={sourceDuration:decoded.duration,sampleRate:sr,channels:decoded.numberOfChannels,duration:loop.duration,start:.760,end:4.780,crossfade:.120,rms:rms,peak:peak,normalisation:normalisation,seamDelta:(first[0]-first[first.length-1])*normalisation};
+    HYBRID.loop={sourceDuration:decoded.duration,sampleRate:sr,channels:decoded.numberOfChannels,duration:loop.duration,start:.760,end:end,recording:recording,crossfade:.120,rms:rms,peak:peak,normalisation:normalisation,seamDelta:(first[0]-first[first.length-1])*normalisation};
     return {buffer:loop,gain:normalisation};
   }
-  async function loadRecording(ctx, bytes) {
+  async function loadRecording(ctx, bytes, recording) {
+    recording=recording||$('recording').value;
     var serial=++HYBRID.loadSerial;
     try {
-      if(!bytes) {var response=await fetch('./REC194.wav');if(!response.ok)throw new Error('HTTP '+response.status);bytes=await response.arrayBuffer();}
-      var decoded=await ctx.decodeAudioData(bytes),prepared=prepareRecording(ctx,decoded);
+      if(!bytes) {var response=await fetch('./'+recording+'.wav');if(!response.ok)throw new Error('HTTP '+response.status);bytes=await response.arrayBuffer();}
+      var decoded=await ctx.decodeAudioData(bytes),prepared=prepareRecording(ctx,decoded,recording);
       if(serial!==HYBRID.loadSerial)return;
-      var source=ctx.createBufferSource(),normalise=ctx.createGain(),highpass=ctx.createBiquadFilter(),fade=ctx.createGain();
+      var source=ctx.createBufferSource(),normalise=ctx.createGain(),highpass=ctx.createBiquadFilter(),fade=ctx.createGain(),textureFilter=ctx.createBiquadFilter();
       source.buffer=prepared.buffer;source.loop=true;normalise.gain.value=prepared.gain;
       highpass.type='highpass';highpass.frequency.value=18;highpass.Q.value=.707;
-      fade.gain.value=0;source.connect(normalise);normalise.connect(highpass);highpass.connect(fade);fade.connect(HYBRID.sampleGain);source.fade=fade;source.cleanup=function(){normalise.disconnect();highpass.disconnect();fade.disconnect();};
+      fade.gain.value=0;source.connect(normalise);normalise.connect(highpass);highpass.connect(fade);fade.connect(HYBRID.sampleGain);textureFilter.type='highpass';textureFilter.frequency.value=500;textureFilter.Q.value=.707;fade.connect(textureFilter);textureFilter.connect(HYBRID.textureGain);source.fade=fade;source.cleanup=function(){normalise.disconnect();highpass.disconnect();fade.disconnect();textureFilter.disconnect();};
       var old=HYBRID.source,now=ctx.currentTime;if(old){old.fade.gain.setTargetAtTime(0,now,.035);old.stop(now+.25);setTimeout(function(){old.disconnect();old.cleanup();},350);}
-      source.start();fade.gain.setTargetAtTime(1,now,.035);HYBRID.source=source;HYBRID.ready=true;HYBRID.error='';updateHybrid();
+      source.start();fade.gain.setTargetAtTime(1,now,.035);HYBRID.source=source;HYBRID.recording=recording;HYBRID.ready=true;HYBRID.error='';updateHybrid();
     } catch(error) {
       if(serial!==HYBRID.loadSerial)return;
       HYBRID.error=String(error.message||error);if(!HYBRID.ready){HYBRID.mode='procedural';$('audioMode').value='procedural';}updateHybrid();
     }
   }
+  async function loadRevRecording(ctx) {
+    try {
+      var response=await fetch('./ryton-fissore-magnum_revving.mp3');
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      var buffer=await ctx.decodeAudioData(await response.arrayBuffer());
+      if(buffer.duration<3.85)throw new Error('Rev recording is too short');
+      HYBRID.revBuffer=buffer;HYBRID.revError='';
+      $('revStatus').textContent='Rev clip ready · plays on throttle press in Hybrid; recorded RPM is unknown.';
+    } catch(e) { HYBRID.revBuffer=null;HYBRID.revError=String(e.message||e);$('revStatus').textContent='Rev clip unavailable: '+HYBRID.revError+'; steady recording remains usable.'; }
+  }
+  function stopRev() {
+    var voice=HYBRID.revActive;if(!voice||!AC)return;
+    HYBRID.revActive=null;var now=AC.currentTime;
+    try { if(voice.fade.gain.cancelAndHoldAtTime)voice.fade.gain.cancelAndHoldAtTime(now);else {var g=voice.fade.gain.value;voice.fade.gain.cancelScheduledValues(now);voice.fade.gain.setValueAtTime(g,now);}voice.fade.gain.linearRampToValueAtTime(0,now+.09);voice.source.stop(now+.10); } catch(e) {}
+  }
+  function triggerRev() {
+    if(!AC||!HYBRID.revBuffer||HYBRID.mode!=='hybrid'||STATE.mode!=='running'||HYBRID.revAmount<=0)return;
+    stopRev();var t=AC.currentTime,source=AC.createBufferSource(),fade=AC.createGain(),level=AC.createGain(),offset=Number($('revSegment').value);
+    source.buffer=HYBRID.revBuffer;level.gain.value=.12*HYBRID.revAmount;
+    fade.gain.setValueAtTime(0,t);fade.gain.linearRampToValueAtTime(1,t+.08);fade.gain.setValueAtTime(1,t+2.64);fade.gain.linearRampToValueAtTime(0,t+2.8);
+    source.connect(fade);fade.connect(level);level.connect(HYBRID.revBus);var voice={source:source,fade:fade,offset:offset};HYBRID.revActive=voice;HYBRID.revCount++;
+    source.onended=function(){source.disconnect();fade.disconnect();level.disconnect();if(HYBRID.revActive===voice)HYBRID.revActive=null;};
+    source.start(t,offset,2.8);
+  }
   function updateHybrid() {
     var ratio=Math.max(0,STATE.rpm/HYBRID.baseRPM),running=STATE.mode==='running'||STATE.mode==='stopping';
-    HYBRID.rate=ratio;HYBRID.quality=hybridSmooth(.4,.75,ratio)*(1-hybridSmooth(1.7,2.7,ratio));
+    HYBRID.rate=ratio;var range=$('sampleRange').value;HYBRID.quality=hybridSmooth(.4,.75,ratio)*(range==='full'?1:1-hybridSmooth(range==='extended'?3.0:1.7,range==='extended'?4.5:2.7,ratio));
     var angle=HYBRID.mode==='hybrid'?HYBRID.blend*HYBRID.quality*Math.PI/2:HYBRID.mode==='sample'?Math.PI/2:0;
     var sampleWeight=HYBRID.ready?Math.sin(angle):0;
     // Sample has no recorded starter. Hybrid keeps the original starter intact.
@@ -2487,8 +2516,8 @@ registerProcessor('apex-engine', EngineProcessor);
     var envelope=running?hybridSmooth(0,180,STATE.rpm)*(.65+.35*clamp(STATE.load||0,0,1)):0;
     HYBRID.sampleTarget=sampleWeight*envelope;HYBRID.proceduralTarget=proc;
     var detail=HYBRID.mode==='hybrid'&&running?proc*sampleWeight:0;proc-=detail;
-    if(AC&&HYBRID.sampleGain){var now=AC.currentTime;HYBRID.sampleGain.gain.setTargetAtTime(HYBRID.sampleTarget,now,.045);HYBRID.proceduralGain.gain.setTargetAtTime(proc,now,.045);HYBRID.detailGain.gain.setTargetAtTime(detail,now,.045);if(HYBRID.source)HYBRID.source.playbackRate.setTargetAtTime(ratio,now,.055);}
-    var text=HYBRID.ready?'REC194 · '+ratio.toFixed(2)+'× · '+(HYBRID.mode==='hybrid'?'recorded band '+Math.round(HYBRID.quality*100)+'%':HYBRID.mode):'Recording not loaded';
+    if(AC&&HYBRID.sampleGain){var now=AC.currentTime;HYBRID.sampleGain.gain.setTargetAtTime(HYBRID.sampleTarget,now,.045);HYBRID.textureGain.gain.setTargetAtTime(HYBRID.mode==='hybrid'?HYBRID.sampleTarget*HYBRID.texture*.25:0,now,.045);HYBRID.proceduralGain.gain.setTargetAtTime(proc,now,.045);HYBRID.detailGain.gain.setTargetAtTime(detail,now,.045);if(HYBRID.source)HYBRID.source.playbackRate.setTargetAtTime(ratio,now,.055);}
+    var text=HYBRID.ready?HYBRID.recording+' · '+ratio.toFixed(2)+'× · '+(HYBRID.mode==='hybrid'?'recorded band '+Math.round(HYBRID.quality*100)+'%'+(ratio>2.5?' · noticeable transposition possible':''):HYBRID.mode):'Recording not loaded';
     if(HYBRID.mode==='sample'&&(ratio<.6||ratio>2.5))text+=' · large pitch shift; limited realism';
     if(HYBRID.error)text+=' · '+HYBRID.error+' · select REC194.wav or use Procedural';
     $('sampleStatus').textContent=text;
@@ -2498,14 +2527,18 @@ registerProcessor('apex-engine', EngineProcessor);
     for(var i=0;i<curve.length;i++){var x=i*2/(curve.length-1)-1,a=Math.abs(x);curve[i]=Math.sign(x)*(a<=.8?a:.8+.15*Math.tanh((a-.8)/.15));}
     guard.curve=curve;guard.oversample='2x';return guard;
   }
-  $('audioMode').addEventListener('change',function(){HYBRID.mode=this.value;updateHybrid();});
+  $('recording').addEventListener('change',function(){if(AC)loadRecording(AC,null,this.value);});
+  $('revAmount').addEventListener('input',function(){HYBRID.revAmount=Number(this.value);$('revAmountValue').textContent=Math.round(HYBRID.revAmount*100)+'%';if(HYBRID.revAmount===0)stopRev();});
+  $('sampleRange').addEventListener('change',updateHybrid);
+  $('sampleTexture').addEventListener('input',function(){HYBRID.texture=Number(this.value);$('sampleTextureValue').textContent=Math.round(HYBRID.texture*100)+'%';updateHybrid();});
+  $('audioMode').addEventListener('change',function(){HYBRID.mode=this.value;if(HYBRID.mode!=='hybrid')stopRev();updateHybrid();});
   $('hybridMix').addEventListener('input',function(){HYBRID.blend=Number(this.value);$('hybridMixValue').textContent=Math.round(HYBRID.blend*100)+'%';updateHybrid();});
   $('sampleRPM').addEventListener('change',function(){var value=Number(this.value);if(!Number.isFinite(value))value=775;HYBRID.baseRPM=clamp(value,400,3000);this.value=HYBRID.baseRPM;updateHybrid();});
   $('sampleFile').addEventListener('change',async function(){if(!this.files[0])return;var bytes=await this.files[0].arrayBuffer();await ensureAudio();if(AC)await loadRecording(AC,bytes);});
   // Read-only instrumentation for reproducible browser checks; no alternate RPM model.
   window.hybridAudio=Object.freeze({snapshot:function(){
     var rms=0,peak=0;if(ANALYSER){var data=new Float32Array(ANALYSER.fftSize);ANALYSER.getFloatTimeDomainData(data);for(var i=0;i<data.length;i++){rms+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));}rms=Math.sqrt(rms/data.length);}
-    return {mode:HYBRID.mode,engineMode:STATE.mode,profile:STATE.key,rpm:STATE.rpm,throttle:STATE.throttle,ready:HYBRID.ready,error:HYBRID.error,rate:HYBRID.rate,quality:HYBRID.quality,sampleGain:HYBRID.sampleGain?HYBRID.sampleGain.gain.value:0,proceduralGain:HYBRID.proceduralGain?HYBRID.proceduralGain.gain.value:1,detailGain:HYBRID.detailGain?HYBRID.detailGain.gain.value:0,loop:HYBRID.loop,rms:rms,peak:peak,context:AC?AC.state:'not-created'};
+    return {mode:HYBRID.mode,engineMode:STATE.mode,profile:STATE.key,rpm:STATE.rpm,throttle:STATE.throttle,ready:HYBRID.ready,error:HYBRID.error,rate:HYBRID.rate,quality:HYBRID.quality,sampleGain:HYBRID.sampleGain?HYBRID.sampleGain.gain.value:0,proceduralGain:HYBRID.proceduralGain?HYBRID.proceduralGain.gain.value:1,detailGain:HYBRID.detailGain?HYBRID.detailGain.gain.value:0,textureGain:HYBRID.textureGain?HYBRID.textureGain.gain.value:0,recording:HYBRID.recording,revReady:!!HYBRID.revBuffer,revActive:!!HYBRID.revActive,revOffset:HYBRID.revActive?HYBRID.revActive.offset:null,revCount:HYBRID.revCount,revError:HYBRID.revError,loop:HYBRID.loop,rms:rms,peak:peak,context:AC?AC.state:'not-created'};
   },context:function(){return AC;},output:function(){return HYBRID.output;}});
 
   function sendSoundSettings() {
@@ -2630,10 +2663,10 @@ registerProcessor('apex-engine', EngineProcessor);
         analyser.fftSize = 2048;
         analyser.smoothingTimeConstant = 0.72;
 
-        var proceduralGain=ctx.createGain(),sampleGain=ctx.createGain(),detailGain=ctx.createGain(),detailFilter=ctx.createBiquadFilter(),guard=makeOutputGuard(ctx);
-        proceduralGain.gain.value=1;sampleGain.gain.value=0;detailGain.gain.value=0;detailFilter.type='highpass';detailFilter.frequency.value=180;detailFilter.Q.value=.707;
-        HYBRID.proceduralGain=proceduralGain;HYBRID.detailGain=detailGain;HYBRID.sampleGain=sampleGain;HYBRID.output=guard;
-        node.connect(proceduralGain);proceduralGain.connect(input);node.connect(detailFilter);detailFilter.connect(detailGain);detailGain.connect(input);sampleGain.connect(input);
+        var proceduralGain=ctx.createGain(),sampleGain=ctx.createGain(),textureGain=ctx.createGain(),revBus=ctx.createGain(),detailGain=ctx.createGain(),detailFilter=ctx.createBiquadFilter(),guard=makeOutputGuard(ctx);
+        proceduralGain.gain.value=1;sampleGain.gain.value=0;textureGain.gain.value=0;detailGain.gain.value=0;detailFilter.type='highpass';detailFilter.frequency.value=180;detailFilter.Q.value=.707;
+        HYBRID.proceduralGain=proceduralGain;HYBRID.detailGain=detailGain;HYBRID.sampleGain=sampleGain;HYBRID.textureGain=textureGain;HYBRID.revBus=revBus;HYBRID.output=guard;
+        node.connect(proceduralGain);proceduralGain.connect(input);node.connect(detailFilter);detailFilter.connect(detailGain);detailGain.connect(input);sampleGain.connect(input);textureGain.connect(input);revBus.connect(input);
         input.connect(dry);
         dry.connect(comp);
         input.connect(conv);
@@ -2665,6 +2698,7 @@ registerProcessor('apex-engine', EngineProcessor);
             console.warn('Audio resume failed', err);
           });
         }
+        loadRevRecording(ctx);
         loadRecording(ctx).then(resolve);
       }).catch(function (err) {
         ctx.close().catch(function () {});
@@ -2731,6 +2765,7 @@ registerProcessor('apex-engine', EngineProcessor);
   }
 
   function stopEngine() {
+    stopRev();
     if (!NODE) return;
     NODE.port.postMessage({ type: 'stop' });
     setThrottle(0);
@@ -2877,6 +2912,7 @@ registerProcessor('apex-engine', EngineProcessor);
 
   function pedalDown() {
     if (STATE.booting) return;
+    if(!STATE.pedalHeld)triggerRev();
     STATE.pedalHeld = true;
     pedalBtn.classList.add('down');
     if (STATE.mode === 'off' || STATE.mode === 'stopping') {
@@ -2887,6 +2923,7 @@ registerProcessor('apex-engine', EngineProcessor);
   }
 
   function pedalUp() {
+    stopRev();
     STATE.pedalHeld = false;
     pedalBtn.classList.remove('down');
     setThrottle(0);
