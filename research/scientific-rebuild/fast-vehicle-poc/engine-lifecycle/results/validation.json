@@ -1,0 +1,106 @@
+{
+  "base": "794d2eb",
+  "runtime": "v24.19.0",
+  "scope": "Cold start, starter cutoff and idle at matched 5 seconds. Events are endpoint decisions; no monotonic error claim across differently quantized fire times.",
+  "results": [
+    {
+      "h": 0.001,
+      "fire": 0.7310000000000005,
+      "finalOmega": 86.7350765341856,
+      "engine": {
+        "mode": "running",
+        "lowTime": 0,
+        "combustionWork": 2221.884374630996,
+        "starterWork": 154.17465993267382,
+        "lossWork": 1247.6130093558368,
+        "diagnostics": {
+          "combustion": 4.173370017910401,
+          "starter": 0,
+          "loss": 4.078527634559267,
+          "idleOpening": 0.039180978437439874,
+          "overspeed": false,
+          "netTorque": 0.09484238335113471
+        }
+      },
+      "maxEnergyResidualJ": 8.285496733151376e-10,
+      "maxGeneralizedForceResidual": 9.99822447056431e-12,
+      "maxIterations": 5,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": "starting"
+        },
+        {
+          "time": 0.7310000000000005,
+          "mode": "running"
+        }
+      ]
+    },
+    {
+      "h": 0.0005,
+      "fire": 0.7309999999999749,
+      "finalOmega": 86.73507639347388,
+      "engine": {
+        "mode": "running",
+        "lowTime": 0,
+        "combustionWork": 2221.8843755102566,
+        "starterWork": 154.17465949248063,
+        "lossWork": 1247.6130134563914,
+        "diagnostics": {
+          "combustion": 4.173343448222965,
+          "starter": 0,
+          "loss": 4.0785310715032885,
+          "idleOpening": 0.039180031402080776,
+          "overspeed": false,
+          "netTorque": 0.0948123767196769
+        }
+      },
+      "maxEnergyResidualJ": 9.22000253922306e-10,
+      "maxGeneralizedForceResidual": 9.991341087811634e-12,
+      "maxIterations": 5,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": "starting"
+        },
+        {
+          "time": 0.7309999999999749,
+          "mode": "running"
+        }
+      ]
+    },
+    {
+      "h": 0.00025,
+      "fire": 0.7307499999999473,
+      "finalOmega": 86.73512500955766,
+      "engine": {
+        "mode": "running",
+        "lowTime": 0,
+        "combustionWork": 2222.008759675116,
+        "starterWork": 154.09751114995615,
+        "lossWork": 1247.6589842622086,
+        "diagnostics": {
+          "combustion": 4.173313775947439,
+          "starter": 0,
+          "loss": 4.078534909786557,
+          "idleOpening": 0.0391789737796388,
+          "overspeed": false,
+          "netTorque": 0.09477886616088194
+        }
+      },
+      "maxEnergyResidualJ": 6.914433470228687e-10,
+      "maxGeneralizedForceResidual": 9.99955673819386e-12,
+      "maxIterations": 4,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": "starting"
+        },
+        {
+          "time": 0.7307499999999473,
+          "mode": "running"
+        }
+      ]
+    }
+  ]
+}

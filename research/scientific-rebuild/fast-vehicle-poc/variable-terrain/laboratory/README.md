@@ -16,7 +16,7 @@ python3 -m http.server 8000
 Open **http://localhost:8000/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/**.
 Use HTTP, not file://. This branch-local page is not a deployment to the main
 GitHub Pages site. W throttle, S service brakes, A/D front steering, Space rear
-handbrake, R reset. Pointer-hold controls also work. Clutch slider sets actual
+handbrake, N neutral, hold R to start in lifecycle mode, Backspace reset. Pointer-hold controls also work. Clutch slider sets actual
 constraint capacity. Orbit/zoom with mouse; camera selector includes top, side,
 chase and contact inspection. Flat/hills/rough/road settings intentionally reset
 state and histories on change. Pause is explicit; numerical failure freezes the
@@ -38,8 +38,8 @@ Only its **render-only coachwork/wheel/spring construction** is retained in
 | 3D camera | Existing vendored Three.js + OrbitControls; workshop/chase/top/side/contact presets and camera reset |
 | Dashboards | Existing SVG `createInstrument` and `drawFrictionCircles`, imported unchanged |
 | Clock | Existing `SimulationClock`, fixed 1000 Hz; 20 ms frame CPU budget / 128 tick cap; **uncapped visible debt**, no discarded time |
-| W/S/A/D/Space/R and pointer holds | Same mappings/conventions; small DOM input binder, including focus-loss release and key-repeat-safe reset |
-| Engine/clutch | Existing mean engine torque and exact open/slip/lock capacity; ignition checkbox is explicitly not a starter/lifecycle model |
+| W/S/A/D/Space/R and pointer holds | W/S/A/D/Space retained; R starter and Backspace reset; small DOM input binder, including focus-loss release and key-repeat-safe reset |
+| Engine/clutch | Selectable retained mean-engine references or experimental starter/idle/stall lifecycle; exact open/slip/lock clutch capacity |
 | Gearbox/differential | Fixed-ratio reference by default; experimental six-rotor mode exposes neutral, six forward gears and synchronized reverse. Differential remains ideal open. |
 | Brakes/steering | Actual service/rear brake constraints; bounded rate-limited front steering **input**, no direct yaw manipulation |
 | Contact recording / world marks | Existing bounded TireObservatory + incremental track mesh, with record/clear/visibility controls |
@@ -280,3 +280,16 @@ reference, terrain/contact law, suspension and historical fixtures are retained.
 See `../../coupled-drivetrain/README.md` for equations, passivity, numerical gates,
 complete-step CPU measurements and limits. This option is for bounded research
 driving, not certification of a complete real engine/manual-transmission system.
+
+## Manual engine lifecycle and current keyboard controls
+
+Select **Manual engine lifecycle**, open the clutch and hold **R** to crank.
+Ignition alone does not spin a stopped engine. Idle uses engine torque; stalls
+remove combustion until cranking or valid mechanical push-start. The engine panel
+shows lifecycle state, starter/combustion/loss torque and separate work totals.
+Digits1–6 and Numpad1–6 request gears1–6; both7 keys request reverse; **N** requests
+neutral. These keys go through synchronization. **Backspace** replaces the old
+R-reset binding. This sequential numpad layout intentionally follows the explicit
+mission request rather than production's H-pattern. W/S/A/D/Space are retained.
+The mean-engine reference options remain selectable for prior experiments.
+See `../../engine-lifecycle/README.md` for equations, tests, timing and limits.

@@ -1,0 +1,24 @@
+{
+  "baseCommit": "794d2eb1bf441b2b29627156c8c25e40df76049e",
+  "branch": "PERFORMANCE",
+  "runtime": "v24.19.0",
+  "lifecycleTests": 14,
+  "retainedTests": 195,
+  "bitExactAcceptedStates": 1080,
+  "browser": "Chromium 154 / SwiftShader; lifecycle and retained reference smoke PASS",
+  "sourceSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/engine.js": "018742fc02072b01588ae47c205231a79f45356161729bb65e0663907994954e",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/vehicle.js": "62f84a800ff2760052e7d1dc9f7ff2d727511aa048208371b46693eba6b289ad",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/browser-smoke.mjs": "88b47fa9879eb86d40743f331aa44c26f7ec9cd9e541d9f1bdd769819014a146",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/validate.mjs": "5004df05b20d1664ce1461ae1091d75c1de5d18b04d4191d9192b722464e8357",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/benchmark.mjs": "8aeb61ca442b029eef79f3cba3e3ab51af865ff1ac769cda6765c2b963faaaee",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/test.mjs": "8e39e451024ea03575c53a512746570d90bb515d57e5a2fa5101cda96d9a7dfb",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/maps.js": "49e93c0fa1ad837619ac860f562b3cce5aae89eb0dd2b97e3af2572fca8e88b3",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/controls.js": "cd6112b66cfbc923d553f223195338dd8ba88e43d64848641176d10aba242bd8",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/main.js": "4071234c0eec5ec65caf77c746703ca4f7c2b53292e31882cbe43d5fb7968fcd",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/view3d.js": "1d992018236a3746683abac8dbfbe49739fb7176f5f8ab12f2095e63bd42181f",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/track-view.js": "df74d64cbb52c47ad141c4d3c985a1241cbdf65ff13a636ec0210491ea81d857",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/adapter.js": "3f3e92b0bfa5d52ab881c78a647ba2a2f02774303f0ea31d879bb4ffc4f66a26"
+  },
+  "syntaxChecks": "PASS"
+}
