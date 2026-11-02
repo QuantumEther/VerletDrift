@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {shaftFlow,ratio,reflectedInertia} from './shaft-flow.js';
+const near=(a,b,t=1e-10)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
+test('six forward ratios, neutral, reverse and reflected inertia',()=>{assert.equal(ratio('N'),null);assert.ok(ratio('R')<0);for(let i=1;i<=6;i++)assert.ok(ratio(i)>0);near(reflectedInertia(.08,.12,3),.84);});
+test('neutral isolates shafts under torque',()=>{const a=shaftFlow([0,20],{mode:'neutral',inputTorque:2},.1);near(a.w[0],2.5);near(a.w[1],20);near(a.heat,0);});
+for(const g of [3.8,1.52,.76,-3.55])test(`synchronizer conserves generalized momentum and accounts heat at g=${g}`,()=>{const initial=[80,5],a=shaftFlow(initial,{g,capacity:40},1),moment=w=>g*.08*w[0]+.12*w[1];near(moment(a.w),moment(initial));assert.ok(a.synchronized);assert.ok(a.heat>0);near(a.residual,0);});
+test('no mismatched-speed dog engagement or mutation on rejection',()=>{const w=[80,5];assert.throws(()=>shaftFlow(w,{g:2,mode:'engaged'}));assert.deepEqual(w,[80,5]);});
+test('engaged shafts transmit torque and back-drive with exact speed relation',()=>{for(const torque of [-4,4]){const a=shaftFlow([20,10],{g:2,mode:'engaged',outputTorque:torque},.1);assert.equal(a.w[0],2*a.w[1]);near(a.heat,0);near(a.w[1],10+.1*torque/reflectedInertia(.08,.12,2));}});
+test('finite-capacity slipping and refinement agree over matched time',()=>{const run=h=>{let w=[80,5],heat=0;for(let i=0;i<Math.round(.2/h);i++){const a=shaftFlow(w,{g:2,capacity:3},h);w=a.w;heat+=a.heat;assert.ok(a.segments<=3);}return {w,heat};};const a=run(.001),b=run(.00025);a.w.forEach((x,i)=>near(x,b.w[i],1e-9));near(a.heat,b.heat,1e-8);});
