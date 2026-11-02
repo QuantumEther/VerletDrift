@@ -1,0 +1,11 @@
+# MP3 segmentation investigation
+
+Run `python3 research/scientific-rebuild/fast-vehicle-poc/variable-terrain/analyze-rev-recording.py` to regenerate the analysis and audition page (offline ffmpeg, NumPy and SciPy required). Browser playback needs no new dependency. Open `rev-recording-audition.html` through an HTTP server alongside the original MP3.
+
+The analysis uses 250 ms windows with 100 ms hops, log RMS, log spectral centroid, bass-power fraction and autocorrelation periodicity. Differences between neighboring 300 ms feature averages identify nine separated change-point candidates, producing ten sections. This is a bounded acoustic segmentation, not source separation or verified engine-state recognition. The nine-peak cap is a design choice, and listening may reveal other useful boundaries. Labels describe level changes only. Periodicity can correspond to harmonics, background interference or exhaust resonances; it does not establish crank RPM.
+
+The 6.425–9.825 and 9.825–11.025 s regions have comparatively high autocorrelation periodicity (~.85/.87) and low spectral centroids (~158/154 Hz). These are candidates for sustained texture, subject to loopability testing. The 0.425–1.425 s section has a much higher centroid (~1640 Hz) and low periodicity (~.27), which may be useful transient detail or unwanted noise. The falling-level 11.025–13.725 s section merits audition as a release texture, without claiming it is a recorded deceleration. These observations are not perceptual quality judgments.
+
+The audition page displays original-level audio without normalization, candidate boundaries, relative RMS and spectral centroid. Clip playback uses the original MP3 and approximate browser seek/stop timing; it is an analysis interface, not a sample-accurate loop player. Raw boundaries may click and require trimmed/faded edits before engine use. The existing engine experiment and original media remain unchanged.
+
+Chromium smoke check passed: ten segment buttons, playback of a selected middle section and no runtime exceptions. No listening assessment was available. The next useful step is listening to these sections, selecting sustained and transient candidates, then testing crossfaded loops and event-triggered snippets independently before combining them. Do not map the clips to exact RPM/load states from these measurements alone.
