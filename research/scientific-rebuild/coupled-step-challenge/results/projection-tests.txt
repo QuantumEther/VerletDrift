@@ -1,0 +1,13 @@
+✔ scalar bounds, equality and zero capacity obey analytic optima (1.507224ms)
+✔ anisotropic saturated disc agrees with independent multiplier bisection (1.281126ms)
+✔ generalized Jacobian matches finite differences away from kinks (0.184813ms)
+✔ independent KKT and feasibility checker rejects incorrect feasible and infeasible answers (0.617085ms)
+✔ bounded failure is explicit and does not mutate problem or initial guess (0.948207ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65.913025

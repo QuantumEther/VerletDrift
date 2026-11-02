@@ -1,0 +1,1109 @@
+{
+  "base": "8cb9413e3936e51502f6ac53d036a769ad8846e2",
+  "runtime": "v24.19.0",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCPUs": 5,
+  "note": "Coarse stage profiling of complete production steps; timers included; not the uninstrumented throughput denominator.",
+  "runs": [
+    {
+      "strategy": "reference",
+      "scenario": "acceleration",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 112.773,
+      "wallMs": 82.89707899999999,
+      "inner": 13346,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 8.468339000000043
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 7.109847999999658
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 10.727137000000369
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 50.87097399999965
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 4.617758000000293
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "acceleration",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 79.917,
+      "wallMs": 61.00985099999997,
+      "inner": 6980,
+      "outer": 247,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.985032000000388
+        },
+        "trial-copy": {
+          "count": 247,
+          "ms": 5.73109200000016
+        },
+        "terrain-and-reactions": {
+          "count": 247,
+          "ms": 7.139984000000027
+        },
+        "unified-solve": {
+          "count": 247,
+          "ms": 35.316818999999555
+        },
+        "energy-and-endpoint": {
+          "count": 247,
+          "ms": 4.784222000000284
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "saturated",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 138.575,
+      "wallMs": 101.97851400000002,
+      "inner": 19384,
+      "outer": 295,
+      "saturatedForceStages": 175,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.014831999999899
+        },
+        "trial-copy": {
+          "count": 295,
+          "ms": 6.314601000001289
+        },
+        "terrain-and-reactions": {
+          "count": 295,
+          "ms": 7.583268999999007
+        },
+        "unified-solve": {
+          "count": 295,
+          "ms": 76.45970399999993
+        },
+        "energy-and-endpoint": {
+          "count": 295,
+          "ms": 4.968008999999711
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "saturated",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 77.734,
+      "wallMs": 64.95851899999991,
+      "inner": 11305,
+      "outer": 271,
+      "saturatedForceStages": 175,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.0705189999998765
+        },
+        "trial-copy": {
+          "count": 271,
+          "ms": 4.5629859999996825
+        },
+        "terrain-and-reactions": {
+          "count": 271,
+          "ms": 5.365035000000489
+        },
+        "unified-solve": {
+          "count": 271,
+          "ms": 45.93818199999987
+        },
+        "energy-and-endpoint": {
+          "count": 271,
+          "ms": 3.2256900000000996
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "drift-recovery",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 100.061,
+      "wallMs": 84.75123599999995,
+      "inner": 15786,
+      "outer": 297,
+      "saturatedForceStages": 174,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.1585050000005594
+        },
+        "trial-copy": {
+          "count": 297,
+          "ms": 5.243867000000591
+        },
+        "terrain-and-reactions": {
+          "count": 297,
+          "ms": 7.451901999999336
+        },
+        "unified-solve": {
+          "count": 297,
+          "ms": 61.10671699999989
+        },
+        "energy-and-endpoint": {
+          "count": 297,
+          "ms": 4.071713000000045
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "drift-recovery",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 129.813,
+      "wallMs": 69.79172900000003,
+      "inner": 9309,
+      "outer": 271,
+      "saturatedForceStages": 174,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.603847999999857
+        },
+        "trial-copy": {
+          "count": 271,
+          "ms": 6.406787000000691
+        },
+        "terrain-and-reactions": {
+          "count": 271,
+          "ms": 5.934318000000189
+        },
+        "unified-solve": {
+          "count": 271,
+          "ms": 48.127750999999535
+        },
+        "energy-and-endpoint": {
+          "count": 271,
+          "ms": 3.108033999999975
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "braking",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 160.756,
+      "wallMs": 107.07522900000004,
+      "inner": 22821,
+      "outer": 299,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.774907999999186
+        },
+        "trial-copy": {
+          "count": 299,
+          "ms": 7.483761000002119
+        },
+        "terrain-and-reactions": {
+          "count": 299,
+          "ms": 8.033847999999125
+        },
+        "unified-solve": {
+          "count": 299,
+          "ms": 80.29497200000094
+        },
+        "energy-and-endpoint": {
+          "count": 299,
+          "ms": 4.867849999998725
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "braking",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 76.978,
+      "wallMs": 57.972481000000016,
+      "inner": 12722,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.730059999999412
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 5.285468000000492
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 5.55059700000038
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 37.53866599999924
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 3.2319270000007236
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "recontact",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 93.93,
+      "wallMs": 87.9930760000002,
+      "inner": 31109,
+      "outer": 315,
+      "saturatedForceStages": 1,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.435610999999881
+        },
+        "trial-copy": {
+          "count": 315,
+          "ms": 5.165037999997821
+        },
+        "terrain-and-reactions": {
+          "count": 315,
+          "ms": 8.453158999999232
+        },
+        "unified-solve": {
+          "count": 315,
+          "ms": 66.41726700000208
+        },
+        "energy-and-endpoint": {
+          "count": 315,
+          "ms": 3.0260940000000573
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "recontact",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 68.668,
+      "wallMs": 64.67564700000003,
+      "inner": 14538,
+      "outer": 300,
+      "saturatedForceStages": 1,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.927721999999449
+        },
+        "trial-copy": {
+          "count": 300,
+          "ms": 5.293666000003213
+        },
+        "terrain-and-reactions": {
+          "count": 300,
+          "ms": 6.64256699999919
+        },
+        "unified-solve": {
+          "count": 300,
+          "ms": 43.98216999999795
+        },
+        "energy-and-endpoint": {
+          "count": 300,
+          "ms": 3.1525409999999283
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "clutch-lock",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 57.174,
+      "wallMs": 46.765511999999944,
+      "inner": 10328,
+      "outer": 220,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.588684000000285
+        },
+        "trial-copy": {
+          "count": 220,
+          "ms": 3.5765619999988303
+        },
+        "terrain-and-reactions": {
+          "count": 220,
+          "ms": 4.799318000000994
+        },
+        "unified-solve": {
+          "count": 220,
+          "ms": 31.127633999999716
+        },
+        "energy-and-endpoint": {
+          "count": 220,
+          "ms": 2.2299090000003616
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "clutch-lock",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 116.814,
+      "wallMs": 64.76524300000005,
+      "inner": 4748,
+      "outer": 200,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.685793999999305
+        },
+        "trial-copy": {
+          "count": 200,
+          "ms": 4.630762000000459
+        },
+        "terrain-and-reactions": {
+          "count": 200,
+          "ms": 8.58499799999936
+        },
+        "unified-solve": {
+          "count": 200,
+          "ms": 40.64087800000084
+        },
+        "energy-and-endpoint": {
+          "count": 200,
+          "ms": 3.6416899999996986
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "stall",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 69.997,
+      "wallMs": 62.42925799999989,
+      "inner": 15577,
+      "outer": 294,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.912893000000167
+        },
+        "trial-copy": {
+          "count": 294,
+          "ms": 4.13061400000106
+        },
+        "terrain-and-reactions": {
+          "count": 294,
+          "ms": 6.12380199999734
+        },
+        "unified-solve": {
+          "count": 294,
+          "ms": 44.43332800000121
+        },
+        "energy-and-endpoint": {
+          "count": 294,
+          "ms": 2.4017279999991388
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "stall",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 75.312,
+      "wallMs": 51.17456799999991,
+      "inner": 7914,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.290927000000465
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 3.7094759999977214
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 5.604028000001108
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 33.6934399999991
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 2.3420960000025843
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "reference",
+      "scenario": "selector",
+      "accuracy": "strict",
+      "simulated": 0.006,
+      "cpuMs": 10.67,
+      "wallMs": 6.671231999999918,
+      "inner": 44,
+      "outer": 18,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 7,
+          "ms": 0.9405699999999797
+        },
+        "trial-copy": {
+          "count": 21,
+          "ms": 0.6503819999995812
+        },
+        "terrain-and-reactions": {
+          "count": 21,
+          "ms": 0.8978780000006736
+        },
+        "unified-solve": {
+          "count": 21,
+          "ms": 3.3341299999995044
+        },
+        "energy-and-endpoint": {
+          "count": 21,
+          "ms": 0.34858200000007855
+        }
+      },
+      "fault": {
+        "time": 0.006,
+        "message": "Terrain step crosses a gear event: subdivision is required"
+      }
+    },
+    {
+      "strategy": "reference",
+      "scenario": "selector",
+      "accuracy": "balanced",
+      "simulated": 0.006,
+      "cpuMs": 3.585,
+      "wallMs": 3.4661530000000766,
+      "inner": 19,
+      "outer": 13,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 7,
+          "ms": 0.5561830000001464
+        },
+        "trial-copy": {
+          "count": 15,
+          "ms": 0.34579500000018015
+        },
+        "terrain-and-reactions": {
+          "count": 15,
+          "ms": 0.27390700000000834
+        },
+        "unified-solve": {
+          "count": 15,
+          "ms": 2.0021139999998923
+        },
+        "energy-and-endpoint": {
+          "count": 15,
+          "ms": 0.15849099999991267
+        }
+      },
+      "fault": {
+        "time": 0.006,
+        "message": "Terrain step crosses a gear event: subdivision is required"
+      }
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "acceleration",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 82.368,
+      "wallMs": 64.43121400000018,
+      "inner": 12150,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.473696000000018
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 4.370656000000508
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 4.848315000002913
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 44.9245469999978
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 3.054840999998305
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "acceleration",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 49.153,
+      "wallMs": 46.238770999999815,
+      "inner": 6323,
+      "outer": 247,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.807267000000593
+        },
+        "trial-copy": {
+          "count": 247,
+          "ms": 3.6249649999926987
+        },
+        "terrain-and-reactions": {
+          "count": 247,
+          "ms": 4.248851000006653
+        },
+        "unified-solve": {
+          "count": 247,
+          "ms": 29.756825999994362
+        },
+        "energy-and-endpoint": {
+          "count": 247,
+          "ms": 2.198443000007501
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "saturated",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 106.646,
+      "wallMs": 91.37416899999971,
+      "inner": 20428,
+      "outer": 294,
+      "saturatedForceStages": 171,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.44048699999712
+        },
+        "trial-copy": {
+          "count": 294,
+          "ms": 4.6746970000003785
+        },
+        "terrain-and-reactions": {
+          "count": 294,
+          "ms": 5.3914909999953124
+        },
+        "unified-solve": {
+          "count": 294,
+          "ms": 70.50758300000416
+        },
+        "energy-and-endpoint": {
+          "count": 294,
+          "ms": 3.6371470000030968
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "saturated",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 130.413,
+      "wallMs": 82.20704700000033,
+      "inner": 11924,
+      "outer": 271,
+      "saturatedForceStages": 171,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 7.602188000000751
+        },
+        "trial-copy": {
+          "count": 271,
+          "ms": 5.1913949999980105
+        },
+        "terrain-and-reactions": {
+          "count": 271,
+          "ms": 6.564463000001524
+        },
+        "unified-solve": {
+          "count": 271,
+          "ms": 58.9970989999988
+        },
+        "energy-and-endpoint": {
+          "count": 271,
+          "ms": 3.386869999999817
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "drift-recovery",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 140.959,
+      "wallMs": 104.24359700000014,
+      "inner": 18064,
+      "outer": 297,
+      "saturatedForceStages": 172,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.724929999998949
+        },
+        "trial-copy": {
+          "count": 297,
+          "ms": 7.258061999999427
+        },
+        "terrain-and-reactions": {
+          "count": 297,
+          "ms": 6.757445000000189
+        },
+        "unified-solve": {
+          "count": 297,
+          "ms": 77.76368799999727
+        },
+        "energy-and-endpoint": {
+          "count": 297,
+          "ms": 5.012448000004497
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "drift-recovery",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 74.725,
+      "wallMs": 64.6823629999999,
+      "inner": 10896,
+      "outer": 271,
+      "saturatedForceStages": 172,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.256311999998616
+        },
+        "trial-copy": {
+          "count": 271,
+          "ms": 4.233999000001404
+        },
+        "terrain-and-reactions": {
+          "count": 271,
+          "ms": 5.548120000000381
+        },
+        "unified-solve": {
+          "count": 271,
+          "ms": 45.248318999993444
+        },
+        "energy-and-endpoint": {
+          "count": 271,
+          "ms": 2.846304000004693
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "braking",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 76.492,
+      "wallMs": 72.92354399999977,
+      "inner": 20262,
+      "outer": 299,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.758178000001408
+        },
+        "trial-copy": {
+          "count": 299,
+          "ms": 4.878882000003614
+        },
+        "terrain-and-reactions": {
+          "count": 299,
+          "ms": 5.464056999997865
+        },
+        "unified-solve": {
+          "count": 299,
+          "ms": 52.72771499999499
+        },
+        "energy-and-endpoint": {
+          "count": 299,
+          "ms": 2.6130070000012893
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "braking",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 85.459,
+      "wallMs": 51.35195599999997,
+      "inner": 11291,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.743344999999408
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 3.623696999997719
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 5.089253999999073
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 34.38834300000099
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 2.066916000004312
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "recontact",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 181.28,
+      "wallMs": 171.25799099999995,
+      "inner": 93776,
+      "outer": 315,
+      "saturatedForceStages": 2,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.530911999998352
+        },
+        "trial-copy": {
+          "count": 315,
+          "ms": 5.634974999997667
+        },
+        "terrain-and-reactions": {
+          "count": 315,
+          "ms": 6.555861999999706
+        },
+        "unified-solve": {
+          "count": 315,
+          "ms": 148.75236499999664
+        },
+        "energy-and-endpoint": {
+          "count": 315,
+          "ms": 3.2266070000068794
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "recontact",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 100.62,
+      "wallMs": 100.28975499999979,
+      "inner": 43377,
+      "outer": 300,
+      "saturatedForceStages": 2,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.420168000001922
+        },
+        "trial-copy": {
+          "count": 300,
+          "ms": 4.306864999997288
+        },
+        "terrain-and-reactions": {
+          "count": 300,
+          "ms": 6.8707379999978
+        },
+        "unified-solve": {
+          "count": 300,
+          "ms": 80.21708200000012
+        },
+        "energy-and-endpoint": {
+          "count": 300,
+          "ms": 2.91386100000409
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "clutch-lock",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 49.222,
+      "wallMs": 42.717109000000164,
+      "inner": 10345,
+      "outer": 220,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.9605739999988145
+        },
+        "trial-copy": {
+          "count": 220,
+          "ms": 2.844065000002047
+        },
+        "terrain-and-reactions": {
+          "count": 220,
+          "ms": 5.027423999999428
+        },
+        "unified-solve": {
+          "count": 220,
+          "ms": 27.620776000002024
+        },
+        "energy-and-endpoint": {
+          "count": 220,
+          "ms": 1.9034869999968578
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "clutch-lock",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 38.505,
+      "wallMs": 33.10748999999987,
+      "inner": 4752,
+      "outer": 200,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 5.415775000000849
+        },
+        "trial-copy": {
+          "count": 200,
+          "ms": 2.5629329999997026
+        },
+        "terrain-and-reactions": {
+          "count": 200,
+          "ms": 3.8596320000006017
+        },
+        "unified-solve": {
+          "count": 200,
+          "ms": 18.6421849999997
+        },
+        "energy-and-endpoint": {
+          "count": 200,
+          "ms": 2.125449000000117
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "stall",
+      "accuracy": "strict",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 59.431,
+      "wallMs": 57.23340199999984,
+      "inner": 14203,
+      "outer": 294,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 4.75046600000087
+        },
+        "trial-copy": {
+          "count": 294,
+          "ms": 3.71350600000369
+        },
+        "terrain-and-reactions": {
+          "count": 294,
+          "ms": 5.393615999997564
+        },
+        "unified-solve": {
+          "count": 294,
+          "ms": 40.25949599999376
+        },
+        "energy-and-endpoint": {
+          "count": 294,
+          "ms": 2.6770870000073046
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "stall",
+      "accuracy": "balanced",
+      "simulated": 0.05000000000000004,
+      "cpuMs": 66.887,
+      "wallMs": 57.176070999999865,
+      "inner": 7154,
+      "outer": 250,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 50,
+          "ms": 6.352523000000929
+        },
+        "trial-copy": {
+          "count": 250,
+          "ms": 4.335763000002316
+        },
+        "terrain-and-reactions": {
+          "count": 250,
+          "ms": 5.482132000000092
+        },
+        "unified-solve": {
+          "count": 250,
+          "ms": 36.522052999995594
+        },
+        "energy-and-endpoint": {
+          "count": 250,
+          "ms": 3.926716000001761
+        }
+      },
+      "fault": null
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "selector",
+      "accuracy": "strict",
+      "simulated": 0.006,
+      "cpuMs": 3.628,
+      "wallMs": 3.626162000000022,
+      "inner": 44,
+      "outer": 18,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 7,
+          "ms": 0.6387549999999464
+        },
+        "trial-copy": {
+          "count": 21,
+          "ms": 0.48788999999987936
+        },
+        "terrain-and-reactions": {
+          "count": 21,
+          "ms": 0.39816800000016883
+        },
+        "unified-solve": {
+          "count": 21,
+          "ms": 1.752890999999181
+        },
+        "energy-and-endpoint": {
+          "count": 21,
+          "ms": 0.20935800000188465
+        }
+      },
+      "fault": {
+        "time": 0.006,
+        "message": "Terrain step crosses a gear event: subdivision is required"
+      }
+    },
+    {
+      "strategy": "speed-normalized-anisotropic",
+      "scenario": "selector",
+      "accuracy": "balanced",
+      "simulated": 0.006,
+      "cpuMs": 3.026,
+      "wallMs": 3.0240209999997205,
+      "inner": 19,
+      "outer": 13,
+      "saturatedForceStages": 0,
+      "stages": {
+        "setup": {
+          "count": 7,
+          "ms": 0.8578350000002501
+        },
+        "trial-copy": {
+          "count": 15,
+          "ms": 0.21964399999978923
+        },
+        "terrain-and-reactions": {
+          "count": 15,
+          "ms": 0.4497410000008131
+        },
+        "unified-solve": {
+          "count": 15,
+          "ms": 1.229599999999209
+        },
+        "energy-and-endpoint": {
+          "count": 15,
+          "ms": 0.15641499999992448
+        }
+      },
+      "fault": {
+        "time": 0.006,
+        "message": "Terrain step crosses a gear event: subdivision is required"
+      }
+    }
+  ]
+}

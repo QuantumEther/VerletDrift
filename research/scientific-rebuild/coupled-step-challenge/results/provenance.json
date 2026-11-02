@@ -1,0 +1,6 @@
+{
+  "base": "8cb9413e3936e51502f6ac53d036a769ad8846e2",
+  "planarSha256": "c262cfebe8f6a0f98ec8437925f3d1438ed816344f4b89195cb9b312be498dba",
+  "vehicleSha256": "23a53b1e7bdf230f5cf3308e25f22272b250061489fad185b6e290bcc3e12776",
+  "changes": "Isolated stage adds probe, supplied-solver callback and fixed mode; original physical updates and safety guards intact. Transaction wrapper calls joint candidate; protected sources untouched."
+}

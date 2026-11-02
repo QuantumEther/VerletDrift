@@ -1,0 +1,46 @@
+[
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/candidate.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/check-reference.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/compare.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/fixtures.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/generate.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/joint.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/model.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/profile.mjs",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/stage-adapter.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/step.js",
+    "exitCode": 0
+  },
+  {
+    "file": "research/scientific-rebuild/coupled-step-challenge/test.mjs",
+    "exitCode": 0
+  }
+]

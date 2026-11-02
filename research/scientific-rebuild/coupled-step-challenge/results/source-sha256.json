@@ -1,0 +1,14 @@
+{
+  "research/scientific-rebuild/coupled-step-challenge/candidate.js": "5db881f741ce69c270209634b4f09afab595ee5c048d129be9ef732d136a161a",
+  "research/scientific-rebuild/coupled-step-challenge/check-reference.mjs": "ecd16593746e85c401d1b0d809894d41538e782abfc693504f0426bf7f19b1dd",
+  "research/scientific-rebuild/coupled-step-challenge/compare.mjs": "88bf54996b20faa16abb0a294ee2b733af613828cb02151197ca890617258a41",
+  "research/scientific-rebuild/coupled-step-challenge/fixtures.mjs": "57de2ac75f0bd9329bc51fec98051ebbf7037408100fdf1c32a7b61bc581ebdc",
+  "research/scientific-rebuild/coupled-step-challenge/generate.mjs": "50ee34cd02c2583ee71284f12bd560a22db5741036cdccb040e0d4877870ef42",
+  "research/scientific-rebuild/coupled-step-challenge/joint.js": "7337cf1ca1ca9f3382168f0ae0fec0d3f204928548e9db1ad32d70e0ac7fdce2",
+  "research/scientific-rebuild/coupled-step-challenge/model.js": "09813790065952cfec1ec69669d75d4d22d702c99faae2a9286d31da5a39fc7a",
+  "research/scientific-rebuild/coupled-step-challenge/profile.mjs": "af39b2b4cbeb066f9dc8520d938a27437db5d959f4aa7d35ebc8f933f28a8fc4",
+  "research/scientific-rebuild/coupled-step-challenge/stage-adapter.js": "08d36e4204375619796c5c0dd533dd53f30e27bd019bd0c25af2a554003c6dac",
+  "research/scientific-rebuild/coupled-step-challenge/step.js": "f134ea8868ad2f8923823385691e38f00d43eabb2b1466e0b487ea2b6e915473",
+  "research/scientific-rebuild/coupled-step-challenge/summarize.py": "440e3762a9267ba86adedd90a675dc6040918ae21b6eff9f696a0cfb95530230",
+  "research/scientific-rebuild/coupled-step-challenge/test.mjs": "7bc3cb4a356707813c20c7afb24e39bd6f04a66dc1d4a62d7388dde8f748d5ec"
+}

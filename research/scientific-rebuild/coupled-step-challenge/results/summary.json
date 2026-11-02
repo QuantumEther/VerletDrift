@@ -1,0 +1,248 @@
+{
+  "decision": "DO NOT INTEGRATE: numerical agreement in the bounded tests, but complete-step CPU and latency regress substantially; retain nested strict/balanced path",
+  "performance": [
+    {
+      "accuracy": "strict",
+      "method": "reference",
+      "runs": 56,
+      "complete": 56,
+      "cpuMsPerSimSecond": 1857.5330357142843,
+      "medianMs": 1.4118275000037102,
+      "p95Ms": 2.05463950000194,
+      "p99Ms": 2.4404734999993707,
+      "worstObservedMs": 131.8987219999981,
+      "fistaIterationsPerStep": 428.0672619047619,
+      "endpointIterationsPerStep": 5.679761904761905,
+      "jointNewtonIterationsPerStep": 0.0,
+      "environmentEvaluationsPerStep": 0.0,
+      "problemAssembliesPerStep": 0.0
+    },
+    {
+      "accuracy": "strict",
+      "method": "joint",
+      "runs": 56,
+      "complete": 56,
+      "cpuMsPerSimSecond": 5125.462202380949,
+      "medianMs": 2.8865895000001274,
+      "p95Ms": 4.598160000003531,
+      "p99Ms": 7.6920384999993985,
+      "worstObservedMs": 307.70787500000006,
+      "fistaIterationsPerStep": 0.0,
+      "endpointIterationsPerStep": 0.0,
+      "jointNewtonIterationsPerStep": 1.832142857142857,
+      "environmentEvaluationsPerStep": 45.10952380952381,
+      "problemAssembliesPerStep": 46.0797619047619
+    },
+    {
+      "accuracy": "balanced",
+      "method": "reference",
+      "runs": 56,
+      "complete": 56,
+      "cpuMsPerSimSecond": 1371.992708333332,
+      "medianMs": 1.0733524999959627,
+      "p95Ms": 1.705670999997892,
+      "p99Ms": 2.1300239999982296,
+      "worstObservedMs": 129.30464500000016,
+      "fistaIterationsPerStep": 215.16607142857143,
+      "endpointIterationsPerStep": 5.03452380952381,
+      "jointNewtonIterationsPerStep": 0.0,
+      "environmentEvaluationsPerStep": 0.0,
+      "problemAssembliesPerStep": 0.0
+    },
+    {
+      "accuracy": "balanced",
+      "method": "joint",
+      "runs": 56,
+      "complete": 56,
+      "cpuMsPerSimSecond": 4808.520833333329,
+      "medianMs": 2.8087129999985336,
+      "p95Ms": 4.1209579999976995,
+      "p99Ms": 6.289298500001905,
+      "worstObservedMs": 401.2037070000006,
+      "fistaIterationsPerStep": 0.0,
+      "endpointIterationsPerStep": 0.0,
+      "jointNewtonIterationsPerStep": 1.65,
+      "environmentEvaluationsPerStep": 40.9202380952381,
+      "problemAssembliesPerStep": 41.89047619047619
+    }
+  ],
+  "cpuRatios": [
+    {
+      "accuracy": "strict",
+      "jointOverReferenceCPU": 2.7592845477496635
+    },
+    {
+      "accuracy": "balanced",
+      "jointOverReferenceCPU": 3.504771420523524
+    }
+  ],
+  "profileStageWallTimes": {
+    "setup": {
+      "ms": 168.8778379999977,
+      "count": 1428,
+      "fraction": 0.0825274916372308
+    },
+    "trial-copy": {
+      "ms": 137.6026989999997,
+      "count": 7589,
+      "fraction": 0.06724390675218744
+    },
+    "terrain-and-reactions": {
+      "ms": 177.1150559999969,
+      "count": 7589,
+      "fraction": 0.08655286848750166
+    },
+    "unified-solve": {
+      "ms": 1470.595313999967,
+      "count": 7589,
+      "fraction": 0.7186528671564634
+    },
+    "energy-and-endpoint": {
+      "ms": 92.13129000004395,
+      "count": 7589,
+      "fraction": 0.04502286596661675
+    }
+  },
+  "validation": {
+    "jointRuns": 32,
+    "complete": 32,
+    "allFinite": true,
+    "independentCertificateFailures": 0,
+    "maxKKT": 6.853372314097328e-10,
+    "maxEnergyResidualJ": 7.885563653442507e-08,
+    "maxConstitutiveImpulseResidualNs": 1.563982406307322e-10,
+    "maxFrictionExcessN": 1.1368683772161603e-13,
+    "saturatedForceStages": 2058,
+    "maxErrorsToMatchedReference": {
+      "x_m": 2.3561375073199997e-11,
+      "y_m": 9.205227162120688e-11,
+      "heading_rad": 2.9564935569159623e-12,
+      "u_m_s": 2.5977797690757143e-10,
+      "v_m_s": 6.903792615711724e-10,
+      "yaw_rad_s": 3.474814880277677e-11,
+      "engine_rad_s": 3.6671252701125923e-09,
+      "column_rad": 2.7359547960514874e-10,
+      "omega0_rad_s": 1.2473240218469073e-09,
+      "omega1_rad_s": 1.2639223001542632e-09,
+      "omega2_rad_s": 1.0310703402183208e-09,
+      "omega3_rad_s": 1.0644267689485787e-09,
+      "fx0_N": 5.055184939539714e-07,
+      "fx1_N": 5.055270898557396e-07,
+      "fx2_N": 6.998003421188059e-07,
+      "fx3_N": 7.014492053869503e-07,
+      "fy0_N": 7.741420757767514e-07,
+      "fy1_N": 7.741573240238608e-07,
+      "fy2_N": 7.876960146369072e-07,
+      "fy3_N": 7.877142627066291e-07,
+      "normal0_N": 1.737598722684197e-07,
+      "normal1_N": 1.7479572989032022e-07,
+      "normal2_N": 1.7829239595812396e-07,
+      "normal3_N": 1.738048354127386e-07,
+      "q0_SI": 2.3447910280083306e-13,
+      "q1_SI": 2.7563014370901584e-11,
+      "q2_SI": 6.613462631265693e-11,
+      "q3_SI": 8.801626094623316e-12,
+      "q4_SI": 8.801626094623316e-12,
+      "q5_SI": 8.920419958258208e-12,
+      "q6_SI": 8.804068585277491e-12,
+      "v0_SI": 6.261283158615072e-12,
+      "v1_SI": 3.5246441334145506e-10,
+      "v2_SI": 6.670272465880006e-10,
+      "v3_SI": 4.1705274761547236e-10,
+      "v4_SI": 4.170527588776224e-10,
+      "v5_SI": 4.172318133553016e-10,
+      "v6_SI": 4.172318223135221e-10
+    },
+    "identicalEngineClutchGearEvents": true,
+    "stopping": [
+      {
+        "strategy": "reference",
+        "accuracy": "strict",
+        "method": "reference",
+        "result": {
+          "time": 0.8391232958853722,
+          "distance": 2.0675277006568673
+        }
+      },
+      {
+        "strategy": "reference",
+        "accuracy": "strict",
+        "method": "joint",
+        "result": {
+          "time": 0.8391232958889199,
+          "distance": 2.0675277006568686
+        }
+      },
+      {
+        "strategy": "reference",
+        "accuracy": "balanced",
+        "method": "reference",
+        "result": {
+          "time": 0.8391232958616179,
+          "distance": 2.0675277006551736
+        }
+      },
+      {
+        "strategy": "reference",
+        "accuracy": "balanced",
+        "method": "joint",
+        "result": {
+          "time": 0.8391232958889199,
+          "distance": 2.0675277006568686
+        }
+      },
+      {
+        "strategy": "speed-normalized-anisotropic",
+        "accuracy": "strict",
+        "method": "reference",
+        "result": {
+          "time": 0.8391232958854503,
+          "distance": 2.0675277006568775
+        }
+      },
+      {
+        "strategy": "speed-normalized-anisotropic",
+        "accuracy": "strict",
+        "method": "joint",
+        "result": {
+          "time": 0.8391232958889199,
+          "distance": 2.067527700656868
+        }
+      },
+      {
+        "strategy": "speed-normalized-anisotropic",
+        "accuracy": "balanced",
+        "method": "reference",
+        "result": {
+          "time": 0.8391232958585365,
+          "distance": 2.067527700655446
+        }
+      },
+      {
+        "strategy": "speed-normalized-anisotropic",
+        "accuracy": "balanced",
+        "method": "joint",
+        "result": {
+          "time": 0.8391232958889199,
+          "distance": 2.067527700656868
+        }
+      }
+    ]
+  },
+  "transitions": {
+    "nonflatSelectorAllRejectAt6ms": true,
+    "flatGearShiftDelegatedExactly": true
+  },
+  "certificateCorrection": {
+    "initialExtraFailures": 8,
+    "unmodifiedReferenceFailures": 0,
+    "action": "Independent original certificate added as a mandatory joint termination condition; no threshold relaxed"
+  },
+  "limits": [
+    "Only prescribed 1ms road/seed42/1mm A/B tests; 0.35s dynamic trajectories and 1s braking",
+    "No hardware GPU, rendering or production integration",
+    "No global uniqueness or convergence proof for the nonlinear load-dependent feasible sets",
+    "Finite-difference geometry Jacobian and allocation costs are included; worst observed timing is not WCET",
+    "Flat drivetrain shifts delegate unchanged source physics; nonflat shifts retain original explicit rejection"
+  ]
+}

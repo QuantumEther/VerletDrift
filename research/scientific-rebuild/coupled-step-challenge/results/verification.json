@@ -1,0 +1,60 @@
+{
+  "base": "8cb9413e3936e51502f6ac53d036a769ad8846e2",
+  "branch": "scientific-rebuild/12-braking-and-tire-contact",
+  "codeIdentity": "source-sha256.json; commit supplied in final response",
+  "decision": "Do not integrate; slower full step, preserve current nested references",
+  "checks": [
+    {
+      "command": "node --test --test-isolation=none research/scientific-rebuild/coupled-step-challenge/test.mjs",
+      "result": "PASS 6/6",
+      "evidence": "tests.txt"
+    },
+    {
+      "command": "node --test research/scientific-rebuild/contact-solver-challenge/test.mjs",
+      "result": "PASS 5/5 reused projection/Jacobian/certificate tests",
+      "evidence": "projection-tests.txt"
+    },
+    {
+      "command": "node research/scientific-rebuild/procedural-terrain/tools/tire-baseline.mjs",
+      "result": "PASS 1080 bit-exact accepted states plus initial/rollback fixtures",
+      "evidence": "a-exact-replay.txt"
+    },
+    {
+      "command": "complete trajectory comparison against strict/balanced",
+      "result": "PASS 32/32 joint dynamic/braking trajectories, all original guards and added independent KKT certificate",
+      "evidence": [
+        "validation.json",
+        "braking.json"
+      ]
+    },
+    {
+      "command": "transition comparison",
+      "result": "PASS exact delegated flat shift, matched non-flat rejection and rollback",
+      "evidence": "transitions.json"
+    },
+    {
+      "command": "source-derived atomic wrapper comparison",
+      "result": "PASS original wrapper body after function/candidate rename and trimming trailing blank lines; original energy guards retained"
+    },
+    {
+      "command": "node --check added JavaScript modules",
+      "result": "PASS",
+      "evidence": "syntax.json"
+    }
+  ],
+  "preservation": {
+    "originalTrackedFilesChanged": [],
+    "newBranch": false,
+    "productionIntegration": false,
+    "historicalFixturesModified": false,
+    "defaultNumerics": "strict, unchanged",
+    "balanced": "original explicit opt-in, unchanged"
+  },
+  "limitations": [
+    "Only prescribed 1ms road/seed42/1mm A/B tests; 0.35s dynamic trajectories and 1s braking",
+    "No hardware GPU, rendering or production integration",
+    "No global uniqueness or convergence proof for the nonlinear load-dependent feasible sets",
+    "Finite-difference geometry Jacobian and allocation costs are included; worst observed timing is not WCET",
+    "Flat drivetrain shifts delegate unchanged source physics; nonflat shifts retain original explicit rejection"
+  ]
+}

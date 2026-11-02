@@ -1,0 +1,14 @@
+✔ reduced assembly equals original source adapter for perturbed endpoints and modes (210.95254ms)
+✔ one coupled step agrees physically, saturates friction, and closes unchanged guards (498.262764ms)
+✔ contact and state records remain unchanged when an invalid numerical setting rejects (43.257275ms)
+✔ flat gear transition delegation is bit-exact and does not advance a second physics model (109.992184ms)
+✔ late non-flat selector rejection preserves state and observer history (93.135965ms)
+✔ accepted subdivisions cover exactly the requested duration; later rejection is atomic (144.402326ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1133.147993
