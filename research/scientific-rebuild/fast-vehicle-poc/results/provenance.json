@@ -1,0 +1,19 @@
+{
+  "base": "af74de28443278fcc7ed2f9816bfc80c0c4793fc",
+  "branch": "scientific-rebuild/12-braking-and-tire-contact",
+  "sourceSha256": {
+    "model.js": "78e4f8dd778c64db7551d68561a3f48548bf59bb3bdb134ca726d432045dc6ba",
+    "compare.mjs": "66c61f56dce7353f54787e5a3a225b433dac5213673dcdb21e027f968bac4bf7",
+    "validate.mjs": "dd5c74fb3fdc7fc2f7cadc2031b5591a131e067dfc0cc02e3824b6633627dc15",
+    "test.mjs": "e4bb9dfd59f181eb73f60f314dcf5c91b484b7cd4b0a9424b640b90df2507d61",
+    "summarize.mjs": "9cafe44eb13dc8b55b706a8a0835effff535426feb123bdde23f4d354ceeba2a"
+  },
+  "resultsSha256": {
+    "inherited-flat-comparison.json": "6ce973ec0acfdf961366070b3d7c1a745025d22ab0d8c12f25ef221a45337dff",
+    "comparison.json": "cbbdf28cc443661b11885f7a49d106d4dd36445d9a1fc7229cc5dc17786e56e4",
+    "timing.json": "af0f19dbb5c3652262f8bccb6efb0f9d78064b70a7a32ab3effe01f7738b0491",
+    "summary.json": "70e2d18d8fc6c9074cb213031a962c6e735bc520b0af1a32bda82787fb75bd36",
+    "mechanical.json": "e024d5b759a2e3ed484ef15b87b435775f5310bb5287e160c1853c27c9a151ba",
+    "inherited-flat-timing.json": "d9ab71960d5f86a4e27886c9b0ef7eacb7cf9034da9de18a67b9d8ac6cec3ddd"
+  }
+}
