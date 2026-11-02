@@ -1,0 +1,9 @@
+// Same W/S/A/D/Space and pointer-hold conventions as Experiments 10/11.
+export function bindControls(root,onReset){
+ const keys=new Set(),pointers=new Map(),allowed=new Set(['w','s','a','d',' ']);let steer=0;
+ const clear=()=>{keys.clear();pointers.clear();root.querySelectorAll('.held').forEach(b=>b.classList.remove('held'));};
+ window.addEventListener('keydown',e=>{if(e.target.matches?.('input[type=number],input[type=text],textarea,[contenteditable=true]'))return;const k=e.key.toLowerCase();if(allowed.has(k)||k==='r')e.preventDefault();if(k==='r'&&!e.repeat){onReset();return;}if(allowed.has(k))keys.add(k);});
+ window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',clear);document.addEventListener('visibilitychange',clear);
+ root.querySelectorAll('[data-drive]').forEach(b=>{b.addEventListener('pointerdown',e=>{b.setPointerCapture(e.pointerId);pointers.set(e.pointerId,b.dataset.drive);b.classList.add('held');});const release=e=>{pointers.delete(e.pointerId);b.classList.remove('held');};for(const type of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(type,release);});
+ return {clear,reset(){clear();steer=0;},sample(h){const held=k=>keys.has(k)||[...pointers.values()].includes(k),target=(Number(held('a'))-Number(held('d')))*.35;steer+=Math.sign(target-steer)*Math.min(Math.abs(target-steer),.8*h);return {throttle:held('w')?Number(root.querySelector('#throttle').value):0,serviceBrake:held('s')?1:0,handbrake:held(' ')?1:0,steer,clutch:Number(root.querySelector('#engagement').value),ignition:root.querySelector('#ignition').checked};},held:()=>[...keys,...pointers.values()]};
+}
