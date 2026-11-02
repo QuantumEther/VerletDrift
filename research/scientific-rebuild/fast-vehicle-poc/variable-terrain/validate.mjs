@@ -1,0 +1,18 @@
+import {writeFile} from 'node:fs/promises';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {readFile} from 'node:fs/promises';
+import {create,step,energy,totalWork} from './vehicle.js';import {cases,initialize,plane} from './cases.js';
+const results=[];
+for(const c of cases)for(const h of [.001,.0005,.00025]){
+ const s=initialize(create,c),E=energy(s,c.terrain);let maxEnergy=0,maxNormal=0,maxForce=0,maxFriction=0,maxIterations=0,maxLock=0,unloaded=0,minN=Infinity,maxN=0,normalVariation=0,minNormalZ=1,failure=null;
+ for(let i=0;i<Math.round(c.duration/h);i++){
+  const snapshot=structuredClone(s);try{step(s,c.terrain,c.input(i*h),h);}catch(e){failure={step:i,time:i*h,message:e.message,workResidual:e.workResidual,tolerance:e.tolerance,transactional:JSON.stringify(s)===JSON.stringify(snapshot)};break;}
+  maxEnergy=Math.max(maxEnergy,Math.abs(energy(s,c.terrain)-E-totalWork(s)));maxNormal=Math.max(maxNormal,Math.abs(s.consistency.normalDefect));maxForce=Math.max(maxForce,s.consistency.forceResidual);maxFriction=Math.max(maxFriction,s.consistency.frictionExcess);maxIterations=Math.max(maxIterations,s.consistency.iterations);
+  if(s.constraints.clutchMode==='locked')maxLock=Math.max(maxLock,Math.abs(s.y[24]-1.75*(s.y[22]+s.y[23])));
+  const N=s.contacts.map(t=>t.normal.N);normalVariation=Math.max(normalVariation,Math.max(...N)-Math.min(...N));
+  for(const t of s.contacts){unloaded+=Number(t.normal.N===0);minN=Math.min(minN,t.normal.N);maxN=Math.max(maxN,t.normal.N);minNormalZ=Math.min(minNormalZ,t.normal.endpoint[2]);}
+ }
+ results.push({id:c.id,h,settings:c.terrain.settings,initial:c.initial,lift:c.lift??0,requestedDuration:c.duration,completed:s.time,status:failure?'FAIL':'PASS',failure,maxEnergyWorkResidualJ:maxEnergy,maxNormalWorkResidualJ:maxNormal,maxForceResidualN:maxForce,maxFrictionExcessN:maxFriction,maxIterations,maxLockedMismatchRadS:maxLock,unloadedSamples:unloaded,minNormalN:minN,maxNormalN:maxN,maxAxleLoadSpreadN:normalVariation,minNormalZ,final:s.y,bristles:s.bristles,bristleNormals:s.bristleNormals,tireLoss:s.tireLoss});console.error(c.id,h,failure?.message??'PASS');
+}
+const refinement=cases.map(c=>{const r=results.filter(r=>r.id===c.id),fine=r[2];return {id:c.id,comparisons:r.slice(0,2).map(x=>({h:x.h,stateAbsoluteError:x.final.slice(0,25).map((z,i)=>Math.abs(z-fine.final[i])),positionErrorM:Math.hypot(x.final[0]-fine.final[0],x.final[1]-fine.final[1]),wheelMaxErrorRadS:Math.max(...x.final.slice(20,24).map((z,i)=>Math.abs(z-fine.final[20+i]))),strainMaxErrorM:Math.max(...x.bristles.flat().map((z,i)=>Math.abs(z-fine.bristles.flat()[i])))}))};});
+const rear=create(plane(5*Math.PI/180),{engine:0}),E=energy(rear,plane(5*Math.PI/180));for(let i=0;i<5000;i++)step(rear,plane(5*Math.PI/180),{handbrake:1,clutch:1,ignition:false});
+const files=['geometry.js','vehicle.js','linear.js','cases.js','terrain.test.mjs','validate.mjs','benchmark.mjs'],hashes={};for(const f of files)hashes[f]=createHash('sha256').update(await readFile(new URL(f,import.meta.url))).digest('hex');
+await writeFile(new URL('results/validation.json',import.meta.url),JSON.stringify({base:'c493e4bb0ba41e25360700d4796363503e214971',branch:execFileSync('git',['branch','--show-current'],{encoding:'utf8'}).trim(),runtime:process.version,sourceSHA256:hashes,units:{state:['m','m','rad','m/s','m/s','rad/s','m','rad','rad','m','m','m','m','m/s','rad/s','rad/s','m/s','m/s','m/s','m/s','rad/s','rad/s','rad/s','rad/s','rad/s'],bristles:'world tangent m',work:'J'},results,refinement,rearHandbrake:{duration:5,final:rear.y,energyWorkResidualJ:energy(rear,plane(5*Math.PI/180))-E-totalWork(rear),brakeModes:rear.constraints.brakeModes}},null,2));
