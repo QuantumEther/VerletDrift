@@ -1,14 +1,15 @@
 // Read-only presentation mapping plus accepted rotor-angle quadrature. No solver.
 import {P,create,step,energy,totalWork} from '../vehicle.js';
+import * as coupled from '../../coupled-drivetrain/vehicle.js';
 import {point,sample,frame} from '../geometry.js';
 import {createMap} from './maps.js';
 export const defaults=Object.freeze({preset:'flat',seed:23,amplitude:.15,roughness:.5});
 export function createLaboratory(settings=defaults,options={}){
- const terrain=createMap(settings),state=create(terrain,options);
- return {terrain,state,angles:[0,0,0,0,0],steer:0,initialEnergy:energy(state,terrain),lastInput:{}};
+ const terrain=createMap(settings),sixRotor=options.drivetrainMode==='manual',model=sixRotor?coupled:{create,step,energy,totalWork},state=model.create(terrain,options);
+ return {terrain,state,sixRotor,angles:Array(sixRotor?6:5).fill(0),steer:0,initialEnergy:model.energy(state,terrain),lastInput:{}};
 }
 export function advance(lab,input,h=.001){
- step(lab.state,lab.terrain,input,h); // Transaction succeeds before any display history updates.
+ (lab.sixRotor?coupled.step:step)(lab.state,lab.terrain,input,h); // Transaction succeeds before any display history updates.
  lab.angles=lab.angles.map((a,i)=>a+lab.state.constraints.integral[i]);lab.steer=input.steer??0;lab.lastInput={...input};
 }
 export function presentation(lab){
@@ -20,7 +21,7 @@ export function presentation(lab){
     mount:[p[0],p[1],y[6]+corner[0]*y[7]+corner[1]*y[8]],compression:v.length-y[6]-corner[0]*y[7]-corner[1]*y[8]+y[9+i],
     normal:contact?.normal.N??v.kt*Math.max(0,P.R+ground.height-p[2])*Math.hypot(...ground.gradient,1),mu:contact?.normal.mu??ground.friction,
     fx:contact?.flow.force[0]??0,fy:contact?.flow.force[1]??0,slipX:contact?.slip[0]??0,slipY:contact?.slip[1]??0,mode:contact?.flow.mode??'initial',worldForce:contact?.Ft??[0,0,0],attached:contact?.normal.attached??p[2]<P.R+ground.height};
-  }),engineOmega:y[24],engineAngle:lab.angles[4],clutch:s.constraints?.clutchMode??'initial',heat:{clutch:-y[28],brakes:-y[27]},energy:energy(s,lab.terrain),energyResidual:energy(s,lab.terrain)-lab.initialEnergy-totalWork(s),consistency:s.consistency??null};
+  }),gearbox:s.gearbox??null,inputOmega:lab.sixRotor?y[30]:1.75*(y[22]+y[23]),synchronizerHeat:lab.sixRotor?-y[31]:0,outputOmega:lab.sixRotor?s.transmission.ratios.finalDrive*(y[22]+y[23])/2:null,engineOmega:y[24],engineAngle:lab.angles[4],clutch:s.constraints?.clutchMode??'initial',heat:{clutch:-y[28],brakes:-y[27]},energy:(lab.sixRotor?coupled.energy:energy)(s,lab.terrain),energyResidual:(lab.sixRotor?coupled.energy:energy)(s,lab.terrain)-lab.initialEnergy-(lab.sixRotor?coupled.totalWork:totalWork)(s),consistency:s.consistency??null};
 }
 // Reuse the old bounded track/history renderer with genuine irreversible bristle
 // dissipation, NOT instantaneous mechanical contact power (which may return U).

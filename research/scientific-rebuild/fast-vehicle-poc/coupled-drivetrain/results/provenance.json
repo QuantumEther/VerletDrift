@@ -1,0 +1,26 @@
+{
+  "base": "f4693971033f8494fdb0da724e1c24177d4076e3",
+  "branch": "PERFORMANCE",
+  "runtime": "v24.19.0",
+  "sourceSHA256": {
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/rotors.js": "64cba64473a4ef12a9426f6cb0313f9f7df9058731d24b12850d396bc0544b8a",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/vehicle.js": "b13ef1685234283a3c24283eba21301d967de0fc8f1b18067bd811b23f9a2fe3",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/test.mjs": "ad4554788d73d305059639996fbf61aa40eaf919e8955a64cd97d033bef5b4d0",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/benchmark.mjs": "f2223b3ab1d7913297322b7ffbc0528ba3f58eda02bfaec59506cff67ad51f70",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/validate.mjs": "1889ffcdb4ce6c1de13feedd478961e3afe2184111d7a08a655a98149948cae9",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/browser-smoke.mjs": "899d5f102bad70993debdf311407c77ed37f4e240076ad06eaafa5e2b04aafd1",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/adapter.js": "54d99bf77c5f09959b26b7f1824d9f25ae4b9680c2853c889138ea8cc6baa772",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/controls.js": "e682ea7e4752ee84066678ef17a71fddf1a4cfda73d42e3f9bd18ccbe5b2b95f",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/main.js": "d87cd03f65bf0658bae3d8badd19d7b3a7504d0dad48a70350460132d159dd9c",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/index.html": "d4fd050fcb4c759b9e30eeeddb2fb145f140efeece451f666c6f9cbd3df901f2"
+  },
+  "checks": {
+    "newTests": 20,
+    "existingTests": 175,
+    "exactReplayStates": 1080,
+    "matchedRateRuns": 24,
+    "manualBrowser": "PASS; actual engaged gears 1/2/R; software renderer",
+    "referenceBrowser": "PASS",
+    "historicalPhysicsComparedToBase": "byte-identical"
+  }
+}

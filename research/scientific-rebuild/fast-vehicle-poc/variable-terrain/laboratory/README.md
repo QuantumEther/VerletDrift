@@ -1,9 +1,9 @@
 # PERFORMANCE terrain driving laboratory
 
 New standalone page on PERFORMANCE, physics baseline **4736576**. No production
-or historical laboratory changes. No new dependency, solver, physics equation,
-force parameter or tolerance. This is a browser adapter for the existing isolated
-vehicle, not another vehicle implementation.
+or historical laboratory changes. The fixed-ratio reference remains the default.
+An explicitly selected experimental six-rotor gearbox is also available; its
+mechanical model and validation are documented below.
 
 ## Launch
 
@@ -40,7 +40,7 @@ Only its **render-only coachwork/wheel/spring construction** is retained in
 | Clock | Existing `SimulationClock`, fixed 1000 Hz; 20 ms frame CPU budget / 128 tick cap; **uncapped visible debt**, no discarded time |
 | W/S/A/D/Space/R and pointer holds | Same mappings/conventions; small DOM input binder, including focus-loss release and key-repeat-safe reset |
 | Engine/clutch | Existing mean engine torque and exact open/slip/lock capacity; ignition checkbox is explicitly not a starter/lifecycle model |
-| Gearbox/differential | Disabled selectors: fixed forward 3.5 ratio and ideal open differential; no fictional shift or reverse mechanism |
+| Gearbox/differential | Fixed-ratio reference by default; experimental six-rotor mode exposes neutral, six forward gears and synchronized reverse. Differential remains ideal open. |
 | Brakes/steering | Actual service/rear brake constraints; bounded rate-limited front steering **input**, no direct yaw manipulation |
 | Contact recording / world marks | Existing bounded TireObservatory + incremental track mesh, with record/clear/visibility controls |
 | Terrain | Existing analytic presets, colors and sampled display mesh; no visual height exaggeration |
@@ -262,3 +262,21 @@ additional. Occasional visible frame spikes are therefore possible; no 240 Hz
 claim is made. A short, single Chromium/SwiftShader browser run observed roughly
 22.5 FPS on flat and 17–19 FPS on the new maps; these are software-renderer samples,
 not measurements of the user's RTX 5090 or a controlled performance benchmark.
+
+## Experimental six-rotor gearbox
+
+Select **Experimental six-rotor gearbox** under Drivetrain. It resets the vehicle
+to neutral. Set clutch open, request a gear and wait until the displayed engaged
+gear matches; then apply throttle and clutch. The selected option is a request,
+not guaranteed engagement: a loaded synchronizer can continue slipping and heating.
+The dashboard shows actual independent input-shaft RPM, output speed, engine RPM,
+clutch state and synchronizer heat. This is a massless ideal dog-release/engagement
+controller, not a selector-force or tooth-collision model. All reverse gears are
+synchronized; try reverse from rest with clutch open. There is no automatic rev
+matching, clutch assistance or new stall/starter lifecycle.
+
+The authoritative new model is `../../coupled-drivetrain/vehicle.js`; the fixed
+reference, terrain/contact law, suspension and historical fixtures are retained.
+See `../../coupled-drivetrain/README.md` for equations, passivity, numerical gates,
+complete-step CPU measurements and limits. This option is for bounded research
+driving, not certification of a complete real engine/manual-transmission system.
