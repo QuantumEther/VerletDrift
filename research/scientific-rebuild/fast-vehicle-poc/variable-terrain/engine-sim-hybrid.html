@@ -1,0 +1,3397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<title>APEX DYNO — Hybrid Engine Audio · Experiment 01</title>
+<style>
+  :root {
+    --bg: #06080b;
+    --panel: #0c1016;
+    --panel-2: #111821;
+    --line: #1d2632;
+    --line-2: #2a3645;
+    --text: #edf3fa;
+    --dim: #7d8a9a;
+    --dim-2: #4e5a68;
+    --orange: #ff6b1a;
+    --orange-2: #ffb26b;
+    --red: #ff354b;
+    --green: #43f5a0;
+    --cyan: #65e0ff;
+    --amber: #ffc45e;
+    --vol: 70%;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(circle at 50% -15%, #18212d 0%, #090c11 45%, #05070a 100%);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 105%, rgba(255, 107, 26, 0.08), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 82% 8%, rgba(101, 224, 255, 0.04), transparent 70%);
+  }
+  .ambient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.24;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+  }
+  .ambient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%);
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    width: min(458px, 100vw);
+    max-height: 100dvh;
+    padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 31px;
+    padding: 0 3px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(145deg, #202a36, #0d1219 72%);
+    border: 1px solid #2a3645;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 18px -8px #000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2.5px;
+    padding-bottom: 7px;
+    overflow: hidden;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 35% 0%, rgba(255,107,26,0.35), transparent 55%);
+  }
+  .brand-mark span {
+    position: relative;
+    z-index: 1;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--orange-2), var(--orange));
+    box-shadow: 0 0 7px rgba(255,107,26,0.45);
+  }
+  .brand-mark span:nth-child(1) { height: 7px; opacity: 0.65; }
+  .brand-mark span:nth-child(2) { height: 11px; }
+  .brand-mark span:nth-child(3) { height: 8px; opacity: 0.78; }
+  .brand-name {
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .brand-name b { color: var(--orange); font-weight: 850; }
+  .brand-sub {
+    margin-top: 4px;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    background: rgba(13, 18, 25, 0.6);
+    border-radius: 999px;
+    color: var(--dim);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .status i {
+    width: 5.5px;
+    height: 5.5px;
+    border-radius: 50%;
+    background: var(--dim-2);
+    box-shadow: 0 0 0 transparent;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+  .status[data-state="run"] { color: #b5ffe7; border-color: rgba(67,245,160,0.22); }
+  .status[data-state="run"] i { background: var(--green); box-shadow: 0 0 10px rgba(67,245,160,0.9); }
+  .status[data-state="load"] { color: var(--orange-2); border-color: rgba(255,107,26,0.26); }
+  .status[data-state="load"] i { background: var(--orange); box-shadow: 0 0 10px rgba(255,107,26,0.9); }
+  .status[data-state="overrun"] { color: #ffb07e; border-color: rgba(255,107,26,0.32); }
+  .status[data-state="overrun"] i { background: var(--orange-2); box-shadow: 0 0 10px rgba(255,178,107,0.9); }
+  .status[data-state="cranking"] { color: var(--amber); border-color: rgba(255,196,94,0.24); }
+  .status[data-state="cranking"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .65s ease-in-out infinite alternate; }
+  .status[data-state="limit"] { color: #ff9aa5; border-color: rgba(255,53,75,0.4); }
+  .status[data-state="limit"] i { background: var(--red); box-shadow: 0 0 12px rgba(255,53,75,1); animation: dotPulse .18s ease-in-out infinite alternate; }
+  .status[data-state="shift"] { color: var(--amber); border-color: rgba(255,196,94,0.34); }
+  .status[data-state="shift"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .28s ease-in-out infinite alternate; }
+
+  /* ---------------------------------------------------------------- */
+  .pod {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(19, 26, 35, 0.97) 0%, rgba(9, 12, 17, 0.99) 100%);
+    border: 1px solid #212a36;
+    border-radius: 23px;
+    padding: 13px 13px 12px;
+    box-shadow:
+      0 30px 60px -30px #000,
+      0 2px 0 rgba(255,255,255,0.035) inset,
+      0 -1px 0 rgba(0,0,0,0.7) inset;
+    overflow: hidden;
+  }
+  .pod::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+    pointer-events: none;
+  }
+
+  .pod-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 1px 2px 10px;
+  }
+  .engine-id { min-width: 0; }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .eyebrow .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 7px rgba(255,107,26,0.8);
+  }
+  .engine-id h1 {
+    margin: 5px 0 2px;
+    font-size: 19px;
+    line-height: 1.05;
+    font-weight: 760;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .engine-id p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 9.5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .power {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 73px;
+    justify-content: center;
+    padding: 10px 11px;
+    border-radius: 11px;
+    border: 1px solid #2a3542;
+    background: linear-gradient(180deg, #161e28, #0e131a);
+    color: #9aa8b8;
+    font-family: inherit;
+    font-size: 8.5px;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+    cursor: pointer;
+    box-shadow: 0 4px 12px -6px #000, inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
+  }
+  .power svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .power:hover { color: #dbe6f3; border-color: #3a4859; }
+  .power:active { transform: translateY(1px); }
+  .power.running {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.46);
+    background: linear-gradient(180deg, rgba(255,107,26,0.14), rgba(255,107,26,0.045));
+    box-shadow: 0 0 20px -8px rgba(255,107,26,0.7), inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  .power.cranking {
+    color: var(--amber);
+    border-color: rgba(255,196,94,0.42);
+    background: linear-gradient(180deg, rgba(255,196,94,0.12), rgba(255,196,94,0.03));
+  }
+  .power:disabled { opacity: 0.55; cursor: default; }
+
+  /* ---------------------------------------------------------------- */
+  .gaugeWrap {
+    position: relative;
+    border: 1px solid #1c2430;
+    border-radius: 17px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,255,255,0.035), transparent 50%),
+      linear-gradient(180deg, #0c1118 0%, #080b10 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      inset 0 -20px 30px -20px #000;
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .gaugeWrap[data-limiter="1"] {
+    border-color: rgba(255,53,75,0.38);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 30px -10px rgba(255,53,75,0.36),
+      inset 0 -20px 30px -20px #000;
+  }
+  .gaugeWrap[data-shift="1"] {
+    border-color: rgba(255,196,94,0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 26px -12px rgba(255,196,94,0.45),
+      inset 0 -20px 30px -20px #000;
+  }
+  #gauge {
+    display: block;
+    width: 100%;
+    height: 296px;
+  }
+  .gauge-glass {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(116deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.01) 27%, transparent 28%, transparent 73%, rgba(255,255,255,0.015) 100%);
+    mix-blend-mode: screen;
+  }
+
+  .scopeWrap {
+    position: relative;
+    padding: 7px 11px 9px;
+    border-top: 1px solid rgba(255,255,255,0.045);
+    background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.15));
+  }
+  .scopeLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    color: var(--dim-2);
+    font-size: 7px;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .scopeLive {
+    color: var(--dim-2);
+    transition: color .2s ease;
+  }
+  .scopeLive[data-live="1"] { color: rgba(67,245,160,0.72); }
+  #scope { display: block; width: 100%; height: 38px; }
+
+  /* ---------------------------------------------------------------- */
+  .specs {
+    display: grid;
+    grid-template-columns: 2fr 0.92fr 0.62fr;
+    gap: 7px;
+    margin-top: 9px;
+  }
+  .specs > span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px 9px 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.018);
+    border-radius: 8px;
+  }
+  .specs b {
+    color: #cbd7e5;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+  }
+  .specs em {
+    color: var(--dim-2);
+    font-style: normal;
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 3px;
+  }
+  .control-row { display: flex; align-items: center; gap: 12px; min-height: 32px; }
+  .control-row > label {
+    width: 53px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .select-wrap { position: relative; flex: 1; }
+  select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #151d27, #0f141b);
+    color: #d6e0ec;
+    border-radius: 10px;
+    padding: 9px 34px 9px 11px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    transition: border-color .18s ease;
+  }
+  select:hover, select:focus { border-color: #344354; }
+  select option { background: #10161e; color: #edf3fa; }
+  .chev {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    stroke: var(--dim);
+    fill: none;
+    stroke-width: 1.8;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+    box-shadow: 0 2px 8px rgba(255,107,26,0.4);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+  }
+  .vol-val {
+    width: 33px;
+    flex: none;
+    text-align: right;
+    color: var(--dim);
+    font-size: 9.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .transmission {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 39px;
+    padding: 6px 9px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(17, 24, 33, 0.94), rgba(10, 14, 19, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+  .trans-label {
+    width: 49px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+  .trans-btn, .shift-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    min-width: 28px;
+    padding: 0 7px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    background: #111821;
+    color: #718091;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .trans-btn:hover, .shift-btn:hover { color: #ccd8e7; border-color: #3a4a5b; }
+  .trans-btn:disabled, .shift-btn:disabled { opacity: 0.32; cursor: default; box-shadow: none; }
+  .trans-btn.active {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.55);
+    background: rgba(255,107,26,0.11);
+    box-shadow: 0 0 12px -5px rgba(255,107,26,0.9), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .shift-stepper {
+    display: flex;
+    align-items: center;
+    height: 26px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #0e151d;
+  }
+  .shift-stepper .shift-btn {
+    height: 24px;
+    min-width: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 13px;
+    line-height: 1;
+    color: #8190a1;
+  }
+  .shift-stepper .shift-btn:hover { background: rgba(255,255,255,0.045); color: #fff; }
+  .gear-badge {
+    min-width: 24px;
+    text-align: center;
+    color: #dbe6f3;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .trans-mode {
+    margin-left: auto;
+    color: var(--dim-2);
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+  }
+  .transmission.shifting { border-color: rgba(255,196,94,0.34); }
+  .transmission.shifting .gear-badge { color: var(--amber); }
+  .transmission.auto .trans-mode { color: rgba(101,224,255,0.68); }
+
+  /* ---------------------------------------------------------------- */
+  .pedal {
+    --pedalFill: 0%;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 17px;
+    border-radius: 15px;
+    border: 1px solid #3a2719;
+    background:
+      linear-gradient(180deg, #1c140f 0%, #100b08 100%);
+    color: #ff9a5c;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    touch-action: none;
+    box-shadow:
+      0 12px 26px -16px #000,
+      inset 0 1px 0 rgba(255,150,80,0.13);
+    transition: border-color .18s ease, box-shadow .18s ease, color .18s ease;
+  }
+  .pedal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(255,107,26,0.055), transparent 42%);
+    pointer-events: none;
+  }
+  .pedal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: var(--pedalFill);
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,107,26,0.05), rgba(255,107,26,0.27));
+    border-right: 1px solid rgba(255,160,95,0.22);
+    pointer-events: none;
+    transition: width .06s linear;
+  }
+  .pedal-copy { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+  .pedal-copy b { font-size: 12px; font-weight: 850; letter-spacing: 0.18em; line-height: 1; }
+  .pedal-copy small { font-size: 7px; font-weight: 800; letter-spacing: 0.18em; color: #94694e; }
+  .pedal-pct {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    color: #a77555;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pedal:hover { border-color: #5a3922; }
+  .pedal.down {
+    border-color: rgba(255,157,90,0.76);
+    color: #fff4ea;
+    background: linear-gradient(180deg, #d9510d 0%, #a63808 100%);
+    box-shadow:
+      0 0 34px -8px rgba(255,107,26,0.8),
+      inset 0 2px 10px rgba(255,255,255,0.16);
+  }
+  .pedal.down .pedal-copy small, .pedal.down .pedal-pct { color: rgba(255,244,234,0.72); }
+  .pedal.down::after { background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.22)); border-right-color: rgba(255,255,255,0.4); }
+  .pedal.limited { animation: pedalLimit .17s steps(2, end) infinite; }
+  .pedal:active { transform: translateY(1px); }
+
+  .hint {
+    text-align: center;
+    color: #46515e;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    line-height: 1.5;
+    margin-top: -2px;
+  }
+  .hint kbd {
+    display: inline-block;
+    padding: 2px 4px;
+    margin: 0 1px;
+    border: 1px solid #25303d;
+    border-radius: 4px;
+    background: #0f151d;
+    color: #788797;
+    font-family: inherit;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    vertical-align: 1px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background:
+      radial-gradient(circle at 50% 36%, rgba(26, 35, 47, 0.92) 0%, rgba(6, 8, 11, 0.98) 62%, #05070a 100%);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  .overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .overlay-inner {
+    width: min(380px, 100%);
+    text-align: center;
+    animation: riseIn .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .overlay-kicker {
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+  }
+  .overlay h2 {
+    margin: 17px 0 10px;
+    color: var(--text);
+    font-size: clamp(36px, 10vw, 50px);
+    line-height: 0.95;
+    font-weight: 780;
+    letter-spacing: -0.055em;
+  }
+  .overlay p {
+    margin: 0 auto 26px;
+    max-width: 295px;
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: 0.015em;
+  }
+  .start-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 214px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 1px solid #ffad72;
+    background: linear-gradient(180deg, #ff7a2b 0%, #cf470b 100%);
+    color: #1b0c04;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.17em;
+    cursor: pointer;
+    box-shadow:
+      0 0 55px -12px rgba(255,107,26,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.32);
+    transition: transform .16s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .start-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.1; }
+  .start-btn:hover { transform: translateY(-1px) scale(1.015); box-shadow: 0 0 75px -10px rgba(255,107,26,1), inset 0 1px 0 rgba(255,255,255,0.38); }
+  .start-btn:active { transform: scale(.985); }
+  .start-btn:disabled { cursor: default; filter: saturate(0.7) brightness(0.8); transform: none; }
+  .overlay-note {
+    margin-top: 19px;
+    color: #4f5b69;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    min-height: 13px;
+    line-height: 1.5;
+  }
+  .overlay-note.error { color: #ff8c99; }
+
+  @keyframes dotPulse {
+    from { opacity: 0.38; transform: scale(0.82); }
+    to { opacity: 1; transform: scale(1.1); }
+  }
+  @keyframes pedalLimit {
+    0% { border-color: rgba(255,53,75,0.75); }
+    100% { border-color: rgba(255,53,75,0.2); }
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------------------------------------------------------------- */
+  @media (max-height: 790px) {
+    .app { gap: 9px; padding-top: 10px; padding-bottom: 12px; }
+    .pod { padding: 11px 11px 10px; }
+    #gauge { height: 247px; }
+    #scope { height: 32px; }
+    .scopeWrap { padding-top: 6px; padding-bottom: 7px; }
+    .pod-head { padding-bottom: 8px; }
+    .overlay h2 { font-size: 40px; }
+    .pedal { padding: 14px 16px; }
+  }
+  @media (max-height: 690px) {
+    .app { gap: 7px; padding-top: 8px; padding-bottom: 10px; }
+    .brand-sub { display: none; }
+    .topbar { min-height: 26px; }
+    .pod { padding: 9px 10px 9px; border-radius: 19px; }
+    #gauge { height: 218px; }
+    #scope { height: 26px; }
+    .transmission { min-height: 35px; padding: 5px 8px; }
+    .trans-label { font-size: 6.5px; width: 43px; }
+    .scopeWrap { padding: 5px 10px 6px; }
+    .scopeLabel { font-size: 6.5px; margin-bottom: 2px; }
+    .specs { margin-top: 7px; gap: 6px; }
+    .specs > span { padding: 6px 8px 5px; }
+    .specs b { font-size: 9.5px; }
+    .specs em { font-size: 6px; }
+    .pod-head { padding-bottom: 6px; }
+    .engine-id h1 { font-size: 17px; margin-top: 4px; }
+    .engine-id p { font-size: 8.5px; }
+    .power { padding: 8px 9px; min-width: 66px; }
+    .overlay h2 { font-size: 34px; margin-top: 12px; }
+    .overlay p { margin-bottom: 19px; font-size: 10px; }
+    .start-btn { padding: 14px 22px; }
+    .pedal { padding: 12px 14px; }
+    .pedal-copy b { font-size: 11px; }
+    .hint { font-size: 8px; }
+  }
+  @media (max-height: 660px) {
+    #gauge { height: 205px; }
+    .specs { display: none; }
+  }
+  @media (max-height: 620px) {
+    #gauge { height: 174px; }
+    .scopeWrap, .specs { display: none; }
+    .controls { gap: 5px; }
+    .control-row { min-height: 28px; }
+    .pedal { padding: 10px 13px; }
+    .hint { display: none; }
+    .topbar { display: none; }
+    .app { padding-top: 8px; padding-bottom: 8px; gap: 7px; }
+    .overlay h2 { font-size: 29px; }
+    .overlay p { display: none; }
+  }
+  @media (max-height: 500px) {
+    .app { gap: 5px; padding-top: 6px; padding-bottom: 6px; }
+    .pod { padding: 7px 9px; }
+    #gauge { height: 142px; }
+    .scopeWrap, .specs, .hint, .topbar { display: none; }
+    .pod-head { padding-bottom: 4px; }
+    .engine-id p { display: none; }
+    .engine-id h1 { font-size: 15px; margin: 2px 0 0; }
+    .power { padding: 6px 8px; min-width: 58px; font-size: 7.5px; }
+    .transmission { min-height: 31px; padding: 4px 7px; }
+    .trans-label { width: 38px; font-size: 6px; }
+    .control-row { min-height: 26px; }
+    select { padding: 6px 30px 6px 9px; font-size: 10px; }
+    .pedal { padding: 9px 12px; }
+    .pedal-copy b { font-size: 10px; }
+  }
+  @media (max-width: 370px) {
+    .app { padding-left: 11px; padding-right: 11px; }
+    .engine-id h1 { font-size: 17px; }
+    .status { font-size: 7.5px; padding: 6px 8px; }
+    .control-row > label { width: 47px; }
+    .specs { grid-template-columns: 2.1fr 0.9fr 0.6fr; }
+    .specs b { font-size: 8.5px; }
+    .trans-mode { font-size: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .overlay-inner { animation: none; }
+    .status i { animation: none !important; }
+    .pedal.limited { animation: none; }
+    .start-btn { transition: none; }
+  }
+  /* Hybrid additions only; original controls can scroll on short screens. */
+  body { display:block; overflow-y:auto; touch-action:pan-y; }
+  .app { margin:0 auto; max-height:none; }
+  .hybrid-controls { border:1px solid var(--line); border-radius:12px; padding:9px; background:var(--panel); }
+  .hybrid-controls p { font-size:10px; line-height:1.5; margin:4px 0; color:var(--dim); }
+  .hybrid-controls details { font-size:10px; color:var(--dim); }
+  .hybrid-controls input[type=number] { width:85px; background:var(--bg); color:var(--text); padding:4px; border:1px solid var(--line-2); }
+  .hybrid-controls input[type=file] { width:100%; margin-top:6px; font-size:10px; }
+  #sampleStatus { color:var(--cyan); }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div>
+        <div class="brand-name">APEX <b>DYNO</b></div>
+        <div class="brand-sub">ACOUSTIC ENGINE CELL</div>
+      </div>
+    </div>
+    <div class="status" id="status" data-state="off" aria-live="polite">
+      <i></i><span id="statusText">STANDBY</span>
+    </div>
+  </header>
+
+  <section class="pod" aria-label="Engine tachometer">
+    <div class="pod-head">
+      <div class="engine-id">
+        <div class="eyebrow">
+          <span id="podLayout">V8 · CROSS-PLANE</span>
+          <span class="dot"></span>
+          <span id="podDisplacement">5.0 L</span>
+        </div>
+        <h1 id="engLabel">5.0L V8 Cross-plane</h1>
+        <p id="engNote">Naturally aspirated · 90° V8</p>
+      </div>
+      <button class="power" id="powerBtn" type="button" aria-label="Start or stop engine">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+        <span id="powerText">START</span>
+      </button>
+    </div>
+
+    <div class="gaugeWrap">
+      <canvas id="gauge" aria-label="Tachometer"></canvas>
+      <div class="gauge-glass" aria-hidden="true"></div>
+      <div class="scopeWrap">
+        <div class="scopeLabel"><span>EXHAUST NOTE</span><span class="scopeLive" id="scopeLive">STANDBY</span></div>
+        <canvas id="scope"></canvas>
+      </div>
+    </div>
+
+    <div class="specs">
+      <span><b id="specFire">1-8-4-3-6-5-7-2</b><em>FIRING ORDER</em></span>
+      <span><b id="specRedline">6,800</b><em>REDLINE RPM</em></span>
+      <span><b id="specPower">460</b><em>HP</em></span>
+    </div>
+  </section>
+
+  <section class="controls" aria-label="Engine controls">
+    <div class="control-row">
+      <label for="engine">Engine</label>
+      <div class="select-wrap">
+        <select id="engine">
+          <option value="i4t">2.0L Turbo Inline-4</option>
+          <option value="i6">3.0L Inline-6</option>
+          <option value="v8" selected>5.0L V8 Cross-plane</option>
+          <option value="v8f">5.2L V8 Flat-plane</option>
+          <option value="v12">6.5L V12</option>
+        </select>
+        <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8"/></svg>
+      </div>
+    </div>
+    <div class="control-row">
+      <label for="vol">Volume</label>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="0.70" aria-label="Master volume">
+      <output class="vol-val" id="volVal" for="vol">70%</output>
+    </div>
+  </section>
+
+  <section class="controls hybrid-controls" aria-label="Hybrid audio experiment">
+    <div class="control-row"><label for="audioMode">Audio</label><div class="select-wrap"><select id="audioMode"><option value="procedural">Procedural · original synthesis</option><option value="sample">Sample · REC194 recording</option><option value="hybrid" selected>Hybrid · recording + synthesis</option></select></div></div>
+    <div class="control-row"><label for="hybridMix">Recorded</label><input id="hybridMix" type="range" min="0" max="1" step=".01" value=".65" aria-label="Recorded share in hybrid mode"><output id="hybridMixValue">65%</output></div>
+    <p id="sampleStatus" role="status">REC194 loads when audio starts. One idle-like recording; full-range timbre is not captured.</p>
+    <details><summary>Recording reference and limitations</summary><p>Reference RPM is an unverified pitch calibration, not measured metadata. The same recording is used for every profile; profile-specific firing, intake and exhaust remain procedural.</p><label for="sampleRPM">Reference RPM </label><input id="sampleRPM" type="number" min="400" max="3000" step="5" value="775"><p>Hybrid fades to procedural outside the useful pitch band. Sample-only mode follows RPM exactly and can sound unnaturally transposed. No recorded starter or shutdown transient. For file:// or a failed download, select the supplied REC194.wav:</p><input id="sampleFile" type="file" accept="audio/wav,.wav" aria-label="Select REC194 WAV file"></details>
+  </section>
+
+  <section class="transmission" aria-label="Gearbox controls">
+    <span class="trans-label">GEARBOX</span>
+    <button class="trans-btn" id="neutralBtn" type="button" title="Neutral">N</button>
+    <button class="trans-btn" id="autoBtn" type="button" title="Automatic drive">D</button>
+    <div class="shift-stepper">
+      <button class="shift-btn" id="downBtn" type="button" title="Downshift" aria-label="Downshift">−</button>
+      <span class="gear-badge" id="gearBadge">N</span>
+      <button class="shift-btn" id="upBtn" type="button" title="Upshift" aria-label="Upshift">+</button>
+    </div>
+    <span class="trans-mode" id="transMode">NEUTRAL</span>
+  </section>
+
+  <button class="pedal" id="pedal" type="button" aria-label="Hold to rev the engine">
+    <span class="pedal-copy"><b>HOLD TO REV</b><small id="pedalSub">THROTTLE · NEUTRAL</small></span>
+    <span class="pedal-pct" id="pedalPct">0%</span>
+  </button>
+  <div class="hint"><kbd>SPACE</kbd> / <kbd>W</kbd> / <kbd>↑</kbd> rev · <kbd>Q</kbd>/<kbd>E</kbd> shift · <kbd>A</kbd> auto</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-inner">
+    <div class="overlay-kicker">APEX DYNO · ACOUSTIC ENGINE CELL</div>
+    <h2>Cold start.</h2>
+    <p>Recorded engine texture with real-time combustion, exhaust and induction.<br>D for auto · Q/E to shift · headphones recommended.</p>
+    <button id="startBtn" class="start-btn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+      <span>START ENGINE</span>
+    </button>
+    <div class="overlay-note" id="overlayNote">Audio is generated live in your browser.</div>
+  </div>
+</div>
+
+<script id="worklet-source" type="text/plain">
+'use strict';
+
+/* =====================================================================
+   APEX DYNO — engine acoustic worklet
+   A sample-accurate, firing-event driven engine synthesiser.
+
+   The engine is modelled as:
+     crank dynamics -> cylinder firing events -> exhaust pressure pulses
+     -> header/collector resonances -> intake + mechanical noise -> stereo
+   ===================================================================== */
+
+const TAU = Math.PI * 2;
+const DEG = Math.PI / 180;
+
+/* Driveline constants.  A compact virtual car keeps the engine under a
+   realistic load and gives the gearbox something real to do. */
+const GEAR_RATIOS = [0, 3.60, 2.19, 1.55, 1.20, 0.97, 0.80];
+const FINAL_DRIVE = 3.55;
+const WHEEL_RADIUS = 0.33;
+const VEHICLE_MASS = 1550;
+const DRIVELINE_EFF = 0.92;
+const CLUTCH_K = 6.5;
+
+function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function finite(x) { return x === x && x !== Infinity && x !== -Infinity; }
+
+/* A cheap, stable tanh-ish soft clipper. */
+function softClip(x) {
+  if (x < -3) return -1;
+  if (x > 3) return 1;
+  const x2 = x * x;
+  return x * (27 + x2) / (27 + 9 * x2);
+}
+
+function asymClip(x) {
+  return softClip(x + 0.16) - 0.158;
+}
+
+class OnePole {
+  constructor() {
+    this.y = 0;
+    this.a = 0.1;
+  }
+  set(fc) {
+    fc = clamp(fc, 5, sampleRate * 0.45);
+    this.a = 1 - Math.exp(-TAU * fc / sampleRate);
+  }
+  process(x) {
+    this.y += (x - this.y) * this.a;
+    return this.y;
+  }
+  reset() { this.y = 0; }
+}
+
+class DCBlock {
+  constructor() {
+    this.x1 = 0;
+    this.y1 = 0;
+    this.r = 0.996;
+  }
+  process(x) {
+    const y = x - this.x1 + this.r * this.y1;
+    this.x1 = x;
+    this.y1 = y;
+    return y;
+  }
+  reset() { this.x1 = this.y1 = 0; }
+}
+
+class Biquad {
+  constructor() {
+    this.b0 = 1; this.b1 = 0; this.b2 = 0;
+    this.a1 = 0; this.a2 = 0;
+    this.x1 = 0; this.x2 = 0;
+    this.y1 = 0; this.y2 = 0;
+  }
+  bandpass(fc, q, clear) {
+    fc = clamp(fc, 20, sampleRate * 0.45);
+    q = clamp(q, 0.25, 20);
+    const w = TAU * fc / sampleRate;
+    const alpha = Math.sin(w) / (2 * q);
+    const a0 = 1 + alpha;
+    const c = Math.cos(w);
+    this.b0 = alpha / a0;
+    this.b1 = 0;
+    this.b2 = -alpha / a0;
+    this.a1 = -2 * c / a0;
+    this.a2 = (1 - alpha) / a0;
+    if (clear) this.reset();
+  }
+  lowpass(fc, q, clear) {
+    fc = clamp(fc, 20, sampleRate * 0.45);
+    q = clamp(q, 0.25, 20);
+    const w = TAU * fc / sampleRate;
+    const alpha = Math.sin(w) / (2 * q);
+    const a0 = 1 + alpha;
+    const c = Math.cos(w);
+    const b1 = 1 - c;
+    this.b0 = b1 * 0.5 / a0;
+    this.b1 = b1 / a0;
+    this.b2 = b1 * 0.5 / a0;
+    this.a1 = -2 * c / a0;
+    this.a2 = (1 - alpha) / a0;
+    if (clear) this.reset();
+  }
+  highpass(fc, q, clear) {
+    fc = clamp(fc, 20, sampleRate * 0.45);
+    q = clamp(q, 0.25, 20);
+    const w = TAU * fc / sampleRate;
+    const alpha = Math.sin(w) / (2 * q);
+    const a0 = 1 + alpha;
+    const c = Math.cos(w);
+    const b1 = 1 + c;
+    this.b0 = b1 * 0.5 / a0;
+    this.b1 = -b1 / a0;
+    this.b2 = b1 * 0.5 / a0;
+    this.a1 = -2 * c / a0;
+    this.a2 = (1 - alpha) / a0;
+    if (clear) this.reset();
+  }
+  process(x) {
+    const y = this.b0 * x + this.b1 * this.x1 + this.b2 * this.x2
+      - this.a1 * this.y1 - this.a2 * this.y2;
+    this.x2 = this.x1;
+    this.x1 = x;
+    this.y2 = this.y1;
+    this.y1 = y;
+    return y;
+  }
+  reset() {
+    this.x1 = this.x2 = this.y1 = this.y2 = 0;
+  }
+}
+
+class Noise {
+  constructor(seed) {
+    this.s = seed | 0 || 0x9e3779b9;
+    this.p0 = this.p1 = this.p2 = this.p3 = this.p4 = this.p5 = this.p6 = 0;
+  }
+  next() {
+    /* xorshift32 */
+    let x = this.s;
+    x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+    this.s = x | 0;
+    return (x | 0) / 2147483648;
+  }
+  pink() {
+    const w = this.next();
+    this.p0 = 0.99886 * this.p0 + w * 0.0555179;
+    this.p1 = 0.99332 * this.p1 + w * 0.0750759;
+    this.p2 = 0.96900 * this.p2 + w * 0.1538520;
+    this.p3 = 0.86650 * this.p3 + w * 0.3104856;
+    this.p4 = 0.55000 * this.p4 + w * 0.5329522;
+    this.p5 = -0.7616 * this.p5 - w * 0.0168980;
+    const out = this.p0 + this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6 + w * 0.5362;
+    this.p6 = w * 0.115926;
+    return out * 0.11;
+  }
+}
+
+class EngineProcessor extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.profile = null;
+    this.mode = 'off';
+    this.sampleRate = sampleRate;
+    this.t = 0;
+    this.frame = 0;
+    this.telemetryCountdown = 0;
+    this.noise = new Noise(0x51ed270b);
+
+    this.throttleTarget = 0;
+    this.throttle = 0;
+    this.idleTarget = 0;
+    this.idleNoise = 0;
+    this.rpm = 0;
+    this.omega = 0;
+    this.angle = 0;
+    this.prevAngle = 0;
+    this.cycle = 0;
+    this.fuel = false;
+    this.fuelCut = false;
+    this.limiterCut = false;
+    this.overrun = false;
+    this.cranking = 0;
+    this.starter = 0;
+    this.catchTime = 0;
+    this.stopping = 0;
+
+    this.idlePhase = 0;
+    this.lopePhase = 0;
+
+    this.events = [];
+    this.eventCount = 0;
+    this.banks = 2;
+
+    this.exEnv = [0, 0];
+    this.exNoiseEnv = [0, 0];
+    this.exCrackEnv = [0, 0];
+    this.exPrevEnv = [0, 0];
+    this.exDecay = 0.999;
+    this.exNoiseDecay = 0.999;
+    this.intakeEnv = 0;
+    this.intakeDecay = 0.999;
+
+    this.exLp = [new OnePole(), new OnePole()];
+    this.exHp = [new DCBlock(), new DCBlock()];
+    this.outHpL = new Biquad();
+    this.outHpR = new Biquad();
+    this.outLpL = new Biquad();
+    this.outLpR = new Biquad();
+    this.sparkA = [new Biquad(), new Biquad()];
+    this.sparkB = [new Biquad(), new Biquad()];
+    this.exMidHp = [new Biquad(), new Biquad()];
+    this.exCrackHp = [new Biquad(), new Biquad()];
+    this.bodyEq = new Biquad();
+    this.presenceEq = new Biquad();
+    this.outHpL.highpass(46, 0.68, true);
+    this.outHpR.highpass(46, 0.68, true);
+    this.outLpL.lowpass(7600, 0.62, true);
+    this.outLpR.lowpass(7600, 0.62, true);
+    this.sparkA[0].bandpass(2400, 1.10, true);
+    this.sparkA[1].bandpass(2400, 1.10, true);
+    this.sparkB[0].bandpass(4600, 0.85, true);
+    this.sparkB[1].bandpass(4600, 0.85, true);
+    this.exMidHp[0].highpass(480, 0.72, true);
+    this.exMidHp[1].highpass(480, 0.72, true);
+    this.exCrackHp[0].highpass(620, 0.70, true);
+    this.exCrackHp[1].highpass(620, 0.70, true);
+    this.bodyEq.bandpass(130, 0.9, true);
+    this.presenceEq.bandpass(2100, 1.1, true);
+    this.exModeA = [new Biquad(), new Biquad()];
+    this.exModeB = [new Biquad(), new Biquad()];
+    this.exModeC = [new Biquad(), new Biquad()];
+    this.intakeBp = new Biquad();
+    this.intakePulseBp = new Biquad();
+    this.intakeLp = new OnePole();
+    this.raspBp = new Biquad();
+    this.raspHp = new Biquad();
+    this.raspLp = new OnePole();
+    this.tickHp = new Biquad();
+    this.tickBp = new Biquad();
+
+    this.popEnv = 0;
+    this.popDecay = 0.999;
+    this.popTonePhase = 0;
+    this.popToneFreq = 90;
+    this.popNoise = 0;
+
+    this.turboSpool = 0;
+    this.prevThrottleTarget = 0;
+    this.turboPhase = 0;
+    this.bovEnv = 0;
+    this.bovDecay = 0.999;
+
+    this.tickEnv = 0;
+    this.tickDecay = 0.999;
+    this.tickPhase = 0;
+    this.injectorEnv = 0;
+
+    this.boost = 0;
+
+
+    this.gear = 0;
+    this.auto = false;
+    this.speed = 0;
+    this.clutch = 0;
+    this.clutchTarget = 0;
+    this.clutchTorque = 0;
+    this.driveLoad = 0;
+    this.soundLoad = 0.1;
+    this.tipIn = 0;
+    this.shiftTimer = 0;
+    this.shiftTarget = 0;
+    this.shiftKind = '';
+    this.shiftGearChanged = false;
+    this.shiftCut = false;
+    this.revMatch = 0;
+    this.shiftCooldown = 0;
+    this.liftTimer = 0;
+    this.clunkEnv = 0;
+    this.clunkPhase = 0;
+    this.gearWhinePhase = 0;
+    this.gearWhineFreq = 0;
+    this.gearWhineAmp = 0;
+    this.drivelineOmega = 0;
+    this.locked = false;
+    this.pulseBuf = [new Float32Array(128), new Float32Array(128)];
+    this.pulseIdx = 0;
+    this.bankDrift = [0, 0];
+
+    this.flowBp = new Biquad();
+    this.flowLp = new OnePole();
+    this.flowBp.bandpass(760, 0.72, true);
+    this.flowLp.set(420);
+
+    this.outL = 0;
+    this.outR = 0;
+
+    this.port.onmessage = (e) => {
+      const d = e.data || {};
+      if (d.type === 'profile') this.configure(d.profile);
+      else if (d.type === 'throttle') {
+        const v = clamp(+d.value || 0, 0, 1);
+        if (this.throttleTarget < 0.20 && v > 0.50) this.tipIn = 1;
+        if (this.throttleTarget > 0.45 && v < 0.12 && this.mode === 'running' && this.rpm > 2600) {
+          this.startPop(0.34 + 0.16 * clamp(this.rpm / 7000, 0, 1));
+        }
+        this.throttleTarget = v;
+      }
+      else if (d.type === 'start') this.startEngine();
+      else if (d.type === 'stop') this.stopEngine();
+      else if (d.type === 'neutral') this.setNeutral();
+      else if (d.type === 'auto') this.setAuto();
+      else if (d.type === 'gear') this.setGear(d.gear);
+      else if (d.type === 'shift') this.requestShift(d.dir);
+    };
+    if (this.port.start) this.port.start();
+  }
+
+  configure(p) {
+    if (!p) return;
+    this.profile = p;
+    this.events = p.firing.map((f) => ({
+      angle: f.a,
+      bank: f.b,
+      gain: f.g == null ? 1 : f.g,
+      off: f.o || 0
+    }));
+    this.eventCount = this.events.length;
+    this.banks = p.banks || 2;
+
+    const modes = p.exhaustModes || [90, 230, 620];
+    for (let b = 0; b < 2; b++) {
+      this.exModeA[b].bandpass(modes[0] * (1 + b * (p.bankTrim || 0.02)), 1.1, true);
+      this.exModeB[b].bandpass(modes[1] * (1 + b * (p.bankTrim || 0.02)), 1.6, true);
+      this.exModeC[b].bandpass(modes[2] * (1 + b * (p.bankTrim || 0.02)), 0.9, true);
+      this.exLp[b].reset();
+      this.exHp[b].reset();
+    }
+    this.intakeBp.bandpass(750, 0.85, true);
+    this.intakePulseBp.bandpass(520, 1.1, true);
+    this.intakeLp.set(2400);
+    this.raspBp.bandpass(1500, 0.7, true);
+    this.raspHp.highpass(110, 0.7, true);
+    this.raspLp.set(5200);
+    this.tickHp.highpass(1400, 0.8, true);
+    this.tickBp.bandpass(2800, 1.2, true);
+
+    this.idleTarget = p.idle;
+    this.rpm = 0;
+    this.omega = 0;
+    this.angle = 0;
+    this.mode = 'off';
+    this.fuel = false;
+    this.throttle = 0;
+    this.throttleTarget = 0;
+    this.overrun = false;
+    this.limiterCut = false;
+    this.fuelCut = false;
+    this.turboSpool = 0;
+    this.prevThrottleTarget = 0;
+    this.bovEnv = 0;
+    this.gear = 0;
+    this.auto = false;
+    this.speed = 0;
+    this.clutch = 0;
+    this.clutchTarget = 0;
+    this.clutchTorque = 0;
+    this.shiftTimer = 0;
+    this.shiftCut = false;
+    this.revMatch = 0;
+    this.shiftCooldown = 0;
+    this.clunkEnv = 0;
+    this.locked = false;
+    this.driveLoad = 0;
+    this.soundLoad = 0.1;
+    this.pulseBuf = [new Float32Array(128), new Float32Array(128)];
+    this.pulseIdx = 0;
+    this.postState();
+  }
+
+  startEngine() {
+    if (!this.profile) return;
+    if (this.mode === 'running' || this.mode === 'cranking') return;
+    this.mode = 'cranking';
+    this.cranking = 0;
+    this.stopping = 0;
+    this.fuel = false;
+    this.fuelCut = false;
+    this.throttleTarget = 0;
+    this.throttle = 0;
+    this.rpm = Math.max(0, this.rpm);
+    this.omega = this.rpm * Math.PI / 30;
+    this.angle = 0;
+    this.catchTime = 0;
+    this.starter = 1;
+    this.gear = 0;
+    this.auto = false;
+    this.speed = 0;
+    this.clutch = 0;
+    this.clutchTarget = 0;
+    this.clutchTorque = 0;
+    this.shiftTimer = 0;
+    this.shiftCut = false;
+    this.revMatch = 0;
+    this.shiftCooldown = 0;
+    this.clunkEnv = 0;
+    this.locked = false;
+    this.driveLoad = 0;
+    this.soundLoad = 0.1;
+    this.pulseBuf = [new Float32Array(128), new Float32Array(128)];
+    this.pulseIdx = 0;
+    this.exEnv[0] = this.exEnv[1] = 0;
+    this.exNoiseEnv[0] = this.exNoiseEnv[1] = 0;
+    this.exCrackEnv[0] = this.exCrackEnv[1] = 0;
+    this.postState();
+  }
+
+  stopEngine() {
+    if (this.mode === 'off') return;
+    this.mode = 'stopping';
+    this.fuel = false;
+    this.starter = 0;
+    this.stopping = 0;
+    this.gear = 0;
+    this.auto = false;
+    this.clutch = 0;
+    this.clutchTarget = 0;
+    this.speed = 0;
+    this.shiftTimer = 0;
+    this.shiftCut = false;
+    this.revMatch = 0;
+    this.postState();
+  }
+
+  chooseAutoGear() {
+    const p = this.profile;
+    if (!p || this.speed < 0.8) return 1;
+    const wheelOmega = this.speed / WHEEL_RADIUS;
+    for (let g = 1; g <= 6; g++) {
+      const rpm = wheelOmega * GEAR_RATIOS[g] * FINAL_DRIVE * 60 / TAU;
+      if (rpm >= p.idle * 1.15 && rpm <= p.redline * 0.62) return g;
+    }
+    return 1;
+  }
+
+  setNeutral() {
+    this.auto = false;
+    this.gear = 0;
+    this.shiftTimer = 0;
+    this.shiftCut = false;
+    this.revMatch = 0;
+    this.clutchTarget = 0;
+    this.triggerClunk(0.35);
+  }
+
+  setAuto() {
+    if (!this.profile) return;
+    this.auto = true;
+    if (this.shiftTimer > 0) return;
+    if (this.gear === 0) {
+      this.gear = this.chooseAutoGear();
+      this.clutch = 0;
+      this.clutchTarget = 0;
+      this.triggerClunk(0.55);
+    }
+  }
+
+  setGear(n) {
+    n = clamp(Math.round(n), 0, 6);
+    this.auto = false;
+    if (n === 0) { this.setNeutral(); return; }
+    if (this.shiftTimer > 0) return;
+    if (this.gear === 0) {
+      this.gear = n;
+      this.clutch = 0;
+      this.clutchTarget = 0;
+      this.triggerClunk(0.55);
+      return;
+    }
+    if (n === this.gear) return;
+    this.startShift(n, n > this.gear ? 'up' : 'down');
+  }
+
+  requestShift(dir) {
+    if (!this.profile || this.mode === 'off') return;
+    this.auto = false;
+    if (this.shiftTimer > 0) return;
+    if (this.gear === 0) {
+      if (dir > 0) {
+        this.gear = 1;
+        this.clutch = 0;
+        this.clutchTarget = 0;
+        this.triggerClunk(0.55);
+      }
+      return;
+    }
+    const target = clamp(this.gear + dir, 1, 6);
+    if (target === this.gear) return;
+    this.startShift(target, dir > 0 ? 'up' : 'down');
+  }
+
+  startShift(target, kind) {
+    if (this.shiftTimer > 0) return;
+    this.shiftKind = kind;
+    this.shiftTarget = target;
+    this.shiftTimer = kind === 'up' ? 0.26 : 0.30;
+    this.shiftGearChanged = false;
+    this.shiftCut = kind === 'up';
+    this.revMatch = kind === 'down' ? 0.95 : 0;
+    this.clutchTarget = 0;
+    this.liftTimer = 0;
+    if (kind === 'up' && this.profile.turbo && this.turboSpool > 0.2) {
+      this.bovEnv = 0.45 + this.turboSpool * 0.4;
+    }
+    this.triggerClunk(0.32);
+  }
+
+  triggerClunk(strength) {
+    this.clunkEnv = Math.max(this.clunkEnv, strength);
+    this.clunkPhase = 0;
+  }
+
+  updateTransmission(dt) {
+    const p = this.profile;
+    if (!p) return;
+    this.shiftCooldown = Math.max(0, this.shiftCooldown - dt);
+
+    if (this.shiftTimer > 0) {
+      this.shiftTimer -= dt;
+      this.clutchTarget = 0;
+      const switchAt = this.shiftKind === 'up' ? 0.12 : 0.16;
+      if (!this.shiftGearChanged && this.shiftTimer <= switchAt) {
+        this.gear = this.shiftTarget;
+        this.shiftGearChanged = true;
+        this.triggerClunk(0.55);
+      }
+      if (this.shiftTimer <= 0) {
+        this.shiftTimer = 0;
+        this.clutchTarget = 1;
+        this.shiftCut = false;
+        this.revMatch = 0;
+        this.shiftCooldown = 0.55;
+        this.triggerClunk(0.9);
+        this.startPop(this.shiftKind === 'down' ? 0.20 : 0.06);
+        this.shiftKind = '';
+        this.shiftGearChanged = false;
+      }
+      this.clutch += (this.clutchTarget - this.clutch) * (1 - Math.exp(-dt / 0.045));
+      return;
+    }
+
+    this.shiftCut = false;
+    this.revMatch = 0;
+    let target = 0;
+    if (this.gear > 0 && this.mode !== 'off') {
+      if (this.speed < 0.5 && this.throttleTarget < 0.05) target = 0;
+      else if (this.speed < 2.5) target = clamp(0.16 + this.throttleTarget * 0.34 + this.speed * 0.10, 0, 0.8);
+      else target = 1;
+      if (this.rpm < p.idle * 0.72) {
+        target *= clamp((this.rpm - p.idle * 0.42) / (p.idle * 0.30), 0, 1);
+      }
+      if (this.mode === 'stopping' || this.mode === 'cranking') target = 0;
+    }
+    this.clutchTarget = target;
+    this.clutch += (target - this.clutch) * (1 - Math.exp(-dt / (target > this.clutch ? 0.08 : 0.05)));
+
+    if (this.auto && this.mode === 'running' && this.shiftCooldown <= 0 && this.clutch > 0.55) {
+      if (this.gear < 6 && this.rpm > p.redline - 300 && this.throttle > 0.12) {
+        this.startShift(this.gear + 1, 'up');
+        return;
+      }
+      if (this.gear > 1 && this.speed > 1.5 && this.throttle < 0.65 &&
+          this.rpm < p.idle + 780) {
+        this.startShift(this.gear - 1, 'down');
+        return;
+      }
+      if (this.throttleTarget < 0.05 && this.throttle < 0.1 && this.speed > 4 &&
+          this.gear > 1 && this.rpm < p.redline * 0.42) {
+        this.liftTimer += dt;
+        if (this.liftTimer > 0.55) {
+          this.startShift(this.gear - 1, 'down');
+          this.liftTimer = 0;
+          return;
+        }
+      } else {
+        this.liftTimer = 0;
+      }
+    }
+  }
+
+  postState() {
+    this.port.postMessage({ type: 'state', mode: this.mode });
+  }
+
+  noteFired(ev) {
+    const p = this.profile;
+    const idleish = this.rpm < p.idle * 1.6;
+    let cycleVar = 1 + (this.noise.next() - 0.5) * 0.24;
+    if (idleish) cycleVar *= 1 + (this.noise.next() - 0.5) * 0.18;
+    if (idleish && this.noise.next() < 0.035) cycleVar *= 0.52;
+    let amp = 0;
+
+    if (this.mode === 'running') {
+      const throttle = this.throttle;
+      const load = clamp(0.20 + this.soundLoad * 0.92, 0, 1.35);
+      const firing = this.fuel && !this.limiterCut && !this.shiftCut;
+      const overrun = this.overrun;
+
+      if (firing) {
+        amp = (0.12 + 0.88 * Math.pow(load, 0.68)) * cycleVar *
+          (0.92 + 0.20 * clamp(this.soundLoad, 0, 1.3)) * (1 + this.tipIn * 0.22);
+        if (idleish) {
+          const lopeAmt = p.idleLope == null ? 1 : p.idleLope;
+          amp *= 1 + 0.06 * lopeAmt * Math.sin(this.lopePhase * 2.0 + ev.bank * 1.7);
+          amp *= 0.94 + 0.12 * lopeAmt * Math.sin(this.lopePhase * 5.1 + ev.angle * 0.03);
+        }
+        amp *= 0.9 + 0.10 * Math.sin(this.t * 7.3 + ev.bank);
+      } else if (overrun) {
+        amp = 0.026 + 0.010 * Math.pow(load, 0.5);
+      } else {
+        amp = 0.035;
+      }
+    } else if (this.mode === 'cranking') {
+      amp = 0.105 + 0.025 * (0.5 + 0.5 * Math.sin(this.cranking * 8.0));
+    } else if (this.mode === 'stopping') {
+      amp = 0.04 * clamp(this.rpm / 500, 0, 1);
+    } else {
+      return;
+    }
+
+    if (this.mode === 'running' && this.fuel && !this.limiterCut && !this.overrun &&
+        this.throttle < 0.03 && this.rpm > p.idle * 1.55) {
+      amp *= 0.34;
+    }
+
+    const bank = ev.bank || 0;
+    const gain = ev.gain * (0.92 + this.noise.next() * 0.16);
+    const pulse = amp * gain;
+
+    this.exEnv[bank] += pulse * 1.28;
+    if (this.exEnv[bank] > 2.6) this.exEnv[bank] = 2.6;
+    this.exNoiseEnv[bank] += pulse * (0.10 + this.throttle * 0.34);
+    if (this.exNoiseEnv[bank] > 3.2) this.exNoiseEnv[bank] = 3.2;
+    this.exCrackEnv[bank] += pulse * (0.22 + this.throttle * 0.32);
+    if (this.exCrackEnv[bank] > 2.2) this.exCrackEnv[bank] = 2.2;
+    const b = this.pulseBuf[bank];
+    const idx = this.pulseIdx;
+    const delay = 4 + ((this.noise.next() * 7) | 0);
+    const drive = pulse * (1.35 + this.throttle * 0.85) * (1 + this.bankDrift[bank]);
+    b[(idx + delay) & 127] += drive;
+    b[(idx + delay + 11) & 127] -= drive * 0.86;
+    b[(idx + delay + 27) & 127] += drive * 0.42;
+    b[(idx + delay + 46) & 127] -= drive * 0.16;
+
+    this.intakeEnv += pulse * (0.12 + this.throttle * 0.44);
+    if (this.intakeEnv > 1.6) this.intakeEnv = 1.6;
+
+    this.tickEnv += pulse * (0.55 + this.throttle * 0.45);
+    if (this.tickEnv > 1.2) this.tickEnv = 1.2;
+    this.injectorEnv = Math.min(1, this.injectorEnv + 0.5 * pulse);
+
+    /* Overrun and limiter crackle. */
+    if (this.mode === 'running') {
+      let popChance = 0;
+      const eventRate = Math.max(1, (this.rpm / 120) * p.cyl);
+      if (this.limiterCut) popChance = 15 / eventRate;
+      else if (this.overrun && this.rpm > p.idle * 1.8) popChance = (4 + 4 * this.rpm / p.redline) / eventRate;
+      if (popChance > 0 && this.noise.next() < popChance) {
+        this.popEnv = Math.min(1.8, this.popEnv + 0.45 + this.noise.next() * 0.65);
+        this.popToneFreq = 70 + this.noise.next() * 80;
+        this.popNoise = 0.5 + this.noise.next() * 0.5;
+      }
+    }
+
+  }
+
+  startPop(strength) {
+    this.popEnv = Math.min(2.0, this.popEnv + strength);
+    this.popToneFreq = 65 + this.noise.next() * 105;
+    this.popNoise = 0.5 + this.noise.next() * 0.5;
+  }
+
+  updateEngine(dt) {
+    const p = this.profile;
+    if (!p) return;
+    this.t += dt;
+
+    /* Throttle-body smoothing. A real plate does not follow the pedal
+       instantly; release is a touch slower because of the return spring. */
+    if (this.mode === 'running') {
+      const target = this.throttleTarget;
+      const tau = target > this.throttle ? 0.034 : 0.055;
+      const a = 1 - Math.exp(-dt / tau);
+      this.throttle += (target - this.throttle) * a;
+    } else {
+      this.throttle += (0 - this.throttle) * (1 - Math.exp(-dt / 0.09));
+    }
+
+    this.updateTransmission(dt);
+
+    /* Idle wander: combustion instability, not a LFO on the master gain. */
+    this.idlePhase += dt;
+    this.lopePhase += dt * TAU * (7.1 + 0.45 * Math.sin(this.idlePhase * 0.37));
+    if ((this.frame & 255) === 0) {
+      this.idleNoise += (this.noise.next() - 0.5) * 0.9;
+      this.idleNoise *= 0.96;
+    }
+    const idleWander =
+      Math.sin(this.idlePhase * 1.13) * 0.0042 +
+      Math.sin(this.idlePhase * 2.77 + 1.2) * 0.002 + 
+      this.idleNoise * 0.0015;
+    this.idleTarget = p.idle * (1 + idleWander);
+
+    let idleThrottle = 0;
+    if (this.mode === 'running' && this.throttleTarget < 0.025 && this.rpm < p.idle * 1.42 &&
+        (this.gear === 0 || this.clutch < 0.25 || this.speed < 1.5)) {
+      const err = this.idleTarget - this.rpm;
+      const authority = clamp(1 - (this.rpm - p.idle) / (p.idle * 0.55), 0, 1);
+      idleThrottle = clamp((p.idleThrottle + err * 0.00215) * authority, 0, 0.30);
+    }
+
+    let cut = false;
+    let overrun = false;
+
+    if (this.mode === 'cranking') {
+      this.cranking += dt;
+      this.starter = clamp(this.cranking / 0.10, 0, 1);
+      const targetRpm = p.starterRpm + Math.sin(this.cranking * 22) * 18;
+      this.rpm += (targetRpm - this.rpm) * Math.min(1, dt * 5.6);
+      if (this.rpm < 0) this.rpm = 0;
+      this.fuel = false;
+      const ignitionDelay = p.ignitionDelay || 0.78;
+      if (this.cranking > ignitionDelay) {
+        this.mode = 'running';
+        this.fuel = true;
+        this.catchTime = 0.55;
+        this.starter = 0;
+        this.rpm = Math.max(this.rpm, p.starterRpm * 1.25);
+        this.omega = this.rpm * Math.PI / 30;
+        this.startPop(0.16);
+        this.postState();
+      }
+    } else if (this.mode === 'running') {
+      this.fuel = true;
+      this.cranking = 0;
+      this.starter = Math.max(0, this.starter - dt * 8);
+
+      if (this.catchTime > 0) this.catchTime = Math.max(0, this.catchTime - dt);
+
+      /* Rev limiter: a hard ignition cut, cycling fast enough to sound
+         like a limiter rather than a slow oscillation. */
+      const nearLimit = this.rpm > p.limiter - 45 && this.throttle > 0.12;
+      if (nearLimit) {
+        this.limiterPhase = (this.limiterPhase || 0) + dt;
+        const period = 0.040;
+        const cutPhase = (this.limiterPhase % period) / period;
+        cut = cutPhase < 0.45 || this.rpm > p.limiter + 25;
+        if (this.rpm > p.limiter + 90) this.rpm = p.limiter + 90;
+      } else {
+        this.limiterPhase = 0;
+        cut = false;
+      }
+      this.limiterCut = cut;
+      overrun = !cut && !this.shiftCut && this.shiftTimer <= 0 &&
+        this.throttleTarget < 0.03 && this.throttle < 0.055 &&
+        this.rpm > p.idle * 1.55;
+      this.overrun = overrun;
+    } else if (this.mode === 'stopping') {
+      this.stopping += dt;
+      this.fuel = false;
+      this.starter = 0;
+      overrun = false;
+      this.limiterCut = false;
+      this.overrun = false;
+    } else {
+      this.fuel = false;
+      this.rpm *= Math.exp(-dt * 1.7);
+      if (this.rpm < 1) this.rpm = 0;
+      this.omega = this.rpm * Math.PI / 30;
+      this.throttle = 0;
+    }
+
+    if (this.mode === 'running' || this.mode === 'cranking' || this.mode === 'stopping') {
+      const th = this.mode === 'running' ? Math.max(this.throttle, idleThrottle) : 0;
+      this.actualThrottle = th;
+
+      if (this.mode === 'cranking') {
+        /* Starter motor drags the engine through compression at a roughly
+           constant cranking speed; combustion has not taken over yet. */
+        const wobble = Math.sin(this.angle * DEG * 4) * 11 + Math.sin(this.angle * DEG * 2 + 1.3) * 5;
+        const targetRpm = p.starterRpm + wobble;
+        this.rpm += (targetRpm - this.rpm) * Math.min(1, dt * 7.5);
+        this.omega = this.rpm * Math.PI / 30;
+      } else {
+        let x = clamp(this.rpm / p.redline, 0, 1.2);
+        const curve = 0.60 + 1.12 * x - 1.02 * x * x;
+        let torque = 0;
+
+        const ratio = this.gear > 0 ? GEAR_RATIOS[this.gear] : 0;
+        this.drivelineOmega = ratio ? (this.speed / WHEEL_RADIUS) * ratio * FINAL_DRIVE : 0;
+        const drivelineRpm = this.drivelineOmega * 30 / Math.PI;
+        let tclutch = 0;
+        if (ratio && this.clutch > 0.001 && this.mode !== 'off') {
+          const slip = this.omega - this.drivelineOmega;
+          tclutch = clamp(slip * CLUTCH_K, -p.maxTorque * 1.35, p.maxTorque * 1.35) *
+            this.clutch;
+        }
+
+        if (this.mode === 'running' && this.fuel && !this.limiterCut && !this.shiftCut) {
+          let thTorque = th;
+          if (this.catchTime > 0) {
+            thTorque += 0.11 * (this.catchTime / 0.55) * (this.catchTime / 0.55);
+          }
+          if (this.revMatch > 0) thTorque = Math.max(thTorque, this.revMatch);
+          torque = thTorque * p.maxTorque * Math.max(0.08, curve);
+          if (this.catchTime > 0) {
+            const f = this.catchTime / 0.55;
+            torque += p.maxTorque * 0.20 * f * f;
+          }
+          if (this.revMatch > 0) torque += p.maxTorque * 0.08 * this.revMatch;
+          if (p.turbo) {
+            this.turboSpool += ((th * clamp((this.rpm - 1200) / 2800, 0, 1)) - this.turboSpool) *
+              (1 - Math.exp(-dt / (0.26 + 0.38 * (1 - this.turboSpool))));
+            this.boost = this.turboSpool * 0.42;
+            torque *= 1 + this.boost;
+          }
+        }
+
+        const pumping = (1 - clamp(th, 0, 1)) * p.pumping * clamp(this.rpm / p.redline, 0, 1.2);
+        const loss = p.friction + p.fricSlope * this.omega + pumping;
+        const netEngine = torque - loss;
+        let driveTorque = 0;
+
+        /* Above walking pace the clutch locks and the engine speed is tied
+           to road speed.  Below that it slips like a launch clutch. */
+        if (this.locked) {
+          if (!ratio || this.clutch < 0.55 || this.shiftTimer > 0 || this.speed < 1.2 ||
+              (this.rpm < p.idle * 0.60 && this.throttle < 0.10)) {
+            this.locked = false;
+          }
+        } else if (ratio && this.clutch > 0.82 && this.speed > 2 && this.shiftTimer <= 0 &&
+                   Math.abs(this.rpm - drivelineRpm) < 500) {
+          this.locked = true;
+        }
+
+        if (this.locked) {
+          this.omega += (this.drivelineOmega - this.omega) * (1 - Math.exp(-dt / 0.018));
+          if (this.omega < 0) this.omega = 0;
+          this.rpm = this.omega * 30 / Math.PI;
+          driveTorque = netEngine;
+          this.clutchTorque = netEngine;
+        } else {
+          let net = netEngine - tclutch;
+          if (this.mode === 'stopping') net -= 8 + this.omega * 0.11;
+          if (overrun && this.rpm > p.idle * 2.5) net -= 4.5;
+          this.omega += (net / p.inertia) * dt;
+          if (this.omega < 0) this.omega = 0;
+          this.rpm = this.omega * 30 / Math.PI;
+          driveTorque = tclutch;
+          this.clutchTorque = tclutch;
+        }
+
+        this.updateVehicle(dt, driveTorque);
+
+        const loadTorque = this.locked ? Math.abs(netEngine) : Math.abs(tclutch);
+        const loadTarget = clamp(loadTorque / (p.maxTorque * 0.85), 0, 1.3);
+        this.driveLoad += (loadTarget - this.driveLoad) * (1 - Math.exp(-dt / 0.06));
+        this.soundLoad = clamp(0.08 + th * 0.42 + this.driveLoad * 0.86, 0, 1.4);
+
+        if (this.mode === 'running' && this.rpm < p.idle * 0.35 &&
+            this.throttle < 0.05 && this.catchTime <= 0 && this.overrun === false) {
+          /* The idle governor should always catch this, but never let a
+             numerical edge case turn into a stalled, silent engine. */
+          this.rpm = p.idle * 0.35;
+          this.omega = this.rpm * Math.PI / 30;
+        }
+      }
+
+      if (this.mode === 'stopping' && this.rpm < 14) {
+        this.mode = 'off';
+        this.rpm = 0;
+        this.omega = 0;
+        this.postState();
+      }
+    }
+
+    const maxOmega = (p.limiter + 140) * Math.PI / 30;
+    if (this.omega > maxOmega) {
+      this.omega = maxOmega;
+      this.rpm = this.omega * 30 / Math.PI;
+    }
+    this.fuelCut = (this.mode === 'running' && this.fuel && (this.limiterCut || this.shiftCut));
+    this.updateTurbo(dt, overrun);
+  }
+
+  updateVehicle(dt, tclutch) {
+    const p = this.profile;
+    let force = 0;
+    if (this.gear > 0 && this.clutch > 0.001 && this.mode !== 'off') {
+      force = tclutch * GEAR_RATIOS[this.gear] * FINAL_DRIVE * DRIVELINE_EFF / WHEEL_RADIUS;
+    }
+    const drag = 0.5 * 1.2 * 0.68 * this.speed * this.speed +
+      (this.speed > 0.1 ? 155 : 0);
+    if (this.mode === 'off' || this.mode === 'stopping') force = 0;
+    this.speed += (force - drag) / VEHICLE_MASS * dt;
+    if (this.speed < 0) this.speed = 0;
+    if (this.speed > 90) this.speed = 90;
+  }
+
+  updateTurbo(dt, overrun) {
+    const p = this.profile;
+    if (!p.turbo) return;
+    const lift = this.prevThrottleTarget > 0.25 && this.throttleTarget < 0.15 &&
+      this.turboSpool > 0.15;
+    this.prevThrottleTarget = this.throttleTarget;
+    if (lift) this.bovEnv = 0.55 + this.turboSpool * 0.45;
+    this.bovEnv *= Math.exp(-dt / 0.20);
+
+    const target = clamp((this.rpm - 1100) / 3300, 0, 1) * clamp(this.throttle * 1.3, 0, 1);
+    const spoolRate = target > this.turboSpool ? 1.4 : 2.6;
+    this.turboSpool += (target - this.turboSpool) * (1 - Math.exp(-dt * spoolRate));
+    this.turboSpool = clamp(this.turboSpool, 0, 1);
+  }
+
+  updateEnvelopes(dt) {
+    const p = this.profile;
+    if (!p) return;
+    const fireFreq = Math.max(1, (this.rpm / 120) * p.cyl);
+    const period = 1 / fireFreq;
+    const tau = clamp(period * 0.19, 0.00032, 0.045);
+    this.exDecay = Math.exp(-dt / tau);
+    this.exNoiseDecay = Math.exp(-dt / Math.max(0.0013, tau * 1.9));
+    const crackDecay = Math.exp(-dt / 0.0022);
+    this.intakeDecay = Math.exp(-dt / Math.max(0.0011, tau * 1.2));
+    this.tickDecay = Math.exp(-dt / 0.0021);
+    this.popDecay = Math.exp(-dt / 0.060);
+    this.bovDecay = Math.exp(-dt / 0.065);
+    this.tipIn *= Math.exp(-dt / 0.16);
+
+    if ((this.frame & 255) === 0) {
+      this.bankDrift[0] += (this.noise.next() - 0.5) * 0.010;
+      this.bankDrift[1] += (this.noise.next() - 0.5) * 0.010;
+      this.bankDrift[0] *= 0.985;
+      this.bankDrift[1] *= 0.985;
+    }
+    const running = this.mode === 'running';
+    const x = clamp(this.rpm / p.redline, 0, 1.2);
+    const th = this.actualThrottle == null ? this.throttle : this.actualThrottle;
+
+    for (let b = 0; b < 2; b++) {
+      this.exEnv[b] *= this.exDecay;
+      this.exNoiseEnv[b] *= this.exNoiseDecay;
+      this.exCrackEnv[b] *= crackDecay;
+    }
+    this.intakeEnv *= this.intakeDecay;
+    this.tickEnv *= this.tickDecay;
+    this.popEnv *= this.popDecay;
+    this.injectorEnv *= Math.exp(-dt / 0.006);
+
+    const open = running ? clamp(th, 0, 1) : 0;
+    const drive = clamp(this.soundLoad, 0, 1.4);
+    const cutoff = clamp(
+      100 + this.rpm * 0.085 + open * (900 + this.rpm * 0.26) + drive * 360 + x * 380,
+      90, 7600
+    );
+    this.exLp[0].set(cutoff);
+    this.exLp[1].set(cutoff * 1.06);
+    this.intakeLp.set(900 + this.rpm * 0.20 + open * 1600 + drive * 250);
+    this.raspLp.set(2200 + this.rpm * 0.24 + open * 2400 + drive * 500);
+    this.flowLp.set(180 + this.rpm * 0.030 + drive * 210);
+
+    if ((this.frame & 31) === 0) {
+      const intakeCenter = clamp(460 + this.rpm * 0.25 + open * 950 + drive * 180, 280, 5200);
+      this.intakeBp.bandpass(intakeCenter, 0.72 + open * 0.5);
+      const raspCenter = clamp(760 + this.rpm * 0.30 + open * 1000 + drive * 260, 500, 5600);
+      this.raspBp.bandpass(raspCenter, 0.62);
+      this.flowBp.bandpass(clamp(240 + this.rpm * 0.075 + drive * 180, 160, 1400), 0.62);
+    }
+  }
+
+  renderSample(dt) {
+    const p = this.profile;
+    if (!p) { this.outL = this.outR = 0; return; }
+
+    this.updateEngine(dt);
+    this.updateEnvelopes(dt);
+
+    const sr = sampleRate;
+    const degPerSample = (this.rpm * 6) / sr;
+    this.angle += degPerSample;
+    if (this.angle >= 720) {
+      this.angle -= 720;
+      this.cycle++;
+    }
+
+    const step = degPerSample + 1e-7;
+    for (let i = 0; i < this.eventCount; i++) {
+      const ev = this.events[i];
+      let d = this.angle - ev.angle;
+      if (d < 0) d += 720;
+      if (d < step && this.rpm > 1.5) this.noteFired(ev);
+    }
+
+    /* ---- exhaust pressure pulses ---- */
+    const n1 = this.noise.next();
+    const n2 = this.noise.next();
+    const thr = this.actualThrottle == null ? this.throttle : this.actualThrottle;
+    const open = this.mode === 'running' ? clamp(thr, 0, 1) : 0;
+    const x = clamp(this.rpm / p.redline, 0, 1.2);
+    const pink = this.noise.pink();
+    const flow = this.flowBp.process(pink) * (0.0035 + this.soundLoad * 0.014) *
+      (0.30 + open * 0.70);
+    const flowLow = this.flowLp.process(pink) * (0.0018 + this.soundLoad * 0.007);
+
+    let exL = 0;
+    let exR = 0;
+    let envTotal = 0;
+
+    for (let b = 0; b < 2; b++) {
+      const env = this.exEnv[b];
+      const imp = this.pulseBuf[b][this.pulseIdx];
+      this.pulseBuf[b][this.pulseIdx] = 0;
+      const noiseEnv = this.exNoiseEnv[b];
+      envTotal += env;
+
+      const low = this.exLp[b].process(env * 0.12);
+      const m1 = this.exModeA[b].process(imp * 1.05 + env * 0.075);
+      const m2 = this.exModeB[b].process(imp * 0.68 + env * 0.042);
+      const m3 = this.exModeC[b].process(imp * 0.30 + env * 0.018);
+      const edge = (env - this.exPrevEnv[b]) * 0.14;
+      this.exPrevEnv[b] = env;
+
+      const spark = this.sparkA[b].process(imp * 0.65 + edge * 2.0) * 0.52 +
+        this.sparkB[b].process(imp * 0.34 + edge * 1.0) * 0.30;
+      const loadTone = clamp(this.soundLoad, 0, 1.4);
+      const body = low * (0.30 + loadTone * 0.11) + m1 * (0.80 + loadTone * 0.14) +
+        m2 * 0.56 + m3 * 0.30 + edge + spark + imp * 0.72;
+      const mid = this.exMidHp[b].process(body + imp * 1.1);
+      const shaped = asymClip((body + mid * 1.15) * (1.55 + open * 1.2 + this.soundLoad * 0.28)) * 0.56;
+      const n = b === 0 ? n1 : n2;
+      const raspGain = 0.0012 + noiseEnv * (0.075 + open * 0.34 * (0.35 + 0.65 * x) + this.soundLoad * 0.10);
+      const rasp = (this.raspBp.process(n * 0.63) * 0.46 +
+        this.raspLp.process(n * 0.9) * 0.08) * raspGain;
+      const crack = this.exCrackHp[b].process(n * 0.8) * this.exCrackEnv[b] * 0.22;
+      const value = this.exHp[b].process(shaped + rasp + crack + flow + flowLow);
+      if (b === 0) exL = value;
+      else exR = value;
+    }
+    this.pulseIdx = (this.pulseIdx + 1) & 127;
+
+    /* No artificial sawtooth: the pressure pulses themselves create the
+       firing-order harmonics and the cross-plane bank roughness. */
+
+    /* ---- intake ---- */
+    const intakeNoise = this.noise.next();
+    this.intakeLp.process(intakeNoise * 0.4);
+    const intakeBand = this.intakeBp.process(intakeNoise * 0.8) *
+      (0.008 + open * 0.105 + this.soundLoad * 0.018);
+    const intakeRoar = this.intakeEnv * (0.018 + open * 0.075 + this.soundLoad * 0.025);
+    const intakePulse = this.intakePulseBp.process(this.intakeEnv * 0.10) * (0.32 + open * 0.62);
+    let intake = intakeBand + intakeRoar + intakePulse;
+    if (this.mode === 'cranking') intake += this.intakeLp.process(this.noise.next() * 0.28) * 0.22;
+
+    /* ---- valvetrain / injector mechanical noise ---- */
+    this.tickPhase += dt * (this.rpm / 120) * p.cyl * 2;
+    this.tickPhase -= Math.floor(this.tickPhase);
+    const tickNoise = this.noise.next();
+    const tick = this.tickHp.process(tickNoise) * this.tickEnv * 0.12 +
+      this.tickBp.process(tickNoise) * this.tickEnv * 0.055;
+    const injector = this.injectorEnv * (this.noise.next() * 0.5) * 0.016;
+
+    /* ---- exhaust crackle / overrun pops ---- */
+    let pop = 0;
+    if (this.popEnv > 0.0005) {
+      this.popTonePhase += TAU * this.popToneFreq / sr;
+      if (this.popTonePhase > TAU) this.popTonePhase -= TAU;
+      const tone = Math.sin(this.popTonePhase) * this.popEnv * 0.15;
+      const crackN = this.noise.next();
+      const crack = (this.raspBp.process(crackN * 0.5) * 1.8 + crackN * 0.18) *
+        this.popEnv * this.popNoise * 0.30;
+      pop = softClip((tone + crack) * 1.7) * 0.48;
+    }
+
+    /* ---- turbo whistle and compressor surge ---- */
+    let turbo = 0;
+    if (p.turbo && (this.turboSpool > 0.01 || this.bovEnv > 0.005)) {
+      const whistleFreq = 1250 + this.turboSpool * 3100 + this.rpm * 0.045;
+      this.turboPhase += TAU * whistleFreq / sr;
+      if (this.turboPhase > TAU) this.turboPhase -= TAU;
+      const whistle = Math.sin(this.turboPhase) * (0.006 + this.turboSpool * 0.036) *
+        (0.3 + open * 0.7);
+      const gear = Math.sin(this.turboPhase * 2.01) * 0.22;
+      const flutter = 0.55 + 0.45 * Math.sin(this.t * TAU * 27.0);
+      const bov = this.noise.next() * this.bovEnv * 0.060 * flutter;
+      turbo = (whistle + whistle * gear + bov) * (this.starter > 0.02 ? 0.8 : 1);
+    }
+
+    /* ---- starter motor ---- */
+    let starter = 0;
+    if (this.starter > 0.001 && this.mode === 'cranking') {
+      const rpmFrac = clamp(this.rpm / Math.max(120, p.starterRpm), 0, 1.4);
+      const f = 820 + rpmFrac * 940 + 34 * Math.sin(this.t * 21);
+      this.starterPhase = (this.starterPhase || 0) + TAU * f / sr;
+      if (this.starterPhase > TAU) this.starterPhase -= TAU;
+      const motor = Math.sin(this.starterPhase) * 0.020 +
+        Math.sin(this.starterPhase * 2.0) * 0.011 +
+        Math.sin(this.starterPhase * 3.02) * 0.006;
+      starter = (motor + this.noise.next() * 0.006) * this.starter;
+    }
+
+    /* ---- gearbox mesh whine and shift clunk ---- */
+    let gearWhine = 0;
+    let clunk = 0;
+    if (this.gear > 0 && this.speed > 0.25) {
+      const ratio = GEAR_RATIOS[this.gear];
+      const targetF = clamp(260 + this.speed * 3.6 * ratio * FINAL_DRIVE * 3.8, 260, 5400);
+      this.gearWhineFreq += (targetF - this.gearWhineFreq) * (1 - Math.exp(-dt / 0.06));
+      this.gearWhinePhase += TAU * this.gearWhineFreq / sr;
+      if (this.gearWhinePhase > TAU) this.gearWhinePhase -= TAU;
+      const amp = (0.0008 + this.soundLoad * 0.0025) * clamp(this.speed / 4, 0, 1);
+      gearWhine = (Math.sin(this.gearWhinePhase) * 0.78 +
+        Math.sin(this.gearWhinePhase * 2.02 + 0.6) * 0.16) * amp;
+    } else {
+      this.gearWhineAmp *= Math.exp(-dt / 0.08);
+    }
+    if (this.clunkEnv > 0.0005) {
+      this.clunkPhase += TAU * 58 / sr;
+      if (this.clunkPhase > TAU) this.clunkPhase -= TAU;
+      const n = (n1 + n2) * 0.5;
+      clunk = Math.sin(this.clunkPhase) * this.clunkEnv * 0.13 +
+        n * this.clunkEnv * 0.045;
+      this.clunkEnv *= Math.exp(-dt / 0.055);
+    }
+
+    /* ---- stereo placement ---- */
+    const pan = p.bankPan || [0.72, 1.0];
+    const bankLGain = pan[0];
+    const bankRGain = pan[1];
+
+    let exMixL;
+    let exMixR;
+    if (p.banks === 1) {
+      /* A single exhaust bank is heard centred, with a tiny amount of
+         stereo spread from the intake/mechanical layers. */
+      exMixL = exL;
+      exMixR = exL * 0.96;
+    } else {
+      exMixL = exL * bankLGain + exR * 0.20;
+      exMixR = exR * bankRGain + exL * 0.20;
+    }
+
+    let l = exMixL + intake * 0.92 + tick * 0.72 + pop * 1.0 + turbo * 0.8 + starter + gearWhine + clunk;
+    let r = exMixR + intake * 0.72 + tick * 0.72 + pop * 1.0 + turbo * 0.8 + starter + gearWhine + clunk;
+
+    /* A tiny amount of bank crosstalk and mechanical common-mode. */
+    if (this.mode === 'off') {
+      const fade = Math.exp(-dt / 0.08);
+      this.outL *= fade;
+      this.outR *= fade;
+    } else {
+      this.outL = l;
+      this.outR = r;
+    }
+
+    let mixL = this.outHpL.process(this.outL);
+    let mixR = this.outHpR.process(this.outR);
+    const body = this.bodyEq.process(mixL + mixR) * 0.07;
+    const presence = this.presenceEq.process(mixL + mixR) * 0.03;
+    mixL = this.outLpL.process(mixL + body + presence);
+    mixR = this.outLpR.process(mixR + body + presence);
+    const gain = p.outputGain || 0.63;
+    this.outL = softClip(mixL * gain);
+    this.outR = softClip(mixR * gain);
+
+    if (!finite(this.outL)) this.outL = 0;
+    if (!finite(this.outR)) this.outR = 0;
+  }
+
+  process(inputs, outputs) {
+    const out = outputs[0];
+    const l = out[0];
+    const r = out.length > 1 ? out[1] : out[0];
+    if (!l) return true;
+
+    if (!this.profile) {
+      for (let i = 0; i < l.length; i++) { l[i] = 0; if (r !== l) r[i] = 0; }
+      return true;
+    }
+
+    const dt = 1 / sampleRate;
+    for (let i = 0; i < l.length; i++) {
+      this.frame++;
+      this.renderSample(dt);
+      l[i] = this.outL;
+      if (r !== l) r[i] = this.outR;
+    }
+
+    this.telemetryCountdown -= l.length;
+    if (this.telemetryCountdown <= 0) {
+      this.telemetryCountdown = 1024;
+      const limiter = this.mode === 'running' && this.rpm > (this.profile.limiter - 120) &&
+        this.throttle > 0.15;
+      this.port.postMessage({
+        type: 'telemetry',
+        rpm: this.rpm,
+        throttle: this.actualThrottle || 0,
+        climb: this.throttle,
+        mode: this.mode,
+        limiter: limiter,
+        overrun: this.overrun,
+        turbo: this.turboSpool,
+        cut: this.limiterCut || this.shiftCut,
+        gear: this.gear,
+        auto: this.auto,
+        speed: this.speed,
+        shifting: this.shiftTimer > 0,
+        shiftKind: this.shiftKind,
+        clutch: this.clutch,
+        load: this.soundLoad,
+        tclutch: this.clutchTorque
+      });
+    }
+    return true;
+  }
+}
+
+registerProcessor('apex-engine', EngineProcessor);
+</script>
+
+<script>
+/* =====================================================================
+   APEX DYNO — UI, audio graph and gauge rendering
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     ENGINE DEFINITIONS
+     All acoustic/physical parameters live here.  The worklet receives a
+     plain serialisable copy; the UI keeps the presentation metadata.
+     ------------------------------------------------------------------ */
+  var ENGINE_ORDER = ['i4t', 'i6', 'v8', 'v8f', 'v12'];
+
+  var ENGINES = {
+    i4t: {
+      id: 'i4t',
+      label: '2.0L Turbo Inline-4',
+      layout: 'INLINE-4 · TURBO',
+      displacement: '2.0 L',
+      hp: 320,
+      torque: 420,
+      fireOrder: '1-3-4-2',
+      note: 'Turbocharged · direct injection',
+      cyl: 4,
+      idle: 810, redline: 6800, limiter: 6900,
+      starterRpm: 235, ignitionDelay: 0.74,
+      maxTorque: 330, inertia: 0.145,
+      friction: 7.5, fricSlope: 0.060, pumping: 42, idleThrottle: 0.083,
+      firing: [0, 180, 360, 540].map(function (a) { return { a: a, b: 0, g: 1 }; }),
+      banks: 1, bankTrim: 0.018, bankPan: [0.95, 0.95],
+      exhaustModes: [70, 190, 430], outputGain: 0.62, turbo: true, idleLope: 0.80
+    },
+    i6: {
+      id: 'i6',
+      label: '3.0L Inline-6',
+      layout: 'INLINE-6 · NA',
+      displacement: '3.0 L',
+      hp: 380,
+      torque: 365,
+      fireOrder: '1-5-3-6-2-4',
+      note: 'Naturally aspirated · six-cylinder',
+      cyl: 6,
+      idle: 720, redline: 7200, limiter: 7300,
+      starterRpm: 215, ignitionDelay: 0.76,
+      maxTorque: 350, inertia: 0.205,
+      friction: 9.5, fricSlope: 0.075, pumping: 50, idleThrottle: 0.078,
+      firing: [0, 120, 240, 360, 480, 600].map(function (a) { return { a: a, b: 0, g: 1 }; }),
+      banks: 1, bankTrim: 0.012, bankPan: [0.95, 0.95],
+      exhaustModes: [75, 200, 480], outputGain: 0.62, turbo: false, idleLope: 0.35
+    },
+    v8: {
+      id: 'v8',
+      label: '5.0L V8 Cross-plane',
+      layout: 'V8 · CROSS-PLANE',
+      displacement: '5.0 L',
+      hp: 460,
+      torque: 420,
+      fireOrder: '1-8-4-3-6-5-7-2',
+      note: 'Naturally aspirated · 90° V8',
+      cyl: 8,
+      idle: 650, redline: 6800, limiter: 6950,
+      starterRpm: 195, ignitionDelay: 0.80,
+      maxTorque: 430, inertia: 0.265,
+      friction: 11.5, fricSlope: 0.095, pumping: 55, idleThrottle: 0.075,
+      firing: [
+        { a: 0, b: 0, g: 1.00 }, { a: 90, b: 1, g: 0.96 },
+        { a: 180, b: 1, g: 1.03 }, { a: 270, b: 0, g: 0.98 },
+        { a: 360, b: 1, g: 1.02 }, { a: 450, b: 0, g: 0.95 },
+        { a: 540, b: 0, g: 1.01 }, { a: 630, b: 1, g: 0.99 }
+      ],
+      banks: 2, bankTrim: 0.035, bankPan: [1.0, 0.93],
+      exhaustModes: [82, 220, 560], outputGain: 0.63, turbo: false, idleLope: 1.00
+    },
+    v8f: {
+      id: 'v8f',
+      label: '5.2L V8 Flat-plane',
+      layout: 'V8 · FLAT-PLANE',
+      displacement: '5.2 L',
+      hp: 540,
+      torque: 406,
+      fireOrder: '1-8-3-6-4-5-2-7',
+      note: 'Naturally aspirated · flat-plane crank',
+      cyl: 8,
+      idle: 850, redline: 8250, limiter: 8400,
+      starterRpm: 225, ignitionDelay: 0.78,
+      maxTorque: 410, inertia: 0.235,
+      friction: 10.5, fricSlope: 0.080, pumping: 55, idleThrottle: 0.075,
+      firing: [0, 90, 180, 270, 360, 450, 540, 630].map(function (a, i) {
+        return { a: a, b: i % 2, g: 1 };
+      }),
+      banks: 2, bankTrim: 0.018, bankPan: [0.98, 0.95],
+      exhaustModes: [95, 265, 690], outputGain: 0.61, turbo: false, idleLope: 0.65
+    },
+    v12: {
+      id: 'v12',
+      label: '6.5L V12',
+      layout: 'V12 · 65°',
+      displacement: '6.5 L',
+      hp: 780,
+      torque: 530,
+      fireOrder: '1-12-5-8-3-10-6-7-2-11-4-9',
+      note: 'Naturally aspirated · twelve-cylinder',
+      cyl: 12,
+      idle: 850, redline: 8600, limiter: 8750,
+      starterRpm: 235, ignitionDelay: 0.82,
+      maxTorque: 540, inertia: 0.34,
+      friction: 12.5, fricSlope: 0.075, pumping: 65, idleThrottle: 0.062,
+      firing: [0, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660].map(function (a, i) {
+        return { a: a, b: i % 2, g: 1 };
+      }),
+      banks: 2, bankTrim: 0.022, bankPan: [0.98, 0.95],
+      exhaustModes: [100, 300, 820], outputGain: 0.60, turbo: false, idleLope: 0.25
+    }
+  };
+
+  /* ------------------------------------------------------------------
+     RUNTIME STATE
+     ------------------------------------------------------------------ */
+  var STATE = {
+    key: 'v8',
+    mode: 'off',
+    rpm: 0,
+    throttle: 0,
+    limiter: false,
+    overrun: false,
+    cut: false,
+    turbo: 0,
+    gear: 0,
+    auto: false,
+    speed: 0,
+    shifting: false,
+    shiftKind: '',
+    clutch: 0,
+    load: 0,
+    volume: 0.70,
+    pedalHeld: false,
+    booting: false,
+    needleRpm: 0,
+    needleVel: 0,
+    statusKey: '',
+    audioReady: false,
+    time: 0
+  };
+
+  var AC = null;
+  var NODE = null;
+  var MASTER = null;
+  var ANALYSER = null;
+  var ANALYSER_DATA = null;
+  var AUDIO_PROMISE = null;
+  var SCOPE_GAIN = 1;
+  var HYBRID = { mode:'hybrid', blend:.65, baseRPM:775, ready:false, error:'', source:null, sampleGain:null, proceduralGain:null, output:null, loop:null, rate:1, quality:0, sampleTarget:0, proceduralTarget:1, loadSerial:0 }; 
+  var pendingTransmission = null;
+
+  /* ------------------------------------------------------------------
+     DOM
+     ------------------------------------------------------------------ */
+  function $(id) { return document.getElementById(id); }
+  var gauge = $('gauge');
+  var scope = $('scope');
+  var gaugeCtx = gauge.getContext('2d');
+  var scopeCtx = scope.getContext('2d');
+  var overlay = $('overlay');
+  var startBtn = $('startBtn');
+  var overlayNote = $('overlayNote');
+  var powerBtn = $('powerBtn');
+  var powerText = $('powerText');
+  var engineSel = $('engine');
+  var volSlider = $('vol');
+  var volVal = $('volVal');
+  var pedalBtn = $('pedal');
+  var pedalPct = $('pedalPct');
+  var statusEl = $('status');
+  var statusText = $('statusText');
+  var scopeLive = $('scopeLive');
+  var engLabel = $('engLabel');
+  var engNote = $('engNote');
+  var podLayout = $('podLayout');
+  var podDisplacement = $('podDisplacement');
+  var specFire = $('specFire');
+  var specRedline = $('specRedline');
+  var specPower = $('specPower');
+  var gaugeWrap = document.querySelector('.gaugeWrap');
+  var neutralBtn = $('neutralBtn');
+  var autoBtn = $('autoBtn');
+  var downBtn = $('downBtn');
+  var upBtn = $('upBtn');
+  var gearBadge = $('gearBadge');
+  var transMode = $('transMode');
+  var transmissionEl = document.querySelector('.transmission');
+  var pedalSub = $('pedalSub');
+
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function fmtInt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+  /* ------------------------------------------------------------------
+     AUDIO BOOTSTRAP
+     ------------------------------------------------------------------ */
+  function workletSource() {
+    return document.getElementById('worklet-source').textContent;
+  }
+
+  function makeImpulseResponse(ctx) {
+    var seconds = 0.55;
+    var len = Math.max(1, Math.floor(ctx.sampleRate * seconds));
+    var buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch);
+      for (var i = 0; i < len; i++) {
+        var t = i / len;
+        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2.8) * 0.55;
+      }
+      /* A few early reflections give the exhaust a sense of place. */
+      var taps = [
+        [0.009, 0.32], [0.017, -0.22], [0.029, 0.16],
+        [0.043, -0.11], [0.061, 0.07]
+      ];
+      for (var k = 0; k < taps.length; k++) {
+        var idx = Math.floor(taps[k][0] * ctx.sampleRate) + ch * 3;
+        if (idx < len) d[idx] += taps[k][1];
+      }
+    }
+    return buf;
+  }
+
+
+  /* Sample transport is native Web Audio. One prepared circular overlap-add loop,
+     one source, no grains, per-frame scheduling, or DSP changes to the worklet. */
+  function hybridSmooth(a,b,x) { var t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t); }
+  function prepareRecording(ctx, decoded) {
+    if(decoded.numberOfChannels<1 || decoded.duration<4.79) throw new Error('Use the supplied 5.02 s REC194 recording.');
+    var sr=decoded.sampleRate,a=Math.round(.760*sr),b=Math.round(4.780*sr),fade=Math.round(.120*sr),length=b-a-fade;
+    var loop=ctx.createBuffer(decoded.numberOfChannels,length,sr),sum=0,peak=0;
+    for(var ch=0;ch<decoded.numberOfChannels;ch++) {
+      var input=decoded.getChannelData(ch),out=loop.getChannelData(ch),mean=0;
+      for(var i=a;i<b;i++)mean+=input[i];mean/=(b-a);
+      for(var i=0;i<length;i++)out[i]=input[a+fade+i]-mean;
+      for(var j=0;j<fade;j++) { var w=.5-.5*Math.cos(Math.PI*j/(fade-1));out[length-fade+j]=(1-w)*input[b-fade+j]+w*input[a+j]-mean; }
+      for(var i=0;i<length;i++){sum+=out[i]*out[i];peak=Math.max(peak,Math.abs(out[i]));}
+    }
+    var rms=Math.sqrt(sum/(length*decoded.numberOfChannels));
+    if(!Number.isFinite(rms)||rms<.001)throw new Error('Recording is silent or invalid.');
+    var normalisation=Math.min(4,.010/rms),first=loop.getChannelData(0);
+    HYBRID.loop={sourceDuration:decoded.duration,sampleRate:sr,channels:decoded.numberOfChannels,duration:loop.duration,start:.760,end:4.780,crossfade:.120,rms:rms,peak:peak,normalisation:normalisation,seamDelta:(first[0]-first[first.length-1])*normalisation};
+    return {buffer:loop,gain:normalisation};
+  }
+  async function loadRecording(ctx, bytes) {
+    var serial=++HYBRID.loadSerial;
+    try {
+      if(!bytes) {var response=await fetch('./REC194.wav');if(!response.ok)throw new Error('HTTP '+response.status);bytes=await response.arrayBuffer();}
+      var decoded=await ctx.decodeAudioData(bytes),prepared=prepareRecording(ctx,decoded);
+      if(serial!==HYBRID.loadSerial)return;
+      var source=ctx.createBufferSource(),normalise=ctx.createGain(),highpass=ctx.createBiquadFilter(),fade=ctx.createGain();
+      source.buffer=prepared.buffer;source.loop=true;normalise.gain.value=prepared.gain;
+      highpass.type='highpass';highpass.frequency.value=18;highpass.Q.value=.707;
+      fade.gain.value=0;source.connect(normalise);normalise.connect(highpass);highpass.connect(fade);fade.connect(HYBRID.sampleGain);source.fade=fade;source.cleanup=function(){normalise.disconnect();highpass.disconnect();fade.disconnect();};
+      var old=HYBRID.source,now=ctx.currentTime;if(old){old.fade.gain.setTargetAtTime(0,now,.035);old.stop(now+.25);setTimeout(function(){old.disconnect();old.cleanup();},350);}
+      source.start();fade.gain.setTargetAtTime(1,now,.035);HYBRID.source=source;HYBRID.ready=true;HYBRID.error='';updateHybrid();
+    } catch(error) {
+      if(serial!==HYBRID.loadSerial)return;
+      HYBRID.error=String(error.message||error);if(!HYBRID.ready){HYBRID.mode='procedural';$('audioMode').value='procedural';}updateHybrid();
+    }
+  }
+  function updateHybrid() {
+    var ratio=Math.max(0,STATE.rpm/HYBRID.baseRPM),running=STATE.mode==='running'||STATE.mode==='stopping';
+    HYBRID.rate=ratio;HYBRID.quality=hybridSmooth(.4,.75,ratio)*(1-hybridSmooth(1.7,2.7,ratio));
+    var angle=HYBRID.mode==='hybrid'?HYBRID.blend*HYBRID.quality*Math.PI/2:HYBRID.mode==='sample'?Math.PI/2:0;
+    var sampleWeight=HYBRID.ready?Math.sin(angle):0;
+    // Sample has no recorded starter. Hybrid keeps the original starter intact.
+    var proc=HYBRID.mode==='sample'?0:Math.cos(angle);
+    if(!running&&HYBRID.mode==='hybrid')proc=1;
+    if(!HYBRID.ready&&HYBRID.mode==='hybrid')proc=1;
+    var envelope=running?hybridSmooth(0,180,STATE.rpm)*(.65+.35*clamp(STATE.load||0,0,1)):0;
+    HYBRID.sampleTarget=sampleWeight*envelope;HYBRID.proceduralTarget=proc;
+    var detail=HYBRID.mode==='hybrid'&&running?proc*sampleWeight:0;proc-=detail;
+    if(AC&&HYBRID.sampleGain){var now=AC.currentTime;HYBRID.sampleGain.gain.setTargetAtTime(HYBRID.sampleTarget,now,.045);HYBRID.proceduralGain.gain.setTargetAtTime(proc,now,.045);HYBRID.detailGain.gain.setTargetAtTime(detail,now,.045);if(HYBRID.source)HYBRID.source.playbackRate.setTargetAtTime(ratio,now,.055);}
+    var text=HYBRID.ready?'REC194 · '+ratio.toFixed(2)+'× · '+(HYBRID.mode==='hybrid'?'recorded band '+Math.round(HYBRID.quality*100)+'%':HYBRID.mode):'Recording not loaded';
+    if(HYBRID.mode==='sample'&&(ratio<.6||ratio>2.5))text+=' · large pitch shift; limited realism';
+    if(HYBRID.error)text+=' · '+HYBRID.error+' · select REC194.wav or use Procedural';
+    $('sampleStatus').textContent=text;
+  }
+  function makeOutputGuard(ctx) {
+    var guard=ctx.createWaveShaper(),curve=new Float32Array(4097);
+    for(var i=0;i<curve.length;i++){var x=i*2/(curve.length-1)-1,a=Math.abs(x);curve[i]=Math.sign(x)*(a<=.8?a:.8+.15*Math.tanh((a-.8)/.15));}
+    guard.curve=curve;guard.oversample='2x';return guard;
+  }
+  $('audioMode').addEventListener('change',function(){HYBRID.mode=this.value;updateHybrid();});
+  $('hybridMix').addEventListener('input',function(){HYBRID.blend=Number(this.value);$('hybridMixValue').textContent=Math.round(HYBRID.blend*100)+'%';updateHybrid();});
+  $('sampleRPM').addEventListener('change',function(){var value=Number(this.value);if(!Number.isFinite(value))value=775;HYBRID.baseRPM=clamp(value,400,3000);this.value=HYBRID.baseRPM;updateHybrid();});
+  $('sampleFile').addEventListener('change',async function(){if(!this.files[0])return;var bytes=await this.files[0].arrayBuffer();await ensureAudio();if(AC)await loadRecording(AC,bytes);});
+  // Read-only instrumentation for reproducible browser checks; no alternate RPM model.
+  window.hybridAudio=Object.freeze({snapshot:function(){
+    var rms=0,peak=0;if(ANALYSER){var data=new Float32Array(ANALYSER.fftSize);ANALYSER.getFloatTimeDomainData(data);for(var i=0;i<data.length;i++){rms+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));}rms=Math.sqrt(rms/data.length);}
+    return {mode:HYBRID.mode,engineMode:STATE.mode,profile:STATE.key,rpm:STATE.rpm,throttle:STATE.throttle,ready:HYBRID.ready,error:HYBRID.error,rate:HYBRID.rate,quality:HYBRID.quality,sampleGain:HYBRID.sampleGain?HYBRID.sampleGain.gain.value:0,proceduralGain:HYBRID.proceduralGain?HYBRID.proceduralGain.gain.value:1,detailGain:HYBRID.detailGain?HYBRID.detailGain.gain.value:0,loop:HYBRID.loop,rms:rms,peak:peak,context:AC?AC.state:'not-created'};
+  },context:function(){return AC;},output:function(){return HYBRID.output;}});
+
+  function sendProfile() {
+    if (!NODE) return;
+    var e = ENGINES[STATE.key];
+    NODE.port.postMessage({
+      type: 'profile',
+      profile: {
+        id: e.id, label: e.label, cyl: e.cyl,
+        idle: e.idle, redline: e.redline, limiter: e.limiter,
+        starterRpm: e.starterRpm, ignitionDelay: e.ignitionDelay,
+        maxTorque: e.maxTorque, inertia: e.inertia,
+        friction: e.friction, fricSlope: e.fricSlope,
+        pumping: e.pumping, idleThrottle: e.idleThrottle,
+        firing: e.firing, banks: e.banks,
+        bankTrim: e.bankTrim, bankPan: e.bankPan,
+        exhaustModes: e.exhaustModes, outputGain: e.outputGain,
+        turbo: e.turbo, idleLope: e.idleLope
+      }
+    });
+  }
+
+  function ensureAudio() {
+    if (AC && NODE) {
+      if (AC.state === 'suspended') return AC.resume();
+      return Promise.resolve();
+    }
+    if (AUDIO_PROMISE) return AUDIO_PROMISE;
+
+    AUDIO_PROMISE = new Promise(function (resolve, reject) {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) {
+        reject(new Error('Web Audio is not supported in this browser.'));
+        return;
+      }
+      var ctx;
+      try {
+        ctx = new Ctx({ latencyHint: 'interactive' });
+      } catch (err) {
+        reject(new Error('Could not create an audio context.'));
+        return;
+      }
+
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(function () {});
+      }
+
+      if (!ctx.audioWorklet) {
+        ctx.close().catch(function () {});
+        reject(new Error('AudioWorklet is not supported in this browser.'));
+        return;
+      }
+
+      var source;
+      var dataUrl;
+      try {
+        source = workletSource();
+        /* A data URL works both from http(s) and from a local file.  Blob
+           worklets are rejected by Chrome when the page origin is file://. */
+        dataUrl = 'data:application/javascript;charset=utf-8,' + encodeURIComponent(source);
+      } catch (err) {
+        ctx.close().catch(function () {});
+        reject(new Error('Could not prepare the audio engine.'));
+        return;
+      }
+
+      function loadWorklet() {
+        return ctx.audioWorklet.addModule(dataUrl).catch(function () {
+          /* Safari and some embedded browsers prefer a blob module. */
+          var blobUrl = URL.createObjectURL(new Blob([source], { type: 'application/javascript' }));
+          return ctx.audioWorklet.addModule(blobUrl).then(function () {
+            URL.revokeObjectURL(blobUrl);
+          }, function (err) {
+            URL.revokeObjectURL(blobUrl);
+            throw err;
+          });
+        });
+      }
+
+      loadWorklet().then(function () {
+
+        var node;
+        try {
+          node = new AudioWorkletNode(ctx, 'apex-engine', {
+            numberOfInputs: 0,
+            numberOfOutputs: 1,
+            outputChannelCount: [2]
+          });
+        } catch (err) {
+          ctx.close().catch(function () {});
+          reject(new Error('Could not start the audio engine.'));
+          return;
+        }
+
+        var input = ctx.createGain();
+        input.gain.value = 1.0;
+
+        var dry = ctx.createGain();
+        dry.gain.value = 0.945;
+
+        var comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -15;
+        comp.knee.value = 20;
+        comp.ratio.value = 4.2;
+        comp.attack.value = 0.004;
+        comp.release.value = 0.22;
+
+        var master = ctx.createGain();
+        master.gain.value = STATE.volume;
+
+        var wet = ctx.createGain();
+        wet.gain.value = 0.055;
+
+        var conv = ctx.createConvolver();
+        try { conv.buffer = makeImpulseResponse(ctx); } catch (e) {}
+
+        var analyser = ctx.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.72;
+
+        var proceduralGain=ctx.createGain(),sampleGain=ctx.createGain(),detailGain=ctx.createGain(),detailFilter=ctx.createBiquadFilter(),guard=makeOutputGuard(ctx);
+        proceduralGain.gain.value=1;sampleGain.gain.value=0;detailGain.gain.value=0;detailFilter.type='highpass';detailFilter.frequency.value=180;detailFilter.Q.value=.707;
+        HYBRID.proceduralGain=proceduralGain;HYBRID.detailGain=detailGain;HYBRID.sampleGain=sampleGain;HYBRID.output=guard;
+        node.connect(proceduralGain);proceduralGain.connect(input);node.connect(detailFilter);detailFilter.connect(detailGain);detailGain.connect(input);sampleGain.connect(input);
+        input.connect(dry);
+        dry.connect(comp);
+        input.connect(conv);
+        conv.connect(wet);
+        wet.connect(comp);
+        comp.connect(master);
+        master.connect(guard);guard.connect(ctx.destination);
+        guard.connect(analyser);
+
+        node.onprocessorerror = function (event) {
+          console.error('Audio processor error', event);
+          showAudioError('The audio engine stopped unexpectedly.');
+        };
+
+        node.port.onmessage = onWorkletMessage;
+        if (node.port.start) node.port.start();
+
+        AC = ctx;
+        NODE = node;
+        MASTER = master;
+        ANALYSER = analyser;
+        ANALYSER_DATA = new Float32Array(analyser.fftSize);
+        STATE.audioReady = true;
+
+        sendProfile();
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(function (err) {
+            console.warn('Audio resume failed', err);
+          });
+        }
+        loadRecording(ctx).then(resolve);
+      }).catch(function (err) {
+        ctx.close().catch(function () {});
+        reject(new Error('AudioWorklet could not be loaded. ' + (err && err.message ? err.message : '')));
+      });
+    }).catch(function (err) {
+      AUDIO_PROMISE = null;
+      throw err;
+    });
+
+    return AUDIO_PROMISE;
+  }
+
+  function showAudioError(message) {
+    STATE.booting = false;
+    startBtn.disabled = false;
+    startBtn.querySelector('span').textContent = 'RETRY';
+    overlay.classList.remove('hide');
+    overlayNote.textContent = message;
+    overlayNote.classList.add('error');
+    console.error(message);
+  }
+
+  /* ------------------------------------------------------------------
+     START / STOP / MESSAGES
+     ------------------------------------------------------------------ */
+  function startEngine() {
+    if (STATE.booting) return;
+    if (STATE.mode === 'running' || STATE.mode === 'cranking') return;
+    STATE.booting = true;
+    startBtn.disabled = true;
+    startBtn.querySelector('span').textContent = 'STARTING…';
+    overlayNote.classList.remove('error');
+    overlayNote.textContent = 'Spinning up the engine model…';
+
+    ensureAudio().then(function () {
+      if (!NODE) throw new Error('Audio engine is unavailable.');
+      if (AC && AC.state === 'suspended') {
+        AC.resume().catch(function () {});
+      }
+      NODE.port.postMessage({ type: 'start' });
+      NODE.port.postMessage({ type: 'throttle', value: STATE.pedalHeld ? 1 : 0 });
+      if (pendingTransmission) {
+        NODE.port.postMessage(pendingTransmission);
+        pendingTransmission = null;
+      }
+      STATE.mode = 'cranking';
+      STATE.booting = false;
+      startBtn.disabled = false;
+      startBtn.querySelector('span').textContent = 'START ENGINE';
+      overlayNote.textContent = 'Audio is generated live in your browser.';
+      overlay.classList.add('hide');
+      updateStatus();
+    }).catch(function (err) {
+      pendingTransmission = null;
+      STATE.booting = false;
+      startBtn.disabled = false;
+      startBtn.querySelector('span').textContent = 'RETRY';
+      overlay.classList.remove('hide');
+      overlayNote.textContent = err && err.message ? err.message : 'Could not start audio.';
+      overlayNote.classList.add('error');
+      console.error(err);
+    });
+  }
+
+  function stopEngine() {
+    if (!NODE) return;
+    NODE.port.postMessage({ type: 'stop' });
+    setThrottle(0);
+    pedalBtn.classList.remove('down');
+    STATE.pedalHeld = false;
+  }
+
+  function onWorkletMessage(event) {
+    var msg = event && event.data ? event.data : event;
+    if (!msg) return;
+    if (msg.type === 'state') {
+      setMode(msg.mode);
+      updateHybrid();
+    } else if (msg.type === 'telemetry') {
+      STATE.rpm = msg.rpm || 0;
+      STATE.throttle = msg.throttle || 0;
+      STATE.limiter = !!msg.limiter;
+      STATE.overrun = !!msg.overrun;
+      STATE.cut = !!msg.cut;
+      STATE.turbo = msg.turbo || 0;
+      STATE.gear = msg.gear || 0;
+      STATE.auto = !!msg.auto;
+      STATE.speed = msg.speed || 0;
+      STATE.shifting = !!msg.shifting;
+      STATE.shiftKind = msg.shiftKind || '';
+      STATE.clutch = msg.clutch || 0;
+      STATE.load = msg.load || 0;
+      if (msg.mode && msg.mode !== STATE.mode) setMode(msg.mode);
+      updateStatus();
+      updateTransmissionUI();
+      updatePedalVisuals();
+      updateHybrid();
+    }
+  }
+
+  function setMode(mode) {
+    STATE.mode = mode || 'off';
+    if (STATE.mode === 'off') {
+      STATE.rpm = 0;
+      STATE.throttle = 0;
+      STATE.limiter = false;
+      STATE.overrun = false;
+      STATE.cut = false;
+      STATE.turbo = 0;
+      STATE.gear = 0;
+      STATE.auto = false;
+      STATE.speed = 0;
+      STATE.shifting = false;
+      STATE.shiftKind = '';
+      STATE.clutch = 0;
+      STATE.load = 0;
+    }
+    updateStatus();
+    updateTransmissionUI();
+    updatePedalVisuals();
+  }
+
+  /* ------------------------------------------------------------------
+     STATUS / CONTROLS
+     ------------------------------------------------------------------ */
+  function statusForState() {
+    var m = STATE.mode;
+    if (m === 'cranking') return { key: 'cranking', text: 'CRANKING', cls: 'cranking' };
+    if (m === 'stopping') return { key: 'stopping', text: 'SHUTDOWN', cls: 'cranking' };
+    if (m === 'running') {
+      if (STATE.shifting) return { key: 'shift', text: STATE.shiftKind === 'down' ? 'DOWNSHIFT' : 'UPSHIFT', cls: 'shift' };
+      if (STATE.limiter || STATE.cut) return { key: 'limit', text: 'LIMITER', cls: 'limit' };
+      if (STATE.overrun) return { key: 'overrun', text: 'OVERRUN', cls: 'overrun' };
+      if (STATE.gear > 0 && STATE.throttle < 0.08 && STATE.speed > 2) {
+        return { key: 'brake', text: 'ENGINE BRAKE', cls: 'overrun' };
+      }
+      if (STATE.throttle > 0.24) return { key: 'load', text: STATE.gear > 0 ? 'PULLING' : 'UNDER LOAD', cls: 'load' };
+      var eng = ENGINES[STATE.key];
+      if (STATE.gear === 0 && STATE.rpm > eng.idle * 1.16) return { key: 'settle', text: 'FAST IDLE', cls: 'load' };
+      return { key: 'idle', text: 'IDLE', cls: 'run' };
+    }
+    return { key: 'off', text: 'STANDBY', cls: 'off' };
+  }
+
+  function updateStatus() {
+    var s = statusForState();
+    var key = s.key + '|' + STATE.mode + '|' + STATE.gear + '|' + (STATE.auto ? 'A' : 'M');
+    if (key !== STATE.statusKey) {
+      STATE.statusKey = key;
+      statusEl.dataset.state = s.cls;
+      statusText.textContent = s.text;
+      if (scopeLive) {
+        scopeLive.textContent = (STATE.mode === 'running' || STATE.mode === 'cranking') ? 'LIVE' : 'STANDBY';
+        scopeLive.dataset.live = (STATE.mode === 'running' || STATE.mode === 'cranking') ? '1' : '0';
+      }
+      gaugeWrap.dataset.limiter = STATE.limiter ? '1' : '0';
+      gaugeWrap.dataset.shift = STATE.shifting ? '1' : '0';
+    }
+
+    var active = STATE.mode === 'running' || STATE.mode === 'cranking' || STATE.mode === 'stopping';
+    powerText.textContent = STATE.mode === 'cranking' ? 'CRANK' : (active ? 'STOP' : 'START');
+    powerBtn.classList.toggle('running', STATE.mode === 'running');
+    powerBtn.classList.toggle('cranking', STATE.mode === 'cranking');
+    powerBtn.disabled = STATE.booting;
+  }
+
+  function updateTransmissionUI() {
+    if (!gearBadge) return;
+    gearBadge.textContent = STATE.gear > 0 ? String(STATE.gear) : 'N';
+    autoBtn.classList.toggle('active', STATE.auto);
+    neutralBtn.classList.toggle('active', !STATE.auto && STATE.gear === 0);
+    transMode.textContent = STATE.auto ? 'AUTO' : (STATE.gear > 0 ? 'MANUAL' : 'NEUTRAL');
+    transmissionEl.classList.toggle('shifting', STATE.shifting);
+    transmissionEl.classList.toggle('auto', STATE.auto);
+    downBtn.disabled = STATE.gear === 0;
+    upBtn.disabled = STATE.gear >= 6;
+    if (pedalSub) {
+      var label = STATE.gear > 0 ? (STATE.auto ? 'AUTO · ' : '') + 'GEAR ' + STATE.gear : 'NEUTRAL';
+      pedalSub.textContent = 'THROTTLE · ' + label;
+    }
+  }
+
+  function updatePedalVisuals() {
+    var pct = clamp(STATE.throttle, 0, 1) * 100;
+    pedalBtn.style.setProperty('--pedalFill', pct.toFixed(1) + '%');
+    if (STATE.pedalHeld) {
+      pedalPct.textContent = '100%';
+    } else {
+      pedalPct.textContent = Math.round(pct) + '%';
+    }
+    pedalBtn.classList.toggle('down', STATE.pedalHeld);
+    pedalBtn.classList.toggle('limited', STATE.limiter);
+  }
+
+  function setThrottle(v) {
+    if (NODE) NODE.port.postMessage({ type: 'throttle', value: v });
+  }
+
+  function requestTransmission(msg) {
+    if (STATE.booting) return;
+    if (!NODE || STATE.mode === 'off' || STATE.mode === 'stopping') {
+      if (msg.type === 'neutral') return;
+      pendingTransmission = msg;
+      if (STATE.mode === 'off' || STATE.mode === 'stopping') startEngine();
+      return;
+    }
+    NODE.port.postMessage(msg);
+  }
+
+  function pedalDown() {
+    if (STATE.booting) return;
+    STATE.pedalHeld = true;
+    pedalBtn.classList.add('down');
+    if (STATE.mode === 'off' || STATE.mode === 'stopping') {
+      startEngine();
+    }
+    setThrottle(1);
+    updatePedalVisuals();
+  }
+
+  function pedalUp() {
+    STATE.pedalHeld = false;
+    pedalBtn.classList.remove('down');
+    setThrottle(0);
+    updatePedalVisuals();
+  }
+
+  function updateEngineUI() {
+    var e = ENGINES[STATE.key];
+    engLabel.textContent = e.label;
+    engNote.textContent = e.note;
+    podLayout.textContent = e.layout;
+    podDisplacement.textContent = e.displacement;
+    specFire.textContent = e.fireOrder;
+    specRedline.textContent = fmtInt(e.redline);
+    specPower.textContent = String(e.hp);
+    engineSel.value = STATE.key;
+    document.title = 'APEX DYNO Hybrid 01 — ' + e.label;
+  }
+
+  function setEngine(key) {
+    if (!ENGINES[key]) key = 'v8';
+    var active = STATE.mode === 'running' || STATE.mode === 'cranking' || STATE.mode === 'stopping';
+    STATE.key = key;
+    updateEngineUI();
+    STATE.needleRpm = 0;
+    STATE.needleVel = 0;
+    if (NODE) {
+      sendProfile();
+      if (active) {
+        NODE.port.postMessage({ type: 'start' });
+        NODE.port.postMessage({ type: 'throttle', value: STATE.pedalHeld ? 1 : 0 });
+        STATE.mode = 'cranking';
+      }
+    }
+    updateStatus();
+    drawGauge();
+  }
+
+  /* ------------------------------------------------------------------
+     CANVAS
+     ------------------------------------------------------------------ */
+  function resizeCanvas(canvas) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.max(1, Math.round(rect.width * dpr));
+    var h = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, dpr: dpr };
+  }
+
+  function resizeAll() {
+    resizeCanvas(gauge);
+    resizeCanvas(scope);
+    drawGauge();
+    drawScope();
+  }
+
+  function roundRect(g, x, y, w, h, r) {
+    var rr = Math.min(r, w * 0.5, h * 0.5);
+    g.beginPath();
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr);
+    g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr);
+    g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
+  }
+
+  function drawGauge() {
+    var w = gauge.clientWidth;
+    var h = gauge.clientHeight;
+    if (!w || !h) return;
+    var g = gaugeCtx;
+    var e = ENGINES[STATE.key];
+    var maxRpm = Math.ceil((e.redline + 350) / 500) * 500;
+    var cx = w * 0.5;
+    var cy = h * 0.615;
+    var R = Math.min(w * 0.355, h * 0.415);
+    var A0 = Math.PI * 0.75;
+    var A1 = Math.PI * 2.25;
+    var span = A1 - A0;
+    var ratio = clamp(STATE.rpm / e.redline, 0, 1.25);
+    var limiterOn = STATE.limiter || (STATE.mode === 'running' && ratio > 0.995 && STATE.throttle > 0.2);
+
+    function ang(v) { return A0 + span * clamp(v / maxRpm, 0, 1); }
+
+    g.clearRect(0, 0, w, h);
+
+    /* subtle instrument face light */
+    var bg = g.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.55);
+    bg.addColorStop(0, 'rgba(255,255,255,0.045)');
+    bg.addColorStop(0.55, 'rgba(255,255,255,0.012)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, w, h);
+
+    /* shift lights */
+    var lightCount = 8;
+    var lightW = Math.max(10, Math.min(16, w * 0.038));
+    var lightH = Math.max(3.5, Math.min(5, h * 0.016));
+    var gap = lightW * 0.38;
+    var totalW = lightCount * lightW + (lightCount - 1) * gap;
+    var lx = cx - totalW / 2;
+    var ly = Math.max(10, h * 0.045);
+    var litCount = 0;
+    var thresholds = [0.58, 0.65, 0.71, 0.77, 0.83, 0.89, 0.94, 0.975];
+    for (var t = 0; t < thresholds.length; t++) {
+      if (ratio >= thresholds[t]) litCount = t + 1;
+    }
+    var flash = Math.floor(STATE.time * 13) % 2 === 0;
+    for (var li = 0; li < lightCount; li++) {
+      var lit = li < litCount;
+      if (limiterOn && flash) lit = true;
+      var col = li < 4 ? '#3ff2a0' : (li < 6 ? '#ffc45e' : '#ff354b');
+      g.globalAlpha = lit ? 1 : 0.16;
+      g.fillStyle = col;
+      g.shadowColor = lit ? col : 'transparent';
+      g.shadowBlur = lit ? 9 : 0;
+      roundRect(g, lx + li * (lightW + gap), ly, lightW, lightH, lightH * 0.5);
+      g.fill();
+    }
+    g.shadowBlur = 0;
+    g.globalAlpha = 1;
+
+    /* track */
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(cx, cy, R, A0, A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = '#171e27';
+    g.stroke();
+
+    /* red zone */
+    g.beginPath();
+    g.arc(cx, cy, R, ang(e.redline), A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = 'rgba(255,47,69,0.29)';
+    g.stroke();
+
+    /* outer throttle ring */
+    var ringR = R + Math.max(7, R * 0.075);
+    g.beginPath();
+    g.arc(cx, cy, ringR, A0, A1);
+    g.lineWidth = Math.max(2, R * 0.018);
+    g.strokeStyle = 'rgba(101,224,255,0.08)';
+    g.stroke();
+    var th = STATE.mode === 'off' ? 0 : clamp(STATE.throttle, 0, 1);
+    if (th > 0.005) {
+      g.beginPath();
+      g.arc(cx, cy, ringR, A0, A0 + span * th);
+      g.lineWidth = Math.max(2, R * 0.018);
+      g.strokeStyle = 'rgba(101,224,255,0.78)';
+      g.shadowColor = 'rgba(101,224,255,0.55)';
+      g.shadowBlur = 8;
+      g.stroke();
+      g.shadowBlur = 0;
+    }
+
+    /* ticks and labels */
+    var majorStep = 1000;
+    var minorStep = 500;
+    var font = Math.max(8, Math.round(R * 0.080));
+    for (var v = 0; v <= maxRpm + 1; v += minorStep) {
+      var major = v % majorStep === 0;
+      var a = ang(v);
+      var r1 = R - Math.max(7, R * 0.058);
+      var r2 = r1 - (major ? Math.max(8, R * 0.083) : Math.max(4, R * 0.043));
+      var red = v >= e.redline;
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+      g.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+      g.lineWidth = major ? Math.max(1.2, R * 0.014) : Math.max(0.7, R * 0.008);
+      g.strokeStyle = red ? (major ? '#ff6273' : '#7c3039') : (major ? '#7c8998' : '#39424e');
+      g.stroke();
+      if (major) {
+        var rr = r2 - Math.max(8, R * 0.075);
+        g.fillStyle = red ? '#ff8792' : '#788696';
+        g.font = '700 ' + font + 'px ui-sans-serif, system-ui, sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(String(v / 1000), cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+      }
+    }
+
+    /* small unit label */
+    g.fillStyle = 'rgba(126,140,157,0.62)';
+    g.font = '700 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText('x1000 r/min', cx, cy - R * 0.47);
+
+    /* value arc */
+    var nr = clamp(STATE.needleRpm, 0, maxRpm);
+    if (limiterOn) {
+      nr += (Math.random() - 0.5) * e.redline * 0.010;
+    } else if (STATE.mode === 'running' || STATE.mode === 'cranking') {
+      nr += (Math.sin(STATE.time * 0.091) + Math.sin(STATE.time * 0.137)) * e.redline * 0.0007;
+      nr += (Math.random() - 0.5) * e.redline * 0.00035;
+    }
+    nr = clamp(nr, 0, maxRpm);
+    var vEnd = ang(nr);
+    if (vEnd > A0 + 0.004) {
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(8, R * 0.074);
+      g.strokeStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+      g.shadowColor = limiterOn ? 'rgba(255,50,71,.75)' : 'rgba(255,107,26,.65)';
+      g.shadowBlur = Math.max(10, R * 0.14);
+      g.stroke();
+      g.shadowBlur = 0;
+
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(1, R * 0.008);
+      g.strokeStyle = 'rgba(255,228,203,0.52)';
+      g.stroke();
+    }
+
+    /* redline radial marker */
+    var ra = ang(e.redline);
+    g.beginPath();
+    g.moveTo(cx + Math.cos(ra) * (R - Math.max(8, R * 0.074)), cy + Math.sin(ra) * (R - Math.max(8, R * 0.074)));
+    g.lineTo(cx + Math.cos(ra) * (R + Math.max(7, R * 0.055)), cy + Math.sin(ra) * (R + Math.max(7, R * 0.055)));
+    g.lineWidth = Math.max(1.2, R * 0.015);
+    g.strokeStyle = 'rgba(255,84,104,0.9)';
+    g.stroke();
+
+    /* needle */
+    var na = ang(nr);
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(na);
+    var needleLen = R - Math.max(8, R * 0.055);
+    var needleBase = R * 0.14;
+    g.beginPath();
+    g.moveTo(-needleBase, -Math.max(4, R * 0.043));
+    g.lineTo(needleLen, -Math.max(1.2, R * 0.012));
+    g.lineTo(needleLen, Math.max(1.2, R * 0.012));
+    g.lineTo(-needleBase, Math.max(4, R * 0.043));
+    g.closePath();
+    var ng = g.createLinearGradient(-needleBase, 0, needleLen, 0);
+    ng.addColorStop(0, limiterOn ? '#ff8a93' : '#ffb06c');
+    ng.addColorStop(0.35, limiterOn ? '#ff3247' : '#ff6b1a');
+    ng.addColorStop(1, limiterOn ? '#ff273b' : '#ff5a0c');
+    g.fillStyle = ng;
+    g.shadowColor = limiterOn ? 'rgba(255,50,71,.9)' : 'rgba(255,107,26,.8)';
+    g.shadowBlur = Math.max(10, R * 0.15);
+    g.fill();
+    g.restore();
+    g.shadowBlur = 0;
+
+    /* hub */
+    g.beginPath();
+    g.arc(cx, cy, Math.max(7, R * 0.085), 0, Math.PI * 2);
+    g.fillStyle = '#0b0f14';
+    g.fill();
+    g.lineWidth = Math.max(1.4, R * 0.019);
+    g.strokeStyle = '#2b3542';
+    g.stroke();
+    g.beginPath();
+    g.arc(cx, cy, Math.max(2, R * 0.025), 0, Math.PI * 2);
+    g.fillStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+    g.fill();
+
+    /* digital readout */
+    var readoutY = cy + R * 0.58;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = limiterOn ? '#ff5365' : '#eef4fb';
+    g.font = '800 ' + Math.max(20, Math.round(R * 0.245)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText(String(Math.round(STATE.rpm)), cx, readoutY);
+    g.fillStyle = '#4f5b69';
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.060)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('RPM', cx, readoutY + Math.max(12, R * 0.125));
+
+    /* gear and road-speed readouts */
+    var nx = cx - R * 0.57;
+    var ny = readoutY;
+    var gearText = STATE.gear > 0 ? String(STATE.gear) : 'N';
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, nx - 11, ny - 11, 22, 22, 5);
+    g.fill();
+    g.strokeStyle = STATE.shifting ? 'rgba(255,196,94,0.60)' : 'rgba(101,224,255,0.25)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = STATE.shifting ? '#ffc45e' : 'rgba(101,224,255,0.82)';
+    g.font = '800 ' + Math.max(9, Math.round(R * 0.085)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(gearText, nx, ny);
+
+    var sx = cx + R * 0.57;
+    var speedKmh = Math.round(STATE.speed * 3.6);
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, sx - 18, ny - 12, 36, 24, 5);
+    g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.10)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = '#cfdbe8';
+    g.font = '800 ' + Math.max(8, Math.round(R * 0.072)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText(String(speedKmh), sx, ny - 3);
+    g.fillStyle = '#596675';
+    g.font = '800 ' + Math.max(4.5, Math.round(R * 0.040)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('KM/H', sx, ny + 7);
+
+    /* state caption */
+    var shiftCaption = STATE.shiftKind === 'down' ? 'DOWNSHIFT' : 'UPSHIFT';
+    var caption = STATE.mode === 'off' ? 'ENGINE OFF' :
+      (STATE.mode === 'cranking' ? 'CRANKING' :
+        (STATE.mode === 'stopping' ? 'SHUTDOWN' :
+          (STATE.shifting ? shiftCaption :
+            (limiterOn ? 'REV LIMIT' :
+              (STATE.overrun ? 'OVERRUN' :
+                (STATE.gear > 0 && STATE.throttle < 0.08 && STATE.speed > 2 ? 'ENGINE BRAKE' :
+                  (STATE.throttle > 0.24 ? 'FULL LOAD' :
+                    (STATE.gear === 0 && STATE.rpm > e.idle * 1.16 ? 'FAST IDLE' : 'IDLE'))))))));
+    g.fillStyle = STATE.shifting ? 'rgba(255,196,94,0.88)' :
+      (limiterOn ? 'rgba(255,83,101,0.85)' : 'rgba(104,118,134,0.78)');
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText(caption, cx, readoutY + Math.max(26, R * 0.24));
+  }
+
+  function drawScope() {
+    var w = scope.clientWidth;
+    var h = scope.clientHeight;
+    if (!w || !h) return;
+    var g = scopeCtx;
+    g.clearRect(0, 0, w, h);
+
+    var cy = h * 0.54;
+    g.strokeStyle = 'rgba(255,255,255,0.06)';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(0, cy);
+    g.lineTo(w, cy);
+    g.stroke();
+
+    g.strokeStyle = 'rgba(255,255,255,0.025)';
+    for (var gx = 0.25; gx < 1; gx += 0.25) {
+      g.beginPath();
+      g.moveTo(w * gx, 0);
+      g.lineTo(w * gx, h);
+      g.stroke();
+    }
+
+    if (!ANALYSER || !ANALYSER_DATA) return;
+    ANALYSER.getFloatTimeDomainData(ANALYSER_DATA);
+
+    var peak = 0;
+    for (var i = 0; i < ANALYSER_DATA.length; i += 3) {
+      var av = Math.abs(ANALYSER_DATA[i]);
+      if (av > peak) peak = av;
+    }
+    var targetGain = peak > 0.004 ? 0.85 / peak : 1;
+    targetGain = clamp(targetGain, 1, 100);
+    SCOPE_GAIN += (targetGain - SCOPE_GAIN) * 0.10;
+    var gain = SCOPE_GAIN * h * 0.40;
+
+    g.beginPath();
+    var n = ANALYSER_DATA.length;
+    for (var k = 0; k < n; k++) {
+      var x = (k / (n - 1)) * w;
+      var y = cy - ANALYSER_DATA[k] * gain;
+      if (k === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    var grad = g.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, 'rgba(255,107,26,0.22)');
+    grad.addColorStop(0.38, 'rgba(255,107,26,0.95)');
+    grad.addColorStop(0.72, 'rgba(255,180,111,0.9)');
+    grad.addColorStop(1, 'rgba(101,224,255,0.65)');
+    g.strokeStyle = grad;
+    g.lineWidth = 1.15;
+    g.shadowColor = 'rgba(255,107,26,0.30)';
+    g.shadowBlur = 5;
+    g.stroke();
+    g.shadowBlur = 0;
+  }
+
+  function updateNeedle(dt) {
+    var target = STATE.mode === 'off' ? 0 : STATE.rpm;
+    var stiffness = 92;
+    var damping = 14.5;
+    var accel = (target - STATE.needleRpm) * stiffness - STATE.needleVel * damping;
+    STATE.needleVel += accel * dt;
+    STATE.needleRpm += STATE.needleVel * dt;
+    if (STATE.mode === 'off' && Math.abs(STATE.needleRpm) < 0.6 && Math.abs(STATE.needleVel) < 0.6) {
+      STATE.needleRpm = 0;
+      STATE.needleVel = 0;
+    }
+    STATE.needleRpm = clamp(STATE.needleRpm, -60, 11000);
+  }
+
+  /* ------------------------------------------------------------------
+     RAF
+     ------------------------------------------------------------------ */
+  var lastFrame = 0;
+  function frame(ts) {
+    if (!lastFrame) lastFrame = ts;
+    var dt = Math.min(0.05, Math.max(0.001, (ts - lastFrame) / 1000));
+    lastFrame = ts;
+    STATE.time += dt;
+    updateNeedle(dt);
+    drawGauge();
+    drawScope();
+    requestAnimationFrame(frame);
+  }
+
+  /* ------------------------------------------------------------------
+     WIRING
+     ------------------------------------------------------------------ */
+  function init() {
+    updateEngineUI();
+    volSlider.value = String(STATE.volume);
+    volVal.textContent = Math.round(STATE.volume * 100) + '%';
+    document.documentElement.style.setProperty('--vol', (STATE.volume * 100) + '%');
+    resizeAll();
+    updateStatus();
+    updateTransmissionUI();
+    updatePedalVisuals();
+
+    startBtn.addEventListener('click', function (ev) {
+      if (ev) ev.stopPropagation();
+      startEngine();
+    });
+    overlay.addEventListener('click', function (ev) {
+      if (ev.target === overlay) startEngine();
+    });
+
+    powerBtn.addEventListener('click', function () {
+      if (STATE.mode === 'running' || STATE.mode === 'cranking' || STATE.mode === 'stopping') {
+        stopEngine();
+      } else {
+        startEngine();
+      }
+    });
+
+    neutralBtn.addEventListener('click', function () { requestTransmission({ type: 'neutral' }); });
+    autoBtn.addEventListener('click', function () { requestTransmission({ type: 'auto' }); });
+    downBtn.addEventListener('click', function () { requestTransmission({ type: 'shift', dir: -1 }); });
+    upBtn.addEventListener('click', function () { requestTransmission({ type: 'shift', dir: 1 }); });
+
+    pedalBtn.addEventListener('pointerdown', function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (pedalBtn.setPointerCapture) {
+        try { pedalBtn.setPointerCapture(ev.pointerId); } catch (err) {}
+      }
+      pedalDown();
+    });
+    window.addEventListener('pointerup', pedalUp);
+    window.addEventListener('pointercancel', pedalUp);
+    pedalBtn.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
+
+    var keysDown = {};
+    function isRevKey(e) {
+      return e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp';
+    }
+    window.addEventListener('keydown', function (e) {
+      if (!e.repeat) {
+        if (e.code === 'KeyQ') { e.preventDefault(); requestTransmission({ type: 'shift', dir: -1 }); return; }
+        if (e.code === 'KeyE') { e.preventDefault(); requestTransmission({ type: 'shift', dir: 1 }); return; }
+        if (e.code === 'KeyA') { e.preventDefault(); requestTransmission({ type: 'auto' }); return; }
+        if (e.code === 'KeyN') { e.preventDefault(); requestTransmission({ type: 'neutral' }); return; }
+      }
+      if (isRevKey(e)) {
+        e.preventDefault();
+        if (!keysDown[e.code]) {
+          keysDown[e.code] = true;
+          pedalDown();
+        }
+      }
+    });
+    window.addEventListener('keyup', function (e) {
+      if (isRevKey(e)) {
+        e.preventDefault();
+        keysDown[e.code] = false;
+        var any = false;
+        for (var k in keysDown) { if (keysDown[k]) { any = true; break; } }
+        if (!any) pedalUp();
+      }
+    });
+    window.addEventListener('blur', function () {
+      keysDown = {};
+      pedalUp();
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        keysDown = {};
+        pedalUp();
+      }
+    });
+
+    engineSel.addEventListener('change', function () {
+      setEngine(engineSel.value);
+    });
+
+    volSlider.addEventListener('input', function () {
+      STATE.volume = parseFloat(volSlider.value) || 0;
+      volVal.textContent = Math.round(STATE.volume * 100) + '%';
+      document.documentElement.style.setProperty('--vol', (STATE.volume * 100) + '%');
+      if (MASTER && AC) MASTER.gain.setTargetAtTime(STATE.volume, AC.currentTime, 0.025);
+    });
+
+    window.addEventListener('resize', resizeAll);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', resizeAll);
+    setTimeout(resizeAll, 80);
+    setTimeout(resizeAll, 350);
+
+    requestAnimationFrame(frame);
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
