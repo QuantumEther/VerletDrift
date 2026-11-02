@@ -1,0 +1,14 @@
+{
+  "branch": "PERFORMANCE",
+  "base": "9a8593a152584bc513334f7a0981a34f8ed984cd",
+  "sourceSha256": {
+    "constrained-model.js": "dbb6c23864e3f969c862e86025de6c8c0068e34c1d33d921dce513be230277a0",
+    "constraints.js": "363b17acb6cb33a11f76b4e4195bd5228b69beacaf5e278c17c809105d5751f9",
+    "constraints.test.mjs": "8adddf71d5fa463062efc174e4de0a3969af562921fe165e5c9513b36cad8cae",
+    "constraint-benchmark.mjs": "8ed91e577eebbc776f875e826f4b392674590d99f1bfaee7ad313274c355e76b"
+  },
+  "resultSha256": {
+    "summary.json": "07f5aa8df38f955a741ee6800f67c3803ffdb255108a5fafdd7ce7a9ea23cdc6",
+    "benchmark.json": "cc3ad0b9be58859fa30f2147551d4e5d7644d67e69e7de06358cba01fcb93ba7"
+  }
+}
