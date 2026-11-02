@@ -1,0 +1,16 @@
+{
+  "branch": "PERFORMANCE",
+  "base": "5f6683b84b1bf0900ea596fa270e9e5983dee2aa",
+  "sourceSha256": {
+    "consistent-model.js": "7af7fce486fe3869c0d4fb1d487d0e03c6968e2ce0018e4200a269fd07c5c6c9",
+    "consistency.test.mjs": "b1500764d39d83395d868684e5be3cba75d115652d452a8b86aab1d13952ccfe",
+    "consistency-benchmark.mjs": "c868cc49735f36fbb440272892bb0aeeb9a55411f539f1258dd0a85a6f12014a",
+    "trace-time-levels.mjs": "869f7ed1804f8233c8da481c2744822f8a2a453ac0c3447bcf059b508114afdb"
+  },
+  "resultSha256": {
+    "state-refinement.json": "15e8bc87001aac0c389893ef28d12381bc7dac5b00a38f8a345be28f694efec8",
+    "summary.json": "ed4f9775d35e110e6bada255a0595cf6b2e1940822343ab45508be606cc6f2b5",
+    "old-time-level-trace.json": "85f1f28015e8ad804c862900b2a641f2cb006f30369c9e68947d0d8bcd930097",
+    "benchmark.json": "892ec171d9504551b4cdcd45653f24463b10103bab5c75c2b2e63eae91292881"
+  }
+}

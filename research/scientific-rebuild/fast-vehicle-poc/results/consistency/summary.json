@@ -1,0 +1,179 @@
+{
+  "meansCpuMsPerSimSecond": {
+    "previous": 23.661714285714286,
+    "consistent": 97.89657142857142,
+    "strict": 1080.4057142857143
+  },
+  "costVsPrevious": 4.137340610510046,
+  "strictThroughputRatio": 11.0361956350434,
+  "cases": [
+    {
+      "case": "acceleration",
+      "previous": {
+        "cpuMsPerSimSecond": 49.865,
+        "medianMs": 0.013370000000122673,
+        "p95Ms": 0.05115400000022419,
+        "p99Ms": 0.10257899999987785,
+        "worstMs": 2.0718980000001466
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 175.361,
+        "medianMs": 0.06478500000002896,
+        "p95Ms": 0.2273619999998573,
+        "p99Ms": 0.4208490000000893,
+        "worstMs": 2.388580000000047
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 998.302,
+        "medianMs": 0.8144940000001952,
+        "p95Ms": 1.488905000000159,
+        "p99Ms": 2.0867739999998776,
+        "worstMs": 4.769553999999971
+      }
+    },
+    {
+      "case": "steering",
+      "previous": {
+        "cpuMsPerSimSecond": 27.192,
+        "medianMs": 0.012501000000156637,
+        "p95Ms": 0.01476600000023609,
+        "p99Ms": 0.08660500000041793,
+        "worstMs": 0.5951750000003813
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 104.48,
+        "medianMs": 0.05651099999977305,
+        "p95Ms": 0.13541100000020379,
+        "p99Ms": 0.2584440000000541,
+        "worstMs": 0.6418690000000424
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 931.997,
+        "medianMs": 0.7116439999999784,
+        "p95Ms": 1.2176119999994626,
+        "p99Ms": 1.6063739999999598,
+        "worstMs": 4.181171000000177
+      }
+    },
+    {
+      "case": "braking",
+      "previous": {
+        "cpuMsPerSimSecond": 22.962,
+        "medianMs": 0.013349999999263673,
+        "p95Ms": 0.022114999999757856,
+        "p99Ms": 0.05606900000020687,
+        "worstMs": 0.5166909999989002
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 156.066,
+        "medianMs": 0.06428600000072038,
+        "p95Ms": 0.17186000000037893,
+        "p99Ms": 0.49047799999971176,
+        "worstMs": 3.122664000000441
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 1407.389,
+        "medianMs": 1.1916450000007899,
+        "p95Ms": 2.09167300000081,
+        "p99Ms": 3.0315620000001218,
+        "worstMs": 6.716298999999708
+      }
+    },
+    {
+      "case": "drift-recovery",
+      "previous": {
+        "cpuMsPerSimSecond": 17.054,
+        "medianMs": 0.013097999999445165,
+        "p95Ms": 0.01761100000294391,
+        "p99Ms": 0.08959399999730522,
+        "worstMs": 0.3911000000007334
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 77.457,
+        "medianMs": 0.06157299999904353,
+        "p95Ms": 0.1501060000009602,
+        "p99Ms": 0.28607800000099814,
+        "worstMs": 0.8869560000002821
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 1433.778,
+        "medianMs": 1.2130139999972016,
+        "p95Ms": 2.0323170000010577,
+        "p99Ms": 2.7312780000029306,
+        "worstMs": 5.337006999998266
+      }
+    },
+    {
+      "case": "recontact",
+      "previous": {
+        "cpuMsPerSimSecond": 13.796,
+        "medianMs": 0.011207999999896856,
+        "p95Ms": 0.015250999997078907,
+        "p99Ms": 0.041367000001628185,
+        "worstMs": 0.636160000001837
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 66.846,
+        "medianMs": 0.054690999997546896,
+        "p95Ms": 0.12758299999768496,
+        "p99Ms": 0.21585199999753968,
+        "worstMs": 1.0116579999994428
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 1404.298,
+        "medianMs": 1.3316449999983888,
+        "p95Ms": 2.101322999998956,
+        "p99Ms": 2.5419159999983094,
+        "worstMs": 5.203770000000077
+      }
+    },
+    {
+      "case": "clutch-transition",
+      "previous": {
+        "cpuMsPerSimSecond": 18.839,
+        "medianMs": 0.01263699999981327,
+        "p95Ms": 0.0210350000015751,
+        "p99Ms": 0.10393699999985984,
+        "worstMs": 0.5915009999989707
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 55.469,
+        "medianMs": 0.053384999999252614,
+        "p95Ms": 0.108221999998932,
+        "p99Ms": 0.19493900000088615,
+        "worstMs": 2.2285510000001523
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 749.712,
+        "medianMs": 0.7146890000003623,
+        "p95Ms": 1.2319539999989502,
+        "p99Ms": 1.864014999999199,
+        "worstMs": 8.808447999999771
+      }
+    },
+    {
+      "case": "hold-release",
+      "previous": {
+        "cpuMsPerSimSecond": 15.924,
+        "medianMs": 0.012812000000849366,
+        "p95Ms": 0.016336999997292878,
+        "p99Ms": 0.08776700000089477,
+        "worstMs": 0.5087229999990086
+      },
+      "consistent": {
+        "cpuMsPerSimSecond": 49.597,
+        "medianMs": 0.05196600000272156,
+        "p95Ms": 0.12090800000078161,
+        "p99Ms": 0.1875949999994191,
+        "worstMs": 0.9385570000013104
+      },
+      "strict": {
+        "cpuMsPerSimSecond": 637.364,
+        "medianMs": 0.649039999996603,
+        "p95Ms": 1.1968569999989995,
+        "p99Ms": 1.5852599999998347,
+        "worstMs": 3.6558049999985087
+      }
+    }
+  ]
+}
