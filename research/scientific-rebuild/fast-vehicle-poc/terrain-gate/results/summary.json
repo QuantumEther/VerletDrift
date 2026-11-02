@@ -1,0 +1,46 @@
+{
+  "verdict": "BLOCKED at stationary-contact gate; no new terrain vehicle implemented",
+  "diagnosticTimingOnly": true,
+  "timings": [
+    {
+      "case": "acceleration",
+      "mode": "flat",
+      "cpuMsPerSimSecond": 35.75,
+      "medianMs": 0.030744000000026972,
+      "p95Ms": 0.05846800000017538,
+      "p99Ms": 0.1475870000000441,
+      "iterations": 6087,
+      "worstMs": 0.2977260000000115
+    },
+    {
+      "case": "acceleration",
+      "mode": "flat+observations",
+      "cpuMsPerSimSecond": 46.257,
+      "medianMs": 0.03236600000002454,
+      "p95Ms": 0.06931699999995544,
+      "p99Ms": 0.17147099999999682,
+      "iterations": 6087,
+      "worstMs": 1.4369390000000521
+    },
+    {
+      "case": "drift-recovery",
+      "mode": "flat",
+      "cpuMsPerSimSecond": 46.529,
+      "medianMs": 0.040151000000150816,
+      "p95Ms": 0.07085499999993772,
+      "p99Ms": 0.1653519999999844,
+      "iterations": 7374,
+      "worstMs": 0.35964899999999034
+    },
+    {
+      "case": "drift-recovery",
+      "mode": "flat+observations",
+      "cpuMsPerSimSecond": 51.233,
+      "medianMs": 0.041674000000057276,
+      "p95Ms": 0.08583099999987098,
+      "p99Ms": 0.18637200000011944,
+      "iterations": 7374,
+      "worstMs": 0.5139309999999568
+    }
+  ]
+}

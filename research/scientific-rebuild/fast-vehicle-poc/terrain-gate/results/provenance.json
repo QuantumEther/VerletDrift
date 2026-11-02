@@ -1,0 +1,14 @@
+{
+  "branch": "PERFORMANCE",
+  "base": "71cfb6c1295e9e4bea923ff3ff27e87633aa1f8f",
+  "verdict": "BLOCKED: necessary static contact condition fails",
+  "sourceSha256": {
+    "probe.mjs": "8905bdb61f6e4c7c37dcb71d88ba9d9988af1be335176d45ec4fe29a3b277207",
+    "gates.test.mjs": "6ad2de60af20b9576148f5c0c72566b18d29bcb98524c0af4fe65bbb4baa42f1",
+    "measure.mjs": "4f18e81144e4ab50b553459df12e3117fc07579ce0a47c583cc1309db31d6086"
+  },
+  "resultSha256": {
+    "probe.json": "60cb22e9ab4ae8d626f4f06b760502b6c018e609d76ee2e68058189f4e867df9",
+    "summary.json": "9f34639f4c4dbb352c5f4b35a008c0fa4fecbf114f9964584083cb3e3fbc137d"
+  }
+}
