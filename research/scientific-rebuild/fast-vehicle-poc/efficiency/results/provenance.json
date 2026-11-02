@@ -1,0 +1,22 @@
+{
+  "baseline": "a8be5c99d16140dafc042282691ae95b972a2181",
+  "reuseCommit": "3e21636",
+  "branch": "PERFORMANCE",
+  "sourceHashes": {
+    "../consistent-model.js": "1ca26687ae22647f811f75897fa39ffd027bda9ec409333d8d474418fe382b52",
+    "fixtures.mjs": "be202c2868c1052c5363cbc440a4c64e410f4d64a06d54fd215e483ff31277aa",
+    "benchmark.mjs": "44d44e4ca69f83bacd6414a3ed53e0e9617ee358b17cb4a05a8b1db6c398d407",
+    "efficiency.test.mjs": "dfebd83b07dc4632883444fa5d2ec821843441134b5c747f2f2070474347666e",
+    "profile.mjs": "907f2c308c1538f7e04233060ac83bd4ba960611df59ff6c5f0e796ff3770a08",
+    "summarize-profile.mjs": "752922236c33e3195b627a18c59fe17ca764a2ab1e31372d4af41f5ffe143949",
+    "report.mjs": "c73697708de46a28bd68b0efed73b980cfd388c660753e355552ce8584604387",
+    "pilot.mjs": "4de7200fcd58b1c29cf79abf8bb3fd0f108f91026bd71a6741823ac985f8455e"
+  },
+  "resultHashes": {
+    "benchmark.json": "9369fc3a6d8408c28127c65a423efecf0046dc5b0cc16c48904f91a47073b24b",
+    "pilot.json": "c671bdc7ce8d2f3b0724f578853c4c4678d3a07adfec160a60c2d3d070746e0d",
+    "profile-baseline.json": "3fa1c976b617a2bbe932d189c51ea2823b10af5eb04712051704102c809eae9c",
+    "profile-optimized.json": "d85b9d5f88c7f46b77f8259773fe45b4605c3e875eb986a98ece381f8750c11e",
+    "summary.json": "b526d27b6f6d79a49bf29869ee9e6f38b2301754e7c2e85e5db994d2f1a85175"
+  }
+}

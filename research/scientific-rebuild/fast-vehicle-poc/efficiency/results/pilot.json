@@ -1,0 +1,110 @@
+{
+  "runs": [
+    {
+      "repeat": 0,
+      "warmup": true,
+      "method": "baseline",
+      "cpuMsPerSimSecond": 247.80585714285715,
+      "iterations": 55601
+    },
+    {
+      "repeat": 0,
+      "warmup": true,
+      "method": "reuse",
+      "cpuMsPerSimSecond": 154.37342857142858,
+      "iterations": 55601
+    },
+    {
+      "repeat": 0,
+      "warmup": true,
+      "method": "aitken",
+      "cpuMsPerSimSecond": 59.75657142857143,
+      "iterations": 42792
+    },
+    {
+      "repeat": 1,
+      "warmup": false,
+      "method": "reuse",
+      "cpuMsPerSimSecond": 52.911142857142856,
+      "iterations": 55601
+    },
+    {
+      "repeat": 1,
+      "warmup": false,
+      "method": "aitken",
+      "cpuMsPerSimSecond": 42.47342857142857,
+      "iterations": 42792
+    },
+    {
+      "repeat": 1,
+      "warmup": false,
+      "method": "baseline",
+      "cpuMsPerSimSecond": 100.03942857142857,
+      "iterations": 55601
+    },
+    {
+      "repeat": 2,
+      "warmup": false,
+      "method": "aitken",
+      "cpuMsPerSimSecond": 45.24485714285714,
+      "iterations": 42792
+    },
+    {
+      "repeat": 2,
+      "warmup": false,
+      "method": "baseline",
+      "cpuMsPerSimSecond": 106.82871428571428,
+      "iterations": 55601
+    },
+    {
+      "repeat": 2,
+      "warmup": false,
+      "method": "reuse",
+      "cpuMsPerSimSecond": 49.720142857142854,
+      "iterations": 55601
+    },
+    {
+      "repeat": 3,
+      "warmup": false,
+      "method": "baseline",
+      "cpuMsPerSimSecond": 65.41857142857143,
+      "iterations": 55601
+    },
+    {
+      "repeat": 3,
+      "warmup": false,
+      "method": "reuse",
+      "cpuMsPerSimSecond": 50.36528571428571,
+      "iterations": 55601
+    },
+    {
+      "repeat": 3,
+      "warmup": false,
+      "method": "aitken",
+      "cpuMsPerSimSecond": 41.469,
+      "iterations": 42792
+    },
+    {
+      "repeat": 4,
+      "warmup": false,
+      "method": "reuse",
+      "cpuMsPerSimSecond": 49.52757142857143,
+      "iterations": 55601
+    },
+    {
+      "repeat": 4,
+      "warmup": false,
+      "method": "aitken",
+      "cpuMsPerSimSecond": 41.32385714285714,
+      "iterations": 42792
+    },
+    {
+      "repeat": 4,
+      "warmup": false,
+      "method": "baseline",
+      "cpuMsPerSimSecond": 63.22557142857143,
+      "iterations": 55601
+    }
+  ],
+  "protocol": "Seven original cases; whole CPU only; five paired rotated-order passes, discard first. No validation/profilers running."
+}

@@ -1,0 +1,299 @@
+{
+  "maxDifferencesByQuantity": {
+    "worldX_m": 8.881784197001252e-15,
+    "worldY_m": 1.1102230246251565e-15,
+    "heading_rad": 2.220446049250313e-16,
+    "worldVX_m_s": 2.398081733190338e-14,
+    "worldVY_m_s": 5.773159728050814e-15,
+    "yawRate_rad_s": 3.858025010572419e-15,
+    "heave_m": 1.1102230246251565e-16,
+    "pitch_rad": 8.413408858487514e-16,
+    "roll_rad": 1.285430095698814e-15,
+    "hubFL_m": 8.326672684688674e-16,
+    "hubFR_m": 7.216449660063518e-16,
+    "hubRL_m": 7.771561172376096e-16,
+    "hubRR_m": 7.216449660063518e-16,
+    "heaveRate_m_s": 2.3670301829703533e-15,
+    "pitchRate_rad_s": 8.708311849403572e-15,
+    "rollRate_rad_s": 1.1022432966356632e-14,
+    "hubRateFL_m_s": 5.126541552380459e-14,
+    "hubRateFR_m_s": 4.428055144778398e-14,
+    "hubRateRL_m_s": 3.866264947083309e-14,
+    "hubRateRR_m_s": 4.1669792616438883e-14,
+    "omegaFL_rad_s": 8.171241461241152e-14,
+    "omegaFR_rad_s": 8.171241461241152e-14,
+    "omegaRL_rad_s": 1.0302869668521453e-13,
+    "omegaRR_rad_s": 1.1013412404281553e-13,
+    "engineOmega_rad_s": 3.765876499528531e-13,
+    "engineWork_J": 2.8421709430404007e-13,
+    "contactWork_J": 7.531752999057062e-13,
+    "brakeWork_J": 1.8189894035458565e-12,
+    "clutchWork_J": 1.1368683772161603e-13,
+    "dampingWork_J": 2.1316282072803006e-13
+  },
+  "baseline": "a8be5c99d16140dafc042282691ae95b972a2181",
+  "meansCpuMsPerSimSecond": {
+    "baseline": 67.48242857142857,
+    "reuse": 55.01771428571427,
+    "optimized": 42.561
+  },
+  "speedup": 1.5855461237148698,
+  "reuseSpeedup": 1.2265581994370647,
+  "accelerationIncrementalSpeedup": 1.2926790791032698,
+  "iterationsPerSevenSimulatedSeconds": {
+    "baseline": 55601,
+    "reuse": 55601,
+    "optimized": 42792
+  },
+  "gc": {
+    "baseline": {
+      "events": 243,
+      "durationMsPerSimSecond": 1.6843455008098058
+    },
+    "reuse": {
+      "events": 174,
+      "durationMsPerSimSecond": 1.386307387479714
+    },
+    "optimized": {
+      "events": 149,
+      "durationMsPerSimSecond": 1.1301388570240565
+    }
+  },
+  "estimatedAllocationBytesPer35SimSeconds": [
+    5555675944,
+    3518156032
+  ],
+  "cases": [
+    {
+      "case": "acceleration",
+      "baseline": {
+        "cpuMsPerSimSecond": 86.616,
+        "meanMs": 0.06847316649999675,
+        "medianMs": 0.05573100000015074,
+        "p95Ms": 0.1406289999999899,
+        "p99Ms": 0.2703320000000531,
+        "iterations": 8604,
+        "rotorSegments": 9604,
+        "worstMs": 0.6484020000002602
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 84.025,
+        "meanMs": 0.0505857090000045,
+        "medianMs": 0.0406679999998687,
+        "p95Ms": 0.11200350000001436,
+        "p99Ms": 0.23959250000018528,
+        "iterations": 8604,
+        "rotorSegments": 9604,
+        "worstMs": 3.3417199999998957
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 40.8595,
+        "meanMs": 0.0376813244999928,
+        "medianMs": 0.030672500000036962,
+        "p95Ms": 0.07076749999987442,
+        "p99Ms": 0.18415550000008807,
+        "iterations": 6087,
+        "rotorSegments": 7087,
+        "worstMs": 0.5512499999999818
+      }
+    },
+    {
+      "case": "steering",
+      "baseline": {
+        "cpuMsPerSimSecond": 71.1585,
+        "meanMs": 0.07018825350000248,
+        "medianMs": 0.056428500000038184,
+        "p95Ms": 0.1422414999999546,
+        "p99Ms": 0.24738449999995282,
+        "iterations": 8311,
+        "rotorSegments": 9311,
+        "worstMs": 0.8712690000002112
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 55.0955,
+        "meanMs": 0.05435102249999932,
+        "medianMs": 0.04477299999985007,
+        "p95Ms": 0.10632550000013907,
+        "p99Ms": 0.20846050000000105,
+        "iterations": 8311,
+        "rotorSegments": 9311,
+        "worstMs": 0.5131020000003446
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 49.201,
+        "meanMs": 0.04807381750000059,
+        "medianMs": 0.04022800000029747,
+        "p95Ms": 0.11016550000022107,
+        "p99Ms": 0.19634099999984755,
+        "iterations": 6598,
+        "rotorSegments": 7598,
+        "worstMs": 1.026911999999811
+      }
+    },
+    {
+      "case": "braking",
+      "baseline": {
+        "cpuMsPerSimSecond": 64.4935,
+        "meanMs": 0.06422309449999511,
+        "medianMs": 0.0534104999999272,
+        "p95Ms": 0.13072249999981977,
+        "p99Ms": 0.23840050000012525,
+        "iterations": 9069,
+        "rotorSegments": 10089,
+        "worstMs": 0.6984800000000178
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 49.833,
+        "meanMs": 0.04938544349999711,
+        "medianMs": 0.04158550000011019,
+        "p95Ms": 0.09807000000000698,
+        "p99Ms": 0.1994204999998601,
+        "iterations": 9069,
+        "rotorSegments": 10089,
+        "worstMs": 0.9052189999997609
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 40.1975,
+        "meanMs": 0.03980533949999767,
+        "medianMs": 0.03432599999996455,
+        "p95Ms": 0.08581149999986337,
+        "p99Ms": 0.177245499999799,
+        "iterations": 6654,
+        "rotorSegments": 7669,
+        "worstMs": 0.4445630000000165
+      }
+    },
+    {
+      "case": "drift-recovery",
+      "baseline": {
+        "cpuMsPerSimSecond": 73.521,
+        "meanMs": 0.0731062550000056,
+        "medianMs": 0.06078849999994418,
+        "p95Ms": 0.14299649999975372,
+        "p99Ms": 0.25922300000001997,
+        "iterations": 9206,
+        "rotorSegments": 10238,
+        "worstMs": 0.7678829999995287
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 59.509,
+        "meanMs": 0.0591475274999957,
+        "medianMs": 0.048923000000286265,
+        "p95Ms": 0.12283500000012282,
+        "p99Ms": 0.263365000000249,
+        "iterations": 9206,
+        "rotorSegments": 10238,
+        "worstMs": 1.5905240000001868
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 50.289500000000004,
+        "meanMs": 0.04987975599998935,
+        "medianMs": 0.04077900000038426,
+        "p95Ms": 0.1024264999996376,
+        "p99Ms": 0.20611050000024989,
+        "iterations": 7374,
+        "rotorSegments": 8399,
+        "worstMs": 1.097128999999768
+      }
+    },
+    {
+      "case": "recontact",
+      "baseline": {
+        "cpuMsPerSimSecond": 66.98949999999999,
+        "meanMs": 0.06640729300001202,
+        "medianMs": 0.05435800000032032,
+        "p95Ms": 0.1357429999998203,
+        "p99Ms": 0.27851049999981115,
+        "iterations": 9088,
+        "rotorSegments": 10097,
+        "worstMs": 0.9028650000000198
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 53.285,
+        "meanMs": 0.05279629550000072,
+        "medianMs": 0.041675499999655585,
+        "p95Ms": 0.1125609999999142,
+        "p99Ms": 0.21778349999976854,
+        "iterations": 9088,
+        "rotorSegments": 10097,
+        "worstMs": 0.9903290000002016
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 42.042500000000004,
+        "meanMs": 0.041568054500006384,
+        "medianMs": 0.03446449999955803,
+        "p95Ms": 0.07112200000028679,
+        "p99Ms": 0.1839074999998047,
+        "iterations": 7009,
+        "rotorSegments": 8016,
+        "worstMs": 1.5548760000001494
+      }
+    },
+    {
+      "case": "clutch-transition",
+      "baseline": {
+        "cpuMsPerSimSecond": 56.156,
+        "meanMs": 0.055695000000004255,
+        "medianMs": 0.05469650000031834,
+        "p95Ms": 0.12038500000016938,
+        "p99Ms": 0.23749150000003283,
+        "iterations": 6480,
+        "rotorSegments": 7491,
+        "worstMs": 0.5592870000000403
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 46.5195,
+        "meanMs": 0.04582089549999045,
+        "medianMs": 0.04393549999986135,
+        "p95Ms": 0.10810150000042995,
+        "p99Ms": 0.19967599999972663,
+        "iterations": 6480,
+        "rotorSegments": 7491,
+        "worstMs": 0.5043569999997999
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 39.732,
+        "meanMs": 0.03926560149999796,
+        "medianMs": 0.035944000000199594,
+        "p95Ms": 0.06790300000011484,
+        "p99Ms": 0.18259849999958533,
+        "iterations": 5130,
+        "rotorSegments": 6138,
+        "worstMs": 2.3598050000000512
+      }
+    },
+    {
+      "case": "hold-release",
+      "baseline": {
+        "cpuMsPerSimSecond": 53.442499999999995,
+        "meanMs": 0.04821196399999371,
+        "medianMs": 0.05417349999970611,
+        "p95Ms": 0.10077999999975873,
+        "p99Ms": 0.20583200000010038,
+        "iterations": 4843,
+        "rotorSegments": 5843,
+        "worstMs": 2.2675530000005892
+      },
+      "reuse": {
+        "cpuMsPerSimSecond": 36.857,
+        "meanMs": 0.036475980499991234,
+        "medianMs": 0.04346299999997427,
+        "p95Ms": 0.0772409999995034,
+        "p99Ms": 0.1562659999999596,
+        "iterations": 4843,
+        "rotorSegments": 5843,
+        "worstMs": 1.5867510000007314
+      },
+      "optimized": {
+        "cpuMsPerSimSecond": 35.605,
+        "meanMs": 0.03505909950000023,
+        "medianMs": 0.03578350000043429,
+        "p95Ms": 0.08500550000007934,
+        "p99Ms": 0.1836950000001707,
+        "iterations": 3940,
+        "rotorSegments": 4940,
+        "worstMs": 0.5440090000001874
+      }
+    }
+  ]
+}

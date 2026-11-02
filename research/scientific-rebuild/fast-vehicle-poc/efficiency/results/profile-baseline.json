@@ -1,0 +1,782 @@
+{
+  "label": "baseline",
+  "simulatedSeconds": 35,
+  "protocol": "One warmup pass across seven cases, five measured passes. Inspector CPU interval100us and heap sampling16KiB including collected objects. Sampling overhead included: not throughput timing. Bytes are statistical allocation estimates, not retained heap.",
+  "totalCpuSampleUs": 3654165,
+  "totalSampledAllocationBytes": 5555675944,
+  "cpuSelf": [
+    {
+      "function": "rotorFlow",
+      "file": "constraints.js",
+      "line": 29,
+      "value": 891530,
+      "percent": 24.397639405992887
+    },
+    {
+      "function": "step",
+      "file": "consistent-model.js",
+      "line": 39,
+      "value": 793638,
+      "percent": 21.71872370295266
+    },
+    {
+      "function": "reactions",
+      "file": "constraints.js",
+      "line": 5,
+      "value": 791677,
+      "percent": 21.665058912227554
+    },
+    {
+      "function": "(garbage collector)",
+      "file": "",
+      "line": 0,
+      "value": 289283,
+      "percent": 7.916528126124573
+    },
+    {
+      "function": "verticalOperator",
+      "file": "consistent-model.js",
+      "line": 19,
+      "value": 116138,
+      "percent": 3.178236341270851
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 32,
+      "value": 109642,
+      "percent": 3.000466590862755
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 25,
+      "value": 79659,
+      "percent": 2.1799508232386877
+    },
+    {
+      "function": "evaluate",
+      "file": "vertical.js",
+      "line": 7,
+      "value": 74694,
+      "percent": 2.044078469363042
+    },
+    {
+      "function": "",
+      "file": "profile.mjs",
+      "line": 0,
+      "value": 57473,
+      "percent": 1.572808014963747
+    },
+    {
+      "function": "evaluateVehicle",
+      "file": "model.js",
+      "line": 12,
+      "value": 50537,
+      "percent": 1.382997210032935
+    },
+    {
+      "function": "factor",
+      "file": "consistent-model.js",
+      "line": 17,
+      "value": 48749,
+      "percent": 1.3340667430178987
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 62,
+      "value": 30341,
+      "percent": 0.830312807440277
+    },
+    {
+      "function": "wheel",
+      "file": "constraints.js",
+      "line": 7,
+      "value": 29738,
+      "percent": 0.8138110895375551
+    },
+    {
+      "function": "brakeActuation",
+      "file": "brakes.js",
+      "line": 8,
+      "value": 28211,
+      "percent": 0.7720231571371299
+    },
+    {
+      "function": "",
+      "file": "vertical.js",
+      "line": 10,
+      "value": 27672,
+      "percent": 0.7572728653468029
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 17,
+      "value": 25260,
+      "percent": 0.691265993735915
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 64,
+      "value": 24351,
+      "percent": 0.6663902697333043
+    },
+    {
+      "function": "solve",
+      "file": "consistent-model.js",
+      "line": 18,
+      "value": 24121,
+      "percent": 0.6600960821418846
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 47,
+      "value": 23444,
+      "percent": 0.6415692777967059
+    },
+    {
+      "function": "post",
+      "file": "node:inspector",
+      "line": 115,
+      "value": 18623,
+      "percent": 0.5096376326739488
+    },
+    {
+      "function": "energy",
+      "file": "model.js",
+      "line": 37,
+      "value": 16235,
+      "percent": 0.4442875458552091
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 58,
+      "value": 12932,
+      "percent": 0.3538975388358216
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 60,
+      "value": 12495,
+      "percent": 0.34193858241212427
+    },
+    {
+      "function": "",
+      "file": "brakes.js",
+      "line": 12,
+      "value": 11471,
+      "percent": 0.3139157646138037
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 75,
+      "value": 9026,
+      "percent": 0.24700581391371215
+    },
+    {
+      "function": "contactForces",
+      "file": "consistent-model.js",
+      "line": 30,
+      "value": 7748,
+      "percent": 0.2120320237318238
+    },
+    {
+      "function": "engineTorques",
+      "file": "engine.js",
+      "line": 10,
+      "value": 7375,
+      "percent": 0.20182449342052153
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 59,
+      "value": 7342,
+      "percent": 0.20092141433131783
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 67,
+      "value": 3765,
+      "percent": 0.10303311426823912
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 31,
+      "value": 3578,
+      "percent": 0.09791566609608487
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 20,
+      "value": 3087,
+      "percent": 0.08447894389005423
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 68,
+      "value": 3070,
+      "percent": 0.0840137213289493
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 41,
+      "value": 2913,
+      "percent": 0.07971725414698022
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 16,
+      "value": 2641,
+      "percent": 0.07227369316930134
+    },
+    {
+      "function": "ports",
+      "file": "fixtures.mjs",
+      "line": 3,
+      "value": 2462,
+      "percent": 0.06737517326119646
+    },
+    {
+      "function": "(program)",
+      "file": "",
+      "line": 0,
+      "value": 2113,
+      "percent": 0.0578244277420423
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 70,
+      "value": 1842,
+      "percent": 0.05040823279736958
+    },
+    {
+      "function": "processTicksAndRejections",
+      "file": "task_queues",
+      "line": 72,
+      "value": 1669,
+      "percent": 0.04567390908730175
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 61,
+      "value": 1606,
+      "percent": 0.04394984900791289
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 52,
+      "value": 1476,
+      "percent": 0.04039226471711047
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 74,
+      "value": 864,
+      "percent": 0.023644252517332962
+    },
+    {
+      "function": "createVertical",
+      "file": "vertical.js",
+      "line": 2,
+      "value": 604,
+      "percent": 0.016529083935728134
+    },
+    {
+      "function": "init",
+      "file": "fixtures.mjs",
+      "line": 4,
+      "value": 516,
+      "percent": 0.014120873031184963
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 53,
+      "value": 391,
+      "percent": 0.010700118905413412
+    },
+    {
+      "function": "create",
+      "file": "model.js",
+      "line": 8,
+      "value": 345,
+      "percent": 0.00944128138712948
+    },
+    {
+      "function": "",
+      "file": "brakes.js",
+      "line": 21,
+      "value": 336,
+      "percent": 0.00919498709007393
+    },
+    {
+      "function": "clamp",
+      "file": "constraints.js",
+      "line": 4,
+      "value": 336,
+      "percent": 0.00919498709007393
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 48,
+      "value": 335,
+      "percent": 0.009167621057067758
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 46,
+      "value": 331,
+      "percent": 0.009058156925043068
+    },
+    {
+      "function": "cpuUsage",
+      "file": "",
+      "line": 0,
+      "value": 330,
+      "percent": 0.009030790892036894
+    },
+    {
+      "function": "dispatch",
+      "file": "",
+      "line": 0,
+      "value": 150,
+      "percent": 0.004104904950925861
+    }
+  ],
+  "allocations": [
+    {
+      "function": "rotorFlow",
+      "file": "constraints.js",
+      "line": 29,
+      "value": 1398239808
+    },
+    {
+      "function": "step",
+      "file": "consistent-model.js",
+      "line": 39,
+      "value": 1140162280
+    },
+    {
+      "function": "reactions",
+      "file": "constraints.js",
+      "line": 5,
+      "value": 728200656
+    },
+    {
+      "function": "sort",
+      "file": "",
+      "line": 0,
+      "value": 263974696
+    },
+    {
+      "function": "next",
+      "file": "",
+      "line": 0,
+      "value": 228213432
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 32,
+      "value": 214089320
+    },
+    {
+      "function": "slice",
+      "file": "",
+      "line": 0,
+      "value": 204533800
+    },
+    {
+      "function": "map",
+      "file": "",
+      "line": 0,
+      "value": 199340032
+    },
+    {
+      "function": "evaluate",
+      "file": "vertical.js",
+      "line": 7,
+      "value": 180590192
+    },
+    {
+      "function": "verticalOperator",
+      "file": "consistent-model.js",
+      "line": 19,
+      "value": 164252984
+    },
+    {
+      "function": "flatMap",
+      "file": "",
+      "line": 0,
+      "value": 128491976
+    },
+    {
+      "function": "from",
+      "file": "",
+      "line": 0,
+      "value": 82116552
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 62,
+      "value": 74147232
+    },
+    {
+      "function": "evaluateVehicle",
+      "file": "model.js",
+      "line": 12,
+      "value": 66657048
+    },
+    {
+      "function": "reduce",
+      "file": "",
+      "line": 0,
+      "value": 59093168
+    },
+    {
+      "function": "",
+      "file": "vertical.js",
+      "line": 10,
+      "value": 52669200
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 25,
+      "value": 36521504
+    },
+    {
+      "function": "abs",
+      "file": "",
+      "line": 0,
+      "value": 27128768
+    },
+    {
+      "function": "",
+      "file": "brakes.js",
+      "line": 12,
+      "value": 26615424
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 47,
+      "value": 25227296
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 64,
+      "value": 24030672
+    },
+    {
+      "function": "hypot",
+      "file": "",
+      "line": 0,
+      "value": 23981504
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 17,
+      "value": 23406528
+    },
+    {
+      "function": "some",
+      "file": "",
+      "line": 0,
+      "value": 19768752
+    },
+    {
+      "function": "brakeActuation",
+      "file": "brakes.js",
+      "line": 8,
+      "value": 18720048
+    },
+    {
+      "function": "max",
+      "file": "",
+      "line": 0,
+      "value": 17309968
+    },
+    {
+      "function": "contactForces",
+      "file": "consistent-model.js",
+      "line": 30,
+      "value": 16925112
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 58,
+      "value": 15392096
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 75,
+      "value": 15171904
+    },
+    {
+      "function": "every",
+      "file": "",
+      "line": 0,
+      "value": 10015520
+    },
+    {
+      "function": "splice",
+      "file": "",
+      "line": 0,
+      "value": 9961888
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 60,
+      "value": 8986544
+    },
+    {
+      "function": "engineTorques",
+      "file": "engine.js",
+      "line": 10,
+      "value": 7736688
+    },
+    {
+      "function": "solve",
+      "file": "consistent-model.js",
+      "line": 18,
+      "value": 7025352
+    },
+    {
+      "function": "push",
+      "file": "",
+      "line": 0,
+      "value": 5365904
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 59,
+      "value": 4688112
+    },
+    {
+      "function": "",
+      "file": "profile.mjs",
+      "line": 1,
+      "value": 3733672
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 52,
+      "value": 2954208
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 41,
+      "value": 2770256
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 67,
+      "value": 2688304
+    },
+    {
+      "function": "ports",
+      "file": "fixtures.mjs",
+      "line": 3,
+      "value": 2577872
+    },
+    {
+      "function": "min",
+      "file": "",
+      "line": 0,
+      "value": 2376848
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 68,
+      "value": 2311280
+    },
+    {
+      "function": "values",
+      "file": "",
+      "line": 0,
+      "value": 1411104
+    },
+    {
+      "function": "energy",
+      "file": "model.js",
+      "line": 37,
+      "value": 1213008
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 70,
+      "value": 999920
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 69,
+      "value": 819600
+    },
+    {
+      "function": "clamp",
+      "file": "constraints.js",
+      "line": 4,
+      "value": 770432
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 46,
+      "value": 491760
+    },
+    {
+      "function": "#onMessage",
+      "file": "node:inspector",
+      "line": 84,
+      "value": 382544
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 53,
+      "value": 344240
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 39,
+      "value": 213104
+    },
+    {
+      "function": "post",
+      "file": "node:inspector",
+      "line": 115,
+      "value": 172584
+    },
+    {
+      "function": "wheel",
+      "file": "constraints.js",
+      "line": 7,
+      "value": 152048
+    },
+    {
+      "function": "",
+      "file": "constraints.js",
+      "line": 61,
+      "value": 147536
+    },
+    {
+      "function": "sin",
+      "file": "",
+      "line": 0,
+      "value": 131136
+    },
+    {
+      "function": "",
+      "file": "brakes.js",
+      "line": 21,
+      "value": 98352
+    },
+    {
+      "function": "cos",
+      "file": "",
+      "line": 0,
+      "value": 65568
+    },
+    {
+      "function": "",
+      "file": "consistent-model.js",
+      "line": 45,
+      "value": 49184
+    },
+    {
+      "function": "createVertical",
+      "file": "vertical.js",
+      "line": 2,
+      "value": 33024
+    },
+    {
+      "function": "init",
+      "file": "fixtures.mjs",
+      "line": 4,
+      "value": 16400
+    },
+    {
+      "function": "(root)",
+      "file": "",
+      "line": 0,
+      "value": 0
+    },
+    {
+      "function": "processTicksAndRejections",
+      "file": "task_queues",
+      "line": 72,
+      "value": 0
+    },
+    {
+      "function": "",
+      "file": "",
+      "line": 0,
+      "value": 0
+    },
+    {
+      "function": "send",
+      "file": "profile.mjs",
+      "line": 4,
+      "value": 0
+    },
+    {
+      "function": "Promise",
+      "file": "",
+      "line": 0,
+      "value": 0
+    },
+    {
+      "function": "",
+      "file": "profile.mjs",
+      "line": 4,
+      "value": 0
+    },
+    {
+      "function": "",
+      "file": "node:inspector",
+      "line": 66,
+      "value": 0
+    },
+    {
+      "function": "create",
+      "file": "model.js",
+      "line": 8,
+      "value": 0
+    }
+  ]
+}
