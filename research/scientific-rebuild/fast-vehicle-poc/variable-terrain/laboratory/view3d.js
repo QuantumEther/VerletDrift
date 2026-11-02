@@ -6,7 +6,9 @@ import {OrbitControls} from '../../../tire-road-observatory-prototype/vendor/Orb
 import {batchRigidChildren} from '../../../procedural-terrain/src/render-batching.js';
 import {createTrackView} from './track-view.js';
 import {authored} from './maps.js';
-export function createView3D(canvas,terrain,quality='auto'){
+import {buildMustang} from '../../vehicles/mustang-view.js';
+export function createView3D(canvas,terrain,quality='auto',vehicle={id:'reference'}){
+ const mustang=vehicle.id==='mustang-1969';
  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
  const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info'),backend=debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);let renderScale=1;
  function setQuality(value){const scale=value==='auto'?(/SwiftShader|llvmpipe/i.test(backend)?.5:1):Number(value);if(![.5,.75,1].includes(scale))throw Error('Invalid rendering scale');renderScale=scale;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)*scale);}setQuality(quality);
@@ -26,7 +28,9 @@ export function createView3D(canvas,terrain,quality='auto'){
  function ring(parent,r,t,pos,mat,axis='x'){const m=mesh(parent,new THREE.TorusGeometry(r,t,8,40),mat,pos);if(axis==='x')m.rotation.y=Math.PI/2;if(axis==='y')m.rotation.x=Math.PI/2;return m;}
  function group(parent,pos=[0,0,0]){const g=new THREE.Group();g.position.set(...pos);parent.add(g);return g;}
  function instanced(parent,geometry,mat,transforms){const m=new THREE.InstancedMesh(geometry,mat,transforms.length),o=new THREE.Object3D();transforms.forEach((fn,i)=>{o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);fn(o,i);o.updateMatrix();m.setMatrixAt(i,o.matrix);});parent.add(m);return m;}
- const body=group(scene),exterior=group(body),frame=group(body);
+ const body=group(scene),exterior=group(body),frame=group(body);let custom=null;
+ if(mustang)custom=buildMustang(exterior,vehicle);
+ if(!mustang){
  for(const y of [-.38,.38])box(frame,[2.6,.075,.12],[0,y,-.1],cast);
  for(const x of [-.85,.25,.9])box(frame,[.08,.84,.08],[x,0,-.1],steel);
  function coachPanel(size,pos,mat){
@@ -44,18 +48,21 @@ export function createView3D(canvas,terrain,quality='auto'){
  const archShape=new THREE.Shape();archShape.absarc(0,0,.39,0,Math.PI,false);archShape.absarc(0,0,.35,Math.PI,0,true);archShape.closePath();
  const archGeometry=new THREE.ExtrudeGeometry(archShape,{depth:.22,bevelEnabled:false,curveSegments:24});archGeometry.translate(0,0,-.11);archGeometry.rotateX(Math.PI/2);
  for(const x of [-1,1])for(const y of [-.59,.59])mesh(exterior,archGeometry,paint,[x,y,-.44]);
+ }
  const hubs=[],rotors=[],springs=[],dampers=[];
- const tireGeo=new THREE.CylinderGeometry(1,1,.22,48),rimGeo=new THREE.CylinderGeometry(.67,.67,.226,32),treadGeo=new THREE.BoxGeometry(.045,.21,.012);
+ const tireGeo=new THREE.CylinderGeometry(1,1,.22,48),rimGeo=new THREE.CylinderGeometry(mustang?vehicle.visual.rimRadius/vehicle.physical.R:.67,mustang?vehicle.visual.rimRadius/vehicle.physical.R:.67,.226,32),treadGeo=new THREE.BoxGeometry(.045,.21,.012);
  const springPoints=Array.from({length:97},(_,i)=>{const t=i/96,a=t*12*Math.PI;return new THREE.Vector3(.035*Math.cos(a),.035*Math.sin(a),t);});
  const springGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(springPoints),96,.006,5,false);
  for(let i=0;i<4;i++){
   const hub=group(scene),rotor=group(hub);mesh(rotor,tireGeo,rubber);mesh(rotor,rimGeo,cast);
   instanced(rotor,treadGeo,rubber,Array.from({length:48},(_,j)=>o=>{const a=j*Math.PI/24;o.position.set(Math.cos(a),0,Math.sin(a));o.rotation.y=-a+Math.PI/2;}));
-  for(const side of [-1,1]){ring(rotor,.82,.025,[0,side*.113,0],rubber,'y');ring(rotor,.62,.035,[0,side*.12,0],chrome,'y');
+  if(!mustang)for(const side of [-1,1]){ring(rotor,.82,.025,[0,side*.113,0],rubber,'y');ring(rotor,.62,.035,[0,side*.12,0],chrome,'y');
    instanced(rotor,new THREE.BoxGeometry(1.22,.014,.025),chrome,Array.from({length:12},(_,j)=>o=>{o.position.y=side*.118;o.rotation.y=j*Math.PI/12;}));
   }
-  cyl(rotor,.17,.25,[0,0,0],brass,'y');hubs.push(hub);rotors.push(rotor);springs.push(mesh(scene,springGeo,brass));dampers.push(cyl(scene,.017,1,[0,0,0],chrome,'z'));
+  if(mustang)for(const side of [-1,1]){ring(rotor,.53,.028,[0,side*.12,0],chrome,'y');instanced(rotor,new THREE.BoxGeometry(.48,.014,.08),chrome,Array.from({length:5},(_,j)=>o=>{const a=j*2*Math.PI/5;o.position.set(.25*Math.cos(a),side*.12,.25*Math.sin(a));o.rotation.y=-a;}));}
+  cyl(rotor,mustang?.12:.17,.25,[0,0,0],mustang?chrome:brass,'y');hubs.push(hub);rotors.push(rotor);springs.push(mesh(scene,springGeo,brass));dampers.push(cyl(scene,.017,1,[0,0,0],chrome,'z'));
  }
+ const customResources=new Set(),customBatch=custom?batchRigidChildren(custom.body,customResources):null;
  const batching=batchRigidChildren(body);hubs.forEach(h=>batchRigidChildren(h));
  const tracks=createTrackView(scene,terrain),arrows=hubs.map(()=>{const a=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),1,0xd5ba78,.06,.03);scene.add(a);return a;});
  const groundGeo=new THREE.PlaneGeometry(40,40,160,authored.includes(terrain.settings.preset)?120:20),ground=new THREE.Mesh(groundGeo,material(0xffffff,.05,1,{vertexColors:true}));groundGeo.setAttribute('color',new THREE.BufferAttribute(new Float32Array(groundGeo.attributes.position.count*3),3));scene.add(ground);
@@ -70,7 +77,7 @@ export function createView3D(canvas,terrain,quality='auto'){
  function submit(sceneToDraw,kind,frame,timing){let q=null;if(timing&&ext&&pending.length<8){q=gl.createQuery();gl.beginQuery(ext.TIME_ELAPSED_EXT,q);}else if(timing&&ext)gpuDropped++;try{if(kind==='minimal'){renderer.resetState();gl.clearColor(.06,.09,.08,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);renderer.resetState();}else renderer.render(sceneToDraw,camera);}finally{if(q){gl.endQuery(ext.TIME_ELAPSED_EXT);pending.push({query:q,frame,epoch:gpuEpoch});}}}
  function gpuStatus(){return {supported:!!ext,extension:ext?'EXT_disjoint_timer_query_webgl2':null,pending:pending.length,dropped:gpuDropped,epoch:gpuEpoch};}
 
- function resetCamera(next=mode){mode=next;const [position,target]=presets[mode];camera.position.fromArray(position);controls.target.fromArray(target);controls.update();}resetCamera();
+ function resetCamera(next=mode){mode=next;const [position,target]=presets[mode];camera.position.fromArray(mustang&&mode==='normal'?[5.9,-7.8,3.7]:position).multiplyScalar(mustang&&mode!=='normal'?1.65:1);controls.target.fromArray(target);if(mustang)controls.target.z=.8;controls.update();}resetCamera();
  function draw(p,observatory,{marks=true,vectors=false,xray=false,sceneUpdates=true,submission=true,timings=null,diagnostic={mode:'full'},frameId=0,gpuTiming=false}={}){
   const start=performance.now(),d=diagnostic,incremental=d.mode==='incremental';
   const enabled=k=>!incremental||!!d[k];
@@ -78,10 +85,10 @@ export function createView3D(canvas,terrain,quality='auto'){
   if(!sceneUpdates){const t=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-t;}return;}
 
   last=p;const width=canvas.clientWidth,height=canvas.clientHeight;if(width>0&&height>0&&(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio()))){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
-  body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;
+  body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;if(custom){if(custom.paint.transparent!==xray)custom.paint.needsUpdate=true;custom.paint.transparent=xray;custom.paint.opacity=xray?.18:1;custom.paint.depthWrite=!xray;}
   const basis=new THREE.Matrix4(),from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),axis=new THREE.Vector3(0,1,0);
   p.wheels.forEach((w,i)=>{
-   const x=w.position[0]-p.planar.x,y=w.position[1]-p.planar.y,z=w.position[2];hubs[i].position.set(x,y,z);basis.makeBasis(new THREE.Vector3(...w.tangent),new THREE.Vector3(...w.lateral),new THREE.Vector3(...w.normalAxis));hubs[i].quaternion.setFromRotationMatrix(basis);rotors[i].rotation.y=w.angle;rotors[i].scale.set(w.radius,1,w.radius);
+   const x=w.position[0]-p.planar.x,y=w.position[1]-p.planar.y,z=w.position[2];hubs[i].position.set(x,y,z);basis.makeBasis(new THREE.Vector3(...w.tangent),new THREE.Vector3(...w.lateral),new THREE.Vector3(...w.normalAxis));hubs[i].quaternion.setFromRotationMatrix(basis);rotors[i].rotation.y=w.angle;rotors[i].scale.set(w.radius,mustang?vehicle.visual.wheelWidth/.22:1,w.radius);
    from.set(x,y,z);to.set(w.mount[0]-p.planar.x,w.mount[1]-p.planar.y,w.mount[2]);direction.subVectors(to,from);springs[i].position.copy(from);springs[i].quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),direction.clone().normalize());springs[i].scale.z=direction.length();dampers[i].position.copy(from).add(to).multiplyScalar(.5);dampers[i].position.x+=.055;dampers[i].quaternion.setFromUnitVectors(axis,direction.clone().normalize());dampers[i].scale.y=direction.length();
    const F=new THREE.Vector3(...w.worldForce),length=F.length()*.001;arrows[i].visible=enabled('other')&&vectors&&w.normal>0&&length>1e-8;if(arrows[i].visible){arrows[i].position.set(x,y,w.roadHeight+.04);arrows[i].setDirection(F.normalize());arrows[i].setLength(length);}
   });
@@ -89,6 +96,6 @@ export function createView3D(canvas,terrain,quality='auto'){
   if(nx!==ox||ny!==oy){ox=nx;oy=ny;const a=groundGeo.attributes.position,col=groundGeo.attributes.color,colors={asphalt:0x44494d,gravel:0x8b8172,dirt:0x756044,grass:0x547448};for(let i=0;i<a.count;i++){const s=terrain.sample(a.getX(i)+ox,a.getY(i)+oy),color=new THREE.Color(colors[s.surface]??colors.grass);a.setZ(i,s.height);col.setXYZ(i,color.r,color.g,color.b);}a.needsUpdate=col.needsUpdate=true;groundGeo.computeVertexNormals();if(ground.material.map){for(let j=0;j<256;j++)for(let k=0;k<256;k++){const wx=ox-20+(k+.5)*40/256,wy=oy-20+(j+.5)*40/256,rgba=terrain.paint(wx,wy),i=(j*256+k)*4;mapData[i]=rgba[0];mapData[i+1]=rgba[1];mapData[i+2]=rgba[2];mapData[i+3]=255;}mapTexture.needsUpdate=true;for(let i=0;i<col.count;i++)col.setXYZ(i,1,1,1);col.needsUpdate=true;}terrainUpdates++;}
   const trackStart=performance.now();tracks.draw(p,observatory,marks&&enabled('tracks'));const trackEnd=performance.now();controls.update();const submitStart=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);const end=performance.now();if(timings){timings.scene=submitStart-start-(trackEnd-trackStart);timings.tracks=trackEnd-trackStart;timings.webgl=end-submitStart;}
  }
- function snapshot(){const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info');return {renderScale,backend:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,terrainUpdates,batching,mode,camera:camera.position.toArray(),wheelPositions:hubs.map(h=>h.position.toArray()),wheelAngles:rotors.map(r=>r.rotation.y),wheelQuaternions:hubs.map(h=>h.quaternion.toArray()),chassis:[body.position.z,body.rotation.x,-body.rotation.y,body.rotation.z],tracks:tracks.info(),time:last?.time};}
- return {draw,resetCamera,snapshot,setQuality,clearGpu,pollGpu,gpuStatus,contextInfo:()=>({attributes:contextAttributes,drawingBuffer:[gl.drawingBufferWidth,gl.drawingBufferHeight],cssSize:[canvas.clientWidth,canvas.clientHeight],devicePixelRatio,renderScale}),dispose(){clearGpu();mapTexture.dispose();controls.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.isInstancedMesh)o.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();}};
+ function snapshot(){const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info');return {vehicleId:vehicle.id,coachwork:custom?.metadata??{style:'reference'},customBatch,wheelRadii:rotors.map(r=>r.scale.x),renderScale,backend:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,terrainUpdates,batching,mode,camera:camera.position.toArray(),wheelPositions:hubs.map(h=>h.position.toArray()),wheelAngles:rotors.map(r=>r.rotation.y),wheelQuaternions:hubs.map(h=>h.quaternion.toArray()),chassis:[body.position.z,body.rotation.x,-body.rotation.y,body.rotation.z],tracks:tracks.info(),time:last?.time};}
+ return {draw,resetCamera,snapshot,setQuality,clearGpu,pollGpu,gpuStatus,contextInfo:()=>({attributes:contextAttributes,drawingBuffer:[gl.drawingBufferWidth,gl.drawingBufferHeight],cssSize:[canvas.clientWidth,canvas.clientHeight],devicePixelRatio,renderScale}),dispose(){clearGpu();mapTexture.dispose();controls.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.isInstancedMesh)o.dispose();});if(custom){for(const g of custom.geometries)geometries.add(g);for(const m of custom.materials)materials.add(m);for(const t of custom.textures)t.dispose();}for(const g of customResources)geometries.add(g);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();}};
 }

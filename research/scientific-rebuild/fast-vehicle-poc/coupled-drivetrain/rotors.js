@@ -6,7 +6,7 @@ function solve(A,b){const n=b.length,a=A.map((r,i)=>[...r,b[i]]);for(let k=0;k<n
 export function mass(p=DEFAULTS){const M=Array.from({length:6},()=>Array(6).fill(0));for(let i=0;i<4;i++)M[i][i]=p.Iw;M[4][4]=p.Ie;M[5][5]=p.Ii;for(const i of [2,3])for(const j of [2,3])M[i][j]+=p.Io*p.finalDrive**2/4;return M;}
 export const kinetic=(w,p=DEFAULTS)=>.5*p.Iw*w.slice(0,4).reduce((s,x)=>s+x*x,0)+.5*p.Ie*w[4]**2+.5*p.Ii*w[5]**2+.5*p.Io*(p.finalDrive*(w[2]+w[3])/2)**2;
 export function rotorFlow(initial,T,B,C,h,config={}){
- const {gear='N',mode='neutral',ratios=DEFAULT_RATIOS,finalDrive=ratios.finalDrive,...overrides}=config;validateRatios(ratios);const p={...DEFAULTS,...overrides,finalDrive},g=gear==='N'?0:ratio(gear,ratios)*p.finalDrive;
+ const {exactCoordinates=false,gear='N',mode='neutral',ratios=DEFAULT_RATIOS,finalDrive=ratios.finalDrive,...overrides}=config;validateRatios(ratios);const p={...DEFAULTS,...overrides,finalDrive},g=gear==='N'?0:ratio(gear,ratios)*p.finalDrive;
  if(!Number.isFinite(g)||!Number.isFinite(p.Io*p.finalDrive**2))throw Error('Nonfinite reflected inertia');
  if((gear==='N')!==(mode==='neutral')||!['neutral','synchronizing','engaged'].includes(mode))throw Error('Invalid gearbox mode');
  if(initial.length!==6||T.length!==6||B.length!==4||![...initial,...T,...B,C,h,...Object.values(p)].every(Number.isFinite)||h<=0||C<0||B.some(x=>x<0)||[p.Iw,p.Ie,p.Ii,p.Io,p.finalDrive].some(x=>x<=0)||p.synchronizer<0)throw Error('Invalid coupled rotor problem');
@@ -14,15 +14,26 @@ export function rotorFlow(initial,T,B,C,h,config={}){
  const inverse=v=>{const mean=(v[2]+v[3])/(2*p.Iw+p.Io*p.finalDrive**2),difference=(v[2]-v[3])/(2*p.Iw);return [v[0]/p.Iw,v[1]/p.Iw,mean+difference,mean-difference,v[4]/p.Ie,v[5]/p.Ii];},rows=B.map((cap,i)=>({j:Array.from({length:6},(_,k)=>Number(k===i)),cap,type:'brake'}));rows.push({j:[0,0,0,0,1,-1],cap:C,type:'clutch'});if(gear!=='N')rows.push({j:[0,0,-g/2,-g/2,0,1],cap:mode==='engaged'?Infinity:p.synchronizer,type:'sync'});
  let w=initial.slice(),remaining=h,segments=0,brakeHeat=0,clutchHeat=0,syncHeat=0,roundingEnergy=0,cases=0;const initialEnergy=kinetic(initial,p);if(!Number.isFinite(initialEnergy))throw Error('Nonfinite rotor energy');const integral=Array(6).fill(0),brakeImpulse=Array(4).fill(0);let clutchImpulse=0,syncImpulse=0;
  const zeroTolerance=()=>128*Number.EPSILON*(1+Math.max(...w.map(Math.abs)));
- while(remaining>0){if(++segments>32)throw Error('Coupled rotor event budget exceeded');const tol=zeroTolerance(),slips=rows.map(r=>dot(r.j,w));if(rows.some((r,i)=>r.cap===Infinity&&Math.abs(slips[i])>tol))throw Error('Unsynchronized dog engagement');
+ // Opt-in coordinate reconstruction for full-size vehicle loads. Only rows
+ // already within the existing roundoff classification can be reconstructed.
+ // Record the actual representational energy delta; never conceal it as heat.
+ const slipOf=(row,values)=>exactCoordinates&&row.type==='sync'?values[5]-g*(values[2]+values[3])/2:dot(row.j,values);
+ function coordinates(values,indices){const before=kinetic(values,p),out=values.slice(),bound=4*zeroTolerance();
+  for(const i of indices)if(rows[i].type==='brake')out[i]=0;
+  if(indices.some(i=>rows[i].type==='sync'))out[5]=g*(out[2]+out[3])/2;
+  if(indices.some(i=>rows[i].type==='clutch'))out[4]=out[5];
+  if(out.some((x,i)=>Math.abs(x-values[i])>bound))throw Error('Constraint coordinate reconstruction exceeds roundoff');
+  roundingEnergy+=kinetic(out,p)-before;return out;
+ }
+ while(remaining>0){if(++segments>32)throw Error('Coupled rotor event budget exceeded');const tol=zeroTolerance();if(exactCoordinates)w=coordinates(w,rows.map((r,i)=>r.cap>0&&Math.abs(slipOf(r,w))<=tol?i:-1).filter(i=>i>=0));const slips=rows.map(r=>slipOf(r,w));if(rows.some((r,i)=>r.cap===Infinity&&Math.abs(slips[i])>tol))throw Error('Unsynchronized dog engagement');
   const zeros=rows.map((r,i)=>r.cap>0&&Math.abs(slips[i])<=tol?i:-1).filter(i=>i>=0),choices=zeros.reduce((n,i)=>n*(rows[i].cap===Infinity?1:3),1);let selected=null;
   for(let code=0;code<choices;code++){cases++;let c=code;const force=rows.map((r,i)=>r.cap===0?0:Math.abs(slips[i])>tol?Math.sign(slips[i])*r.cap:0),active=[];const side={};for(const i of zeros){if(rows[i].cap===Infinity){active.push(i);continue;}const choice=c%3;c=Math.floor(c/3);if(choice===0)active.push(i);else{side[i]=choice===1?-1:1;force[i]=side[i]*rows[i].cap;}}
    let tau=T.map((x,k)=>x-rows.reduce((s,r,i)=>s+r.j[k]*force[i],0)),a=inverse(tau);const vectors=active.map(i=>inverse(rows[i].j)),A=active.map(i=>vectors.map(v=>dot(rows[i].j,v))),b=active.map(i=>dot(rows[i].j,a)),solution=solve(A,b);if(!solution)continue;for(let j=0;j<active.length;j++)force[active[j]]=solution[j];a=inverse(T.map((x,k)=>x-rows.reduce((s,r,i)=>s+r.j[k]*force[i],0)));
    const eps=256*Number.EPSILON*(1+Math.max(...a.map(Math.abs),...force.filter(Number.isFinite).map(Math.abs)));if(active.some(i=>Math.abs(force[i])>rows[i].cap+eps)||Object.keys(side).some(i=>side[i]*dot(rows[i].j,a)<-eps))continue;selected={force,a,active};break;
   }
   if(!selected)throw Error('Coupled static reactions unresolved');const {force,a}=selected;let dt=remaining;for(let i=0;i<rows.length;i++){const d=dot(rows[i].j,a);if(rows[i].cap>0&&Math.abs(slips[i])>tol&&slips[i]*d<0)dt=Math.min(dt,-slips[i]/d);}if(!(dt>0))throw Error('Nonpositive coupled event');
-  const next=w.map((x,i)=>x+dt*a[i]),average=w.map((x,i)=>(x+next[i])/2);for(let i=0;i<6;i++)integral[i]+=dt*average[i];rows.forEach((r,i)=>{const heat=dt*force[i]*dot(r.j,average);if(r.type==='brake'){brakeHeat+=heat;brakeImpulse[i]+=dt*force[i];}else if(r.type==='clutch'){clutchHeat+=heat;clutchImpulse+=dt*force[i];}else {syncHeat+=heat;syncImpulse+=dt*force[i];}});w=next;remaining=dt===remaining?0:remaining-dt;
+  let next=w.map((x,i)=>x+dt*a[i]);if(exactCoordinates)next=coordinates(next,selected.active);const average=w.map((x,i)=>(x+next[i])/2);for(let i=0;i<6;i++)integral[i]+=dt*average[i];rows.forEach((r,i)=>{const heat=exactCoordinates&&selected.active.includes(i)?0:dt*force[i]*slipOf(r,average);if(r.type==='brake'){brakeHeat+=heat;brakeImpulse[i]+=dt*force[i];}else if(r.type==='clutch'){clutchHeat+=heat;clutchImpulse+=dt*force[i];}else {syncHeat+=heat;syncImpulse+=dt*force[i];}});w=next;remaining=dt===remaining?0:remaining-dt;
  }
- const finalEnergy=kinetic(w,p),work=dot(T,integral),residual=finalEnergy-initialEnergy-work+brakeHeat+clutchHeat+syncHeat,tolerance=128*Number.EPSILON*(1+initialEnergy+finalEnergy+Math.abs(work)+Math.abs(brakeHeat)+Math.abs(clutchHeat)+Math.abs(syncHeat));if(![...w,...integral,residual,tolerance,work,brakeHeat,clutchHeat,syncHeat,finalEnergy,initialEnergy].every(Number.isFinite)||Math.abs(residual)>tolerance||Math.min(brakeHeat,clutchHeat,syncHeat)<-tolerance)throw Error('Coupled rotor work check failed');
+ const finalEnergy=kinetic(w,p),work=dot(T,integral),residual=finalEnergy-initialEnergy-work+brakeHeat+clutchHeat+syncHeat-roundingEnergy,tolerance=128*Number.EPSILON*(1+initialEnergy+finalEnergy+Math.abs(work)+Math.abs(brakeHeat)+Math.abs(clutchHeat)+Math.abs(syncHeat));if(![...w,...integral,residual,tolerance,work,brakeHeat,clutchHeat,syncHeat,finalEnergy,initialEnergy].every(Number.isFinite)||Math.abs(residual)>tolerance||Math.min(brakeHeat,clutchHeat,syncHeat)<-tolerance)throw Error('Coupled rotor work check failed');
  const slip=w[5]-g*(w[2]+w[3])/2;return {w,integral,brakeHeat,clutchHeat,syncHeat,brakeImpulse,clutchImpulse,syncImpulse,roundingEnergy,segments,cases,residual,synchronized:gear!=='N'&&Math.abs(slip)<=zeroTolerance(),clutchMode:C===0?'open':Math.abs(w[4]-w[5])<=zeroTolerance()?'locked':'slipping',brakeModes:w.slice(0,4).map((x,i)=>B[i]===0?'open':Math.abs(x)<=zeroTolerance()?'holding':'slipping')};
 }

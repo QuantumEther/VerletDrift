@@ -1,4 +1,5 @@
 import {createLaboratory,advance,presentation,capture} from './adapter.js';
+import {definition} from '../../vehicles/definitions.js';
 import {bindControls} from './controls.js';import {createView3D} from './view3d.js';
 import {SimulationClock} from '../../../procedural-terrain/src/clock.js';
 import {createInstrument} from '../../../procedural-terrain/src/instruments.js';
@@ -12,17 +13,18 @@ function diagnosticSettings(){return {drivetrainMode:$('drivetrain-mode').value,
 $('diag-start').onclick=()=>{view.clearGpu();measurement={start:performance.now(),settings:diagnosticSettings(),frames:[],gpu:[],gpuEpoch:view.gpuStatus().epoch,gpuInvalid:false,changed:false,hidden:false};previousFrame=null;$('diag-output').textContent='Measuring…';};
 $('diag-download').onclick=()=>{if(!report)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));a.download='frame-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
 function summarize(values){const sorted=values.slice().sort((a,b)=>a-b),n=sorted.length;return {median:n?sorted[Math.floor((n-1)/2)]:0,mean:n?values.reduce((a,b)=>a+b,0)/n:0,p95:sorted[Math.max(0,Math.ceil(n*.95)-1)]??0,p99:sorted[Math.max(0,Math.ceil(n*.99)-1)]??0};}
-const gauges={engine:createInstrument($('engine-dial'),{label:'ENGINE',unit:'rpm',max:3000}),input:createInstrument($('input-dial'),{label:'GEARBOX INPUT',unit:'rpm',max:3000}),speed:createInstrument($('speed-dial'),{label:'ROAD SPEED',unit:'km/h',max:60})};
+const gauges={engine:createInstrument($('engine-dial'),{label:'ENGINE',unit:'rpm',max:7000}),input:createInstrument($('input-dial'),{label:'GEARBOX INPUT',unit:'rpm',max:7000}),speed:createInstrument($('speed-dial'),{label:'ROAD SPEED',unit:'km/h',max:60})};
 const controls=bindControls(document,()=>reset());
 function reset(speed=0){
  try{
-  const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed,drivetrainMode:$('drivetrain-mode').value});
+  const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed,drivetrainMode:$('drivetrain-mode').value,vehicleId:$('vehicle-select').value});
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
-  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=createView3D($('perspective'),next.terrain,$('render-scale').value);view.resetCamera($('camera').value);lab=next;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
+  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle);view.resetCamera($('camera').value);lab=next;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
  }catch(e){clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
 for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=['mountain','yard','rally'].includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});
+$('vehicle-select').addEventListener('change',()=>{const mustang=$('vehicle-select').value!=='reference';$('drivetrain-mode').value=mustang?'lifecycle':'fixed';$('drivetrain-mode').disabled=mustang;$('gear-request').disabled=!mustang;$('gear-request').value='N';const v=definition($('vehicle-select').value);$('vehicle-title').textContent=mustang?'1969 Mustang Mach 1':'The touring chassis';$('vehicle-info').textContent=mustang?'428 Cobra Jet reference · modified six-speed · 1660 kg estimate · 2.7432 m wheelbase · reduced suspension/tire model':'Original experimental reference · retained physics and coachwork';reset();});
 $('drivetrain-mode').addEventListener('change',()=>{$('gear-request').disabled=$('drivetrain-mode').value==='fixed';$('gear-request').value='N';reset();});
 $('pause').addEventListener('click',()=>{paused=!paused;controls.clear();$('pause').textContent=paused?'Resume':'Pause';});
 $('record-contacts').addEventListener('change',()=>observatory.breakContinuity());
@@ -42,7 +44,7 @@ function panel(p){
  const e=p.engineLifecycle; $('engine-live').textContent=e?`${e.mode} · starter ${(e.diagnostics?.starter??0).toFixed(2)} Nm\nCombustion ${(e.diagnostics?.combustion??0).toFixed(2)} Nm · losses ${(e.diagnostics?.loss??0).toFixed(2)} Nm\nStarter work ${e.starterWork.toFixed(2)} J · fuel work ${e.combustionWork.toFixed(2)} J\nInternal loss ${e.lossWork.toFixed(2)} J${e.diagnostics?.overspeed?' · OVERSPEED FUEL CUT':''}`:'Reference mean-engine mode';
  $('gear-status').textContent=p.gearbox?`Engine ${p.engineLifecycle?.mode??'legacy'} ${p.engineLifecycle?.diagnostics?.overspeed?'OVERSPEED / fuel cut':''} · Requested ${p.gearbox.gear} · ${p.gearbox.mode} · engaged ${p.gearbox.mode==='engaged'?p.gearbox.gear:'N'} · synchro heat ${p.synchronizerHeat.toFixed(2)} J · output ${p.outputOmega.toFixed(2)} rad/s`:'Fixed ratio 3.5 reference';
  $('clutch-reading').textContent=`Clutch ${p.clutch} · heat ${p.heat.clutch.toFixed(2)} J\nBrake heat ${p.heat.brakes.toFixed(2)} J`;
- $('energy-reading').textContent=`E ${p.energy.toFixed(3)} J\nWork residual ${p.energyResidual.toExponential(3)} J\nYaw ${(p.planar.heading*180/Math.PI).toFixed(1)}°\nSteer ${(lab.steer*180/Math.PI).toFixed(1)}°`;
+ $('energy-reading').textContent=`E ${p.energy.toFixed(3)} J\nWork residual ${p.energyResidual.toExponential(3)} J\nRoundoff ΔE ${p.roundoffEnergy.toExponential(3)} J\nYaw ${(p.planar.heading*180/Math.PI).toFixed(1)}°\nSteer ${(lab.steer*180/Math.PI).toFixed(1)}°`;
  $('contacts').replaceChildren(...p.wheels.map(w=>{const tr=document.createElement('tr');for(const value of [w.name,...[w.omega,w.normal,w.fx,w.fy,w.slipX,w.slipY,w.compression,w.mu].map(x=>x.toFixed(3)),w.mode]){const td=document.createElement('td');td.textContent=value;tr.append(td);}return tr;}));drawFrictionCircles($('friction-circles'),observatory.latest);
  if(clock.fault)$('warning').textContent=`PAUSED: ${clock.fault.message}. Last accepted state retained; reset to retry. Snapshot available via runtimeSnapshot().clock.fault.`;
 }

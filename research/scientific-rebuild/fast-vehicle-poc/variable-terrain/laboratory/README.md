@@ -293,3 +293,14 @@ R-reset binding. This sequential numpad layout intentionally follows the explici
 mission request rather than production's H-pattern. W/S/A/D/Space are retained.
 The mean-engine reference options remain selectable for prior experiments.
 See `../../engine-lifecycle/README.md` for equations, tests, timing and limits.
+
+## Selectable 1969 Mustang Mach 1
+
+The vehicle selector retains the experimental reference and adds a red procedural
+1969-style Mach 1 SportsRoof with a declared six-speed conversion. Selection resets
+incompatible state and selects the lifecycle drivetrain. Hold R with the clutch
+open, request a gear, add throttle, then progressively engage the clutch. The
+shared engine equations and terrain mechanisms are used; no second simulator runs.
+Historical source access is incomplete and the parameters are estimates/reference
+figures, not a calibrated Mustang. See [vehicle specification, numerical prerequisite,
+limitations and measured results](../../vehicles/README.md).

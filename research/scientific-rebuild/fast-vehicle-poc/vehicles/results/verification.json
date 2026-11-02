@@ -1,0 +1,85 @@
+{
+  "branch": "PERFORMANCE",
+  "baseCommit": "0927739a13b8e4f527a95a10d5677b849ae290c3",
+  "runtime": "v24.19.0",
+  "tests": [
+    {
+      "name": "Mustang tests",
+      "command": "node --test research/scientific-rebuild/fast-vehicle-poc/vehicles/vehicles.test.mjs",
+      "passed": 10,
+      "failed": 0,
+      "outputSha256": "0ac79d8a372af9dcd58c9bb6401e2491cb13303b8bdf54176358b0b6265bb309"
+    },
+    {
+      "name": "Lifecycle/coupled/shaft/terrain/lab tests",
+      "command": "node --test research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/test.mjs research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/test.mjs research/scientific-rebuild/fast-vehicle-poc/manual-transmission/shaft-flow.test.mjs research/scientific-rebuild/fast-vehicle-poc/variable-terrain/terrain.test.mjs research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/adapter.test.mjs research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/maps.test.mjs",
+      "passed": 71,
+      "failed": 0,
+      "outputSha256": "84b2ef1252844eb4c0a62ffd785d37d74dd1309ef5921b3bb90e2b8b998098f5"
+    },
+    {
+      "name": "Retained fast tests",
+      "command": "node --test research/scientific-rebuild/fast-vehicle-poc/test.mjs research/scientific-rebuild/fast-vehicle-poc/constraints.test.mjs research/scientific-rebuild/fast-vehicle-poc/consistency.test.mjs research/scientific-rebuild/fast-vehicle-poc/efficiency/efficiency.test.mjs research/scientific-rebuild/fast-vehicle-poc/static-contact/bristle.test.mjs research/scientific-rebuild/fast-vehicle-poc/static-contact/vehicle.test.mjs research/scientific-rebuild/fast-vehicle-poc/terrain-gate/gates.test.mjs",
+      "passed": 56,
+      "failed": 0,
+      "outputSha256": "8bff57bf286ddc8cdbc24f37424b7d6eb5235960fd34c53c6e40e846c8dd12cf"
+    },
+    {
+      "name": "Strict reference tests",
+      "command": "node --test research/scientific-rebuild/procedural-terrain/tests/*.test.mjs",
+      "passed": 82,
+      "failed": 0,
+      "outputSha256": "31121838f277bae9d3d0bd11f4c59f17c9365698ae6ed534b59b003c0f2595cc"
+    },
+    {
+      "name": "Reference exact replay",
+      "command": "node research/scientific-rebuild/fast-vehicle-poc/vehicles/reference-replay.mjs",
+      "status": "PASS",
+      "output": "PASS 2000 exact lifecycle reference states against 0927739"
+    },
+    {
+      "name": "Strategy A exact replay",
+      "command": "node research/scientific-rebuild/procedural-terrain/tools/tire-baseline.mjs",
+      "status": "PASS",
+      "output": "PASS bit-exact baseline: 36 driving fixtures, 1080 accepted states and rejected-step isolation, runtime v24.19.0"
+    },
+    {
+      "name": "Mustang browser",
+      "command": "node research/scientific-rebuild/fast-vehicle-poc/vehicles/browser-smoke.mjs",
+      "status": "PASS",
+      "output": "PASS Mustang browser driving and safe reference selection"
+    },
+    {
+      "name": "Existing reference browser",
+      "command": "node research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/browser-smoke.mjs",
+      "status": "PASS",
+      "output": "acceleration PASS\nsteering PASS\nview/state parity PASS\nbraking PASS\nhills PASS\nrough PASS\nroad PASS\nhandbrake/input release PASS\nPASS browser smoke ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  ],
+  "syntaxChecks": "PASS",
+  "sourceSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/mustang-view.js": "98af0541cada63fbf4b4b809ee29a851e858f1999256641856f6d037a15e8d54",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/definitions.js": "add4404bce4069f1fe2648dfcad21fc70c752bea26aa22fe4a90c837b7fbebc7",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/vehicles.test.mjs": "dd6036526eae7c64219258ac692d01537d477468fde004dc287d048a30c4b695",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/browser-smoke.mjs": "ef0061cb649d7591f267f640d4e6ea0f0ca15c27781e30ee96694fdf0fd46a6a",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/reference-replay.mjs": "770543f43493146d33459bcdf4465b2d91ac67baaeae3dd50b8c76c7a1f30ab5",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/benchmark.mjs": "74f6ed2e013f01471d77b4062bd44295f342631f2e7ae4eb1bbca2dc45e1b1f9",
+    "research/scientific-rebuild/fast-vehicle-poc/coupled-drivetrain/rotors.js": "bf161312d415aca42103651a5e5bb6ec3eedcd145160112600a61dba4353e3ac",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/vehicle.js": "878e00fd1bdf20894a69b35d5798856a2c6e17911b4a7a416ee0a2e6dff0ebe0",
+    "research/scientific-rebuild/fast-vehicle-poc/engine-lifecycle/engine.js": "174a616ced7b004b0fb52948efddaf3b0b072c55b11da8c159901ef7d13aeda8",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/adapter.js": "e418cd5418c1f9a1c1f6351aa75ed1d59ae1a2f03f91e40fdaf05b0148e86295",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/main.js": "849f521023e5a59c2bd70ce2f47039143f3fb28d4cd39084ddaf348dc5dfcc51",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/view3d.js": "fc0e479a289b221bf26f217d9833cfb1a923d454ca66ff4cbecb1db739cc5805"
+  },
+  "historicalSourceVerification": "UNVERIFIED: configured proxy denied Ford Heritage Vault, MustangSpecs and Wikipedia; nominal figures/engineering estimates clearly separated",
+  "benchmarkFailures": 0,
+  "artifactSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/results/mustang-front.png": "59fcdd34db7f69620da30426831a66215602942edef1de551b0d722b5ee12295",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/results/mustang-side.png": "eccd37757b8e71afeb9e36fb9f903a9adcc29cbf9c79ae39e1ae4cbdc13dd31f",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/results/browser.json": "495a241fb4db6219a411ab790da562f1f016a45ae25bc354c72d606852be5d41",
+    "research/scientific-rebuild/fast-vehicle-poc/vehicles/results/benchmark.json": "e9743076e412c47e4844ef8d7447dac7940bb7c4e8ae25ab7c89f8fdeb0997a2"
+  },
+  "totalNodeTestsPassed": 219,
+  "baselineExactStates": 2000,
+  "strategyAExactStates": 1080
+}
