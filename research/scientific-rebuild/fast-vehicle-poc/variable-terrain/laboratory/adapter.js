@@ -1,10 +1,10 @@
 // Read-only presentation mapping plus accepted rotor-angle quadrature. No solver.
 import {P,create,step,energy,totalWork} from '../vehicle.js';
 import {point,sample,frame} from '../geometry.js';
-import {createTerrain} from '../../../procedural-terrain/src/terrain.js';
+import {createMap} from './maps.js';
 export const defaults=Object.freeze({preset:'flat',seed:23,amplitude:.15,roughness:.5});
 export function createLaboratory(settings=defaults,options={}){
- const terrain=createTerrain(settings),state=create(terrain,options);
+ const terrain=createMap(settings),state=create(terrain,options);
  return {terrain,state,angles:[0,0,0,0,0],steer:0,initialEnergy:energy(state,terrain),lastInput:{}};
 }
 export function advance(lab,input,h=.001){

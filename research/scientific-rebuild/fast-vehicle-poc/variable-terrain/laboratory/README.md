@@ -218,3 +218,47 @@ identify the first triggering operation. If even minimal WebGL reproduces the
 problem in both browsers, compare direct-NVIDIA versus hybrid routing and inspect
 browser GPU/compositor traces and VSync manually; do not change system settings
 without deliberately testing and recording them.
+
+## Authored driving maps
+
+The terrain selector retains the four original test surfaces and adds three
+fixed-layout maps. Seed, amplitude and roughness affect the original procedural
+surfaces only; those fields are disabled on authored maps.
+
+- **Alpine pass:** a gently winding paved mountain road, painted center and edge
+  lines, gravel shoulders and muted rocky ground over an analytic low-relief grade.
+- **Industrial proving ground:** a wide concrete driving apron with yellow edge
+  lines, slab seams, gravel margins and a shallow longitudinal grade.
+- **Highland gravel stage:** a narrower winding dirt route, gravel shoulders and
+  grass margins over rolling terrain, with understated route-edge markings.
+
+`maps.js` separates analytic height/gradient, corridor surface and friction, and
+presentation color. The same corridor classification supplies both contact friction
+and road coloring. All wheel contact and normal calculations use the existing
+variable-terrain physics; the locally adapted track display also reads that exact
+sampler. Surface friction values are illustrative, not calibrated. Paint and
+material grain are visual and do not change grip. The 40 m terrain mesh and texture
+are bounded and reposition in 4 m tiles. Geometry and raster interpolation approximate
+the analytic contact surface visually; road markings are not physical obstacles.
+
+The maps are designed driving surfaces, not complete landscapes: they have no
+buildings, vegetation, guardrails, distant mountain skyline or closed circuit.
+The alpine relief is modest and is not a model of real mountain topography. The
+routes continue as analytic fields rather than authored finite-length tracks.
+
+Verification: `node --test research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/maps.test.mjs research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/adapter.test.mjs research/scientific-rebuild/fast-vehicle-poc/variable-terrain/terrain.test.mjs`
+passed 28 tests, including analytic gradient checks, per-surface friction, renderer
+color/physical-corridor agreement, energy residual and a 500-step drive on each
+map. `node research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/maps-browser-smoke.mjs`
+loaded and drove all maps in Chromium with no page errors. The original laboratory
+browser smoke also passed. Browser screenshots are generated in `/tmp`.
+
+Performance limitation: authored maps increase the displayed terrain mesh from
+160×20 to 160×120 cells (about 29,096 to 61,096 total scene triangles in the smoke
+run). Texture regeneration is bounded to 256×256 samples per 4 m tile movement.
+On the shared Xeon cloud host, a separate warmed Node-only loop generating the
+colors took roughly 11–19 ms per tile; mesh updates, normals and GPU uploads are
+additional. Occasional visible frame spikes are therefore possible; no 240 Hz
+claim is made. A short, single Chromium/SwiftShader browser run observed roughly
+22.5 FPS on flat and 17–19 FPS on the new maps; these are software-renderer samples,
+not measurements of the user's RTX 5090 or a controlled performance benchmark.

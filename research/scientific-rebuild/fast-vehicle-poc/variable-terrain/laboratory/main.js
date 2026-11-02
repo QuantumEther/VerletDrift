@@ -19,10 +19,10 @@ function reset(speed=0){
   const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed});
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
-  setEnvironment(settings);view?.dispose();view=createView3D($('perspective'),next.terrain,$('render-scale').value);view.resetCamera($('camera').value);lab=next;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
+  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=createView3D($('perspective'),next.terrain,$('render-scale').value);view.resetCamera($('camera').value);lab=next;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
  }catch(e){clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
-for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>reset());
+for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=['mountain','yard','rally'].includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});
 $('pause').addEventListener('click',()=>{paused=!paused;controls.clear();$('pause').textContent=paused?'Resume':'Pause';});
 $('record-contacts').addEventListener('change',()=>observatory.breakContinuity());
 $('render-scale').addEventListener('change',()=>view?.setQuality($('render-scale').value));
