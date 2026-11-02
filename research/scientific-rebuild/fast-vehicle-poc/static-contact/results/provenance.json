@@ -1,0 +1,21 @@
+{
+  "branch": "PERFORMANCE",
+  "workingBase": "37e2c61cdda47346b25d1ab18124c160f8c09079",
+  "comparisonBaseline": "71cfb6c1295e9e4bea923ff3ff27e87633aa1f8f",
+  "sourceSha256": {
+    "bristle.js": "af5eb8992d25f2408a9a67216da0a602785320a6dc6228aa27c85da002ccd352",
+    "vehicle.js": "a6ca9c6a380e021731a9b296fd0b4058ab7db65f86e24d60945e66a10b1f1aea",
+    "bristle.test.mjs": "7189c7918173fff1f24edb7a8c932adb7e8b6171aa7c69df5b1afb07e7b9c45d",
+    "vehicle.test.mjs": "18f49493c2d080885a69c1f663f8611c7589cef474ea31cd5e344aa386cc9f87",
+    "benchmark.mjs": "821340b701827cf4ca8908019389bb8fdeaa78d140a6232f2a6b9a142c1ec1a0",
+    "characterize.mjs": "3fcd0d954e1aa71a66b6ef2f4c9228df1b8d024dae8607266f5d061eeb9bf120"
+  },
+  "resultsSha256": {
+    "refinement.json": "fa5c77b08959f7faa933bf783233b4f4f551ed9ec761bccbeacfb0a904127607",
+    "baseline-braking.json": "da97867d395af0a46887c5505520d39bbcf9ea6318cf297e791a3f27e9b50f56",
+    "rolling-memory-limit.json": "5c530723d9296c26c278804eb38c7fd6cbdc77023fe05b5146b7001b410790ce",
+    "rear-handbrake-hold.json": "977c24123f497829ba88d2781c7bafaf68284b7cc4b611b7f662844a77f04888",
+    "summary.json": "4fc2e0b0f3040852110341e0de3784aca09e02f10677c4c2173160dbae7cf43d",
+    "benchmark.json": "031e49acbfbbfefc4cb516aac7c968e503dd0e87a4981f0a6bb021a2c68290fc"
+  }
+}

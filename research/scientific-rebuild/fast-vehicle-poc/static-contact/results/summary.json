@@ -1,0 +1,149 @@
+{
+  "baseline": "71cfb6c1295e9e4bea923ff3ff27e87633aa1f8f",
+  "meanCpuMsPerSimSecond": {
+    "baseline": 43.643214285714286,
+    "bristle": 64.49964285714286
+  },
+  "cpuOverheadRatio": 1.4778847963600952,
+  "maxEnergyResidualJ": 1.91562321560923e-11,
+  "maxIterations": 8,
+  "maxForceResidualN": 9.99733629214461e-12,
+  "maxFrictionExcessN": 8.753886504564434e-12,
+  "maxLockedResidualRadS": 0,
+  "cases": [
+    {
+      "case": "acceleration",
+      "baseline": {
+        "cpuMsPerSimSecond": 54.4455,
+        "medianMs": 0.03249500000003991,
+        "p95Ms": 0.06626050000011219,
+        "p99Ms": 0.19422300000007908,
+        "iterations": 6087.0,
+        "worstMs": 4.461598999999978
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 104.699,
+        "medianMs": 0.04817850000006274,
+        "p95Ms": 0.175395500000036,
+        "p99Ms": 0.32374799999990955,
+        "iterations": 5922.0,
+        "worstMs": 3.7588399999999638
+      }
+    },
+    {
+      "case": "steering",
+      "baseline": {
+        "cpuMsPerSimSecond": 48.559,
+        "medianMs": 0.039894499999945765,
+        "p95Ms": 0.11493850000010752,
+        "p99Ms": 0.21530950000010307,
+        "iterations": 6598.0,
+        "worstMs": 0.6026630000001205
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 66.174,
+        "medianMs": 0.0547750000000633,
+        "p95Ms": 0.14320950000001176,
+        "p99Ms": 0.23174200000016754,
+        "iterations": 6561.0,
+        "worstMs": 0.5280130000001009
+      }
+    },
+    {
+      "case": "braking",
+      "baseline": {
+        "cpuMsPerSimSecond": 42.0435,
+        "medianMs": 0.03414399999996931,
+        "p95Ms": 0.07907950000003439,
+        "p99Ms": 0.18102550000003248,
+        "iterations": 6654.0,
+        "worstMs": 0.6782720000001063
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 56.4215,
+        "medianMs": 0.04810749999978725,
+        "p95Ms": 0.11476949999996577,
+        "p99Ms": 0.20827500000018517,
+        "iterations": 6462.0,
+        "worstMs": 1.7858949999999822
+      }
+    },
+    {
+      "case": "drift-recovery",
+      "baseline": {
+        "cpuMsPerSimSecond": 50.2855,
+        "medianMs": 0.04045799999994415,
+        "p95Ms": 0.10733299999992596,
+        "p99Ms": 0.19465250000007472,
+        "iterations": 7374.0,
+        "worstMs": 1.3135379999998804
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 69.2125,
+        "medianMs": 0.055853999999953885,
+        "p95Ms": 0.15142450000007557,
+        "p99Ms": 0.2661565000000792,
+        "iterations": 7278.0,
+        "worstMs": 0.9890179999997599
+      }
+    },
+    {
+      "case": "recontact",
+      "baseline": {
+        "cpuMsPerSimSecond": 40.980000000000004,
+        "medianMs": 0.034315500000047905,
+        "p95Ms": 0.06895649999978559,
+        "p99Ms": 0.16361699999993107,
+        "iterations": 7009.0,
+        "worstMs": 0.5930109999999331
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 58.717,
+        "medianMs": 0.04945050000014817,
+        "p95Ms": 0.11430800000016461,
+        "p99Ms": 0.1993280000001505,
+        "iterations": 7090.0,
+        "worstMs": 2.1378850000000966
+      }
+    },
+    {
+      "case": "clutch-transition",
+      "baseline": {
+        "cpuMsPerSimSecond": 37.4,
+        "medianMs": 0.0356685000001562,
+        "p95Ms": 0.06746799999973518,
+        "p99Ms": 0.16146049999997558,
+        "iterations": 5130.0,
+        "worstMs": 0.4658239999998841
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 52.254,
+        "medianMs": 0.04884549999997034,
+        "p95Ms": 0.1167924999999741,
+        "p99Ms": 0.216113000000405,
+        "iterations": 5113.0,
+        "worstMs": 0.5692720000006375
+      }
+    },
+    {
+      "case": "hold-release",
+      "baseline": {
+        "cpuMsPerSimSecond": 31.789,
+        "medianMs": 0.035556000000269705,
+        "p95Ms": 0.05748449999964578,
+        "p99Ms": 0.142413999999917,
+        "iterations": 3940.0,
+        "worstMs": 1.0477989999999409
+      },
+      "bristle": {
+        "cpuMsPerSimSecond": 44.0195,
+        "medianMs": 0.04836650000015652,
+        "p95Ms": 0.09377150000000256,
+        "p99Ms": 0.2042900000001282,
+        "iterations": 3862.0,
+        "worstMs": 0.4912690000001021
+      }
+    }
+  ],
+  "readiness": "Static/sliding contact gate cleared for reduced fixed-plane research; NOT ready for full varying-normal terrain or definitive pneumatic-tire use"
+}

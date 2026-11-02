@@ -1,0 +1,47 @@
+{
+  "meaning": "Prescribed constant slip at one lumped contact, NOT a driving trajectory. A dry elasto-plastic contact eventually reaches Coulomb yield even at tiny sustained slip. Pneumatic rolling-patch renewal and a calibrated slip-ratio curve are not implemented.",
+  "normalN": 250,
+  "mu": 0.9,
+  "rows": [
+    {
+      "timeSeconds": 0.1,
+      "slipMS": 0.001,
+      "forceN": -2.7899999999999965,
+      "elasticJ": 0.00009999999999999964,
+      "dissipatedJ": 0.00008000000000000009,
+      "mode": "grip"
+    },
+    {
+      "timeSeconds": 1,
+      "slipMS": 0.001,
+      "forceN": -20.790000000000305,
+      "elasticJ": 0.010000000000000304,
+      "dissipatedJ": 0.0008000000000000127,
+      "mode": "grip"
+    },
+    {
+      "timeSeconds": 5,
+      "slipMS": 0.001,
+      "forceN": -100.79000000000678,
+      "elasticJ": 0.2500000000000339,
+      "dissipatedJ": 0.004000000000000039,
+      "mode": "grip"
+    },
+    {
+      "timeSeconds": 12,
+      "slipMS": 0.001,
+      "forceN": -225,
+      "elasticJ": 1.2656249999762053,
+      "dissipatedJ": 0.17773400002339512,
+      "mode": "sliding"
+    },
+    {
+      "timeSeconds": 20,
+      "slipMS": 0.001,
+      "forceN": -225,
+      "elasticJ": 1.2656249999999927,
+      "dissipatedJ": 1.9777339999986217,
+      "mode": "sliding"
+    }
+  ]
+}

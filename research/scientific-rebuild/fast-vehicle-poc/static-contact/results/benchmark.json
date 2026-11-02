@@ -1,0 +1,5968 @@
+{
+  "baseline": "71cfb6c1295e9e4bea923ff3ff27e87633aa1f8f",
+  "runtime": "v24.19.0",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCPUs": 5,
+  "protocol": {
+    "h": 0.001,
+    "duration": 1,
+    "repeats": 5,
+    "discardFirst": true,
+    "warmup": "one full seven-case pass per method",
+    "order": "alternating paired runs",
+    "scope": "Complete headless physics CPU + common counters; per-step wall time just step; all validation excluded; baseline y initial conditions identical, tire laws deliberately differ"
+  },
+  "runs": [
+    {
+      "name": "acceleration",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 84.869,
+      "medianMs": 0.03474099999993996,
+      "p95Ms": 0.14788799999996627,
+      "p99Ms": 0.31621000000018284,
+      "worstMs": 1.279348999999911,
+      "iterations": 6087,
+      "maxIterations": 8,
+      "rotorSegments": 7087
+    },
+    {
+      "name": "acceleration",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 251.746,
+      "medianMs": 0.08522799999991548,
+      "p95Ms": 0.20708200000012766,
+      "p99Ms": 0.4777440000000297,
+      "worstMs": 5.4603779999999915,
+      "iterations": 5922,
+      "maxIterations": 8,
+      "rotorSegments": 6922
+    },
+    {
+      "name": "acceleration",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 138.142,
+      "medianMs": 0.05057799999985946,
+      "p95Ms": 0.19230000000015934,
+      "p99Ms": 0.37204799999994975,
+      "worstMs": 2.7783569999999145,
+      "iterations": 5922,
+      "maxIterations": 8,
+      "rotorSegments": 6922
+    },
+    {
+      "name": "acceleration",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 72.305,
+      "medianMs": 0.03455400000007103,
+      "p95Ms": 0.1292320000000018,
+      "p99Ms": 0.27348299999994197,
+      "worstMs": 0.4013440000001083,
+      "iterations": 6087,
+      "maxIterations": 8,
+      "rotorSegments": 7087
+    },
+    {
+      "name": "acceleration",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 102.989,
+      "medianMs": 0.03442300000006071,
+      "p95Ms": 0.07010400000012851,
+      "p99Ms": 0.2245620000001054,
+      "worstMs": 4.461598999999978,
+      "iterations": 6087,
+      "maxIterations": 8,
+      "rotorSegments": 7087
+    },
+    {
+      "name": "acceleration",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 213.727,
+      "medianMs": 0.047600999999986016,
+      "p95Ms": 0.1813320000001113,
+      "p99Ms": 0.5340369999998984,
+      "worstMs": 3.7588399999999638,
+      "iterations": 5922,
+      "maxIterations": 8,
+      "rotorSegments": 6922
+    },
+    {
+      "name": "acceleration",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 71.256,
+      "medianMs": 0.048756000000139466,
+      "p95Ms": 0.16945899999996072,
+      "p99Ms": 0.2572229999998399,
+      "worstMs": 2.5830720000001293,
+      "iterations": 5922,
+      "maxIterations": 8,
+      "rotorSegments": 6922
+    },
+    {
+      "name": "acceleration",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 35.794,
+      "medianMs": 0.030567000000019107,
+      "p95Ms": 0.058500999999978376,
+      "p99Ms": 0.14089800000010655,
+      "worstMs": 0.3558290000000852,
+      "iterations": 6087,
+      "maxIterations": 8,
+      "rotorSegments": 7087
+    },
+    {
+      "name": "acceleration",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 36.586,
+      "medianMs": 0.03054999999994834,
+      "p95Ms": 0.06241700000009587,
+      "p99Ms": 0.16388400000005277,
+      "worstMs": 0.354567999999972,
+      "iterations": 6087,
+      "maxIterations": 8,
+      "rotorSegments": 7087
+    },
+    {
+      "name": "acceleration",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 54.475,
+      "medianMs": 0.043603000000075554,
+      "p95Ms": 0.1180650000001151,
+      "p99Ms": 0.27544799999986935,
+      "worstMs": 0.4990339999999378,
+      "iterations": 5922,
+      "maxIterations": 8,
+      "rotorSegments": 6922
+    },
+    {
+      "name": "steering",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 48.64,
+      "medianMs": 0.0399240000001555,
+      "p95Ms": 0.10581200000024182,
+      "p99Ms": 0.20501000000012937,
+      "worstMs": 0.48452399999996487,
+      "iterations": 6598,
+      "maxIterations": 8,
+      "rotorSegments": 7598
+    },
+    {
+      "name": "steering",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 65.297,
+      "medianMs": 0.05484900000010384,
+      "p95Ms": 0.14170400000011796,
+      "p99Ms": 0.2357809999998608,
+      "worstMs": 0.8254839999999604,
+      "iterations": 6561,
+      "maxIterations": 8,
+      "rotorSegments": 7561
+    },
+    {
+      "name": "steering",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 70.997,
+      "medianMs": 0.05481800000006842,
+      "p95Ms": 0.13309399999980087,
+      "p99Ms": 0.23103900000023714,
+      "worstMs": 0.4706380000002355,
+      "iterations": 6561,
+      "maxIterations": 8,
+      "rotorSegments": 7561
+    },
+    {
+      "name": "steering",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 46.787,
+      "medianMs": 0.0393130000002202,
+      "p95Ms": 0.10807800000020507,
+      "p99Ms": 0.19505900000012844,
+      "worstMs": 0.33625599999959377,
+      "iterations": 6598,
+      "maxIterations": 8,
+      "rotorSegments": 7598
+    },
+    {
+      "name": "steering",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 50.209,
+      "medianMs": 0.04002799999989293,
+      "p95Ms": 0.12179900000000998,
+      "p99Ms": 0.21882599999980812,
+      "worstMs": 0.6026630000001205,
+      "iterations": 6598,
+      "maxIterations": 8,
+      "rotorSegments": 7598
+    },
+    {
+      "name": "steering",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 63.539,
+      "medianMs": 0.054411999999956606,
+      "p95Ms": 0.1305829999996604,
+      "p99Ms": 0.21625399999993533,
+      "worstMs": 0.49419899999975314,
+      "iterations": 6561,
+      "maxIterations": 8,
+      "rotorSegments": 7561
+    },
+    {
+      "name": "steering",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 66.431,
+      "medianMs": 0.054790000000139116,
+      "p95Ms": 0.15332500000022264,
+      "p99Ms": 0.23387600000023667,
+      "worstMs": 0.49076900000000023,
+      "iterations": 6561,
+      "maxIterations": 8,
+      "rotorSegments": 7561
+    },
+    {
+      "name": "steering",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 46.909,
+      "medianMs": 0.03982300000006944,
+      "p95Ms": 0.07786299999997937,
+      "p99Ms": 0.21440100000017992,
+      "worstMs": 0.46697400000039124,
+      "iterations": 6598,
+      "maxIterations": 8,
+      "rotorSegments": 7598
+    },
+    {
+      "name": "steering",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 51.454,
+      "medianMs": 0.03996599999982209,
+      "p95Ms": 0.12385200000016994,
+      "p99Ms": 0.21621800000002622,
+      "worstMs": 0.38619599999992715,
+      "iterations": 6598,
+      "maxIterations": 8,
+      "rotorSegments": 7598
+    },
+    {
+      "name": "steering",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 65.917,
+      "medianMs": 0.054759999999987485,
+      "p95Ms": 0.1534430000001521,
+      "p99Ms": 0.23244500000009793,
+      "worstMs": 0.5280130000001009,
+      "iterations": 6561,
+      "maxIterations": 8,
+      "rotorSegments": 7561
+    },
+    {
+      "name": "braking",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 39.213,
+      "medianMs": 0.03403799999978219,
+      "p95Ms": 0.06952300000011746,
+      "p99Ms": 0.1702700000000732,
+      "worstMs": 0.3701389999996536,
+      "iterations": 6654,
+      "maxIterations": 8,
+      "rotorSegments": 7669
+    },
+    {
+      "name": "braking",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 102.891,
+      "medianMs": 0.05565100000012535,
+      "p95Ms": 0.16141100000004371,
+      "p99Ms": 0.30437499999970896,
+      "worstMs": 0.42009699999971417,
+      "iterations": 6462,
+      "maxIterations": 8,
+      "rotorSegments": 7476
+    },
+    {
+      "name": "braking",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 54.442,
+      "medianMs": 0.04785200000014811,
+      "p95Ms": 0.08139799999980823,
+      "p99Ms": 0.2461750000002212,
+      "worstMs": 0.41041099999984,
+      "iterations": 6462,
+      "maxIterations": 8,
+      "rotorSegments": 7476
+    },
+    {
+      "name": "braking",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 43.389,
+      "medianMs": 0.033977000000049884,
+      "p95Ms": 0.1085800000000745,
+      "p99Ms": 0.20660300000008647,
+      "worstMs": 0.6782720000001063,
+      "iterations": 6654,
+      "maxIterations": 8,
+      "rotorSegments": 7669
+    },
+    {
+      "name": "braking",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 64.286,
+      "medianMs": 0.034341999999924155,
+      "p95Ms": 0.07630600000038612,
+      "p99Ms": 0.18211100000007718,
+      "worstMs": 0.564850999999635,
+      "iterations": 6654,
+      "maxIterations": 8,
+      "rotorSegments": 7669
+    },
+    {
+      "name": "braking",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 58.25,
+      "medianMs": 0.04801499999985026,
+      "p95Ms": 0.13312900000028094,
+      "p99Ms": 0.19883600000002843,
+      "worstMs": 1.7858949999999822,
+      "iterations": 6462,
+      "maxIterations": 8,
+      "rotorSegments": 7476
+    },
+    {
+      "name": "braking",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 54.593,
+      "medianMs": 0.04819999999972424,
+      "p95Ms": 0.09640999999965061,
+      "p99Ms": 0.19689700000026278,
+      "worstMs": 0.4066769999999451,
+      "iterations": 6462,
+      "maxIterations": 8,
+      "rotorSegments": 7476
+    },
+    {
+      "name": "braking",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 40.698,
+      "medianMs": 0.03362200000037774,
+      "p95Ms": 0.08185299999968265,
+      "p99Ms": 0.17993999999998778,
+      "worstMs": 0.5836150000000089,
+      "iterations": 6654,
+      "maxIterations": 8,
+      "rotorSegments": 7669
+    },
+    {
+      "name": "braking",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 40.248,
+      "medianMs": 0.034310999999888736,
+      "p95Ms": 0.06815800000003946,
+      "p99Ms": 0.17751799999996365,
+      "worstMs": 0.44017699999994875,
+      "iterations": 6654,
+      "maxIterations": 8,
+      "rotorSegments": 7669
+    },
+    {
+      "name": "braking",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 58.492,
+      "medianMs": 0.04904600000008941,
+      "p95Ms": 0.13894499999969412,
+      "p99Ms": 0.2177140000003419,
+      "worstMs": 0.6315190000000257,
+      "iterations": 6462,
+      "maxIterations": 8,
+      "rotorSegments": 7476
+    },
+    {
+      "name": "drift-recovery",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 47.615,
+      "medianMs": 0.04044099999964601,
+      "p95Ms": 0.0804960000000392,
+      "p99Ms": 0.15734399999973903,
+      "worstMs": 0.45943299999999,
+      "iterations": 7374,
+      "maxIterations": 8,
+      "rotorSegments": 8399
+    },
+    {
+      "name": "drift-recovery",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 68.201,
+      "medianMs": 0.0559690000000046,
+      "p95Ms": 0.14695500000016182,
+      "p99Ms": 0.23048700000026656,
+      "worstMs": 0.8703810000001795,
+      "iterations": 7278,
+      "maxIterations": 8,
+      "rotorSegments": 8303
+    },
+    {
+      "name": "drift-recovery",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 69.951,
+      "medianMs": 0.05588799999986804,
+      "p95Ms": 0.16289400000005116,
+      "p99Ms": 0.2926390000002357,
+      "worstMs": 0.9890179999997599,
+      "iterations": 7278,
+      "maxIterations": 8,
+      "rotorSegments": 8303
+    },
+    {
+      "name": "drift-recovery",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 50.385,
+      "medianMs": 0.04047200000013618,
+      "p95Ms": 0.11066899999968882,
+      "p99Ms": 0.196194000000105,
+      "worstMs": 1.008842000000186,
+      "iterations": 7374,
+      "maxIterations": 8,
+      "rotorSegments": 8399
+    },
+    {
+      "name": "drift-recovery",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 51.231,
+      "medianMs": 0.04044399999975212,
+      "p95Ms": 0.09681000000000495,
+      "p99Ms": 0.2040690000003451,
+      "worstMs": 1.3135379999998804,
+      "iterations": 7374,
+      "maxIterations": 8,
+      "rotorSegments": 8399
+    },
+    {
+      "name": "drift-recovery",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 68.474,
+      "medianMs": 0.05667700000003606,
+      "p95Ms": 0.13995500000009997,
+      "p99Ms": 0.22118099999988772,
+      "worstMs": 0.40023900000005597,
+      "iterations": 7278,
+      "maxIterations": 8,
+      "rotorSegments": 8303
+    },
+    {
+      "name": "drift-recovery",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 73.402,
+      "medianMs": 0.05582000000003973,
+      "p95Ms": 0.17850100000032398,
+      "p99Ms": 0.2956909999998061,
+      "worstMs": 0.6858170000000428,
+      "iterations": 7278,
+      "maxIterations": 8,
+      "rotorSegments": 8303
+    },
+    {
+      "name": "drift-recovery",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 50.186,
+      "medianMs": 0.04050999999981286,
+      "p95Ms": 0.1039970000001631,
+      "p99Ms": 0.19311100000004444,
+      "worstMs": 0.4730580000000373,
+      "iterations": 7374,
+      "maxIterations": 8,
+      "rotorSegments": 8399
+    },
+    {
+      "name": "drift-recovery",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 48.876,
+      "medianMs": 0.040425000000141154,
+      "p95Ms": 0.11747599999989689,
+      "p99Ms": 0.17060399999991205,
+      "worstMs": 0.37098500000001877,
+      "iterations": 7374,
+      "maxIterations": 8,
+      "rotorSegments": 8399
+    },
+    {
+      "name": "drift-recovery",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 67.324,
+      "medianMs": 0.05580699999973149,
+      "p95Ms": 0.13674399999990783,
+      "p99Ms": 0.23967399999992267,
+      "worstMs": 0.4141260000001239,
+      "iterations": 7278,
+      "maxIterations": 8,
+      "rotorSegments": 8303
+    },
+    {
+      "name": "recontact",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 42.232,
+      "medianMs": 0.03441100000009101,
+      "p95Ms": 0.07306500000004235,
+      "p99Ms": 0.17159300000002986,
+      "worstMs": 0.8373520000000099,
+      "iterations": 7009,
+      "maxIterations": 8,
+      "rotorSegments": 8016
+    },
+    {
+      "name": "recontact",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 70.343,
+      "medianMs": 0.05365700000038487,
+      "p95Ms": 0.1490179999996144,
+      "p99Ms": 0.2867400000000089,
+      "worstMs": 0.5257599999999911,
+      "iterations": 7090,
+      "maxIterations": 8,
+      "rotorSegments": 8097
+    },
+    {
+      "name": "recontact",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 58.508,
+      "medianMs": 0.04932700000017576,
+      "p95Ms": 0.11828400000013062,
+      "p99Ms": 0.17930500000011307,
+      "worstMs": 0.30175199999985125,
+      "iterations": 7090,
+      "maxIterations": 8,
+      "rotorSegments": 8097
+    },
+    {
+      "name": "recontact",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 40.081,
+      "medianMs": 0.03426600000011604,
+      "p95Ms": 0.06850500000018656,
+      "p99Ms": 0.1498910000000251,
+      "worstMs": 0.26556899999968664,
+      "iterations": 7009,
+      "maxIterations": 8,
+      "rotorSegments": 8016
+    },
+    {
+      "name": "recontact",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 40.655,
+      "medianMs": 0.034350999999787746,
+      "p95Ms": 0.06639099999983955,
+      "p99Ms": 0.16314499999998588,
+      "worstMs": 0.3783490000000711,
+      "iterations": 7009,
+      "maxIterations": 8,
+      "rotorSegments": 8016
+    },
+    {
+      "name": "recontact",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 58.843,
+      "medianMs": 0.04955599999993865,
+      "p95Ms": 0.1103320000001986,
+      "p99Ms": 0.19684400000005553,
+      "worstMs": 0.3743650000001253,
+      "iterations": 7090,
+      "maxIterations": 8,
+      "rotorSegments": 8097
+    },
+    {
+      "name": "recontact",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 70.69,
+      "medianMs": 0.04985500000020693,
+      "p95Ms": 0.13887900000008813,
+      "p99Ms": 0.35460800000055315,
+      "worstMs": 2.1378850000000966,
+      "iterations": 7090,
+      "maxIterations": 8,
+      "rotorSegments": 8097
+    },
+    {
+      "name": "recontact",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 41.473,
+      "medianMs": 0.03428299999995943,
+      "p95Ms": 0.07148200000028737,
+      "p99Ms": 0.19846400000005815,
+      "worstMs": 0.2854479999996329,
+      "iterations": 7009,
+      "maxIterations": 8,
+      "rotorSegments": 8016
+    },
+    {
+      "name": "recontact",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 41.305,
+      "medianMs": 0.03434800000013638,
+      "p95Ms": 0.06940799999938463,
+      "p99Ms": 0.16408899999987625,
+      "worstMs": 0.5930109999999331,
+      "iterations": 7009,
+      "maxIterations": 8,
+      "rotorSegments": 8016
+    },
+    {
+      "name": "recontact",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 58.591,
+      "medianMs": 0.049345000000357686,
+      "p95Ms": 0.10091199999988021,
+      "p99Ms": 0.20181200000024546,
+      "worstMs": 0.6416960000005929,
+      "iterations": 7090,
+      "maxIterations": 8,
+      "rotorSegments": 8097
+    },
+    {
+      "name": "clutch-transition",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 37.826,
+      "medianMs": 0.03568100000029517,
+      "p95Ms": 0.07107600000017555,
+      "p99Ms": 0.18281500000011874,
+      "worstMs": 0.3650290000005043,
+      "iterations": 5130,
+      "maxIterations": 8,
+      "rotorSegments": 6138
+    },
+    {
+      "name": "clutch-transition",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 52.568,
+      "medianMs": 0.04881100000056904,
+      "p95Ms": 0.12004499999966356,
+      "p99Ms": 0.20346599999993487,
+      "worstMs": 0.5015940000002956,
+      "iterations": 5113,
+      "maxIterations": 8,
+      "rotorSegments": 6121
+    },
+    {
+      "name": "clutch-transition",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 51.846,
+      "medianMs": 0.048901000000114436,
+      "p95Ms": 0.11351899999954185,
+      "p99Ms": 0.2023090000002412,
+      "worstMs": 0.5692720000006375,
+      "iterations": 5113,
+      "maxIterations": 8,
+      "rotorSegments": 6121
+    },
+    {
+      "name": "clutch-transition",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 38.251,
+      "medianMs": 0.03569299999981013,
+      "p95Ms": 0.07103499999993801,
+      "p99Ms": 0.17618600000059814,
+      "worstMs": 0.3587659999993775,
+      "iterations": 5130,
+      "maxIterations": 8,
+      "rotorSegments": 6138
+    },
+    {
+      "name": "clutch-transition",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 36.488,
+      "medianMs": 0.035644000000502274,
+      "p95Ms": 0.06083500000022468,
+      "p99Ms": 0.13897300000007817,
+      "worstMs": 0.4060460000000603,
+      "iterations": 5130,
+      "maxIterations": 8,
+      "rotorSegments": 6138
+    },
+    {
+      "name": "clutch-transition",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 52.799,
+      "medianMs": 0.048866000000089116,
+      "p95Ms": 0.12166600000000471,
+      "p99Ms": 0.23894500000005792,
+      "worstMs": 0.40509600000041246,
+      "iterations": 5113,
+      "maxIterations": 8,
+      "rotorSegments": 6121
+    },
+    {
+      "name": "clutch-transition",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 52.662,
+      "medianMs": 0.04882499999985157,
+      "p95Ms": 0.12006600000040635,
+      "p99Ms": 0.2299170000005688,
+      "worstMs": 0.522715000000062,
+      "iterations": 5113,
+      "maxIterations": 8,
+      "rotorSegments": 6121
+    },
+    {
+      "name": "clutch-transition",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 38.764,
+      "medianMs": 0.03566800000044168,
+      "p95Ms": 0.06958399999984977,
+      "p99Ms": 0.185247000000345,
+      "worstMs": 0.4658239999998841,
+      "iterations": 5130,
+      "maxIterations": 8,
+      "rotorSegments": 6138
+    },
+    {
+      "name": "clutch-transition",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 36.549,
+      "medianMs": 0.03566899999987072,
+      "p95Ms": 0.0653519999996206,
+      "p99Ms": 0.14673499999935302,
+      "worstMs": 0.2818220000008296,
+      "iterations": 5130,
+      "maxIterations": 8,
+      "rotorSegments": 6138
+    },
+    {
+      "name": "clutch-transition",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 49.646,
+      "medianMs": 0.04874199999994744,
+      "p95Ms": 0.08678199999940261,
+      "p99Ms": 0.17834700000003068,
+      "worstMs": 0.327860000000328,
+      "iterations": 5113,
+      "maxIterations": 8,
+      "rotorSegments": 6121
+    },
+    {
+      "name": "hold-release",
+      "method": "baseline",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 32.182,
+      "medianMs": 0.03548099999989063,
+      "p95Ms": 0.0662160000001677,
+      "p99Ms": 0.1538410000002841,
+      "worstMs": 0.3869480000003023,
+      "iterations": 3940,
+      "maxIterations": 7,
+      "rotorSegments": 4940
+    },
+    {
+      "name": "hold-release",
+      "method": "bristle",
+      "repeat": 0,
+      "warmup": true,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 40.556,
+      "medianMs": 0.048281999999744585,
+      "p95Ms": 0.07953100000031554,
+      "p99Ms": 0.15106500000001688,
+      "worstMs": 0.24855900000056863,
+      "iterations": 3862,
+      "maxIterations": 7,
+      "rotorSegments": 4862
+    },
+    {
+      "name": "hold-release",
+      "method": "bristle",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 45.395,
+      "medianMs": 0.04831300000023475,
+      "p95Ms": 0.11917699999958131,
+      "p99Ms": 0.2343380000002071,
+      "worstMs": 0.4912690000001021,
+      "iterations": 3862,
+      "maxIterations": 7,
+      "rotorSegments": 4862
+    },
+    {
+      "name": "hold-release",
+      "method": "baseline",
+      "repeat": 1,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 31.317,
+      "medianMs": 0.03503000000000611,
+      "p95Ms": 0.06265199999961624,
+      "p99Ms": 0.15089999999963766,
+      "worstMs": 0.29930100000001403,
+      "iterations": 3940,
+      "maxIterations": 7,
+      "rotorSegments": 4940
+    },
+    {
+      "name": "hold-release",
+      "method": "baseline",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 30.557,
+      "medianMs": 0.03559399999994639,
+      "p95Ms": 0.05231699999967532,
+      "p99Ms": 0.12548100000003615,
+      "worstMs": 0.2093109999996159,
+      "iterations": 3940,
+      "maxIterations": 7,
+      "rotorSegments": 4940
+    },
+    {
+      "name": "hold-release",
+      "method": "bristle",
+      "repeat": 2,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 43.393,
+      "medianMs": 0.04850500000065949,
+      "p95Ms": 0.09296499999982188,
+      "p99Ms": 0.20259900000019115,
+      "worstMs": 0.28116099999988364,
+      "iterations": 3862,
+      "maxIterations": 7,
+      "rotorSegments": 4862
+    },
+    {
+      "name": "hold-release",
+      "method": "bristle",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 42.163,
+      "medianMs": 0.048259000000143715,
+      "p95Ms": 0.08494700000028388,
+      "p99Ms": 0.20224299999972573,
+      "worstMs": 0.37762600000041857,
+      "iterations": 3862,
+      "maxIterations": 7,
+      "rotorSegments": 4862
+    },
+    {
+      "name": "hold-release",
+      "method": "baseline",
+      "repeat": 3,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 32.261,
+      "medianMs": 0.03551800000059302,
+      "p95Ms": 0.04834899999968911,
+      "p99Ms": 0.13392800000019633,
+      "worstMs": 1.0477989999999409,
+      "iterations": 3940,
+      "maxIterations": 7,
+      "rotorSegments": 4940
+    },
+    {
+      "name": "hold-release",
+      "method": "baseline",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 33.179,
+      "medianMs": 0.035649999999805004,
+      "p95Ms": 0.0703880000000936,
+      "p99Ms": 0.17395200000009936,
+      "worstMs": 0.3785250000000815,
+      "iterations": 3940,
+      "maxIterations": 7,
+      "rotorSegments": 4940
+    },
+    {
+      "name": "hold-release",
+      "method": "bristle",
+      "repeat": 4,
+      "warmup": false,
+      "completed": 1000,
+      "failure": null,
+      "cpuMsPerSimSecond": 44.646,
+      "medianMs": 0.04842000000007829,
+      "p95Ms": 0.09457800000018324,
+      "p99Ms": 0.20598100000006525,
+      "worstMs": 0.49106599999959144,
+      "iterations": 3862,
+      "maxIterations": 7,
+      "rotorSegments": 4862
+    }
+  ],
+  "validation": [
+    {
+      "name": "acceleration",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 8.206768598029157e-13,
+      "maxConstitutiveResidualJ": 1.4365678785432934e-16,
+      "maxForceResidualN": 9.976020010071807e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.3431428323534442,
+        6.166538930971281e-19,
+        -1.5809575870662108e-20,
+        0.6886600052317152,
+        6.649311832499011e-19,
+        1.1842378929335004e-19,
+        0.809147,
+        0.0047654534321258995,
+        -1.2405723526241565e-18,
+        0.30766475835665935,
+        0.30766475835665935,
+        0.30682924164334074,
+        0.30682924164334074,
+        4.880685963240684e-16,
+        -0.004077863715016323,
+        -1.475425283173219e-18,
+        -0.00023614615314199232,
+        -0.000236146153141997,
+        0.00023614615315005838,
+        0.00023614615315005843,
+        2.1453487564721305,
+        2.1453487564721305,
+        2.1453487564721305,
+        2.1453487564721305,
+        35.44322569319074,
+        287.37737771541526,
+        -0.17945283460471584,
+        0,
+        -304.7225398202595,
+        -0.09290449737074541
+      ],
+      "bristles": [
+        [
+          0.0003395046773176183,
+          -1.873221032919572e-20
+        ],
+        [
+          0.0003395046773176183,
+          -1.873221032919572e-20
+        ],
+        [
+          -0.002121432822682383,
+          1.2884029596241094e-20
+        ],
+        [
+          -0.002121432822682383,
+          1.2884029596241094e-20
+        ]
+      ],
+      "loss": {
+        "viscous": 0.08713802166321996,
+        "plastic": 0
+      },
+      "storedEnergy": 0.09231481294149367,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acceleration",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 1.0835776720341528e-12,
+      "maxConstitutiveResidualJ": 3.006492624302304e-16,
+      "maxForceResidualN": 9.883649454422994e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.34314283559822595,
+        -2.6974422927862617e-17,
+        -3.5083047578155754e-21,
+        0.6886599351789028,
+        -7.132789367301781e-19,
+        5.921189464667487e-20,
+        0.809147,
+        0.0047654309391049554,
+        5.062567523943726e-17,
+        0.30766475837169865,
+        0.3076647583716987,
+        0.3068292416283014,
+        0.30682924162830133,
+        3.7013466902741887e-16,
+        -0.004077373604478481,
+        -1.0715062970274185e-16,
+        -0.00023607527864462444,
+        -0.00023607527864269454,
+        0.00023607527863923458,
+        0.00023607527864343515,
+        2.14534933931154,
+        2.14534933931154,
+        2.14534933931154,
+        2.14534933931154,
+        35.443225679009004,
+        287.3773770833622,
+        -0.17945278985509885,
+        0,
+        -304.72254018939304,
+        -0.09290458007342751
+      ],
+      "bristles": [
+        [
+          0.00033950531449582113,
+          -1.663751590708366e-18
+        ],
+        [
+          0.00033950531449582113,
+          -1.663751590708366e-18
+        ],
+        [
+          -0.002121432185504178,
+          -1.6567366379176174e-18
+        ],
+        [
+          -0.002121432185504178,
+          -1.6567366379176174e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 0.08713802232982078,
+        "plastic": 0
+      },
+      "storedEnergy": 0.09231476752527878,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acceleration",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 2.1529444893531036e-12,
+      "maxConstitutiveResidualJ": 1.8496489062602706e-16,
+      "maxForceResidualN": 9.99733629214461e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.34314283640932036,
+        1.1887413114480353e-18,
+        2.216190194322533e-20,
+        0.6886599176645007,
+        1.5565760377576197e-18,
+        -4.440892098500629e-20,
+        0.809147,
+        0.0047654253166201765,
+        -2.382600149685082e-18,
+        0.3076647583760978,
+        0.3076647583760978,
+        0.3068292416239019,
+        0.3068292416239019,
+        8.856884016696975e-16,
+        -0.004077251071639627,
+        -3.189034789895953e-18,
+        -0.00023605762800223671,
+        -0.00023605762800222742,
+        0.0002360576280184346,
+        0.00023605762801844386,
+        2.1453494850313604,
+        2.1453494850313604,
+        2.1453494850313604,
+        2.1453494850313604,
+        35.44322567546385,
+        287.3773769253539,
+        -0.17945277866682344,
+        0,
+        -304.7225402816514,
+        -0.09290460074894065
+      ],
+      "bristles": [
+        [
+          0.0003395054738028055,
+          1.7959995114459875e-20
+        ],
+        [
+          0.0003395054738028055,
+          1.7959995114459875e-20
+        ],
+        [
+          -0.0021214320261971954,
+          -2.6363877376862324e-20
+        ],
+        [
+          -0.0021214320261971954,
+          -2.6363877376862324e-20
+        ]
+      ],
+      "loss": {
+        "viscous": 0.08713802249647593,
+        "plastic": 0
+      },
+      "storedEnergy": 0.0923147561703441,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "steering",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 2.7853275241795927e-12,
+      "maxConstitutiveResidualJ": 2.391749992503023e-16,
+      "maxForceResidualN": 9.99733629214461e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.193488847856839,
+        0.2747377589078531,
+        0.07810245727575571,
+        5.383981395172448,
+        0.4852214633068277,
+        0.0811184587009614,
+        0.809147,
+        0.002838086710703619,
+        0.010570290611537036,
+        0.3081359867736869,
+        0.30684667230892154,
+        0.30764732769107866,
+        0.3063580132263131,
+        9.904049675969376e-16,
+        -0.00386793828013609,
+        0.03216235903297328,
+        0.0011565284297021092,
+        -0.001796321078469324,
+        0.001796321078464319,
+        -0.0011565284297044031,
+        16.74137699977223,
+        17.044748385397323,
+        16.73289100416212,
+        17.037080309648374,
+        59.097449799168366,
+        378.1758961632041,
+        -0.447923047184151,
+        0,
+        -6.254310089248053e-17,
+        -0.2528362547802983
+      ],
+      "bristles": [
+        [
+          0.00011290910541298384,
+          0.0007611080153679995
+        ],
+        [
+          0.00041125475507795156,
+          -0.0020377877686646737
+        ],
+        [
+          -0.0011905282325682571,
+          -0.0007089802736097614
+        ],
+        [
+          -0.0011867742112722129,
+          -0.0007125084586561553
+        ]
+      ],
+      "loss": {
+        "viscous": 0.36042449544472094,
+        "plastic": 0
+      },
+      "storedEnergy": 0.08749855173943374,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "steering",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 1.5518253349000588e-11,
+      "maxConstitutiveResidualJ": 1.9418060909215384e-16,
+      "maxForceResidualN": 9.977796366911207e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.193488859701448,
+        0.27473771323231533,
+        0.07810245720051068,
+        5.383981306106086,
+        0.48522184417698005,
+        0.08111845974921442,
+        0.809147,
+        0.0028380606500473544,
+        0.010570377161916975,
+        0.30813599123386587,
+        0.3068466644997505,
+        0.30764733550024964,
+        0.3063580087661341,
+        5.929838206511577e-16,
+        -0.0038677074232004206,
+        0.03216165723511124,
+        0.0011564114058820998,
+        -0.0017961120391591127,
+        0.0017961120391741835,
+        -0.0011564114058858332,
+        16.741377201537762,
+        17.04474859131068,
+        16.73289122821584,
+        17.037080537885082,
+        59.097450590676615,
+        378.1758963163902,
+        -0.4479231796082547,
+        0,
+        1.1713058499470608e-15,
+        -0.2528369966286693
+      ],
+      "bristles": [
+        [
+          0.00011290991040701434,
+          0.00076110487762376
+        ],
+        [
+          0.0004112556137724723,
+          -0.002037790899500289
+        ],
+        [
+          -0.0011905264514743704,
+          -0.0007089833035048336
+        ],
+        [
+          -0.0011867724198037254,
+          -0.0007125114878523791
+        ]
+      ],
+      "loss": {
+        "viscous": 0.3604245379523227,
+        "plastic": 0
+      },
+      "storedEnergy": 0.08749864165593553,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "steering",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 1.91562321560923e-11,
+      "maxConstitutiveResidualJ": 2.0122792321330962e-16,
+      "maxForceResidualN": 9.972467296393006e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.1934888626619795,
+        0.27473770181332496,
+        0.07810245718169238,
+        5.3839812838389145,
+        0.48522193938961583,
+        0.08111846001129192,
+        0.809147,
+        0.0028380541352403307,
+        0.010570398799623197,
+        0.3081359923445473,
+        0.3068466625529825,
+        0.3076473374470172,
+        0.30635800765545274,
+        3.780945929231019e-16,
+        -0.003867649703460054,
+        0.03216148173664564,
+        0.0011563818908041825,
+        -0.0017960595424684233,
+        0.0017960595424651759,
+        -0.0011563818908009059,
+        16.741377251983717,
+        17.044748642793614,
+        16.732891284232092,
+        17.037080594947117,
+        59.09745078856362,
+        378.17589635457915,
+        -0.44792321271184327,
+        0,
+        1.116671424260077e-15,
+        -0.25283718215155165
+      ],
+      "bristles": [
+        [
+          0.00011291011166017609,
+          0.0007611040931958681
+        ],
+        [
+          0.0004112558284505101,
+          -0.0020377916822007466
+        ],
+        [
+          -0.0011905260061943457,
+          -0.0007089840609700472
+        ],
+        [
+          -0.0011867719719300624,
+          -0.0007125122451428756
+        ]
+      ],
+      "loss": {
+        "viscous": 0.3604245485773708,
+        "plastic": 0
+      },
+      "storedEnergy": 0.08749866413447631,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "braking",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 4.547473508864641e-12,
+      "maxConstitutiveResidualJ": 2.831068712794149e-15,
+      "maxForceResidualN": 9.890754881780595e-12,
+      "maxFrictionExcessN": 8.412825991399586e-12,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 3540,
+      "slidingSamples": 460,
+      "airborneSamples": 0,
+      "final": [
+        1.8219345681047268,
+        -2.3797964551873048e-17,
+        -1.1870911661067665e-18,
+        -0.13574765799529337,
+        1.549528950333108e-16,
+        -2.2204460492480078e-20,
+        0.809147,
+        0.022705914121081732,
+        5.04966114668125e-17,
+        0.3101742850972388,
+        0.3101742850972389,
+        0.3043197149027611,
+        0.30431971490276133,
+        7.909702083178047e-16,
+        0.2351534097673148,
+        -3.3731593158172027e-16,
+        0.010680302722677023,
+        0.010680302722667009,
+        -0.010680302722671474,
+        -0.01068030272267159,
+        0,
+        0,
+        0,
+        0,
+        15.299734605807455,
+        -101.50800145616756,
+        -9.607573671845328,
+        -1938.499821167847,
+        -132.57072904075181,
+        -15.47992431372229
+      ],
+      "bristles": [
+        [
+          0.001996581849533145,
+          4.3173299702833907e-19
+        ],
+        [
+          0.001996581849533145,
+          4.3173299702833907e-19
+        ],
+        [
+          -0.005112031297751221,
+          4.473512783451454e-19
+        ],
+        [
+          -0.005112031297751221,
+          4.473512783451962e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 4.732472575448211,
+        "plastic": 4.272717034975632
+      },
+      "storedEnergy": 0.6023840614214646,
+      "stop": {
+        "time": 0.7431629024504893,
+        "distance": 1.869464006711503
+      },
+      "maxReverseMS": -0.24300555652151123,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.022,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.07,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.176,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.358,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.74,
+          "mode": [
+            "slipping",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "braking",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 5.002220859751105e-12,
+      "maxConstitutiveResidualJ": 2.4424906541753444e-15,
+      "maxForceResidualN": 9.976020010071807e-12,
+      "maxFrictionExcessN": 8.753886504564434e-12,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 7082,
+      "slidingSamples": 918,
+      "airborneSamples": 0,
+      "final": [
+        1.8219338451366174,
+        5.2466315409271154e-17,
+        -2.8549935563818267e-18,
+        -0.1357428658116672,
+        9.675877569907446e-17,
+        1.3507713466282358e-19,
+        0.809147,
+        0.022706362674015386,
+        -1.0135972864816362e-16,
+        0.3101742928215409,
+        0.31017429282154085,
+        0.30431970717845896,
+        0.30431970717845913,
+        4.586998204784971e-16,
+        0.23514594991467166,
+        9.233873109014325e-17,
+        0.010688645545097717,
+        0.010688645545091932,
+        -0.010688645545096995,
+        -0.010688645545098335,
+        0,
+        0,
+        0,
+        0,
+        15.299734643267444,
+        -101.50800351975253,
+        -9.606504919932444,
+        -1938.5008920258106,
+        -132.57072225670024,
+        -15.47999964717552
+      ],
+      "bristles": [
+        [
+          0.001996530267980628,
+          6.404283765732824e-19
+        ],
+        [
+          0.001996530267980628,
+          6.40428376573284e-19
+        ],
+        [
+          -0.0051120828794032425,
+          6.754951816554959e-19
+        ],
+        [
+          -0.0051120828794032425,
+          6.754951816557239e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 4.732542180488646,
+        "plastic": 4.271572249906718
+      },
+      "storedEnergy": 0.6023904895370109,
+      "stop": {
+        "time": 0.7431617058937987,
+        "distance": 1.8694638683310851
+      },
+      "maxReverseMS": -0.2430083340718735,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.021500000000000002,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.0695,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.17550000000000002,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.357,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.7395,
+          "mode": [
+            "slipping",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "braking",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 5.002220859751105e-12,
+      "maxConstitutiveResidualJ": 1.4673363503523058e-15,
+      "maxForceResidualN": 9.961809155356605e-12,
+      "maxFrictionExcessN": 8.15703060652595e-12,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 14164,
+      "slidingSamples": 1836,
+      "airborneSamples": 0,
+      "final": [
+        1.8219336704270848,
+        3.716164950700069e-17,
+        4.444219442688214e-19,
+        -0.13574167616182528,
+        1.6750896284128474e-17,
+        -1.5994150448507773e-19,
+        0.809147,
+        0.02270647200126438,
+        -7.245416213884459e-17,
+        0.31017429462591567,
+        0.3101742946259156,
+        0.3043197053740844,
+        0.3043197053740844,
+        3.103450155034916e-16,
+        0.2351441000697195,
+        -8.84500119756999e-17,
+        0.010690730371592839,
+        0.010690730371597925,
+        -0.01069073037160232,
+        -0.010690730371603717,
+        0,
+        0,
+        0,
+        0,
+        15.299734652631036,
+        -101.50800403566085,
+        -9.606252307148349,
+        -1938.501148027327,
+        -132.57071901103862,
+        -15.480017342840615
+      ],
+      "bristles": [
+        [
+          0.001996517585921255,
+          1.165046632080391e-18
+        ],
+        [
+          0.001996517585921255,
+          1.165046632080391e-18
+        ],
+        [
+          -0.0051120955614932595,
+          1.1353547483639948e-18
+        ],
+        [
+          -0.0051120955614932595,
+          1.1353547483641558e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 4.732563477194399,
+        "plastic": 4.27129675993925
+      },
+      "storedEnergy": 0.6023920700146383,
+      "stop": {
+        "time": 0.7431611152354259,
+        "distance": 1.8694638952137408
+      },
+      "maxReverseMS": -0.2430085168468964,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.02125,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.069,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.17500000000000002,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.35675,
+          "mode": [
+            "slipping",
+            [
+              "slipping",
+              "slipping",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.73925,
+          "mode": [
+            "slipping",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "drift-recovery",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 5.9117155615240335e-12,
+      "maxConstitutiveResidualJ": 6.439293542825908e-15,
+      "maxForceResidualN": 9.890754881780595e-12,
+      "maxFrictionExcessN": 7.929656931082718e-12,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 3754,
+      "slidingSamples": 246,
+      "airborneSamples": 0,
+      "final": [
+        4.901461537295032,
+        0.09640090730111595,
+        -0.012073513409779559,
+        4.703970647248103,
+        -0.07566378338525065,
+        -0.07059102083235541,
+        0.809147,
+        -0.008050733007152717,
+        -0.039442941279285625,
+        0.30411118840788665,
+        0.30890231735609247,
+        0.3055916826439076,
+        0.3103828115921134,
+        7.50496873129666e-16,
+        0.0058686440910306345,
+        -0.09580037122940951,
+        0.0022639475784472832,
+        0.004811676748197173,
+        -0.0048116767482093694,
+        -0.002263947578443717,
+        14.848875349605274,
+        14.585018566029108,
+        14.842772410092394,
+        14.579154412648222,
+        51.48837193979608,
+        -178.19036457372226,
+        -50.98358963313273,
+        -282.48455571362047,
+        -7.771674023617482,
+        -20.004333386365907
+      ],
+      "bristles": [
+        [
+          0.0001502071509056952,
+          0.003431189839959258
+        ],
+        [
+          0.000012138919754438153,
+          -0.00006105947041925077
+        ],
+        [
+          0.0010217734061915248,
+          0.00415159630029154
+        ],
+        [
+          0.0009746382233578417,
+          -0.0008651139075991208
+        ]
+      ],
+      "loss": {
+        "viscous": 11.408278965287796,
+        "plastic": 39.25753450792418
+      },
+      "storedEnergy": 0.3177761599206972,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.032,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.034,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.085,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.089,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.094,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.201,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.227,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.401,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.406,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.436,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "drift-recovery",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 4.831690603168681e-12,
+      "maxConstitutiveResidualJ": 1.3322676295501878e-15,
+      "maxForceResidualN": 9.986678151108208e-12,
+      "maxFrictionExcessN": 3.069544618483633e-12,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 7512,
+      "slidingSamples": 488,
+      "airborneSamples": 0,
+      "final": [
+        4.901461216633543,
+        0.0964015590107116,
+        -0.012073451482428433,
+        4.703969511616187,
+        -0.07566738328532768,
+        -0.07059103507546932,
+        0.809147,
+        -0.008050521940292831,
+        -0.03944329055194222,
+        0.3041112355190443,
+        0.30890235301300456,
+        0.3055916469869955,
+        0.310382764480956,
+        8.114451175709573e-16,
+        0.005872594999917195,
+        -0.09579263397286802,
+        0.0022686308913970206,
+        0.004807349106838672,
+        -0.004807349106839935,
+        -0.0022686308913963476,
+        14.84887854475168,
+        14.585021469776864,
+        14.84277591775076,
+        14.579157854949448,
+        51.48838410222536,
+        -178.1903750862108,
+        -50.983556452123864,
+        -282.4845269870381,
+        -7.771678093756444,
+        -20.004518716611887
+      ],
+      "bristles": [
+        [
+          0.00015018230670766865,
+          0.0034306460602097095
+        ],
+        [
+          0.000012157562172932062,
+          -0.000060504051054337883
+        ],
+        [
+          0.0010217620990666902,
+          0.004151574932459346
+        ],
+        [
+          0.0009746280597419431,
+          -0.0008650601646906427
+        ]
+      ],
+      "loss": {
+        "viscous": 11.407419751970258,
+        "plastic": 39.25840173202883
+      },
+      "storedEnergy": 0.3177349681247735,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.0315,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.033,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.084,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.089,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.093,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.2005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.2265,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.4005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.405,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.436,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "drift-recovery",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 1.5802470443304628e-11,
+      "maxConstitutiveResidualJ": 1.1674688993323912e-15,
+      "maxForceResidualN": 9.99644811372491e-12,
+      "maxFrictionExcessN": 2.2737367544323206e-13,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 15024,
+      "slidingSamples": 976,
+      "airborneSamples": 0,
+      "final": [
+        4.9014611577316085,
+        0.09640190807546231,
+        -0.012073377453925498,
+        4.703969251648786,
+        -0.0756681189866175,
+        -0.0705910389982881,
+        0.809147,
+        -0.008050469661230259,
+        -0.039443362679351245,
+        0.3041112485527398,
+        0.30890236060908804,
+        0.30559163939091205,
+        0.3103827514472602,
+        7.65885952741934e-16,
+        0.005873588232858842,
+        -0.09579049290322088,
+        0.002269825841837925,
+        0.0048062435722800835,
+        -0.0048062435722815095,
+        -0.0022698258418375086,
+        14.848879380401277,
+        14.585022307868712,
+        14.842776866461072,
+        14.5791587935313,
+        51.48838740498665,
+        -178.19037900035224,
+        -50.98352787592818,
+        -282.48452172725666,
+        -7.771678251234014,
+        -20.004566070718845
+      ],
+      "bristles": [
+        [
+          0.00015018276107951458,
+          0.003430684845419073
+        ],
+        [
+          0.000012155449248254367,
+          -0.00006053790921884005
+        ],
+        [
+          0.001021759192506246,
+          0.004151584691886322
+        ],
+        [
+          0.0009746254160764115,
+          -0.0008650659600273648
+        ]
+      ],
+      "loss": {
+        "viscous": 11.407381626033013,
+        "plastic": 39.258407779075775
+      },
+      "storedEnergy": 0.31773847081948625,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.031,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.033,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.08375,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.089,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "sliding"
+            ]
+          ]
+        },
+        {
+          "time": 0.09275,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.20025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.2265,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "slipping",
+              "slipping"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.40025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.40475,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.43575,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recontact",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 5.684341886080801e-13,
+      "maxConstitutiveResidualJ": 6.808789643208968e-16,
+      "maxForceResidualN": 9.9262820185686e-12,
+      "maxFrictionExcessN": 3.9901415505028126e-13,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 3938,
+      "slidingSamples": 8,
+      "airborneSamples": 54,
+      "final": [
+        0.33883947998368635,
+        0.0005687448195021242,
+        0.00010412887007048716,
+        0.6063431679305036,
+        0.002785956716411363,
+        -1.934420845405419e-10,
+        0.8090066655023151,
+        0.0014613599097757373,
+        -0.0007995078498059077,
+        0.3071023775478078,
+        0.3072367073390564,
+        0.30727335864367056,
+        0.30737417831378616,
+        0.004787006366344644,
+        -0.05792335619677191,
+        -0.00512974788752605,
+        -0.006218887853407125,
+        -0.004023768413112672,
+        0.004859221476853407,
+        0.005605090361080581,
+        1.8010825910523263,
+        1.8010825897207234,
+        1.7917697683088465,
+        1.791769766976665,
+        6.2711941867496455,
+        -53.06677228137111,
+        -0.31330593622330893,
+        0,
+        -155.04497531769562,
+        -11.121493753555965
+      ],
+      "bristles": [
+        [
+          -0.0001393186645617531,
+          -0.00017796924339505743
+        ],
+        [
+          -0.0001393619977630215,
+          0.00023806789355737112
+        ],
+        [
+          0.0002581740148824071,
+          0.000030091479820242255
+        ],
+        [
+          0.00025817400331849534,
+          0.000030089909017417616
+        ]
+      ],
+      "loss": {
+        "viscous": 0.30989691461489227,
+        "plastic": 0.0007860279285571378
+      },
+      "storedEnergy": 0.00262299367985672,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.036000000000000004,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.038,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.111,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.113,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.114,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.132,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.136,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.878,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recontact",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 8.526512829121202e-13,
+      "maxConstitutiveResidualJ": 3.531246475785288e-16,
+      "maxForceResidualN": 9.975131831652106e-12,
+      "maxFrictionExcessN": 4.0190073491430667e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 7879,
+      "slidingSamples": 12,
+      "airborneSamples": 109,
+      "final": [
+        0.3388397951167701,
+        0.0005690870455634374,
+        0.00010446484749141554,
+        0.6063431842341915,
+        0.002786806462373231,
+        -1.940572345164105e-10,
+        0.8090066553424176,
+        0.001461231116239703,
+        -0.0007993304748226676,
+        0.3071021060939557,
+        0.30723673066890655,
+        0.3072732990747897,
+        0.3073742087730688,
+        0.004786434206126473,
+        -0.05792236555489345,
+        -0.005130969256167196,
+        -0.006194887072203616,
+        -0.004028969603241325,
+        0.004857649005834429,
+        0.0056087409429034455,
+        1.801084583144836,
+        1.8010845818090013,
+        1.791768995609671,
+        1.7917689942732529,
+        6.271191482295117,
+        -53.06677493084766,
+        -0.31334135692163206,
+        0,
+        -155.0449457489941,
+        -11.121488855019486
+      ],
+      "bristles": [
+        [
+          -0.00013930160976672305,
+          -0.00017865778317047021
+        ],
+        [
+          -0.00013934522300835004,
+          0.0002387216120344069
+        ],
+        [
+          0.00025812884255996434,
+          0.000030074202388977407
+        ],
+        [
+          0.0002581288309553866,
+          0.0000300726191206953
+        ]
+      ],
+      "loss": {
+        "viscous": 0.30993473788717585,
+        "plastic": 0.0007786344944457271
+      },
+      "storedEnergy": 0.002627984540003928,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.036000000000000004,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.037,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.111,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.113,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.1135,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.132,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.135,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.878,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recontact",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 1.1368683772161603e-12,
+      "maxConstitutiveResidualJ": 9.651389862547037e-17,
+      "maxForceResidualN": 9.979572723750607e-12,
+      "maxFrictionExcessN": 1.1213252548714081e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 15757,
+      "slidingSamples": 25,
+      "airborneSamples": 218,
+      "final": [
+        0.33883985867764016,
+        0.0005689945436123804,
+        0.00010439457723686053,
+        0.6063431953001708,
+        0.0027867370356894007,
+        -1.9399555438863203e-10,
+        0.8090066526872924,
+        0.0014612059303429042,
+        -0.0007993381683723781,
+        0.3071020374308699,
+        0.3072367390417493,
+        0.30727328141316435,
+        0.3073742181559845,
+        0.004786293054412728,
+        -0.05792214913135112,
+        -0.005130921949237084,
+        -0.0061888514025519375,
+        -0.004030296232927256,
+        0.0048572906075295364,
+        0.005609627073025502,
+        1.8010850486230143,
+        1.801085047287603,
+        1.791768772544837,
+        1.7917687712088435,
+        6.2711907015689405,
+        -53.0667756235643,
+        -0.31334876901631253,
+        0,
+        -155.04493959317278,
+        -11.121487641036444
+      ],
+      "bristles": [
+        [
+          -0.00013929752686938797,
+          -0.00017851961730628395
+        ],
+        [
+          -0.0001393410814507942,
+          0.000238578857664438
+        ],
+        [
+          0.00025811713723782466,
+          0.00003007187900362246
+        ],
+        [
+          0.00025811712563754294,
+          0.000030070294856823543
+        ]
+      ],
+      "loss": {
+        "viscous": 0.3099382585063085,
+        "plastic": 0.0007838474031713039
+      },
+      "storedEnergy": 0.0026266631068227694,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.036000000000000004,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.037,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.11075,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.113,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.11325,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.13175,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.13475,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.878,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clutch-transition",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 7.034373084024992e-12,
+      "maxConstitutiveResidualJ": 1.5699247457590104e-16,
+      "maxForceResidualN": 9.944933765382302e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.023360165764004,
+        -5.561516831399445e-20,
+        -4.2003437764986287e-22,
+        5.0490750597595335,
+        6.036897641364397e-19,
+        -4.070817756958911e-20,
+        0.809147,
+        0.0004607394626669725,
+        1.1808911173838453e-19,
+        0.30728529025418283,
+        0.30728529025418283,
+        0.3072087097458171,
+        0.3072087097458171,
+        1.9396330194755173e-16,
+        -0.0011638549510503394,
+        -9.679981356322803e-19,
+        -0.000140125681328216,
+        -0.00014012568132820686,
+        0.00014012568132895376,
+        0.0001401256813289446,
+        15.776480500878366,
+        15.776480500878366,
+        15.77632319580154,
+        15.77632319580154,
+        55.21713118530539,
+        43.92096380935926,
+        -0.016641484520178294,
+        0,
+        -0.016291233619164677,
+        -0.003163420729520389
+      ],
+      "bristles": [
+        [
+          0.000021308012094287696,
+          5.053054908621669e-21
+        ],
+        [
+          0.000021308012094287696,
+          5.053054908621669e-21
+        ],
+        [
+          -0.00015557724100347022,
+          5.893282390674025e-21
+        ],
+        [
+          -0.00015557724100347022,
+          5.893282390674025e-21
+        ]
+      ],
+      "loss": {
+        "viscous": 0.01614831833422474,
+        "plastic": 0
+      },
+      "storedEnergy": 0.0004931661859532433,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.201,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.20400000000000001,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clutch-transition",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 4.881428594671888e-12,
+      "maxConstitutiveResidualJ": 1.5880851321481426e-16,
+      "maxForceResidualN": 9.937495271117314e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.023360176391654,
+        1.5160620875794375e-19,
+        5.028385115698056e-22,
+        5.049075044369689,
+        1.504161940317364e-17,
+        -1.2952601953960166e-20,
+        0.809147,
+        0.0004607259386078652,
+        -1.1748038791547397e-18,
+        0.30728528974180747,
+        0.30728528974180747,
+        0.30720871025819263,
+        0.30720871025819263,
+        6.285226680376559e-16,
+        -0.001163880510117207,
+        -1.17064260792983e-16,
+        -0.00014017598448128244,
+        -0.00014017598448128204,
+        0.000140175984466648,
+        0.00014017598447190445,
+        15.776480415917737,
+        15.776480415917737,
+        15.776323099012664,
+        15.776323099012664,
+        55.21713084654432,
+        43.920943341931995,
+        -0.016665004679123904,
+        0,
+        -0.016266660491252635,
+        -0.0031634779073847537
+      ],
+      "bristles": [
+        [
+          0.000021308289927711996,
+          -4.358746599151839e-19
+        ],
+        [
+          0.000021308289927711996,
+          -4.358746599151839e-19
+        ],
+        [
+          -0.0001555764086996951,
+          -4.36880450340772e-19
+        ],
+        [
+          -0.0001555764086996951,
+          -4.36880450340772e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 0.016171843435854528,
+        "plastic": 0
+      },
+      "storedEnergy": 0.0004931612432707599,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.2005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.20350000000000001,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clutch-transition",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 8.007816632016329e-12,
+      "maxConstitutiveResidualJ": 7.119142515082943e-17,
+      "maxForceResidualN": 9.992173755080103e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        5.023360183630359,
+        1.3317127983029776e-19,
+        -4.64327650403121e-22,
+        5.049075045676496,
+        1.3370442004176405e-19,
+        2.3129646346357432e-20,
+        0.809147,
+        0.0004607225070145028,
+        -2.6355995176017917e-19,
+        0.3072852896041986,
+        0.3072852896041986,
+        0.3072087103958014,
+        0.3072087103958014,
+        6.271111809976973e-16,
+        -0.0011638878496504892,
+        -2.961064863821831e-19,
+        -0.00014018867553403216,
+        -0.00014018867553403216,
+        0.0001401886755369022,
+        0.00014018867553689988,
+        15.776480409254042,
+        15.776480409254042,
+        15.776323089276143,
+        15.776323089276143,
+        55.2171308124665,
+        43.920942684411074,
+        -0.01667144639011557,
+        0,
+        -0.01625995212788137,
+        -0.003163493923358011
+      ],
+      "bristles": [
+        [
+          0.000021308360080485133,
+          -3.689481454696223e-22
+        ],
+        [
+          0.000021308360080485133,
+          -3.689481454696223e-22
+        ],
+        [
+          -0.00015557619743313965,
+          5.595969592915602e-22
+        ],
+        [
+          -0.00015557619743313965,
+          5.595969592915602e-22
+        ]
+      ],
+      "loss": {
+        "viscous": 0.0161782864017753,
+        "plastic": 0
+      },
+      "storedEnergy": 0.0004931599883414973,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.20025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.20350000000000001,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hold-release",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 4.96269692007445e-13,
+      "maxConstitutiveResidualJ": 3.9866113882292e-16,
+      "maxForceResidualN": 9.993783578465809e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.05672800688910182,
+        -1.8681047701804654e-17,
+        9.621932880084642e-22,
+        0.2272815646400464,
+        -5.803993821538487e-17,
+        -8.881784197001253e-20,
+        0.809147,
+        0.0022694889270026986,
+        3.626113033104592e-17,
+        0.3074153057819985,
+        0.3074153057819985,
+        0.30707869421800155,
+        0.30707869421800155,
+        1.2850728804235302e-15,
+        -0.009743328706340057,
+        4.892965088905426e-17,
+        -0.0003842568297000628,
+        -0.0003842568297014051,
+        0.0003842568297010178,
+        0.00038425682970280036,
+        0.6947182066804104,
+        0.6947182066804104,
+        0.692000467611038,
+        0.692000467611038,
+        2.4220016366386328,
+        4.664319222863822,
+        -0.07081414674344376,
+        0,
+        -2.2431941008879186e-17,
+        -0.04500324461277966
+      ],
+      "bristles": [
+        [
+          0.00021939566069064585,
+          -5.495731464448915e-19
+        ],
+        [
+          0.00021939566069064585,
+          -5.495731464448915e-19
+        ],
+        [
+          -0.0012650129625294845,
+          -5.514974489044468e-19
+        ],
+        [
+          -0.0012650129625294845,
+          -5.514974489044468e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 0.03784630171749232,
+        "plastic": 0
+      },
+      "storedEnergy": 0.03296784502595017,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.501,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hold-release",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 5.322409180053e-13,
+      "maxConstitutiveResidualJ": 1.4094628242311558e-16,
+      "maxForceResidualN": 9.976020010071807e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.05672802104586647,
+        1.8882803579437477e-17,
+        -3.1086244689504264e-22,
+        0.22728142487352032,
+        4.074563156516882e-17,
+        0,
+        0.809147,
+        0.0022694741767245053,
+        -3.7270445397811473e-17,
+        0.3074153115963824,
+        0.3074153115963826,
+        0.30707868840361763,
+        0.30707868840361763,
+        1.4616415795787074e-15,
+        -0.009742654423712372,
+        -4.976388647725929e-16,
+        -0.0003843093399022939,
+        -0.00038430933989223187,
+        0.0003843093398966216,
+        0.00038430933989686347,
+        0.694718867928085,
+        0.694718867928085,
+        0.6920011727952817,
+        0.6920011727952817,
+        2.422004104783486,
+        4.664319245375173,
+        -0.07081410267267248,
+        0,
+        -2.3435579083643302e-17,
+        -0.04500348933535774
+      ],
+      "bristles": [
+        [
+          0.000219396139627557,
+          2.4735109334965196e-19
+        ],
+        [
+          0.000219396139627557,
+          2.4735109334965196e-19
+        ],
+        [
+          -0.0012650117027631315,
+          2.4797248664827037e-19
+        ],
+        [
+          -0.0012650117027631315,
+          2.4797248664827037e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 0.03784631718844777,
+        "plastic": 0
+      },
+      "storedEnergy": 0.032967785484223036,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.5005000000000001,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hold-release",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 5.373479439185758e-13,
+      "maxConstitutiveResidualJ": 5.594483210025203e-17,
+      "maxForceResidualN": 9.72200098203757e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.05672802458051141,
+        8.1690938745698e-18,
+        -6.818619742906206e-22,
+        0.22728138993522293,
+        2.986037153054936e-17,
+        3.70074341541719e-20,
+        0.809147,
+        0.002269470489561633,
+        -1.5356270809481392e-17,
+        0.3074153130474151,
+        0.3074153130474151,
+        0.30707868695258494,
+        0.3070786869525849,
+        1.5863765938809665e-15,
+        -0.009742485882299382,
+        -4.1080902514294694e-17,
+        -0.0003843227315571452,
+        -0.0003843227315570712,
+        0.00038432273155904857,
+        0.0003843227315616153,
+        0.6947190332356717,
+        0.6947190332356717,
+        0.6920013490988212,
+        0.6920013490988212,
+        2.422004721845874,
+        4.664319251188612,
+        -0.07081409164200517,
+        0,
+        5.798949062824038e-18,
+        -0.045003550576692246
+      ],
+      "bristles": [
+        [
+          0.0002193962592851517,
+          4.9032346965485895e-19
+        ],
+        [
+          0.0002193962592851517,
+          4.9032346965485895e-19
+        ],
+        [
+          -0.0012650113876416008,
+          4.916869411732305e-19
+        ],
+        [
+          -0.0012650113876416008,
+          4.916869411732305e-19
+        ]
+      ],
+      "loss": {
+        "viscous": 0.037846321052977805,
+        "plastic": 0
+      },
+      "storedEnergy": 0.03296777058902492,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.50025,
+          "mode": [
+            "locked",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-hold",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 1.1368683772167767e-13,
+      "maxConstitutiveResidualJ": 1.8098680151225737e-17,
+      "maxForceResidualN": 5.684341886080801e-13,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 1,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        -5.974641337225274e-16,
+        5.13554145515795e-17,
+        0,
+        2.7988722450799683e-16,
+        3.8702668404619745e-16,
+        0,
+        0.8095688291324357,
+        0.006113234529936018,
+        -5.72451957030438e-17,
+        0.3078512776088665,
+        0.30785127760886655,
+        0.3067397804216055,
+        0.3067397804216055,
+        1.2685059410146466e-15,
+        -7.481808945110659e-16,
+        -3.9125715172849866e-16,
+        9.793675565350818e-15,
+        1.9808754619469967e-15,
+        -1.7963354613076485e-14,
+        -2.6534315460885374e-14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -3.890100289989197e-15,
+        0,
+        0,
+        -7.063109755769313e-26
+      ],
+      "bristles": [
+        [
+          -0.001111497187260923,
+          6.182589011742401e-18
+        ],
+        [
+          -0.001111497187260923,
+          6.182589011742401e-18
+        ],
+        [
+          -0.001111497187260923,
+          6.182589011742401e-18
+        ],
+        [
+          -0.001111497187260923,
+          6.182589011742401e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 9.496514633252786e-29,
+        "plastic": 0
+      },
+      "storedEnergy": 0.04941703989155774,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-hold",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 1.1368683772200266e-13,
+      "maxConstitutiveResidualJ": 1.8057015988474373e-17,
+      "maxForceResidualN": 5.684341886080801e-13,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 1,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        7.34728930473777e-16,
+        -1.512636374784595e-16,
+        0,
+        -1.5898948824144484e-15,
+        -2.431397151789275e-16,
+        0,
+        0.8095688291324357,
+        0.006113234529933589,
+        3.2692620997478826e-16,
+        0.30785127760886644,
+        0.30785127760886644,
+        0.3067397804216056,
+        0.3067397804216056,
+        -6.7498914074642866e-15,
+        2.8418553306243917e-15,
+        5.472827916462884e-16,
+        -4.093906447561722e-14,
+        -5.045725968752335e-14,
+        1.6456055802511427e-14,
+        6.472203625479412e-15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3.688731105052247e-15,
+        0,
+        0,
+        -3.891054000832926e-25
+      ],
+      "bristles": [
+        [
+          -0.0011114971872608784,
+          -4.350760179380532e-18
+        ],
+        [
+          -0.0011114971872608784,
+          -4.350760179380532e-18
+        ],
+        [
+          -0.0011114971872608784,
+          -4.350760179380532e-18
+        ],
+        [
+          -0.0011114971872608784,
+          -4.350760179380532e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 8.770958232470367e-29,
+        "plastic": 0
+      },
+      "storedEnergy": 0.04941703989155377,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-hold",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 1.1368683772179516e-13,
+      "maxConstitutiveResidualJ": 8.976978582494473e-18,
+      "maxForceResidualN": 5.684341886080801e-13,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 1,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        1.781534583050733e-15,
+        3.214443571534078e-16,
+        0,
+        7.138456492583368e-16,
+        -2.2901674110644695e-15,
+        0,
+        0.8095688291324357,
+        0.006113234529931274,
+        -5.938359967831467e-16,
+        0.30785127760886644,
+        0.30785127760886644,
+        0.3067397804216055,
+        0.3067397804216056,
+        9.363787185212812e-15,
+        -1.493882742544151e-15,
+        4.4433118306884954e-15,
+        -9.701212359191076e-14,
+        -7.551171840456173e-14,
+        1.005909830466001e-13,
+        9.193910688026381e-14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -2.084614795489178e-15,
+        0,
+        0,
+        -1.1401745109719473e-24
+      ],
+      "bristles": [
+        [
+          -0.0011114971872608847,
+          7.976131073519876e-18
+        ],
+        [
+          -0.0011114971872608847,
+          7.976131073519876e-18
+        ],
+        [
+          -0.0011114971872608847,
+          7.976131073519876e-18
+        ],
+        [
+          -0.0011114971872608847,
+          7.976131073519876e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 1.4240919821927986e-28,
+        "plastic": 0
+      },
+      "storedEnergy": 0.049417039891554326,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-insufficient-grip",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 7.380762667708041e-13,
+      "maxConstitutiveResidualJ": 1.9081958235744878e-17,
+      "maxForceResidualN": 9.407585821463726e-12,
+      "maxFrictionExcessN": 1.7763568394002505e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 5,
+      "gripSamples": 52,
+      "slidingSamples": 3948,
+      "airborneSamples": 0,
+      "final": [
+        -0.28271326707701494,
+        -8.489711385853516e-18,
+        1.7965184895274507e-18,
+        -0.5636298438108447,
+        1.6774342239202064e-17,
+        4.17443857259061e-18,
+        0.8095688291324358,
+        0.0019913942981362957,
+        -7.864287856729313e-17,
+        0.30747515057711394,
+        0.30747515057711394,
+        0.30711590745335804,
+        0.30711590745335815,
+        -9.661839305319916e-16,
+        -0.00022396315277149598,
+        4.495764574180692e-17,
+        0.00004687707214147063,
+        0.00004687707214235251,
+        -0.00004687707214356932,
+        -0.000046877072140775984,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -8.58918974673942,
+        0,
+        0,
+        -0.01590130950593667
+      ],
+      "bristles": [
+        [
+          -0.00037571506246042305,
+          4.9866962999596713e-20
+        ],
+        [
+          -0.00037571506246042305,
+          4.9866962999596774e-20
+        ],
+        [
+          -0.0003865531966130233,
+          4.882773586586233e-20
+        ],
+        [
+          -0.0003865531966130237,
+          4.8827735865862776e-20
+        ]
+      ],
+      "loss": {
+        "viscous": 0.005227418098369132,
+        "plastic": 8.578150625001625
+      },
+      "storedEnergy": 0.0058117036394277274,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.014,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-insufficient-grip",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 7.567280135845067e-13,
+      "maxConstitutiveResidualJ": 1.214306433183765e-17,
+      "maxForceResidualN": 8.753886504564434e-12,
+      "maxFrictionExcessN": 1.7763568394002505e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 5,
+      "gripSamples": 104,
+      "slidingSamples": 7896,
+      "airborneSamples": 0,
+      "final": [
+        -0.28271283784486484,
+        3.9540534085907696e-18,
+        1.0610549476079136e-18,
+        -0.5636293936187096,
+        1.7249017211159576e-17,
+        6.335672727194191e-18,
+        0.8095688291324358,
+        0.001991397340910348,
+        -5.936720318019465e-17,
+        0.30747515174972595,
+        0.307475151749726,
+        0.3071159062807459,
+        0.307115906280746,
+        -1.3262157602992089e-15,
+        -0.00022376559745217276,
+        -4.0279507203933867e-16,
+        0.000046898216098444244,
+        0.00004689821609944403,
+        -0.0000468982161013086,
+        -0.00004689821610027426,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -8.589177617101605,
+        0,
+        0,
+        -0.015901619056721637
+      ],
+      "bristles": [
+        [
+          -0.00037571505618754327,
+          -2.0483682114315882e-20
+        ],
+        [
+          -0.00037571505618754294,
+          -2.0483682114315662e-20
+        ],
+        [
+          -0.0003865532028858921,
+          -2.955168826761182e-20
+        ],
+        [
+          -0.00038655320288589237,
+          -2.9551688267611447e-20
+        ]
+      ],
+      "loss": {
+        "viscous": 0.0052284224913070314,
+        "plastic": 8.578137490968155
+      },
+      "storedEnergy": 0.00581170364214701,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.0135,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slope-insufficient-grip",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 1.0249578963339445e-12,
+      "maxConstitutiveResidualJ": 7.497935649095067e-18,
+      "maxForceResidualN": 9.038103598868474e-12,
+      "maxFrictionExcessN": 1.687538997430238e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 4,
+      "gripSamples": 208,
+      "slidingSamples": 15792,
+      "airborneSamples": 0,
+      "final": [
+        -0.2827127305308079,
+        3.8543652861082267e-19,
+        2.982382859191955e-20,
+        -0.5636292810648303,
+        3.937798848174424e-19,
+        4.0708177569589074e-20,
+        0.8095688291324358,
+        0.0019913981019830753,
+        -7.985551007419001e-19,
+        0.3074751520431232,
+        0.3074751520431232,
+        0.3071159059873488,
+        0.3071159059873488,
+        -4.045372113934504e-16,
+        -0.00022371620912704044,
+        1.0533476755508943e-19,
+        0.00004690347553186244,
+        0.000046903475531863596,
+        -0.00004690347552939768,
+        -0.000046903475529399984,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -8.589174584485814,
+        0,
+        0,
+        -0.015901696449136526
+      ],
+      "bristles": [
+        [
+          -0.00037571505461279323,
+          3.3769802742392316e-22
+        ],
+        [
+          -0.00037571505461279323,
+          3.3769802742392316e-22
+        ],
+        [
+          -0.0003865532044606393,
+          2.892112659339596e-22
+        ],
+        [
+          -0.0003865532044606393,
+          2.892112659339596e-22
+        ]
+      ],
+      "loss": {
+        "viscous": 0.005228673572525813,
+        "plastic": 8.57813420727047
+      },
+      "storedEnergy": 0.005811703642829661,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.01325,
+          "mode": [
+            "locked",
+            [
+              "holding",
+              "holding",
+              "holding",
+              "holding"
+            ],
+            [
+              "sliding",
+              "sliding",
+              "sliding",
+              "sliding"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "uphill",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 2.3874235921539366e-12,
+      "maxConstitutiveResidualJ": 4.145989107584569e-16,
+      "maxForceResidualN": 9.947598300641403e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 4000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.2608289687700486,
+        -4.060470201452935e-17,
+        -2.4868995751603438e-21,
+        0.5264207495304798,
+        3.132369047917775e-16,
+        0,
+        0.8095688291324358,
+        0.009559268566921955,
+        6.874216143474182e-17,
+        0.3081335320267558,
+        0.30813353202675586,
+        0.30645752600371606,
+        0.3064575260037161,
+        -1.80517458913037e-15,
+        -0.008179996927128426,
+        -2.112207582347441e-16,
+        -0.00047369773541860245,
+        -0.0004736977354283191,
+        0.0004736977354270587,
+        0.000473697735424377,
+        1.6315973654367422,
+        1.6315973654367422,
+        1.6315973654367422,
+        1.6315973654367422,
+        70.03354304203296,
+        1325.3479715225433,
+        -0.5711612080526225,
+        0,
+        -785.4373135892566,
+        -0.3738329729926631
+      ],
+      "bristles": [
+        [
+          0.00026355051203211683,
+          -6.2355797235943684e-18
+        ],
+        [
+          0.00026355051203211683,
+          -6.2355797235943684e-18
+        ],
+        [
+          -0.0038380119879678834,
+          -6.230605346279441e-18
+        ],
+        [
+          -0.0038380119879678834,
+          -6.230605346279441e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 0.275165310209072,
+        "plastic": 0
+      },
+      "storedEnergy": 0.2959958978435515,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "uphill",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 6.59383658785373e-12,
+      "maxConstitutiveResidualJ": 5.512083844916305e-16,
+      "maxForceResidualN": 9.86233317235019e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 8000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.2608289752789229,
+        -1.526951522209015e-17,
+        2.235249022911981e-21,
+        0.5264206090079303,
+        -1.9847547590297134e-16,
+        -1.7763568394002505e-19,
+        0.8095688291324358,
+        0.00955922344701286,
+        3.3216867300982625e-17,
+        0.3081335320569249,
+        0.30813353205692484,
+        0.30645752597354714,
+        0.30645752597354714,
+        -1.7734162405571794e-15,
+        -0.008179013789147574,
+        2.252011398942246e-16,
+        -0.00047355556458222625,
+        -0.00047355556457709104,
+        0.000473555564583391,
+        0.0004735555645831229,
+        1.6315985345843598,
+        1.6315985345843598,
+        1.6315985345843598,
+        1.6315985345843598,
+        70.03354306151692,
+        1325.3479753334457,
+        -0.5711610279872591,
+        0,
+        -785.4373198338734,
+        -0.3738333057750972
+      ],
+      "bristles": [
+        [
+          0.00026355179018068504,
+          1.341036865175011e-18
+        ],
+        [
+          0.00026355179018068504,
+          1.341036865175011e-18
+        ],
+        [
+          -0.003838010709819313,
+          1.3365663671291892e-18
+        ],
+        [
+          -0.003838010709819313,
+          1.3365663671291892e-18
+        ]
+      ],
+      "loss": {
+        "viscous": 0.2751653128913627,
+        "plastic": 0
+      },
+      "storedEnergy": 0.29599571509590383,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "uphill",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 3.979039320256561e-12,
+      "maxConstitutiveResidualJ": 3.1051550219984847e-16,
+      "maxForceResidualN": 9.990230864787009e-12,
+      "maxFrictionExcessN": 0,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 16000,
+      "slidingSamples": 0,
+      "airborneSamples": 0,
+      "final": [
+        0.26082897690593776,
+        -2.0923534650281898e-20,
+        0,
+        0.5264205738748915,
+        1.0117281475264583e-18,
+        0,
+        0.8095688291324358,
+        0.009559212168581565,
+        5.211497422683126e-20,
+        0.30813353206574967,
+        0.30813353206574967,
+        0.3064575259647223,
+        0.3064575259647223,
+        -1.3893412153819905e-15,
+        -0.008178767994206037,
+        -1.993923308771844e-18,
+        -0.0004735201582511475,
+        -0.00047352015825114294,
+        0.0004735201582502343,
+        0.0004735201582502367,
+        1.6315988268912465,
+        1.6315988268912465,
+        1.6315988268912465,
+        1.6315988268912465,
+        70.03354306638802,
+        1325.3479762861698,
+        -0.5711609829674131,
+        0,
+        -785.437321394943,
+        -0.37383338897010604
+      ],
+      "bristles": [
+        [
+          0.0002635521097427831,
+          5.1339524631342084e-21
+        ],
+        [
+          0.0002635521097427831,
+          5.1339524631342084e-21
+        ],
+        [
+          -0.0038380103902572156,
+          5.1339524631342084e-21
+        ],
+        [
+          -0.0038380103902572156,
+          5.1339524631342084e-21
+        ]
+      ],
+      "loss": {
+        "viscous": 0.2751653135619646,
+        "plastic": 0
+      },
+      "storedEnergy": 0.2959956694054443,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "slipping",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unloading-recontact",
+      "h": 0.001,
+      "duration": 1,
+      "completedTime": 1.0000000000000007,
+      "failure": null,
+      "maxEnergyResidualJ": 4.178879464689089e-13,
+      "maxConstitutiveResidualJ": 4.102621020685149e-16,
+      "maxForceResidualN": 9.985789972688508e-12,
+      "maxFrictionExcessN": 2.5757174171303632e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 8,
+      "gripSamples": 3957,
+      "slidingSamples": 1,
+      "airborneSamples": 42,
+      "final": [
+        -0.000013849826390977205,
+        -0.00031328697621220994,
+        0.00013308934904504693,
+        -0.0002955452249545057,
+        -0.00046526489107310897,
+        1.935600801820848e-12,
+        0.8090563789624529,
+        -0.00011860918705108067,
+        0.0008309916771901743,
+        0.3072856254577468,
+        0.3071754757501017,
+        0.3072824178641291,
+        0.3071792141256173,
+        -0.0031429952287045956,
+        0.0020428779741716602,
+        0.0008437118635851023,
+        -0.0015192312515174458,
+        0.00036576319786410977,
+        -0.00047225857849683716,
+        -0.0005861014304067142,
+        0.0024431689229555027,
+        0.002443168936125224,
+        0.0024431689228700914,
+        0.0024431689362106367,
+        0,
+        0,
+        -0.08382697908599866,
+        0,
+        0,
+        -6.664644276221938
+      ],
+      "bristles": [
+        [
+          0.0000034760643859051775,
+          -0.0002970899645740005
+        ],
+        [
+          0.0000034052152796001437,
+          0.00023526413555034214
+        ],
+        [
+          0.0000034406388349234364,
+          -0.00003091126373365023
+        ],
+        [
+          0.0000034406408297556435,
+          -0.00003091455908184097
+        ]
+      ],
+      "loss": {
+        "viscous": 0.09231093556415551,
+        "plastic": 0.000060341209486141504
+      },
+      "storedEnergy": 0.0014557023123529368,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.001,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.01,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.011,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.052000000000000005,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.053,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unloading-recontact",
+      "h": 0.0005,
+      "duration": 1,
+      "completedTime": 0.9999999999999453,
+      "failure": null,
+      "maxEnergyResidualJ": 4.689582056016661e-13,
+      "maxConstitutiveResidualJ": 2.1017259113631503e-16,
+      "maxForceResidualN": 9.903813880107748e-12,
+      "maxFrictionExcessN": 2.0039525594484076e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 7,
+      "gripSamples": 7913,
+      "slidingSamples": 3,
+      "airborneSamples": 84,
+      "final": [
+        -0.000013767600456580915,
+        -0.0003132833219854307,
+        0.00013312645028449286,
+        -0.0002955492985786486,
+        -0.00046515127272604955,
+        1.894957199916064e-12,
+        0.8090563598224317,
+        -0.00011858739077311804,
+        0.0008310487355844149,
+        0.30728528183399245,
+        0.3071755418553302,
+        0.307282414221638,
+        0.307179178639175,
+        -0.0031433349152738123,
+        0.002042711663461961,
+        0.0008426948321421303,
+        -0.0015214116201815637,
+        0.00036393757802601095,
+        -0.00047467016462029386,
+        -0.0005817972080517231,
+        0.002443195464581454,
+        0.0024431954774714114,
+        0.002443195464496035,
+        0.0024431954775568296,
+        0,
+        0,
+        -0.08383398738254053,
+        0,
+        0,
+        -6.664637181391783
+      ],
+      "bristles": [
+        [
+          0.0000034741618686436284,
+          -0.00029716910212051773
+        ],
+        [
+          0.000003403273253691968,
+          0.00023533340011532247
+        ],
+        [
+          0.000003438716563790227,
+          -0.00003091619881024688
+        ],
+        [
+          0.0000034387185577196486,
+          -0.00003091949699237647
+        ]
+      ],
+      "loss": {
+        "viscous": 0.09232573414848236,
+        "plastic": 0.00005174910671039507
+      },
+      "storedEnergy": 0.0014565041273454356,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.0005,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.009000000000000001,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.01,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.0105,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.052000000000000005,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.0525,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unloading-recontact",
+      "h": 0.00025,
+      "duration": 1,
+      "completedTime": 0.9999999999999176,
+      "failure": null,
+      "maxEnergyResidualJ": 4.156675004196586e-13,
+      "maxConstitutiveResidualJ": 1.1541332126108195e-16,
+      "maxForceResidualN": 9.985567928083583e-12,
+      "maxFrictionExcessN": 1.7430501486614958e-14,
+      "maxLockedResidualRadS": 0,
+      "maxIterations": 6,
+      "gripSamples": 15826,
+      "slidingSamples": 5,
+      "airborneSamples": 169,
+      "final": [
+        -0.000013620014713593074,
+        -0.00031325482496901086,
+        0.00013316338800212397,
+        -0.000295565814653941,
+        -0.00046507191865117646,
+        1.8752373709096457e-12,
+        0.8090563550322751,
+        -0.00011857679511021786,
+        0.0008310631281385251,
+        0.3072851967537881,
+        0.30717555930922524,
+        0.30728241216510216,
+        0.3071791691780836,
+        -0.0031434256408739993,
+        0.0020427761531527358,
+        0.000842347468852341,
+        -0.0015219101670274863,
+        0.0003634857004663475,
+        -0.000475283379837763,
+        -0.0005807230457027234,
+        0.002443327342933859,
+        0.0024433273556877986,
+        0.0024433273428482905,
+        0.0024433273557733686,
+        0,
+        0,
+        -0.08384401293608529,
+        0,
+        0,
+        -6.664627129123254
+      ],
+      "bristles": [
+        [
+          0.000003473578222801222,
+          -0.00029724424071203033
+        ],
+        [
+          0.00000340265026548717,
+          0.00023540600969499209
+        ],
+        [
+          0.000003438113245667895,
+          -0.000030917461963259925
+        ],
+        [
+          0.0000034381152417936308,
+          -0.00003092076284436461
+        ]
+      ],
+      "loss": {
+        "viscous": 0.09233026215947791,
+        "plastic": 0.00005645681560797762
+      },
+      "storedEnergy": 0.0014572939609972225,
+      "stop": null,
+      "maxReverseMS": 0,
+      "events": [
+        {
+          "time": 0.00025,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.009000000000000001,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.00975,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "detaching",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.01,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "airborne",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.052000000000000005,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "sliding",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        },
+        {
+          "time": 0.0525,
+          "mode": [
+            "open",
+            [
+              "open",
+              "open",
+              "open",
+              "open"
+            ],
+            [
+              "grip",
+              "grip",
+              "grip",
+              "grip"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "slopeSettling": {
+    "duration": 5,
+    "final": [
+      -0.004168172465323325,
+      -1.8442528085626662e-17,
+      0,
+      0.000005037829249855105,
+      -1.1176426636490056e-16,
+      0,
+      0.8095688291324358,
+      0.006113331281611323,
+      3.20937348252686e-17,
+      0.3078512558445321,
+      0.30785125584453216,
+      0.30673980218593977,
+      0.30673980218593994,
+      -1.4231510995337588e-15,
+      -0.000008794615547714465,
+      -1.6888233036080912e-16,
+      -7.52891950829987e-7,
+      -7.52891947230811e-7,
+      7.528919512874154e-7,
+      7.528919520055808e-7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -0.08192927984271843,
+      0,
+      0,
+      -0.15280251344290705
+    ],
+    "loss": {
+      "viscous": 0.03251138300474247,
+      "plastic": 0
+    },
+    "maxBodyDisplacementM": 0.004168172465323325,
+    "energyResidualJ": -1.8807178037150152e-13
+  }
+}
