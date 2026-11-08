@@ -1,0 +1,21 @@
+{
+  "base": "bd844ff315b92c9cee253f90de0f5cc3d90fb661",
+  "branch": "PERFORMANCE",
+  "nodeTestsPassed": 7,
+  "newBrowserSmoke": "PASS Mustang browser driving and safe reference selection",
+  "referenceBrowserSmoke": "acceleration PASS\nsteering PASS\nview/state parity PASS\nbraking PASS\nhills PASS\nrough PASS\nroad PASS\nhandbrake/input release PASS\nPASS browser smoke ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "sourceSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/view3d.js": "b23342ae18a4b49e1e53d293a1b216cef851a01d3352a55022b67f72053b71e2",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/main.js": "05b77d4d1f32d06ff7eff7b4c91aaa821c5cf08ec6c6087f8e144a853bfa11c6",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-mustang.js": "a190ebdf278148aa9520b9b62648e65e6f6a0719a85016e09558b42a1b42b558",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-mustang.test.mjs": "868cf4b2732766906d0a4c6c09c0a56addd8c316820c1655094f62db36e4df69",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-glb-browser.mjs": "65d5a5a37b466ac7e79ede0b9b4d87999aa14f2332c27afb76c47683f2880246",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/vendor/GLTFLoader.js": "e64584c9e072067bc88aa6b298a34f1bfddc296539bf7a21cddef1e46e5306b6",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/vendor/BufferGeometryUtils.js": "194274c38b4217a4dae7ec9cfa7bcb2f473518aebbcf59acc6996daad1dcbd56"
+  },
+  "assetSha256": "382c303d75d0bc4c96f175bac469f267ffda13f67f7d19069ab3724c87ab1be3",
+  "physicalWheelRadius": 0.335,
+  "nativeVisualWheelRadius": 0.3025130033493042,
+  "scale": 1,
+  "backend": "Chromium / SwiftShader; hardware GPU performance not measured"
+}

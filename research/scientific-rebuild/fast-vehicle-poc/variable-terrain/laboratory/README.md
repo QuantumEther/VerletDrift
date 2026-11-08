@@ -304,3 +304,11 @@ shared engine equations and terrain mechanisms are used; no second simulator run
 Historical source access is incomplete and the parameters are estimates/reference
 figures, not a calibrated Mustang. See [vehicle specification, numerical prerequisite,
 limitations and measured results](../../vehicles/README.md).
+
+## Custom Blender Mustang
+
+The Mustang appearance selector prefers the supplied GLB once loaded; choose
+Original procedural Mustang for comparison. Appearance changes preserve physics
+and the current driving state. Loading failures display a message and retain the
+procedural fallback. See [integration details, native geometry differences and
+verification](custom-mustang-integration.md).
