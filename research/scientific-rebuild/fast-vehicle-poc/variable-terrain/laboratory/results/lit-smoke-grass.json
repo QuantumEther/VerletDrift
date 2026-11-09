@@ -1,0 +1,63 @@
+{
+  "pixels": 53017,
+  "max": 123,
+  "total": 1036135,
+  "info": {
+    "status": "Particles active",
+    "submitted": false,
+    "active": 120,
+    "spawned": 208,
+    "paused": true,
+    "particlesPerSecond": 0,
+    "budget": 120,
+    "updateMs": 0.09999999962747097,
+    "memoryBytes": 53400,
+    "drawCalls": 0,
+    "wheels": [
+      {
+        "rate": 0,
+        "active": 0,
+        "wheel": "0",
+        "supported": true,
+        "normal": 4000,
+        "sx": -5,
+        "sy": 0,
+        "power": 0,
+        "potentialRate": 0
+      },
+      {
+        "rate": 0,
+        "active": 0,
+        "wheel": "1",
+        "supported": true,
+        "normal": 4000,
+        "sx": -5,
+        "sy": 0,
+        "power": 0,
+        "potentialRate": 0
+      },
+      {
+        "rate": 0,
+        "active": 120,
+        "wheel": "2",
+        "supported": true,
+        "normal": 4000,
+        "sx": -5,
+        "sy": 0,
+        "power": 12000,
+        "potentialRate": 69.35960967773586
+      },
+      {
+        "rate": 0,
+        "active": 0,
+        "wheel": "3",
+        "supported": true,
+        "normal": 4000,
+        "sx": -5,
+        "sy": 0,
+        "power": 0,
+        "potentialRate": 0
+      }
+    ]
+  }
+}
