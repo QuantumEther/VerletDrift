@@ -321,3 +321,11 @@ The handwheel follows accepted road steering through a provisional visual 16:1
 ratio; no steering force or physical behavior is changed. [Current integration,
 geometry measurements and verification](foundation8-integration.md). The earlier
 Foundation 7 asset and its historical integration report remain available.
+
+## Upgraded graphics
+
+Select **Graphics → Balanced**, then try the three authored maps. Baseline restores
+the original presentation. EXR lighting, shadows, world-anchored surface detail,
+roadside cues and distant terrain are renderer-only. See [graphics-upgrade.md](graphics-upgrade.md)
+for controls, comparisons, verification commands and measured limitations. Roadside
+posts/stones are explicitly non-colliding decorations and can be disabled.

@@ -1,0 +1,40 @@
+{
+  "branch": "PERFORMANCE",
+  "baseCommit": "a76212968dc51f831bcda0e863cd4dfb035a5803",
+  "workingTreeSourceSha256": {
+    "view3d.js": "42f21e159063f868cb26852a487c7e328d26911f5d56e21d1448b33a1d7c6f45",
+    "main.js": "438c0596fbf97b8f25ac3bf2860a77a7ec27d8867705253d4f5d06b406eac636",
+    "index.html": "9379fd2c5e3435d3084d9887152f3f46ad12167c00d29cce96778e671b5dfcb7",
+    "graphics.js": "09b4b74653b266301925efceaf98154d16f0e523a0e342693855b77b5c382c8a",
+    "terrain-material.js": "924ada6ff2a0d4234f5520f135d6150de69270914998ffecb32e010cb7de94f6",
+    "landscape.js": "869addb407599e56a4f526f7391982e894714f623504de63f94a816846d1949f",
+    "roadside.js": "f47127fa1645e8410151108c97aa9cfe58aadaaf0140efa8f47ec7aab20d542a",
+    "surface-palette.js": "971dc279b4e7537340a472554d3ce60353a887f308c24266d191ad629ded1159",
+    "graphics.test.mjs": "66dc5087e91ca1822aff1aae04540b753626ca3395769e17d80525dd2e7d3d20",
+    "authored-graphics-browser.mjs": "090e73eda01b12698921bbadf072c9114db6062aacbd44b981c155eac3f03633",
+    "authored-graphics-benchmark.mjs": "915066deae18f70c963bb8d01f59226c22b6e7ead03ec6979a8809ad0b1eb503",
+    "authored-driving-browser.mjs": "6556d1288427481acd8ac7aeea7b8acd8d92cfb824cd4e5cc73338fe64b6d4af"
+  },
+  "node": "v24.19.0",
+  "browser": "Chromium 154.0.8037.57",
+  "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "checks": {
+    "node": {
+      "passed": 18,
+      "failed": 0
+    },
+    "authoredMapsBrowser": "PASS",
+    "fullDrivingBrowser": "PASS",
+    "fourPresetBenchmark": "PASS"
+  },
+  "resultSha256": {
+    "results/authored-driving-browser.json": "04fcadae3b213aa00690d08541b629e50eca4bb1b5c01b62ff3e9f5ea5e87293",
+    "results/authored-graphics-browser.json": "06a0845547970d41255d2fc2c6ef69465559215e0884daef81f091d0caabb711",
+    "results/authored-graphics-performance.json": "345c3cf2ca6eee017e020cf4c55494055d83606c1f4dbfb147625fd826b58b2e"
+  },
+  "notes": [
+    "Physics/terrain heights/friction and GLB source materials/geometry unchanged.",
+    "Software-rendered measurements, not RTX 5090 results.",
+    "Full driving run preceded the final palette-only correction; final map browser and benchmark exercise the final shader."
+  ]
+}
