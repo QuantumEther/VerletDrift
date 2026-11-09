@@ -6,7 +6,7 @@ Implemented on PERFORMANCE above baseline `eed9a9c`. Production physics, contact
 
 Serve the repository with `python3 -m http.server 8000` and open
 `http://localhost:8000/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/`.
-Select Schweinemotorwerke and Performance, Balanced or Cinematic graphics. Expand **Tire Smoke** to enable/disable emission, adjust density and inspect per-wheel diagnostics. Baseline deliberately disables smoke. Existing driving, clutch, gear, engine-start and camera controls remain in force.
+Select Schweinemotorwerke and any graphics preset. Expand **Tire Smoke** to enable/disable emission, adjust density and inspect per-wheel diagnostics. Baseline uses the same small particle budget as Performance. Existing driving, clutch, gear, engine-start and camera controls remain in force.
 
 ## Physical signal and visual approximation
 
@@ -16,7 +16,7 @@ The bounded rate is `35*(1-exp(-max(0,P-P0)/Ps))*(1-exp(-(slidingSpeed-0.15)))` 
 
 Four independent accepted-step accumulators feed one pooled Three.js Points draw. Birth positions are actual world contact positions; Float64 world coordinates are converted to vehicle-relative Float32 attributes only for drawing. Camera motion and terrain recentering do not relocate old particles. Particles inherit 20% of contact-patch translation, decay horizontal momentum, rise, expand and fade. Dust uses brown tint, lower rise and shorter lifetime; smoke uses restrained gray-white. Procedural soft irregular opacity, fixed birth variation and ordinary alpha blending avoid additive glow. No new texture dependency, scene per particle, terrain query per particle, physics loop or animation loop is introduced.
 
-Budgets: Baseline 0, Performance 120, Balanced 320, Cinematic 600. Particle arrays occupy 53,400 CPU bytes (excludes JS objects/GPU copies). One additional draw when visible. Zero-live/no-pending frames skip pool updates. Accepted steps accumulate births; graphical frames advance particles, capped at 50 ms visual aging per frame. Pause, hidden tab and physics fault freeze particles and discard pending births. Reset/vehicle replacement disposes the pool; disable/quality changes clear it. No rejected step emits.
+Budgets: Baseline 120, Performance 120, Balanced 320, Cinematic 600. Particle arrays occupy 53,400 CPU bytes (excludes JS objects/GPU copies). One additional draw when visible. Zero-live/no-pending frames skip pool updates. Accepted steps accumulate births; graphical frames advance particles, capped at 50 ms visual aging per frame. Pause, hidden tab and physics fault freeze particles and discard pending births. Reset/vehicle replacement disposes the pool; disable/quality changes clear it. No rejected step emits.
 
 ## Executed verification
 
@@ -55,3 +55,9 @@ CPU submission is not measured GPU execution. Software overdraw makes Cinematic 
 ## Remaining limitations
 
 This is a dissipation-driven visual approximation, not thermal chemistry or fluid simulation. Dust has simplified upward dispersion, no terrain collision/settling. No soft-particle depth fading, per-particle depth sorting, volumetric self-shadowing or lighting integration; intersections/order artifacts remain possible. No prolonged controlled drift or all camera/terrain combinations were independently captured. The existing bounded terrain-contact convergence fault remains unchanged: the laboratory pauses, and emission freezes. No solver tolerance, physical parameter, timestep or safeguard was changed to make smoke work.
+
+## Visibility follow-up
+
+The original Baseline preset assigned a zero particle budget despite the smoke checkbox being enabled. The prior moving-burnout screenshot also showed a faint plume with opacity 0.16–0.28. Baseline now uses a 120-particle budget and particle initial size and opacity are modestly increased; the physical emission formula and thresholds remain unchanged. The existing recorded rear burnout reached about 53.6 kW, far above the 400 W asphalt threshold, so changing that threshold was not supported by this measurement. The diagnostics now report user disable, preset disable, no signal, emission, active/expired particles and visible submission state.
+
+`node research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/tire-smoke-visibility-browser.mjs` renders the production effect with one controlled loaded/sliding wheel, compares actual WebGL pixels with it hidden, and writes `results/tire-smoke-visibility-{on,off}.png` and JSON. On SwiftShader 10,510 pixels differed by at least five 8-bit levels. This controlled result verifies the render path, not real driving by itself. `results/tire-smoke-fixed-moving.png` shows the real driving scenario after the change; the original `tire-smoke-browser.png` remains the earlier comparison. Hardware performance and the exact cause of the user's local experience remain unverified.

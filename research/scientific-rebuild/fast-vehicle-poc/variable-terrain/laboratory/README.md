@@ -346,6 +346,6 @@ posts/stones are explicitly non-colliding decorations and can be disabled.
 
 ## Tire smoke and dust
 
-Select Performance, Balanced or Cinematic graphics, then expand **Tire Smoke**.
-Emission uses accepted per-wheel irreversible tire losses; Baseline is off.
+Expand **Tire Smoke** to control the effect on any graphics preset.
+Emission uses accepted per-wheel irreversible tire losses; Baseline has a 120-particle budget.
 See [tire-smoke.md](tire-smoke.md) for verification, captures and software-renderer performance limits.
