@@ -1,0 +1,88 @@
+{
+  "active": 600,
+  "records": [
+    {
+      "quality": "cinematic",
+      "active": 597,
+      "visible": true,
+      "frames": {
+        "mean": 37.56949152542372,
+        "median": 33.399999999999636,
+        "p95": 50,
+        "p99": 66.60000000000036,
+        "worst": 66.60000000000036
+      },
+      "cpuSubmission": {
+        "mean": 0.14500000104308128,
+        "median": 0.10000000894069672,
+        "p95": 0.29999999701976776,
+        "p99": 1.5,
+        "worst": 1.5
+      },
+      "drawCalls": 1
+    },
+    {
+      "quality": "balanced",
+      "active": 320,
+      "visible": true,
+      "frames": {
+        "mean": 16.66610169491526,
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "p99": 16.800000000000182,
+        "worst": 16.800000000000182
+      },
+      "cpuSubmission": {
+        "mean": 0.07999999970197677,
+        "median": 0.09999999403953552,
+        "p95": 0.10000000894069672,
+        "p99": 0.30000001192092896,
+        "worst": 0.30000001192092896
+      },
+      "drawCalls": 1
+    },
+    {
+      "quality": "performance",
+      "active": 120,
+      "visible": true,
+      "frames": {
+        "mean": 16.66610169491524,
+        "median": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "p99": 16.80000000000109,
+        "worst": 16.80000000000109
+      },
+      "cpuSubmission": {
+        "mean": 0.08333333358168601,
+        "median": 0.09999999403953552,
+        "p95": 0.19999998807907104,
+        "p99": 0.29999999701976776,
+        "worst": 0.29999999701976776
+      },
+      "drawCalls": 1
+    },
+    {
+      "quality": "hidden",
+      "active": 597,
+      "visible": false,
+      "frames": {
+        "mean": 16.66610169491524,
+        "median": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "p99": 16.799999999999272,
+        "worst": 16.799999999999272
+      },
+      "cpuSubmission": {
+        "mean": 0.04333333323399226,
+        "median": 0,
+        "p95": 0.10000000894069672,
+        "p99": 0.20000000298023224,
+        "worst": 0.20000000298023224
+      },
+      "drawCalls": 0
+    }
+  ],
+  "memoryStable": true,
+  "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "method": "Isolated production smoke renderer stress fixture, controlled positive contact-loss inputs rather than vehicle physics. 960x540, warmup 15 frames + 60 measured frames per state; CPU submission is not GPU execution."
+}

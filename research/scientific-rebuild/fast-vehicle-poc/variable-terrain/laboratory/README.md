@@ -343,3 +343,9 @@ the original presentation. EXR lighting, shadows, world-anchored surface detail,
 roadside cues and distant terrain are renderer-only. See [graphics-upgrade.md](graphics-upgrade.md)
 for controls, comparisons, verification commands and measured limitations. Roadside
 posts/stones are explicitly non-colliding decorations and can be disabled.
+
+## Tire smoke and dust
+
+Select Performance, Balanced or Cinematic graphics, then expand **Tire Smoke**.
+Emission uses accepted per-wheel irreversible tire losses; Baseline is off.
+See [tire-smoke.md](tire-smoke.md) for verification, captures and software-renderer performance limits.

@@ -33,6 +33,6 @@ export function capture(lab,h=.001){
  const s=lab.state,y=s.y;
  return {time:s.time,center:{x:y[0],y:y[1],z:y[6]},heading:y[2],bump:null,wheels:s.vertical.corners.map((corner,i)=>{
   const p=point(y,corner,i),ground=lab.terrain.sample(p[0],p[1]),t=s.contacts?.[i],normal=t?.normal.N??0,mu=t?.normal.mu??ground.friction,fx=t?.flow.force[0]??0,fy=t?.flow.force[1]??0,sx=t?.slip[0]??0,sy=t?.slip[1]??0,limit=normal*mu,utilization=limit>0?Math.hypot(fx,fy)/limit:null,heading=y[2]+(i<2?lab.steer:0);
-  return {name:['FL','FR','RL','RR'][i],position:{x:p[0],y:p[1],z:ground.height},heading,forceHeading:heading,omega:s.constraints?s.constraints.integral[i]/h:y[20+i],normal,mu,sx,sy,fx,fy,power:t?(t.flow.viscous+t.flow.plastic)/h:0,mechanicalPower:t?t.flow.work/h:0,slidingSpeed:Math.hypot(sx,sy),utilization,brakeTorque:s.constraints?s.constraints.brakeImpulse[i]/h:0,geometryContact:normal>0,supported:normal>0,saturated:utilization!==null&&utilization>=1-1e-6};
+  return {surface:ground.surface,name:['FL','FR','RL','RR'][i],position:{x:p[0],y:p[1],z:ground.height},heading,forceHeading:heading,omega:s.constraints?s.constraints.integral[i]/h:y[20+i],normal,mu,sx,sy,fx,fy,power:t?(t.flow.viscous+t.flow.plastic)/h:0,mechanicalPower:t?t.flow.work/h:0,slidingSpeed:Math.hypot(sx,sy),utilization,brakeTorque:s.constraints?s.constraints.brakeImpulse[i]/h:0,geometryContact:normal>0,supported:normal>0,saturated:utilization!==null&&utilization>=1-1e-6};
  })};
 }
