@@ -82,3 +82,27 @@ were altered to improve appearance.
 
 Launch from repository root with `python -m http.server 8000`, then open
 `http://localhost:8000/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/`.
+
+## Follow-up: terrain horizon
+
+Balanced/Cinematic now extend the near patch with a square annular landscape from
+20 to 140 metres, sampled from the same terrain height and surface interface.
+The outer mesh has 1,536 vertices / 2,560 triangles and one additional main-pass draw
+call. It does not cast shadows. Samples are cached for the current near-terrain tile;
+ordinary camera movement does not rebuild it. It is render-only, coarser than contact
+geometry, so distant narrow roads and sharp features can alias and the near/far seam
+can show interpolation differences. Fog hides the outer edge; no fictitious mountain
+geometry or collidable scenery was introduced. A lightweight gradient background
+replaces the flat sky when the photographic background checkbox is off. The photo
+remains selectable, and Baseline retains its original background and finite patch.
+The 12 Node tests include exact sampled-plane heights, tile-cache behavior and
+unchanged sampler state. New comparison captures use `results/landscape-*.png`;
+previous graphics captures and performance records retain their original provenance.
+The prior performance table predates this follow-up and is not a measurement of it.
+
+Follow-up browser verification: `graphics-comparison.mjs` checks Baseline hiding and
+Balanced enabling the outer landscape, exact frozen physics-state equality, real EXR
+readiness, rendering without JavaScript errors, and failed replacement recovery.
+The generated background encodes world Z-up into Three.js's Y-up equirectangular
+lookup convention. The final captures were inspected visually. No timing claim is
+made for this addition; hardware frame-time profiling and broader map coverage remain.
