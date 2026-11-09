@@ -1,3 +1,4 @@
+import {createRendererBackend} from './renderer-backend.js';
 import {createTireSmoke} from './tire-smoke.js';
 // Coachwork, wheel mesh and spring construction reused verbatim from Experiment 11
 // view3d.js (4736576). Only the render-only subset is retained: no old vehicle,
@@ -14,10 +15,10 @@ import {terrainMaterial} from './terrain-material.js';
 import {createGraphics} from './graphics.js';
 import {loadCustomMustang} from './custom-mustang.js';
 import {buildMustang} from '../../vehicles/mustang-view.js';
-export function createView3D(canvas,terrain,quality='auto',vehicle={id:'reference'}){
+export async function createView3D(canvas,terrain,quality='auto',vehicle={id:'reference'}){
  const mustang=vehicle.id==='mustang-1969';let contactEnabled=true,sceneryEnabled=true,graphics=null,imported=null,disposed=false,appearance='custom',assetStatus=mustang?'loading':'not-applicable',assetError='',lastXray=null;
  function setAppearance(value){if(!['custom','procedural'].includes(value))throw Error('Unknown appearance');appearance=value;}
- const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ const backendHandle=await createRendererBackend(canvas,'webgl'),renderer=backendHandle.renderer;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
  const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info'),backend=debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);let renderScale=1;
  function setQuality(value){const scale=value==='auto'?(/SwiftShader|llvmpipe/i.test(backend)?.5:1):Number(value);if(![.5,.75,1].includes(scale))throw Error('Invalid rendering scale');renderScale=scale;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)*scale);}setQuality(quality);
  const scene=new THREE.Scene();const smoke=createTireSmoke(scene,terrain);scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,20,55);
