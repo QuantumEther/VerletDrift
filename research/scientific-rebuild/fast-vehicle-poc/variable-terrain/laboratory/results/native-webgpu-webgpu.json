@@ -1,0 +1,6 @@
+{
+  "active": null,
+  "stage": "native render",
+  "error": "A valid external Instance reference no longer exists.",
+  "stack": "OperationError: A valid external Instance reference no longer exists."
+}
