@@ -94,9 +94,10 @@ export function createView3D(canvas,terrain,quality='auto',vehicle={id:'referenc
   const enabled=k=>!incremental||!!d[k];
   const useGLB=mustang&&appearance==='custom'&&assetStatus==='ready';if(custom)custom.body.visible=!useGLB;rotors.forEach(r=>r.visible=!useGLB);if(imported){imported.body.visible=useGLB;imported.spins.forEach(r=>r.visible=useGLB);if(xray!==lastXray){imported.setXray(xray);lastXray=xray;}}
   body.visible=enabled('vehicle');hubs.forEach(x=>x.visible=enabled('vehicle'));springs.forEach(x=>x.visible=enabled('vehicle'));dampers.forEach(x=>x.visible=enabled('vehicle'));arrows.forEach(x=>x.visible=enabled('other')&&x.visible);hemisphere.visible=sun.visible=enabled('lighting');
+  const width=canvas.clientWidth,height=canvas.clientHeight;if(width>0&&height>0){if(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio()))renderer.setSize(width,height,false);if(camera.aspect!==width/height){camera.aspect=width/height;camera.updateProjectionMatrix();}}
   if(!sceneUpdates){const t=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-t;}return;}
 
-  last=p;const width=canvas.clientWidth,height=canvas.clientHeight;if(width>0&&height>0&&(canvas.width!==Math.round(width*renderer.getPixelRatio())||canvas.height!==Math.round(height*renderer.getPixelRatio()))){renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+  last=p;
   if(imported)imported.setSteering((p.wheels[0].steering+p.wheels[1].steering)/2);
   body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;if(custom){if(custom.paint.transparent!==xray)custom.paint.needsUpdate=true;custom.paint.transparent=xray;custom.paint.opacity=xray?.18:1;custom.paint.depthWrite=!xray;}
   const basis=new THREE.Matrix4(),from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),axis=new THREE.Vector3(0,1,0);
