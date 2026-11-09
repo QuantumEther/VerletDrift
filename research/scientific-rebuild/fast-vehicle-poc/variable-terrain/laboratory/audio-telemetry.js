@@ -1,0 +1,7 @@
+// Read-only accepted-state handoff. No DOM, solver calls or production imports.
+export function audioTelemetry(lab,{paused=false,faulted=false,hidden=false,focusLost=false,epoch=0}={}){
+ if(!lab)return null;
+ const s=lab.state,w=s.y[24],e=s.engine,flow=e?.diagnostics??{},input=lab.lastInput??{},g=s.gearbox;
+ const torqueReference=lab.vehicle?.engineConfig?.curve?.reduce((m,p)=>Math.max(m,p[1]),0)??600;
+ return Object.freeze({engineRPM:w*30/Math.PI,engineAngularVelocity:w,engineMode:e?.mode??'unsupported',throttle:input.throttle??0,effectiveOpening:Math.max(input.throttle??0,flow.idleOpening??0),engineTorque:flow.netTorque??null,engineTorqueDescription:'combustion + starter - internal losses, before clutch reaction',combustionTorque:flow.combustion??0,starterTorque:flow.starter??0,lossTorque:flow.loss??0,engineLoad:null,loadProxy:Math.min(1,Math.max(0,(flow.combustion??0)/(torqueReference||600))),loadDescription:'combustion torque / maximum configured brake-curve torque; acoustic proxy, not measured engine load',combustionPresent:(flow.combustion??0)>0,fuelCut:!!e&&e.mode==='running'&&!!flow.overspeed&&(flow.combustion??0)<=0,overspeed:!!flow.overspeed,clutchEngagement:input.clutch??0,clutchMode:s.constraints?.clutchMode??'unknown',requestedGear:input.gear??g?.gear??null,engagedGear:g?.mode==='engaged'?g.gear:'N',gearboxMode:g?.mode??'fixed',vehicleSpeed:Math.hypot(s.y[3],s.y[4]),focusLost,simulationPaused:paused||hidden,simulationFaulted:faulted,simulationTime:s.time,epoch});
+}

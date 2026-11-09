@@ -5,6 +5,19 @@ or historical laboratory changes. The fixed-ratio reference remains the default.
 An explicitly selected experimental six-rotor gearbox is also available; its
 mechanical model and validation are documented below.
 
+## Schweinemotorwerke engine audio
+
+The custom vehicle is now presented as **Schweinemotorwerke**, the user's original
+vehicle. Historical Mustang asset names, internal `mustang-1969` ID and inherited
+428-CJ-based physical estimates remain for compatibility, not as a claim of a
+faithful Ford reproduction. No engine or vehicle parameters changed with naming.
+
+Select Schweinemotorwerke, click **Enable Audio**, wait for ready, and hold **R**
+to start the physical engine. Recorded Engine is the default. Hybrid/Procedural
+are experimental comparisons; Muted and Disable affect sound only. Click the 3D
+view to use driving keys after editing forms. See [engine-audio-integration.md](engine-audio-integration.md)
+for telemetry, loopback samples, tests, timings, controls and limitations.
+
 ## Launch
 
 From repository root:
@@ -294,10 +307,11 @@ mission request rather than production's H-pattern. W/S/A/D/Space are retained.
 The mean-engine reference options remain selectable for prior experiments.
 See `../../engine-lifecycle/README.md` for equations, tests, timing and limits.
 
-## Selectable 1969 Mustang Mach 1
+## Schweinemotorwerke · inherited parameter estimates
 
-The vehicle selector retains the experimental reference and adds a red procedural
-1969-style Mach 1 SportsRoof with a declared six-speed conversion. Selection resets
+The vehicle selector retains the experimental reference and offers the original
+Schweinemotorwerke design with a six-speed transmission. Its unchanged mechanical
+parameter estimates originated in the earlier Mustang-inspired experiment. Selection resets
 incompatible state and selects the lifecycle drivetrain. Hold R with the clutch
 open, request a gear, add throttle, then progressively engage the clutch. The
 shared engine equations and terrain mechanisms are used; no second simulator runs.
@@ -305,17 +319,17 @@ Historical source access is incomplete and the parameters are estimates/referenc
 figures, not a calibrated Mustang. See [vehicle specification, numerical prerequisite,
 limitations and measured results](../../vehicles/README.md).
 
-## Custom Blender Mustang
+## Custom Blender vehicle
 
-The Mustang appearance selector prefers the supplied GLB once loaded; choose
-Original procedural Mustang for comparison. Appearance changes preserve physics
+The vehicle appearance selector prefers the supplied GLB once loaded; choose
+Historical procedural fallback for comparison. Appearance changes preserve physics
 and the current driving state. Loading failures display a message and retain the
 procedural fallback. See [integration details, native geometry differences and
 verification](custom-mustang-integration.md).
 
 ## Foundation 8.2 update
 
-The Custom Blender Mustang now loads Foundation 8 Export 2, including its actual
+The custom Schweinemotorwerke appearance loads Foundation 8 Export 2, including its actual
 interior and handwheel. Choose **Interior · fixed cockpit** to inspect steering.
 The handwheel follows accepted road steering through a provisional visual 16:1
 ratio; no steering force or physical behavior is changed. [Current integration,

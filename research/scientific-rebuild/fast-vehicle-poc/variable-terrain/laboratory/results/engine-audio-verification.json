@@ -1,0 +1,85 @@
+{
+  "branch": "PERFORMANCE",
+  "baseCommit": "f02ab53e8cf86a327122335a14504caf60a0f620",
+  "sourceWorkingTreeSha256": {
+    "main.js": "fee963e933cec70f5193e6b3b36fc8a87634d75e239b2ca13a24e3847adde76e",
+    "index.html": "8dad28c83c241c1eacf03ada990e4933d6f7e7075cdd1c97e2b464e4f5179627",
+    "audio-samples.js": "f51f4dc6f8137bd449e381c2b409135e195bac2b47f49aea14ff6ff1fa94445b",
+    "audio-telemetry.js": "7662a8f874e3bb4eeb9b02da626cf17a35067f7da2e3075fa55ab12694fcab4f",
+    "engine-audio.js": "14d5d6bd7cca6a9b1e209c1d0de25fcb1bc41936b4a61678ed16193c7fbda8be",
+    "engine-audio-worklet.js": "00c38944c55b32b73d4a6c3357d578a08a65860bf18604f261727d5dfb199855",
+    "audio.test.mjs": "00514148bc831451484da34ae1927f2f8043ddd85a96c4f9808119b420cd98fb",
+    "audio-test-harness.mjs": "e40ae57143c2b2935b762d0ff9fe838ae2960b655ff231debbc79a3eda5e6759",
+    "engine-audio-browser.mjs": "b506f56f713828763267146e139be2f20c7c05c9d6e4c8706cb781c8c95b2078",
+    "audio-browser-benchmark.mjs": "32d264db112d74e602ffff291c1757e0c5295d4465ff3d326200622a9ae089be",
+    "audio-benchmark.mjs": "422e0482aabfbc96363405f56edde242185bd95386fc17733aa947b494c3df41",
+    "audio-benchmark-prepare.py": "d5ae4e9a8fad0c6182b9e877c0d0205295f96f5d23870399cbf4d3e2ffbbec9c"
+  },
+  "preservedHistoricalSourcesSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/engine-sim-hybrid-v4.html": "49ce49b5192f44c44ca90b832881a1d1d3ea357a5c7f917fe27078e72d2c5bb5",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/engine-sim-hybrid-v5.html": "c5549048b9d4a9198698defd428705c5efad5dd748a1109ad52253ee1868a1f7",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/REC194.wav": "8c7ab22d3ebbe7c3a984db8f9edd43382c0383ab88f94f1428db05c578e418ca",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/REC25.wav": "961802cd2429881650878d3f187426f5e261028f5452f49969e59a1ce5ba3257",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/2000RPM_Constant.wav": "c94099da8ea198fdb4bd31609ad6a08064de509342488344a3cfddc2dfe475a3",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/2000RPM_Constant_2.wav": "4fb6522c41827ea2bbfa56a99b35a1f7ead91a552c073647b853ad5abbc81f82",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/3000RPM_Constant.wav": "5052e2ec9a220f8011334fb5d0a91c5e5565e55b68e9ef417c2e0b5fb1d404aa",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/4000RPM_Constant.wav": "2bedc2bf0953922a79b1f69fe85a5dbc2336d33b7f54efaf23269f340460c646",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/5000RPM_Constant.wav": "2944222e48a457ef88eecf5f45adb92cb67006370523e97e8b7020b2767a01cd",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/6000RPM_Constant.wav": "dc474ab86249c7dda240c75899e8b803f08c74078b9f189b20347e3f905603cd",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/7000RPM_Constant.wav": "da3aa57a8ba4a18cd4c62ab09abde09ccf5195779294ab406702f58cd10573b6"
+  },
+  "physicalStepSourceUnchanged": true,
+  "tests": {
+    "laboratoryNode": {
+      "pass": 26,
+      "fail": 0
+    },
+    "existingPhysics": {
+      "pass": 44,
+      "fail": 0
+    },
+    "integratedBrowser": "PASS",
+    "standaloneV5Browser": "PASS",
+    "offlineBrowserBenchmark": "PASS"
+  },
+  "records": [
+    "stopped/paused",
+    "start/idle",
+    "neutral throttle",
+    "mode switches/paused",
+    "neutral release",
+    "first gear launch",
+    "moving mode hybrid",
+    "moving mode procedural",
+    "moving mode recorded",
+    "manual second clutch open",
+    "engine braking",
+    "loopback",
+    "service braking",
+    "ignition off/back-driven rotation",
+    "restart",
+    "vehicle reset",
+    "reverse propulsion",
+    "fully coupled clutch shift request",
+    "clutch-induced stall",
+    "restart after stall",
+    "250 ms blocked graphics/main thread",
+    "3D rendering and audible engine together",
+    "60 second continuous playback",
+    "missing/corrupt recordings",
+    "explicit procedural fallback with no recordings"
+  ],
+  "loopback": {
+    "rms": 0.007852028557021074,
+    "peak": 0.033059339970350266,
+    "duration": 1.98
+  },
+  "listeningAssessment": "NOT PERFORMED",
+  "underruns": "No reliable browser counter; no unsupported claim",
+  "resultSha256": {
+    "results/engine-audio-browser.json": "935cdb87445287c4f3dd3e6cddace4c623afb630526ebbe413e112379b7a650c",
+    "results/engine-audio-browser-benchmark.json": "cd379cf754d740391573ee62d42a775dffc0283852c62ee112ae0cfaee4da041",
+    "results/engine-audio-benchmark.json": "5348a7af6a98b955c748030410e6a6b0e98d6217edb3190a6fd6626fb646133c",
+    "results/schweinemotorwerke-audio.webm": "a8f00f68c6170253f4e553d6c16b7225636d88f08997cdd7807ae858f46b00e5"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "method": "Chromium OfflineAudioContext, 48 kHz stereo, 6 seconds per mode, seven real loop buffers and fixed test telemetry at 3500 RPM. Physics and scene updates paused; excludes download/decode/module load; includes initialization, scheduling, JIT and render work. Wall throughput, not live audio-thread CPU utilization or underrun proof.",
+  "rows": [
+    {
+      "mode": "recorded",
+      "seconds": 6,
+      "renderWallMs": 414.20000000298023,
+      "msPerAudioSecond": 69.03333333383004,
+      "rms": 0.02182294131029721,
+      "peak": 0.11392637342214584
+    },
+    {
+      "mode": "hybrid",
+      "seconds": 6,
+      "renderWallMs": 1215.7999999970198,
+      "msPerAudioSecond": 202.63333333283663,
+      "rms": 0.021795192039954638,
+      "peak": 0.11395874619483948
+    },
+    {
+      "mode": "procedural",
+      "seconds": 6,
+      "renderWallMs": 1030.7999999970198,
+      "msPerAudioSecond": 171.79999999950329,
+      "rms": 0.0036116942454109176,
+      "peak": 0.09066841751337051
+    },
+    {
+      "mode": "muted",
+      "seconds": 6,
+      "renderWallMs": 17.400000005960464,
+      "msPerAudioSecond": 2.9000000009934106,
+      "rms": 0,
+      "peak": 0
+    }
+  ]
+}

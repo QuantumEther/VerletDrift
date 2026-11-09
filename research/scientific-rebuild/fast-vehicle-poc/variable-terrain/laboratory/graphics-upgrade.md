@@ -7,7 +7,7 @@ intermediate work; this document describes the current authored-map additions.
 
 ## Use
 
-Launch the existing laboratory and select **Mustang → Graphics: Balanced**. Try
+Launch the existing laboratory and select **Schweinemotorwerke → Graphics: Balanced**. Try
 Alpine pass, Industrial proving ground and Highland gravel stage. Terrain selection
 resets the vehicle, as before. Graphics, exposure, camera and visual toggles do not.
 
@@ -136,7 +136,7 @@ simulation clock or artificial vehicle animation was introduced.
 
 ## Collect RTX measurements
 
-On the desktop browser, choose the Mustang, industrial map, workshop camera and
+On the desktop browser, choose Schweinemotorwerke, the industrial map, workshop camera and
 100% render scale. Settle, pause, and keep window size, camera and exposure fixed.
 Open rendering diagnostics; optionally enable the asynchronous GPU timer. For
 each graphics preset, allow at least five seconds to warm up, start the existing

@@ -1,0 +1,51 @@
+{
+  "node": "v24.19.0",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "method": "48 kHz stereo, seven actual decoded recordings, fixed accepted telemetry at 3500 RPM, 1s warmup + 5s measured per mode. Includes VM overhead; no browser scheduling/decode/network cost. Not audio-thread realtime deadline proof.",
+  "results": [
+    {
+      "mode": "recorded",
+      "simulatedAudioSeconds": 5,
+      "cpuMsPerAudioSecond": 88.68805940000007,
+      "meanBlockMs": 0.2365014917333335,
+      "medianBlockMs": 0.2256209999999328,
+      "p95BlockMs": 0.27662199999997483,
+      "p99BlockMs": 0.38651100000004135,
+      "worstBlockMs": 1.5651540000000068,
+      "safetyLimitSamples": 0
+    },
+    {
+      "mode": "hybrid",
+      "simulatedAudioSeconds": 5,
+      "cpuMsPerAudioSecond": 450.6959302,
+      "meanBlockMs": 1.2018558138666666,
+      "medianBlockMs": 1.1598380000000361,
+      "p95BlockMs": 1.383574999999837,
+      "p99BlockMs": 1.8000449999999546,
+      "worstBlockMs": 3.999463999999989,
+      "safetyLimitSamples": 0
+    },
+    {
+      "mode": "procedural",
+      "simulatedAudioSeconds": 5,
+      "cpuMsPerAudioSecond": 448.8353397999925,
+      "meanBlockMs": 1.1968942394666466,
+      "medianBlockMs": 1.1604330000000118,
+      "p95BlockMs": 1.376273000000765,
+      "p99BlockMs": 1.6705229999997755,
+      "worstBlockMs": 2.3550190000005387,
+      "safetyLimitSamples": 0
+    },
+    {
+      "mode": "muted",
+      "simulatedAudioSeconds": 5,
+      "cpuMsPerAudioSecond": 0.4334969999985333,
+      "meanBlockMs": 0.0011559919999960888,
+      "medianBlockMs": 0.0007740000000922009,
+      "p95BlockMs": 0.0018689999997150153,
+      "p99BlockMs": 0.0024079999993773527,
+      "worstBlockMs": 0.26277699999991455,
+      "safetyLimitSamples": 0
+    }
+  ]
+}
