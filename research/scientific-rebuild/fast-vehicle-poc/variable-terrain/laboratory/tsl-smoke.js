@@ -8,12 +8,13 @@ export async function createTSLSmokeView(scene,buffers,lighting,capacity=600){
  const x=N.cos(spin).mul(p.x).sub(N.sin(spin).mul(p.y)),y=N.sin(spin).mul(p.x).add(N.cos(spin).mul(p.y));
  const lobes=N.float(.85).add(N.sin(x.mul(9).add(y.mul(5))).mul(.1)).add(N.cos(y.mul(13)).mul(.05));
  const fog=N.pow(N.max(0,N.float(1).sub(r.div(lobes))),2),optical=a.mul(fog).mul(3),transmission=N.exp(optical.negate());
- const direction=N.uniform(lighting.lightDirection.value),sun=N.uniform(lighting.sunColor.value),ambient=N.uniform(lighting.illumination.value);
+ const fallback=new T.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;const sky=N.texture(fallback),skyIntensity=N.uniform(0),cameraBasis=N.uniform(new T.Matrix3());const direction=N.uniform(lighting.lightDirection.value),sun=N.uniform(lighting.sunColor.value),ambient=N.uniform(lighting.illumination.value);
  const n=N.normalize(N.vec3(p,N.sqrt(N.max(0,N.float(1).sub(r))))),facing=N.dot(n,direction),scattering=N.float(.3).add(N.pow(N.max(0,facing.mul(.5).add(.5)),2).mul(.7));
  material.positionNode=N.attribute('particlePosition','vec3');material.scaleNode=N.attribute('particleDiameter','float');
- material.colorNode=N.attribute('particleTint','vec3').mul(ambient.mul(N.float(.6).add(transmission.mul(.4))).add(sun.mul(scattering).mul(N.exp(optical.mul(N.float(1).sub(N.max(0,facing))).mul(-.7)))));
+ const env=directionNode=>{const w=N.normalize(cameraBasis.mul(directionNode)),uv=N.vec2(N.atan2(w.z,w.x).mul(.159154943).add(.5),N.asin(N.clamp(w.y,-1,1)).mul(.318309886).add(.5));return sky.sample(uv).rgb.mul(skyIntensity);};const ambientLight=ambient.add(env(n).add(env(N.vec3(0,0,1))).mul(.5));
+ material.colorNode=N.attribute('particleTint','vec3').mul(ambientLight.mul(N.float(.6).add(transmission.mul(.4))).add(sun.mul(scattering).mul(N.exp(optical.mul(N.float(1).sub(N.max(0,facing))).mul(-.7)))));
  material.opacityNode=N.float(1).sub(transmission);
  const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.frustumCulled=false;mesh.renderOrder=3;mesh.userData.noShadow=true;mesh.visible=false;scene.add(mesh);
- mesh.onBeforeRender=(_r,_s,camera)=>direction.value.copy(buffers.sunDirection).transformDirection(camera.matrixWorldInverse);
- return {mesh,update(visible){mesh.visible=visible;for(const attr of Object.values(geometry.attributes))if(attr.isInstancedBufferAttribute)attr.needsUpdate=true;},dispose(){mesh.removeFromParent();geometry.dispose();material.dispose();}};
+ mesh.onBeforeRender=(_r,_s,camera)=>{direction.value.copy(buffers.sunDirection).transformDirection(camera.matrixWorldInverse);cameraBasis.value.setFromMatrix4(camera.matrixWorld);sky.value=lighting.skyMap.value??fallback;skyIntensity.value=lighting.hasSky.value?lighting.skyIntensity.value:0;};
+ return {mesh,update(visible){mesh.visible=visible;for(const attr of Object.values(geometry.attributes))if(attr.isInstancedBufferAttribute)attr.needsUpdate=true;},dispose(){mesh.removeFromParent();fallback.dispose();geometry.dispose();material.dispose();}};
 }

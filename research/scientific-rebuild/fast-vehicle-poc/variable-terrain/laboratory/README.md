@@ -349,3 +349,7 @@ posts/stones are explicitly non-colliding decorations and can be disabled.
 Expand **Tire Smoke** to control the effect on any graphics preset.
 Emission uses accepted per-wheel irreversible tire losses; Baseline has a 120-particle budget.
 See [tire-smoke.md](tire-smoke.md) for verification, captures and software-renderer performance limits.
+
+## PERFORMANCE_2 rendering backends
+
+The Renderer selector explicitly reloads the laboratory with WebGL or experimental WebGPU. WebGL remains the default. WebGPU does not silently fall back. For GPU texture validation in environments where native presentation fails, use `?backend=webgpu&presentation=offscreen`; this is a test target, not a replacement interactive display. See [webgpu-laboratory.md](webgpu-laboratory.md) for commands, captures and remaining limitations.

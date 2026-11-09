@@ -1,0 +1,29 @@
+{
+  "webglTarget": [
+    526,
+    329
+  ],
+  "webgpuTarget": [
+    526,
+    329
+  ],
+  "webglScale": 1,
+  "webgpuScale": 1,
+  "matchingCamera": true,
+  "imageSizes": [
+    [
+      800,
+      501
+    ],
+    [
+      800,
+      501
+    ]
+  ],
+  "method": "Resting custom vehicle, baseline graphics, screenshot of GPU readback; diagnostic comparison, not parity acceptance or performance benchmark.",
+  "meanAbsoluteRgbDifference8Bit": [
+    0.019161676646706587,
+    0.011501996007984032,
+    0.020102295409181636
+  ]
+}
