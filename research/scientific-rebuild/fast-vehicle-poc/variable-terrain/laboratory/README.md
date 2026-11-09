@@ -353,3 +353,7 @@ See [tire-smoke.md](tire-smoke.md) for verification, captures and software-rende
 ## PERFORMANCE_2 rendering backends
 
 The Renderer selector explicitly reloads the laboratory with WebGL or experimental WebGPU. WebGL remains the default. WebGPU does not silently fall back. For GPU texture validation in environments where native presentation fails, use `?backend=webgpu&presentation=offscreen`; this is a test target, not a replacement interactive display. See [webgpu-laboratory.md](webgpu-laboratory.md) for commands, captures and remaining limitations.
+
+## CPU/GPU A/B audit
+
+Open frame diagnostics and use **Run paused A/B audit (~2 minutes)**, then **Download A/B audit JSON**. It freezes the current vehicle and restores settings afterward. Keep the camera/tab unchanged and wait for asset loading/warmup before starting. See [performance-audit.md](performance-audit.md) for interpretation and the distinction between GPU batch timing, CPU submission and frame pacing.
