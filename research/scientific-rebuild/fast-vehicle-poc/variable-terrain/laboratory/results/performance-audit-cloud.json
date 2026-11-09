@@ -1,0 +1,713 @@
+{
+  "method": "Paused reference vehicle, same state/camera/settings; three independent work-disable comparisons against full. Software-renderer measurements do not predict RTX performance.",
+  "records": [
+    {
+      "mode": "full",
+      "report": {
+        "settings": {
+          "smoke": {
+            "enabled": true,
+            "density": 2,
+            "opacity": 1.2,
+            "size": 1.4,
+            "lifetime": 1.4,
+            "dispersion": 1
+          },
+          "environmentPath": "./german_town_street_2k.exr",
+          "environmentStatus": "ready",
+          "graphics": {
+            "scenery": true,
+            "preset": "baseline",
+            "exposure": 1,
+            "intensity": 1,
+            "detail": true,
+            "contact": true,
+            "sunlight": 3,
+            "background": false
+          },
+          "vehicle": false,
+          "appearance": {
+            "requested": "custom",
+            "status": "not-applicable",
+            "active": "procedural"
+          },
+          "drivetrainMode": "fixed",
+          "mode": "full",
+          "terrain": false,
+          "lighting": false,
+          "tracks": false,
+          "other": false,
+          "gpu": true,
+          "submission": true,
+          "scene": true,
+          "dashboard": true,
+          "paused": true,
+          "environment": {
+            "preset": "flat",
+            "seed": 23,
+            "amplitude": 0.15,
+            "roughness": 0.5
+          },
+          "canvas": {
+            "attributes": {
+              "alpha": true,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "default",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "drawingBuffer": [
+              263,
+              164
+            ],
+            "cssSize": [
+              526,
+              329
+            ],
+            "devicePixelRatio": 1,
+            "renderScale": 0.5
+          },
+          "camera": "normal",
+          "marks": true,
+          "vectors": false,
+          "xray": false,
+          "recording": true
+        },
+        "settingsChanged": false,
+        "hiddenDuringRun": false,
+        "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "visibility": "visible",
+        "frames": 397,
+        "meanFps": 39.504059863079135,
+        "onePercentLowFps": 14.99250374812608,
+        "onePercentLowDefinition": "1000 / mean slowest ceil(1% of intervals)",
+        "memory": {
+          "usedJSHeapSize": 30557402,
+          "totalJSHeapSize": 49800798,
+          "jsHeapSizeLimit": 4395630592,
+          "note": "Chromium heap estimate; not allocation rate, GC time or GPU memory"
+        },
+        "estimatedMissedRefreshes": 2015,
+        "refreshAssumptionHz": 240,
+        "estimatedDroppedPercent": 83.54063018242122,
+        "stats": {
+          "interval": {
+            "median": 16.700000000000728,
+            "mean": 25.313853904282112,
+            "p95": 33.400000000001455,
+            "p99": 50
+          },
+          "physics": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "recording": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "conversion": {
+            "median": 0.09999999776482582,
+            "mean": 0.09722921913794666,
+            "p95": 0.19999999925494194,
+            "p99": 0.4000000022351742
+          },
+          "smoke": {
+            "median": 0,
+            "mean": 0.05894206550619764,
+            "p95": 0.10000000149011612,
+            "p99": 0.29999999701976776
+          },
+          "audioSpatial": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "scene": {
+            "median": 0.10000000149011612,
+            "mean": 0.13425692687894897,
+            "p95": 0.20000000298023224,
+            "p99": 0.6000000014901161
+          },
+          "tracks": {
+            "median": 0,
+            "mean": 0.01712846350609806,
+            "p95": 0.10000000149011612,
+            "p99": 0.10000000149011612
+          },
+          "webgl": {
+            "median": 1.1000000014901161,
+            "mean": 1.3473551637617407,
+            "p95": 2.199999999254942,
+            "p99": 7.600000001490116
+          },
+          "dashboard": {
+            "median": 0,
+            "mean": 0.19193954663515392,
+            "p95": 1.5,
+            "p99": 2.2000000029802322
+          },
+          "callback": {
+            "median": 1.6000000014901161,
+            "mean": 2.0806045340331885,
+            "p95": 3.600000001490116,
+            "p99": 14.400000002235174
+          }
+        },
+        "gpu": {
+          "scope": "WebGL elapsed render query",
+          "supported": false,
+          "webgpuPending": false,
+          "extension": null,
+          "pending": 0,
+          "dropped": 0,
+          "epoch": 1,
+          "disjointDuringRun": false,
+          "samples": 0,
+          "stats": null
+        }
+      }
+    },
+    {
+      "mode": "no-dashboard",
+      "report": {
+        "settings": {
+          "smoke": {
+            "enabled": true,
+            "density": 2,
+            "opacity": 1.2,
+            "size": 1.4,
+            "lifetime": 1.4,
+            "dispersion": 1
+          },
+          "environmentPath": "./german_town_street_2k.exr",
+          "environmentStatus": "ready",
+          "graphics": {
+            "scenery": true,
+            "preset": "baseline",
+            "exposure": 1,
+            "intensity": 1,
+            "detail": true,
+            "contact": true,
+            "sunlight": 3,
+            "background": false
+          },
+          "vehicle": false,
+          "appearance": {
+            "requested": "custom",
+            "status": "not-applicable",
+            "active": "procedural"
+          },
+          "drivetrainMode": "fixed",
+          "mode": "full",
+          "terrain": false,
+          "lighting": false,
+          "tracks": false,
+          "other": false,
+          "gpu": true,
+          "submission": true,
+          "scene": true,
+          "dashboard": false,
+          "paused": true,
+          "environment": {
+            "preset": "flat",
+            "seed": 23,
+            "amplitude": 0.15,
+            "roughness": 0.5
+          },
+          "canvas": {
+            "attributes": {
+              "alpha": true,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "default",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "drawingBuffer": [
+              263,
+              164
+            ],
+            "cssSize": [
+              526,
+              329
+            ],
+            "devicePixelRatio": 1,
+            "renderScale": 0.5
+          },
+          "camera": "normal",
+          "marks": true,
+          "vectors": false,
+          "xray": false,
+          "recording": true
+        },
+        "settingsChanged": false,
+        "hiddenDuringRun": false,
+        "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "visibility": "visible",
+        "frames": 421,
+        "meanFps": 42.031488673462256,
+        "onePercentLowFps": 13.048016701461105,
+        "onePercentLowDefinition": "1000 / mean slowest ceil(1% of intervals)",
+        "memory": {
+          "usedJSHeapSize": 34388884,
+          "totalJSHeapSize": 49805188,
+          "jsHeapSizeLimit": 4395630592,
+          "note": "Chromium heap estimate; not allocation rate, GC time or GPU memory"
+        },
+        "estimatedMissedRefreshes": 1983,
+        "refreshAssumptionHz": 240,
+        "estimatedDroppedPercent": 82.48752079866888,
+        "stats": {
+          "interval": {
+            "median": 16.700000000000728,
+            "mean": 23.7916864608076,
+            "p95": 33.400000000001455,
+            "p99": 50.10000000000218
+          },
+          "physics": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "recording": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "conversion": {
+            "median": 0,
+            "mean": 0.050831353853759746,
+            "p95": 0.10000000149011612,
+            "p99": 0.30000000074505806
+          },
+          "smoke": {
+            "median": 0,
+            "mean": 0.02066508308937884,
+            "p95": 0.10000000149011612,
+            "p99": 0.10000000149011612
+          },
+          "audioSpatial": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "scene": {
+            "median": 0.09999999776482582,
+            "mean": 0.07838479808206512,
+            "p95": 0.19999999925494194,
+            "p99": 0.4000000022351742
+          },
+          "tracks": {
+            "median": 0,
+            "mean": 0.00807600947995084,
+            "p95": 0.09999999776482582,
+            "p99": 0.10000000149011612
+          },
+          "webgl": {
+            "median": 1,
+            "mean": 1.0764845606213935,
+            "p95": 1.5999999977648258,
+            "p99": 2.699999999254942
+          },
+          "dashboard": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "callback": {
+            "median": 1.300000000745058,
+            "mean": 1.4066508312990575,
+            "p95": 2,
+            "p99": 3.5
+          }
+        },
+        "gpu": {
+          "scope": "WebGL elapsed render query",
+          "supported": false,
+          "webgpuPending": false,
+          "extension": null,
+          "pending": 0,
+          "dropped": 0,
+          "epoch": 2,
+          "disjointDuringRun": false,
+          "samples": 0,
+          "stats": null
+        }
+      }
+    },
+    {
+      "mode": "no-scene",
+      "report": {
+        "settings": {
+          "smoke": {
+            "enabled": true,
+            "density": 2,
+            "opacity": 1.2,
+            "size": 1.4,
+            "lifetime": 1.4,
+            "dispersion": 1
+          },
+          "environmentPath": "./german_town_street_2k.exr",
+          "environmentStatus": "ready",
+          "graphics": {
+            "scenery": true,
+            "preset": "baseline",
+            "exposure": 1,
+            "intensity": 1,
+            "detail": true,
+            "contact": true,
+            "sunlight": 3,
+            "background": false
+          },
+          "vehicle": false,
+          "appearance": {
+            "requested": "custom",
+            "status": "not-applicable",
+            "active": "procedural"
+          },
+          "drivetrainMode": "fixed",
+          "mode": "full",
+          "terrain": false,
+          "lighting": false,
+          "tracks": false,
+          "other": false,
+          "gpu": true,
+          "submission": true,
+          "scene": false,
+          "dashboard": true,
+          "paused": true,
+          "environment": {
+            "preset": "flat",
+            "seed": 23,
+            "amplitude": 0.15,
+            "roughness": 0.5
+          },
+          "canvas": {
+            "attributes": {
+              "alpha": true,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "default",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "drawingBuffer": [
+              263,
+              164
+            ],
+            "cssSize": [
+              526,
+              329
+            ],
+            "devicePixelRatio": 1,
+            "renderScale": 0.5
+          },
+          "camera": "normal",
+          "marks": true,
+          "vectors": false,
+          "xray": false,
+          "recording": true
+        },
+        "settingsChanged": false,
+        "hiddenDuringRun": false,
+        "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "visibility": "visible",
+        "frames": 397,
+        "meanFps": 39.635394307279135,
+        "onePercentLowFps": 15.99360255897627,
+        "onePercentLowDefinition": "1000 / mean slowest ceil(1% of intervals)",
+        "memory": {
+          "usedJSHeapSize": 38636362,
+          "totalJSHeapSize": 49800826,
+          "jsHeapSizeLimit": 4395630592,
+          "note": "Chromium heap estimate; not allocation rate, GC time or GPU memory"
+        },
+        "estimatedMissedRefreshes": 2007,
+        "refreshAssumptionHz": 240,
+        "estimatedDroppedPercent": 83.48585690515807,
+        "stats": {
+          "interval": {
+            "median": 16.700000000004366,
+            "mean": 25.22997481108312,
+            "p95": 49.900000000001455,
+            "p99": 50.099999999998545
+          },
+          "physics": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "recording": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "conversion": {
+            "median": 0.09999999776482582,
+            "mean": 0.07380352645962304,
+            "p95": 0.19999999925494194,
+            "p99": 0.3999999985098839
+          },
+          "smoke": {
+            "median": 0,
+            "mean": 0.001007556680693134,
+            "p95": 0,
+            "p99": 0.09999999776482582
+          },
+          "audioSpatial": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "scene": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "tracks": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "webgl": {
+            "median": 1,
+            "mean": 1.1357682619985165,
+            "p95": 1.6000000014901161,
+            "p99": 4.399999998509884
+          },
+          "dashboard": {
+            "median": 0,
+            "mean": 0.235264483614067,
+            "p95": 1.6000000014901161,
+            "p99": 4.300000000745058
+          },
+          "callback": {
+            "median": 1.300000000745058,
+            "mean": 1.667758186336053,
+            "p95": 3.300000000745058,
+            "p99": 7.5
+          }
+        },
+        "gpu": {
+          "scope": "WebGL elapsed render query",
+          "supported": false,
+          "webgpuPending": false,
+          "extension": null,
+          "pending": 0,
+          "dropped": 0,
+          "epoch": 3,
+          "disjointDuringRun": false,
+          "samples": 0,
+          "stats": null
+        }
+      }
+    },
+    {
+      "mode": "no-submission",
+      "report": {
+        "settings": {
+          "smoke": {
+            "enabled": true,
+            "density": 2,
+            "opacity": 1.2,
+            "size": 1.4,
+            "lifetime": 1.4,
+            "dispersion": 1
+          },
+          "environmentPath": "./german_town_street_2k.exr",
+          "environmentStatus": "ready",
+          "graphics": {
+            "scenery": true,
+            "preset": "baseline",
+            "exposure": 1,
+            "intensity": 1,
+            "detail": true,
+            "contact": true,
+            "sunlight": 3,
+            "background": false
+          },
+          "vehicle": false,
+          "appearance": {
+            "requested": "custom",
+            "status": "not-applicable",
+            "active": "procedural"
+          },
+          "drivetrainMode": "fixed",
+          "mode": "full",
+          "terrain": false,
+          "lighting": false,
+          "tracks": false,
+          "other": false,
+          "gpu": true,
+          "submission": false,
+          "scene": true,
+          "dashboard": true,
+          "paused": true,
+          "environment": {
+            "preset": "flat",
+            "seed": 23,
+            "amplitude": 0.15,
+            "roughness": 0.5
+          },
+          "canvas": {
+            "attributes": {
+              "alpha": true,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "default",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "drawingBuffer": [
+              263,
+              164
+            ],
+            "cssSize": [
+              526,
+              329
+            ],
+            "devicePixelRatio": 1,
+            "renderScale": 0.5
+          },
+          "camera": "normal",
+          "marks": true,
+          "vectors": false,
+          "xray": false,
+          "recording": true
+        },
+        "settingsChanged": false,
+        "hiddenDuringRun": false,
+        "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "visibility": "visible",
+        "frames": 600,
+        "meanFps": 60.00240009600385,
+        "onePercentLowFps": 59.523809523799216,
+        "onePercentLowDefinition": "1000 / mean slowest ceil(1% of intervals)",
+        "memory": {
+          "usedJSHeapSize": 32198482,
+          "totalJSHeapSize": 49014394,
+          "jsHeapSizeLimit": 4395630592,
+          "note": "Chromium heap estimate; not allocation rate, GC time or GPU memory"
+        },
+        "estimatedMissedRefreshes": 1800,
+        "refreshAssumptionHz": 240,
+        "estimatedDroppedPercent": 75,
+        "stats": {
+          "interval": {
+            "median": 16.69999999999709,
+            "mean": 16.665999999999997,
+            "p95": 16.700000000004366,
+            "p99": 16.80000000000291
+          },
+          "physics": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "recording": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "conversion": {
+            "median": 0,
+            "mean": 0.0470000000235935,
+            "p95": 0.10000000149011612,
+            "p99": 0.30000000074505806
+          },
+          "smoke": {
+            "median": 0,
+            "mean": 0.013666666640589634,
+            "p95": 0.10000000149011612,
+            "p99": 0.10000000149011612
+          },
+          "audioSpatial": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "scene": {
+            "median": 0.09999999776482582,
+            "mean": 0.0825000000372529,
+            "p95": 0.19999999925494194,
+            "p99": 0.3999999985098839
+          },
+          "tracks": {
+            "median": 0,
+            "mean": 0.008833333334575097,
+            "p95": 0.10000000149011612,
+            "p99": 0.10000000149011612
+          },
+          "webgl": {
+            "median": 0,
+            "mean": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "dashboard": {
+            "median": 0,
+            "mean": 0.13133333336561917,
+            "p95": 1.3999999985098839,
+            "p99": 1.8999999985098839
+          },
+          "callback": {
+            "median": 0.30000000074505806,
+            "mean": 0.43466666678587595,
+            "p95": 1.699999999254942,
+            "p99": 2.599999997764826
+          }
+        },
+        "gpu": {
+          "scope": "WebGL elapsed render query",
+          "supported": false,
+          "webgpuPending": false,
+          "extension": null,
+          "pending": 0,
+          "dropped": 0,
+          "epoch": 4,
+          "disjointDuringRun": false,
+          "samples": 0,
+          "stats": null
+        }
+      }
+    }
+  ]
+}

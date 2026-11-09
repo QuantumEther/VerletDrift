@@ -5,7 +5,7 @@ export async function createRendererBackend(canvas,kind='webgl',{antialias=true}
  let renderer;
  if(kind==='webgpu'){
   const {WebGPURenderer}=await import('./vendor/three-r180/three.webgpu.js');
-  renderer=new WebGPURenderer({canvas,antialias,forceWebGL:false});
+  renderer=new WebGPURenderer({canvas,antialias,forceWebGL:false,trackTimestamp:true});
   try{await renderer.init();if(!renderer.backend.isWebGPUBackend)throw Error('Requested WebGPU but a different backend initialized');}catch(error){renderer.dispose();throw error;}
  }else renderer=new THREE.WebGLRenderer({canvas,antialias});
  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
