@@ -1,0 +1,27 @@
+{
+  "baseCommit": "980d2e632effed1331581d4b343bb7f9b7d7d163",
+  "branch": "PERFORMANCE",
+  "nodeTests": {
+    "passed": 9,
+    "failed": 0,
+    "output": "\u2714 adapter preserves exact physics and quadratures accepted rotor travel only (546.496231ms)\n\u2714 invalid step leaves physical state and display quadrature unchanged (2.938004ms)\n\u2714 reused clock retains all active wall-time debt at a fixed 1 ms timestep (0.834093ms)\n\u2714 airborne display keeps the authoritative last-contact frame (4.474281ms)\n\u2714 actual GLB conversion and position-based corner mapping at unit scale (23.28667ms)\n\u2714 adaptation preserves vertex positions, source materials and wheel origins (15.432294ms)\n\u2714 missing wheels reject explicitly (8.031976ms)\n\u2714 inclined local shaft, symmetric steering and exact neutral restore without drift (20.703652ms)\n\u2714 Foundation 7 remains compatible as an explicit rollback asset (39.706449ms)\n\u2139 tests 9\n\u2139 suites 0\n\u2139 pass 9\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 684.51685\n"
+  },
+  "browser": {
+    "custom": "PASS Mustang browser driving and safe reference selection",
+    "reference": "acceleration PASS\nsteering PASS\nview/state parity PASS\nbraking PASS\nhills PASS\nrough PASS\nroad PASS\nhandbrake/input release PASS\nPASS browser smoke ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "backend": "Chromium / SwiftShader, not hardware GPU performance"
+  },
+  "sourceSha256": {
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-mustang.js": "b6913e88b7a65591fb643524f589a4ad6dbd845b9372032095b85b930e8c557f",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-mustang.test.mjs": "23742d269609de73ffb385dbd597d4078b307d4627db38e051c1cd46fbce1e95",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/custom-glb-browser.mjs": "4e00ed3beab10e8d8798a43408260a9dc1ee5f687828a567df7d3c2e0dc21c41",
+    "research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/view3d.js": "8cc34e788bbc8d4c53ce29f8fa8df4ef3b1dd478ed2cfbf419b2e35af659668e"
+  },
+  "assetSha256": "0517f9c105f45cee980d1c28e771ac88359865f46e8f076ad63a28fb36cebc58",
+  "visualSteeringRatio": 16,
+  "nativeWheelRadius": 0.3265,
+  "physicalWheelRadius": 0.335,
+  "assetScale": 1,
+  "triangleCount": 75052,
+  "materials": 6
+}

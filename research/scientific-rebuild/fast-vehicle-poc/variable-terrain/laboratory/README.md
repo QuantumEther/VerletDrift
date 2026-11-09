@@ -312,3 +312,12 @@ Original procedural Mustang for comparison. Appearance changes preserve physics
 and the current driving state. Loading failures display a message and retain the
 procedural fallback. See [integration details, native geometry differences and
 verification](custom-mustang-integration.md).
+
+## Foundation 8.2 update
+
+The Custom Blender Mustang now loads Foundation 8 Export 2, including its actual
+interior and handwheel. Choose **Interior · fixed cockpit** to inspect steering.
+The handwheel follows accepted road steering through a provisional visual 16:1
+ratio; no steering force or physical behavior is changed. [Current integration,
+geometry measurements and verification](foundation8-integration.md). The earlier
+Foundation 7 asset and its historical integration report remain available.
