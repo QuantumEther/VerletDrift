@@ -1,4 +1,10 @@
 {
-  "active": null,
-  "error": "A valid external Instance reference no longer exists."
+  "pixelType": "Uint8Array",
+  "pixelLength": 1996672,
+  "format": 1023,
+  "type": 1009,
+  "nonblack": 469572,
+  "active": "webgpu",
+  "revision": "180",
+  "adapter": {}
 }
