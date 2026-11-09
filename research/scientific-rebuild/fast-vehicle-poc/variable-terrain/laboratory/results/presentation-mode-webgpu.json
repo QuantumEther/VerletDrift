@@ -1,0 +1,27 @@
+{
+  "backend": "webgpu",
+  "presentation": "offscreen; native presentation not tested",
+  "results": [
+    {
+      "mode": "empty",
+      "width": 526,
+      "height": 329,
+      "sum": 10383240,
+      "opaque": 173054
+    },
+    {
+      "mode": "minimal",
+      "width": 526,
+      "height": 329,
+      "sum": 28345202,
+      "opaque": 173054
+    },
+    {
+      "mode": "full",
+      "width": 526,
+      "height": 329,
+      "sum": 32186988,
+      "opaque": 173054
+    }
+  ]
+}

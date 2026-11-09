@@ -356,4 +356,4 @@ The Renderer selector explicitly reloads the laboratory with WebGL or experiment
 
 ## CPU/GPU A/B audit
 
-Open frame diagnostics and use **Run paused A/B audit (~2 minutes)**, then **Download A/B audit JSON**. It freezes the current vehicle and restores settings afterward. Keep the camera/tab unchanged and wait for asset loading/warmup before starting. See [performance-audit.md](performance-audit.md) for interpretation and the distinction between GPU batch timing, CPU submission and frame pacing.
+Open frame diagnostics and use **Run paused A/B audit (~3 minutes)**, then **Download A/B audit JSON**. It freezes the current vehicle and restores settings afterward. Keep the camera/tab unchanged and wait for asset loading/warmup before starting. See [performance-audit.md](performance-audit.md) for interpretation and the distinction between GPU batch timing, CPU submission and frame pacing.

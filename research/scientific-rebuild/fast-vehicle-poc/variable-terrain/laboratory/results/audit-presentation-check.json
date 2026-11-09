@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "cases": [
+    "baseline",
+    "no-dashboard",
+    "no-scene-updates",
+    "no-render-submission",
+    "no-smoke",
+    "no-terrain",
+    "no-vehicle",
+    "no-direct-lighting",
+    "no-tracks",
+    "no-grid-roadside-and-smoke",
+    "empty-pass",
+    "minimal-triangle",
+    "resolution-75",
+    "resolution-50",
+    "baseline-gpu-off"
+  ],
+  "physicalStatePreserved": true,
+  "settingsRestored": true,
+  "cancelRestored": true,
+  "method": "Short 500 ms browser functionality checks, not performance measurements"
+}
