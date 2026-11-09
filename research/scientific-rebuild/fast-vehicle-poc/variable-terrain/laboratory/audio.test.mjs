@@ -17,7 +17,8 @@ test('starter approximation, overrun, true fuel cut and mute preserve externally
 });
 test('disable during initialization and stale processor errors cannot corrupt a replacement context',async()=>{
  const {createEngineAudio}=await import('./engine-audio.js'),original={AudioContext:globalThis.AudioContext,AudioWorkletNode:globalThis.AudioWorkletNode,fetch:globalThis.fetch},gates=[],contexts=[],nodes=[];
- class Context{constructor(){this.state='running';this.audioWorklet={addModule:()=>new Promise(r=>gates.push(r))};contexts.push(this);}resume(){return Promise.resolve();}close(){this.state='closed';return Promise.resolve();}createAnalyser(){return {getFloatTimeDomainData:a=>a.fill(0)};}}
+ class G{constructor(){for(const k of ['gain','frequency','positionX','positionY','positionZ'])this[k]={value:0,setTargetAtTime(){}};}connect(){}disconnect(){}}
+ class Context{createGain(){return new G()}createBiquadFilter(){return new G()}createPanner(){return new G()}get listener(){return Object.fromEntries(['positionX','positionY','positionZ','forwardX','forwardY','forwardZ','upX','upY','upZ'].map(k=>[k,{setTargetAtTime(){}}]));}constructor(){this.state='running';this.audioWorklet={addModule:()=>new Promise(r=>gates.push(r))};contexts.push(this);}resume(){return Promise.resolve();}close(){this.state='closed';return Promise.resolve();}createAnalyser(){return {getFloatTimeDomainData:a=>a.fill(0)};}}
  class Node{constructor(){this.port={postMessage(){},close(){}};nodes.push(this);}connect(){}disconnect(){}}
  const tick=()=>new Promise(r=>setImmediate(r));globalThis.AudioContext=Context;globalThis.AudioWorkletNode=Node;globalThis.fetch=async()=>({ok:false,status:404});const a=createEngineAudio(()=>packet(0));
  try{const pending=a.enable();await tick();await a.disable();gates.shift()();await pending;assert.equal(a.snapshot().status,'disabled');assert.equal(nodes.length,0);assert.equal(contexts[0].state,'closed');
