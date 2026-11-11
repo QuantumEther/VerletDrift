@@ -7,14 +7,16 @@ import {DEPOSITION} from '../../../procedural-terrain/src/tracks.js';
 export function createTrackView(scene,terrain,capacity=1024){
  const positions=new Float32Array(4*capacity*18),colors=new Float32Array(4*capacity*24),uvs=new Float32Array(4*capacity*12);
  for(let n=0;n<4*capacity;n++)uvs.set([0,0,1,0,0,1,0,1,1,0,1,1],n*12);
- const occupied=new Uint8Array(4*capacity),indices=4*capacity*6<65536?new Uint16Array(4*capacity*6):new Uint32Array(4*capacity*6);let activeCount=0;
+ // WebGPU promotes Uint16 indices by replacing BufferAttribute.array at upload.
+ // Keep a native Uint32 buffer and always update the attribute's current array.
+ const occupied=new Uint8Array(4*capacity),indices=new Uint32Array(4*capacity*6);let activeCount=0;
  const index=new THREE.BufferAttribute(indices,1).setUsage(THREE.DynamicDrawUsage);
  const geometry=new THREE.BufferGeometry(),pos=new THREE.BufferAttribute(positions,3).setUsage(THREE.DynamicDrawUsage),color=new THREE.BufferAttribute(colors,4).setUsage(THREE.DynamicDrawUsage);
  geometry.setIndex(index);geometry.setDrawRange(0,0);geometry.setAttribute('position',pos);geometry.setAttribute('shade',color);geometry.setAttribute('uv',new THREE.BufferAttribute(uvs,2));
- const roadCenter=new THREE.Vector2();
- const material=new THREE.ShaderMaterial({uniforms:{roadCenter:{value:roadCenter}},transparent:true,depthWrite:false,side:THREE.DoubleSide,
+ const roadCenter=new THREE.Vector2(),textureOrigin=new THREE.Vector2();
+ const material=new THREE.ShaderMaterial({uniforms:{roadCenter:{value:roadCenter},textureOrigin:{value:textureOrigin}},transparent:true,depthWrite:false,side:THREE.DoubleSide,
  vertexShader:'attribute vec4 shade; varying vec4 vShade; varying vec2 vUv; varying vec2 groundXY; void main(){groundXY=(modelMatrix*vec4(position,1.)).xy;vShade=shade;vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
- fragmentShader:'uniform vec2 roadCenter; varying vec4 vShade; varying vec2 vUv; varying vec2 groundXY; void main(){if(any(greaterThan(abs(groundXY-roadCenter),vec2(20.))))discard;float edge=smoothstep(0.,.1,vUv.x)*smoothstep(0.,.1,1.-vUv.x); gl_FragColor=vec4(vShade.rgb,vShade.a*edge);}' });
+ fragmentShader:'uniform vec2 roadCenter; uniform vec2 textureOrigin; varying vec4 vShade; varying vec2 vUv; varying vec2 groundXY; void main(){if(any(greaterThan(abs(groundXY-roadCenter),vec2(20.))))discard;vec2 w=groundXY+textureOrigin;vec2 cell=floor(w*55.);float grain=fract(sin(dot(cell,vec2(12.9898,78.233)))*43758.5453);float broad=fract(sin(dot(floor(w*7.),vec2(39.346,11.135)))*24634.6345);float edgeWidth=.045+.055*broad;float edge=smoothstep(0.,edgeWidth,vUv.x)*smoothstep(0.,edgeWidth,1.-vUv.x);float grooves=pow(abs(sin(vUv.x*18.84956)),12.);float deposit=(.80+.20*grain)*(.90+.10*broad)*(1.-.35*grooves);gl_FragColor=vec4(vShade.rgb,vShade.a*edge*deposit);}' });
  const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=2;scene.add(mesh);
  let source,last=-1,generation=-1,bump,originX=0,originY=0,updates=0,uploadedVertices=0;
  function write(slot,record){
@@ -32,7 +34,7 @@ export function createTrackView(scene,terrain,capacity=1024){
   bump=state.bump;originX=ox;originY=oy;const changed=full?null:observatory.changesSince(last);
   const slots=changed===null?Array.from({length:4*capacity},(_,i)=>i):changed;
   const oldActive=activeCount;
-  for(const slot of slots){const record=observatory.marks[Math.floor(slot/capacity)].items[slot%capacity];write(slot,record);if(record&&!occupied[slot]){occupied[slot]=1;for(let j=0;j<6;j++)indices[activeCount*6+j]=slot*6+j;activeCount++;}}
+  for(const slot of slots){const record=observatory.marks[Math.floor(slot/capacity)].items[slot%capacity];write(slot,record);if(record&&!occupied[slot]){occupied[slot]=1;for(let j=0;j<6;j++)index.array[activeCount*6+j]=slot*6+j;activeCount++;}}
   if(activeCount!==oldActive||reset){index.clearUpdateRanges();index.addUpdateRange(oldActive*6,(activeCount-oldActive)*6);index.needsUpdate=true;geometry.setDrawRange(0,activeCount*6);}
   if(slots.length){pos.clearUpdateRanges();color.clearUpdateRanges();
    // Only dirty vertices upload in steady state; rare clear/terrain/origin changes
@@ -41,9 +43,9 @@ export function createTrackView(scene,terrain,capacity=1024){
    const range=()=>{pos.addUpdateRange(lo*18,(hi-lo+1)*18);color.addUpdateRange(lo*24,(hi-lo+1)*24);};
    for(let i=1;i<sorted.length;i++){if(sorted[i]<=hi+1)hi=sorted[i];else{range();lo=hi=sorted[i];}}range();pos.needsUpdate=color.needsUpdate=true;updates++;uploadedVertices+=slots.length*6;
   }
-  source=observatory;last=observatory.revision;generation=observatory.generation;roadCenter.set(Math.floor(state.planar.x)-state.planar.x,Math.floor(state.planar.y)-state.planar.y);mesh.position.set(originX-state.planar.x,originY-state.planar.y,0);mesh.visible=visible&&observatory.marks.some(r=>r.count>0);
+  source=observatory;last=observatory.revision;generation=observatory.generation;roadCenter.set(Math.floor(state.planar.x)-state.planar.x,Math.floor(state.planar.y)-state.planar.y);textureOrigin.set(state.planar.x,state.planar.y);mesh.position.set(originX-state.planar.x,originY-state.planar.y,0);mesh.visible=visible&&observatory.marks.some(r=>r.count>0);
  }
- return {draw,info:()=>({updates,uploadedVertices,bytes:positions.byteLength+colors.byteLength+uvs.byteLength+indices.byteLength+occupied.byteLength,activePrimitives:activeCount,maxPrimitives:4*capacity,maxVertices:4*capacity*6,visible:mesh.visible,origin:[originX,originY]}),geometry,material};
+ return {draw,info:()=>({updates,uploadedVertices,bytes:positions.byteLength+colors.byteLength+uvs.byteLength+index.array.byteLength+occupied.byteLength,activePrimitives:activeCount,maxPrimitives:4*capacity,maxVertices:4*capacity*6,visible:mesh.visible,origin:[originX,originY]}),geometry,material};
 }
 
 export function drawTracks2D(ctx,observatory,p,{marks=true,center=true,paths=false,slips=false}={},scale=85,width=1000,height=590){

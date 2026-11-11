@@ -1,0 +1,43 @@
+{
+  "method": "Same offscreen Chromium WebGPU test and deterministic vehicle run, before and after index buffer repair. Incremental pixel count compares render before and after 1000 additional simulation steps; RGB difference >= 3.",
+  "before": {
+    "incrementalChangedPixels": 0,
+    "newlyUploadedBoundIndexValues": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "after": {
+    "incrementalChangedPixels": 6524,
+    "newlyUploadedBoundIndexValues": [
+      14028,
+      14029,
+      14030,
+      14031,
+      14032,
+      14033,
+      20172,
+      20173
+    ],
+    "gpuIndexValues": [
+      14028,
+      14029,
+      14030,
+      14031,
+      14032,
+      14033,
+      20172,
+      20173
+    ]
+  }
+}

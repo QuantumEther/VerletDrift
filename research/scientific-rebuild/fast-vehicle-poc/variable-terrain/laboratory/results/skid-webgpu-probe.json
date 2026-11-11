@@ -1,0 +1,78 @@
+{
+  "gpuIndices": [
+    14028,
+    14029,
+    14030,
+    14031,
+    14032,
+    14033,
+    20172,
+    20173
+  ],
+  "cpuIndices": [
+    14028,
+    14029,
+    14030,
+    14031,
+    14032,
+    14033,
+    20172,
+    20173
+  ],
+  "firstNew": {
+    "kind": "strip",
+    "a": {
+      "x": 9.942876805652693,
+      "y": 0.74676,
+      "z": 0
+    },
+    "b": {
+      "x": 9.982876805652692,
+      "y": 0.74676,
+      "z": 0
+    },
+    "na": {
+      "x": 0,
+      "y": 1
+    },
+    "nb": {
+      "x": 0,
+      "y": 1
+    },
+    "alpha": 0.7,
+    "work": 168.1725670496657,
+    "load": 4154.9963868117375,
+    "wheel": 2
+  },
+  "vehicleX": 11.58974362259699,
+  "latestX": 22.262876805652432,
+  "marks": [
+    0,
+    0,
+    598,
+    598
+  ],
+  "tracks": {
+    "updates": 2,
+    "uploadedVertices": 28272,
+    "bytes": 987136,
+    "activePrimitives": 1196,
+    "maxPrimitives": 4096,
+    "maxVertices": 24576,
+    "visible": false,
+    "origin": [
+      0,
+      0
+    ]
+  },
+  "changed": 4676,
+  "max": 53,
+  "incrementalChanged": 6524,
+  "fullChanged": 6524,
+  "recreatedChanged": 6524,
+  "shiftedChanged": 0,
+  "drawRange": {
+    "start": 0,
+    "count": 7176
+  }
+}

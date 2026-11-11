@@ -1,0 +1,70 @@
+{
+  "backend": "offscreen webgpu, SwiftShader",
+  "method": "actual deterministic vehicle steps; gray terrain-only diagnostic scene; overlap uses two independently restarted physical braking passes",
+  "records": [
+    {
+      "mode": "braking",
+      "steps": 2000,
+      "error": null,
+      "marks": [
+        18,
+        18,
+        108,
+        108
+      ],
+      "physicsUnchanged": true,
+      "visiblePixels": {
+        "near": 3798,
+        "far": 680
+      }
+    },
+    {
+      "mode": "drift",
+      "steps": 2000,
+      "error": null,
+      "marks": [
+        29,
+        38,
+        194,
+        159
+      ],
+      "physicsUnchanged": true,
+      "visiblePixels": {
+        "near": 6464,
+        "far": 1184
+      }
+    },
+    {
+      "mode": "burnout",
+      "steps": 5000,
+      "error": null,
+      "marks": [
+        0,
+        0,
+        290,
+        290
+      ],
+      "physicsUnchanged": true,
+      "visiblePixels": {
+        "near": 5724,
+        "far": 1848
+      }
+    },
+    {
+      "mode": "overlap",
+      "steps": 4000,
+      "error": null,
+      "marks": [
+        36,
+        36,
+        216,
+        216
+      ],
+      "physicsUnchanged": true,
+      "visiblePixels": {
+        "near": 3798,
+        "far": 680
+      }
+    }
+  ]
+}
