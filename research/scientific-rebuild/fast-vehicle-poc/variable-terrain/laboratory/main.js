@@ -124,3 +124,5 @@ export async function runPerformanceAudit({durationMs=10000,warmupMs=1000}={}){
  finally{measurement=null;for(const id of ids)$(id).checked=values[id];$('diag-mode').value=oldMode;if($('render-scale').value!==oldScale){$('render-scale').value=oldScale;$('render-scale').dispatchEvent(new Event('change'));}for(const [el,value]of disabled)el.disabled=value;paused=wasPaused;$('pause').textContent=paused?'Resume':'Pause';$('diag-audit-cancel').disabled=true;$('diag-audit-download').disabled=false;$('diag-audit-status').textContent=`${result.status}: ${result.records.length} captures${result.error?' · '+result.error:''}`;auditBusy=false;}
 }
 $('diag-audit').onclick=()=>runPerformanceAudit().catch(error=>{$('diag-audit-status').textContent=error.message;});
+
+$('balloon-reset').onclick=()=>view?.balloonConfigure({count:Number($('balloon-count').value),min:Number($('balloon-min').value),max:Number($('balloon-max').value),intensity:Number($('balloon-intensity').value),persistence:Number($('balloon-persistence').value)});
