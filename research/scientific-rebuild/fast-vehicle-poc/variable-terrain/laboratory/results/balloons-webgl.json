@@ -1,0 +1,170 @@
+{
+  "backend": "webgl",
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "threeRevision": "180",
+  "canvas": [
+    640,
+    480
+  ],
+  "adapter": null,
+  "captures": [
+    {
+      "id": "sizes",
+      "info": {
+        "alive": 24,
+        "impacts": 0,
+        "liquid": {
+          "droplets": 0,
+          "patches": 0,
+          "sheets": 0,
+          "terrainVertexSamples": 0,
+          "maxPatches": 4096,
+          "drawCalls": 0
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "sheet",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 16,
+          "patches": 0,
+          "sheets": 1,
+          "terrainVertexSamples": 0,
+          "maxPatches": 4096,
+          "drawCalls": 3
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "droplets",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 16,
+          "patches": 0,
+          "sheets": 1,
+          "terrainVertexSamples": 0,
+          "maxPatches": 4096,
+          "drawCalls": 3
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "deposits",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 0,
+          "patches": 17,
+          "sheets": 0,
+          "terrainVertexSamples": 425,
+          "maxPatches": 4096,
+          "drawCalls": 1
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "deposits-overcast",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 0,
+          "patches": 17,
+          "sheets": 0,
+          "terrainVertexSamples": 425,
+          "maxPatches": 4096,
+          "drawCalls": 1
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "deposits-low-sun",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 0,
+          "patches": 17,
+          "sheets": 0,
+          "terrainVertexSamples": 425,
+          "maxPatches": 4096,
+          "drawCalls": 1
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    },
+    {
+      "id": "deposits-angle",
+      "info": {
+        "alive": 23,
+        "impacts": 1,
+        "liquid": {
+          "droplets": 0,
+          "patches": 17,
+          "sheets": 0,
+          "terrainVertexSamples": 425,
+          "maxPatches": 4096,
+          "drawCalls": 1
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      }
+    }
+  ],
+  "persistence": {
+    "changedPixels": 0,
+    "maxDiff": 1,
+    "samplesBefore": 425,
+    "samplesAfter": 425
+  },
+  "cpu": {
+    "meanMs": 0.055999999940395354,
+    "p95Ms": 0.19999998807907104,
+    "p99Ms": 0.5,
+    "worstMs": 0.5
+  },
+  "renderAB": [
+    {
+      "effectsEnabled": false,
+      "cpuSubmission": {
+        "meanMs": 0.03666666646798452,
+        "p95Ms": 0.10000002384185791,
+        "samples": 30
+      },
+      "gpuRenderPassBatch": null
+    },
+    {
+      "effectsEnabled": true,
+      "cpuSubmission": {
+        "meanMs": 0.2200000007947286,
+        "p95Ms": 0.3999999761581421,
+        "samples": 30
+      },
+      "gpuRenderPassBatch": null
+    }
+  ],
+  "info": {
+    "alive": 21,
+    "impacts": 3,
+    "liquid": {
+      "droplets": 32,
+      "patches": 18,
+      "sheets": 2,
+      "terrainVertexSamples": 450,
+      "maxPatches": 4096,
+      "drawCalls": 4
+    },
+    "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+  },
+  "environment": "headless Chromium, SwiftShader; offscreen render/readback; CPU draw timing excludes GPU and presentation"
+}

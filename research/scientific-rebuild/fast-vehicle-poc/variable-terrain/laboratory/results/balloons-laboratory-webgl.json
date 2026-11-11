@@ -1,0 +1,18 @@
+{
+  "activeBackend": "webgl",
+  "balloons": {
+    "alive": 36,
+    "impacts": 0,
+    "liquid": {
+      "droplets": 0,
+      "patches": 0,
+      "sheets": 0,
+      "terrainVertexSamples": 0,
+      "maxPatches": 4096,
+      "drawCalls": 0
+    },
+    "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+  },
+  "errors": [],
+  "controls": true
+}

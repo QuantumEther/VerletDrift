@@ -1,3 +1,4 @@
+import {createLiquidMaterials} from './liquid-materials.js';
 import {createBalloons} from './balloons.js';
 import {createRendererBackend} from './renderer-backend.js';
 import {createTireSmoke} from './tire-smoke.js';
@@ -23,7 +24,7 @@ export async function createView3D(canvas,terrain,quality='auto',vehicle={id:'re
  const offscreen=new URL(location.href).searchParams.get('presentation')==='offscreen';const Target=backendKind==='webgpu'?(await import('./vendor/three-r180/three.webgpu.js')).RenderTarget:THREE.WebGLRenderTarget;const outputTarget=offscreen?new Target(800,600,{type:THREE.UnsignedByteType,colorSpace:THREE.SRGBColorSpace}):null;if(outputTarget)renderer.setRenderTarget(outputTarget);
  const gl=backendKind==='webgl'?renderer.getContext():{getExtension:()=>null,getContextAttributes:()=>({backend:'webgpu'}),getParameter:()=> 'WebGPU',get drawingBufferWidth(){return canvas.width;},get drawingBufferHeight(){return canvas.height;}},debug=gl.getExtension('WEBGL_debug_renderer_info'),backend=debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);let renderScale=1;
  function setQuality(value){const scale=value==='auto'?(/SwiftShader|llvmpipe/i.test(backend)?.5:1):Number(value);if(![.5,.75,1].includes(scale))throw Error('Invalid rendering scale');renderScale=scale;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)*scale);}setQuality(quality);
- const scene=new THREE.Scene();const smoke=createTireSmoke(scene,terrain);const balloons=createBalloons(THREE,scene,terrain);scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,20,55);
+ const scene=new THREE.Scene();const smoke=createTireSmoke(scene,terrain);const balloons=createBalloons(THREE,scene,terrain,await createLiquidMaterials(THREE,backendKind),vehicle);scene.background=new THREE.Color('#101715');scene.fog=new THREE.Fog(0x101715,20,55);
  const camera=new THREE.PerspectiveCamera(40,1,.025,100);camera.up.set(0,0,1);
  const controls=new OrbitControls(camera,canvas);controls.minDistance=.6;controls.maxDistance=30;controls.maxPolarAngle=Math.PI*.49;
  const hemisphere=new THREE.HemisphereLight(0xffeed5,0x36483d,2);scene.add(hemisphere);const sun=new THREE.DirectionalLight(0xffebd0,3);sun.position.set(3,-4,7);scene.add(sun);
