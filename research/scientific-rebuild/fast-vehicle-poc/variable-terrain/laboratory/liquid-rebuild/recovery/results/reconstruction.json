@@ -1,0 +1,639 @@
+{
+  "records": [
+    {
+      "kind": "sphere",
+      "accounting": {
+        "count": 323,
+        "particleMass": 0.022409379176070846,
+        "mass": 7.2382294738708834,
+        "restDensityVolume": 0.007238229473870883,
+        "sphDensityEstimatedVolume": 0.008663481424153538,
+        "finite": true,
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "totalMechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "center": [
+          -0.0492445823647105,
+          0.0007554175499423104,
+          0.40075541566768946
+        ],
+        "bounds": {
+          "min": [
+            -0.1420000046491623,
+            -0.09200000017881393,
+            0.30799999833106995
+          ],
+          "max": [
+            0.05400000140070915,
+            0.10400000214576721,
+            0.5040000081062317
+          ]
+        },
+        "maxSpeed": 0,
+        "density": {
+          "min": 535.4055960931803,
+          "max": 1000.9432724829744,
+          "compressionMax": 0.0009432724829743222,
+          "compressionRMS": 0.0005375536504461578
+        },
+        "penetrationMax": 0,
+        "classification": {
+          "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+          "bodyMass": 7.2382294738708834,
+          "detachedMass": 0,
+          "groundMass": 0,
+          "components": 1
+        },
+        "reconstruction": {
+          "analyticFullKernelVolume": 0.007238229473870883,
+          "belowFloorKernelVolume": 0,
+          "boxClippedKernelVolume": 0.007238229469691005,
+          "otherBoxLoss": 4.179877798049514e-12,
+          "kernelInsidePaddleVolume": 0
+        },
+        "constraintTargetDensity": 1000,
+        "modeledViscousDissipationJ": 0,
+        "artificialViscosity": false,
+        "vorticityConfinement": false,
+        "ledger": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "projectionAccounting": {
+          "forceKineticChangeJ": 0,
+          "gravityKickJ": 0,
+          "cohesionKickJ": 0,
+          "collisionKineticLossJ": 0,
+          "densityKineticChangeJ": 0,
+          "densityQuadraticJ": 0,
+          "maxAbsLambda": 0,
+          "maxPositionCorrection": 0,
+          "collisionKineticChangeJ": 0,
+          "predictCollisionKineticChangeJ": 0,
+          "densityCollisionKineticChangeJ": 0,
+          "collisionPositiveChangeJ": 0,
+          "movingBoundaryWorkJ": 0,
+          "collisionRelativeHeatJ": 0,
+          "negativeCollisionHeatJ": 0,
+          "note": "signed numerical corrections are not automatically physical work or dissipation"
+        }
+      },
+      "unchanged": true,
+      "renders": [
+        {
+          "mode": "clean",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.007244131229817869,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.007453125000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.02734375,
+            "surfaceEnclosedVolume": 0.007974787004984246
+          },
+          "visiblePixels": 0
+        },
+        {
+          "mode": "legacy",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.007244131229817869,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.007453125000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.02734375,
+            "surfaceEnclosedVolume": 0.007974787004984246
+          },
+          "visiblePixels": 7733
+        },
+        {
+          "mode": "conservative",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.007244131229817869,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.007453125000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.02734375,
+            "surfaceEnclosedVolume": 0.007974787004984246
+          },
+          "visiblePixels": 14011
+        }
+      ]
+    },
+    {
+      "kind": "ground",
+      "accounting": {
+        "count": 192,
+        "particleMass": 0.015625000000000003,
+        "mass": 3.000000000000001,
+        "restDensityVolume": 0.003000000000000001,
+        "sphDensityEstimatedVolume": 0.003874129976683153,
+        "finite": true,
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "totalMechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "center": [
+          -0.049999999813735534,
+          3.2526065174565133e-19,
+          0.03750000055879355
+        ],
+        "bounds": {
+          "min": [
+            -0.13750000298023224,
+            -0.08749999850988388,
+            0.012500000186264515
+          ],
+          "max": [
+            0.03750000149011612,
+            0.08749999850988388,
+            0.0625
+          ]
+        },
+        "maxSpeed": 0,
+        "density": {
+          "min": 520.1871308597514,
+          "max": 1009.7752978020526,
+          "compressionMax": 0.009775297802052663,
+          "compressionRMS": 0.004232775150340002
+        },
+        "penetrationMax": 0,
+        "classification": {
+          "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+          "bodyMass": 2.0000000000000004,
+          "detachedMass": 0,
+          "groundMass": 1.0000000000000002,
+          "components": 1
+        },
+        "reconstruction": {
+          "analyticFullKernelVolume": 0.003000000000000001,
+          "belowFloorKernelVolume": 0.00021910029161294322,
+          "boxClippedKernelVolume": 0.00278089965750913,
+          "otherBoxLoss": 5.087792779310055e-11,
+          "kernelInsidePaddleVolume": 0
+        },
+        "constraintTargetDensity": 1000,
+        "modeledViscousDissipationJ": 0,
+        "artificialViscosity": false,
+        "vorticityConfinement": false,
+        "ledger": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "projectionAccounting": {
+          "forceKineticChangeJ": 0,
+          "gravityKickJ": 0,
+          "cohesionKickJ": 0,
+          "collisionKineticLossJ": 0,
+          "densityKineticChangeJ": 0,
+          "densityQuadraticJ": 0,
+          "maxAbsLambda": 0,
+          "maxPositionCorrection": 0,
+          "collisionKineticChangeJ": 0,
+          "predictCollisionKineticChangeJ": 0,
+          "densityCollisionKineticChangeJ": 0,
+          "collisionPositiveChangeJ": 0,
+          "movingBoundaryWorkJ": 0,
+          "collisionRelativeHeatJ": 0,
+          "negativeCollisionHeatJ": 0,
+          "note": "signed numerical corrections are not automatically physical work or dissipation"
+        }
+      },
+      "unchanged": true,
+      "renders": [
+        {
+          "mode": "clean",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.002836379528045655,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.003000000000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.009765625,
+            "surfaceEnclosedVolume": 0.003301994160473417
+          },
+          "visiblePixels": 0
+        },
+        {
+          "mode": "legacy",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.002836379528045655,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.003000000000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.009765625,
+            "surfaceEnclosedVolume": 0.003301994160473417
+          },
+          "visiblePixels": 4619
+        },
+        {
+          "mode": "conservative",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.0030291666984558112,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.003000000000000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.009765625,
+            "surfaceEnclosedVolume": 0.0033673410161295823
+          },
+          "visiblePixels": 8067
+        },
+        {
+          "mode": "conservative",
+          "size": 96,
+          "metric": {
+            "densityIntegralVolume": 0.002999913273034272,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.003277777777777778,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.016666666666666666,
+            "minDensity": 0,
+            "maxDensity": 1.005859375,
+            "surfaceEnclosedVolume": 0.0033703950560098894
+          },
+          "visiblePixels": 7226
+        },
+        {
+          "mode": "conservative",
+          "size": 128,
+          "metric": {
+            "densityIntegralVolume": 0.002998718433547766,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.002992187500000001,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.0125,
+            "minDensity": 0,
+            "maxDensity": 0.99951171875,
+            "surfaceEnclosedVolume": 0.0033574963439979596
+          },
+          "visiblePixels": 6908
+        }
+      ]
+    },
+    {
+      "kind": "thin",
+      "accounting": {
+        "count": 400,
+        "particleMass": 0.0008,
+        "mass": 0.32,
+        "restDensityVolume": 0.00032,
+        "sphDensityEstimatedVolume": 0.007043742118398609,
+        "finite": true,
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "totalMechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "center": [
+          -0.05000000000000001,
+          -9.75781955236954e-19,
+          0.0010000000474974587
+        ],
+        "bounds": {
+          "min": [
+            -0.23999999463558197,
+            -0.1899999976158142,
+            0.0010000000474974513
+          ],
+          "max": [
+            0.14000000059604645,
+            0.1899999976158142,
+            0.0010000000474974513
+          ]
+        },
+        "maxSpeed": 0,
+        "density": {
+          "min": 26.16134662696299,
+          "max": 48.92226639547133,
+          "compressionMax": 0,
+          "compressionRMS": 0
+        },
+        "penetrationMax": 0,
+        "classification": {
+          "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+          "bodyMass": 0,
+          "detachedMass": 0,
+          "groundMass": 0.32,
+          "components": 1
+        },
+        "reconstruction": {
+          "analyticFullKernelVolume": 0.00032,
+          "belowFloorKernelVolume": 0.00015212919811484455,
+          "boxClippedKernelVolume": 0.0001678708017881523,
+          "otherBoxLoss": 9.700318890151771e-14,
+          "kernelInsidePaddleVolume": 0
+        },
+        "constraintTargetDensity": 1000,
+        "modeledViscousDissipationJ": 0,
+        "artificialViscosity": false,
+        "vorticityConfinement": false,
+        "ledger": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "projectionAccounting": {
+          "forceKineticChangeJ": 0,
+          "gravityKickJ": 0,
+          "cohesionKickJ": 0,
+          "collisionKineticLossJ": 0,
+          "densityKineticChangeJ": 0,
+          "densityQuadraticJ": 0,
+          "maxAbsLambda": 0,
+          "maxPositionCorrection": 0,
+          "collisionKineticChangeJ": 0,
+          "predictCollisionKineticChangeJ": 0,
+          "densityCollisionKineticChangeJ": 0,
+          "collisionPositiveChangeJ": 0,
+          "movingBoundaryWorkJ": 0,
+          "collisionRelativeHeatJ": 0,
+          "negativeCollisionHeatJ": 0,
+          "note": "signed numerical corrections are not automatically physical work or dissipation"
+        }
+      },
+      "unchanged": true,
+      "renders": [
+        {
+          "mode": "clean",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.00016776967048645023,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 0.039703369140625,
+            "surfaceEnclosedVolume": 0
+          },
+          "visiblePixels": 0
+        },
+        {
+          "mode": "legacy",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.00016776967048645023,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 0.039703369140625,
+            "surfaceEnclosedVolume": 0
+          },
+          "visiblePixels": 0
+        },
+        {
+          "mode": "conservative",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.00031862446665763863,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 0.076171875,
+            "surfaceEnclosedVolume": 0
+          },
+          "visiblePixels": 12059
+        }
+      ]
+    },
+    {
+      "kind": "snapshot",
+      "accounting": {
+        "count": 323,
+        "particleMass": 0.022409379176070846,
+        "mass": 7.2382294738708834,
+        "restDensityVolume": 0.007238229473870883,
+        "sphDensityEstimatedVolume": 0.014713151050603614,
+        "finite": true,
+        "kineticJ": 7.356147096871037,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "totalMechanicalJ": 7.356147096871037,
+        "momentum": [
+          -0.5022632346141358,
+          -0.10603414288503522,
+          -1.4697319489363392
+        ],
+        "center": [
+          0.2024219862038368,
+          0.001683690368944626,
+          0.04149237729828147
+        ],
+        "bounds": {
+          "min": [
+            -0.3920000195503235,
+            -0.7919999957084656,
+            0.00800000037997961
+          ],
+          "max": [
+            1.0818434953689575,
+            0.7919999957084656,
+            1.201799750328064
+          ]
+        },
+        "maxSpeed": 3.49931993289364,
+        "density": {
+          "min": 280.8668730650155,
+          "max": 1000.6113754200588,
+          "compressionMax": 0.0006113754200587351,
+          "compressionRMS": 0.0000340178383478076
+        },
+        "penetrationMax": 0,
+        "classification": {
+          "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+          "bodyMass": 0.022409379176070846,
+          "detachedMass": 0.6274626169299837,
+          "groundMass": 6.588357477764829,
+          "components": 81
+        },
+        "reconstruction": {
+          "analyticFullKernelVolume": 0.007238229473870883,
+          "belowFloorKernelVolume": 0.0020346630687796048,
+          "boxClippedKernelVolume": 0.004485113021143128,
+          "otherBoxLoss": 0.0007184533839481506,
+          "kernelInsidePaddleVolume": 0.00016917572669507465
+        },
+        "constraintTargetDensity": 1000,
+        "modeledViscousDissipationJ": 0,
+        "artificialViscosity": false,
+        "vorticityConfinement": false,
+        "ledger": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "projectionAccounting": {
+          "forceKineticChangeJ": 0,
+          "gravityKickJ": 0,
+          "cohesionKickJ": 0,
+          "collisionKineticLossJ": 0,
+          "densityKineticChangeJ": 0,
+          "densityQuadraticJ": 0,
+          "maxAbsLambda": 0,
+          "maxPositionCorrection": 0,
+          "collisionKineticChangeJ": 0,
+          "predictCollisionKineticChangeJ": 0,
+          "densityCollisionKineticChangeJ": 0,
+          "collisionPositiveChangeJ": 0,
+          "movingBoundaryWorkJ": 0,
+          "collisionRelativeHeatJ": 0,
+          "negativeCollisionHeatJ": 0,
+          "note": "signed numerical corrections are not automatically physical work or dissipation"
+        }
+      },
+      "unchanged": true,
+      "renders": [
+        {
+          "mode": "clean",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.004621110072359443,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.0032968750000000008,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.0341796875,
+            "surfaceEnclosedVolume": 0.0031223524374174587
+          },
+          "visiblePixels": 0
+        },
+        {
+          "mode": "legacy",
+          "size": 64,
+          "metric": {
+            "densityIntegralVolume": 0.004621110072359443,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.0032968750000000008,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.025,
+            "minDensity": 0,
+            "maxDensity": 1.0341796875,
+            "surfaceEnclosedVolume": 0.0031223524374174587
+          },
+          "visiblePixels": 10318
+        },
+        {
+          "mode": "conservative",
+          "size": 96,
+          "metric": {
+            "densityIntegralVolume": 0.007258923812769352,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.006609374999999999,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.024999999999999998,
+            "minDensity": 0,
+            "maxDensity": 1.615234375,
+            "surfaceEnclosedVolume": 0.005913286271542356
+          },
+          "visiblePixels": 67708
+        },
+        {
+          "mode": "conservative",
+          "size": 128,
+          "metric": {
+            "densityIntegralVolume": 0.007227490550358197,
+            "isoThreshold": 0.35,
+            "isoCellVolume": 0.006558837890624999,
+            "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+            "cellSize": 0.01875,
+            "minDensity": 0,
+            "maxDensity": 1.6845703125,
+            "surfaceEnclosedVolume": 0.0060338059042954525
+          },
+          "visiblePixels": 59518
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "scope": "static known states; no simulation stepping; GPU field and image readbacks only in validation"
+}

@@ -1,0 +1,9 @@
+BLENDER 4.3.2 PYTHON 3.13.5 (main, Aug 10 2026, 12:06:59) [GCC 14.2.0] PLATFORM Linux-6.18.57-x86_64-with-glibc2.41
+UPDATE_DOMAIN
+Fatal Python error: PyImport_AppendInittab: PyImport_AppendInittab() may not be called after Py_Initialize()
+Python runtime state: initialized
+
+Current thread 0x00007f3041a32c80 (most recent call first):
+  File "/workspace/VerletDrift/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/liquid-rebuild/recovery/blender-minimal.py", line 8 in <module>
+
+Extension modules: _freestyle, bpy.props, bpy.app.icons, bpy.app.timers, bpy.utils.units, bpy.types, mathutils.geometry, mathutils.interpolate, mathutils.noise, mathutils, idprop, bmesh.ops, bmesh.utils, bmesh.geometry, bmesh, _cycles (total: 16)

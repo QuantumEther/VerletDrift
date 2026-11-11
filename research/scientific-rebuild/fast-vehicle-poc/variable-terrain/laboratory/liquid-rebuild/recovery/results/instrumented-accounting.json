@@ -1,0 +1,823 @@
+{
+  "records": [
+    {
+      "id": "moderate",
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.004166666666666667,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "states": [
+        {
+          "time": 0,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.008663481424153538,
+          "finite": true,
+          "kineticJ": 57.90583579096675,
+          "gravitationalJ": 28.456452279307825,
+          "cohesionPotentialJ": 0.002526268671490751,
+          "totalMechanicalJ": 86.36481433894606,
+          "momentum": [
+            28.952917895483374,
+            0,
+            0
+          ],
+          "center": [
+            -0.0492445823647105,
+            0.0007554175499423104,
+            0.40075541566768946
+          ],
+          "maxSpeed": 4,
+          "density": {
+            "min": 535.4055960931803,
+            "max": 1000.9432724829744,
+            "compressionMax": 0.0009432724829743222,
+            "compressionRMS": 0.0005375536504461578
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 7.2382294738708834,
+            "detachedMass": 0,
+            "groundMass": 0,
+            "components": 1
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0,
+            "boxClippedKernelVolume": 0.007238229469691005,
+            "otherBoxLoss": 4.179877798049514e-12,
+            "kernelInsidePaddleVolume": 0
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time": 0.1,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.010720335688666163,
+          "finite": true,
+          "kineticJ": 26.13424291002256,
+          "gravitationalJ": 24.828406556019406,
+          "cohesionPotentialJ": 0.004366458097685287,
+          "totalMechanicalJ": 50.96701592413965,
+          "momentum": [
+            3.083803860543106,
+            -7.850542711532182e-7,
+            -7.100735129535739
+          ],
+          "center": [
+            0.23370505154317414,
+            0.000755417412983096,
+            0.34966123999087795
+          ],
+          "maxSpeed": 5.98427898231831,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 1002.7715799181017,
+            "compressionMax": 0.0027715799181016187,
+            "compressionRMS": 0.0002597111418175643
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 6.9244981654058915,
+            "detachedMass": 0.31373130846499186,
+            "groundMass": 0,
+            "components": 9
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0,
+            "boxClippedKernelVolume": 0.007238229469691005,
+            "otherBoxLoss": 4.179877798049514e-12,
+            "kernelInsidePaddleVolume": 0.0015583743058464358
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            3.4820454131113365,
+            3.4829186983406544,
+            -0.0008732856367714703,
+            32.2923700788524,
+            -2.9614709839224815,
+            19.020674051251262,
+            3.4563072404125705e-9,
+            0,
+            -32.29216797556728,
+            -23.67018602322787,
+            -8.621981645002961,
+            0.00020265861530788243
+          ]
+        },
+        {
+          "time": 0.3,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.016085750286961922,
+          "finite": true,
+          "kineticJ": 14.37743778888825,
+          "gravitationalJ": 11.666129592676194,
+          "cohesionPotentialJ": 0.007948930521321527,
+          "totalMechanicalJ": 26.051516312085766,
+          "momentum": [
+            -0.6482596300805514,
+            0.2747334748067274,
+            -4.585537011583611
+          ],
+          "center": [
+            0.2343265229357474,
+            0.0017775476437303876,
+            0.16429541420895066
+          ],
+          "maxSpeed": 3.9105235466362056,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 1004.059349438059,
+            "compressionMax": 0.004059349438058968,
+            "compressionRMS": 0.00027888116159564065
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0.9411939253949755,
+            "detachedMass": 2.890809913713139,
+            "groundMass": 3.4062256347627686,
+            "components": 101
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0.0010369029015467879,
+            "boxClippedKernelVolume": 0.006052886016421532,
+            "otherBoxLoss": 0.00014844055590256325,
+            "kernelInsidePaddleVolume": 0.0006740942968047068
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            17.03466515475884,
+            17.03823557589203,
+            -0.003569208984117722,
+            53.614024420268834,
+            -6.949674420058727,
+            27.04572959896177,
+            8.816073204798158e-9,
+            0,
+            -53.6133895998355,
+            -42.97525195614435,
+            -10.638136961439159,
+            0.0006362586136674508
+          ]
+        },
+        {
+          "time": 0.6,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.014543717826298576,
+          "finite": true,
+          "kineticJ": 7.248464283075283,
+          "gravitationalJ": 2.921447728515297,
+          "cohesionPotentialJ": 0.006882759906942522,
+          "totalMechanicalJ": 10.176794771497521,
+          "momentum": [
+            -0.4927931864157383,
+            -0.07460175568212293,
+            -1.4433920295998786
+          ],
+          "center": [
+            0.20323530705962833,
+            0.00274580491897027,
+            0.04114307670193746
+          ],
+          "maxSpeed": 3.499323639195084,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 1000.0133924052158,
+            "compressionMax": 0.000013392405215695291,
+            "compressionRMS": 8.085463454475884e-7
+          },
+          "penetrationMax": 1.9550323471229092e-8,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0.04481875835214169,
+            "detachedMass": 0.582643858577842,
+            "groundMass": 6.6107668569408995,
+            "components": 83
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0.002046751295949402,
+            "boxClippedKernelVolume": 0.004467085145874922,
+            "otherBoxLoss": 0.0007243930320465588,
+            "kernelInsidePaddleVolume": 0.0001722104025294649
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            26.34544648975134,
+            26.346719156601466,
+            -0.00126328181977442,
+            68.2114812368527,
+            -8.792182315140963,
+            31.12273231893778,
+            5.760625754192006e-9,
+            0,
+            -68.21063075307757,
+            -56.808747747913,
+            -11.401882715344982,
+            0.0008529695528523007
+          ]
+        }
+      ],
+      "field": {
+        "densityIntegralVolume": 0.004605664846487344,
+        "isoThreshold": 0.35,
+        "isoCellVolume": 0.0031406250000000006,
+        "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+        "cellSize": 0.025,
+        "minDensity": 0,
+        "maxDensity": 0.99853515625,
+        "surfaceEnclosedVolume": 0.003093401190695879
+      }
+    },
+    {
+      "id": "violent",
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.004166666666666667,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "states": [
+        {
+          "time": 0,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.008663481424153538,
+          "finite": true,
+          "kineticJ": 521.1525221187067,
+          "gravitationalJ": 28.456452279307825,
+          "cohesionPotentialJ": 0.002526268671490751,
+          "totalMechanicalJ": 549.611500666686,
+          "momentum": [
+            86.85875368645034,
+            0,
+            0
+          ],
+          "center": [
+            -0.0492445823647105,
+            0.0007554175499423104,
+            0.40075541566768946
+          ],
+          "maxSpeed": 12,
+          "density": {
+            "min": 535.4055960931803,
+            "max": 1000.9432724829744,
+            "compressionMax": 0.0009432724829743222,
+            "compressionRMS": 0.0005375536504461578
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 7.2382294738708834,
+            "detachedMass": 0,
+            "groundMass": 0,
+            "components": 1
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0,
+            "boxClippedKernelVolume": 0.007238229469691005,
+            "otherBoxLoss": 4.179877798049514e-12,
+            "kernelInsidePaddleVolume": 0
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time": 0.1,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.018473113861421663,
+          "finite": true,
+          "kineticJ": 124.17357968004104,
+          "gravitationalJ": 30.55516889580682,
+          "cohesionPotentialJ": 0.009743267632731726,
+          "totalMechanicalJ": 154.7384918434806,
+          "momentum": [
+            -0.8013312382596701,
+            -0.19833693308589587,
+            8.8966626291793
+          ],
+          "center": [
+            0.23230909253975235,
+            -0.001644512155308068,
+            0.4303118776524263
+          ],
+          "maxSpeed": 13.889206886291504,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 986.9640173238502,
+            "compressionMax": 0,
+            "compressionRMS": 0
+          },
+          "penetrationMax": 3.14712524929206e-8,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0.06722813752821254,
+            "detachedMass": 5.221385348024507,
+            "groundMass": 1.9496159883181636,
+            "components": 150
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0.0005919675492239291,
+            "boxClippedKernelVolume": 0.006390211239950002,
+            "otherBoxLoss": 0.00025605068469695166,
+            "kernelInsidePaddleVolume": 0.0004755992788365519
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            -1.599643126828596,
+            -1.5900563925970346,
+            -0.009586648171534762,
+            5525.332142078318,
+            5129.951764918864,
+            5240.7415353655815,
+            7.927155820652843e-9,
+            0,
+            -5525.331163230818,
+            -2149.6009142152034,
+            -3375.7301797587425,
+            0.000994411835563369
+          ]
+        },
+        {
+          "time": 0.3,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.01738101169101787,
+          "finite": true,
+          "kineticJ": 25.01632161722613,
+          "gravitationalJ": 34.96891820031027,
+          "cohesionPotentialJ": 0.009002281343753337,
+          "totalMechanicalJ": 59.99424209888015,
+          "momentum": [
+            -0.226876308501294,
+            0.4670371477034947,
+            -2.097029386459928
+          ],
+          "center": [
+            0.2361974735504982,
+            0.0185283565689772,
+            0.4924712051686489
+          ],
+          "maxSpeed": 22.457779709681628,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 1000.0068266581245,
+            "compressionMax": 0.000006826658124570173,
+            "compressionRMS": 3.79845418900003e-7
+          },
+          "penetrationMax": 3.14712524929206e-8,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0.2016844125846376,
+            "detachedMass": 3.5406819098191935,
+            "groundMass": 3.4958631514670517,
+            "components": 142
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0.0010760708339620179,
+            "boxClippedKernelVolume": 0.004886219742789352,
+            "otherBoxLoss": 0.001275938897119513,
+            "kernelInsidePaddleVolume": 0.00010361567824208022
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            -6.169752414338291,
+            -6.162981073372066,
+            -0.006769889979977961,
+            2472698.3001344907,
+            2472208.361240061,
+            2471307.8932282925,
+            9.440555004402995e-10,
+            0,
+            -2472698.2982806964,
+            -8762.797050695168,
+            -2463935.5284948237,
+            0.001937013491669859
+          ]
+        },
+        {
+          "time": 0.6,
+          "count": 323,
+          "particleMass": 0.022409379176070846,
+          "mass": 7.2382294738708834,
+          "restDensityVolume": 0.007238229473870883,
+          "sphDensityEstimatedVolume": 0.01771790570440414,
+          "finite": true,
+          "kineticJ": 3157.5350239809827,
+          "gravitationalJ": 20.12230579598591,
+          "cohesionPotentialJ": -0.0034044374401438703,
+          "totalMechanicalJ": 3177.6539253395285,
+          "momentum": [
+            -7.85205481178371,
+            -7.749807805048795,
+            -7.603476674396981
+          ],
+          "center": [
+            0.24985031273083394,
+            -0.008097386193438617,
+            0.2833846940690704
+          ],
+          "maxSpeed": 528.571206694524,
+          "density": {
+            "min": 280.8668730650155,
+            "max": 5898.204334365325,
+            "compressionMax": 4.8982043343653245,
+            "compressionRMS": 1.638872060338456
+          },
+          "penetrationMax": 0.007069511890411384,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0,
+            "detachedMass": 2.7339442594806433,
+            "groundMass": 4.50428521439024,
+            "components": 176
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870883,
+            "belowFloorKernelVolume": 0.001392938709098493,
+            "boxClippedKernelVolume": 0.004279058982307083,
+            "otherBoxLoss": 0.0015662317824653067,
+            "kernelInsidePaddleVolume": 0.000046723129128093126
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            8.87851944193244,
+            8.892917968332767,
+            -0.014391201179023483,
+            450595852.39743394,
+            450598483.2705175,
+            450611312.2316674,
+            7.723429007455707e-9,
+            0,
+            -450595852.39422846,
+            -108491.88752961718,
+            -450487370.97841287,
+            0.003511930200147617
+          ]
+        }
+      ],
+      "field": {
+        "densityIntegralVolume": 0.004413077318109573,
+        "isoThreshold": 0.35,
+        "isoCellVolume": 0.0013906250000000004,
+        "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+        "cellSize": 0.025,
+        "minDensity": 0,
+        "maxDensity": 5.48046875,
+        "surfaceEnclosedVolume": 0.0010470245897600664
+      }
+    },
+    {
+      "id": "fine",
+      "config": {
+        "count": 1229,
+        "steps": 288,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.0020833333333333333,
+        "nominalMass": 7.238229473870883,
+        "nominalVolume": 0.007238229473870882
+      },
+      "states": [
+        {
+          "time": 0,
+          "count": 1229,
+          "particleMass": 0.005889527643507635,
+          "mass": 7.238229473870883,
+          "restDensityVolume": 0.007238229473870882,
+          "sphDensityEstimatedVolume": 0.00891706391044208,
+          "finite": true,
+          "kineticJ": 57.90583579096625,
+          "gravitationalJ": 28.439904800203397,
+          "cohesionPotentialJ": 0.004185939919683764,
+          "totalMechanicalJ": 86.34992653108932,
+          "momentum": [
+            28.952917895483125,
+            0,
+            0
+          ],
+          "center": [
+            -0.0494776233262327,
+            0.0005223760858748031,
+            0.4005223756596907
+          ],
+          "maxSpeed": 4,
+          "density": {
+            "min": 466.83946964599056,
+            "max": 1007.0358870304395,
+            "compressionMax": 0.007035887030439447,
+            "compressionRMS": 0.0038264298463406097
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 7.238229473870883,
+            "detachedMass": 0,
+            "groundMass": 0,
+            "components": 1
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870882,
+            "belowFloorKernelVolume": 0,
+            "boxClippedKernelVolume": 0.007238229469690909,
+            "otherBoxLoss": 4.1799732078406926e-12,
+            "kernelInsidePaddleVolume": 0
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time": 0.1,
+          "count": 1229,
+          "particleMass": 0.005889527643507635,
+          "mass": 7.238229473870883,
+          "restDensityVolume": 0.007238229473870882,
+          "sphDensityEstimatedVolume": 0.015548977824217866,
+          "finite": true,
+          "kineticJ": 25.613116532676983,
+          "gravitationalJ": 24.884422736164037,
+          "cohesionPotentialJ": 0.009822186060110342,
+          "totalMechanicalJ": 50.50736145490114,
+          "momentum": [
+            1.9591215557561514,
+            7.000116846803128e-7,
+            -7.1007408547647355
+          ],
+          "center": [
+            0.2310838851747326,
+            0.000522386357656161,
+            0.35045012215150906
+          ],
+          "maxSpeed": 5.787464737415506,
+          "density": {
+            "min": 73.81611065907242,
+            "max": 1002.4669131813799,
+            "compressionMax": 0.002466913181379926,
+            "compressionRMS": 0.00009950923960219305
+          },
+          "penetrationMax": 0,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 7.0968808104267,
+            "detachedMass": 0.14134866344418323,
+            "groundMass": 0,
+            "components": 17
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870882,
+            "belowFloorKernelVolume": 0,
+            "boxClippedKernelVolume": 0.007238229469690909,
+            "otherBoxLoss": 4.1799732078406926e-12,
+            "kernelInsidePaddleVolume": 0.001602453178515114
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            3.478290456754621,
+            3.4829199092346244,
+            -0.004629452212611795,
+            34.555458831746364,
+            -1.2163789583137259,
+            22.75899662601296,
+            -2.0965700286978972e-9,
+            0,
+            -34.554629309350275,
+            -26.717537273900234,
+            -7.837092907429906,
+            0.0008300557099119033
+          ]
+        },
+        {
+          "time": 0.3,
+          "count": 1229,
+          "particleMass": 0.005889527643507635,
+          "mass": 7.238229473870883,
+          "restDensityVolume": 0.007238229473870882,
+          "sphDensityEstimatedVolume": 0.040982089422686836,
+          "finite": true,
+          "kineticJ": 22.55915415851488,
+          "gravitationalJ": 12.229405139070835,
+          "cohesionPotentialJ": 0.018100552052274437,
+          "totalMechanicalJ": 34.80665984963799,
+          "momentum": [
+            -1.137949544963114,
+            0.6850749256593465,
+            -4.193252289363017
+          ],
+          "center": [
+            0.21254493823794807,
+            0.0032875962307516698,
+            0.17222808703531597
+          ],
+          "maxSpeed": 12.565525359501999,
+          "density": {
+            "min": 73.81611065907242,
+            "max": 1000.6562956743579,
+            "compressionMax": 0.0006562956743578763,
+            "compressionRMS": 0.000018720906164274778
+          },
+          "penetrationMax": 1.9550323471229092e-8,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 2.143788062236779,
+            "detachedMass": 1.8493116800613973,
+            "groundMass": 3.245129731572707,
+            "components": 168
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870882,
+            "belowFloorKernelVolume": 0.0010019139091328843,
+            "boxClippedKernelVolume": 0.006080174161000716,
+            "otherBoxLoss": 0.00015614140373728194,
+            "kernelInsidePaddleVolume": 0.0005950821892898304
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            16.33062710124068,
+            16.3424612081144,
+            -0.011842809692552692,
+            59.31900686226436,
+            7.639199209748767,
+            55.59342108713463,
+            -5.274671366350958e-9,
+            0,
+            -59.316506341230706,
+            -48.41851134227181,
+            -10.897996721630989,
+            0.002502115699371643
+          ]
+        },
+        {
+          "time": 0.6,
+          "count": 1229,
+          "particleMass": 0.005889527643507635,
+          "mass": 7.238229473870883,
+          "restDensityVolume": 0.007238229473870882,
+          "sphDensityEstimatedVolume": 0.04233985463383435,
+          "finite": true,
+          "kineticJ": 33381.80389073709,
+          "gravitationalJ": 3.677816557084923,
+          "cohesionPotentialJ": 0.009347393641990475,
+          "totalMechanicalJ": 33385.491054687816,
+          "momentum": [
+            10.088694526610125,
+            -14.861939303788052,
+            -1.071016477179555
+          ],
+          "center": [
+            0.24809039285405643,
+            0.006311730939957037,
+            0.051795103922910896
+          ],
+          "maxSpeed": 1058.1044532923543,
+          "density": {
+            "min": 73.81611065907242,
+            "max": 3912.253864930836,
+            "compressionMax": 2.9122538649308356,
+            "compressionRMS": 0.8778907244040336
+          },
+          "penetrationMax": 0.026014550209045417,
+          "classification": {
+            "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+            "bodyMass": 0.4004878797585192,
+            "detachedMass": 0.7774176489430078,
+            "groundMass": 6.0603239451693565,
+            "components": 213
+          },
+          "reconstruction": {
+            "analyticFullKernelVolume": 0.007238229473870882,
+            "belowFloorKernelVolume": 0.001876028528187427,
+            "boxClippedKernelVolume": 0.0043469900164624835,
+            "otherBoxLoss": 0.0010152109292209718,
+            "kernelInsidePaddleVolume": 0.00011115400577652081
+          },
+          "modeledViscousDissipationJ": 0,
+          "artificialViscosity": false,
+          "vorticityConfinement": false,
+          "ledger": [
+            25.160641307244077,
+            25.17520563257858,
+            -0.014629818510002224,
+            87195080150.52211,
+            87195117620.8881,
+            87194813637.05412,
+            -7.616222319484223e-9,
+            0,
+            -87195080150.51881,
+            -158943.27137337194,
+            -87194920118.23753,
+            0.004151687686771766
+          ]
+        }
+      ],
+      "field": {
+        "densityIntegralVolume": 0.00447899584658444,
+        "isoThreshold": 0.35,
+        "isoCellVolume": 0.0011718750000000002,
+        "isoVolumeMethod": "thresholded voxel-cell estimate, not an exact triangle-mesh volume",
+        "cellSize": 0.025,
+        "minDensity": 0,
+        "maxDensity": 3.634765625,
+        "surfaceEnclosedVolume": 0.0009082144014164908
+      }
+    }
+  ],
+  "errors": [],
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "scope": "equations unmodified; correction-energy instrumentation added; independent CPU accounting and readbacks only in validation"
+}

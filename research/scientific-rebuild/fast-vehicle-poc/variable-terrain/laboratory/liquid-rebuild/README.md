@@ -85,3 +85,7 @@ GPU timestamps cover the complete encoded batch of solver steps plus field recon
 ## Decision
 
 **Do not integrate or scale this candidate.** Neither a verified FLIP bake nor an acceptable reduced PBF rupture has passed the first gate. Preserve the working simulator. The next justified dependency is a valid single-event fluid reference: recover the primary material and obtain a working, independently inspectable FLIP bake before using it to judge/correct the boundary and energy behavior of a GPU implementation. No multi-balloon solver campaign is authorized by this result.
+
+## Recovery follow-up
+
+See [the restricted recovery experiment](recovery/README-recovery.md) for independent mass/surface accounting, rest-lattice normalization, swept-boundary probes and a rest/ground-only viewer. This adds a limited supported test domain; it does not change this original impact pilot's rejected status.

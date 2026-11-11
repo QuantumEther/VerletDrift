@@ -1,0 +1,24 @@
+{
+  "status": {
+    "count": 323,
+    "steps": 4,
+    "time": 0.016666666666666666,
+    "iterations": 16,
+    "dt": 0.004166666666666667,
+    "gravity": 0,
+    "constraintDensity": 1000.9430861505712,
+    "sweptBoundary": true,
+    "collisions": 1,
+    "boundaryVelocity": 0,
+    "sigma": 0,
+    "nominalMass": 7.2382294738708834,
+    "nominalVolume": 0.007238229473870882,
+    "cpuEncodeAndSubmitMs": 0.7999999821186066,
+    "presentation": "offscreen-test-only",
+    "simulationDebtSeconds": 0,
+    "scope": "CPU encoding, not GPU completion or presentation",
+    "warning": "Restricted rest/ground test, no surface tension or viscosity; 0.4 s viewer horizon. Impact modes remain rejected."
+  },
+  "errors": [],
+  "scope": "module/controls initialized and GPU work completed; offscreen target; native canvas presentation failed independently and is not asserted"
+}

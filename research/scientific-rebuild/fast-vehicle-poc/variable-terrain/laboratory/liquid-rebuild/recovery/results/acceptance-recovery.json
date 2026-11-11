@@ -1,0 +1,888 @@
+{
+  "sourceBaseCommit": "e805358",
+  "verdict": "LIMITED RECOVERY — resting and ground-only test domain",
+  "checks": [
+    {
+      "id": "rest mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "rest finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "rest kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 9.691680258541331e-19
+      }
+    },
+    {
+      "id": "rest rest stability",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "kineticJ": 1.2894572803470123e-10,
+        "referenceDensity": 1000.9430861505712
+      }
+    },
+    {
+      "id": "rest-16 mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "rest-16 finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "rest-16 kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 8.288191022501304e-19
+      }
+    },
+    {
+      "id": "rest-16 rest stability",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "kineticJ": 1.373673332103025e-10,
+        "referenceDensity": 1000.9430861505712
+      }
+    },
+    {
+      "id": "rest-repeat mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "rest-repeat finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "rest-repeat kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 9.691680258541331e-19
+      }
+    },
+    {
+      "id": "rest-repeat rest stability",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "kineticJ": 1.2894572803470123e-10,
+        "referenceDensity": 1000.9430861505712
+      }
+    },
+    {
+      "id": "rest-fine mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.238229473870883,
+        "count": 1229
+      }
+    },
+    {
+      "id": "rest-fine finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "rest-fine kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 1.8492276976205524e-16
+      }
+    },
+    {
+      "id": "rest-fine rest stability",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "kineticJ": 6.819177978134327e-9,
+        "referenceDensity": 1007.0355103383393
+      }
+    },
+    {
+      "id": "translation mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "translation finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "translation kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.0000011164521040996078
+      }
+    },
+    {
+      "id": "gravity-open mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "gravity-open finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "gravity-open kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -2.2555254153289184e-7
+      }
+    },
+    {
+      "id": "cohesion-only mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "cohesion-only finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0.000004514861578375218,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "cohesion-only kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -9.295731935934914e-12
+      }
+    },
+    {
+      "id": "floor mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.0000017603668513999082
+      }
+    },
+    {
+      "id": "floor no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -17.921800268594534,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 15.664977006657864,
+        "numericalDensityKineticChangeJ": -2.832972289994359
+      }
+    },
+    {
+      "id": "floor-half mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor-half finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0.00036384851895210346,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-half kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 0.000006010306179859981
+      }
+    },
+    {
+      "id": "floor-half no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -17.28168989515215,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 14.18456331786183,
+        "numericalDensityKineticChangeJ": -3.3841674071736634
+      }
+    },
+    {
+      "id": "floor-8 mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor-8 finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-8 kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.000002489461476073984
+      }
+    },
+    {
+      "id": "floor-8 no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -17.9608010933821,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 15.612061062967769,
+        "numericalDensityKineticChangeJ": -2.9252376314252615
+      }
+    },
+    {
+      "id": "floor-16 mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor-16 finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-16 kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.0000025865015231829602
+      }
+    },
+    {
+      "id": "floor-16 no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -17.972210932923225,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 15.608716234622989,
+        "numericalDensityKineticChangeJ": -2.940171927213669
+      }
+    },
+    {
+      "id": "floor-fine mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.238229473870883,
+        "count": 1229
+      }
+    },
+    {
+      "id": "floor-fine finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-fine kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 0.000019366720396263304
+      }
+    },
+    {
+      "id": "floor-fine no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -18.15518385648584,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 20.40583192375709,
+        "numericalDensityKineticChangeJ": 1.9638550369127188
+      }
+    },
+    {
+      "id": "floor-long mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor-long finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-long kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.000006387675329122544
+      }
+    },
+    {
+      "id": "floor-long no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -17.99158583827589,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 16.6096860030666,
+        "numericalDensityKineticChangeJ": -2.8330732192844152
+      }
+    },
+    {
+      "id": "floor-16-long mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "floor-16-long finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-16-long kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.000014322310990522169
+      }
+    },
+    {
+      "id": "floor-16-long no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -18.034793681831182,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 16.545472676865757,
+        "numericalDensityKineticChangeJ": -2.9405029201880097
+      }
+    },
+    {
+      "id": "floor-long-fine mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.238229473870883,
+        "count": 1229
+      }
+    },
+    {
+      "id": "floor-long-fine finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "floor-long-fine kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 0.00015139960118126794
+      }
+    },
+    {
+      "id": "floor-long-fine no mechanical energy source",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mechanicalChangeJ": -18.251861643143837,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 20.985480019415263,
+        "numericalDensityKineticChangeJ": 2.008129304187605
+      }
+    },
+    {
+      "id": "static-paddle mass/count",
+      "domain": "four-iteration diagnostic",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "static-paddle finite/density/penetration",
+      "domain": "four-iteration diagnostic",
+      "status": "FAIL",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "static-paddle kinetic ledger",
+      "domain": "four-iteration diagnostic",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 7.257604508481563e-7
+      }
+    },
+    {
+      "id": "moving-paddle mass/count",
+      "domain": "four-iteration diagnostic",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "moving-paddle finite/density/penetration",
+      "domain": "four-iteration diagnostic",
+      "status": "FAIL",
+      "evidence": {
+        "compression": 0.0016088537532457092,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "moving-paddle kinetic ledger",
+      "domain": "four-iteration diagnostic",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -2.4288884148404577e-7
+      }
+    },
+    {
+      "id": "rest-16-minimal mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "rest-16-minimal finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "rest-16-minimal kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": 8.099437712498594e-19
+      }
+    },
+    {
+      "id": "rest-16-minimal rest stability",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "kineticJ": 1.365521789906755e-10,
+        "referenceDensity": 1000.9430861505712
+      }
+    },
+    {
+      "id": "ground-16-minimal mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "ground-16-minimal finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "ground-16-minimal kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.0000040061730306462096
+      }
+    },
+    {
+      "id": "ground-16-long mass/count",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "mass": 7.2382294738708834,
+        "count": 323
+      }
+    },
+    {
+      "id": "ground-16-long finite/density/penetration",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "compression": 0,
+        "penetration": 0
+      }
+    },
+    {
+      "id": "ground-16-long kinetic ledger",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "residualJ": -0.000012127611750401002
+      }
+    },
+    {
+      "id": "static-paddle-16 swept collision",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "penetration": 0,
+        "compression": 0,
+        "energyChangeJ": -37.365555702595664,
+        "wallWorkJ": 0,
+        "relativeHeatJ": 34.36885068938136
+      }
+    },
+    {
+      "id": "moving-paddle-16 swept collision",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "penetration": 0,
+        "compression": 5.809452265914672e-7,
+        "energyChangeJ": 17.20598116655872,
+        "wallWorkJ": 25.988432480044338,
+        "relativeHeatJ": 7.260735009935388
+      }
+    },
+    {
+      "id": "gravity-open analytic momentum",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "measured": -7.1010132689216,
+        "expected": -7.100703113867337
+      }
+    },
+    {
+      "id": "gravity-open symplectic-Euler energy error",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "measuredJ": -0.14496998973347175,
+        "expectedJ": -0.1451206198896637
+      }
+    },
+    {
+      "id": "moving-boundary work bounds energy change",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "energyChangeJ": 17.23496319832056,
+        "wallWorkJ": 26.011206954693424
+      }
+    },
+    {
+      "id": "decreasing ground timestep differences",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "timesteps": [
+          0.004166666666666667,
+          0.0020833333333333333,
+          0.0010416666666666667
+        ],
+        "kineticJ": [
+          9.933582622347037,
+          10.544111139562602,
+          10.885018601263127
+        ],
+        "differencesJ": [
+          0.610528517215565,
+          0.34090746170052455
+        ],
+        "note": "Observed trend, not a rigorous error bound or formal convergence order"
+      }
+    },
+    {
+      "id": "slab density-integral conservation at 128 cubed",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "nominal": 0.003000000000000001,
+        "measured": 0.002998718433547766,
+        "surfaceEnclosedVolume": 0.0033574963439979596,
+        "note": "Density integral is not enclosed isosurface volume"
+      }
+    },
+    {
+      "id": "thin-sheet visibility without changing particles",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "legacyPixels": 0,
+        "continuousOpticsPixels": 12059,
+        "nominalVolume": 0.00032,
+        "oldDensityVolume": 0.00016776967048645023,
+        "newDensityVolume": 0.00031862446665763863,
+        "isoVolume": 0
+      }
+    },
+    {
+      "id": "previous failed snapshot reconstructed without changing particles",
+      "domain": "minimal",
+      "status": "PASS",
+      "evidence": {
+        "nominalV": 0.007238229473870883,
+        "oldDensityV": 0.004621110072359443,
+        "newDensityV": 0.007227490550358197,
+        "oldSurfaceV": 0.0031223524374174587,
+        "newSurfaceV": 0.0060338059042954525,
+        "note": "Geometric surface error remains; mass integral correction is not a solver-energy fix"
+      }
+    }
+  ],
+  "lossBreakdown": [
+    {
+      "id": "moderate",
+      "nominalV": 0.007238229473870883,
+      "gpuDensityIntegralV": 0.004621110072359443,
+      "missingV": 0.0026171194015114398,
+      "belowFloorV": 0.0020346630687796048,
+      "otherBoxLossV": 0.0007184533839481506,
+      "samplingBiasV": 0.0001359970512163156,
+      "closureResidualV": 0,
+      "enclosedSurfaceV": 0.0031223524374174587,
+      "particleMass": 7.2382294738708834,
+      "classification": {
+        "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+        "bodyMass": 0.022409379176070846,
+        "detachedMass": 0.6274626169299837,
+        "groundMass": 6.588357477764829,
+        "components": 81
+      }
+    },
+    {
+      "id": "violent",
+      "nominalV": 0.007238229473870883,
+      "gpuDensityIntegralV": 0.0043106656912714255,
+      "missingV": 0.0029275637825994577,
+      "belowFloorV": 0.001458965972029205,
+      "otherBoxLossV": 0.0016068411419520546,
+      "samplingBiasV": 0.0001382433313818019,
+      "closureResidualV": 0,
+      "enclosedSurfaceV": 0.0015427505195290017,
+      "particleMass": 7.2382294738708834,
+      "classification": {
+        "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+        "bodyMass": 0,
+        "detachedMass": 2.509850467719935,
+        "groundMass": 4.7283790061509485,
+        "components": 151
+      }
+    },
+    {
+      "id": "fine",
+      "nominalV": 0.007238229473870882,
+      "gpuDensityIntegralV": 0.004487685822881759,
+      "missingV": 0.002750543650989123,
+      "belowFloorV": 0.0018035340074937373,
+      "otherBoxLossV": 0.0010818390411701613,
+      "samplingBiasV": 0.00013482939767477543,
+      "closureResidualV": 0,
+      "enclosedSurfaceV": 0.0018771461831530419,
+      "particleMass": 7.238229473870883,
+      "classification": {
+        "method": "exclusive diagnostic tags; ground-height band, then connected components at h; not separate emitters",
+        "bodyMass": 0.2002439398792596,
+        "detachedMass": 1.1955741116320497,
+        "groundMass": 5.842411422359573,
+        "components": 220
+      }
+    }
+  ],
+  "restComparison": [
+    {
+      "id": "rest",
+      "beforeK": 0.0001242231144105945,
+      "afterK": 1.2894572803470123e-10
+    },
+    {
+      "id": "rest-fine",
+      "beforeK": 0.265676081571112,
+      "afterK": 6.819177978134327e-9
+    }
+  ],
+  "impact16": [
+    {
+      "id": "coarse-impact-16",
+      "energyChangeJ": -66.01387497232224,
+      "kineticJ": 17.474553345700002,
+      "maxCorrection": 0.014910009689629078
+    },
+    {
+      "id": "fine-impact-16-half",
+      "energyChangeJ": -64.12488980211991,
+      "kineticJ": 19.071734798691775,
+      "maxCorrection": 0.00557097839191556
+    },
+    {
+      "id": "violent-impact-16",
+      "energyChangeJ": -387.8112424834416,
+      "kineticJ": 115.3764543621505,
+      "maxCorrection": 0.04565884917974472
+    }
+  ],
+  "impactStatus": "REJECTED — refined swept-boundary impact still generates excess energy",
+  "refinedImpact": [
+    {
+      "id": "fine-swept-half",
+      "energyChangeJ": 3840.443540649136,
+      "kineticJ": 3895.9348479392643,
+      "trace": {
+        "forceKineticChangeJ": -2.1275041359476745,
+        "gravityKickJ": -2.1134035361465067,
+        "cohesionKickJ": -0.014109609818660829,
+        "collisionKineticLossJ": 257.64966494304826,
+        "densityKineticChangeJ": 4097.5032563585555,
+        "densityQuadraticJ": 5194.786615366756,
+        "maxAbsLambda": 0.009249893948435783,
+        "maxPositionCorrection": 0.17168869078159332,
+        "collisionKineticChangeJ": -257.3465726248105,
+        "predictCollisionKineticChangeJ": -102.36452297557844,
+        "densityCollisionKineticChangeJ": -154.98215467759314,
+        "collisionPositiveChangeJ": 0.3030898665251698,
+        "movingBoundaryWorkJ": 0,
+        "collisionRelativeHeatJ": 257.3465726248105,
+        "negativeCollisionHeatJ": -0.3030898665251698,
+        "note": "signed numerical corrections are not automatically physical work or dissipation"
+      }
+    }
+  ],
+  "fullAcceptance": false,
+  "remaining": "Impact timestep convergence, geometric surface-volume accuracy and RTX performance remain unverified/unresolved. Legacy 4-iteration impact failures remain rejected; no laboratory integration."
+}

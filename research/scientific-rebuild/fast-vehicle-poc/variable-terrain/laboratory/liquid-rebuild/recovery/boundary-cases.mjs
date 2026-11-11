@@ -1,0 +1,22 @@
+import {createServer} from 'node:http';import {readFile,writeFile} from 'node:fs/promises';import {resolve,extname} from 'node:path';import {chromium} from 'playwright';import assert from 'node:assert/strict';
+const stress=process.argv.includes('--stress'),refine=process.argv.includes('--refine'),verify16=process.argv.includes('--verify16'),collisionCheck=process.argv.includes('--collision'),boundaryCheck=process.argv.includes('--verify-boundary'),minimal=process.argv.includes('--minimal');const root=process.cwd(),base='/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/liquid-rebuild/';const cases=[
+ {id:'rest',speed:0,gravity:0,collisions:false,sigma:0,horizon:.3},
+ {id:'rest-16',speed:0,gravity:0,collisions:false,sigma:0,iterations:16,horizon:1},
+ {id:'rest-repeat',speed:0,gravity:0,collisions:false,sigma:0,horizon:.3},
+ {id:'rest-fine',speed:0,gravity:0,collisions:false,sigma:0,spacing:.018,dt:1/480,horizon:.3},
+ {id:'translation',speed:4,gravity:0,collisions:false,sigma:0,horizon:.1},
+ {id:'gravity-open',speed:0,collisions:false,sigma:0,horizon:.1},
+ {id:'cohesion-only',speed:0,gravity:0,collisions:false,sigma:.072,horizon:.3},
+ {id:'floor',speed:0,collisions:'floor',sigma:0,horizon:.4},
+ {id:'floor-half',speed:0,collisions:'floor',sigma:0,dt:1/480,horizon:.4},
+ {id:'floor-8',speed:0,collisions:'floor',sigma:0,iterations:8,horizon:.4},
+ {id:'floor-16',speed:0,collisions:'floor',sigma:0,iterations:16,horizon:.4},
+ {id:'floor-fine',speed:0,collisions:'floor',sigma:0,spacing:.018,dt:1/480,horizon:.4},
+ {id:'floor-long',speed:0,collisions:'floor',sigma:0,horizon:1},
+ {id:'floor-16-long',speed:0,collisions:'floor',sigma:0,iterations:16,horizon:1},
+ {id:'floor-long-fine',speed:0,collisions:'floor',sigma:0,spacing:.018,dt:1/480,horizon:1},
+ {id:'static-paddle',speed:4,gravity:0,collisions:'paddle',sigma:0,horizon:.2},
+ {id:'moving-paddle',speed:0,gravity:0,collisions:'paddle',sigma:0,boundaryVelocity:-2,horizon:.2}
+];
+const server=createServer(async(req,res)=>{try{const path=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);res.setHeader('Content-Type',({'.js':'text/javascript','.wgsl':'text/plain','.html':'text/html'})[extname(path)]||'application/octet-stream');res.end(await readFile(path));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:!process.argv.includes('--headed'),executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/usr/bin/chromium',args:process.argv.includes('--hardware')?[]:['--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--use-angle=swiftshader']});
+try{const page=await browser.newPage();await page.goto(`http://127.0.0.1:${server.address().port}/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/gpu-fixture.html`);const result=await page.evaluate(async base=>{const {createPBF}=await import(base+'pbf.js'),{analyze}=await import(base+'recovery/accounting.js'),adapter=await navigator.gpu.requestAdapter(),device=await adapter.requestDevice(),records=[];for(const kind of ['side','top','side-fast'])for(const sweptBoundary of [false,true]){const start=kind==='top'?[.28,0,.9,1]:[.28,-.4,.4,1],velocity=kind==='top'?[0,0,-4,0]:[0,kind==='side-fast'?300:4,0,0],solver=await createPBF(device,{initialState:{positions:new Float32Array(start),velocities:new Float32Array(velocity),count:1,volume:1e-6},sigma:0,gravity:0,collisions:'paddle',sweptBoundary,iterations:16});const steps=kind==='side-fast'?1:24,encoder=device.createCommandEncoder();for(let i=0;i<steps;i++)solver.step(encoder);device.queue.submit([encoder.finish()]);const state=await solver.readback();records.push({kind,sweptBoundary,position:Array.from(state.positions),velocity:Array.from(state.velocities),accounting:analyze(state,{...solver,boundaryMode:2})});solver.dispose();}device.destroy();return records;},base);for(const kind of ['side','top','side-fast']){const r=result.find(r=>r.kind===kind&&r.sweptBoundary);if(kind==='top')assert.ok(r.position[2]>=.708-1e-6);else assert.ok(r.position[1]<=-.258+1e-6);assert.ok(r.accounting.penetrationMax<1e-6);}await writeFile(new URL('results/boundary-regressions.json',import.meta.url),JSON.stringify(result,null,2));console.log(JSON.stringify(result.map(r=>({kind:r.kind,swept:r.sweptBoundary,p:r.position,penetration:r.accounting.penetrationMax}))));}finally{await browser.close();server.close();}

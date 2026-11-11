@@ -1,0 +1,12 @@
+INITIAL_STATUS A valid external Instance reference no longer exists.
+PAGE_ERRORS []
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 15000ms exceeded.
+    at /workspace/VerletDrift/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/liquid-rebuild/recovery/minimal-browser.mjs:22:359 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
