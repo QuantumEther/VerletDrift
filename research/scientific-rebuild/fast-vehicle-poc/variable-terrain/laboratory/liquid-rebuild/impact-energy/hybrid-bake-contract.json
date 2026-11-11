@@ -1,0 +1,37 @@
+{
+  "status": "PREPARED_NOT_BAKED_NOT_VISUALLY_VALIDATED",
+  "solverCandidate": {
+    "name": "SPlisHSPlasH DFSPH (offline only)",
+    "repository": "https://github.com/InteractiveComputerGraphics/SPlisHSPlasH",
+    "sourceCommitInspected": "dba6b26b9387ab6bdd187d6df0a7c9d490d03500",
+    "evidenceInspected": "README: DFSPH support, partio/vtk export, MIT library license; dependencies have separate licenses",
+    "execution": "NOT RUN; no dependency on Blender; this contract is not a solver-native scene file"
+  },
+  "singleInitialBake": {
+    "radiusM": 0.12,
+    "densityKgM3": 1000,
+    "velocityMps": [4, 0, 0],
+    "gravityMps2": [0, 0, -9.81],
+    "staticGeometry": "horizontal plane and vertical finite paddle, dimensions recorded in scene export",
+    "horizonS": 0.6,
+    "initialState": "relaxed coherent sphere; export actual particle masses and inventory rather than inferring mass from a mesh",
+    "refinement": "halve fixed timestep and compare two particle spacings with identical physical volume and inputs; retain raw trajectories"
+  },
+  "requiredFrameFields": ["timeS", "stableParticleIds", "positionM", "velocityMps", "particleMassKg", "densityKgM3", "bulkSprayDepositClassification", "kineticJ", "gravityPotentialJ", "boundaryWorkJ", "dissipativeWorkJ", "densityResidual", "penetrationM"],
+  "runtimeContract": {
+    "bulk": "GPU interpolation of validated baked positions/velocities and thickness field; no live pressure solve",
+    "secondarySpray": "derive from resolved thinning/ejection in baked motion; inherit local velocity; debit mass from the same bulk identifiers exactly once",
+    "deposit": "landing transfers particle mass into connected world-keyed terrain wetness/height tiles; deposits follow sampled terrain; no decorative volume added",
+    "optics": "existing liquid rendering with measured thickness, dye absorption, Fresnel and HDR; not part of this commit",
+    "bounds": "one event first; fixed frame/particle/tile budgets; no synchronous per-frame GPU readback; no velocity/time scaling without renewed validation",
+    "drying": "explicit evaporation sink; retain residue separately; no abrupt unaccounted disappearance"
+  },
+  "gates": {
+    "mass": "bulk + spray + deposits + explicit sinks = initial mass; relative accounting error <= 1e-4",
+    "energy": "no unexplained gain exceeding 1% of initial available mechanical energy plus signed supplied boundary work; refinement must reduce error; report constraint dissipation separately",
+    "surface": "validate mesh enclosed volume independently of particle mass, including thin sheets; existing 16.6% error is not accepted automatically",
+    "visual": "close-range sequence must show coherent falling/spreading liquid before multiplying events; compare with water-balloon high-speed references",
+    "performance": "measure RTX CPU/GPU timing and frame tails on one event; no speedup claim from software GPU or operation counts",
+    "stop": "failed accounting, nonconvergent motion, inaccessible solver or implausible primary liquid blocks runtime integration; preserve existing balloon effects"
+  }
+}

@@ -1,0 +1,10 @@
+import {readFile,writeFile,readdir} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+const root=new URL('.',import.meta.url),sha=b=>createHash('sha256').update(b).digest('hex'),sources=['../pbf.js','../pbf.wgsl',...(await readdir(root)).filter(n=>/\.(js|mjs|json|md)$/.test(n))],hashes={};
+for(const n of sources)hashes[n]=sha(await readFile(new URL(n,root)));
+for(const n of await readdir(new URL('results/',root)))if(n.endsWith('.json')&&n!=='provenance.json')hashes['results/'+n]=sha(await readFile(new URL('results/'+n,root)));
+const shaderPath='research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/liquid-rebuild/pbf.wgsl';assert.equal(sha(execFileSync('git',['show','188a0c5:'+shaderPath])),hashes['../pbf.wgsl']);
+const result={base:'188a0c5',headDuringCapture:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),branch:execFileSync('git',['branch','--show-current'],{encoding:'utf8'}).trim(),node:process.version,chromium:execFileSync(process.env.CHROMIUM_EXECUTABLE_PATH||'/usr/bin/chromium',['--version'],{encoding:'utf8'}).trim(),environment:'Linux AMD EPYC 9V74; headless Chromium; SwiftShader. No RTX performance or native presentation claim.',baselineShaderUnchanged:true,note:'Working-tree source hashes identify tested implementation before committing; software tests pass while physical impact gate fails.',sha256:hashes};
+assert.equal(result.branch,'PERFORMANCE_2');await writeFile(new URL('results/provenance.json',root),JSON.stringify(result,null,2)+'\n');console.log('Recorded source/result hashes; baseline WGSL unchanged');

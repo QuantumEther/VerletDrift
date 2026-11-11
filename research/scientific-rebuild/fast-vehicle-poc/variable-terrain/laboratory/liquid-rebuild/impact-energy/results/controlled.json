@@ -1,0 +1,1189 @@
+{
+  "records": [
+    {
+      "id": "rest",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 24,
+        "time": 0.1,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 24,
+      "accepted": 24,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 1.3762224671352915e-10,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 1.3762224671352915e-10,
+        "momentum": [
+          0.0000013261027115388227,
+          8.615284636683612e-7,
+          3.2056872012120547e-7
+        ],
+        "maxSpeed": 0.000013500154904630106,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 1.3762224671352915e-10,
+      "pressureKineticChangeJ": 1.3762224650396134e-10,
+      "collisionKineticChangeJ": 0,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 2.0956781085274638e-19,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 45.04583333184322,
+        "median": 46.599999994039536,
+        "p95": 48.79999998211861,
+        "max": 49.599999994039536
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "rest",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 24,
+        "time": 0.1,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 24,
+      "accepted": 24,
+      "rollback": null,
+      "status": [
+        0,
+        1065353216,
+        1,
+        0,
+        24,
+        21,
+        405,
+        0
+      ],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 1.3101200550248576e-10,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 1.3101200550248576e-10,
+        "momentum": [
+          8.627806668404772e-7,
+          4.7083533729446785e-7,
+          6.41137440242411e-7
+        ],
+        "maxSpeed": 0.000012135986459192783,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 1.310120055024858e-10,
+      "pressureKineticChangeJ": 1.3101200441173157e-10,
+      "collisionKineticChangeJ": 0,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 1.0907541925693545e-18,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 103.0750000004967,
+        "median": 102.2000000178814,
+        "p95": 117.19999998807907,
+        "max": 123.40000000596046
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "ground",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 72,
+        "time": 0.3,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 28.456452279307825,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 12.302675657833435,
+        "gravitationalJ": 1.7440432186877664,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 14.0467188765212,
+        "momentum": [
+          0.000009170388885352274,
+          -4.920865823432319e-7,
+          -4.697229748608361
+        ],
+        "maxSpeed": 3.4769545615845434,
+        "maxCompression": 0.00015010864849673844,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 28.456452279307825,
+      "pressureKineticChangeJ": -2.6796345482580364,
+      "collisionKineticChangeJ": -11.973438583674579,
+      "forceKineticChangeJ": 26.95575115084648,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.000002361080431612095,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 45.544444443037115,
+        "median": 45.400000005960464,
+        "p95": 53.69999998807907,
+        "max": 54.900000005960464
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "ground",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 72,
+        "time": 0.3,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [
+        778182872,
+        1065353216,
+        1,
+        0,
+        72,
+        36,
+        1188,
+        958300160
+      ],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 28.456452279307825,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 12.302698856627059,
+        "gravitationalJ": 1.7440418176639996,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 14.046740674291058,
+        "momentum": [
+          0.000013670038654410533,
+          -0.0000028881709546266926,
+          -4.697253715796676
+        ],
+        "maxSpeed": 3.4769656255011046,
+        "maxCompression": 0.0001502229573120406,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 28.456452279307825,
+      "pressureKineticChangeJ": -2.6796290650963783,
+      "collisionKineticChangeJ": -11.973420584003179,
+      "forceKineticChangeJ": 26.955751039087772,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.0000025333611564093417,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 103.48749999991722,
+        "median": 101.7999999821186,
+        "p95": 123,
+        "max": 127.09999999403954
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "static-low",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 144,
+      "accepted": 144,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 1.3028814088404717,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 1.3028814088404717,
+        "momentum": [
+          4.34293785689535,
+          0,
+          0
+        ],
+        "maxSpeed": 0.6000000238418579,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 0.5911115279754566,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0.5911115279754566,
+        "momentum": [
+          0.7191635454521776,
+          0.000012215899553255985,
+          -0.00013023514141963406
+        ],
+        "maxSpeed": 0.7621616348455689,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 1.3028814088404717,
+      "pressureKineticChangeJ": -0.14856568648247048,
+      "collisionKineticChangeJ": -0.5632039191841614,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -2.7519838319278733e-7,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 43.863194443699385,
+        "median": 44.80000001192093,
+        "p95": 51.099999994039536,
+        "max": 55.69999998807907
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "static-low",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 144,
+      "accepted": 144,
+      "rollback": null,
+      "status": [
+        635534071,
+        1048576000,
+        1,
+        0,
+        144,
+        61,
+        2365,
+        884998144
+      ],
+      "initial": {
+        "kineticJ": 1.3028814088404717,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 1.3028814088404717,
+        "momentum": [
+          4.34293785689535,
+          0,
+          0
+        ],
+        "maxSpeed": 0.6000000238418579,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 0.5910856600720586,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0.5910856600720586,
+        "momentum": [
+          0.7191369384136791,
+          0.000011372426554428008,
+          -0.00012310248237830564
+        ],
+        "maxSpeed": 0.7621266557315467,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 1.3028814088404717,
+      "pressureKineticChangeJ": -0.14857306006888393,
+      "collisionKineticChangeJ": -0.5632224351720652,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -2.5352746391149594e-7,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 105.2201388888061,
+        "median": 101.69999998807907,
+        "p95": 139.89999997615814,
+        "max": 239.2999999821186
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "static-fast",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 57.90583579096675,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 57.90583579096675,
+        "momentum": [
+          28.952917895483374,
+          0,
+          0
+        ],
+        "maxSpeed": 4,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 20.573581323988616,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 20.573581323988616,
+        "momentum": [
+          0.16949277967968115,
+          -3.529334522134331e-7,
+          -0.00001892037508413602
+        ],
+        "maxSpeed": 5.165586193579407,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 57.90583579096675,
+      "pressureKineticChangeJ": -2.9967301040887833,
+      "collisionKineticChangeJ": -34.33552217925899,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.000002183630357421862,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 41.71666666865349,
+        "median": 44,
+        "p95": 59.30000001192093,
+        "max": 68.39999997615814
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "static-fast",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [
+        0,
+        1065353216,
+        1,
+        0,
+        36,
+        20,
+        596,
+        0
+      ],
+      "initial": {
+        "kineticJ": 57.90583579096675,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 57.90583579096675,
+        "momentum": [
+          28.952917895483374,
+          0,
+          0
+        ],
+        "maxSpeed": 4,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 20.57358270537607,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 20.57358270537607,
+        "momentum": [
+          0.16948909313916538,
+          0.0000011734412488709212,
+          -0.000016756536080332618
+        ],
+        "maxSpeed": 5.165566192443858,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 57.90583579096675,
+      "pressureKineticChangeJ": -2.996732670813799,
+      "collisionKineticChangeJ": -34.335517744068056,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.000002670708823870882,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 101.69444444444444,
+        "median": 99.90000000596046,
+        "p95": 131.80000001192093,
+        "max": 153
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "moving",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": -2,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 10.437014014630698,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 10.437014014630698,
+        "momentum": [
+          -8.599999460172079,
+          7.029626638167114e-7,
+          -0.000022830790324664813
+        ],
+        "maxSpeed": 3.2345340779519516,
+        "maxCompression": 0.00000696866214977554,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 10.437014014630696,
+      "pressureKineticChangeJ": -1.248451408406254,
+      "collisionKineticChangeJ": 11.68546546320431,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 17.200050844088,
+      "kineticBudgetResidualJ": -4.0167357440168416e-8,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 46.20277777810892,
+        "median": 45.900000005960464,
+        "p95": 52,
+        "max": 58.79999998211861
+      },
+      "result": "COMPLETED (signed boundary-work review required)"
+    },
+    {
+      "id": "moving",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 2,
+        "boundaryVelocity": -2,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [
+        734543266,
+        1065353216,
+        1,
+        0,
+        36,
+        14,
+        590,
+        922877952
+      ],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 10.436985322872173,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 10.436985322872173,
+        "momentum": [
+          -8.59996598611706,
+          -8.172344105692592e-7,
+          -0.00002667761520984413
+        ],
+        "maxSpeed": 3.2345445706225107,
+        "maxCompression": 0.00000669725707336255,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 10.436985322872173,
+      "pressureKineticChangeJ": -1.24844814685639,
+      "collisionKineticChangeJ": 11.68543416634202,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 17.19998363807208,
+      "kineticBudgetResidualJ": -6.96613456696582e-7,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 103.16944444262319,
+        "median": 101.7000000178814,
+        "p95": 126.7999999821186,
+        "max": 128.69999998807907
+      },
+      "result": "COMPLETED (signed boundary-work review required)"
+    },
+    {
+      "id": "violent",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 521.1525221187067,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0.002524681592720966,
+        "mechanicalJ": 549.6114990796071,
+        "momentum": [
+          86.85875368645034,
+          0,
+          0
+        ],
+        "maxSpeed": 12,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 140.0941629731784,
+        "gravitationalJ": 32.80357010347995,
+        "cohesionPotentialJ": 0.010641341688920778,
+        "mechanicalJ": 172.90837441834728,
+        "momentum": [
+          -0.8121055392688676,
+          0.000004916138687506566,
+          6.674869189517573
+        ],
+        "maxSpeed": 15.551139145662797,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 549.6089743980144,
+      "pressureKineticChangeJ": 149.09805149026215,
+      "collisionKineticChangeJ": -526.2880091971019,
+      "forceKineticChangeJ": -3.868402609601617,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 0.0000011709131513271132,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 27.558333333995606,
+        "median": 23.599999994039536,
+        "p95": 46.5,
+        "max": 47
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "violent",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 36,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 36,
+      "accepted": 36,
+      "rollback": null,
+      "status": [
+        0,
+        1065353216,
+        1,
+        0,
+        36,
+        12,
+        588,
+        0
+      ],
+      "initial": {
+        "kineticJ": 521.1525221187067,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0.002524681592720966,
+        "mechanicalJ": 549.6114990796071,
+        "momentum": [
+          86.85875368645034,
+          0,
+          0
+        ],
+        "maxSpeed": 12,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 152.73906217966996,
+        "gravitationalJ": 33.10053985542691,
+        "cohesionPotentialJ": 0.010679732557266787,
+        "mechanicalJ": 185.85028176765414,
+        "momentum": [
+          -0.8345942064856564,
+          0.000005914075854471235,
+          6.578854246963322
+        ],
+        "maxSpeed": 15.185623436665711,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 549.6089743980144,
+      "pressureKineticChangeJ": 155.31827568262815,
+      "collisionKineticChangeJ": -519.562723735813,
+      "forceKineticChangeJ": -4.169009370962158,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.0000025148896156679257,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 80.26666666732893,
+        "median": 78.19999998807907,
+        "p95": 107.7999999821186,
+        "max": 115.09999999403954
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "violent-half",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 72,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.0020833333333333333,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 521.1525221187067,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0.002524681592720966,
+        "mechanicalJ": 549.6114990796071,
+        "momentum": [
+          86.85875368645034,
+          0,
+          0
+        ],
+        "maxSpeed": 12,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 107.85927486084567,
+        "gravitationalJ": 31.0347846281822,
+        "cohesionPotentialJ": 0.010306197137460234,
+        "mechanicalJ": 138.90436568616533,
+        "momentum": [
+          -0.23061882009161752,
+          0.000021959209168420646,
+          4.910429832136975
+        ],
+        "maxSpeed": 11.716221480338021,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 549.6089743980144,
+      "pressureKineticChangeJ": -33.752113215625286,
+      "collisionKineticChangeJ": -377.1649228883907,
+      "forceKineticChangeJ": -2.3762194789014757,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 0.000008325056512603624,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 28.031944444196093,
+        "median": 24.099999994039536,
+        "p95": 46.400000005960464,
+        "max": 53.29999998211861
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "violent-half",
+      "guard": true,
+      "config": {
+        "count": 323,
+        "steps": 72,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.0020833333333333333,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [
+        0,
+        1065353216,
+        1,
+        0,
+        72,
+        51,
+        1203,
+        0
+      ],
+      "initial": {
+        "kineticJ": 521.1525221187067,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0.002524681592720966,
+        "mechanicalJ": 549.6114990796071,
+        "momentum": [
+          86.85875368645034,
+          0,
+          0
+        ],
+        "maxSpeed": 12,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 107.86488365717629,
+        "gravitationalJ": 31.03468403803348,
+        "cohesionPotentialJ": 0.010304310585039124,
+        "mechanicalJ": 138.90987200579482,
+        "momentum": [
+          -0.23714047016125755,
+          0.000021832359116361055,
+          4.910702861868965
+        ],
+        "maxSpeed": 11.716301190438331,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 549.6089743980144,
+      "pressureKineticChangeJ": -33.7411999553442,
+      "collisionKineticChangeJ": -377.17037841002457,
+      "forceKineticChangeJ": -2.3760836224537343,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 0.000023526292125097825,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 86.77083333250549,
+        "median": 83.40000000596046,
+        "p95": 113.7999999821186,
+        "max": 152.2000000178814
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "fine",
+      "guard": false,
+      "config": {
+        "count": 1229,
+        "steps": 72,
+        "time": 0.15,
+        "iterations": 16,
+        "dt": 0.0020833333333333333,
+        "gravity": -9.81,
+        "constraintDensity": 1007.0355103383393,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.238229473870883,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": false,
+        "maxLineSearchTrials": 0
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 57.90583579096625,
+        "gravitationalJ": 28.439904800203397,
+        "cohesionPotentialJ": 0.004166420831678109,
+        "mechanicalJ": 86.34990701200132,
+        "momentum": [
+          28.952917895483125,
+          0,
+          0
+        ],
+        "maxSpeed": 4,
+        "maxCompression": 3.7406039443688144e-7,
+        "count": 1229,
+        "mass": 7.238229473870883
+      },
+      "final": {
+        "kineticJ": 21.476777613968284,
+        "gravitationalJ": 21.02008624760772,
+        "cohesionPotentialJ": 0.0169885418347913,
+        "mechanicalJ": 42.513852403410795,
+        "momentum": [
+          -0.09296225073879814,
+          0.00001602813625479517,
+          -7.785647394597163
+        ],
+        "maxSpeed": 6.285458457209848,
+        "maxCompression": 0,
+        "count": 1229,
+        "mass": 7.238229473870883
+      },
+      "peakEnergyJ": 86.34574059116964,
+      "pressureKineticChangeJ": 0.0721161081455648,
+      "collisionKineticChangeJ": -43.858125100901816,
+      "forceKineticChangeJ": 7.356953971582698,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.000003155824416012365,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 189.5513888883094,
+        "median": 212.80000001192093,
+        "p95": 269.7999999821186,
+        "max": 279.40000000596046
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "fine",
+      "guard": true,
+      "config": {
+        "count": 1229,
+        "steps": 3,
+        "time": 0.00625,
+        "iterations": 16,
+        "dt": 0.0020833333333333333,
+        "gravity": -9.81,
+        "constraintDensity": 1007.0355103383393,
+        "sweptBoundary": true,
+        "collisions": 3,
+        "boundaryVelocity": 0,
+        "sigma": 0.072,
+        "nominalMass": 7.238229473870883,
+        "nominalVolume": 0.007238229473870882,
+        "safeguardedProjection": true,
+        "maxLineSearchTrials": 6
+      },
+      "requested": 72,
+      "accepted": 2,
+      "rollback": true,
+      "status": [
+        621543048,
+        1015021568,
+        0,
+        1,
+        2,
+        11,
+        50,
+        872415232
+      ],
+      "initial": {
+        "kineticJ": 57.90583579096625,
+        "gravitationalJ": 28.439904800203397,
+        "cohesionPotentialJ": 0.004166420831678109,
+        "mechanicalJ": 86.34990701200132,
+        "momentum": [
+          28.952917895483125,
+          0,
+          0
+        ],
+        "maxSpeed": 4,
+        "maxCompression": 3.7406039443688144e-7,
+        "count": 1229,
+        "mass": 7.238229473870883
+      },
+      "final": {
+        "kineticJ": 57.91188891406244,
+        "gravitationalJ": 28.430834141342977,
+        "cohesionPotentialJ": 0.0041654282541084145,
+        "mechanicalJ": 86.34688848365953,
+        "momentum": [
+          28.952919049713575,
+          2.369528818810033e-7,
+          -0.2958831397846518
+        ],
+        "maxSpeed": 4.001270418791893,
+        "maxCompression": 0,
+        "count": 1229,
+        "mass": 7.238229473870883
+      },
+      "peakEnergyJ": 86.34574059116964,
+      "pressureKineticChangeJ": 0.0000024475157260894775,
+      "collisionKineticChangeJ": 0.000005315989255905151,
+      "forceKineticChangeJ": 0.013606846332550049,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": null,
+      "ledgerScope": "Includes rejected attempted stage; not the accepted-state budget",
+      "completionMs": {
+        "mean": 363.70000000794727,
+        "median": 373.5,
+        "p95": 435.2000000178814,
+        "max": 435.2000000178814
+      },
+      "result": "REJECTED"
+    }
+  ],
+  "errors": [],
+  "environment": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "adapter": {
+      "vendor": "google",
+      "description": ""
+    }
+  },
+  "timingScope": "CPU encode + queue completion; software GPU; excludes readback/accounting; includes all failed attempts, not hardware throughput"
+}

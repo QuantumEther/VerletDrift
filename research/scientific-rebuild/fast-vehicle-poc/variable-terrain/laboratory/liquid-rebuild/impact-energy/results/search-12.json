@@ -1,0 +1,140 @@
+{
+  "mode": "trace",
+  "found": false,
+  "search": [
+    {
+      "step": 1,
+      "energyJ": 549.5921032145131,
+      "maxDelta": 9.624752692616312e-07
+    },
+    {
+      "step": 25,
+      "energyJ": 313.25487324814543,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 49,
+      "energyJ": 195.45167007341502,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 73,
+      "energyJ": 173.10173240187274,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 97,
+      "energyJ": 164.66219199939903,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 121,
+      "energyJ": 161.95534607154107,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 145,
+      "energyJ": 159.4582551964373,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 169,
+      "energyJ": 157.83099827372953,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 193,
+      "energyJ": 156.71080237498666,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 217,
+      "energyJ": 155.7457840757141,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 241,
+      "energyJ": 155.00751120491762,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 265,
+      "energyJ": 154.27369602021383,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 289,
+      "energyJ": 153.8676932732767,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 313,
+      "energyJ": 153.34702174093988,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 337,
+      "energyJ": 152.6511199286872,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 361,
+      "energyJ": 151.76744974431745,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 385,
+      "energyJ": 151.15091537552803,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 409,
+      "energyJ": 150.74499467275922,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 433,
+      "energyJ": 150.0823711699254,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 457,
+      "energyJ": 149.60118955548833,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 481,
+      "energyJ": 149.1258368576911,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 505,
+      "energyJ": 148.5333324850884,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 529,
+      "energyJ": 148.07232977053332,
+      "maxDelta": 0.015790943056344986
+    },
+    {
+      "step": 553,
+      "energyJ": 147.4874090503289,
+      "maxDelta": 0.015790943056344986
+    }
+  ],
+  "errors": [],
+  "options": {
+    "speed": 12,
+    "spacing": 0.018,
+    "dt": 0.0010416666666666667,
+    "iterations": 16,
+    "collisions": "scene",
+    "sigma": 0.072,
+    "discreteRestDensity": true,
+    "sweptBoundary": true
+  },
+  "criterion": "first E > 1.10 initial kinetic + gravitational energy",
+  "horizonSeconds": 0.6,
+  "environment": "Headless Chromium 154; SwiftShader (not RTX hardware)"
+}

@@ -1,0 +1,147 @@
+{
+  "records": [
+    {
+      "id": "rest",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 24,
+        "time": 0.1,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": 0,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "requested": 24,
+      "accepted": 24,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 0,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 1.3505744355292265e-10,
+        "gravitationalJ": 0,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 1.3505744355292265e-10,
+        "momentum": [
+          0.0000011683227520902338,
+          5.10906421258946e-7,
+          6.41137440242411e-7
+        ],
+        "maxSpeed": 0.000013500154904630106,
+        "maxCompression": 0,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 1.3505744355292268e-10,
+      "pressureKineticChangeJ": 1.350574425422324e-10,
+      "collisionKineticChangeJ": 0,
+      "forceKineticChangeJ": 0,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": 1.0106902437070047e-18,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 45.037499997764826,
+        "median": 44.400000005960464,
+        "p95": 52.69999998807907,
+        "max": 58.79999998211861
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    },
+    {
+      "id": "ground",
+      "guard": false,
+      "config": {
+        "count": 323,
+        "steps": 72,
+        "time": 0.3,
+        "iterations": 16,
+        "dt": 0.004166666666666667,
+        "gravity": -9.81,
+        "constraintDensity": 1000.9430861505712,
+        "sweptBoundary": true,
+        "collisions": 1,
+        "boundaryVelocity": 0,
+        "sigma": 0,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "requested": 72,
+      "accepted": 72,
+      "rollback": null,
+      "status": [],
+      "initial": {
+        "kineticJ": 0,
+        "gravitationalJ": 28.456452279307825,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 28.456452279307825,
+        "momentum": [
+          0,
+          0,
+          0
+        ],
+        "maxSpeed": 0,
+        "maxCompression": 1.8615684127532006e-7,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "final": {
+        "kineticJ": 12.302686600933626,
+        "gravitationalJ": 1.7440402493690927,
+        "cohesionPotentialJ": 0,
+        "mechanicalJ": 14.046726850302719,
+        "momentum": [
+          0.00000623818668705838,
+          6.315736381101722e-7,
+          -4.697255873625012
+        ],
+        "maxSpeed": 3.4769663926900876,
+        "maxCompression": 0.00014995783301863241,
+        "count": 323,
+        "mass": 7.2382294738708834
+      },
+      "peakEnergyJ": 28.456452279307825,
+      "pressureKineticChangeJ": -2.6796503514051437,
+      "collisionKineticChangeJ": -11.973413847863412,
+      "forceKineticChangeJ": 26.955752722918987,
+      "boundaryWorkJ": 0,
+      "kineticBudgetResidualJ": -0.0000019227168053248533,
+      "ledgerScope": "Accepted trajectory budget",
+      "completionMs": {
+        "mean": 45.069444443616604,
+        "median": 44.79999998211861,
+        "p95": 54.30000001192093,
+        "max": 63.099999994039536
+      },
+      "result": "COMPLETED (not a visual acceptance)"
+    }
+  ],
+  "errors": [],
+  "environment": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "adapter": {
+      "vendor": "google",
+      "description": ""
+    }
+  },
+  "timingScope": "CPU encode + queue completion; software GPU; excludes readback/accounting; includes all failed attempts, not hardware throughput"
+}

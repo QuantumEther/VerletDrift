@@ -1,0 +1,335 @@
+{
+  "sourceBase": "188a0c5",
+  "physicalImpactAcceptance": "FAIL",
+  "experimentalCorrection": "REJECTED: density-objective decrease does not bound kinetic energy",
+  "decision": "STOP extending this live PBF pilot; prepare offline-baked hybrid",
+  "budgets": [
+    {
+      "dt": 0.004166666666666667,
+      "boundaryVelocity": 0,
+      "initialKineticJ": 9.752878182530218,
+      "finalKineticJ": 69377.83283768855,
+      "forceChangeJ": 0,
+      "projectionChangeJ": 140984.32528243295,
+      "collisionChangeJ": -71616.22776853836,
+      "movingWallWorkJ": 0,
+      "proxyToActualAndFloatAccumulationResidualJ": -0.017554388570715673,
+      "maxCorrectionM": 8.712492942810059,
+      "maxPenetrationM": 0
+    },
+    {
+      "dt": 0.004166666666666667,
+      "boundaryVelocity": -2,
+      "initialKineticJ": 7.351238129489301,
+      "finalKineticJ": 69464.63669405968,
+      "forceChangeJ": 0,
+      "projectionChangeJ": 140849.7151209993,
+      "collisionChangeJ": -71392.42202706194,
+      "movingWallWorkJ": 156.1032318659313,
+      "proxyToActualAndFloatAccumulationResidualJ": -0.007638007155037485,
+      "maxCorrectionM": 8.704813957214355,
+      "maxPenetrationM": 1.0299682617898043e-7
+    },
+    {
+      "dt": 0.0020833333333333333,
+      "boundaryVelocity": 0,
+      "initialKineticJ": 9.752878182530218,
+      "finalKineticJ": 4.795249946925663,
+      "forceChangeJ": 0,
+      "projectionChangeJ": -0.6383536852585037,
+      "collisionChangeJ": -4.319272897131743,
+      "movingWallWorkJ": 0,
+      "proxyToActualAndFloatAccumulationResidualJ": -0.0000016532143076730677,
+      "maxCorrectionM": 0.008708835579454899,
+      "maxPenetrationM": 0
+    },
+    {
+      "dt": 0.0020833333333333333,
+      "boundaryVelocity": -2,
+      "initialKineticJ": 7.351238129489301,
+      "finalKineticJ": 3.143683241754405,
+      "forceChangeJ": 0,
+      "projectionChangeJ": -0.6383531392249964,
+      "collisionChangeJ": -3.5692008369276502,
+      "movingWallWorkJ": 0.7500312059862266,
+      "proxyToActualAndFloatAccumulationResidualJ": -9.115822496852388e-7,
+      "maxCorrectionM": 0.008708717301487923,
+      "maxPenetrationM": 2.6623407922699016e-9
+    },
+    {
+      "dt": 0.0010416666666666667,
+      "boundaryVelocity": 0,
+      "initialKineticJ": 9.752878182530218,
+      "finalKineticJ": 3.4827511093747123,
+      "forceChangeJ": 0,
+      "projectionChangeJ": -0.7615886813688091,
+      "collisionChangeJ": -5.5085344710279625,
+      "movingWallWorkJ": 0,
+      "proxyToActualAndFloatAccumulationResidualJ": -0.000003920758733677587,
+      "maxCorrectionM": 0.004365007858723402,
+      "maxPenetrationM": 0
+    },
+    {
+      "dt": 0.0010416666666666667,
+      "boundaryVelocity": -2,
+      "initialKineticJ": 7.351238129489301,
+      "finalKineticJ": 2.3145820622169553,
+      "forceChangeJ": 0,
+      "projectionChangeJ": -0.7615376705190333,
+      "collisionChangeJ": -4.27511513411361,
+      "movingWallWorkJ": 1.2333779231319686,
+      "proxyToActualAndFloatAccumulationResidualJ": -0.0000032626397032942123,
+      "maxCorrectionM": 0.004364990163594484,
+      "maxPenetrationM": 6.755193071583676e-10
+    }
+  ],
+  "controls": [
+    {
+      "id": "rest",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 24,
+      "requested": 24,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 45.04583333184322,
+        "median": 46.599999994039536,
+        "p95": 48.79999998211861,
+        "max": 49.599999994039536
+      }
+    },
+    {
+      "id": "rest",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 24,
+      "requested": 24,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 103.0750000004967,
+        "median": 102.2000000178814,
+        "p95": 117.19999998807907,
+        "max": 123.40000000596046
+      }
+    },
+    {
+      "id": "ground",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 72,
+      "requested": 72,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 45.544444443037115,
+        "median": 45.400000005960464,
+        "p95": 53.69999998807907,
+        "max": 54.900000005960464
+      }
+    },
+    {
+      "id": "ground",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 72,
+      "requested": 72,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 103.48749999991722,
+        "median": 101.7999999821186,
+        "p95": 123,
+        "max": 127.09999999403954
+      }
+    },
+    {
+      "id": "static-low",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 144,
+      "requested": 144,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 43.863194443699385,
+        "median": 44.80000001192093,
+        "p95": 51.099999994039536,
+        "max": 55.69999998807907
+      }
+    },
+    {
+      "id": "static-low",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 144,
+      "requested": 144,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 105.2201388888061,
+        "median": 101.69999998807907,
+        "p95": 139.89999997615814,
+        "max": 239.2999999821186
+      }
+    },
+    {
+      "id": "static-fast",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 41.71666666865349,
+        "median": 44,
+        "p95": 59.30000001192093,
+        "max": 68.39999997615814
+      }
+    },
+    {
+      "id": "static-fast",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 101.69444444444444,
+        "median": 99.90000000596046,
+        "p95": 131.80000001192093,
+        "max": 153
+      }
+    },
+    {
+      "id": "moving",
+      "guard": false,
+      "result": "COMPLETED (signed boundary-work review required)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 46.20277777810892,
+        "median": 45.900000005960464,
+        "p95": 52,
+        "max": 58.79999998211861
+      }
+    },
+    {
+      "id": "moving",
+      "guard": true,
+      "result": "COMPLETED (signed boundary-work review required)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 103.16944444262319,
+        "median": 101.7000000178814,
+        "p95": 126.7999999821186,
+        "max": 128.69999998807907
+      }
+    },
+    {
+      "id": "violent",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 27.558333333995606,
+        "median": 23.599999994039536,
+        "p95": 46.5,
+        "max": 47
+      }
+    },
+    {
+      "id": "violent",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 36,
+      "requested": 36,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 80.26666666732893,
+        "median": 78.19999998807907,
+        "p95": 107.7999999821186,
+        "max": 115.09999999403954
+      }
+    },
+    {
+      "id": "violent-half",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 72,
+      "requested": 72,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 28.031944444196093,
+        "median": 24.099999994039536,
+        "p95": 46.400000005960464,
+        "max": 53.29999998211861
+      }
+    },
+    {
+      "id": "violent-half",
+      "guard": true,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 72,
+      "requested": 72,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 86.77083333250549,
+        "median": 83.40000000596046,
+        "p95": 113.7999999821186,
+        "max": 152.2000000178814
+      }
+    },
+    {
+      "id": "fine",
+      "guard": false,
+      "result": "COMPLETED (not a visual acceptance)",
+      "accepted": 72,
+      "requested": 72,
+      "rejectionCode": 0,
+      "rollback": null,
+      "completionMs": {
+        "mean": 189.5513888883094,
+        "median": 212.80000001192093,
+        "p95": 269.7999999821186,
+        "max": 279.40000000596046
+      }
+    },
+    {
+      "id": "fine",
+      "guard": true,
+      "result": "REJECTED",
+      "accepted": 2,
+      "requested": 72,
+      "rejectionCode": 1,
+      "rollback": true,
+      "completionMs": {
+        "mean": 363.70000000794727,
+        "median": 373.5,
+        "p95": 435.2000000178814,
+        "max": 435.2000000178814
+      }
+    }
+  ],
+  "limitations": [
+    "Four-marker counterexample is adversarial, not a calibrated splash",
+    "No visual-realism acceptance or RTX hardware performance claim",
+    "Reconstruction geometric-volume error 16.6% remains separate",
+    "Rejected attempts retain diagnostic ledger entries; only particle x/v are transactional",
+    "Cloud timings include CPU encoding and software GPU completion; no GPU timestamp separation"
+  ]
+}
