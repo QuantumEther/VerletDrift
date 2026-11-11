@@ -1,0 +1,266 @@
+{
+  "records": [
+    {
+      "speed": 0.6,
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.004166666666666667,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "fieldVolume": 0.004832064306363465,
+      "fieldVolumeRelativeError": -0.33242454887529854,
+      "states": [
+        {
+          "step": 0,
+          "time": 0,
+          "finite": true,
+          "momentum": [
+            4.34293785689535,
+            0,
+            0
+          ],
+          "kineticJ": 1.3028814088404717,
+          "minZ": 0.30799999833106995,
+          "maxZ": 0.5040000081062317,
+          "cpuEncodeMs": 1,
+          "gpuBatchMs": 951.843377,
+          "stepsInBatch": 0,
+          "queueCompletionWaitMs": 966.0999999940395
+        },
+        {
+          "step": 24,
+          "time": 0.1,
+          "finite": true,
+          "momentum": [
+            4.342935437937082,
+            0.000001209669025412308,
+            -7.100764026725877
+          ],
+          "kineticJ": 4.7860443821164536,
+          "minZ": 0.256665974855423,
+          "maxZ": 0.4529561996459961,
+          "cpuEncodeMs": 1,
+          "gpuBatchMs": 1066.607665,
+          "stepsInBatch": 24,
+          "queueCompletionWaitMs": 1071.5
+        },
+        {
+          "step": 72,
+          "time": 0.3,
+          "finite": true,
+          "momentum": [
+            1.4363701840531509,
+            0.00000300049001837957,
+            -3.788199972651222
+          ],
+          "kineticJ": 11.00756958211943,
+          "minZ": 0.00800000037997961,
+          "maxZ": 0.08913566917181015,
+          "cpuEncodeMs": 0.9000000059604645,
+          "gpuBatchMs": 1316.570231,
+          "stepsInBatch": 48,
+          "queueCompletionWaitMs": 1321.0999999940395
+        },
+        {
+          "step": 144,
+          "time": 0.6,
+          "finite": true,
+          "momentum": [
+            -0.43526806923981515,
+            0.11781587711770987,
+            0
+          ],
+          "kineticJ": 4.679774574264279,
+          "minZ": 0.00800000037997961,
+          "maxZ": 0.00800000037997961,
+          "cpuEncodeMs": 1.0999999940395355,
+          "gpuBatchMs": 1343.963403,
+          "stepsInBatch": 72,
+          "queueCompletionWaitMs": 1351
+        }
+      ]
+    },
+    {
+      "speed": 4,
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.004166666666666667,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "fieldVolume": 0.00458609263971448,
+      "fieldVolumeRelativeError": -0.3664068462778487,
+      "states": [
+        {
+          "step": 0,
+          "time": 0,
+          "finite": true,
+          "momentum": [
+            28.952917895483374,
+            0,
+            0
+          ],
+          "kineticJ": 57.90583579096675,
+          "minZ": 0.30799999833106995,
+          "maxZ": 0.5040000081062317,
+          "cpuEncodeMs": 0.20000001788139343,
+          "gpuBatchMs": 976.610043,
+          "stepsInBatch": 0,
+          "queueCompletionWaitMs": 1008.6999999880791
+        },
+        {
+          "step": 24,
+          "time": 0.1,
+          "finite": true,
+          "momentum": [
+            3.0838171641458367,
+            9.643828454142245e-7,
+            -7.100742978127061
+          ],
+          "kineticJ": 26.134275887643795,
+          "minZ": 0.0594964399933815,
+          "maxZ": 0.6340638995170593,
+          "cpuEncodeMs": 2.100000023841858,
+          "gpuBatchMs": 1223.902632,
+          "stepsInBatch": 24,
+          "queueCompletionWaitMs": 1227.3999999761581
+        },
+        {
+          "step": 72,
+          "time": 0.3,
+          "finite": true,
+          "momentum": [
+            -0.6471336071524734,
+            0.2628543424612702,
+            -4.584322971201553
+          ],
+          "kineticJ": 14.38560109408973,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.15550696849823,
+          "cpuEncodeMs": 0.8999999761581421,
+          "gpuBatchMs": 1130.66984,
+          "stepsInBatch": 48,
+          "queueCompletionWaitMs": 1136.6000000238419
+        },
+        {
+          "step": 144,
+          "time": 0.6,
+          "finite": true,
+          "momentum": [
+            -0.46638819322697045,
+            0.1397614836027306,
+            -1.4209006609613157
+          ],
+          "kineticJ": 7.331853897782001,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.201799750328064,
+          "cpuEncodeMs": 1.100000023841858,
+          "gpuBatchMs": 1349.673825,
+          "stepsInBatch": 72,
+          "queueCompletionWaitMs": 1359.3999999761581
+        }
+      ]
+    },
+    {
+      "speed": 12,
+      "config": {
+        "count": 323,
+        "steps": 144,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.004166666666666667,
+        "nominalMass": 7.2382294738708834,
+        "nominalVolume": 0.007238229473870882
+      },
+      "fieldVolume": 0.004420003875158728,
+      "fieldVolumeRelativeError": -0.3893528947770448,
+      "states": [
+        {
+          "step": 0,
+          "time": 0,
+          "finite": true,
+          "momentum": [
+            86.85875368645034,
+            0,
+            0
+          ],
+          "kineticJ": 521.1525221187067,
+          "minZ": 0.30799999833106995,
+          "maxZ": 0.5040000081062317,
+          "cpuEncodeMs": 0.30000001192092896,
+          "gpuBatchMs": 927.597994,
+          "stepsInBatch": 0,
+          "queueCompletionWaitMs": 929.0999999940395
+        },
+        {
+          "step": 24,
+          "time": 0.1,
+          "finite": true,
+          "momentum": [
+            -0.8007894769925057,
+            -0.2026123205087082,
+            8.929992947023633
+          ],
+          "kineticJ": 124.05845573472907,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.5920000076293945,
+          "cpuEncodeMs": 0.7999999821186066,
+          "gpuBatchMs": 1016.772748,
+          "stepsInBatch": 24,
+          "queueCompletionWaitMs": 1019.7000000178814
+        },
+        {
+          "step": 72,
+          "time": 0.3,
+          "finite": true,
+          "momentum": [
+            -0.03648416865598236,
+            0.6175247924448586,
+            -2.244096988546585
+          ],
+          "kineticJ": 15.062598932351358,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.5920000076293945,
+          "cpuEncodeMs": 0.5999999940395355,
+          "gpuBatchMs": 1205.618987,
+          "stepsInBatch": 48,
+          "queueCompletionWaitMs": 1210.5999999940395
+        },
+        {
+          "step": 144,
+          "time": 0.6,
+          "finite": true,
+          "momentum": [
+            -6.750514738936459,
+            -9.753553412277775,
+            -7.662363335721522
+          ],
+          "kineticJ": 3039.426196107395,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.5902965068817139,
+          "cpuEncodeMs": 1.100000023841858,
+          "gpuBatchMs": 1225.638981,
+          "stepsInBatch": 72,
+          "queueCompletionWaitMs": 1232.0999999940395
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "environment": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "adapter": {
+      "vendor": "google",
+      "description": ""
+    },
+    "timestampSupported": true,
+    "measurement": "queue completion wait is not GPU timestamp or presentation latency; readbacks are validation-only"
+  }
+}

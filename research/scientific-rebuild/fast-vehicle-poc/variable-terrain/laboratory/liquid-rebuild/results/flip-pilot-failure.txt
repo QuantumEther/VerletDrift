@@ -1,0 +1,9 @@
+Fatal Python error: PyImport_AppendInittab: PyImport_AppendInittab() may not be called after Py_Initialize()
+Python runtime state: initialized
+
+Current thread 0x00007f420c25fc80 (most recent call first):
+  File "/usr/share/blender/scripts/modules/bpy/ops.py", line 68 in _view_layer_update
+  File "/usr/share/blender/scripts/modules/bpy/ops.py", line 103 in __call__
+  File "/workspace/VerletDrift/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/liquid-rebuild/bake-flip.py", line 22 in <module>
+
+Extension modules: _freestyle, bpy.props, bpy.app.icons, bpy.app.timers, bpy.utils.units, bpy.types, mathutils.geometry, mathutils.interpolate, mathutils.noise, mathutils, idprop, bmesh.ops, bmesh.utils, bmesh.geometry, bmesh, _cycles (total: 16)

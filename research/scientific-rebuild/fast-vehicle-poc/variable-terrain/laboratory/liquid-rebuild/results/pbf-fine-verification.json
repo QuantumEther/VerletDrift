@@ -1,0 +1,98 @@
+{
+  "records": [
+    {
+      "speed": 4,
+      "config": {
+        "count": 1229,
+        "steps": 288,
+        "time": 0.6,
+        "iterations": 4,
+        "dt": 0.0020833333333333333,
+        "nominalMass": 7.238229473870883,
+        "nominalVolume": 0.007238229473870882
+      },
+      "fieldVolume": 0.004220342823476703,
+      "fieldVolumeRelativeError": -0.4169371337684691,
+      "states": [
+        {
+          "step": 0,
+          "time": 0,
+          "finite": true,
+          "momentum": [
+            28.952917895483125,
+            0,
+            0
+          ],
+          "kineticJ": 57.90583579096625,
+          "minZ": 0.2980000078678131,
+          "maxZ": 0.5139999985694885,
+          "cpuEncodeMs": 0.800000011920929,
+          "gpuBatchMs": 1108.9107,
+          "stepsInBatch": 0,
+          "queueCompletionWaitMs": 1130.300000011921
+        },
+        {
+          "step": 48,
+          "time": 0.1,
+          "finite": true,
+          "momentum": [
+            1.940748550144255,
+            0.0000011542053695847918,
+            -7.100750807196017
+          ],
+          "kineticJ": 25.67370912614302,
+          "minZ": 0.06385864317417145,
+          "maxZ": 0.6347751021385193,
+          "cpuEncodeMs": 1.2999999821186066,
+          "gpuBatchMs": 3577.476663,
+          "stepsInBatch": 48,
+          "queueCompletionWaitMs": 3585.5
+        },
+        {
+          "step": 144,
+          "time": 0.3,
+          "finite": true,
+          "momentum": [
+            -3.267578984293088,
+            -0.6790719088347452,
+            -0.8732456989240973
+          ],
+          "kineticJ": 536.3183959135241,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.090168833732605,
+          "cpuEncodeMs": 1.5,
+          "gpuBatchMs": 3230.643909,
+          "stepsInBatch": 96,
+          "queueCompletionWaitMs": 3248.4000000059605
+        },
+        {
+          "step": 288,
+          "time": 0.6,
+          "finite": true,
+          "momentum": [
+            1.9422894807848128,
+            -1.701772337936686,
+            -1.987717840577576
+          ],
+          "kineticJ": 518.6916326608892,
+          "minZ": 0.00800000037997961,
+          "maxZ": 1.586212158203125,
+          "cpuEncodeMs": 1.899999976158142,
+          "gpuBatchMs": 3476.110004,
+          "stepsInBatch": 144,
+          "queueCompletionWaitMs": 3494.7000000178814
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "environment": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "adapter": {
+      "vendor": "google",
+      "description": ""
+    },
+    "timestampSupported": true,
+    "measurement": "queue completion wait is not GPU timestamp or presentation latency; readbacks are validation-only"
+  }
+}

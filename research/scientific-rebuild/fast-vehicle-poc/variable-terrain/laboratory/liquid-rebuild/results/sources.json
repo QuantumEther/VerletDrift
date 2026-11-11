@@ -1,0 +1,25 @@
+{
+  "sourceBaseCommit": "65991a0",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/InteractiveComputerGraphics/PositionBasedDynamics/master/PositionBasedDynamics/PositionBasedFluids.cpp",
+      "status": "READ: independent implementation, not the 2013 paper",
+      "sha256": "6fc214b056526faff99ae1e59fcdae88721f1e5330b0f483338f9c118597c743"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NVIDIAGameWorks/FleX/master/doc/manual.html",
+      "status": "READ: official implementation documentation; fluid, rendering and collision sections",
+      "sha256": "428f6f8c82d5fb9f6f26b344270b886c2a82027734a8a410465090dc8d023b3b"
+    },
+    {
+      "url": "https://mmacklin.com/pbf_sig_preprint.pdf",
+      "status": "UNAVAILABLE: HTTP 403 network policy",
+      "sha256": null
+    },
+    {
+      "url": "https://www.damtp.cam.ac.uk/user/sd103/",
+      "status": "UNAVAILABLE: author site HTTP 403; paper and high-speed supplement not read",
+      "sha256": null
+    }
+  ]
+}

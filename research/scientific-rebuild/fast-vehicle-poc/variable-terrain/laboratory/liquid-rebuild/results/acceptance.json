@@ -1,0 +1,62 @@
+{
+  "verdict": "REJECTED",
+  "cases": [
+    {
+      "source": "pbf-verification.json",
+      "speed": 0.6,
+      "count": 323,
+      "finite": true,
+      "fieldVolumeRelativeError": -0.33242454887529854,
+      "volumeGate": "FAIL",
+      "kineticEnergyUpperBoundJ": 39.90350486002951,
+      "maxObservedKineticJ": 11.00756958211943,
+      "energyGate": "PASS"
+    },
+    {
+      "source": "pbf-verification.json",
+      "speed": 4,
+      "count": 323,
+      "finite": true,
+      "fieldVolumeRelativeError": -0.3664068462778487,
+      "volumeGate": "FAIL",
+      "kineticEnergyUpperBoundJ": 96.50645934569982,
+      "maxObservedKineticJ": 57.90583579096675,
+      "energyGate": "PASS"
+    },
+    {
+      "source": "pbf-verification.json",
+      "speed": 12,
+      "count": 323,
+      "finite": true,
+      "fieldVolumeRelativeError": -0.3893528947770448,
+      "volumeGate": "FAIL",
+      "kineticEnergyUpperBoundJ": 559.7531456734363,
+      "maxObservedKineticJ": 3039.426196107395,
+      "energyGate": "FAIL"
+    },
+    {
+      "source": "pbf-half-verification.json",
+      "speed": 4,
+      "count": 323,
+      "finite": true,
+      "fieldVolumeRelativeError": -0.3537855049532094,
+      "volumeGate": "FAIL",
+      "kineticEnergyUpperBoundJ": 96.50645934569982,
+      "maxObservedKineticJ": 57.90583579096675,
+      "energyGate": "PASS"
+    },
+    {
+      "source": "pbf-fine-verification.json",
+      "speed": 4,
+      "count": 1229,
+      "finite": true,
+      "fieldVolumeRelativeError": -0.4169371337684691,
+      "volumeGate": "FAIL",
+      "kineticEnergyUpperBoundJ": 97.4475206473189,
+      "maxObservedKineticJ": 536.3183959135241,
+      "energyGate": "FAIL"
+    }
+  ],
+  "visualGate": "NOT ACCEPTED: coarse surface, inaccessible high-speed primary references, no RTX measurements",
+  "scope": "No production or laboratory integration; do not treat passing unit tests as physical acceptance"
+}
