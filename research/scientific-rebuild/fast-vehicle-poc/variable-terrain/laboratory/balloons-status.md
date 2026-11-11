@@ -13,3 +13,11 @@ Added pooled analytic ballistic droplets and terrain-deposited wet patches, inte
 Executed `node --test .../laboratory/*.test.mjs` and `node .../laboratory/balloons-browser.mjs` from repository root. The latter initialized native WebGPU in headless Chromium/SwiftShader, rendered balloon, impact and deposited stages, and reported one impact and sixteen wet patches without runtime errors. It is a synthetic presentation test, not actual driving or a screenshot-based visual assessment. GPU presentation, WebGL appearance, CPU/GPU overhead and prolonged driving are not yet verified.
 
 Still outstanding: accurate body/wheel swept collision, membranes/tearing sheets/branching filaments, thickness-dependent TSL material, terrain-conforming patch tessellation, robust curved-terrain intersection, persistent accumulation beyond pool eviction, camera/lighting comparisons and measured overhead. Existing shading is standard physical material, not the requested specialized TSL liquid model. This milestone is explicitly partial.
+
+## Milestone 3
+
+Sweeps now follow four chassis-envelope spheres and actual wheel presentation positions/radii. These are approximate envelopes, not triangle-mesh or cylinder collisions. Impact time is interpolated within the sampled interval. Large frame gaps and rotational curvature remain limitations.
+
+Added connected radial splash membranes with bounded topology, analytic expansion/gravity and deterministic missing sectors as a tearing approximation. This implementation evaluates geometry on CPU; GPU-driven TSL deformation and branching filaments remain outstanding. Terrain patch orientation now reads the actual sampler gradient field.
+
+Reran all 41 laboratory tests and the native WebGPU offscreen smoke test. Saved `results/balloon-deposit.png`: visual inspection shows simple dark oval patches on a diagnostic flat ground, not convincing irregular liquid yet. Do not regard this image as fulfillment of visual acceptance. No measured performance improvement, full-laboratory screenshot or multi-camera claim is made.
