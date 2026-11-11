@@ -5,7 +5,7 @@ import {definition} from '../../vehicles/definitions.js';
 import {bindControls} from './controls.js';import {createView3D} from './view3d.js';
 import {SimulationClock} from '../../../procedural-terrain/src/clock.js';
 import {createInstrument} from '../../../procedural-terrain/src/instruments.js';
-import {TireObservatory} from '../../../tire-road-observatory-prototype/src/tracks.js';
+import {TireObservatory} from './tracks.js';
 import {drawFrictionCircles} from '../../../tire-road-observatory-prototype/src/observatory-panel.js';
 import {setEnvironment} from '../../../procedural-terrain/src/application-vehicle.js';
 const $=id=>document.getElementById(id),clock=new SimulationClock({budgetMs:20,maxSteps:128,maxDebt:Infinity}),observatory=new TireObservatory();

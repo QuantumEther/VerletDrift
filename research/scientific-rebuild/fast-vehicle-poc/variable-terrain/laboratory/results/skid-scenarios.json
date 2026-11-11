@@ -7,15 +7,15 @@
       "steps": 2000,
       "error": null,
       "marks": [
-        18,
-        18,
-        108,
-        108
+        110,
+        110,
+        110,
+        110
       ],
       "physicsUnchanged": true,
       "visiblePixels": {
-        "near": 3798,
-        "far": 680
+        "near": 4648,
+        "far": 704
       }
     },
     {
@@ -23,15 +23,15 @@
       "steps": 2000,
       "error": null,
       "marks": [
-        29,
-        38,
-        194,
-        159
+        234,
+        270,
+        198,
+        265
       ],
       "physicsUnchanged": true,
       "visiblePixels": {
-        "near": 6464,
-        "far": 1184
+        "near": 13897,
+        "far": 2490
       }
     },
     {
@@ -39,15 +39,15 @@
       "steps": 5000,
       "error": null,
       "marks": [
-        0,
-        0,
-        290,
-        290
+        293,
+        293,
+        293,
+        293
       ],
       "physicsUnchanged": true,
       "visiblePixels": {
-        "near": 5724,
-        "far": 1848
+        "near": 7632,
+        "far": 1856
       }
     },
     {
@@ -55,15 +55,15 @@
       "steps": 4000,
       "error": null,
       "marks": [
-        36,
-        36,
-        216,
-        216
+        220,
+        220,
+        220,
+        220
       ],
       "physicsUnchanged": true,
       "visiblePixels": {
-        "near": 3798,
-        "far": 680
+        "near": 4668,
+        "far": 704
       }
     }
   ]

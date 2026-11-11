@@ -1,5 +1,5 @@
 import * as THREE from '../../../tire-road-observatory-prototype/vendor/three.module.js';
-import {DEPOSITION} from '../../../procedural-terrain/src/tracks.js';
+import {DEPOSITION} from './tracks.js';
 
 // World-anchored marks sample the same analytic terrain as contact. The
 // bounded display mesh interpolates those elevations between its vertices.
@@ -21,7 +21,7 @@ export function createTrackView(scene,terrain,capacity=1024){
  let source,last=-1,generation=-1,bump,originX=0,originY=0,updates=0,uploadedVertices=0;
  function write(slot,record){
   if(!record){positions.fill(0,slot*18,slot*18+18);colors.fill(0,slot*24,slot*24+24);return;}
-  const {a,b,na,nb,alpha}=record,r=DEPOSITION.width/2;
+  const {a,b,na,nb,alpha}=record,r=(record.width??DEPOSITION.width)/2;
   const corners=[[a.x+na.x*r,a.y+na.y*r],[a.x-na.x*r,a.y-na.y*r],[b.x+nb.x*r,b.y+nb.y*r],[b.x-nb.x*r,b.y-nb.y*r]];
   const order=[0,1,2,2,1,3];order.forEach((n,i)=>{const [x,y]=corners[n];positions.set([x-originX,y-originY,terrain.sample(x,y).height+.006],slot*18+i*3);colors.set([.035,.028,.020,alpha],slot*24+i*4);});
  }
