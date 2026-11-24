@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<title>APEX DYNO — Recorded Engine V9</title>
+<style>
+  :root {
+    --bg: #06080b;
+    --panel: #0c1016;
+    --panel-2: #111821;
+    --line: #1d2632;
+    --line-2: #2a3645;
+    --text: #edf3fa;
+    --dim: #7d8a9a;
+    --dim-2: #4e5a68;
+    --orange: #ff6b1a;
+    --orange-2: #ffb26b;
+    --red: #ff354b;
+    --green: #43f5a0;
+    --cyan: #65e0ff;
+    --amber: #ffc45e;
+    --vol: 70%;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(circle at 50% -15%, #18212d 0%, #090c11 45%, #05070a 100%);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 105%, rgba(255, 107, 26, 0.08), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 82% 8%, rgba(101, 224, 255, 0.04), transparent 70%);
+  }
+  .ambient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.24;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+  }
+  .ambient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%);
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    width: min(458px, 100vw);
+    max-height: 100dvh;
+    padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 31px;
+    padding: 0 3px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(145deg, #202a36, #0d1219 72%);
+    border: 1px solid #2a3645;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 18px -8px #000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2.5px;
+    padding-bottom: 7px;
+    overflow: hidden;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 35% 0%, rgba(255,107,26,0.35), transparent 55%);
+  }
+  .brand-mark span {
+    position: relative;
+    z-index: 1;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--orange-2), var(--orange));
+    box-shadow: 0 0 7px rgba(255,107,26,0.45);
+  }
+  .brand-mark span:nth-child(1) { height: 7px; opacity: 0.65; }
+  .brand-mark span:nth-child(2) { height: 11px; }
+  .brand-mark span:nth-child(3) { height: 8px; opacity: 0.78; }
+  .brand-name {
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .brand-name b { color: var(--orange); font-weight: 850; }
+  .brand-sub {
+    margin-top: 4px;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    background: rgba(13, 18, 25, 0.6);
+    border-radius: 999px;
+    color: var(--dim);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .status i {
+    width: 5.5px;
+    height: 5.5px;
+    border-radius: 50%;
+    background: var(--dim-2);
+    box-shadow: 0 0 0 transparent;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+  .status[data-state="run"] { color: #b5ffe7; border-color: rgba(67,245,160,0.22); }
+  .status[data-state="run"] i { background: var(--green); box-shadow: 0 0 10px rgba(67,245,160,0.9); }
+  .status[data-state="load"] { color: var(--orange-2); border-color: rgba(255,107,26,0.26); }
+  .status[data-state="load"] i { background: var(--orange); box-shadow: 0 0 10px rgba(255,107,26,0.9); }
+  .status[data-state="overrun"] { color: #ffb07e; border-color: rgba(255,107,26,0.32); }
+  .status[data-state="overrun"] i { background: var(--orange-2); box-shadow: 0 0 10px rgba(255,178,107,0.9); }
+  .status[data-state="cranking"] { color: var(--amber); border-color: rgba(255,196,94,0.24); }
+  .status[data-state="cranking"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .65s ease-in-out infinite alternate; }
+  .status[data-state="limit"] { color: #ff9aa5; border-color: rgba(255,53,75,0.4); }
+  .status[data-state="limit"] i { background: var(--red); box-shadow: 0 0 12px rgba(255,53,75,1); animation: dotPulse .18s ease-in-out infinite alternate; }
+  .status[data-state="shift"] { color: var(--amber); border-color: rgba(255,196,94,0.34); }
+  .status[data-state="shift"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .28s ease-in-out infinite alternate; }
+
+  /* ---------------------------------------------------------------- */
+  .pod {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(19, 26, 35, 0.97) 0%, rgba(9, 12, 17, 0.99) 100%);
+    border: 1px solid #212a36;
+    border-radius: 23px;
+    padding: 13px 13px 12px;
+    box-shadow:
+      0 30px 60px -30px #000,
+      0 2px 0 rgba(255,255,255,0.035) inset,
+      0 -1px 0 rgba(0,0,0,0.7) inset;
+    overflow: hidden;
+  }
+  .pod::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+    pointer-events: none;
+  }
+
+  .pod-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 1px 2px 10px;
+  }
+  .engine-id { min-width: 0; }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .eyebrow .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 7px rgba(255,107,26,0.8);
+  }
+  .engine-id h1 {
+    margin: 5px 0 2px;
+    font-size: 19px;
+    line-height: 1.05;
+    font-weight: 760;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .engine-id p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 9.5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .power {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 73px;
+    justify-content: center;
+    padding: 10px 11px;
+    border-radius: 11px;
+    border: 1px solid #2a3542;
+    background: linear-gradient(180deg, #161e28, #0e131a);
+    color: #9aa8b8;
+    font-family: inherit;
+    font-size: 8.5px;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+    cursor: pointer;
+    box-shadow: 0 4px 12px -6px #000, inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
+  }
+  .power svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .power:hover { color: #dbe6f3; border-color: #3a4859; }
+  .power:active { transform: translateY(1px); }
+  .power.running {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.46);
+    background: linear-gradient(180deg, rgba(255,107,26,0.14), rgba(255,107,26,0.045));
+    box-shadow: 0 0 20px -8px rgba(255,107,26,0.7), inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  .power.cranking {
+    color: var(--amber);
+    border-color: rgba(255,196,94,0.42);
+    background: linear-gradient(180deg, rgba(255,196,94,0.12), rgba(255,196,94,0.03));
+  }
+  .power:disabled { opacity: 0.55; cursor: default; }
+
+  /* ---------------------------------------------------------------- */
+  .gaugeWrap {
+    position: relative;
+    border: 1px solid #1c2430;
+    border-radius: 17px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,255,255,0.035), transparent 50%),
+      linear-gradient(180deg, #0c1118 0%, #080b10 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      inset 0 -20px 30px -20px #000;
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .gaugeWrap[data-limiter="1"] {
+    border-color: rgba(255,53,75,0.38);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 30px -10px rgba(255,53,75,0.36),
+      inset 0 -20px 30px -20px #000;
+  }
+  .gaugeWrap[data-shift="1"] {
+    border-color: rgba(255,196,94,0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 26px -12px rgba(255,196,94,0.45),
+      inset 0 -20px 30px -20px #000;
+  }
+  #gauge {
+    display: block;
+    width: 100%;
+    height: 296px;
+  }
+  .gauge-glass {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(116deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.01) 27%, transparent 28%, transparent 73%, rgba(255,255,255,0.015) 100%);
+    mix-blend-mode: screen;
+  }
+
+  .scopeWrap {
+    position: relative;
+    padding: 7px 11px 9px;
+    border-top: 1px solid rgba(255,255,255,0.045);
+    background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.15));
+  }
+  .scopeLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    color: var(--dim-2);
+    font-size: 7px;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .scopeLive {
+    color: var(--dim-2);
+    transition: color .2s ease;
+  }
+  .scopeLive[data-live="1"] { color: rgba(67,245,160,0.72); }
+  #scope { display: block; width: 100%; height: 38px; }
+
+  /* ---------------------------------------------------------------- */
+  .specs {
+    display: grid;
+    grid-template-columns: 2fr 0.92fr 0.62fr;
+    gap: 7px;
+    margin-top: 9px;
+  }
+  .specs > span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px 9px 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.018);
+    border-radius: 8px;
+  }
+  .specs b {
+    color: #cbd7e5;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+  }
+  .specs em {
+    color: var(--dim-2);
+    font-style: normal;
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 3px;
+  }
+  .control-row { display: flex; align-items: center; gap: 12px; min-height: 32px; }
+  .control-row > label {
+    width: 53px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .select-wrap { position: relative; flex: 1; }
+  select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #151d27, #0f141b);
+    color: #d6e0ec;
+    border-radius: 10px;
+    padding: 9px 34px 9px 11px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    transition: border-color .18s ease;
+  }
+  select:hover, select:focus { border-color: #344354; }
+  select option { background: #10161e; color: #edf3fa; }
+  .chev {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    stroke: var(--dim);
+    fill: none;
+    stroke-width: 1.8;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+    box-shadow: 0 2px 8px rgba(255,107,26,0.4);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+  }
+  .vol-val {
+    width: 33px;
+    flex: none;
+    text-align: right;
+    color: var(--dim);
+    font-size: 9.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .transmission {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 39px;
+    padding: 6px 9px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(17, 24, 33, 0.94), rgba(10, 14, 19, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+  .trans-label {
+    width: 49px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+  .trans-btn, .shift-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    min-width: 28px;
+    padding: 0 7px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    background: #111821;
+    color: #718091;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .trans-btn:hover, .shift-btn:hover { color: #ccd8e7; border-color: #3a4a5b; }
+  .trans-btn:disabled, .shift-btn:disabled { opacity: 0.32; cursor: default; box-shadow: none; }
+  .trans-btn.active {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.55);
+    background: rgba(255,107,26,0.11);
+    box-shadow: 0 0 12px -5px rgba(255,107,26,0.9), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .shift-stepper {
+    display: flex;
+    align-items: center;
+    height: 26px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #0e151d;
+  }
+  .shift-stepper .shift-btn {
+    height: 24px;
+    min-width: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 13px;
+    line-height: 1;
+    color: #8190a1;
+  }
+  .shift-stepper .shift-btn:hover { background: rgba(255,255,255,0.045); color: #fff; }
+  .gear-badge {
+    min-width: 24px;
+    text-align: center;
+    color: #dbe6f3;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .trans-mode {
+    margin-left: auto;
+    color: var(--dim-2);
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+  }
+  .transmission.shifting { border-color: rgba(255,196,94,0.34); }
+  .transmission.shifting .gear-badge { color: var(--amber); }
+  .transmission.auto .trans-mode { color: rgba(101,224,255,0.68); }
+
+  /* ---------------------------------------------------------------- */
+  .pedal {
+    --pedalFill: 0%;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 17px;
+    border-radius: 15px;
+    border: 1px solid #3a2719;
+    background:
+      linear-gradient(180deg, #1c140f 0%, #100b08 100%);
+    color: #ff9a5c;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    touch-action: none;
+    box-shadow:
+      0 12px 26px -16px #000,
+      inset 0 1px 0 rgba(255,150,80,0.13);
+    transition: border-color .18s ease, box-shadow .18s ease, color .18s ease;
+  }
+  .pedal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(255,107,26,0.055), transparent 42%);
+    pointer-events: none;
+  }
+  .pedal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: var(--pedalFill);
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,107,26,0.05), rgba(255,107,26,0.27));
+    border-right: 1px solid rgba(255,160,95,0.22);
+    pointer-events: none;
+    transition: width .06s linear;
+  }
+  .pedal-copy { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+  .pedal-copy b { font-size: 12px; font-weight: 850; letter-spacing: 0.18em; line-height: 1; }
+  .pedal-copy small { font-size: 7px; font-weight: 800; letter-spacing: 0.18em; color: #94694e; }
+  .pedal-pct {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    color: #a77555;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pedal:hover { border-color: #5a3922; }
+  .pedal.down {
+    border-color: rgba(255,157,90,0.76);
+    color: #fff4ea;
+    background: linear-gradient(180deg, #d9510d 0%, #a63808 100%);
+    box-shadow:
+      0 0 34px -8px rgba(255,107,26,0.8),
+      inset 0 2px 10px rgba(255,255,255,0.16);
+  }
+  .pedal.down .pedal-copy small, .pedal.down .pedal-pct { color: rgba(255,244,234,0.72); }
+  .pedal.down::after { background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.22)); border-right-color: rgba(255,255,255,0.4); }
+  .pedal.limited { animation: pedalLimit .17s steps(2, end) infinite; }
+  .pedal:active { transform: none; } .pedal { cursor: ew-resize; user-select:none; } .pedal.down { background:linear-gradient(180deg,#432013,#21100a); } .pedal.down::after {background:linear-gradient(90deg,#ff792f22,#ff792f66);border-right:2px solid #ff9a5c;}
+
+  .hint {
+    text-align: center;
+    color: #46515e;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    line-height: 1.5;
+    margin-top: -2px;
+  }
+  .hint kbd {
+    display: inline-block;
+    padding: 2px 4px;
+    margin: 0 1px;
+    border: 1px solid #25303d;
+    border-radius: 4px;
+    background: #0f151d;
+    color: #788797;
+    font-family: inherit;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    vertical-align: 1px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background:
+      radial-gradient(circle at 50% 36%, rgba(26, 35, 47, 0.92) 0%, rgba(6, 8, 11, 0.98) 62%, #05070a 100%);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  .overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .overlay-inner {
+    width: min(380px, 100%);
+    text-align: center;
+    animation: riseIn .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .overlay-kicker {
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+  }
+  .overlay h2 {
+    margin: 17px 0 10px;
+    color: var(--text);
+    font-size: clamp(36px, 10vw, 50px);
+    line-height: 0.95;
+    font-weight: 780;
+    letter-spacing: -0.055em;
+  }
+  .overlay p {
+    margin: 0 auto 26px;
+    max-width: 295px;
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: 0.015em;
+  }
+  .start-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 214px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 1px solid #ffad72;
+    background: linear-gradient(180deg, #ff7a2b 0%, #cf470b 100%);
+    color: #1b0c04;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.17em;
+    cursor: pointer;
+    box-shadow:
+      0 0 55px -12px rgba(255,107,26,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.32);
+    transition: transform .16s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .start-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.1; }
+  .start-btn:hover { transform: translateY(-1px) scale(1.015); box-shadow: 0 0 75px -10px rgba(255,107,26,1), inset 0 1px 0 rgba(255,255,255,0.38); }
+  .start-btn:active { transform: scale(.985); }
+  .start-btn:disabled { cursor: default; filter: saturate(0.7) brightness(0.8); transform: none; }
+  .overlay-note {
+    margin-top: 19px;
+    color: #4f5b69;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    min-height: 13px;
+    line-height: 1.5;
+  }
+  .overlay-note.error { color: #ff8c99; }
+
+  @keyframes dotPulse {
+    from { opacity: 0.38; transform: scale(0.82); }
+    to { opacity: 1; transform: scale(1.1); }
+  }
+  @keyframes pedalLimit {
+    0% { border-color: rgba(255,53,75,0.75); }
+    100% { border-color: rgba(255,53,75,0.2); }
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------------------------------------------------------------- */
+  @media (max-height: 790px) {
+    .app { gap: 9px; padding-top: 10px; padding-bottom: 12px; }
+    .pod { padding: 11px 11px 10px; }
+    #gauge { height: 247px; }
+    #scope { height: 32px; }
+    .scopeWrap { padding-top: 6px; padding-bottom: 7px; }
+    .pod-head { padding-bottom: 8px; }
+    .overlay h2 { font-size: 40px; }
+    .pedal { padding: 14px 16px; }
+  }
+  @media (max-height: 690px) {
+    .app { gap: 7px; padding-top: 8px; padding-bottom: 10px; }
+    .brand-sub { display: none; }
+    .topbar { min-height: 26px; }
+    .pod { padding: 9px 10px 9px; border-radius: 19px; }
+    #gauge { height: 218px; }
+    #scope { height: 26px; }
+    .transmission { min-height: 35px; padding: 5px 8px; }
+    .trans-label { font-size: 6.5px; width: 43px; }
+    .scopeWrap { padding: 5px 10px 6px; }
+    .scopeLabel { font-size: 6.5px; margin-bottom: 2px; }
+    .specs { margin-top: 7px; gap: 6px; }
+    .specs > span { padding: 6px 8px 5px; }
+    .specs b { font-size: 9.5px; }
+    .specs em { font-size: 6px; }
+    .pod-head { padding-bottom: 6px; }
+    .engine-id h1 { font-size: 17px; margin-top: 4px; }
+    .engine-id p { font-size: 8.5px; }
+    .power { padding: 8px 9px; min-width: 66px; }
+    .overlay h2 { font-size: 34px; margin-top: 12px; }
+    .overlay p { margin-bottom: 19px; font-size: 10px; }
+    .start-btn { padding: 14px 22px; }
+    .pedal { padding: 12px 14px; }
+    .pedal-copy b { font-size: 11px; }
+    .hint { font-size: 8px; }
+  }
+  @media (max-height: 660px) {
+    #gauge { height: 205px; }
+    .specs { display: none; }
+  }
+  @media (max-height: 620px) {
+    #gauge { height: 174px; }
+    .scopeWrap, .specs { display: none; }
+    .controls { gap: 5px; }
+    .control-row { min-height: 28px; }
+    .pedal { padding: 10px 13px; }
+    .hint { display: none; }
+    .topbar { display: none; }
+    .app { padding-top: 8px; padding-bottom: 8px; gap: 7px; }
+    .overlay h2 { font-size: 29px; }
+    .overlay p { display: none; }
+  }
+  @media (max-height: 500px) {
+    .app { gap: 5px; padding-top: 6px; padding-bottom: 6px; }
+    .pod { padding: 7px 9px; }
+    #gauge { height: 142px; }
+    .scopeWrap, .specs, .hint, .topbar { display: none; }
+    .pod-head { padding-bottom: 4px; }
+    .engine-id p { display: none; }
+    .engine-id h1 { font-size: 15px; margin: 2px 0 0; }
+    .power { padding: 6px 8px; min-width: 58px; font-size: 7.5px; }
+    .transmission { min-height: 31px; padding: 4px 7px; }
+    .trans-label { width: 38px; font-size: 6px; }
+    .control-row { min-height: 26px; }
+    select { padding: 6px 30px 6px 9px; font-size: 10px; }
+    .pedal { padding: 9px 12px; }
+    .pedal-copy b { font-size: 10px; }
+  }
+  @media (max-width: 370px) {
+    .app { padding-left: 11px; padding-right: 11px; }
+    .engine-id h1 { font-size: 17px; }
+    .status { font-size: 7.5px; padding: 6px 8px; }
+    .control-row > label { width: 47px; }
+    .specs { grid-template-columns: 2.1fr 0.9fr 0.6fr; }
+    .specs b { font-size: 8.5px; }
+    .trans-mode { font-size: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .overlay-inner { animation: none; }
+    .status i { animation: none !important; }
+    .pedal.limited { animation: none; }
+    .start-btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div>
+        <div class="brand-name">APEX <b>DYNO</b></div>
+        <div class="brand-sub">ACOUSTIC ENGINE CELL</div>
+      </div>
+    </div>
+    <div class="status" id="status" data-state="off" aria-live="polite">
+      <i></i><span id="statusText">STANDBY</span>
+    </div>
+  </header>
+
+  <section class="pod" aria-label="Engine tachometer">
+    <div class="pod-head">
+      <div class="engine-id">
+        <div class="eyebrow">
+          <span id="podLayout">VW · TURBO</span>
+          <span class="dot"></span>
+          <span id="podDisplacement">1.0 L</span>
+        </div>
+        <h1 id="engLabel">VW 1.0L · Recorded</h1>
+        <p id="engNote">Recorded acoustics · load-sensitive drivetrain</p>
+      </div>
+      <button class="power" id="powerBtn" type="button" aria-label="Start or stop engine">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+        <span id="powerText">START</span>
+      </button>
+    </div>
+
+    <div class="gaugeWrap">
+      <canvas id="gauge" aria-label="Tachometer"></canvas>
+      <div class="gauge-glass" aria-hidden="true"></div>
+      <div class="scopeWrap">
+        <div class="scopeLabel"><span>EXHAUST NOTE</span><span class="scopeLive" id="scopeLive">STANDBY</span></div>
+        <canvas id="scope"></canvas>
+      </div>
+    </div>
+
+    <div class="specs">
+      <span><b id="specFire">930</b><em>IDLE RPM</em></span>
+      <span><b id="specRedline">6,500</b><em>REDLINE RPM</em></span>
+      <span><b id="specPower">4,000</b><em>AUDIO MAX</em></span>
+    </div>
+  </section>
+
+  <section class="controls" aria-label="Engine controls">
+    <div class="control-row">
+      <label for="engine">Key throttle</label>
+      <div class="select-wrap">
+        <select id="engine">
+          <option value="1">Rapid throttle · 100%</option><option value="0.25">Gentle throttle · 25%</option><option value="0.55">Moderate throttle · 55%</option></select>
+        <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8"/></svg>
+      </div>
+    </div>
+    <div class="control-row">
+      <label for="vol">Volume</label>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="0.70" aria-label="Master volume">
+      <output class="vol-val" id="volVal" for="vol">70%</output>
+    </div>
+  </section>
+
+  <section class="transmission" aria-label="Manual gearbox controls">
+    <span class="trans-label">GEARBOX</span>
+    <button class="trans-btn" id="neutralBtn" type="button" title="Select neutral">N</button>
+    <button class="trans-btn" id="autoBtn" type="button" title="Select reverse">R</button>
+    <div class="shift-stepper">
+      <button class="shift-btn" id="downBtn" type="button" title="Downshift" aria-label="Downshift">−</button>
+      <span class="gear-badge" id="gearBadge">N</span>
+      <button class="shift-btn" id="upBtn" type="button" title="Upshift" aria-label="Upshift">+</button>
+    </div>
+    <span class="trans-mode" id="transMode">NEUTRAL</span>
+  </section>
+
+  <button class="pedal" id="pedal" type="button" aria-label="Variable throttle: hold and drag left to right, release to lift">
+    <span class="pedal-copy"><b>THROTTLE · DRAG</b><small id="pedalSub">0% LEFT · 100% RIGHT · RELEASE TO LIFT</small></span>
+    <span class="pedal-pct" id="pedalPct">0%</span>
+  </button>
+  <div class="hint">Mouse: press anywhere on throttle, drag horizontally, release to lift. Keyboard: selected key-throttle level.</div><div id="assetInfo" aria-live="polite">SOURCE NOT LOADED</div><div class="hint"><kbd>W/D</kbd> throttle · <kbd>A</kbd> clutch · <kbd>S</kbd> brake · <kbd>1–6</kbd> gears · <kbd>N</kbd> neutral · <kbd>7</kbd> reverse</div>
+</div>
+<aside class="v4-panel" aria-label="Manual transmission and audio controls">
+ <header><div class="brand-sub">APEX DYNO · DRIVER / ACOUSTICS</div><h2>Manual cell <small>V9</small></h2></header>
+ <div class="v4-section"><h3>Extended RPM range</h3>
+ <div class="v4-pedals"><button id="loadHigh">LOAD 1.5× / 2× / 2.5× WAVS</button></div>
+ <div id="highStatus" class="brand-sub">ORIGINAL RANGE · 4,000 RPM</div><div id="blendRead" class="brand-sub">1× 100%</div>
+ <label class="v4-toggle"><input type="checkbox" id="extendedRev"> Extended rev test · 10,000 RPM</label>
+ <p>Redline 6,500 RPM; extended test 10,000 RPM. Four overlapping recorded banks blend gradually. Missing sources fall back to pitch extrapolation, never a lower mechanical limit. Stop engine before replacing a source.</p>
+ </div>
+ <div class="v4-section"><h3>Powertrain presets</h3>
+ <label class="v4-range">Vehicle configuration<select id="carPreset" style="grid-column:span 2;width:100%;background:var(--panel-2);color:var(--text);border:1px solid var(--line-2);padding:8px;border-radius:6px">
+ <option value="city">City · 100 hp</option><option value="sport">Sport · 180 hp</option><option value="performance" selected>Performance · 300 hp</option><option value="track">Track · 450 hp</option><option value="super">High power · 650 hp</option><option value="custom">Custom</option></select></label>
+ <label class="v4-range">Rated engine power <output id="hpPowerOut">300 hp</output><input id="hpPower" type="range" min="60" max="750" step="5" value="300"></label>
+ <label class="v4-range">Vehicle mass <output id="massOut">1300 kg</output><input id="mass" type="range" min="800" max="2200" step="25" value="1300"></label>
+ <label class="v4-range">Final drive <output id="finalDriveOut">4.10</output><input id="finalDrive" type="range" min="2.8" max="5.2" step=".05" value="4.1"></label>
+ <label class="v4-range">Engine inertia <output id="engineInertiaOut">0.32 kg·m²</output><input id="engineInertia" type="range" min=".12" max=".65" step=".01" value=".32"></label>
+ <label class="v4-toggle"><input type="checkbox" id="tractionAssist" checked> Approximate traction assistance</label>
+ <div class="v4-stats"><span>PEAK TORQUE <b id="peakTorqueRead">—</b></span><span>POWER / MASS <b id="powerMassRead">—</b></span><span>ENGINE POWER <b id="currentPowerRead">—</b></span><span>CLUTCH TORQUE <b id="currentTorqueRead">—</b></span><span>LONGITUDINAL ACCEL. <b id="accelRead">—</b></span><span>CLUTCH CAPACITY <b id="capacityRead">—</b></span></div>
+ <canvas id="torquePlot" width="310" height="120" style="width:100%;height:120px;display:block" aria-label="Normalized full throttle torque and power curves"></canvas>
+ <div id="presetStatus" class="brand-sub">CHANGE PRESET WHILE STOPPED IN NEUTRAL</div>
+ <p>Illustrative virtual engines; original sound identity unchanged. Rated power at 6,500 RPM. Load high-RPM WAV to reach rated power. Higher final drive = shorter gears. Traction assist reduces demanded torque, not a tire-slip solver.</p></div>
+ <div class="v4-section"><h3>Transmission</h3>
+ <div class="v4-gears" id="gearGrid"><button data-gear="1">1</button><button data-gear="3">3</button><button data-gear="5">5</button><button data-gear="0">N</button><button data-gear="2">2</button><button data-gear="4">4</button><button data-gear="6">6</button><button data-gear="-1">R</button></div>
+ <div class="v4-pedals"><button id="clutchPedal">HOLD CLUTCH · A</button><button id="brakePedal">HOLD BRAKE · S</button></div>
+ <div class="v4-meter"><span>CLUTCH DISENGAGED</span><b id="clutchRead">0%</b><div><i id="clutchBar"></i></div></div>
+ <div class="v4-stats"><span>ROAD SPEED <b id="roadRead">0 km/h</b></span><span>CLUTCH SLIP <b id="slipRead">0 RPM</b></span><span>SHIFT <b id="shiftRead">READY</b></span><span>CLUTCH HEAT <b id="heatRead">0 J</b></span><span>INPUT SHAFT <b id="shaftRead">0 RPM</b></span><span>SYNC MISMATCH <b id="syncRead">0 RPM</b></span></div>
+ <label class="v4-toggle"><input type="checkbox" id="assist" checked> Assisted clutch on gear selection</label>
+ <label class="v4-toggle"><input type="checkbox" id="autoLaunch" checked> Assisted launch / anti-stall</label>
+ <label class="v4-range">Humanization <output id="humanOut">35%</output><input id="human" type="range" min="0" max="1" step=".01" value=".35"></label>
+ <label class="v4-range">Synchronizer assistance <output id="syncEaseOut">85%</output><input id="syncEase" type="range" min="0" max="1" step=".01" value=".85"></label>
+ <p>Ordinary gear changes synchronize progressively rather than requiring an exact engine RPM match. A disengages the clutch; release A to engage it. Reverse requires near-zero road speed. Excessive predicted downshift RPM is still guarded.</p>
+ </div>
+ <div class="v4-section"><h3>Individual gear ratios</h3>
+ <label class="v4-range">Gearbox profile<select id="gearProfile" style="grid-column:span 2;width:100%;background:#141b23;color:#e9edf2;padding:7px;border:1px solid #384250;border-radius:5px"><option value="standard">Standard · V7</option><option value="close">Close-ratio sport</option><option value="long">Long / touring</option><option value="custom">Custom</option></select></label>
+ <div style="display:grid;gap:5px"><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>1</span><input id="ratio0" type="number" min=".35" max="6" step=".01" value="3.77" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed0" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>2</span><input id="ratio1" type="number" min=".35" max="6" step=".01" value="2.09" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed1" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>3</span><input id="ratio2" type="number" min=".35" max="6" step=".01" value="1.32" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed2" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>4</span><input id="ratio3" type="number" min=".35" max="6" step=".01" value="0.98" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed3" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>5</span><input id="ratio4" type="number" min=".35" max="6" step=".01" value="0.78" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed4" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>6</span><input id="ratio5" type="number" min=".35" max="6" step=".01" value="0.64" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed5" style="text-align:right;color:#a5b1bf">—</output></label><label style="display:grid;grid-template-columns:24px 1fr 74px;align-items:center;gap:6px;font-size:11px"><span>R</span><input id="ratio6" type="number" min=".35" max="6" step=".01" value="3.6" style="width:100%;min-width:0;background:#141b23;color:#e9edf2;border:1px solid #384250;border-radius:4px;padding:5px"><output id="ratioSpeed6" style="text-align:right;color:#a5b1bf">—</output></label></div>
+ <button id="applyRatios">APPLY RATIOS</button><div id="ratioStatus" class="brand-sub">STOP IN NEUTRAL TO APPLY</div>
+ <p>Speeds at 6,500 RPM (theoretical). Reverse uses a positive magnitude in the editor. Ratios apply to actual drivetrain, synchronizer and shift protection. Forward ratios must descend. Apply only while stopped in neutral.</p></div>
+ <div class="v4-section"><h3>Recorded gear mechanics</h3>
+ <div class="v4-pedals"><button id="loadKnob">LOAD GEAR WAV</button><button id="previewKnob">AUDITION SHIFT</button></div>
+ <div id="knobStatus" class="brand-sub">GEAR SOURCE NOT LOADED</div>
+ <label class="v4-range">Knob gain <output id="knobLevelOut">45%</output><input id="knobLevel" type="range" min="0" max="1" step=".01" value=".45"></label>
+ <div class="v4-pedals"><button id="clipPrev">‹ CLIP</button><button id="clipPlay">AUDITION ENGINE</button><button id="clipNext">CLIP ›</button></div>
+ <div id="clipRead" class="brand-sub">IDLE A</div></div>
+ <div class="v4-section"><h3>Engine labour &amp; resonance</h3>
+ <div class="v4-meter"><span>TRANSMITTED LOAD</span><b id="loadRead">0%</b><div><i id="loadBar"></i></div></div>
+ <div class="v4-meter"><span>ENGINE LABOUR</span><b id="labourRead">0%</b><div><i id="labourBar" style="background:var(--orange)"></i></div></div>
+ <label class="v4-toggle"><input type="checkbox" id="labourOn" checked> Load-dependent sound</label>
+ <label class="v4-range">Labour intensity <output id="labourAmountOut">65%</output><input id="labourAmount" type="range" min="0" max="1" step=".01" value=".65"></label>
+ <label class="v4-range">Low-RPM threshold <output id="labourThresholdOut">2500 RPM</output><input id="labourThreshold" type="range" min="1600" max="3500" step="50" value="2500"></label>
+ <label class="v4-range">Bass reinforcement <output id="labourBassOut">4 dB</output><input id="labourBass" type="range" min="0" max="10" step=".5" value="4"></label>
+ <label class="v4-range">Boom frequency <output id="boomHzOut">105 Hz</output><input id="boomHz" type="range" min="45" max="240" step="5" value="105"></label>
+ <label class="v4-range">Boom gain <output id="boomGainOut">6 dB</output><input id="boomGain" type="range" min="0" max="12" step=".5" value="6"></label>
+ <label class="v4-range">Resonance Q <output id="boomQOut">1.2</output><input id="boomQ" type="range" min=".4" max="4" step=".1" value="1.2"></label>
+ <label class="v4-range">Pulse roughness <output id="roughOut">12%</output><input id="rough" type="range" min="0" max=".30" step=".01" value=".12"></label>
+ <label class="v4-range">Attack <output id="labourAttackOut">0.08 s</output><input id="labourAttack" type="range" min=".02" max=".4" step=".01" value=".08"></label>
+ <label class="v4-range">Release <output id="labourReleaseOut">0.18 s</output><input id="labourRelease" type="range" min=".03" max=".8" step=".01" value=".18"></label>
+ <button id="resetLabour">RESET LABOUR</button>
+ <p>Experimental shaping of the continuous recording, driven by transmitted clutch torque and accelerator demand. No new engine sound source; ignition, shift clicks and native-pitch blips are unchanged. The EQ bypass also bypasses labour processing.</p>
+ </div>
+ <div class="v4-section"><h3>Phase continuity</h3>
+ <label class="v4-toggle"><input id="phaseOn" type="checkbox" checked> Shared crank-cycle playback</label>
+ <div id="phaseStatus" class="brand-sub">INITIALIZING ON AUDIO START</div>
+ <p>Recorded loops share a continuous rotational phase, with alignment of their average cycle shapes. Disable for an A/B comparison with V7's independent loop voices. Native-pitch transients are unchanged.</p></div>
+ <div class="v4-section"><h3>Environmental acoustics</h3>
+ <label class="v4-range">Environment<select id="envPreset" style="grid-column:span 2;width:100%;background:#141b23;color:#e9edf2;border:1px solid #384250;padding:7px;border-radius:5px"><option value="dry">Dry / reference</option><option value="open">Open air</option><option value="cabin">Cabin</option><option value="garage">Garage</option><option value="tunnel">Tunnel</option></select></label>
+ <label class="v4-range">Distance <output id="envDistanceOut">1.0 m</output><input id="envDistance" type="range" min="1" max="20" step=".1" value="1"></label>
+ <label class="v4-range">Listener pan <output id="envPanOut">Center</output><input id="envPan" type="range" min="-1" max="1" step=".05" value="0"></label>
+ <label class="v4-range">Reflection strength <output id="envAmountOut">100%</output><input id="envAmount" type="range" min="0" max="1" step=".01" value="1"></label>
+ <button id="resetEnv">RESET ENVIRONMENT</button><p>Lightweight direct-path filtering and stereo early reflections, not measured room impulse responses. Works with existing reverb; effects bypass bypasses the environment too.</p></div>
+ <div class="v4-section"><h3>Acoustic processing</h3>
+ <label class="v4-toggle"><input id="fxBypass" type="checkbox"> Bypass EQ / filters / reverb</label>
+ <label class="v4-range">Bass · 120 Hz <output id="bassOut">0 dB</output><input id="bass" type="range" min="-12" max="12" step=".5" value="0"></label>
+ <label class="v4-range">Mid · 900 Hz <output id="midOut">0 dB</output><input id="mid" type="range" min="-12" max="12" step=".5" value="0"></label>
+ <label class="v4-range">Treble · 4 kHz <output id="trebleOut">0 dB</output><input id="treble" type="range" min="-12" max="12" step=".5" value="0"></label>
+ <label class="v4-range">High-pass <output id="hpOut">20 Hz</output><input id="hp" type="range" min="20" max="500" step="5" value="20"></label>
+ <label class="v4-range">Low-pass <output id="lpOut">22000 Hz</output><input id="lp" type="range" min="1000" max="22000" step="100" value="22000"></label>
+ <label class="v4-range">Reverb mix <output id="wetOut">0%</output><input id="wet" type="range" min="0" max=".65" step=".01" value="0"></label>
+ <label class="v4-range">Reverb decay <output id="decayOut">0.65 s</output><input id="decay" type="range" min=".15" max="3" step=".05" value=".65"></label>
+ <button id="resetFx">RESET EFFECTS</button><p>Neutral processing by default. Reverb is a synthetic room response, not a synthetic engine. Filters affect engine and knob audio.</p>
+ </div></aside>
+<div class="overlay" id="overlay">
+  <div class="overlay-inner">
+    <div class="overlay-kicker">APEX DYNO · ACOUSTIC ENGINE CELL</div>
+    <h2>Cold start.</h2>
+    <p>Original engine recording + verified double-speed extension.<br>Load the original, high-RPM and gear-knob WAVs.</p>
+    <button id="startBtn" class="start-btn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+      <span>LOAD / START ENGINE</span>
+    </button>
+    <button id="loadOther" type="button">Choose engine WAV</button> · <button id="loadKnobOverlay" type="button">Choose gear WAV</button> · <button id="loadHighOverlay" type="button">Choose extended WAVs</button><div class="overlay-note" id="overlayNote">Choose Audacity_RPMs_01_original.wav. No upload; processed locally.</div>
+  </div>
+</div>
+
+<input id="sourceFile" type="file" accept=".wav,audio/wav" hidden>
+<input id="knobFile" type="file" accept=".wav,audio/wav" hidden>
+<input id="highFile" type="file" accept=".wav,audio/wav" multiple hidden>
+<style>
+.trans-mode{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:145px}
+#gearBadge{min-width:25px}
+#assetInfo{font-size:10px;line-height:1.3;color:var(--dim);text-align:center;min-height:12px}
+#loadOther,#loadKnobOverlay,#loadHighOverlay{background:transparent;color:var(--dim);border:0;font:inherit;font-size:10px;cursor:pointer;text-decoration:underline}
+/* V4 extension: original main instrument styling retained. */
+body{gap:16px;overflow:auto;align-items:center;touch-action:auto}
+.app{flex-shrink:0}
+.v4-panel{z-index:1;width:350px;max-height:94dvh;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);border-radius:18px;background:var(--panel);font-size:12px;touch-action:pan-y}
+.v4-panel h2{margin:4px 0;font-size:21px}.v4-panel h2 small{font-size:10px;color:var(--orange)}
+.v4-panel h3{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--orange-2);margin:0 0 10px}
+.v4-section{border-top:1px solid var(--line);padding-top:12px}
+.v4-panel button{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);padding:9px;font:600 10px system-ui;cursor:pointer;touch-action:none}
+.v4-panel button.active,.v4-panel button:active{border-color:var(--orange);color:var(--orange-2)}
+.v4-gears{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}
+.v4-gears button{font-size:15px}.v4-pedals{display:flex;gap:5px;margin:6px 0}.v4-pedals button{flex:1}
+.v4-meter{display:grid;grid-template-columns:1fr auto;font-size:9px;color:var(--dim);gap:5px;margin:10px 0}
+.v4-meter div{grid-column:span 2;background:#18212d;height:5px;border-radius:4px}.v4-meter i{display:block;height:100%;width:0%;background:var(--cyan);border-radius:4px}
+.v4-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;color:var(--dim);font-size:9px;margin:8px 0}.v4-stats b{display:block;color:var(--text);font-size:12px;font-variant-numeric:tabular-nums}
+.v4-toggle{display:flex;align-items:center;gap:7px;margin:8px 0;font-size:11px}
+.v4-range{display:grid;grid-template-columns:1fr auto;gap:3px;margin:8px 0;color:var(--dim);font-size:10px}.v4-range output{color:var(--text);font-variant-numeric:tabular-nums}.v4-range input{grid-column:span 2;width:100%;accent-color:var(--orange)}
+.v4-panel p{font-size:10px;color:var(--dim);line-height:1.4;margin:7px 0}
+@media(max-width:830px){body{display:block;overflow-y:auto;height:auto}.app{margin:auto;max-height:none}.v4-panel{width:min(426px,calc(100vw - 32px));max-height:none;margin:0 auto 20px}.overlay{position:fixed}}
+</style>
+<script>
+
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const gauge=$('gauge'), scope=$('scope'), gaugeCtx=gauge.getContext('2d'), scopeCtx=scope.getContext('2d');
+const ENGINES={vw:{idle:930,redline:6500}};
+const STATE={key:'vw',mode:'off',rpm:0,needleRpm:0,needleVel:0,time:0,throttle:0,gear:0,speed:0,shifting:false,overrun:false,limiter:false};
+let AC,MASTER,LOOP_BUS,FX_INPUT,FX,LABOUR_FX,ENV_FX,ANALYSER,ANALYSER_DATA,SCOPE_GAIN=1, raw=null, mono=null, fs=0, loadTask=null;
+let eventSource=null,eventGain=null,eventSerial=0, auditionSource=null, active=new Map(), held=false, keys=new Set(), pointerHeld=false, selected=0, stopPending=false;
+let pointerId=null,mouseThrottle=0,lastDemand=0,phaseNode=null,phaseRenderer=null,phaseInit=null,phaseBackend='pending',phaseWasOn=false;
+let phaseStart=0, lastFrame=0, lastMix=0, stateDeadline=0, eventStart=0;
+const idle=930, ceiling=10000, REDLINE=6500;
+let highTask=null,starting=false;
+const shiftedReady=new Set();
+const audioCeiling=()=>ceiling;
+const poweredLimit=()=>$('extendedRev').checked?ceiling:REDLINE;
+const clips=[
+ ['Idle A',0.5,4.45],['Shutdown A',4.45,5.65],['Key click A (candidate)',81.10,81.25],
+ ['Electrical tone A (candidate)',81.25,83.10],['Ignition / starter',13.94,15.20],
+ ['Post-start idle',15.20,18.60],['Small blip',18.85,21.45],['Low RPM rise',23.50,31.70],
+ ['Gradual rise',35.30,44.20],['High RPM plateau',44.20,45.75],
+ ['Coast A',45.80,52.10],['Multiple blips',52.30,62.00],['Idle B',66.50,69.30],
+ ['Rapid rev',69.80,71.20],['Coast B',71.50,77.65],['Shutdown B',79.45,80.95],
+ ['Shutdown + electrical sequence',79.45,83.25],['Key click B (candidate)',83.10,83.29],
+ ['Electrical tone B (candidate)',88.68,90.66],['Engine off ambience',83.30,85.00],
+ ['Idle floor-throttle blip',52.285,52.685],['Low-mid throttle blip',53.140,53.650],['Upper-low throttle blip',53.975,54.415]
+];
+// RPM anchors are estimates measured on the original time axis. No cylinder assumption in playback.
+const bankDefs={
+ drive:[[930,2.0],[1090,24.0],[1330,24.5],[1570,25.0],[1750,25.5],[1990,27.0],[2260,31.5],[2430,36.5],[2720,37.5],[2960,38.5],[3210,40.5],[3490,42.0],[3730,43.5],[3800,45.0]],
+ coast:[[930,68.0],[1160,77.0],[1390,76.0],[1510,75.5],[1680,75.0],[1990,74.5],[2320,74.0],[2610,73.5],[2930,73.0],[3260,72.5],[3610,72.0],[3920,71.5]],
+ rapid:[[1250,70.0],[2000,70.26],[2840,70.5],[3500,70.68],[4000,71.0]]
+};
+const banks={};
+// V2: preserve the original throttle-onset envelope as a one-shot recording.
+// Time windows selected from the user's hand-cut region and 25 ms RMS analysis.
+// Start RPM is approximate and used only to select the nearest recorded blip.
+const blipDefs=[
+ {rpm:960,a:52.285,b:52.685,label:'Idle floor-throttle blip'},
+ {rpm:1290,a:53.140,b:53.650,label:'Low-mid throttle blip'},
+ {rpm:1750,a:53.975,b:54.415,label:'Upper-low throttle blip'}
+];
+let blipBuffers=[],blipVoice=null,blipSerial=0,lastBlipAt=-Infinity;
+function selectBlip(rpm){
+ return blipBuffers.reduce((best,x)=>!best||Math.abs(Math.log(rpm/x.rpm))<Math.abs(Math.log(rpm/best.rpm))?x:best,null);
+}
+function stopBlip(fade=.035){
+ if(!AC)return;
+ const now=AC.currentTime,v=blipVoice;blipSerial++;blipVoice=null;
+ if(v){v.g.gain.cancelScheduledValues(now);v.g.gain.setTargetAtTime(0,now,fade/5);try{v.src.stop(now+fade);}catch{}}
+ if(LOOP_BUS){LOOP_BUS.gain.cancelScheduledValues(now);LOOP_BUS.gain.setTargetAtTime(1,now,fade/3);}
+}
+function triggerBlip(rpm,throttle){
+ if(!raw||!AC||STATE.mode!=='running'||stopPending||rpm>=2000||rpm<700||throttle<.55)return false;
+ const now=AC.currentTime;
+ if(now-lastBlipAt<.075)return false;
+ const b=selectBlip(rpm);if(!b)return false;
+ stopBlip(.025);lastBlipAt=now;
+ const id=blipSerial,src=AC.createBufferSource(),g=AC.createGain();
+ src.buffer=b.buffer;src.connect(g);g.connect(FX_INPUT);
+ // One-shot transients retain their original recorded pitch and duration.
+ const duration=b.buffer.duration;
+ const intensity=clamp((throttle-.55)/.45,0,1),strength=.65+.35*intensity;
+ src.playbackRate.value=1;
+ // Crossfade the recorded attack in place of (not in addition to) the base loops.
+ const attack=.018,release=Math.min(.075,duration*.25),end=now+duration;
+ g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(strength,now+attack);
+ g.gain.setValueAtTime(strength,end-release);g.gain.linearRampToValueAtTime(0,end);
+ const duck=1-.82*strength;
+ LOOP_BUS.gain.cancelScheduledValues(now);
+ LOOP_BUS.gain.setTargetAtTime(duck,now,.009);
+ LOOP_BUS.gain.setTargetAtTime(1,end-release,.022);
+ blipVoice={src,g};
+ src.onended=()=>{src.disconnect();g.disconnect();if(blipSerial===id){blipVoice=null;}};
+ src.start(now);
+ msg('BLIP · '+b.label+' · '+b.a.toFixed(3)+' s');
+ return true;
+}
+const msg=s=>{$('assetInfo').textContent=s;};
+const status=s=>{$('statusText').textContent=s;$('status').dataset.state=STATE.mode==='running'?'run':STATE.mode==='off'?'off':'cranking';$('powerText').textContent=STATE.mode==='off'?'START':'STOP';$('scopeLive').textContent=STATE.mode==='off'?'STANDBY':'LIVE';$('scopeLive').dataset.live=STATE.mode==='off'?'0':'1';$('powerBtn').classList.toggle('running',STATE.mode==='running');$('powerBtn').classList.toggle('cranking',STATE.mode==='cranking');};
+function ensureAudio(){
+ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); MASTER=AC.createGain();MASTER.gain.value=Number($('vol').value)*.65;
+ LOOP_BUS=AC.createGain();LOOP_BUS.gain.value=1;LOOP_BUS.connect(MASTER);
+ ANALYSER=AC.createAnalyser();ANALYSER.fftSize=2048;ANALYSER_DATA=new Float32Array(ANALYSER.fftSize);MASTER.connect(ANALYSER);ANALYSER.connect(AC.destination);setupFX();setupLabourFX();LOOP_BUS.disconnect();LOOP_BUS.connect(LABOUR_FX.input);}
+ if(!phaseInit)phaseInit=setupPhase();
+ return Promise.all([AC.resume(),phaseInit]);
+}
+function slice(a,b,fade=.008){
+ const start=Math.round(a*fs),end=Math.min(mono.length,Math.round(b*fs)),n=end-start;
+ if(n<=0)throw Error('Invalid audio slice');
+ const buf=AC.createBuffer(1,n,fs),o=buf.getChannelData(0);o.set(mono.subarray(start,end));
+ const f=Math.min(n>>1,Math.round(fade*fs));
+ for(let i=0;i<f;i++){let g=i/Math.max(1,f-1);o[i]*=g;o[n-1-i]*=g;}
+ return buf;
+}
+// Estimate locally compatible loop endpoints around an integer number of 720-degree cycles.
+// Search a small phase offset, then crossfade the seam. This is a V1 heuristic, not full order tracking.
+function makeLoop(rpm,t,rapid,source=mono,rate=fs,windowSeconds=rapid?.10:.38){
+ const period=rate*120/rpm;
+ const nCycles=Math.max(2,Math.round(windowSeconds*rate/period));
+ const n=Math.round(nCycles*period), fade=Math.min(Math.floor(n/5),Math.round(rate*.012));
+ let start=Math.round(t*rate-n/2);start=clamp(start,0,source.length-n-fade-1);
+ let best=0,bestScore=-Infinity,range=Math.floor(period*.18);
+ for(let d=-range;d<=range;d+=Math.max(1,Math.floor(period/100))){
+   const end=start+n+d;if(end+fade>=source.length||end<=start+fade)continue;
+   let xy=0,xx=1e-12,yy=1e-12;
+   for(let j=0;j<fade;j+=4){const x=source[start+j],y=source[end+j];xy+=x*y;xx+=x*x;yy+=y*y;}
+   const score=xy/Math.sqrt(xx*yy)-.03*Math.abs(d)/Math.max(1,range);
+   if(score>bestScore){bestScore=score;best=d;}
+ }
+ const len=n+best,buf=AC.createBuffer(1,len,rate),out=buf.getChannelData(0);
+ out.set(source.subarray(start,start+len));
+ for(let i=0;i<fade;i++){const w=.5-.5*Math.cos(Math.PI*i/Math.max(1,fade-1));out[i]=source[start+len+i]*(1-w)+out[i]*w;}
+ return {rpm,t,buf,nCycles,loopSeconds:len/rate,correlation:bestScore};
+}
+
+// The first matched doubled-speed section in sped_up_x2.wav follows
+// tHigh = tOriginal / 2 - 7.9218. RPM labels come from the measured original track.
+// Only this verified section is used; the remainder of the 120 s file is ignored.
+const highTime=t=>t/2-7.9218;
+const highDefs={
+ highDrive:[[4100,35.5],[4540,36],[4860,36.5],[5180,37],[5440,37.5],[5720,38],[5920,38.5],[6220,40],[6420,40.5],[6620,41],[6800,41.5],[6980,42],[7160,42.5],[7300,43],[7460,43.5],[7600,45],[8000,71]],
+ highCoast:[[4340,48.5],[4860,48],[5500,47.5],[6100,47],[6760,46.5],[7220,72],[7640,71.7],[7840,71.5],[8000,71]],
+ highRapid:[[4260,70.3],[4860,70.4],[5680,70.5],[6540,70.6],[7100,70.7],[8000,71]]
+};
+
+// V8: common phase in units of 720-degree cycles. Actual recorded PCM is retained.
+// The per-loop period is normalized to its integer cycle count, avoiding drift
+// caused by independent sample clocks or noninteger loop lengths.
+class CycleRenderer {
+ constructor(rate){this.rate=rate;this.phase=0;this.rpm=930;this.targetRPM=930;this.banks=new Map();this.voices=new Map();}
+ receive(m){
+  if(m.type==='bank'){this.banks=new Map(m.anchors.map(a=>[a.id,a]));this.voices.clear();return;}
+  if(m.type!=='mix')return;
+  this.targetRPM=Math.max(0,Math.min(12000,Number(m.rpm)||0));
+  for(const v of this.voices.values())v.target=0;
+  for(const [id,w] of m.weights){const a=this.banks.get(id);if(!a)continue;let v=this.voices.get(id);if(!v){v={a,gain:0,target:0};this.voices.set(id,v);}v.target=Math.max(0,Math.min(1,w));}
+ }
+ render(out){
+  const sr=this.rate,rs=1-Math.exp(-1/(sr*.018)),gs=1-Math.exp(-1/(sr*.025));
+  // One array per audio block, never allocate inside the sample loop.
+  const voices=Array.from(this.voices.values());
+  let phase=this.phase,rpm=this.rpm;
+  for(let i=0;i<out.length;i++){
+   rpm+=(this.targetRPM-rpm)*rs;let value=0;
+   for(let k=0;k<voices.length;k++){
+    const v=voices[k],a=v.a;v.gain+=(v.target-v.gain)*gs;
+    const cycle=phase+a.offset,wrapped=cycle-Math.floor(cycle/a.cycles)*a.cycles;
+    const p=wrapped*a.pcm.length/a.cycles,base=Math.floor(p),q=p-base;
+    const x=a.pcm[base%a.pcm.length],y=a.pcm[(base+1)%a.pcm.length];
+    value+=(x+(y-x)*q)*v.gain;
+   }
+   out[i]=value;phase+=rpm/(120*sr);
+   // Wrap by a multiple of all practical loop lengths only when stopped;
+   // normal double precision remains accurate for long sessions.
+  }
+  this.phase=phase;this.rpm=rpm;
+  for(const [id,v] of this.voices)if(v.target===0&&v.gain<.00005)this.voices.delete(id);
+ }
+}
+function phaseSend(m){if(phaseBackend==='worklet')phaseNode.port.postMessage(m);else if(phaseRenderer)phaseRenderer.receive(m);}
+async function setupPhase(){
+ try{
+  if(!AC.audioWorklet||typeof AudioWorkletNode==='undefined')throw Error('AudioWorklet unavailable');
+  const source=CycleRenderer.toString()+'\nclass SharedPhaseProcessor extends AudioWorkletProcessor {constructor(){super();this.renderer=new CycleRenderer(sampleRate);this.port.onmessage=e=>this.renderer.receive(e.data);}process(inputs,outputs){const out=outputs[0]?.[0];if(out)this.renderer.render(out);return true;}}registerProcessor("apex-shared-phase",SharedPhaseProcessor);';
+  const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
+  try{await AC.audioWorklet.addModule(url);}finally{URL.revokeObjectURL(url);}
+  phaseNode=new AudioWorkletNode(AC,'apex-shared-phase',{numberOfInputs:0,numberOfOutputs:1,outputChannelCount:[1]});phaseNode.connect(LOOP_BUS);phaseBackend='worklet';
+ }catch(e){
+  // Local-file/browser compatibility: same renderer, not independent clocks.
+  try{phaseRenderer=new CycleRenderer(AC.sampleRate);phaseNode=AC.createScriptProcessor(512,1,1);const silent=AC.createGain();silent.gain.value=0;const input=AC.createConstantSource();input.connect(silent);silent.connect(phaseNode);input.start();phaseNode.onaudioprocess=e=>phaseRenderer.render(e.outputBuffer.getChannelData(0));phaseNode.connect(LOOP_BUS);phaseBackend='compatibility';}
+  catch(err){phaseBackend='legacy';phaseRenderer=null;phaseNode=null;}
+ }
+ updatePhaseStatus();
+}
+function cycleShape(pcm,cycles,bins=256){
+ const a=new Float64Array(bins);let mean=0,norm=0;
+ for(let k=0;k<bins;k++){let sum=0;for(let c=0;c<cycles;c++){const p=(c+k/bins)*pcm.length/cycles,i=Math.floor(p),q=p-i;sum+=pcm[i%pcm.length]*(1-q)+pcm[(i+1)%pcm.length]*q;}a[k]=sum/cycles;mean+=a[k];}
+ mean/=bins;for(let k=0;k<bins;k++){a[k]-=mean;norm+=a[k]*a[k];}norm=Math.sqrt(norm)||1;for(let k=0;k<bins;k++)a[k]/=norm;return a;
+}
+function alignCycle(reference,shape){
+ let best=-Infinity,offset=0;const n=reference.length;
+ for(let k=0;k<n;k++){let score=0;for(let i=0;i<n;i++)score+=reference[i]*shape[(i+k)%n];if(score>best){best=score;offset=k/n;}}
+ return {offset,score:best};
+}
+let phaseMean=0,phaseCount=0;
+function syncPhaseBanks(){
+ if(!phaseNode)return;
+ const entries=Object.entries(banks).flatMap(([name,list])=>list.map((a,i)=>{a.phaseId=name+':'+i;return a;}));
+ if(!entries.length)return;
+ // Prefer the sustained original plateau as the shared phase reference.
+ const ref=banks.drive?.find(a=>a.rpm===3800)||entries[0],reference=cycleShape(ref.buf.getChannelData(0),ref.nCycles);
+ let sum=0;const anchors=entries.map(a=>{const pcm=a.buf.getChannelData(0),align=alignCycle(reference,cycleShape(pcm,a.nCycles));sum+=align.score;return {id:a.phaseId,pcm,cycles:a.nCycles,offset:align.offset};});
+ phaseCount=anchors.length;phaseMean=sum/phaseCount;phaseSend({type:'bank',anchors});updatePhaseStatus();
+}
+function phaseEnabled(){return phaseBackend!=='legacy'&&!!phaseNode&&$('phaseOn').checked;}
+function updatePhaseStatus(){
+ $('phaseStatus').textContent=phaseBackend==='legacy'?'LEGACY FALLBACK · SHARED RENDERER UNAVAILABLE':!$('phaseOn').checked?'LEGACY V7 · INDEPENDENT VOICES':phaseBackend==='pending'?'INITIALIZING ON AUDIO START':(phaseBackend==='worklet'?'SHARED PHASE · AUDIOWORKLET':'SHARED PHASE · COMPATIBILITY')+(phaseCount?' · '+phaseCount+' LOOPS · ALIGN '+Math.round(phaseMean*100)+'%':'');
+}
+
+
+const SHIFTED_SOURCES=[
+ {factor:1.5,prefix:'mid',file:'sped_up_x1.5.wav',duration:51.18898,offset:-10.2155,peak:380.2},
+ {factor:2,prefix:'high',file:'sped_up_x2.wav',duration:120.217604,offset:-7.9218,peak:506.8},
+ {factor:2.5,prefix:'ultra',file:'sped_up_x2.5.wav',duration:30.713396,offset:-6.12925,peak:633.5}
+];
+function sourceWeights(rpm,available){
+ const sources=[1,...[1.5,2,2.5].filter(x=>available.has(x))],out=new Map();
+ let remainder=1;
+ const smooth=x=>{const u=clamp(x,0,1);return u*u*(3-2*u);};
+ const windows={1:[2800,4500],1.5:[4700,6500],2:[6700,8500]};
+ for(let i=0;i<sources.length-1;i++){
+  const [a,b]=windows[sources[i]],q=smooth((rpm-a)/(b-a));
+  out.set(sources[i],remainder*(1-q));remainder*=q;
+ }
+ out.set(sources.at(-1),remainder);return out;
+}
+function updateHighStatus(){
+ $('highStatus').textContent=SHIFTED_SOURCES.map(s=>s.factor+'× '+(shiftedReady.has(s.factor)?'READY':'MISSING')).join(' · ');
+ $('specPower').textContent=(4000*Math.max(1,...shiftedReady)).toLocaleString('en-US');
+}
+async function decodeShifted(bytes,expected=null){
+ if(STATE.mode!=='off')throw Error('Stop engine before changing sources.');
+ await ensureAudio();const b=await AC.decodeAudioData(bytes);
+ const spec=expected||SHIFTED_SOURCES.find(x=>Math.abs(x.duration-b.duration)<.35);
+ if(!spec||Math.abs(spec.duration-b.duration)>.35)throw Error('Unrecognized shifted WAV duration.');
+ const rate=b.sampleRate,src=new Float32Array(Math.min(b.length,Math.ceil(rate*(77.5/spec.factor+spec.offset))));
+ for(let c=0;c<b.numberOfChannels;c++){const x=b.getChannelData(c);for(let i=0;i<src.length;i++)src[i]+=x[i]/b.numberOfChannels;}
+ const mid=Math.round((45/spec.factor+spec.offset)*rate),n=Math.round(.20*rate);
+ function power(f){let a=0,z=0;for(let i=0;i<n;i++){const x=src[mid-(n>>1)+i]*(.5-.5*Math.cos(2*Math.PI*i/(n-1))),p=2*Math.PI*f*i/rate;a+=x*Math.cos(p);z+=x*Math.sin(p);}return a*a+z*z;}
+ if(!(power(spec.peak)>3*Math.max(power(spec.peak*.937),power(spec.peak*1.065))))throw Error(spec.factor+'× plateau harmonic not verified.');
+ const next={};
+ for(const [name,defs] of Object.entries(highDefs)){
+  const suffix=name.slice(4),key=spec.prefix+suffix;
+  next[key]=defs.map(([rpm,t])=>{
+   const short=suffix==='Rapid'||rpm===8000;
+   return makeLoop(rpm*spec.factor/2,t/spec.factor+spec.offset,short,src,rate,short?.10/spec.factor:.38/spec.factor);
+  });
+ }
+ Object.assign(banks,next);shiftedReady.add(spec.factor);syncPhaseBanks();updateHighStatus();
+}
+async function tryHigh(){
+ if(highTask||location.protocol==='file:')return;
+ highTask=(async()=>{for(const spec of SHIFTED_SOURCES){
+  if(shiftedReady.has(spec.factor))continue;
+  try{const res=await fetch('./'+spec.file);if(res.ok)await decodeShifted(await res.arrayBuffer(),spec);}catch(e){console.warn(spec.file,e);}
+ }updateHighStatus();})();
+ try{await highTask;}finally{highTask=null;}
+}
+async function decode(bytes){
+ await ensureAudio();
+ const b=await AC.decodeAudioData(bytes);
+ if(Math.abs(b.duration-92.1067)>.25)throw Error('Expected the original 92.107-second recording, not the shortened bounce.');
+ raw=b;fs=b.sampleRate;mono=new Float32Array(b.length);
+ for(let c=0;c<b.numberOfChannels;c++){const x=b.getChannelData(c);for(let i=0;i<x.length;i++)mono[i]+=x[i]/b.numberOfChannels;}
+ for(const [name,defs] of Object.entries(bankDefs))banks[name]=defs.map(([rpm,t])=>makeLoop(rpm,t,name==='rapid'));
+ blipBuffers=blipDefs.map(b=>({...b,buffer:slice(b.a,b.b,.004)}));syncPhaseBanks();
+ msg('SOURCE LOADED · '+Object.values(banks).flat().length+' RPM LOOPS · 3 BLIPS');
+ $('overlayNote').textContent='Recording ready. Start engine.';
+ return b;
+}
+async function loadFile(file){
+ if(!file)return;
+ if(STATE.mode!=='off')throw Error('Stop the engine before changing source.');
+ stopAudition();
+ msg('DECODING SOURCE…');
+ raw=null;
+ await decode(await file.arrayBuffer());
+}
+async function loadDefault(){
+ if(raw)return true;
+ try{const response=await fetch('./Audacity_RPMs_01_original.wav');if(!response.ok)throw Error('Missing source');await decode(await response.arrayBuffer());return true;}
+ catch(e){$('overlayNote').textContent='Choose the original 92.107 s WAV file to continue.';return false;}
+}
+function stopAudition(){if(auditionSource){try{auditionSource.stop();}catch{}auditionSource=null;}}
+function stopEvent(){eventSerial++;if(eventSource){try{eventSource.stop();}catch{}eventSource=null;eventGain=null;}}
+function playEvent(a,b,onEnd,fadeIn=.008,fadeOut=.018){
+ stopEvent();const token=eventSerial,src=AC.createBufferSource(),g=AC.createGain();
+ src.buffer=slice(a,b,.004);src.connect(g);g.connect(FX_INPUT);let now=AC.currentTime,dur=src.buffer.duration;
+ g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(1,now+Math.min(fadeIn,dur/3));g.gain.setValueAtTime(1,now+Math.max(dur/3,dur-fadeOut));g.gain.linearRampToValueAtTime(0,now+dur);
+ eventSource=src;eventGain=g;eventStart=now;
+ src.onended=()=>{src.disconnect();g.disconnect();if(token!==eventSerial)return;eventSource=null;eventGain=null;if(onEnd)onEnd();};
+ src.start();return dur;
+}
+function selectPair(bank,rpm,weight,wanted){
+ if(weight<=.0001)return;
+ const list=banks[bank];if(!list?.length)return;
+ let hi=list.findIndex(x=>x.rpm>=rpm);if(hi<0)hi=list.length-1;
+ const lo=Math.max(0,hi-1),a=list[lo],b=list[hi],q=clamp((rpm-a.rpm)/Math.max(1,b.rpm-a.rpm),0,1);
+ if(a===b){wanted.set(a,weight);return;}
+ if(1-q>0.0001)wanted.set(a,weight*(1-q));
+ if(q>0.0001)wanted.set(b,weight*q);
+}
+function createVoice(anchor){
+ const source=AC.createBufferSource(),gain=AC.createGain();
+ source.buffer=anchor.buf;source.loop=true;source.connect(gain);gain.connect(LOOP_BUS);gain.gain.value=0;
+ source.playbackRate.value=clamp(clamp(STATE.rpm,idle,audioCeiling())/anchor.rpm,.35,3);
+ source.start();return {source,gain,retire:0};
+}
+function fadeLegacy(seconds=.08){
+ if(!AC)return;const now=AC.currentTime;
+ for(const v of active.values()){v.gain.gain.cancelScheduledValues(now);v.gain.gain.setTargetAtTime(0,now,seconds/4);try{v.source.stop(now+seconds);}catch{}v.source.onended=()=>{v.source.disconnect();v.gain.disconnect();};}
+ active.clear();
+}
+function fadeLoops(seconds=.08){fadeLegacy(seconds);phaseSend({type:'mix',rpm:STATE.rpm,weights:[]});}
+function mix(){
+ if(!raw||STATE.mode!=='running')return;
+ const wanted=new Map(),rpm=clamp(STATE.rpm,idle,audioCeiling()),t=STATE.throttle;
+ // Rapid bank contains short, nonstationary grains: use conservatively at large pedal input.
+ const moving=clamp((rpm-idle)/350,0,1),driveMix=clamp(t*2.5,0,1)*moving,rapidMix=clamp((t-.55)/.45,0,1)*.35*driveMix;
+ // The one-shot attack bypasses this steady-state RPM gate via MASTER.
+ const weights=sourceWeights(rpm,shiftedReady);
+ $('blendRead').textContent=Array.from(weights,([f,w])=>f+'× '+Math.round(w*100)+'%').join(' · ');
+ for(const [factor,w] of weights){
+   const prefix=SHIFTED_SOURCES.find(x=>x.factor===factor)?.prefix;
+   selectPair(prefix?prefix+'Drive':'drive',rpm,(driveMix-rapidMix)*w,wanted);
+   selectPair(prefix?prefix+'Rapid':'rapid',rpm,rapidMix*w,wanted);
+   selectPair(prefix?prefix+'Coast':'coast',rpm,(1-driveMix)*w,wanted);
+ }
+ const on=phaseEnabled();
+ if(on){if(!phaseWasOn)fadeLegacy(.08);phaseWasOn=true;phaseSend({type:'mix',rpm,weights:Array.from(wanted,([a,w])=>[a.phaseId,w])});return;}
+ if(phaseWasOn){phaseSend({type:'mix',rpm,weights:[]});phaseWasOn=false;}
+ const now=AC.currentTime;
+ for(const [a,w] of wanted){
+   let v=active.get(a);if(!v){v=createVoice(a);active.set(a,v);}v.retire=0;
+   v.source.playbackRate.setTargetAtTime(clamp(rpm/a.rpm,.35,3),now,.018);
+   v.gain.gain.setTargetAtTime(w,now,.025);
+ }
+ for(const [a,v] of active)if(!wanted.has(a)){
+   if(!v.retire){v.retire=now+.18;v.gain.gain.setTargetAtTime(0,now,.025);}
+   else if(now>=v.retire){v.source.stop();v.source.onended=()=>{v.source.disconnect();v.gain.disconnect();};active.delete(a);}
+ }
+}
+function running(){
+ STATE.mode='running';STATE.rpm=idle;STATE.throttle=0;STATE.gear=0;shift=null;STATE.shifting=false;stallTime=0;shaftRPM=idle;syncMismatch=0;clutchTorque=0;showShift('READY');stopPending=false;status('RUNNING');mix();
+}
+async function startEngine(){
+ if(STATE.mode!=='off'||loadTask||highTask||starting)return;
+ if(!raw&&location.protocol==='file:'){$('sourceFile').click();return;}
+ stopAudition();starting=true;
+ try{
+   await ensureAudio();await tryKnob();await tryHigh();
+   if(!raw){loadTask=loadDefault();const ok=await loadTask;loadTask=null;if(!ok){$('overlayNote').textContent='Choose WAV file, then press LOAD / START ENGINE.';return;}}
+   if(STATE.mode!=='off')return;
+   $('overlay').classList.add('hide');
+   STATE.mode='cranking';STATE.rpm=0;STATE.throttle=0;phaseStart=AC.currentTime;status('KEY / IGNITION');
+   // Recorded key + electrical tone kept contiguous, preserving the audible transition.
+   playEvent(81.10,83.10,()=>{status('CRANKING');phaseStart=AC.currentTime;
+     playEvent(13.94,15.20,running,.004,.06);
+   },.004,.025);
+ }catch(e){loadTask=null;msg(e.message);$('overlayNote').textContent=e.message;}finally{starting=false;}
+}
+function beginShutdown(){
+ stopBlip();stopPending=false;STATE.mode='stopping';STATE.throttle=0;phaseStart=AC.currentTime;status('SHUTDOWN');fadeLoops(.12);
+ // Contiguous original engine-off sequence includes run-down, key/mechanical and electrical sound.
+ playEvent(79.45,83.25,()=>{STATE.rpm=0;STATE.mode='off';status('STANDBY');msg('ENGINE OFF · source retained');},.12,.04);
+}
+function stopEngine(){
+ stopBlip();STATE.gear=0;shift=null;STATE.shifting=false;held=false;pointerHeld=false;pointerId=null;mouseThrottle=0;lastDemand=0;keys.clear();
+ if(STATE.mode==='cranking'){stopEvent();fadeLoops();STATE.mode='off';STATE.rpm=0;STATE.throttle=0;status('STANDBY');return;}
+ if(STATE.mode==='stopping'){stopEvent();STATE.mode='off';STATE.rpm=0;status('STANDBY');return;}
+ if(STATE.mode!=='running')return;
+ if(STATE.rpm>idle+100){stopPending=true;status('COAST TO STOP');}else beginShutdown();
+}
+function choose(delta){selected=(selected+delta+clips.length)%clips.length;$('clipRead').textContent=clips[selected][0]+' · '+clips[selected][1].toFixed(2)+'–'+clips[selected][2].toFixed(2)+' s';}
+async function audition(){
+ if(STATE.mode!=='off'){msg('Stop the engine before auditioning clips.');return;}
+ await ensureAudio();if(!raw){if(!await loadDefault()){$('sourceFile').click();return;}}
+ stopAudition();const [name,a,b]=clips[selected];let src=AC.createBufferSource();src.buffer=slice(a,b);src.connect(FX_INPUT);auditionSource=src;src.onended=()=>{src.disconnect();if(auditionSource===src){auditionSource=null;msg('AUDITION COMPLETE · '+name);}};src.start();msg('AUDITION · '+name);
+}
+
+// --- V4: recorded knob mechanics, adjustable effects and simplified coupled drivetrain ---
+const knobDefs=[[.36,.64],[1.25,1.55],[2.40,2.75],[3.65,4.00],[4.85,5.20],[6.15,6.65],[7.50,7.95]];
+let knobBuffers=[],lastKnob=-1,knobLoading=false;
+let clutchHeld=false,brakeHeld=false,clutchKeys=false,brakeKeys=false,clutch=0,shift=null,heat=0,slipRPM=0,stallTime=0,shiftMessage='READY';
+let shaftRPM=0,syncMismatch=0,clutchTorque=0,loadSmooth=0,labourSmooth=0;
+const GEAR_KEYS=[1,2,3,4,5,6,-1];
+const GEAR_PROFILES={standard:[3.77,2.09,1.32,.98,.78,.64,3.6],close:[3.10,2.20,1.65,1.30,1.05,.86,3.1],long:[3.45,1.90,1.20,.86,.67,.52,3.3]};
+const RATIOS={1:3.77,2:2.09,3:1.32,4:.98,5:.78,6:.64,'-1':-3.6,0:0};
+function validateRatios(v){return v.length===7&&v.every(x=>Number.isFinite(x)&&x>=.35&&x<=6)&&v.slice(0,5).every((x,i)=>x>v[i+1]);}
+function ratioDraft(){return GEAR_KEYS.map((g,i)=>Number($('ratio'+i).value));}
+function previewRatios(){
+ const v=ratioDraft();
+ for(let i=0;i<v.length;i++)$('ratioSpeed'+i).textContent=Number.isFinite(v[i])&&v[i]>0?(6500*TAU/60*RADIUS*3.6/(v[i]*FINAL)).toFixed(1)+' km/h':'—';
+}
+function applyRatios(){
+ if(!canConfigure()){$('ratioStatus').textContent='STOP IN NEUTRAL FIRST';return false;}
+ const v=ratioDraft();if(!validateRatios(v)){$('ratioStatus').textContent='INVALID: 0.35–6.00, FORWARD RATIOS DESCENDING';return false;}
+ for(let i=0;i<GEAR_KEYS.length;i++)RATIOS[GEAR_KEYS[i]]=v[i]*(GEAR_KEYS[i]<0?-1:1);
+ $('ratioStatus').textContent='RATIOS APPLIED';previewRatios();return true;
+}
+const RADIUS=.30,TAU=2*Math.PI,HP_W=745.699872;
+const CAR_PRESETS={city:{hp:100,mass:1175,final:3.9,inertia:.18},sport:{hp:180,mass:1250,final:4,inertia:.24},performance:{hp:300,mass:1300,final:4.1,inertia:.32},track:{hp:450,mass:1250,final:3.85,inertia:.40},super:{hp:650,mass:1500,final:3.6,inertia:.50}};
+let car={...CAR_PRESETS.performance},MASS=car.mass,FINAL=car.final,INERTIA=car.inertia;
+let engineNetTorque=0,longAccel=0,tractionLimited=false;
+const TORQUE_SHAPE=[[0,0],[460,.18],[930,.48],[1500,.75],[2200,.94],[3000,1],[4000,1],[5000,.96],[6000,.89],[6500,.84],[7000,.75],[8000,.60],[9000,.44],[10000,.28],[11000,0]];
+function fullTorque(rpm,hp=car.hp){
+ let v=clamp(rpm,0,11000),i=TORQUE_SHAPE.findIndex(p=>p[0]>=v);if(i<1)i=1;
+ const [a,x]=TORQUE_SHAPE[i-1],[b,y]=TORQUE_SHAPE[i];
+ return hp*HP_W/(6500*TAU/60*.84)*lerp(x,y,clamp((v-a)/(b-a),0,1));
+}
+function peakTorque(){return fullTorque(3500);}
+function clutchCapacity(){return Math.max(135,peakTorque()*1.55);}
+function rollingAccel(v){return .12+.00038*v*v;}
+function canConfigure(){return !shift&&STATE.gear===0&&Math.abs(STATE.speed)<.1&&(STATE.mode==='off'||(STATE.mode==='running'&&STATE.rpm<1100));}
+function refreshConfig(){
+ for(const [id,value,unit] of [['hpPower',car.hp,' hp'],['mass',car.mass,' kg'],['finalDrive',car.final,''],['engineInertia',car.inertia,' kg·m²']]){
+  $(id).value=value;$(id+'Out').textContent=(id==='finalDrive'||id==='engineInertia'?value.toFixed(2):String(value))+unit;
+ }
+ $('peakTorqueRead').textContent=Math.round(peakTorque())+' Nm';$('powerMassRead').textContent=Math.round(car.hp/(car.mass/1000))+' hp/t';$('capacityRead').textContent=Math.round(clutchCapacity())+' Nm';drawTorquePlot();previewRatios();
+}
+function setCar(next){if(!canConfigure()){refreshConfig();return false;}car={...next};MASS=car.mass;FINAL=car.final;INERTIA=car.inertia;refreshConfig();return true;}
+function drawTorquePlot(){
+ const cv=$('torquePlot'),g=cv.getContext('2d'),w=cv.width,h=cv.height;g.clearRect(0,0,w,h);const left=28,right=w-10,top=12,bottom=h-19;
+ g.font='10px system-ui';g.textAlign='center';g.fillStyle='#8592a1';
+ for(let i=0;i<=4;i++){const x=left+(right-left)*i/4;g.strokeStyle='#26303b';g.beginPath();g.moveTo(x,top);g.lineTo(x,bottom);g.stroke();g.fillText(String(i*2)+'k',x,h-5);}
+ const maxT=peakTorque();for(const type of ['torque','power']){g.beginPath();g.strokeStyle=type==='torque'?'#ff793b':'#65e0ff';g.lineWidth=1.8;
+ for(let n=0;n<=160;n++){const rpm=n*50,t=fullTorque(rpm),v=type==='torque'?t/maxT:t*rpm*TAU/60/(car.hp*HP_W),x=left+(right-left)*rpm/8000,y=bottom-(bottom-top)*v;n?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();}
+ g.textAlign='left';g.fillStyle='#ff793b';g.fillText('TORQUE',left+4,top+8);g.fillStyle='#65e0ff';g.fillText('POWER',left+65,top+8);
+}
+function updatePowerUI(){
+ const can=canConfigure();for(const id of ['carPreset','hpPower','mass','finalDrive','engineInertia','gearProfile','applyRatios',...GEAR_KEYS.map((g,i)=>'ratio'+i)])$(id).disabled=!can;
+ $('presetStatus').textContent=can?'PRESETS UNLOCKED · STOPPED IN NEUTRAL':tractionLimited?'TRACTION ASSIST ACTIVE':'STOP IN NEUTRAL TO CHANGE PRESET';
+ $('currentPowerRead').textContent=Math.round(Math.max(0,engineNetTorque*STATE.rpm*TAU/60/HP_W))+' hp';
+ $('currentTorqueRead').textContent=Math.round(clutchTorque)+' Nm';$('accelRead').textContent=longAccel.toFixed(2)+' m/s²';
+}
+// Separate recording coverage from a provisional mechanical shift guard; not a measured VW redline.
+const SHIFT_RPM_GUARD=10000; // virtual engine guard, not an actual VW specification
+const human=()=>Number($('human').value);
+const randomSigned=()=>Math.random()*2-1;
+const gearName=g=>g===-1?'R':g===0?'N':String(g);
+const showShift=s=>{shiftMessage=s;};
+function setupFX(){
+ FX_INPUT=AC.createGain();
+ const dry=AC.createGain(),wet=AC.createGain(),bypass=AC.createGain(),processed=AC.createGain(),hp=AC.createBiquadFilter(),lp=AC.createBiquadFilter(),bass=AC.createBiquadFilter(),mid=AC.createBiquadFilter(),treble=AC.createBiquadFilter(),conv=AC.createConvolver();
+ hp.type='highpass';hp.Q.value=.707;lp.type='lowpass';lp.Q.value=.707;
+ bass.type='lowshelf';bass.frequency.value=120;mid.type='peaking';mid.frequency.value=900;mid.Q.value=.8;treble.type='highshelf';treble.frequency.value=4000;
+ FX_INPUT.connect(bypass);bypass.connect(MASTER);FX_INPUT.connect(hp);hp.connect(bass);bass.connect(mid);mid.connect(treble);treble.connect(lp);lp.connect(dry);lp.connect(conv);conv.connect(wet);dry.connect(processed);wet.connect(processed);setupEnvironment(processed);
+ FX={dry,wet,bypass,processed,hp,lp,bass,mid,treble,conv};makeRoom();applyFX(true);
+}
+
+const ENV_PRESETS={
+ dry:{cut:22000,bass:0,delays:[.014,.027,.041],gains:[0,0,0]},
+ open:{cut:18000,bass:0,delays:[.028,.053,.081],gains:[.045,.025,.012]},
+ cabin:{cut:4600,bass:4,delays:[.007,.013,.021],gains:[.16,.12,.08]},
+ garage:{cut:13500,bass:1.5,delays:[.035,.066,.105],gains:[.20,.15,.10]},
+ tunnel:{cut:10500,bass:2,delays:[.075,.145,.225],gains:[.25,.18,.12]}
+};
+function setupEnvironment(input){
+ const low=AC.createBiquadFilter(),bass=AC.createBiquadFilter(),distance=AC.createGain(),pan=AC.createStereoPanner(),direct=AC.createGain();
+ low.type='lowpass';low.Q.value=.707;bass.type='lowshelf';bass.frequency.value=145;
+ input.connect(low);low.connect(bass);bass.connect(distance);distance.connect(pan);pan.connect(direct);direct.connect(MASTER);
+ const taps=[-.8,.8,0].map(side=>{const d=AC.createDelay(.35),g=AC.createGain(),p=AC.createStereoPanner();p.pan.value=side;g.gain.value=0;distance.connect(d);d.connect(g);g.connect(p);p.connect(MASTER);return {d,g,p};});
+ ENV_FX={low,bass,distance,pan,direct,taps};applyEnvironment(true);
+}
+function environmentParams(name,distance,amount,pan){
+ const p=ENV_PRESETS[name]||ENV_PRESETS.dry,d=clamp(distance,1,20),a=clamp(amount,0,1),x=clamp(pan,-1,1);
+ return {cut:Math.max(1200,p.cut/(1+.045*(d-1))),bass:p.bass,attenuation:Math.pow(d,-.85),pan:x,delays:p.delays,gains:p.gains.map(g=>g*a)};
+}
+function applyEnvironment(immediate=false){
+ const d=Number($('envDistance').value),a=Number($('envAmount').value),p=Number($('envPan').value);
+ $('envDistanceOut').textContent=d.toFixed(1)+' m';$('envAmountOut').textContent=Math.round(a*100)+'%';$('envPanOut').textContent=Math.abs(p)<.025?'Center':Math.round(Math.abs(p)*100)+'% '+(p<0?'L':'R');
+ if(!ENV_FX)return;
+ const f=ENV_FX,v=environmentParams($('envPreset').value,d,a,p),now=AC.currentTime;
+ const set=(param,value)=>immediate?param.value=value:param.setTargetAtTime(value,now,.04);
+ set(f.low.frequency,Math.min(AC.sampleRate*.48,v.cut));set(f.bass.gain,v.bass);set(f.distance.gain,v.attenuation);set(f.pan.pan,v.pan);
+ set(f.direct.gain,1-v.gains.reduce((a,b)=>a+b,0)*.30);
+ f.taps.forEach((t,i)=>{set(t.d.delayTime,v.delays[i]);set(t.g.gain,v.gains[i]);});
+}
+
+function makeRoom(){
+ if(!FX)return;const seconds=Number($('decay').value),n=Math.round(AC.sampleRate*seconds),b=AC.createBuffer(2,n,AC.sampleRate);
+ // Seeded noise impulse; deterministic room tail, not an engine source.
+ let seed=74291;
+ for(let c=0;c<2;c++){const data=b.getChannelData(c);for(let i=0;i<n;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const u=i/n;data[i]=(seed/4294967296*2-1)*Math.pow(1-u,3)*.30;}}
+ FX.conv.buffer=b;
+}
+const effectDefaults={bass:0,mid:0,treble:0,hp:20,lp:22000,wet:0,decay:.65};
+function applyFX(immediate=false){
+ for(const [id,def] of Object.entries(effectDefaults)){const v=Number($(id).value);$(id+'Out').textContent=id==='wet'?Math.round(v*100)+'%':id==='decay'?v.toFixed(2)+' s':id==='hp'||id==='lp'?v+' Hz':(v>0?'+':'')+v+' dB';}
+ if(!FX)return;
+ const now=AC.currentTime,byp=$('fxBypass').checked,m=Number($('wet').value);
+ const set=(p,v)=>{if(immediate)p.value=v;else p.setTargetAtTime(v,now,.025);};
+ for(const id of ['bass','mid','treble'])set(FX[id].gain,Number($(id).value));
+ set(FX.hp.frequency,Number($('hp').value));set(FX.lp.frequency,Math.min(AC.sampleRate*.48,Number($('lp').value)));
+ set(FX.dry.gain,1-m);set(FX.wet.gain,m);set(FX.bypass.gain,byp?1:0);set(FX.processed.gain,byp?0:1);
+}
+
+const labourDefaults={labourAmount:.65,labourThreshold:2500,labourBass:4,boomHz:105,boomGain:6,boomQ:1.2,rough:.12,labourAttack:.08,labourRelease:.18};
+function labourTarget(rpm,throttle,torque,gear,disengaged,threshold){
+ if(!gear||disengaged>=.995||throttle<=.03)return {load:0,labour:0};
+ // Positive torque leaving the engine, not engine braking or merely a large gear number.
+ const load=clamp(torque/Math.max(1,fullTorque(rpm)),0,1)*clamp(throttle/.5,0,1);
+ const low=clamp((threshold-rpm)/Math.max(1,threshold-930),0,1);
+ return {load,labour:load*Math.pow(low,1.15)};
+}
+function setupLabourFX(){
+ const input=AC.createGain(),dry=AC.createGain(),wet=AC.createGain(),bass=AC.createBiquadFilter(),boom=AC.createBiquadFilter(),treble=AC.createBiquadFilter(),pulse=AC.createGain(),mod=AC.createOscillator(),depth=AC.createGain(),trim=AC.createGain();
+ bass.type='lowshelf';bass.frequency.value=150;boom.type='peaking';treble.type='highshelf';treble.frequency.value=1800;
+ input.connect(dry);dry.connect(FX_INPUT);input.connect(bass);bass.connect(boom);boom.connect(treble);treble.connect(pulse);pulse.connect(trim);trim.connect(wet);wet.connect(FX_INPUT);
+ // Control-rate oscillator modulates the recorded signal only, never connects to an audio output.
+ mod.type='sine';mod.frequency.value=930/120;depth.gain.value=0;mod.connect(depth);depth.connect(pulse.gain);mod.start();
+ dry.gain.value=1;wet.gain.value=0;pulse.gain.value=1;
+ LABOUR_FX={input,dry,wet,bass,boom,treble,pulse,mod,depth,trim};applyLabour();
+}
+function applyLabour(){
+ for(const [id,def] of Object.entries(labourDefaults)){
+  const v=Number($(id).value);
+  $(id+'Out').textContent=['labourAmount','rough'].includes(id)?Math.round(v*100)+'%':id==='labourThreshold'?v+' RPM':id==='boomHz'?v+' Hz':['labourBass','boomGain'].includes(id)?v+' dB':id==='boomQ'?v.toFixed(1):v.toFixed(2)+' s';
+ }
+}
+function updateLabour(dt){
+ const enabled=$('labourOn').checked&&!$('fxBypass').checked;
+ const v=STATE.mode==='running'?labourTarget(STATE.rpm,STATE.throttle,clutchTorque,STATE.gear,clutch,Number($('labourThreshold').value)):{load:0,labour:0};
+ const attack=Number($('labourAttack').value),release=Number($('labourRelease').value);
+ loadSmooth+=(v.load-loadSmooth)*(1-Math.exp(-dt/(v.load>loadSmooth?attack:release)));
+ const goal=enabled?v.labour*Number($('labourAmount').value):0;
+ labourSmooth+=(goal-labourSmooth)*(1-Math.exp(-dt/(goal>labourSmooth?attack:release)));
+ // For a fully disconnected engine, allow a short release but no new load excitation.
+ $('loadRead').textContent=Math.round(loadSmooth*100)+'%';$('loadBar').style.width=Math.round(loadSmooth*100)+'%';
+ $('labourRead').textContent=Math.round(labourSmooth*100)+'%';$('labourBar').style.width=Math.round(labourSmooth*100)+'%';
+ if(!LABOUR_FX)return;
+ const f=LABOUR_FX,now=AC.currentTime,set=(p,val)=>p.setTargetAtTime(val,now,.025),q=enabled?labourSmooth:0;
+ // Filters scale with load. At zero load use a true dry path.
+ const blend=clamp(q*10,0,1);
+ set(f.dry.gain,1-blend);set(f.wet.gain,blend);
+ set(f.bass.gain,q*Number($('labourBass').value));set(f.boom.gain,q*Number($('boomGain').value));
+ set(f.boom.frequency,Number($('boomHz').value));set(f.boom.Q,Number($('boomQ').value));
+ set(f.treble.gain,-2*q);set(f.trim.gain,Math.pow(10,-q*1.8/20));
+ const d=q*Number($('rough').value);
+ set(f.pulse.gain,1-d);set(f.depth.gain,d);
+ set(f.mod.frequency,clamp(STATE.rpm/120,4,40));
+}
+
+async function decodeKnob(bytes){
+ await ensureAudio();const b=await AC.decodeAudioData(bytes);
+ if(Math.abs(b.duration-8.9279)>.3)throw Error('Expected the original 8.93 s gear_shift_knob_sounds.wav.');
+ const out=knobDefs.map(([a,z])=>{const n=Math.round((z-a)*b.sampleRate),buf=AC.createBuffer(1,n,b.sampleRate),x=buf.getChannelData(0),offset=Math.round(a*b.sampleRate),f=Math.round(.008*b.sampleRate);
+ for(let c=0;c<b.numberOfChannels;c++){const y=b.getChannelData(c);for(let i=0;i<n;i++)x[i]+=(y[offset+i]||0)/b.numberOfChannels;}
+ for(let i=0;i<f;i++){const w=i/Math.max(1,f-1);x[i]*=w;x[n-1-i]*=w;}
+ return buf;});
+ knobBuffers=out;$('knobStatus').textContent='7 RECORDED SHIFT EVENTS · NATIVE PITCH';
+}
+async function tryKnob(){
+ if(knobBuffers.length||knobLoading||location.protocol==='file:')return;
+ knobLoading=true;try{const res=await fetch('./gear_shift_knob_sounds.wav');if(res.ok)await decodeKnob(await res.arrayBuffer());}catch(e){$('knobStatus').textContent='LOAD GEAR WAV MANUALLY';}finally{knobLoading=false;}
+}
+function playKnob(){
+ if(!AC||!knobBuffers.length)return;
+ let i=0;if(lastKnob<0)i=Math.floor(Math.random()*knobBuffers.length);else i=(lastKnob+1+Math.floor(Math.random()*(knobBuffers.length-1)))%knobBuffers.length;
+ lastKnob=i;const src=AC.createBufferSource(),g=AC.createGain();src.buffer=knobBuffers[i];src.playbackRate.value=1;
+ g.gain.value=Number($('knobLevel').value)*(1+human()*.12*randomSigned());src.connect(g);g.connect(FX_INPUT);
+ src.onended=()=>{src.disconnect();g.disconnect();};src.start();
+}
+function targetGearRPM(gear,speed){return speed*(RATIOS[gear]||0)*FINAL/RADIUS*60/TAU;}
+function canSelect(g,speed){
+ if(!Object.hasOwn(RATIOS,g))return 'INVALID GEAR';
+ if(g===0)return '';
+ if(g===-1&&Math.abs(speed)>.7)return 'REVERSE LOCKOUT';
+ if(g>0&&speed<-.7)return 'DIRECTION MISMATCH';
+ if(Math.abs(targetGearRPM(g,speed))>SHIFT_RPM_GUARD)return 'DOWNSHIFT TOO FAST';
+ return '';
+}
+// A low-inertia input-shaft speed proxy. It represents synchronizer progress,
+// not an additional physical shaft or a measured synchronizer torque.
+function syncStep(input,target,disengaged,ease,dt){
+ const rate=(3500+10500*ease)*(.55+.45*clamp(disengaged,0,1));
+ const error=target-input;
+ return input+clamp(error,-rate*dt,rate*dt);
+}
+function requestGear(g){
+ if(STATE.mode!=='running'&&STATE.mode!=='off')return;
+ const why=canSelect(g,STATE.speed);if(why){showShift(why);return;}
+ if(g===STATE.gear&&!shift)return;
+ if(STATE.mode==='off'){STATE.gear=g;playKnob();showShift('SELECTED '+gearName(g));return;}
+ if(shift&&shift.to===g)return;
+ const assist=$('assist').checked,h=human(),ease=Number($('syncEase').value);
+ const open=assist&&STATE.gear!==0&&g!==0?Math.max(.035,.075+(.025+.035*randomSigned())*h):0;
+ const neutral=Math.max(.045,.10-.04*ease+(.045+.055*randomSigned())*h);
+ const engage=Math.max(.12,.25+(.12+.17*randomSigned())*h);
+ // Accept a replacement request while the lever is moving rather than losing it.
+ shift={old:STATE.gear,to:g,t:0,open,neutral,engage,assist,selected:false,engageAt:0,ease};
+ STATE.shifting=true;STATE.shiftKind=g<STATE.gear?'down':'up';showShift('SHIFT TO '+gearName(g));
+}
+function relativeGear(dir){
+ const g=shift?shift.to:STATE.gear;requestGear(clamp(g+dir,0,6));
+}
+// One bounded clutch impulse. Equal/opposite angular impulse through the ratio;
+// friction removes relative kinetic energy rather than adding it.
+function clutchStep(omega,speed,ratio,disengaged,dt,capacity=clutchCapacity()){
+ if(!ratio)return {omega,speed,heat:0,slip:0,torque:0};
+ if(disengaged>=.999)return {omega,speed,heat:0,slip:omega-speed*ratio/RADIUS,torque:0};
+ const k=ratio/RADIUS,rel=omega-speed*k,inv=1/INERTIA+k*k/MASS,cap=capacity*Math.pow(1-clamp(disengaged,0,1),1.6)*dt;
+ const J=clamp(rel/inv,-cap,cap),after=rel-J*inv;
+ return {omega:omega-J/INERTIA,speed:speed+J*k/MASS,heat:Math.max(0,J*(rel+after)*.5),slip:after,torque:dt>0?J/dt:0};
+}
+function stepVehicle(dt,throttle,manualClutch,brake,launch,assist){
+ let want=manualClutch?1:0;
+ if(shift){
+   const z=shift;z.t+=dt;
+   if(z.t<z.open){if(z.assist)want=1;}
+   else if(!z.selected){
+     // Unload the selected ratio and synchronize the gearbox input shaft to
+     // the road-driven target. The engine itself is not snapped to target RPM.
+     STATE.gear=0;if(z.assist&&z.to!==0)want=1;
+     const why=canSelect(z.to,STATE.speed);
+     if(why){shift=null;STATE.shifting=false;syncMismatch=0;showShift(why);}
+     else{
+       const target=z.to===0?shaftRPM:targetGearRPM(z.to,STATE.speed);
+       shaftRPM=syncStep(shaftRPM,target,Math.max(clutch,z.assist?.90:0),z.ease,dt);
+       syncMismatch=Math.abs(target-shaftRPM);
+       const tolerance=40+160*z.ease;
+       if(z.t>=z.open+z.neutral&&(z.to===0||syncMismatch<=tolerance)){
+         STATE.gear=z.to;z.selected=true;z.engageAt=z.t;syncMismatch=0;playKnob();showShift('ENGAGING '+gearName(z.to));
+       }else showShift('SYNCHRONIZING '+gearName(z.to));
+     }
+   }
+   if(shift&&z.selected){
+     if(z.assist&&z.to!==0)want=Math.max(want,clamp(1-(z.t-z.engageAt)/z.engage,0,1));
+     if(z.t>=z.engageAt+(z.assist&&z.to!==0?z.engage:0)){shift=null;STATE.shifting=false;showShift('IN '+gearName(STATE.gear));}
+   }
+ }
+ if(launch&&STATE.gear!==0&&!manualClutch&&!shift&&Math.abs(STATE.speed)<5){
+   const sync=Math.abs(targetGearRPM(STATE.gear,STATE.speed));
+   const creep=throttle>.08?clamp(1-sync/1200,0,1)*.55:clamp(1-sync/1000,0,1);
+   // Keep enough clutch release to launch without a large initial RPM collapse.
+   const bog=clamp((850-STATE.rpm)/300,0,.95);
+   want=Math.max(want,creep,bog);
+ }
+ const tau=want>clutch?.045:.085;
+ clutch=clamp(clutch+(want-clutch)*(1-Math.exp(-dt/tau)),0,1);
+ let rpm=STATE.rpm,omega=rpm*TAU/60,v=STATE.speed;const oldSpeed=v;
+ // Above 4,000 RPM the loss curve is extrapolated, not physically measured.
+ const lossR=[0,930,1000,1500,2000,2500,3000,3500,4000,5000,6500,8000,10000],lossV=[0,0,85,246,485,610,617,667,732,850,1030,1210,1500];
+ let k=lossR.findIndex(x=>x>=rpm);if(k<1)k=rpm>10000?lossR.length-1:1;
+ const loss=lerp(lossV[k-1],lossV[k],clamp((rpm-lossR[k-1])/(lossR[k]-lossR[k-1]),0,1));
+ const idleControl=clamp((idle-rpm)*5,0,1200);
+ // Rated NET torque, with measured neutral/coast loss rate preserved.
+ const lossTorque=loss*TAU/60*INERTIA,demand=fullTorque(rpm)*Math.pow(clamp(throttle,0,1),1.65);
+ const limit=poweredLimit(),limiter=clamp((limit-rpm)/120,0,1),ratio=(RATIOS[STATE.gear]||0)*FINAL;
+ let driveTorque=demand*limiter;tractionLimited=false;
+ if($('tractionAssist').checked&&ratio&&clutch<.85){
+  const tractionTorque=MASS*9.81*.90*RADIUS/Math.abs(ratio);
+  if(driveTorque>tractionTorque){driveTorque=tractionTorque;tractionLimited=true;}
+ }
+ engineNetTorque=driveTorque-lossTorque*(1-clamp(throttle/.25,0,1))+idleControl*TAU/60*INERTIA;
+ omega=Math.max(0,Math.min(Math.max(omega,limit*TAU/60),omega+engineNetTorque/INERTIA*dt));
+ const drag=rollingAccel(v)+(brake?6.5:0);
+ v=Math.sign(v)*Math.max(0,Math.abs(v)-drag*dt);
+ const result=clutchStep(omega,v,(RATIOS[STATE.gear]||0)*FINAL,clutch,dt);
+ omega=result.omega;v=result.speed;heat+=result.heat;slipRPM=Math.abs(result.slip)*60/TAU;
+ clutchTorque=result.torque;
+ if(STATE.gear!==0)shaftRPM=targetGearRPM(STATE.gear,v);else if(!shift)shaftRPM+=(rpm-shaftRPM)*(1-clutch)*(1-Math.exp(-dt/.045));
+ STATE.rpm=Math.max(0,omega*60/TAU);STATE.speed=v;longAccel=(v-oldSpeed)/dt;
+ // Protect the acoustic ceiling; drivetrain may back-drive beyond it, but samples never extrapolate.
+ if(STATE.rpm<460&&STATE.gear!==0&&clutch<.85){stallTime+=dt;if(stallTime>.12){stopBlip();fadeLoops(.12);STATE.mode='off';STATE.rpm=0;STATE.throttle=0;STATE.gear=0;shift=null;STATE.shifting=false;status('STALLED');showShift('STALLED · RESTART');}}else stallTime=0;
+}
+function updateDriveUI(){
+ $('gearBadge').textContent=gearName(STATE.gear);$('transMode').textContent=shift?'SHIFTING':STATE.gear?'MANUAL':'NEUTRAL';
+ for(const b of $('gearGrid').querySelectorAll('button'))b.classList.toggle('active',Number(b.dataset.gear)===STATE.gear);
+ $('clutchRead').textContent=Math.round(clutch*100)+'%';$('clutchBar').style.width=Math.round(clutch*100)+'%';
+ $('roadRead').textContent=(STATE.speed*3.6).toFixed(1)+' km/h';$('slipRead').textContent=Math.round(slipRPM)+' RPM';$('heatRead').textContent=Math.round(heat)+' J';$('shiftRead').textContent=shiftMessage;$('shaftRead').textContent=Math.round(shaftRPM)+' RPM';$('syncRead').textContent=Math.round(syncMismatch)+' RPM';
+ $('clutchPedal').classList.toggle('active',clutchHeld||clutchKeys);$('brakePedal').classList.toggle('active',brakeHeld||brakeKeys);
+}
+function bindHeld(id,set){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);set(true);});for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>set(false));}
+
+function throttleDemand(){return Math.max(pointerHeld?mouseThrottle:0,keys.size?Number($('engine').value):0);}
+function pointerThrottle(x,left,width){return clamp((x-left)/Math.max(1,width),0,1);}
+function throttleState(){
+ const demand=throttleDemand();held=demand>0;
+ // Dragging from below to above the existing recorded-blip threshold is eligible.
+ if(demand>=.55&&lastDemand<.55)triggerBlip(STATE.rpm,demand);
+ lastDemand=demand;
+}
+function tick(ts){
+ const dt=lastFrame?clamp((ts-lastFrame)/1000,0,.05):.016;lastFrame=ts;STATE.time+=dt;
+ if(STATE.mode==='running'){
+   const pedalTarget=stopPending?0:throttleDemand();
+   const target=pedalTarget*(shift?.assist?(shift.selected?clamp((shift.t-shift.engageAt)/Math.max(.01,shift.engage),0,1):0):1);
+   STATE.throttle+=(target-STATE.throttle)*(1-Math.exp(-dt/(target>STATE.throttle?.045:.025)));
+   const steps=Math.max(1,Math.ceil(dt/.005));for(let j=0;j<steps&&STATE.mode==='running';j++)stepVehicle(dt/steps,STATE.throttle,clutchHeld||clutchKeys,brakeHeld||brakeKeys,$('autoLaunch').checked,$('assist').checked);
+   STATE.overrun=STATE.throttle<.04&&STATE.rpm>idle+100;
+   STATE.limiter=STATE.rpm>=poweredLimit()-120&&target>.15;
+   if(STATE.mode==='running'&&stopPending&&STATE.rpm<=idle+100)beginShutdown();
+   if(ts-lastMix>22){lastMix=ts;mix();}
+ }else if(STATE.mode==='cranking'){
+   const elapsed=AC?AC.currentTime-phaseStart:0;
+   if($('statusText').textContent==='CRANKING')STATE.rpm=clamp((elapsed-.05)*1150,0,idle);
+ }else if(STATE.mode==='stopping'){STATE.rpm=idle*Math.max(0,1-(AC.currentTime-phaseStart)/.7);}
+ if(STATE.mode!=='running'){STATE.limiter=false;clutchTorque=0;syncMismatch=0;shaftRPM=STATE.gear?targetGearRPM(STATE.gear,STATE.speed):0;clutch+=(Number(clutchHeld||clutchKeys)-clutch)*(1-Math.exp(-dt/.08));slipRPM=0;engineNetTorque=0;tractionLimited=false;const d=(brakeHeld||brakeKeys?6.5:0)+rollingAccel(STATE.speed);longAccel=STATE.speed===0?0:-Math.sign(STATE.speed)*d;STATE.speed=Math.sign(STATE.speed)*Math.max(0,Math.abs(STATE.speed)-d*dt);}
+ updateLabour(dt);updateDriveUI();updatePowerUI();
+ $('pedalPct').textContent=Math.round(STATE.throttle*100)+'%';
+ $('pedal').style.setProperty('--pedalFill',STATE.throttle*100+'%');
+ $('pedal').classList.toggle('down',held&&STATE.mode==='running');
+ $('pedalSub').textContent=STATE.mode==='running'?(STATE.overrun?'CLOSED THROTTLE':'TARGET '+Math.round(throttleDemand()*100)+'% · '+gearName(STATE.gear)):'0% LEFT · 100% RIGHT · RELEASE TO LIFT';
+ updateNeedle(dt);drawGauge();drawScope();requestAnimationFrame(tick);
+}
+function init(){
+ $('engine').value='1';
+ $('carPreset').addEventListener('change',()=>{const p=CAR_PRESETS[$('carPreset').value];if(p)setCar(p);});
+ for(const [id,key] of [['hpPower','hp'],['mass','mass'],['finalDrive','final'],['engineInertia','inertia']])$(id).addEventListener('input',()=>{if(setCar({...car,[key]:Number($(id).value)}))$('carPreset').value='custom';});
+ $('gearProfile').addEventListener('change',()=>{const v=GEAR_PROFILES[$('gearProfile').value];if(v){v.forEach((x,i)=>$('ratio'+i).value=x);previewRatios();$('ratioStatus').textContent='PREVIEW · APPLY TO USE';}});
+ for(let i=0;i<GEAR_KEYS.length;i++)$('ratio'+i).addEventListener('input',()=>{$('gearProfile').value='custom';previewRatios();$('ratioStatus').textContent='PREVIEW · APPLY TO USE';});
+ $('applyRatios').addEventListener('click',applyRatios);
+ $('phaseOn').addEventListener('change',()=>{updatePhaseStatus();mix();});
+ for(const id of ['envPreset','envDistance','envPan','envAmount'])$(id).addEventListener('input',()=>applyEnvironment());
+ $('resetEnv').addEventListener('click',()=>{$('envPreset').value='dry';$('envDistance').value=1;$('envPan').value=0;$('envAmount').value=1;applyEnvironment();});applyEnvironment();
+ $('engine').addEventListener('change',throttleState);
+ refreshConfig();updatePowerUI();
+ $('neutralBtn').addEventListener('click',()=>requestGear(0));$('autoBtn').addEventListener('click',()=>requestGear(-1));$('upBtn').addEventListener('click',()=>relativeGear(1));$('downBtn').addEventListener('click',()=>relativeGear(-1));
+ for(const b of $('gearGrid').querySelectorAll('button'))b.addEventListener('click',()=>requestGear(Number(b.dataset.gear)));
+ bindHeld('clutchPedal',v=>clutchHeld=v);bindHeld('brakePedal',v=>brakeHeld=v);
+ $('clipPrev').addEventListener('click',()=>choose(-1));$('clipNext').addEventListener('click',()=>choose(1));$('clipPlay').addEventListener('click',()=>audition().catch(e=>msg(e.message)));
+ for(const id of ['loadKnob','loadKnobOverlay'])$(id).addEventListener('click',()=>$('knobFile').click());
+ for(const id of ['loadHigh','loadHighOverlay'])$(id).addEventListener('click',()=>{if(STATE.mode!=='off'){$('highStatus').textContent='STOP ENGINE FIRST';return;}$('highFile').click();});
+ $('highFile').addEventListener('change',async e=>{if(highTask||starting||!e.target.files.length)return;const files=Array.from(e.target.files),errors=[];try{if(STATE.mode!=='off')throw Error('Stop engine first.');highTask=(async()=>{for(const f of files){try{await decodeShifted(await f.arrayBuffer());}catch(err){errors.push(f.name+': '+err.message);}}})();await highTask;updateHighStatus();if(errors.length)$('highStatus').textContent+=' · '+errors.join(' · ');}catch(err){$('highStatus').textContent=err.message;}finally{highTask=null;e.target.value='';}});
+ $('knobFile').addEventListener('change',async e=>{try{if(!e.target.files[0])return;knobLoading=true;await decodeKnob(await e.target.files[0].arrayBuffer());}catch(err){$('knobStatus').textContent=err.message;}finally{knobLoading=false;e.target.value='';}});
+ $('previewKnob').addEventListener('click',async()=>{await ensureAudio();if(!knobBuffers.length){await tryKnob();if(!knobBuffers.length){$('knobStatus').textContent='CHOOSE GEAR WAV FIRST';return;}}playKnob();});
+ for(const id of Object.keys(effectDefaults))$(id).addEventListener('input',()=>applyFX());
+ $('decay').addEventListener('change',makeRoom);$('fxBypass').addEventListener('change',()=>applyFX());
+ $('resetFx').addEventListener('click',()=>{for(const [id,v] of Object.entries(effectDefaults))$(id).value=v;$('fxBypass').checked=false;makeRoom();applyFX();});
+ for(const id of ['human','knobLevel','syncEase'])$(id).addEventListener('input',()=>{$(id+'Out').textContent=Math.round(Number($(id).value)*100)+'%';});
+ applyFX();
+ for(const id of Object.keys(labourDefaults))$(id).addEventListener('input',applyLabour);
+ $('resetLabour').addEventListener('click',()=>{for(const [id,v] of Object.entries(labourDefaults))$(id).value=v;$('labourOn').checked=true;applyLabour();});applyLabour();
+ $('sourceFile').addEventListener('change',async e=>{try{if(loadTask)return;loadTask=loadFile(e.target.files[0]);await loadTask;}catch(err){msg(err.message);$('overlayNote').textContent=err.message;}finally{loadTask=null;e.target.value='';}});
+ $('loadOther').addEventListener('click',()=>$('sourceFile').click());$('startBtn').addEventListener('click',startEngine);
+ $('powerBtn').addEventListener('click',()=>STATE.mode==='off'?startEngine():stopEngine());
+ $('vol').addEventListener('input',()=>{const v=Number($('vol').value);$('volVal').textContent=Math.round(v*100)+'%';document.documentElement.style.setProperty('--vol',v*100+'%');if(MASTER)MASTER.gain.setTargetAtTime(v*.65,AC.currentTime,.025);});
+ const pedal=$('pedal');
+ const drag=e=>{const b=pedal.getBoundingClientRect();mouseThrottle=pointerThrottle(e.clientX,b.left,b.width);throttleState();};
+ pedal.addEventListener('pointerdown',e=>{if(pointerId!==null||e.button!==0)return;e.preventDefault();pointerId=e.pointerId;pointerHeld=true;try{pedal.setPointerCapture(e.pointerId);}catch{}drag(e);});
+ window.addEventListener('pointermove',e=>{if(pointerHeld&&e.pointerId===pointerId)drag(e);});
+ const releasePointer=e=>{if(e.pointerId!==pointerId)return;pointerHeld=false;pointerId=null;mouseThrottle=0;throttleState();};
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(ev,releasePointer);
+ const revCodes=['Space','KeyW','KeyD','ArrowUp'];
+ window.addEventListener('keydown',e=>{
+  if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+  if(revCodes.includes(e.code)){e.preventDefault();keys.add(e.code);throttleState();return;}
+  if(e.code==='KeyA'){e.preventDefault();clutchKeys=true;return;}if(e.code==='KeyS'||e.code==='ArrowDown'){e.preventDefault();brakeKeys=true;return;}
+  if(e.repeat)return;
+  if(/^Digit[1-7]$|^Numpad[1-7]$/.test(e.code)){e.preventDefault();const g=Number(e.code.slice(-1));requestGear(g===7?-1:g);}
+  else if(e.code==='KeyN'){e.preventDefault();requestGear(0);}else if(e.code==='KeyQ'){relativeGear(-1);}else if(e.code==='KeyE'){relativeGear(1);}else if(e.code==='KeyR'&&STATE.mode==='off'){startEngine();}
+ });
+ window.addEventListener('keyup',e=>{if(revCodes.includes(e.code)){keys.delete(e.code);throttleState();}if(e.code==='KeyA')clutchKeys=false;if(e.code==='KeyS'||e.code==='ArrowDown')brakeKeys=false;});
+ const release=()=>{keys.clear();pointerHeld=false;pointerId=null;mouseThrottle=0;clutchKeys=false;brakeKeys=false;clutchHeld=false;brakeHeld=false;throttleState();};window.addEventListener('blur',release);document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
+ window.addEventListener('resize',resizeAll);if(window.visualViewport)window.visualViewport.addEventListener('resize',resizeAll);
+ choose(0);updateHighStatus();msg('SOURCE NOT LOADED');status('STANDBY');resizeAll();requestAnimationFrame(tick);
+}
+
+  function resizeCanvas(canvas) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.max(1, Math.round(rect.width * dpr));
+    var h = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, dpr: dpr };
+  }
+
+  function resizeAll() {
+    resizeCanvas(gauge);
+    resizeCanvas(scope);
+    drawGauge();
+    drawScope();
+  }
+
+  function roundRect(g, x, y, w, h, r) {
+    var rr = Math.min(r, w * 0.5, h * 0.5);
+    g.beginPath();
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr);
+    g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr);
+    g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
+  }
+
+  function drawGauge() {
+    var w = gauge.clientWidth;
+    var h = gauge.clientHeight;
+    if (!w || !h) return;
+    var g = gaugeCtx;
+    var e = ENGINES[STATE.key];
+    var maxRpm = 10000;
+    var cx = w * 0.5;
+    var cy = h * 0.615;
+    var R = Math.min(w * 0.355, h * 0.415);
+    var A0 = Math.PI * 0.75;
+    var A1 = Math.PI * 2.25;
+    var span = A1 - A0;
+    var ratio = clamp(STATE.rpm / e.redline, 0, 1.25);
+    var limiterOn = STATE.mode==='running'&&STATE.limiter;
+
+    function ang(v) { return A0 + span * clamp(v / maxRpm, 0, 1); }
+
+    g.clearRect(0, 0, w, h);
+
+    /* subtle instrument face light */
+    var bg = g.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.55);
+    bg.addColorStop(0, 'rgba(255,255,255,0.045)');
+    bg.addColorStop(0.55, 'rgba(255,255,255,0.012)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, w, h);
+
+    /* shift lights */
+    var lightCount = 8;
+    var lightW = Math.max(10, Math.min(16, w * 0.038));
+    var lightH = Math.max(3.5, Math.min(5, h * 0.016));
+    var gap = lightW * 0.38;
+    var totalW = lightCount * lightW + (lightCount - 1) * gap;
+    var lx = cx - totalW / 2;
+    var ly = Math.max(10, h * 0.045);
+    var litCount = 0;
+    var thresholds = [0.58, 0.65, 0.71, 0.77, 0.83, 0.89, 0.94, 0.975];
+    for (var t = 0; t < thresholds.length; t++) {
+      if (ratio >= thresholds[t]) litCount = t + 1;
+    }
+    var flash = Math.floor(STATE.time * 13) % 2 === 0;
+    for (var li = 0; li < lightCount; li++) {
+      var lit = li < litCount;
+      if (limiterOn && flash) lit = true;
+      var col = li < 4 ? '#3ff2a0' : (li < 6 ? '#ffc45e' : '#ff354b');
+      g.globalAlpha = lit ? 1 : 0.16;
+      g.fillStyle = col;
+      g.shadowColor = lit ? col : 'transparent';
+      g.shadowBlur = lit ? 9 : 0;
+      roundRect(g, lx + li * (lightW + gap), ly, lightW, lightH, lightH * 0.5);
+      g.fill();
+    }
+    g.shadowBlur = 0;
+    g.globalAlpha = 1;
+
+    /* track */
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(cx, cy, R, A0, A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = '#171e27';
+    g.stroke();
+
+    /* red zone */
+    g.beginPath();
+    g.arc(cx, cy, R, ang(e.redline), A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = 'rgba(255,47,69,0.29)';
+    g.stroke();
+
+    /* outer throttle ring */
+    var ringR = R + Math.max(7, R * 0.075);
+    g.beginPath();
+    g.arc(cx, cy, ringR, A0, A1);
+    g.lineWidth = Math.max(2, R * 0.018);
+    g.strokeStyle = 'rgba(101,224,255,0.08)';
+    g.stroke();
+    var th = STATE.mode === 'off' ? 0 : clamp(STATE.throttle, 0, 1);
+    if (th > 0.005) {
+      g.beginPath();
+      g.arc(cx, cy, ringR, A0, A0 + span * th);
+      g.lineWidth = Math.max(2, R * 0.018);
+      g.strokeStyle = 'rgba(101,224,255,0.78)';
+      g.shadowColor = 'rgba(101,224,255,0.55)';
+      g.shadowBlur = 8;
+      g.stroke();
+      g.shadowBlur = 0;
+    }
+
+    /* ticks and labels */
+    var majorStep = 1000;
+    var minorStep = 500;
+    var font = Math.max(8, Math.round(R * 0.080));
+    for (var v = 0; v <= maxRpm + 1; v += minorStep) {
+      var major = v % majorStep === 0;
+      var a = ang(v);
+      var r1 = R - Math.max(7, R * 0.058);
+      var r2 = r1 - (major ? Math.max(8, R * 0.083) : Math.max(4, R * 0.043));
+      var red = v >= e.redline;
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+      g.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+      g.lineWidth = major ? Math.max(1.2, R * 0.014) : Math.max(0.7, R * 0.008);
+      g.strokeStyle = red ? (major ? '#ff6273' : '#7c3039') : (major ? '#7c8998' : '#39424e');
+      g.stroke();
+      if (major) {
+        var rr = r2 - Math.max(8, R * 0.075);
+        g.fillStyle = red ? '#ff8792' : '#788696';
+        g.font = '700 ' + font + 'px ui-sans-serif, system-ui, sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(String(v / 1000), cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+      }
+    }
+
+    /* small unit label */
+    g.fillStyle = 'rgba(126,140,157,0.62)';
+    g.font = '700 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText('x1000 r/min', cx, cy - R * 0.47);
+
+    /* value arc */
+    var nr = clamp(STATE.needleRpm, 0, maxRpm);
+    if (limiterOn) {
+      nr += (Math.random() - 0.5) * e.redline * 0.010;
+    } else if (STATE.mode === 'running' || STATE.mode === 'cranking') {
+      nr += (Math.sin(STATE.time * 0.091) + Math.sin(STATE.time * 0.137)) * e.redline * 0.0007;
+      nr += (Math.random() - 0.5) * e.redline * 0.00035;
+    }
+    nr = clamp(nr, 0, maxRpm);
+    var vEnd = ang(nr);
+    if (vEnd > A0 + 0.004) {
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(8, R * 0.074);
+      g.strokeStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+      g.shadowColor = limiterOn ? 'rgba(255,50,71,.75)' : 'rgba(255,107,26,.65)';
+      g.shadowBlur = Math.max(10, R * 0.14);
+      g.stroke();
+      g.shadowBlur = 0;
+
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(1, R * 0.008);
+      g.strokeStyle = 'rgba(255,228,203,0.52)';
+      g.stroke();
+    }
+
+    /* redline radial marker */
+    var ra = ang(e.redline);
+    g.beginPath();
+    g.moveTo(cx + Math.cos(ra) * (R - Math.max(8, R * 0.074)), cy + Math.sin(ra) * (R - Math.max(8, R * 0.074)));
+    g.lineTo(cx + Math.cos(ra) * (R + Math.max(7, R * 0.055)), cy + Math.sin(ra) * (R + Math.max(7, R * 0.055)));
+    g.lineWidth = Math.max(1.2, R * 0.015);
+    g.strokeStyle = 'rgba(255,84,104,0.9)';
+    g.stroke();
+
+    /* needle */
+    var na = ang(nr);
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(na);
+    var needleLen = R - Math.max(8, R * 0.055);
+    var needleBase = R * 0.14;
+    g.beginPath();
+    g.moveTo(-needleBase, -Math.max(4, R * 0.043));
+    g.lineTo(needleLen, -Math.max(1.2, R * 0.012));
+    g.lineTo(needleLen, Math.max(1.2, R * 0.012));
+    g.lineTo(-needleBase, Math.max(4, R * 0.043));
+    g.closePath();
+    var ng = g.createLinearGradient(-needleBase, 0, needleLen, 0);
+    ng.addColorStop(0, limiterOn ? '#ff8a93' : '#ffb06c');
+    ng.addColorStop(0.35, limiterOn ? '#ff3247' : '#ff6b1a');
+    ng.addColorStop(1, limiterOn ? '#ff273b' : '#ff5a0c');
+    g.fillStyle = ng;
+    g.shadowColor = limiterOn ? 'rgba(255,50,71,.9)' : 'rgba(255,107,26,.8)';
+    g.shadowBlur = Math.max(10, R * 0.15);
+    g.fill();
+    g.restore();
+    g.shadowBlur = 0;
+
+    /* hub */
+    g.beginPath();
+    g.arc(cx, cy, Math.max(7, R * 0.085), 0, Math.PI * 2);
+    g.fillStyle = '#0b0f14';
+    g.fill();
+    g.lineWidth = Math.max(1.4, R * 0.019);
+    g.strokeStyle = '#2b3542';
+    g.stroke();
+    g.beginPath();
+    g.arc(cx, cy, Math.max(2, R * 0.025), 0, Math.PI * 2);
+    g.fillStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+    g.fill();
+
+    /* digital readout */
+    var readoutY = cy + R * 0.58;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = limiterOn ? '#ff5365' : '#eef4fb';
+    g.font = '800 ' + Math.max(20, Math.round(R * 0.245)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText(String(Math.round(STATE.rpm)), cx, readoutY);
+    g.fillStyle = '#4f5b69';
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.060)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('RPM', cx, readoutY + Math.max(12, R * 0.125));
+
+    /* gear and road-speed readouts */
+    var nx = cx - R * 0.57;
+    var ny = readoutY;
+    var gearText = STATE.gear < 0 ? 'R' : STATE.gear > 0 ? String(STATE.gear) : 'N';
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, nx - 11, ny - 11, 22, 22, 5);
+    g.fill();
+    g.strokeStyle = STATE.shifting ? 'rgba(255,196,94,0.60)' : 'rgba(101,224,255,0.25)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = STATE.shifting ? '#ffc45e' : 'rgba(101,224,255,0.82)';
+    g.font = '800 ' + Math.max(9, Math.round(R * 0.085)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(gearText, nx, ny);
+
+    var sx = cx + R * 0.57;
+    var speedKmh = Math.round(STATE.speed * 3.6);
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, sx - 18, ny - 12, 36, 24, 5);
+    g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.10)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = '#cfdbe8';
+    g.font = '800 ' + Math.max(8, Math.round(R * 0.072)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText(String(Math.round(Math.abs(STATE.speed)*3.6)), sx, ny - 3);
+    g.fillStyle = '#596675';
+    g.font = '800 ' + Math.max(4.5, Math.round(R * 0.040)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('KM/H', sx, ny + 7);
+
+    /* state caption */
+    var shiftCaption = STATE.shiftKind === 'down' ? 'DOWNSHIFT' : 'UPSHIFT';
+    var caption = STATE.mode === 'off' ? 'ENGINE OFF' :
+      (STATE.mode === 'cranking' ? 'CRANKING' :
+        (STATE.mode === 'stopping' ? 'SHUTDOWN' :
+          (STATE.shifting ? shiftCaption :
+            (limiterOn ? 'REV LIMIT' :
+              (STATE.overrun ? 'OVERRUN' :
+                (STATE.gear > 0 && STATE.throttle < 0.08 && STATE.speed > 2 ? 'ENGINE BRAKE' :
+                  (STATE.throttle > 0.24 ? 'REVVING' :
+                    (STATE.gear === 0 && STATE.rpm > e.idle * 1.16 ? 'FREE REV' : 'IDLE'))))))));
+    g.fillStyle = STATE.shifting ? 'rgba(255,196,94,0.88)' :
+      (limiterOn ? 'rgba(255,83,101,0.85)' : 'rgba(104,118,134,0.78)');
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText(caption, cx, readoutY + Math.max(26, R * 0.24));
+  }
+
+  function drawScope() {
+    var w = scope.clientWidth;
+    var h = scope.clientHeight;
+    if (!w || !h) return;
+    var g = scopeCtx;
+    g.clearRect(0, 0, w, h);
+
+    var cy = h * 0.54;
+    g.strokeStyle = 'rgba(255,255,255,0.06)';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(0, cy);
+    g.lineTo(w, cy);
+    g.stroke();
+
+    g.strokeStyle = 'rgba(255,255,255,0.025)';
+    for (var gx = 0.25; gx < 1; gx += 0.25) {
+      g.beginPath();
+      g.moveTo(w * gx, 0);
+      g.lineTo(w * gx, h);
+      g.stroke();
+    }
+
+    if (!ANALYSER || !ANALYSER_DATA) return;
+    ANALYSER.getFloatTimeDomainData(ANALYSER_DATA);
+
+    var peak = 0;
+    for (var i = 0; i < ANALYSER_DATA.length; i += 3) {
+      var av = Math.abs(ANALYSER_DATA[i]);
+      if (av > peak) peak = av;
+    }
+    var targetGain = peak > 0.004 ? 0.85 / peak : 1;
+    targetGain = clamp(targetGain, 1, 100);
+    SCOPE_GAIN += (targetGain - SCOPE_GAIN) * 0.10;
+    var gain = SCOPE_GAIN * h * 0.40;
+
+    g.beginPath();
+    var n = ANALYSER_DATA.length;
+    for (var k = 0; k < n; k++) {
+      var x = (k / (n - 1)) * w;
+      var y = cy - ANALYSER_DATA[k] * gain;
+      if (k === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    var grad = g.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, 'rgba(255,107,26,0.22)');
+    grad.addColorStop(0.38, 'rgba(255,107,26,0.95)');
+    grad.addColorStop(0.72, 'rgba(255,180,111,0.9)');
+    grad.addColorStop(1, 'rgba(101,224,255,0.65)');
+    g.strokeStyle = grad;
+    g.lineWidth = 1.15;
+    g.shadowColor = 'rgba(255,107,26,0.30)';
+    g.shadowBlur = 5;
+    g.stroke();
+    g.shadowBlur = 0;
+  }
+
+  function updateNeedle(dt) {
+    var target = STATE.mode === 'off' ? 0 : STATE.rpm;
+    var stiffness = 92;
+    var damping = 14.5;
+    var accel = (target - STATE.needleRpm) * stiffness - STATE.needleVel * damping;
+    STATE.needleVel += accel * dt;
+    STATE.needleRpm += STATE.needleVel * dt;
+    if (STATE.mode === 'off' && Math.abs(STATE.needleRpm) < 0.6 && Math.abs(STATE.needleVel) < 0.6) {
+      STATE.needleRpm = 0;
+      STATE.needleVel = 0;
+    }
+    STATE.needleRpm = clamp(STATE.needleRpm, -60, 11000);
+  }
+
+
+init();})();
+</script>
+</body>
+</html>
