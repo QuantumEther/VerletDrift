@@ -1376,7 +1376,7 @@ function requestGear(g){
  STATE.shifting=true;STATE.shiftKind=g<STATE.gear?'down':'up';showShift('SHIFT TO '+gearName(g));
 }
 function relativeGear(dir){
- const g=STATE.gear;requestGear(clamp(g+dir,0,6));
+ const g=shift?shift.to:STATE.gear;requestGear(clamp(g+dir,0,6));
 }
 // One bounded clutch impulse. Equal/opposite angular impulse through the ratio;
 // friction removes relative kinetic energy rather than adding it.
