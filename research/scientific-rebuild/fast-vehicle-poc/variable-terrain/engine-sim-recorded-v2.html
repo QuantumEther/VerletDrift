@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<title>APEX DYNO — Recorded Engine V2</title>
+<style>
+  :root {
+    --bg: #06080b;
+    --panel: #0c1016;
+    --panel-2: #111821;
+    --line: #1d2632;
+    --line-2: #2a3645;
+    --text: #edf3fa;
+    --dim: #7d8a9a;
+    --dim-2: #4e5a68;
+    --orange: #ff6b1a;
+    --orange-2: #ffb26b;
+    --red: #ff354b;
+    --green: #43f5a0;
+    --cyan: #65e0ff;
+    --amber: #ffc45e;
+    --vol: 70%;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(circle at 50% -15%, #18212d 0%, #090c11 45%, #05070a 100%);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 105%, rgba(255, 107, 26, 0.08), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 82% 8%, rgba(101, 224, 255, 0.04), transparent 70%);
+  }
+  .ambient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.24;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 50%, #000 0%, transparent 80%);
+  }
+  .ambient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%);
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    width: min(458px, 100vw);
+    max-height: 100dvh;
+    padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 31px;
+    padding: 0 3px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(145deg, #202a36, #0d1219 72%);
+    border: 1px solid #2a3645;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 18px -8px #000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2.5px;
+    padding-bottom: 7px;
+    overflow: hidden;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 35% 0%, rgba(255,107,26,0.35), transparent 55%);
+  }
+  .brand-mark span {
+    position: relative;
+    z-index: 1;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--orange-2), var(--orange));
+    box-shadow: 0 0 7px rgba(255,107,26,0.45);
+  }
+  .brand-mark span:nth-child(1) { height: 7px; opacity: 0.65; }
+  .brand-mark span:nth-child(2) { height: 11px; }
+  .brand-mark span:nth-child(3) { height: 8px; opacity: 0.78; }
+  .brand-name {
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .brand-name b { color: var(--orange); font-weight: 850; }
+  .brand-sub {
+    margin-top: 4px;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    background: rgba(13, 18, 25, 0.6);
+    border-radius: 999px;
+    color: var(--dim);
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .status i {
+    width: 5.5px;
+    height: 5.5px;
+    border-radius: 50%;
+    background: var(--dim-2);
+    box-shadow: 0 0 0 transparent;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+  .status[data-state="run"] { color: #b5ffe7; border-color: rgba(67,245,160,0.22); }
+  .status[data-state="run"] i { background: var(--green); box-shadow: 0 0 10px rgba(67,245,160,0.9); }
+  .status[data-state="load"] { color: var(--orange-2); border-color: rgba(255,107,26,0.26); }
+  .status[data-state="load"] i { background: var(--orange); box-shadow: 0 0 10px rgba(255,107,26,0.9); }
+  .status[data-state="overrun"] { color: #ffb07e; border-color: rgba(255,107,26,0.32); }
+  .status[data-state="overrun"] i { background: var(--orange-2); box-shadow: 0 0 10px rgba(255,178,107,0.9); }
+  .status[data-state="cranking"] { color: var(--amber); border-color: rgba(255,196,94,0.24); }
+  .status[data-state="cranking"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .65s ease-in-out infinite alternate; }
+  .status[data-state="limit"] { color: #ff9aa5; border-color: rgba(255,53,75,0.4); }
+  .status[data-state="limit"] i { background: var(--red); box-shadow: 0 0 12px rgba(255,53,75,1); animation: dotPulse .18s ease-in-out infinite alternate; }
+  .status[data-state="shift"] { color: var(--amber); border-color: rgba(255,196,94,0.34); }
+  .status[data-state="shift"] i { background: var(--amber); box-shadow: 0 0 10px rgba(255,196,94,0.8); animation: dotPulse .28s ease-in-out infinite alternate; }
+
+  /* ---------------------------------------------------------------- */
+  .pod {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(19, 26, 35, 0.97) 0%, rgba(9, 12, 17, 0.99) 100%);
+    border: 1px solid #212a36;
+    border-radius: 23px;
+    padding: 13px 13px 12px;
+    box-shadow:
+      0 30px 60px -30px #000,
+      0 2px 0 rgba(255,255,255,0.035) inset,
+      0 -1px 0 rgba(0,0,0,0.7) inset;
+    overflow: hidden;
+  }
+  .pod::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+    pointer-events: none;
+  }
+
+  .pod-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 1px 2px 10px;
+  }
+  .engine-id { min-width: 0; }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .eyebrow .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 7px rgba(255,107,26,0.8);
+  }
+  .engine-id h1 {
+    margin: 5px 0 2px;
+    font-size: 19px;
+    line-height: 1.05;
+    font-weight: 760;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .engine-id p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 9.5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .power {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 73px;
+    justify-content: center;
+    padding: 10px 11px;
+    border-radius: 11px;
+    border: 1px solid #2a3542;
+    background: linear-gradient(180deg, #161e28, #0e131a);
+    color: #9aa8b8;
+    font-family: inherit;
+    font-size: 8.5px;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+    cursor: pointer;
+    box-shadow: 0 4px 12px -6px #000, inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
+  }
+  .power svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .power:hover { color: #dbe6f3; border-color: #3a4859; }
+  .power:active { transform: translateY(1px); }
+  .power.running {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.46);
+    background: linear-gradient(180deg, rgba(255,107,26,0.14), rgba(255,107,26,0.045));
+    box-shadow: 0 0 20px -8px rgba(255,107,26,0.7), inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  .power.cranking {
+    color: var(--amber);
+    border-color: rgba(255,196,94,0.42);
+    background: linear-gradient(180deg, rgba(255,196,94,0.12), rgba(255,196,94,0.03));
+  }
+  .power:disabled { opacity: 0.55; cursor: default; }
+
+  /* ---------------------------------------------------------------- */
+  .gaugeWrap {
+    position: relative;
+    border: 1px solid #1c2430;
+    border-radius: 17px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,255,255,0.035), transparent 50%),
+      linear-gradient(180deg, #0c1118 0%, #080b10 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      inset 0 -20px 30px -20px #000;
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .gaugeWrap[data-limiter="1"] {
+    border-color: rgba(255,53,75,0.38);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 30px -10px rgba(255,53,75,0.36),
+      inset 0 -20px 30px -20px #000;
+  }
+  .gaugeWrap[data-shift="1"] {
+    border-color: rgba(255,196,94,0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.035),
+      0 0 26px -12px rgba(255,196,94,0.45),
+      inset 0 -20px 30px -20px #000;
+  }
+  #gauge {
+    display: block;
+    width: 100%;
+    height: 296px;
+  }
+  .gauge-glass {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(116deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.01) 27%, transparent 28%, transparent 73%, rgba(255,255,255,0.015) 100%);
+    mix-blend-mode: screen;
+  }
+
+  .scopeWrap {
+    position: relative;
+    padding: 7px 11px 9px;
+    border-top: 1px solid rgba(255,255,255,0.045);
+    background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.15));
+  }
+  .scopeLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    color: var(--dim-2);
+    font-size: 7px;
+    font-weight: 850;
+    letter-spacing: 0.19em;
+  }
+  .scopeLive {
+    color: var(--dim-2);
+    transition: color .2s ease;
+  }
+  .scopeLive[data-live="1"] { color: rgba(67,245,160,0.72); }
+  #scope { display: block; width: 100%; height: 38px; }
+
+  /* ---------------------------------------------------------------- */
+  .specs {
+    display: grid;
+    grid-template-columns: 2fr 0.92fr 0.62fr;
+    gap: 7px;
+    margin-top: 9px;
+  }
+  .specs > span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px 9px 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.018);
+    border-radius: 8px;
+  }
+  .specs b {
+    color: #cbd7e5;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+  }
+  .specs em {
+    color: var(--dim-2);
+    font-style: normal;
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 3px;
+  }
+  .control-row { display: flex; align-items: center; gap: 12px; min-height: 32px; }
+  .control-row > label {
+    width: 53px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .select-wrap { position: relative; flex: 1; }
+  select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #151d27, #0f141b);
+    color: #d6e0ec;
+    border-radius: 10px;
+    padding: 9px 34px 9px 11px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    transition: border-color .18s ease;
+  }
+  select:hover, select:focus { border-color: #344354; }
+  select option { background: #10161e; color: #edf3fa; }
+  .chev {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    stroke: var(--dim);
+    fill: none;
+    stroke-width: 1.8;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+    box-shadow: 0 2px 8px rgba(255,107,26,0.4);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--vol), #1c2530 var(--vol), #1c2530 100%);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffb06c, #e95613);
+    border: 1px solid #ffc99d;
+  }
+  .vol-val {
+    width: 33px;
+    flex: none;
+    text-align: right;
+    color: var(--dim);
+    font-size: 9.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .transmission {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 39px;
+    padding: 6px 9px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(17, 24, 33, 0.94), rgba(10, 14, 19, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+  .trans-label {
+    width: 49px;
+    flex: none;
+    color: var(--dim-2);
+    font-size: 7.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+  }
+  .trans-btn, .shift-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    min-width: 28px;
+    padding: 0 7px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    background: #111821;
+    color: #718091;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .trans-btn:hover, .shift-btn:hover { color: #ccd8e7; border-color: #3a4a5b; }
+  .trans-btn:disabled, .shift-btn:disabled { opacity: 0.32; cursor: default; box-shadow: none; }
+  .trans-btn.active {
+    color: var(--orange-2);
+    border-color: rgba(255,107,26,0.55);
+    background: rgba(255,107,26,0.11);
+    box-shadow: 0 0 12px -5px rgba(255,107,26,0.9), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .shift-stepper {
+    display: flex;
+    align-items: center;
+    height: 26px;
+    border: 1px solid #283442;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #0e151d;
+  }
+  .shift-stepper .shift-btn {
+    height: 24px;
+    min-width: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 13px;
+    line-height: 1;
+    color: #8190a1;
+  }
+  .shift-stepper .shift-btn:hover { background: rgba(255,255,255,0.045); color: #fff; }
+  .gear-badge {
+    min-width: 24px;
+    text-align: center;
+    color: #dbe6f3;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .trans-mode {
+    margin-left: auto;
+    color: var(--dim-2);
+    font-size: 6.5px;
+    font-weight: 850;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+  }
+  .transmission.shifting { border-color: rgba(255,196,94,0.34); }
+  .transmission.shifting .gear-badge { color: var(--amber); }
+  .transmission.auto .trans-mode { color: rgba(101,224,255,0.68); }
+
+  /* ---------------------------------------------------------------- */
+  .pedal {
+    --pedalFill: 0%;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 17px;
+    border-radius: 15px;
+    border: 1px solid #3a2719;
+    background:
+      linear-gradient(180deg, #1c140f 0%, #100b08 100%);
+    color: #ff9a5c;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    touch-action: none;
+    box-shadow:
+      0 12px 26px -16px #000,
+      inset 0 1px 0 rgba(255,150,80,0.13);
+    transition: border-color .18s ease, box-shadow .18s ease, color .18s ease;
+  }
+  .pedal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(255,107,26,0.055), transparent 42%);
+    pointer-events: none;
+  }
+  .pedal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: var(--pedalFill);
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,107,26,0.05), rgba(255,107,26,0.27));
+    border-right: 1px solid rgba(255,160,95,0.22);
+    pointer-events: none;
+    transition: width .06s linear;
+  }
+  .pedal-copy { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+  .pedal-copy b { font-size: 12px; font-weight: 850; letter-spacing: 0.18em; line-height: 1; }
+  .pedal-copy small { font-size: 7px; font-weight: 800; letter-spacing: 0.18em; color: #94694e; }
+  .pedal-pct {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    color: #a77555;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pedal:hover { border-color: #5a3922; }
+  .pedal.down {
+    border-color: rgba(255,157,90,0.76);
+    color: #fff4ea;
+    background: linear-gradient(180deg, #d9510d 0%, #a63808 100%);
+    box-shadow:
+      0 0 34px -8px rgba(255,107,26,0.8),
+      inset 0 2px 10px rgba(255,255,255,0.16);
+  }
+  .pedal.down .pedal-copy small, .pedal.down .pedal-pct { color: rgba(255,244,234,0.72); }
+  .pedal.down::after { background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.22)); border-right-color: rgba(255,255,255,0.4); }
+  .pedal.limited { animation: pedalLimit .17s steps(2, end) infinite; }
+  .pedal:active { transform: translateY(1px); }
+
+  .hint {
+    text-align: center;
+    color: #46515e;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    line-height: 1.5;
+    margin-top: -2px;
+  }
+  .hint kbd {
+    display: inline-block;
+    padding: 2px 4px;
+    margin: 0 1px;
+    border: 1px solid #25303d;
+    border-radius: 4px;
+    background: #0f151d;
+    color: #788797;
+    font-family: inherit;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    vertical-align: 1px;
+  }
+
+  /* ---------------------------------------------------------------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background:
+      radial-gradient(circle at 50% 36%, rgba(26, 35, 47, 0.92) 0%, rgba(6, 8, 11, 0.98) 62%, #05070a 100%);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  .overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .overlay-inner {
+    width: min(380px, 100%);
+    text-align: center;
+    animation: riseIn .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .overlay-kicker {
+    color: var(--dim-2);
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+  }
+  .overlay h2 {
+    margin: 17px 0 10px;
+    color: var(--text);
+    font-size: clamp(36px, 10vw, 50px);
+    line-height: 0.95;
+    font-weight: 780;
+    letter-spacing: -0.055em;
+  }
+  .overlay p {
+    margin: 0 auto 26px;
+    max-width: 295px;
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: 0.015em;
+  }
+  .start-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 214px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 1px solid #ffad72;
+    background: linear-gradient(180deg, #ff7a2b 0%, #cf470b 100%);
+    color: #1b0c04;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.17em;
+    cursor: pointer;
+    box-shadow:
+      0 0 55px -12px rgba(255,107,26,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.32);
+    transition: transform .16s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .start-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.1; }
+  .start-btn:hover { transform: translateY(-1px) scale(1.015); box-shadow: 0 0 75px -10px rgba(255,107,26,1), inset 0 1px 0 rgba(255,255,255,0.38); }
+  .start-btn:active { transform: scale(.985); }
+  .start-btn:disabled { cursor: default; filter: saturate(0.7) brightness(0.8); transform: none; }
+  .overlay-note {
+    margin-top: 19px;
+    color: #4f5b69;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    min-height: 13px;
+    line-height: 1.5;
+  }
+  .overlay-note.error { color: #ff8c99; }
+
+  @keyframes dotPulse {
+    from { opacity: 0.38; transform: scale(0.82); }
+    to { opacity: 1; transform: scale(1.1); }
+  }
+  @keyframes pedalLimit {
+    0% { border-color: rgba(255,53,75,0.75); }
+    100% { border-color: rgba(255,53,75,0.2); }
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------------------------------------------------------------- */
+  @media (max-height: 790px) {
+    .app { gap: 9px; padding-top: 10px; padding-bottom: 12px; }
+    .pod { padding: 11px 11px 10px; }
+    #gauge { height: 247px; }
+    #scope { height: 32px; }
+    .scopeWrap { padding-top: 6px; padding-bottom: 7px; }
+    .pod-head { padding-bottom: 8px; }
+    .overlay h2 { font-size: 40px; }
+    .pedal { padding: 14px 16px; }
+  }
+  @media (max-height: 690px) {
+    .app { gap: 7px; padding-top: 8px; padding-bottom: 10px; }
+    .brand-sub { display: none; }
+    .topbar { min-height: 26px; }
+    .pod { padding: 9px 10px 9px; border-radius: 19px; }
+    #gauge { height: 218px; }
+    #scope { height: 26px; }
+    .transmission { min-height: 35px; padding: 5px 8px; }
+    .trans-label { font-size: 6.5px; width: 43px; }
+    .scopeWrap { padding: 5px 10px 6px; }
+    .scopeLabel { font-size: 6.5px; margin-bottom: 2px; }
+    .specs { margin-top: 7px; gap: 6px; }
+    .specs > span { padding: 6px 8px 5px; }
+    .specs b { font-size: 9.5px; }
+    .specs em { font-size: 6px; }
+    .pod-head { padding-bottom: 6px; }
+    .engine-id h1 { font-size: 17px; margin-top: 4px; }
+    .engine-id p { font-size: 8.5px; }
+    .power { padding: 8px 9px; min-width: 66px; }
+    .overlay h2 { font-size: 34px; margin-top: 12px; }
+    .overlay p { margin-bottom: 19px; font-size: 10px; }
+    .start-btn { padding: 14px 22px; }
+    .pedal { padding: 12px 14px; }
+    .pedal-copy b { font-size: 11px; }
+    .hint { font-size: 8px; }
+  }
+  @media (max-height: 660px) {
+    #gauge { height: 205px; }
+    .specs { display: none; }
+  }
+  @media (max-height: 620px) {
+    #gauge { height: 174px; }
+    .scopeWrap, .specs { display: none; }
+    .controls { gap: 5px; }
+    .control-row { min-height: 28px; }
+    .pedal { padding: 10px 13px; }
+    .hint { display: none; }
+    .topbar { display: none; }
+    .app { padding-top: 8px; padding-bottom: 8px; gap: 7px; }
+    .overlay h2 { font-size: 29px; }
+    .overlay p { display: none; }
+  }
+  @media (max-height: 500px) {
+    .app { gap: 5px; padding-top: 6px; padding-bottom: 6px; }
+    .pod { padding: 7px 9px; }
+    #gauge { height: 142px; }
+    .scopeWrap, .specs, .hint, .topbar { display: none; }
+    .pod-head { padding-bottom: 4px; }
+    .engine-id p { display: none; }
+    .engine-id h1 { font-size: 15px; margin: 2px 0 0; }
+    .power { padding: 6px 8px; min-width: 58px; font-size: 7.5px; }
+    .transmission { min-height: 31px; padding: 4px 7px; }
+    .trans-label { width: 38px; font-size: 6px; }
+    .control-row { min-height: 26px; }
+    select { padding: 6px 30px 6px 9px; font-size: 10px; }
+    .pedal { padding: 9px 12px; }
+    .pedal-copy b { font-size: 10px; }
+  }
+  @media (max-width: 370px) {
+    .app { padding-left: 11px; padding-right: 11px; }
+    .engine-id h1 { font-size: 17px; }
+    .status { font-size: 7.5px; padding: 6px 8px; }
+    .control-row > label { width: 47px; }
+    .specs { grid-template-columns: 2.1fr 0.9fr 0.6fr; }
+    .specs b { font-size: 8.5px; }
+    .trans-mode { font-size: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .overlay-inner { animation: none; }
+    .status i { animation: none !important; }
+    .pedal.limited { animation: none; }
+    .start-btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div>
+        <div class="brand-name">APEX <b>DYNO</b></div>
+        <div class="brand-sub">ACOUSTIC ENGINE CELL</div>
+      </div>
+    </div>
+    <div class="status" id="status" data-state="off" aria-live="polite">
+      <i></i><span id="statusText">STANDBY</span>
+    </div>
+  </header>
+
+  <section class="pod" aria-label="Engine tachometer">
+    <div class="pod-head">
+      <div class="engine-id">
+        <div class="eyebrow">
+          <span id="podLayout">VW · TURBO</span>
+          <span class="dot"></span>
+          <span id="podDisplacement">1.0 L</span>
+        </div>
+        <h1 id="engLabel">VW 1.0L · Recorded</h1>
+        <p id="engNote">Original recording · unloaded engine</p>
+      </div>
+      <button class="power" id="powerBtn" type="button" aria-label="Start or stop engine">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+        <span id="powerText">START</span>
+      </button>
+    </div>
+
+    <div class="gaugeWrap">
+      <canvas id="gauge" aria-label="Tachometer"></canvas>
+      <div class="gauge-glass" aria-hidden="true"></div>
+      <div class="scopeWrap">
+        <div class="scopeLabel"><span>EXHAUST NOTE</span><span class="scopeLive" id="scopeLive">STANDBY</span></div>
+        <canvas id="scope"></canvas>
+      </div>
+    </div>
+
+    <div class="specs">
+      <span><b id="specFire">930</b><em>IDLE RPM</em></span>
+      <span><b id="specRedline">4,000</b><em>RECORDED MAX</em></span>
+      <span><b id="specPower">92.1 s</b><em>SOURCE</em></span>
+    </div>
+  </section>
+
+  <section class="controls" aria-label="Engine controls">
+    <div class="control-row">
+      <label for="engine">Throttle</label>
+      <div class="select-wrap">
+        <select id="engine">
+          <option value="1">Rapid throttle · 100%</option><option value="0.25">Gentle throttle · 25%</option><option value="0.55">Moderate throttle · 55%</option></select>
+        <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8"/></svg>
+      </div>
+    </div>
+    <div class="control-row">
+      <label for="vol">Volume</label>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="0.70" aria-label="Master volume">
+      <output class="vol-val" id="volVal" for="vol">70%</output>
+    </div>
+  </section>
+
+  <section class="transmission" aria-label="Recording controls">
+    <span class="trans-label">ASSETS</span>
+    <button class="trans-btn" id="neutralBtn" type="button" title="Select previous clip">‹</button>
+    <button class="trans-btn" id="autoBtn" type="button" title="Play selected original clip">▶</button>
+    <div class="shift-stepper">
+      <button class="shift-btn" id="downBtn" type="button" title="Stop audition" aria-label="Stop audition">■</button>
+      <span class="gear-badge" id="gearBadge">N</span>
+      <button class="shift-btn" id="upBtn" type="button" title="Select next clip" aria-label="Select next clip">›</button>
+    </div>
+    <span class="trans-mode" id="transMode">IDLE A</span>
+  </section>
+
+  <button class="pedal" id="pedal" type="button" aria-label="Hold to rev the engine">
+    <span class="pedal-copy"><b>HOLD TO REV</b><small id="pedalSub">THROTTLE · NEUTRAL</small></span>
+    <span class="pedal-pct" id="pedalPct">0%</span>
+  </button>
+  <div id="assetInfo" aria-live="polite">SOURCE NOT LOADED</div><div class="hint"><kbd>SPACE</kbd> / <kbd>W</kbd> / <kbd>↑</kbd> rev · <kbd>Q</kbd>/<kbd>E</kbd> clips · <kbd>A</kbd> audition</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-inner">
+    <div class="overlay-kicker">APEX DYNO · ACOUSTIC ENGINE CELL</div>
+    <h2>Cold start.</h2>
+    <p>Original VW engine recording only.<br>Choose the 92-second WAV, then start the engine.</p>
+    <button id="startBtn" class="start-btn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.2 6.2a8 8 0 1 0 11.6 0"/></svg>
+      <span>LOAD / START ENGINE</span>
+    </button>
+    <button id="loadOther" type="button">Choose WAV file</button><div class="overlay-note" id="overlayNote">Choose Audacity_RPMs_01_original.wav. No upload; processed locally.</div>
+  </div>
+</div>
+
+<input id="sourceFile" type="file" accept=".wav,audio/wav" hidden>
+<style>
+.trans-mode{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:145px}
+#gearBadge{min-width:25px}
+#assetInfo{font-size:10px;line-height:1.3;color:var(--dim);text-align:center;min-height:12px}
+#loadOther{background:transparent;color:var(--dim);border:0;font:inherit;font-size:10px;cursor:pointer;text-decoration:underline}
+</style>
+<script>
+
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const gauge=$('gauge'), scope=$('scope'), gaugeCtx=gauge.getContext('2d'), scopeCtx=scope.getContext('2d');
+const ENGINES={vw:{idle:930,redline:4000}};
+const STATE={key:'vw',mode:'off',rpm:0,needleRpm:0,needleVel:0,time:0,throttle:0,gear:0,speed:0,shifting:false,overrun:false,limiter:false};
+let AC,MASTER,LOOP_BUS,ANALYSER,ANALYSER_DATA,SCOPE_GAIN=1, raw=null, mono=null, fs=0, loadTask=null;
+let eventSource=null,eventGain=null,eventSerial=0, auditionSource=null, active=new Map(), held=false, keys=new Set(), pointerHeld=false, selected=0, stopPending=false;
+let phaseStart=0, lastFrame=0, lastMix=0, stateDeadline=0, eventStart=0;
+const idle=930, ceiling=4000;
+const clips=[
+ ['Idle A',0.5,4.45],['Shutdown A',4.45,5.65],['Key click A (candidate)',81.10,81.25],
+ ['Electrical tone A (candidate)',81.25,83.10],['Ignition / starter',13.94,15.20],
+ ['Post-start idle',15.20,18.60],['Small blip',18.85,21.45],['Low RPM rise',23.50,31.70],
+ ['Gradual rise',35.30,44.20],['High RPM plateau',44.20,45.75],
+ ['Coast A',45.80,52.10],['Multiple blips',52.30,62.00],['Idle B',66.50,69.30],
+ ['Rapid rev',69.80,71.20],['Coast B',71.50,77.65],['Shutdown B',79.45,80.95],
+ ['Shutdown + electrical sequence',79.45,83.25],['Key click B (candidate)',83.10,83.29],
+ ['Electrical tone B (candidate)',88.68,90.66],['Engine off ambience',83.30,85.00],
+ ['Idle floor-throttle blip',52.285,52.685],['Low-mid throttle blip',53.140,53.650],['Upper-low throttle blip',53.975,54.415]
+];
+// RPM anchors are estimates measured on the original time axis. No cylinder assumption in playback.
+const bankDefs={
+ drive:[[930,2.0],[1090,24.0],[1330,24.5],[1570,25.0],[1750,25.5],[1990,27.0],[2260,31.5],[2430,36.5],[2720,37.5],[2960,38.5],[3210,40.5],[3490,42.0],[3730,43.5],[3800,45.0]],
+ coast:[[930,68.0],[1160,77.0],[1390,76.0],[1510,75.5],[1680,75.0],[1990,74.5],[2320,74.0],[2610,73.5],[2930,73.0],[3260,72.5],[3610,72.0],[3920,71.5]],
+ rapid:[[1250,70.0],[2000,70.26],[2840,70.5],[3500,70.68],[4000,71.0]]
+};
+const banks={};
+// V2: preserve the original throttle-onset envelope as a one-shot recording.
+// Time windows selected from the user's hand-cut region and 25 ms RMS analysis.
+// Start RPM is approximate and is used only for modest initial pitch matching.
+const blipDefs=[
+ {rpm:960,a:52.285,b:52.685,label:'Idle floor-throttle blip'},
+ {rpm:1290,a:53.140,b:53.650,label:'Low-mid throttle blip'},
+ {rpm:1750,a:53.975,b:54.415,label:'Upper-low throttle blip'}
+];
+let blipBuffers=[],blipVoice=null,blipSerial=0,lastBlipAt=-Infinity;
+function selectBlip(rpm){
+ return blipBuffers.reduce((best,x)=>!best||Math.abs(Math.log(rpm/x.rpm))<Math.abs(Math.log(rpm/best.rpm))?x:best,null);
+}
+function stopBlip(fade=.035){
+ if(!AC)return;
+ const now=AC.currentTime,v=blipVoice;blipSerial++;blipVoice=null;
+ if(v){v.g.gain.cancelScheduledValues(now);v.g.gain.setTargetAtTime(0,now,fade/5);try{v.src.stop(now+fade);}catch{}}
+ if(LOOP_BUS){LOOP_BUS.gain.cancelScheduledValues(now);LOOP_BUS.gain.setTargetAtTime(1,now,fade/3);}
+}
+function triggerBlip(rpm,throttle){
+ if(!raw||!AC||STATE.mode!=='running'||stopPending||rpm>=2000||throttle<.55)return false;
+ const now=AC.currentTime;
+ if(now-lastBlipAt<.075)return false;
+ const b=selectBlip(rpm);if(!b)return false;
+ stopBlip(.025);lastBlipAt=now;
+ const id=blipSerial,src=AC.createBufferSource(),g=AC.createGain();
+ src.buffer=b.buffer;src.connect(g);g.connect(MASTER);
+ const rate=clamp(rpm/b.rpm,.82,1.22),duration=b.buffer.duration/rate;
+ const intensity=clamp((throttle-.55)/.45,0,1),strength=.65+.35*intensity;
+ src.playbackRate.value=rate;
+ // Crossfade the recorded attack in place of (not in addition to) the base loops.
+ const attack=.018,release=Math.min(.075,duration*.25),end=now+duration;
+ g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(strength,now+attack);
+ g.gain.setValueAtTime(strength,end-release);g.gain.linearRampToValueAtTime(0,end);
+ const duck=1-.82*strength;
+ LOOP_BUS.gain.cancelScheduledValues(now);
+ LOOP_BUS.gain.setTargetAtTime(duck,now,.009);
+ LOOP_BUS.gain.setTargetAtTime(1,end-release,.022);
+ blipVoice={src,g};
+ src.onended=()=>{src.disconnect();g.disconnect();if(blipSerial===id){blipVoice=null;}};
+ src.start(now);
+ msg('BLIP · '+b.label+' · '+b.a.toFixed(3)+' s');
+ return true;
+}
+const msg=s=>{$('assetInfo').textContent=s;};
+const status=s=>{$('statusText').textContent=s;$('status').dataset.state=STATE.mode==='running'?'run':STATE.mode==='off'?'off':'cranking';$('powerText').textContent=STATE.mode==='off'?'START':'STOP';$('scopeLive').textContent=STATE.mode==='off'?'STANDBY':'LIVE';$('scopeLive').dataset.live=STATE.mode==='off'?'0':'1';$('powerBtn').classList.toggle('running',STATE.mode==='running');$('powerBtn').classList.toggle('cranking',STATE.mode==='cranking');};
+function ensureAudio(){
+ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); MASTER=AC.createGain();MASTER.gain.value=Number($('vol').value)*.65;
+ LOOP_BUS=AC.createGain();LOOP_BUS.gain.value=1;LOOP_BUS.connect(MASTER);
+ ANALYSER=AC.createAnalyser();ANALYSER.fftSize=2048;ANALYSER_DATA=new Float32Array(ANALYSER.fftSize);MASTER.connect(ANALYSER);ANALYSER.connect(AC.destination);}
+ return AC.resume();
+}
+function slice(a,b,fade=.008){
+ const start=Math.round(a*fs),end=Math.min(mono.length,Math.round(b*fs)),n=end-start;
+ if(n<=0)throw Error('Invalid audio slice');
+ const buf=AC.createBuffer(1,n,fs),o=buf.getChannelData(0);o.set(mono.subarray(start,end));
+ const f=Math.min(n>>1,Math.round(fade*fs));
+ for(let i=0;i<f;i++){let g=i/Math.max(1,f-1);o[i]*=g;o[n-1-i]*=g;}
+ return buf;
+}
+// Estimate locally compatible loop endpoints around an integer number of 720-degree cycles.
+// Search a small phase offset, then crossfade the seam. This is a V1 heuristic, not full order tracking.
+function makeLoop(rpm,t,rapid){
+ const period=fs*120/rpm;
+ const nCycles=Math.max(2,Math.round((rapid?.10:.38)*fs/period));
+ const n=Math.round(nCycles*period), fade=Math.min(Math.floor(n/5),Math.round(fs*.018));
+ let start=Math.round(t*fs-n/2);start=clamp(start,0,mono.length-n-fade-1);
+ let best=0,bestScore=-Infinity,range=Math.floor(period*.18);
+ for(let d=-range;d<=range;d+=Math.max(1,Math.floor(period/100))){
+   const end=start+n+d;if(end+fade>=mono.length||end<=start+fade)continue;
+   let xy=0,xx=1e-12,yy=1e-12;
+   for(let j=0;j<fade;j+=4){const x=mono[start+j],y=mono[end+j];xy+=x*y;xx+=x*x;yy+=y*y;}
+   const score=xy/Math.sqrt(xx*yy)-.03*Math.abs(d)/Math.max(1,range);
+   if(score>bestScore){bestScore=score;best=d;}
+ }
+ const len=n+best,buf=AC.createBuffer(1,len,fs),out=buf.getChannelData(0);
+ out.set(mono.subarray(start,start+len));
+ for(let i=0;i<fade;i++){const w=.5-.5*Math.cos(Math.PI*i/Math.max(1,fade-1));out[i]=mono[start+len+i]*(1-w)+out[i]*w;}
+ return {rpm,t,buf,loopSeconds:len/fs,correlation:bestScore};
+}
+async function decode(bytes){
+ await ensureAudio();
+ const b=await AC.decodeAudioData(bytes);
+ if(Math.abs(b.duration-92.1067)>.25)throw Error('Expected the original 92.107-second recording, not the shortened bounce.');
+ raw=b;fs=b.sampleRate;mono=new Float32Array(b.length);
+ for(let c=0;c<b.numberOfChannels;c++){const x=b.getChannelData(c);for(let i=0;i<x.length;i++)mono[i]+=x[i]/b.numberOfChannels;}
+ for(const [name,defs] of Object.entries(bankDefs))banks[name]=defs.map(([rpm,t])=>makeLoop(rpm,t,name==='rapid'));
+ blipBuffers=blipDefs.map(b=>({...b,buffer:slice(b.a,b.b,.004)}));
+ msg('SOURCE LOADED · '+Object.values(banks).flat().length+' RPM LOOPS · 3 BLIPS');
+ $('overlayNote').textContent='Recording ready. Start engine.';
+ return b;
+}
+async function loadFile(file){
+ if(!file)return;
+ if(STATE.mode!=='off')throw Error('Stop the engine before changing source.');
+ stopAudition();
+ msg('DECODING SOURCE…');
+ raw=null;
+ await decode(await file.arrayBuffer());
+}
+async function loadDefault(){
+ if(raw)return true;
+ try{const response=await fetch('./Audacity_RPMs_01_original.wav');if(!response.ok)throw Error('Missing source');await decode(await response.arrayBuffer());return true;}
+ catch(e){$('overlayNote').textContent='Choose the original 92.107 s WAV file to continue.';return false;}
+}
+function stopAudition(){if(auditionSource){try{auditionSource.stop();}catch{}auditionSource=null;}}
+function stopEvent(){eventSerial++;if(eventSource){try{eventSource.stop();}catch{}eventSource=null;eventGain=null;}}
+function playEvent(a,b,onEnd,fadeIn=.008,fadeOut=.018){
+ stopEvent();const token=eventSerial,src=AC.createBufferSource(),g=AC.createGain();
+ src.buffer=slice(a,b,.004);src.connect(g);g.connect(MASTER);let now=AC.currentTime,dur=src.buffer.duration;
+ g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(1,now+Math.min(fadeIn,dur/3));g.gain.setValueAtTime(1,now+Math.max(dur/3,dur-fadeOut));g.gain.linearRampToValueAtTime(0,now+dur);
+ eventSource=src;eventGain=g;eventStart=now;
+ src.onended=()=>{src.disconnect();g.disconnect();if(token!==eventSerial)return;eventSource=null;eventGain=null;if(onEnd)onEnd();};
+ src.start();return dur;
+}
+function selectPair(bank,rpm,weight,wanted){
+ if(weight<=.0001)return;
+ const list=banks[bank];if(!list?.length)return;
+ let hi=list.findIndex(x=>x.rpm>=rpm);if(hi<0)hi=list.length-1;
+ const lo=Math.max(0,hi-1),a=list[lo],b=list[hi],q=clamp((rpm-a.rpm)/Math.max(1,b.rpm-a.rpm),0,1);
+ if(a===b){wanted.set(a,weight);return;}
+ if(1-q>0.0001)wanted.set(a,weight*(1-q));
+ if(q>0.0001)wanted.set(b,weight*q);
+}
+function createVoice(anchor){
+ const source=AC.createBufferSource(),gain=AC.createGain();
+ source.buffer=anchor.buf;source.loop=true;source.connect(gain);gain.connect(LOOP_BUS);gain.gain.value=0;
+ source.playbackRate.value=clamp(STATE.rpm/anchor.rpm,.5,2);
+ source.start();return {source,gain,retire:0};
+}
+function fadeLoops(seconds=.08){
+ if(!AC)return;const now=AC.currentTime;
+ for(const v of active.values()){v.gain.gain.cancelScheduledValues(now);v.gain.gain.setTargetAtTime(0,now,seconds/4);try{v.source.stop(now+seconds);}catch{}v.source.onended=()=>{v.source.disconnect();v.gain.disconnect();};}
+ active.clear();
+}
+function mix(){
+ if(!raw||STATE.mode!=='running')return;
+ const wanted=new Map(),rpm=STATE.rpm,t=STATE.throttle;
+ // Rapid bank contains short, nonstationary grains: use conservatively at large pedal input.
+ const moving=clamp((rpm-idle)/350,0,1),driveMix=clamp(t*2.5,0,1)*moving,rapidMix=clamp((t-.55)/.45,0,1)*.35*driveMix;
+ // The one-shot attack bypasses this steady-state RPM gate via MASTER.
+ selectPair('drive',rpm,driveMix-rapidMix,wanted);selectPair('rapid',rpm,rapidMix,wanted);selectPair('coast',rpm,1-driveMix,wanted);
+ const now=AC.currentTime;
+ for(const [a,w] of wanted){
+   let v=active.get(a);if(!v){v=createVoice(a);active.set(a,v);}v.retire=0;
+   v.source.playbackRate.setTargetAtTime(clamp(rpm/a.rpm,.5,2),now,.018);
+   v.gain.gain.setTargetAtTime(w,now,.025);
+ }
+ for(const [a,v] of active)if(!wanted.has(a)){
+   if(!v.retire){v.retire=now+.18;v.gain.gain.setTargetAtTime(0,now,.025);}
+   else if(now>=v.retire){v.source.stop();v.source.onended=()=>{v.source.disconnect();v.gain.disconnect();};active.delete(a);}
+ }
+}
+function running(){
+ STATE.mode='running';STATE.rpm=idle;STATE.throttle=0;stopPending=false;status('RUNNING');mix();
+}
+async function startEngine(){
+ if(STATE.mode!=='off'||loadTask)return;
+ if(!raw&&location.protocol==='file:'){$('sourceFile').click();return;}
+ stopAudition();
+ try{
+   await ensureAudio();
+   if(!raw){loadTask=loadDefault();const ok=await loadTask;loadTask=null;if(!ok){$('overlayNote').textContent='Choose WAV file, then press LOAD / START ENGINE.';return;}}
+   if(STATE.mode!=='off')return;
+   $('overlay').classList.add('hide');
+   STATE.mode='cranking';STATE.rpm=0;STATE.throttle=0;phaseStart=AC.currentTime;status('KEY / IGNITION');
+   // Recorded key + electrical tone kept contiguous, preserving the audible transition.
+   playEvent(81.10,83.10,()=>{status('CRANKING');phaseStart=AC.currentTime;
+     playEvent(13.94,15.20,running,.004,.06);
+   },.004,.025);
+ }catch(e){loadTask=null;msg(e.message);$('overlayNote').textContent=e.message;}
+}
+function beginShutdown(){
+ stopBlip();stopPending=false;STATE.mode='stopping';STATE.throttle=0;phaseStart=AC.currentTime;status('SHUTDOWN');fadeLoops(.12);
+ // Contiguous original engine-off sequence includes run-down, key/mechanical and electrical sound.
+ playEvent(79.45,83.25,()=>{STATE.rpm=0;STATE.mode='off';status('STANDBY');msg('ENGINE OFF · source retained');},.12,.04);
+}
+function stopEngine(){
+ stopBlip();held=false;pointerHeld=false;keys.clear();
+ if(STATE.mode==='cranking'){stopEvent();fadeLoops();STATE.mode='off';STATE.rpm=0;STATE.throttle=0;status('STANDBY');return;}
+ if(STATE.mode==='stopping'){stopEvent();STATE.mode='off';STATE.rpm=0;status('STANDBY');return;}
+ if(STATE.mode!=='running')return;
+ if(STATE.rpm>idle+100){stopPending=true;status('COAST TO STOP');}else beginShutdown();
+}
+function choose(delta){selected=(selected+delta+clips.length)%clips.length;$('transMode').textContent=clips[selected][0].toUpperCase();$('gearBadge').textContent=String(selected+1);msg(clips[selected][0]+' · '+clips[selected][1].toFixed(2)+'–'+clips[selected][2].toFixed(2)+' s');}
+async function audition(){
+ if(STATE.mode!=='off'){msg('Stop the engine before auditioning clips.');return;}
+ await ensureAudio();if(!raw){if(!await loadDefault()){$('sourceFile').click();return;}}
+ stopAudition();const [name,a,b]=clips[selected];let src=AC.createBufferSource();src.buffer=slice(a,b);src.connect(MASTER);auditionSource=src;src.onended=()=>{src.disconnect();if(auditionSource===src){auditionSource=null;msg('AUDITION COMPLETE · '+name);}};src.start();msg('AUDITION · '+name);
+}
+function throttleState(){const wasHeld=held;held=pointerHeld||keys.size>0;if(held&&!wasHeld)triggerBlip(STATE.rpm,Number($('engine').value));}
+function tick(ts){
+ const dt=lastFrame?clamp((ts-lastFrame)/1000,0,.05):.016;lastFrame=ts;STATE.time+=dt;
+ if(STATE.mode==='running'){
+   const target=held&&!stopPending?Number($('engine').value):0;
+   STATE.throttle+=(target-STATE.throttle)*(1-Math.exp(-dt/(target>STATE.throttle?.045:.025)));
+   // Measured closed-throttle decay; idle control approaches 930 RPM.
+   const lossR=[930,1000,1500,2000,2500,3000,3500,4000],lossV=[0,85,246,485,610,617,667,732];
+   let k=lossR.findIndex(x=>x>=STATE.rpm);if(k<1)k=1;
+   const loss=lerp(lossV[k-1],lossV[k],clamp((STATE.rpm-lossR[k-1])/(lossR[k]-lossR[k-1]),0,1));
+   // 25% reproduces a slow sweep; 100% approximately 3,600 RPM/s midrange.
+   const drive=loss*clamp(STATE.throttle/.25,0,1)+3600*Math.pow(STATE.throttle,2.055);
+   STATE.rpm=clamp(STATE.rpm+(drive-loss)*dt,idle,ceiling);
+   STATE.overrun=STATE.throttle<.04&&STATE.rpm>idle+100;
+   if(stopPending&&STATE.rpm<=idle+100)beginShutdown();
+   if(ts-lastMix>22){lastMix=ts;mix();}
+ }else if(STATE.mode==='cranking'){
+   const elapsed=AC?AC.currentTime-phaseStart:0;
+   if($('statusText').textContent==='CRANKING')STATE.rpm=clamp((elapsed-.05)*1150,0,idle);
+ }else if(STATE.mode==='stopping'){STATE.rpm=idle*Math.max(0,1-(AC.currentTime-phaseStart)/.7);}
+ $('pedalPct').textContent=Math.round(STATE.throttle*100)+'%';
+ $('pedal').style.setProperty('--pedalFill',STATE.throttle*100+'%');
+ $('pedal').classList.toggle('down',held&&STATE.mode==='running');
+ $('pedalSub').textContent=STATE.mode==='running'?(STATE.overrun?'CLOSED THROTTLE':'THROTTLE · NEUTRAL'):'THROTTLE · STANDBY';
+ updateNeedle(dt);drawGauge();drawScope();requestAnimationFrame(tick);
+}
+function init(){
+ $('engine').value='1';$('neutralBtn').addEventListener('click',()=>choose(-1));$('upBtn').addEventListener('click',()=>choose(1));
+ $('autoBtn').addEventListener('click',()=>audition().catch(e=>msg(e.message)));$('downBtn').addEventListener('click',stopAudition);
+ $('sourceFile').addEventListener('change',async e=>{try{if(loadTask)return;loadTask=loadFile(e.target.files[0]);await loadTask;}catch(err){msg(err.message);$('overlayNote').textContent=err.message;}finally{loadTask=null;e.target.value='';}});
+ $('loadOther').addEventListener('click',()=>$('sourceFile').click());$('startBtn').addEventListener('click',startEngine);
+ $('powerBtn').addEventListener('click',()=>STATE.mode==='off'?startEngine():stopEngine());
+ $('vol').addEventListener('input',()=>{const v=Number($('vol').value);$('volVal').textContent=Math.round(v*100)+'%';document.documentElement.style.setProperty('--vol',v*100+'%');if(MASTER)MASTER.gain.setTargetAtTime(v*.65,AC.currentTime,.025);});
+ const pedal=$('pedal');pedal.addEventListener('pointerdown',e=>{e.preventDefault();pointerHeld=true;try{pedal.setPointerCapture(e.pointerId);}catch{}throttleState();});
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(ev,()=>{pointerHeld=false;throttleState();});
+ const revCodes=['Space','KeyW','ArrowUp'];
+ window.addEventListener('keydown',e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName)&&e.code==='Space')return;if(revCodes.includes(e.code)){e.preventDefault();keys.add(e.code);throttleState();}else if(!e.repeat){if(e.code==='KeyQ')choose(-1);if(e.code==='KeyE')choose(1);if(e.code==='KeyA')audition().catch(x=>msg(x.message));}});
+ window.addEventListener('keyup',e=>{if(revCodes.includes(e.code)){keys.delete(e.code);throttleState();}});
+ const release=()=>{keys.clear();pointerHeld=false;throttleState();};window.addEventListener('blur',release);document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
+ window.addEventListener('resize',resizeAll);if(window.visualViewport)window.visualViewport.addEventListener('resize',resizeAll);
+ choose(0);msg('SOURCE NOT LOADED');status('STANDBY');resizeAll();requestAnimationFrame(tick);
+}
+
+  function resizeCanvas(canvas) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.max(1, Math.round(rect.width * dpr));
+    var h = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, dpr: dpr };
+  }
+
+  function resizeAll() {
+    resizeCanvas(gauge);
+    resizeCanvas(scope);
+    drawGauge();
+    drawScope();
+  }
+
+  function roundRect(g, x, y, w, h, r) {
+    var rr = Math.min(r, w * 0.5, h * 0.5);
+    g.beginPath();
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr);
+    g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr);
+    g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
+  }
+
+  function drawGauge() {
+    var w = gauge.clientWidth;
+    var h = gauge.clientHeight;
+    if (!w || !h) return;
+    var g = gaugeCtx;
+    var e = ENGINES[STATE.key];
+    var maxRpm = Math.ceil((e.redline + 350) / 500) * 500;
+    var cx = w * 0.5;
+    var cy = h * 0.615;
+    var R = Math.min(w * 0.355, h * 0.415);
+    var A0 = Math.PI * 0.75;
+    var A1 = Math.PI * 2.25;
+    var span = A1 - A0;
+    var ratio = clamp(STATE.rpm / e.redline, 0, 1.25);
+    var limiterOn = false; // 4,000 is the recorded ceiling, not a measured rev limiter.
+
+    function ang(v) { return A0 + span * clamp(v / maxRpm, 0, 1); }
+
+    g.clearRect(0, 0, w, h);
+
+    /* subtle instrument face light */
+    var bg = g.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.55);
+    bg.addColorStop(0, 'rgba(255,255,255,0.045)');
+    bg.addColorStop(0.55, 'rgba(255,255,255,0.012)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, w, h);
+
+    /* shift lights */
+    var lightCount = 8;
+    var lightW = Math.max(10, Math.min(16, w * 0.038));
+    var lightH = Math.max(3.5, Math.min(5, h * 0.016));
+    var gap = lightW * 0.38;
+    var totalW = lightCount * lightW + (lightCount - 1) * gap;
+    var lx = cx - totalW / 2;
+    var ly = Math.max(10, h * 0.045);
+    var litCount = 0;
+    var thresholds = [0.58, 0.65, 0.71, 0.77, 0.83, 0.89, 0.94, 0.975];
+    for (var t = 0; t < thresholds.length; t++) {
+      if (ratio >= thresholds[t]) litCount = t + 1;
+    }
+    var flash = Math.floor(STATE.time * 13) % 2 === 0;
+    for (var li = 0; li < lightCount; li++) {
+      var lit = li < litCount;
+      if (limiterOn && flash) lit = true;
+      var col = li < 4 ? '#3ff2a0' : (li < 6 ? '#ffc45e' : '#ff354b');
+      g.globalAlpha = lit ? 1 : 0.16;
+      g.fillStyle = col;
+      g.shadowColor = lit ? col : 'transparent';
+      g.shadowBlur = lit ? 9 : 0;
+      roundRect(g, lx + li * (lightW + gap), ly, lightW, lightH, lightH * 0.5);
+      g.fill();
+    }
+    g.shadowBlur = 0;
+    g.globalAlpha = 1;
+
+    /* track */
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(cx, cy, R, A0, A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = '#171e27';
+    g.stroke();
+
+    /* red zone */
+    g.beginPath();
+    g.arc(cx, cy, R, ang(e.redline), A1);
+    g.lineWidth = Math.max(8, R * 0.074);
+    g.strokeStyle = 'rgba(255,47,69,0.29)';
+    g.stroke();
+
+    /* outer throttle ring */
+    var ringR = R + Math.max(7, R * 0.075);
+    g.beginPath();
+    g.arc(cx, cy, ringR, A0, A1);
+    g.lineWidth = Math.max(2, R * 0.018);
+    g.strokeStyle = 'rgba(101,224,255,0.08)';
+    g.stroke();
+    var th = STATE.mode === 'off' ? 0 : clamp(STATE.throttle, 0, 1);
+    if (th > 0.005) {
+      g.beginPath();
+      g.arc(cx, cy, ringR, A0, A0 + span * th);
+      g.lineWidth = Math.max(2, R * 0.018);
+      g.strokeStyle = 'rgba(101,224,255,0.78)';
+      g.shadowColor = 'rgba(101,224,255,0.55)';
+      g.shadowBlur = 8;
+      g.stroke();
+      g.shadowBlur = 0;
+    }
+
+    /* ticks and labels */
+    var majorStep = 1000;
+    var minorStep = 500;
+    var font = Math.max(8, Math.round(R * 0.080));
+    for (var v = 0; v <= maxRpm + 1; v += minorStep) {
+      var major = v % majorStep === 0;
+      var a = ang(v);
+      var r1 = R - Math.max(7, R * 0.058);
+      var r2 = r1 - (major ? Math.max(8, R * 0.083) : Math.max(4, R * 0.043));
+      var red = v >= e.redline;
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+      g.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+      g.lineWidth = major ? Math.max(1.2, R * 0.014) : Math.max(0.7, R * 0.008);
+      g.strokeStyle = red ? (major ? '#ff6273' : '#7c3039') : (major ? '#7c8998' : '#39424e');
+      g.stroke();
+      if (major) {
+        var rr = r2 - Math.max(8, R * 0.075);
+        g.fillStyle = red ? '#ff8792' : '#788696';
+        g.font = '700 ' + font + 'px ui-sans-serif, system-ui, sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(String(v / 1000), cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+      }
+    }
+
+    /* small unit label */
+    g.fillStyle = 'rgba(126,140,157,0.62)';
+    g.font = '700 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText('x1000 r/min', cx, cy - R * 0.47);
+
+    /* value arc */
+    var nr = clamp(STATE.needleRpm, 0, maxRpm);
+    if (limiterOn) {
+      nr += (Math.random() - 0.5) * e.redline * 0.010;
+    } else if (STATE.mode === 'running' || STATE.mode === 'cranking') {
+      nr += (Math.sin(STATE.time * 0.091) + Math.sin(STATE.time * 0.137)) * e.redline * 0.0007;
+      nr += (Math.random() - 0.5) * e.redline * 0.00035;
+    }
+    nr = clamp(nr, 0, maxRpm);
+    var vEnd = ang(nr);
+    if (vEnd > A0 + 0.004) {
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(8, R * 0.074);
+      g.strokeStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+      g.shadowColor = limiterOn ? 'rgba(255,50,71,.75)' : 'rgba(255,107,26,.65)';
+      g.shadowBlur = Math.max(10, R * 0.14);
+      g.stroke();
+      g.shadowBlur = 0;
+
+      g.beginPath();
+      g.arc(cx, cy, R, A0, vEnd);
+      g.lineWidth = Math.max(1, R * 0.008);
+      g.strokeStyle = 'rgba(255,228,203,0.52)';
+      g.stroke();
+    }
+
+    /* redline radial marker */
+    var ra = ang(e.redline);
+    g.beginPath();
+    g.moveTo(cx + Math.cos(ra) * (R - Math.max(8, R * 0.074)), cy + Math.sin(ra) * (R - Math.max(8, R * 0.074)));
+    g.lineTo(cx + Math.cos(ra) * (R + Math.max(7, R * 0.055)), cy + Math.sin(ra) * (R + Math.max(7, R * 0.055)));
+    g.lineWidth = Math.max(1.2, R * 0.015);
+    g.strokeStyle = 'rgba(255,84,104,0.9)';
+    g.stroke();
+
+    /* needle */
+    var na = ang(nr);
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(na);
+    var needleLen = R - Math.max(8, R * 0.055);
+    var needleBase = R * 0.14;
+    g.beginPath();
+    g.moveTo(-needleBase, -Math.max(4, R * 0.043));
+    g.lineTo(needleLen, -Math.max(1.2, R * 0.012));
+    g.lineTo(needleLen, Math.max(1.2, R * 0.012));
+    g.lineTo(-needleBase, Math.max(4, R * 0.043));
+    g.closePath();
+    var ng = g.createLinearGradient(-needleBase, 0, needleLen, 0);
+    ng.addColorStop(0, limiterOn ? '#ff8a93' : '#ffb06c');
+    ng.addColorStop(0.35, limiterOn ? '#ff3247' : '#ff6b1a');
+    ng.addColorStop(1, limiterOn ? '#ff273b' : '#ff5a0c');
+    g.fillStyle = ng;
+    g.shadowColor = limiterOn ? 'rgba(255,50,71,.9)' : 'rgba(255,107,26,.8)';
+    g.shadowBlur = Math.max(10, R * 0.15);
+    g.fill();
+    g.restore();
+    g.shadowBlur = 0;
+
+    /* hub */
+    g.beginPath();
+    g.arc(cx, cy, Math.max(7, R * 0.085), 0, Math.PI * 2);
+    g.fillStyle = '#0b0f14';
+    g.fill();
+    g.lineWidth = Math.max(1.4, R * 0.019);
+    g.strokeStyle = '#2b3542';
+    g.stroke();
+    g.beginPath();
+    g.arc(cx, cy, Math.max(2, R * 0.025), 0, Math.PI * 2);
+    g.fillStyle = limiterOn ? '#ff3247' : '#ff6b1a';
+    g.fill();
+
+    /* digital readout */
+    var readoutY = cy + R * 0.58;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = limiterOn ? '#ff5365' : '#eef4fb';
+    g.font = '800 ' + Math.max(20, Math.round(R * 0.245)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText(String(Math.round(STATE.rpm)), cx, readoutY);
+    g.fillStyle = '#4f5b69';
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.060)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('RPM', cx, readoutY + Math.max(12, R * 0.125));
+
+    /* gear and road-speed readouts */
+    var nx = cx - R * 0.57;
+    var ny = readoutY;
+    var gearText = STATE.gear > 0 ? String(STATE.gear) : 'N';
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, nx - 11, ny - 11, 22, 22, 5);
+    g.fill();
+    g.strokeStyle = STATE.shifting ? 'rgba(255,196,94,0.60)' : 'rgba(101,224,255,0.25)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = STATE.shifting ? '#ffc45e' : 'rgba(101,224,255,0.82)';
+    g.font = '800 ' + Math.max(9, Math.round(R * 0.085)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(gearText, nx, ny);
+
+    var sx = cx + R * 0.57;
+    var speedKmh = Math.round(STATE.speed * 3.6);
+    g.fillStyle = 'rgba(13,18,25,0.9)';
+    roundRect(g, sx - 18, ny - 12, 36, 24, 5);
+    g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.10)';
+    g.lineWidth = 1;
+    g.stroke();
+    g.fillStyle = '#cfdbe8';
+    g.font = '800 ' + Math.max(8, Math.round(R * 0.072)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+    g.fillText('—', sx, ny - 3);
+    g.fillStyle = '#596675';
+    g.font = '800 ' + Math.max(4.5, Math.round(R * 0.040)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText('NEUTRAL', sx, ny + 7);
+
+    /* state caption */
+    var shiftCaption = STATE.shiftKind === 'down' ? 'DOWNSHIFT' : 'UPSHIFT';
+    var caption = STATE.mode === 'off' ? 'ENGINE OFF' :
+      (STATE.mode === 'cranking' ? 'CRANKING' :
+        (STATE.mode === 'stopping' ? 'SHUTDOWN' :
+          (STATE.shifting ? shiftCaption :
+            (limiterOn ? 'REV LIMIT' :
+              (STATE.overrun ? 'OVERRUN' :
+                (STATE.gear > 0 && STATE.throttle < 0.08 && STATE.speed > 2 ? 'ENGINE BRAKE' :
+                  (STATE.throttle > 0.24 ? 'REVVING' :
+                    (STATE.gear === 0 && STATE.rpm > e.idle * 1.16 ? 'FREE REV' : 'IDLE'))))))));
+    g.fillStyle = STATE.shifting ? 'rgba(255,196,94,0.88)' :
+      (limiterOn ? 'rgba(255,83,101,0.85)' : 'rgba(104,118,134,0.78)');
+    g.font = '800 ' + Math.max(7, Math.round(R * 0.058)) + 'px ui-sans-serif, system-ui, sans-serif';
+    g.fillText(caption, cx, readoutY + Math.max(26, R * 0.24));
+  }
+
+  function drawScope() {
+    var w = scope.clientWidth;
+    var h = scope.clientHeight;
+    if (!w || !h) return;
+    var g = scopeCtx;
+    g.clearRect(0, 0, w, h);
+
+    var cy = h * 0.54;
+    g.strokeStyle = 'rgba(255,255,255,0.06)';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(0, cy);
+    g.lineTo(w, cy);
+    g.stroke();
+
+    g.strokeStyle = 'rgba(255,255,255,0.025)';
+    for (var gx = 0.25; gx < 1; gx += 0.25) {
+      g.beginPath();
+      g.moveTo(w * gx, 0);
+      g.lineTo(w * gx, h);
+      g.stroke();
+    }
+
+    if (!ANALYSER || !ANALYSER_DATA) return;
+    ANALYSER.getFloatTimeDomainData(ANALYSER_DATA);
+
+    var peak = 0;
+    for (var i = 0; i < ANALYSER_DATA.length; i += 3) {
+      var av = Math.abs(ANALYSER_DATA[i]);
+      if (av > peak) peak = av;
+    }
+    var targetGain = peak > 0.004 ? 0.85 / peak : 1;
+    targetGain = clamp(targetGain, 1, 100);
+    SCOPE_GAIN += (targetGain - SCOPE_GAIN) * 0.10;
+    var gain = SCOPE_GAIN * h * 0.40;
+
+    g.beginPath();
+    var n = ANALYSER_DATA.length;
+    for (var k = 0; k < n; k++) {
+      var x = (k / (n - 1)) * w;
+      var y = cy - ANALYSER_DATA[k] * gain;
+      if (k === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    var grad = g.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, 'rgba(255,107,26,0.22)');
+    grad.addColorStop(0.38, 'rgba(255,107,26,0.95)');
+    grad.addColorStop(0.72, 'rgba(255,180,111,0.9)');
+    grad.addColorStop(1, 'rgba(101,224,255,0.65)');
+    g.strokeStyle = grad;
+    g.lineWidth = 1.15;
+    g.shadowColor = 'rgba(255,107,26,0.30)';
+    g.shadowBlur = 5;
+    g.stroke();
+    g.shadowBlur = 0;
+  }
+
+  function updateNeedle(dt) {
+    var target = STATE.mode === 'off' ? 0 : STATE.rpm;
+    var stiffness = 92;
+    var damping = 14.5;
+    var accel = (target - STATE.needleRpm) * stiffness - STATE.needleVel * damping;
+    STATE.needleVel += accel * dt;
+    STATE.needleRpm += STATE.needleVel * dt;
+    if (STATE.mode === 'off' && Math.abs(STATE.needleRpm) < 0.6 && Math.abs(STATE.needleVel) < 0.6) {
+      STATE.needleRpm = 0;
+      STATE.needleVel = 0;
+    }
+    STATE.needleRpm = clamp(STATE.needleRpm, -60, 11000);
+  }
+
+
+init();})();
+</script>
+</body>
+</html>
