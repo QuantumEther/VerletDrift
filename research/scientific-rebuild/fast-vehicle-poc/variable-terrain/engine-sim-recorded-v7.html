@@ -1513,9 +1513,10 @@ function stepVehicle(dt,throttle,manualClutch,brake,launch,assist){
  }
  if(launch&&STATE.gear!==0&&!manualClutch&&!shift&&Math.abs(STATE.speed)<5){
    const sync=Math.abs(targetGearRPM(STATE.gear,STATE.speed));
-   const creep=throttle>.08?clamp(.75-.40*throttle-sync/1800,0,.83):clamp(1-sync/1100,0,1);
-   want=Math.max(want,creep);
-   if(STATE.rpm<750)want=Math.max(want,.90);
+   const creep=throttle>.08?clamp(1-sync/1200,0,1)*.55:clamp(1-sync/1000,0,1);
+   // Keep enough clutch release to launch without a large initial RPM collapse.
+   const bog=clamp((850-STATE.rpm)/300,0,.95);
+   want=Math.max(want,creep,bog);
  }
  const tau=want>clutch?.045:.085;
  clutch=clamp(clutch+(want-clutch)*(1-Math.exp(-dt/tau)),0,1);
@@ -1558,7 +1559,8 @@ function throttleState(){const wasHeld=held;held=pointerHeld||keys.size>0;if(hel
 function tick(ts){
  const dt=lastFrame?clamp((ts-lastFrame)/1000,0,.05):.016;lastFrame=ts;STATE.time+=dt;
  if(STATE.mode==='running'){
-   const target=held&&!stopPending&&!(shift?.assist&&!shift.selected)?Number($('engine').value):0;
+   const pedalTarget=held&&!stopPending?Number($('engine').value):0;
+   const target=pedalTarget*(shift?.assist?(shift.selected?clamp((shift.t-shift.engageAt)/Math.max(.01,shift.engage),0,1):0):1);
    STATE.throttle+=(target-STATE.throttle)*(1-Math.exp(-dt/(target>STATE.throttle?.045:.025)));
    const steps=Math.max(1,Math.ceil(dt/.005));for(let j=0;j<steps&&STATE.mode==='running';j++)stepVehicle(dt/steps,STATE.throttle,clutchHeld||clutchKeys,brakeHeld||brakeKeys,$('autoLaunch').checked,$('assist').checked);
    STATE.overrun=STATE.throttle<.04&&STATE.rpm>idle+100;
