@@ -930,7 +930,7 @@
     <span class="pedal-copy"><b>THROTTLE</b><small id="pedalSub">THROTTLE · NEUTRAL</small></span>
     <span class="pedal-pct" id="pedalPct">0%</span>
   </button>
-  <div id="assetInfo" aria-live="polite">SOURCE NOT LOADED</div><div class="hint"><kbd>W</kbd> throttle · <kbd>A</kbd> clutch · <kbd>S</kbd> brake · <kbd>1–6</kbd> gears · <kbd>N</kbd> neutral · <kbd>7</kbd> reverse</div>
+  <div id="assetInfo" aria-live="polite">SOURCE NOT LOADED</div><div class="hint"><kbd>W/D</kbd> throttle · <kbd>A</kbd> clutch · <kbd>S</kbd> brake · <kbd>1–6</kbd> gears · <kbd>N</kbd> neutral · <kbd>7</kbd> reverse</div>
 </div>
 <aside class="v4-panel" aria-label="Manual transmission and audio controls">
  <header><div class="brand-sub">APEX DYNO · DRIVER / ACOUSTICS</div><h2>Manual cell <small>V4</small></h2></header>
@@ -1186,7 +1186,7 @@ function mix(){
  }
 }
 function running(){
- STATE.mode='running';STATE.rpm=idle;STATE.throttle=0;STATE.gear=0;shift=null;stopPending=false;status('RUNNING');mix();
+ STATE.mode='running';STATE.rpm=idle;STATE.throttle=0;STATE.gear=0;shift=null;STATE.shifting=false;stallTime=0;showShift('READY');stopPending=false;status('RUNNING');mix();
 }
 async function startEngine(){
  if(STATE.mode!=='off'||loadTask)return;
@@ -1210,7 +1210,7 @@ function beginShutdown(){
  playEvent(79.45,83.25,()=>{STATE.rpm=0;STATE.mode='off';status('STANDBY');msg('ENGINE OFF · source retained');},.12,.04);
 }
 function stopEngine(){
- stopBlip();STATE.gear=0;shift=null;held=false;pointerHeld=false;keys.clear();
+ stopBlip();STATE.gear=0;shift=null;STATE.shifting=false;held=false;pointerHeld=false;keys.clear();
  if(STATE.mode==='cranking'){stopEvent();fadeLoops();STATE.mode='off';STATE.rpm=0;STATE.throttle=0;status('STANDBY');return;}
  if(STATE.mode==='stopping'){stopEvent();STATE.mode='off';STATE.rpm=0;status('STANDBY');return;}
  if(STATE.mode!=='running')return;
@@ -1346,14 +1346,14 @@ function stepVehicle(dt,throttle,manualClutch,brake,launch,assist){
  const drive=loss*clamp(throttle/.25,0,1)+3600*Math.pow(throttle,2.055);
  // Simplified net free-engine acceleration; cap positive combustion above recorded ceiling.
  const net=(rpm>=ceiling?Math.min(0,drive-loss):drive-loss)+idleControl;
- omega=Math.max(0,omega+net*TAU/60*dt);
+ omega=Math.max(0,Math.min(Math.max(omega,ceiling*TAU/60),omega+net*TAU/60*dt));
  const drag=.11+.0017*v*v+(brake?6.5:0);
  v=Math.sign(v)*Math.max(0,Math.abs(v)-drag*dt);
  const result=clutchStep(omega,v,(RATIOS[STATE.gear]||0)*FINAL,clutch,dt);
  omega=result.omega;v=result.speed;heat+=result.heat;slipRPM=Math.abs(result.slip)*60/TAU;
  STATE.rpm=Math.max(0,omega*60/TAU);STATE.speed=v;
  // Protect the acoustic ceiling; drivetrain may back-drive beyond it, but samples never extrapolate.
- if(STATE.rpm<460&&STATE.gear!==0&&clutch<.85){stallTime+=dt;if(stallTime>.12){stopBlip();fadeLoops(.12);STATE.mode='off';STATE.rpm=0;STATE.gear=0;shift=null;STATE.shifting=false;status('STALLED');showShift('STALLED · RESTART');}}else stallTime=0;
+ if(STATE.rpm<460&&STATE.gear!==0&&clutch<.85){stallTime+=dt;if(stallTime>.12){stopBlip();fadeLoops(.12);STATE.mode='off';STATE.rpm=0;STATE.throttle=0;STATE.gear=0;shift=null;STATE.shifting=false;status('STALLED');showShift('STALLED · RESTART');}}else stallTime=0;
 }
 function updateDriveUI(){
  $('gearBadge').textContent=gearName(STATE.gear);$('transMode').textContent=shift?'SHIFTING':STATE.gear?'MANUAL':'NEUTRAL';
@@ -1378,7 +1378,7 @@ function tick(ts){
    const elapsed=AC?AC.currentTime-phaseStart:0;
    if($('statusText').textContent==='CRANKING')STATE.rpm=clamp((elapsed-.05)*1150,0,idle);
  }else if(STATE.mode==='stopping'){STATE.rpm=idle*Math.max(0,1-(AC.currentTime-phaseStart)/.7);}
- if(STATE.mode!=='running'){const d=(brakeHeld||brakeKeys?6.5:.11)+.0017*STATE.speed*STATE.speed;STATE.speed=Math.sign(STATE.speed)*Math.max(0,Math.abs(STATE.speed)-d*dt);}
+ if(STATE.mode!=='running'){clutch+=(Number(clutchHeld||clutchKeys)-clutch)*(1-Math.exp(-dt/.08));slipRPM=0;const d=(brakeHeld||brakeKeys?6.5:.11)+.0017*STATE.speed*STATE.speed;STATE.speed=Math.sign(STATE.speed)*Math.max(0,Math.abs(STATE.speed)-d*dt);}
  updateDriveUI();
  $('pedalPct').textContent=Math.round(STATE.throttle*100)+'%';
  $('pedal').style.setProperty('--pedalFill',STATE.throttle*100+'%');
@@ -1406,7 +1406,7 @@ function init(){
  $('vol').addEventListener('input',()=>{const v=Number($('vol').value);$('volVal').textContent=Math.round(v*100)+'%';document.documentElement.style.setProperty('--vol',v*100+'%');if(MASTER)MASTER.gain.setTargetAtTime(v*.65,AC.currentTime,.025);});
  const pedal=$('pedal');pedal.addEventListener('pointerdown',e=>{e.preventDefault();pointerHeld=true;try{pedal.setPointerCapture(e.pointerId);}catch{}throttleState();});
  for(const ev of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(ev,()=>{pointerHeld=false;throttleState();});
- const revCodes=['Space','KeyW','ArrowUp'];
+ const revCodes=['Space','KeyW','KeyD','ArrowUp'];
  window.addEventListener('keydown',e=>{
   if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
   if(revCodes.includes(e.code)){e.preventDefault();keys.add(e.code);throttleState();return;}
