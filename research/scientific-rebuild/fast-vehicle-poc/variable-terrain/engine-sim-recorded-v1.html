@@ -985,7 +985,7 @@ const bankDefs={
 };
 const banks={};
 const msg=s=>{$('assetInfo').textContent=s;};
-const status=s=>{$('statusText').textContent=s;$('status').dataset.state=STATE.mode==='running'?'running':STATE.mode==='off'?'off':'cranking';$('powerText').textContent=STATE.mode==='off'?'START':'STOP';$('scopeLive').textContent=s;};
+const status=s=>{$('statusText').textContent=s;$('status').dataset.state=STATE.mode==='running'?'run':STATE.mode==='off'?'off':'cranking';$('powerText').textContent=STATE.mode==='off'?'START':'STOP';$('scopeLive').textContent=STATE.mode==='off'?'STANDBY':'LIVE';$('scopeLive').dataset.live=STATE.mode==='off'?'0':'1';$('powerBtn').classList.toggle('running',STATE.mode==='running');$('powerBtn').classList.toggle('cranking',STATE.mode==='cranking');};
 function ensureAudio(){
  if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); MASTER=AC.createGain();MASTER.gain.value=Number($('vol').value)*.65;
  ANALYSER=AC.createAnalyser();ANALYSER.fftSize=2048;ANALYSER_DATA=new Float32Array(ANALYSER.fftSize);MASTER.connect(ANALYSER);ANALYSER.connect(AC.destination);}
@@ -1095,12 +1095,13 @@ function running(){
 }
 async function startEngine(){
  if(STATE.mode!=='off'||loadTask)return;
+ if(!raw&&location.protocol==='file:'){$('sourceFile').click();return;}
  stopAudition();
  try{
    await ensureAudio();
-   if(!raw){loadTask=loadDefault();const ok=await loadTask;loadTask=null;if(!ok){$('sourceFile').click();return;}}
+   if(!raw){loadTask=loadDefault();const ok=await loadTask;loadTask=null;if(!ok){$('overlayNote').textContent='Choose WAV file, then press LOAD / START ENGINE.';return;}}
    if(STATE.mode!=='off')return;
-   $('overlay').classList.add('hidden');$('overlay').style.display='none';
+   $('overlay').classList.add('hide');
    STATE.mode='cranking';STATE.rpm=0;STATE.throttle=0;phaseStart=AC.currentTime;status('KEY / IGNITION');
    // Recorded key + electrical tone kept contiguous, preserving the audible transition.
    playEvent(81.10,83.10,()=>{status('CRANKING');phaseStart=AC.currentTime;
@@ -1137,7 +1138,7 @@ function tick(ts){
    let k=lossR.findIndex(x=>x>=STATE.rpm);if(k<1)k=1;
    const loss=lerp(lossV[k-1],lossV[k],clamp((STATE.rpm-lossR[k-1])/(lossR[k]-lossR[k-1]),0,1));
    // 25% reproduces a slow sweep; 100% approximately 3,600 RPM/s midrange.
-   const drive=4330*Math.pow(STATE.throttle,2.05);
+   const drive=loss*clamp(STATE.throttle/.25,0,1)+3600*Math.pow(STATE.throttle,2.055);
    STATE.rpm=clamp(STATE.rpm+(drive-loss)*dt,idle,ceiling);
    STATE.overrun=STATE.throttle<.04&&STATE.rpm>idle+100;
    if(stopPending&&STATE.rpm<=idle+100)beginShutdown();
@@ -1147,15 +1148,15 @@ function tick(ts){
    if($('statusText').textContent==='CRANKING')STATE.rpm=clamp((elapsed-.05)*1150,0,idle);
  }else if(STATE.mode==='stopping'){STATE.rpm=idle*Math.max(0,1-(AC.currentTime-phaseStart)/.7);}
  $('pedalPct').textContent=Math.round(STATE.throttle*100)+'%';
- $('pedal').style.setProperty('--throttle',STATE.throttle*100+'%');
- $('pedal').classList.toggle('active',held);$('pedal').classList.toggle('held',held);
+ $('pedal').style.setProperty('--pedalFill',STATE.throttle*100+'%');
+ $('pedal').classList.toggle('down',held&&STATE.mode==='running');
  $('pedalSub').textContent=STATE.mode==='running'?(STATE.overrun?'CLOSED THROTTLE':'THROTTLE · NEUTRAL'):'THROTTLE · STANDBY';
  updateNeedle(dt);drawGauge();drawScope();requestAnimationFrame(tick);
 }
 function init(){
  $('engine').value='1';$('neutralBtn').addEventListener('click',()=>choose(-1));$('upBtn').addEventListener('click',()=>choose(1));
  $('autoBtn').addEventListener('click',()=>audition().catch(e=>msg(e.message)));$('downBtn').addEventListener('click',stopAudition);
- $('sourceFile').addEventListener('change',async e=>{try{await loadFile(e.target.files[0]);}catch(err){msg(err.message);$('overlayNote').textContent=err.message;}finally{e.target.value='';}});
+ $('sourceFile').addEventListener('change',async e=>{try{if(loadTask)return;loadTask=loadFile(e.target.files[0]);await loadTask;}catch(err){msg(err.message);$('overlayNote').textContent=err.message;}finally{loadTask=null;e.target.value='';}});
  $('loadOther').addEventListener('click',()=>$('sourceFile').click());$('startBtn').addEventListener('click',startEngine);
  $('powerBtn').addEventListener('click',()=>STATE.mode==='off'?startEngine():stopEngine());
  $('vol').addEventListener('input',()=>{const v=Number($('vol').value);$('volVal').textContent=Math.round(v*100)+'%';document.documentElement.style.setProperty('--vol',v*100+'%');if(MASTER)MASTER.gain.setTargetAtTime(v*.65,AC.currentTime,.025);});
@@ -1434,7 +1435,7 @@ function init(){
     g.stroke();
     g.fillStyle = '#cfdbe8';
     g.font = '800 ' + Math.max(8, Math.round(R * 0.072)) + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
-    g.fillText(String(speedKmh), sx, ny - 3);
+    g.fillText('—', sx, ny - 3);
     g.fillStyle = '#596675';
     g.font = '800 ' + Math.max(4.5, Math.round(R * 0.040)) + 'px ui-sans-serif, system-ui, sans-serif';
     g.fillText('NEUTRAL', sx, ny + 7);
