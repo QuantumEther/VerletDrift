@@ -20,4 +20,31 @@ export class BalloonEvents{
  }
 
 }
-export function createBalloons(T,scene,terrain,materials,vehicle={}){const liquid=createLiquid(T,scene,terrain,materials),state=new BalloonEvents(vehicle),group=new T.Group();scene.add(group);const geo=new T.SphereGeometry(1,20,12),mat=new T.MeshPhysicalMaterial({color:0x980c30,roughness:.19,metalness:.05,clearcoat:1});const mesh=new T.InstancedMesh(geo,mat,128),matrix=new T.Matrix4(),position=new T.Vector3(),scale=new T.Vector3(),rotation=new T.Quaternion();group.add(mesh);function draw(p){state.update(p,terrain);liquid.draw(p,state.events);let n=0;for(const b of state.items){if(!b.alive)continue;position.set(b.x-p.planar.x,b.y-p.planar.y,terrain.sample(b.x,b.y).height+b.r*1.12);scale.set(b.r,b.r,b.r*1.12);matrix.compose(position,rotation,scale);mesh.setMatrixAt(n++,matrix);}mesh.count=n;mesh.instanceMatrix.needsUpdate=true;mesh.frustumCulled=false;}return {draw,configure:(v={})=>{state.reset(v.count??24,v.min??.18,v.max??.48);liquid.configure(v);},info:()=>({alive:state.items.filter(b=>b.alive).length,impacts:state.events.length,liquid:liquid.info(),stage:'analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres'}),dispose(){liquid.dispose();materials?.dispose();geo.dispose();mat.dispose();group.removeFromParent();}};}
+export function createBalloons(T,scene,terrain,materials,vehicle={},cacheInstances=false){
+ const liquid=createLiquid(T,scene,terrain,materials),state=new BalloonEvents(vehicle),group=new T.Group();scene.add(group);
+ const geo=new T.SphereGeometry(1,20,12),mat=new T.MeshPhysicalMaterial({color:0x980c30,roughness:.19,metalness:.05,clearcoat:1});
+ const mesh=new T.InstancedMesh(geo,mat,128),matrix=new T.Matrix4(),position=new T.Vector3(),scale=new T.Vector3(),rotation=new T.Quaternion();
+ mesh.frustumCulled=false;group.add(mesh);
+ let originX=0,originY=0,dirty=true,lastImpact=null,instanceUploads=0;
+ function draw(p){
+  state.update(p,terrain);liquid.draw(p,state.events);
+  const impact=state.events.at(-1);
+  if(!cacheInstances||dirty||lastImpact!==impact){
+   originX=p.planar.x;originY=p.planar.y;
+   let count=0;
+   for(const balloon of state.items){
+    if(!balloon.alive)continue;
+    position.set(balloon.x-originX,balloon.y-originY,terrain.sample(balloon.x,balloon.y).height+balloon.r*1.12);
+    scale.set(balloon.r,balloon.r,balloon.r*1.12);
+    mesh.setMatrixAt(count++,matrix.compose(position,rotation,scale));
+   }
+   mesh.count=count;mesh.instanceMatrix.needsUpdate=true;instanceUploads++;
+   dirty=false;lastImpact=impact;
+  }
+  mesh.position.set(originX-p.planar.x,originY-p.planar.y,0);
+ }
+ return {draw,configure(v={}){
+  state.reset(v.count??24,v.min??.18,v.max??.48);liquid.configure(v);dirty=true;
+ },info:()=>({alive:state.items.filter(b=>b.alive).length,impacts:state.events.length,instanceUploads,liquid:liquid.info(),stage:'analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres'}),
+ dispose(){liquid.dispose();materials?.dispose();geo.dispose();mat.dispose();group.removeFromParent();}};
+}

@@ -369,3 +369,36 @@ From the repository root run `python3 -m http.server 8779` and open `http://loca
 Chromium verification exercised acceleration, paused workspace changes with exact snapshot equality, camera presets and reset, immersive mode, graphics changes, audio activation, a terrain reset, manual-engine starter and first-gear request, and a diagnostic JSON download in WebGL. A separate initialization confirmed the native WebGPU backend. Both checks used the cloud browser with software rendering. These runs provide no hardware performance comparison.
 
 The dashboard visibility checks are batched before presentation writes. Hidden engine/gear/energy diagnostics skip formatting alongside hidden smoke JSON, gauges and contact tables. A matched 800×500 canvas, paused 1440×900 software-rendered capture is recorded in ux-research/matched-ui-cost.json. The before version is pinned to 6d6dcf0. The changed dashboard samples averaged 8.36 ms versus 19.41 ms before, with P99 57.2 versus 237.4 ms. Legacy averaged 0.286 ms, so a substantial Studio presentation gap remains. These single-run cloud samples establish neither hardware throughput nor statistical significance.
+
+### WebGPU output and upload optimization
+
+Open the laboratory with `?backend=webgpu` for the optimized pipeline or with
+`?backend=webgpu&gpu-pipeline=reference` for the previous output pass and
+particle submission. Both use r180. The reference switch is available for a
+same-checkout comparison with the same model, render scale and graphics preset.
+
+The scene still renders to multisampled HDR color with depth. After resolving
+scene color, the full-screen conversion writes ACES-tonemapped sRGB to the
+canvas in one sample per pixel, without attaching depth to that pass. The
+fallback applies to partial viewports, scissoring, XR and offscreen output.
+At 1920×1080, omitting the final four-sample 8-bit color attachment alone
+avoids allocating about 32 MiB, before counting its depth attachment.
+This is calculated attachment capacity. Driver memory and presentation latency
+require measurement. Scene antialiasing and Cinematic's 2048-pixel shadows are
+preserved.
+
+The optimized path keeps intact balloon matrices until an impact or field
+change and moves the mesh by the current render-origin offset. WebGPU smoke
+only submits the occupied prefix of the existing particle pool. No emission
+or collision equations changed. WebGPU terrain avoids initializing the
+unused WebGL paint texture.
+
+Run `node --test ./*.test.mjs` from this directory. With the repository
+root served at http://127.0.0.1:8792, run `node webgpu-output-browser.mjs`
+to compare the actual Cinematic laboratory in Chromium with software Vulkan.
+The check compares sampled canvas colors, inspects the output attachment
+configuration and verifies the WebGL path. It cannot establish RTX 5090 or
+Mac display performance. To measure those, run the two URLs above at the same
+viewport and render scale. Use the existing Frame Diagnostics capture after
+the custom model and HDR environment are ready, with GPU timestamps disabled
+for a normal-pacing comparison.

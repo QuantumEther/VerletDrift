@@ -54957,7 +54957,7 @@ class Renderer {
 	 * @param {boolean} [useFrameBufferTarget=true] - Whether to use a framebuffer target or not.
 	 * @return {RenderContext} The current render context.
 	 */
-	_renderScene( scene, camera, useFrameBufferTarget = true ) {
+	_renderScene( scene, camera, useFrameBufferTarget = true, singleSampleOutput = false ) {
 
 		if ( this._isDeviceLost === true ) return;
 
@@ -55098,6 +55098,8 @@ class Renderer {
 
 		}
 
+		renderContext.singleSampleOutput = singleSampleOutput;
+
 		const renderList = this._renderLists.get( scene, camera );
 		renderList.begin();
 
@@ -55133,8 +55135,8 @@ class Renderer {
 			renderContext.depthTexture = null;
 			renderContext.width = _drawingBufferSize.width;
 			renderContext.height = _drawingBufferSize.height;
-			renderContext.depth = this.depth;
-			renderContext.stencil = this.stencil;
+			renderContext.depth = this.depth && ! singleSampleOutput;
+			renderContext.stencil = this.stencil && ! singleSampleOutput;
 
 		}
 
@@ -55248,7 +55250,13 @@ class Renderer {
 		this.autoClear = false;
 		this.xr.enabled = false;
 
-		this._renderScene( quad, quad.camera, false );
+		// VerletDrift: the fullscreen conversion samples a resolved HDR texture.
+		// Scene MSAA is already complete. The color-only quad needs no depth or MSAA.
+		const singleSample = this.singleSampleCanvasOutput === true && this.backend.isWebGPUBackend
+			&& this.getRenderTarget() === null && ! currentXR && ! this._scissorTest
+			&& this._viewport.x === 0 && this._viewport.y === 0
+			&& this._viewport.z === this._width && this._viewport.w === this._height;
+		this._renderScene( quad, quad.camera, false, singleSample );
 
 		this.autoClear = currentAutoClear;
 		this.xr.enabled = currentXR;
@@ -71323,6 +71331,8 @@ class WebGPUUtils {
 	 */
 	getSampleCountRenderContext( renderContext ) {
 
+		if ( renderContext.singleSampleOutput ) return 1;
+
 		if ( renderContext.textures !== null ) {
 
 			return this.getSampleCount( renderContext.sampleCount );
@@ -73646,6 +73656,7 @@ class WebGPUBackend extends Backend {
 
 			if ( this.renderer.samples > 0 ) {
 
+				this.colorBuffer ??= this.textureUtils.getColorBuffer();
 				colorAttachment.view = this.colorBuffer.createView();
 
 			} else {
@@ -73922,7 +73933,10 @@ class WebGPUBackend extends Backend {
 
 		if ( renderContext.textures === null ) {
 
-			descriptor = this._getDefaultRenderPassDescriptor();
+			descriptor = renderContext.singleSampleOutput ? {
+				label: 'VerletDrift resolved color output',
+				colorAttachments: [ { view: this.context.getCurrentTexture().createView() } ]
+			} : this._getDefaultRenderPassDescriptor();
 
 		} else {
 
@@ -73963,7 +73977,12 @@ class WebGPUBackend extends Backend {
 
 			const colorAttachment = descriptor.colorAttachments[ 0 ];
 
-			if ( renderContext.clearColor ) {
+			if ( renderContext.singleSampleOutput ) {
+
+				colorAttachment.loadOp = GPULoadOp.Clear;
+				colorAttachment.clearValue = { r: 0, g: 0, b: 0, a: 0 };
+
+			} else if ( renderContext.clearColor ) {
 
 				colorAttachment.clearValue = renderContext.clearColorValue;
 				colorAttachment.loadOp = GPULoadOp.Clear;
@@ -75525,7 +75544,17 @@ class WebGPUBackend extends Backend {
 	 */
 	updateSize() {
 
-		this.colorBuffer = this.textureUtils.getColorBuffer();
+		if ( this.renderer.singleSampleCanvasOutput === true ) {
+
+			this.textureUtils.colorBuffer?.destroy();
+			this.textureUtils.colorBuffer = null;
+			this.colorBuffer = null;
+
+		} else {
+
+			this.colorBuffer = this.textureUtils.getColorBuffer();
+
+		}
 		this.defaultRenderPassdescriptor = null;
 
 	}

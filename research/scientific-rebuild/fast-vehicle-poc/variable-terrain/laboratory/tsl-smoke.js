@@ -1,5 +1,5 @@
 // Instanced billboards sharing the authoritative visual particle arrays.
-export async function createTSLSmokeView(scene,buffers,lighting,capacity=600){
+export async function createTSLSmokeView(scene,buffers,lighting,capacity=600,compact=false){
  const T=await import('./vendor/three-r180/three.webgpu.js'),N=await import('./vendor/three-r180/three.tsl.js');
  const geometry=new T.PlaneGeometry(1,1);
  for(const [name,array,width] of [['particlePosition',buffers.positions,3],['particleOpacity',buffers.alpha,1],['particleDiameter',buffers.sizes,1],['particleTint',buffers.colors,3],['particleRotation',buffers.rotation,1]])geometry.setAttribute(name,new T.InstancedBufferAttribute(array,width));
@@ -16,5 +16,18 @@ export async function createTSLSmokeView(scene,buffers,lighting,capacity=600){
  material.opacityNode=N.float(1).sub(transmission);
  const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.frustumCulled=false;mesh.renderOrder=3;mesh.userData.noShadow=true;mesh.visible=false;scene.add(mesh);
  mesh.onBeforeRender=(_r,_s,camera)=>{direction.value.copy(buffers.sunDirection).transformDirection(camera.matrixWorldInverse);cameraBasis.value.setFromMatrix4(camera.matrixWorld);sky.value=lighting.skyMap.value??fallback;skyIntensity.value=lighting.hasSky.value?lighting.skyIntensity.value:0;};
- return {mesh,update(visible){mesh.visible=visible;for(const attr of Object.values(geometry.attributes))if(attr.isInstancedBufferAttribute)attr.needsUpdate=true;},dispose(){mesh.removeFromParent();fallback.dispose();geometry.dispose();material.dispose();}};
+ const attributes=Object.values(geometry.attributes).filter(attr=>attr.isInstancedBufferAttribute);
+ return {mesh,update(visible){
+  mesh.visible=visible;
+  if(compact){
+   if(!visible)return;
+   // Skip the unused tail while preserving the original particle draw order.
+   let count=capacity;
+   while(count>0&&buffers.sizes[count-1]===0)count--;
+   mesh.count=count;
+   for(const attr of attributes){
+    attr.clearUpdateRanges();attr.addUpdateRange(0,count*attr.itemSize);attr.needsUpdate=true;
+   }
+  }else for(const attr of attributes)attr.needsUpdate=true;
+ },dispose(){mesh.removeFromParent();fallback.dispose();geometry.dispose();material.dispose();}};
 }
