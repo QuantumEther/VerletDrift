@@ -1,0 +1,346 @@
+{
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "backend": "Headless Chromium, SwiftShader Vulkan compositor. Functional tests, no hardware frame-time conclusions.",
+  "records": [
+    {
+      "kind": "cadence",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": null,
+      "error": null,
+      "intervalCount": 92
+    },
+    {
+      "kind": "native-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "native-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "offscreen",
+      "validation": {
+        "status": "PASS",
+        "pixel": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "format": "rgba8unorm",
+        "scope": "Untimed readback of the measured target"
+      },
+      "error": null,
+      "intervalCount": 90
+    },
+    {
+      "kind": "native-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "compose",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "three-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "three-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "offscreen",
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "three-gpu",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "compose",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "three-new",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 91
+    },
+    {
+      "kind": "three-new",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "offscreen",
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "error": null,
+      "intervalCount": 86
+    },
+    {
+      "kind": "three-new",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "compose",
+      "validation": {
+        "status": "PASS",
+        "center": [
+          255,
+          112,
+          38,
+          255
+        ],
+        "corner": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "scope": "Untimed canvas-content check before compositing"
+      },
+      "error": null,
+      "intervalCount": 88
+    },
+    {
+      "kind": "app-minimal",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 2
+      },
+      "error": null,
+      "intervalCount": 10
+    },
+    {
+      "kind": "app-full",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 5
+      },
+      "error": null,
+      "intervalCount": 1
+    },
+    {
+      "kind": "app-minimal",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "offscreen",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 2
+      },
+      "error": null,
+      "intervalCount": 179
+    },
+    {
+      "kind": "app-full",
+      "buffer": [
+        1920,
+        1080
+      ],
+      "path": "offscreen",
+      "validation": null,
+      "error": "Failed to execute 'mapAsync' on 'GPUBuffer': A valid external Instance reference no longer exists.",
+      "intervalCount": 0
+    },
+    {
+      "kind": "app-minimal",
+      "buffer": [
+        640,
+        360
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 2
+      },
+      "error": null,
+      "intervalCount": 115
+    },
+    {
+      "kind": "app-full",
+      "buffer": [
+        640,
+        360
+      ],
+      "path": "direct",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 5
+      },
+      "error": null,
+      "intervalCount": 7
+    },
+    {
+      "kind": "app-minimal",
+      "buffer": [
+        640,
+        360
+      ],
+      "path": "offscreen",
+      "validation": {
+        "status": "PASS",
+        "scope": "Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary",
+        "distinctProbeColors": 2
+      },
+      "error": null,
+      "intervalCount": 156
+    },
+    {
+      "kind": "app-full",
+      "buffer": [
+        640,
+        360
+      ],
+      "path": "offscreen",
+      "validation": null,
+      "error": "Failed to execute 'mapAsync' on 'GPUBuffer': A valid external Instance reference no longer exists.",
+      "intervalCount": 0
+    }
+  ]
+}
