@@ -1,4 +1,6 @@
+import {sampleCanvasTexture} from './output-check.js';
 import {applicationCase} from './application.js';
+import { sources, laboratoryAvailable } from './dependencies.js';
 const $ = id => document.getElementById(id);
 const latest = '0.187.0';
 let report;
@@ -52,17 +54,29 @@ async function nativeGPU(canvas,c) {
   if(!adapter)throw Error('WebGPU adapter unavailable');
   const device=await adapter.requestDevice();
   const context=c.offscreen?null:canvas.getContext('webgpu'),format=navigator.gpu.getPreferredCanvasFormat();
-  context?.configure({device,format,alphaMode:'opaque'});
+  context?.configure({device,format,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
   const usage=GPUTextureUsage.RENDER_ATTACHMENT;
-  const target=c.offscreen?device.createTexture({size:[canvas.width,canvas.height],format,usage}):null;
+  const target=(c.offscreen||c.compose)?device.createTexture({size:[canvas.width,canvas.height],format,usage:usage|GPUTextureUsage.COPY_SRC}):null;
+  if(c.compose)context.configure({device,format,alphaMode:'opaque',usage:usage|GPUTextureUsage.COPY_SRC|GPUTextureUsage.COPY_DST});
   const msaa=c.aa?device.createTexture({size:[canvas.width,canvas.height],format,usage,sampleCount:4}):null;
   const module=device.createShaderModule({code:'@vertex fn vs(@builtin(vertex_index) i:u32)->@builtin(position) vec4f{var p=array<vec2f,3>(vec2f(-.7,-.7),vec2f(.7,-.7),vec2f(0,.7));return vec4f(p[i],0,1);}@fragment fn fs()->@location(0) vec4f{return vec4f(1.,.439,.149,1.);}'});
   const pipeline=await device.createRenderPipelineAsync({layout:'auto',vertex:{module,entryPoint:'vs'},fragment:{module,entryPoint:'fs',targets:[{format}]},multisample:{count:c.aa?4:1}});
-  return {info:{adapter:{vendor:adapter.info?.vendor,architecture:adapter.info?.architecture,device:adapter.info?.device,description:adapter.info?.description},timestampSupport:adapter.features.has('timestamp-query'),gpuTiming:'Not measured in raw path'},render(){const view=(target??context.getCurrentTexture()).createView(),encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:msaa?msaa.createView():view,resolveTarget:msaa?view:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}]});pass.setPipeline(pipeline);pass.draw(3);pass.end();device.queue.submit([encoder.finish()]);},dispose(){target?.destroy();msaa?.destroy();context?.unconfigure();device.destroy();}};
+  return {async verifyOffscreen(){
+    this.render();
+    const buf=device.createBuffer({size:256,usage:GPUBufferUsage.MAP_READ|GPUBufferUsage.COPY_DST});
+    try{
+      const enc=device.createCommandEncoder();
+      enc.copyTextureToBuffer({texture:target,origin:[canvas.width>>1,canvas.height>>1]},{buffer:buf,bytesPerRow:256},[1,1]);
+      device.queue.submit([enc.finish()]);await buf.mapAsync(GPUMapMode.READ);
+      const pixel=Array.from(new Uint8Array(buf.getMappedRange(),0,4));
+      const red=format.startsWith('bgra')?pixel[2]:pixel[0];
+      if(red<200||pixel[1]<80||pixel[1]>150)throw Error('Offscreen triangle check failed: '+pixel);
+      return {status:'PASS',pixel,format,scope:'Untimed readback of the measured target'};
+    }finally{buf.destroy();}
+  },info:{adapter:{vendor:adapter.info?.vendor,architecture:adapter.info?.architecture,device:adapter.info?.device,description:adapter.info?.description},timestampSupport:adapter.features.has('timestamp-query'),gpuTiming:'Not measured in raw path'},render(){const view=(target??context.getCurrentTexture()).createView(),encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:msaa?msaa.createView():view,resolveTarget:msaa?view:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}]});pass.setPipeline(pipeline);pass.draw(3);pass.end();if(c.compose)encoder.copyTextureToTexture({texture:target},{texture:context.getCurrentTexture()},[canvas.width,canvas.height]);device.queue.submit([encoder.finish()]);},dispose(){target?.destroy();msaa?.destroy();context?.unconfigure();device.destroy();}};
 }
 async function three(canvas,c) {
-  const source=c.kind==='three-new'?'./vendor-r187/three.webgpu.js':c.kind==='three-gl'?'../vendor/three-r180/three.module.js':'../vendor/three-r180/three.webgpu.js';
-  const T=await import(source);
+  const T=await import(sources[c.kind]);
   const renderer=c.kind==='three-gl'?new T.WebGLRenderer({canvas,antialias:c.aa,alpha:false}):new T.WebGPURenderer({canvas,antialias:c.aa,forceWebGL:false,powerPreference:c.power,trackTimestamp:c.timestamp});
   const resizeCounts={setSize:0,setPixelRatio:0};
   for(const method of ['setSize','setPixelRatio']){
@@ -72,26 +86,43 @@ async function three(canvas,c) {
   try {
     if(c.kind!=='three-gl'){await renderer.init();if(!renderer.backend.isWebGPUBackend)throw Error('Unexpected WebGL fallback');}
     renderer.setPixelRatio(1);renderer.setSize(canvas.width,canvas.height,false);
-    const mesh=triangle(T),target=c.offscreen?new T.RenderTarget(canvas.width,canvas.height):null;
+    const mesh=triangle(T),target=(c.offscreen||c.compose)?new T.RenderTarget(canvas.width,canvas.height):null;
     if(target){target.samples=c.aa?4:0;renderer.setRenderTarget(target);}
+    const composition=c.compose?new T.QuadMesh(new T.MeshBasicMaterial({map:target.texture,depthTest:false,depthWrite:false,toneMapped:false})):null;
     const adapter=renderer.backend?.device?.adapterInfo;
     return {async verify(){
-      const probe=new T.RenderTarget(32,32);
+      const probe=target??new T.RenderTarget(32,32);
       try {
         renderer.setRenderTarget(probe);
         renderer.render(mesh.scene,mesh.camera);
-        const pixels=await renderer.readRenderTargetPixelsAsync(probe,16,16,1,1);
+        const pixels=await renderer.readRenderTargetPixelsAsync(probe,probe.width>>1,probe.height>>1,1,1);
         const visible=pixels[0]>100&&pixels[0]>pixels[2]*1.5&&pixels[3]>200;
         if(!visible)throw Error('Triangle center pixel validation failed: '+Array.from(pixels));
         return {status:'PASS',centerPixel:Array.from(pixels),scope:'One untimed offscreen readback validates triangle output; native presentation is not independently verified'};
-      }finally{renderer.setRenderTarget(target);probe.dispose();}
-    },info:{revision:T.REVISION,adapter:adapter?{vendor:adapter.vendor,architecture:adapter.architecture,device:adapter.device,description:adapter.description}:null,timestampRequested:c.timestamp,gpuTiming:'Tracking overhead only; GPU duration not resolved in this case',resizeCounts},render(){renderer.render(mesh.scene,mesh.camera);},async dispose(){if(renderer.backend?.device)await renderer.backend.device.queue.onSubmittedWorkDone().catch(()=>{});mesh.dispose();target?.dispose();renderer.dispose();}};
+      }finally{renderer.setRenderTarget(target);if(probe!==target)probe.dispose();}
+    },info:{revision:T.REVISION,adapter:adapter?{vendor:adapter.vendor,architecture:adapter.architecture,device:adapter.device,description:adapter.description}:null,timestampRequested:c.timestamp,gpuTiming:'Tracking overhead only; GPU duration not resolved in this case',resizeCounts},render(){if(composition)renderer.setRenderTarget(target);renderer.render(mesh.scene,mesh.camera);if(composition){renderer.setRenderTarget(null);composition.render(renderer);}},async dispose(){if(renderer.backend?.device)await renderer.backend.device.queue.onSubmittedWorkDone().catch(()=>{});mesh.dispose();composition?.material.dispose();target?.dispose();renderer.dispose();}};
   }catch(error){renderer.dispose();throw error;}
+}
+async function visibleTriangle(canvas,webgpu){
+  let center,corner;
+  if(webgpu){
+    [center,corner]=await sampleCanvasTexture(canvas);
+  }else{
+  const probe=document.createElement('canvas');probe.width=probe.height=16;
+  const ctx=probe.getContext('2d');ctx.drawImage(canvas,0,0,16,16);
+  center=Array.from(ctx.getImageData(8,8,1,1).data);corner=Array.from(ctx.getImageData(0,0,1,1).data);
+  }
+  if(center[0]<100||center[0]<center[2]*1.5||corner[0]>32)throw Error('Canvas triangle check failed: '+center+' / '+corner);
+  return {status:'PASS',center,corner,scope:'Untimed canvas-content check before compositing'};
+}
+if(!laboratoryAvailable){
+  for(const value of ['application','all'])$('group').querySelector('option[value="'+value+'"]').disabled=true;
+  $('status').textContent='Portable independent tests ready. Use the checkout for the two laboratory cases.';
 }
 $('run').onclick=async()=>{
   if(!$('buffer-width').checkValidity()||!$('buffer-height').checkValidity()){ $('status').textContent='Enter valid drawing-buffer dimensions';return; }
   $('run').disabled=true;$('save').disabled=true;$('results').replaceChildren();
-  report={schema:1,latestThree:latest,browser:navigator.userAgent,dpr:devicePixelRatio,screen:{width:screen.width,height:screen.height},records:[],limitations:['Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results.']};
+  report={schema:2,latestThree:latest,browser:navigator.userAgent,dpr:devicePixelRatio,screen:{width:screen.width,height:screen.height},records:[],limitations:['Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results.']};
   const group=$('group').value;
   report.selectedGroup=group;
   const cases=[{kind:'cadence',size:[640,360]}];
@@ -121,6 +152,31 @@ $('run').onclick=async()=>{
     if(group==='paired')selected=[...new Map(selected.map(c=>[c.kind,c])).values()];
     cases.splice(0,cases.length,...new Set([cases[0],...selected]));
   }
+  if(group==='presentation'&&!['verify','appverify','smoke'].some(key=>query.has(key))){
+    const size=[Number($('buffer-width').value),Number($('buffer-height').value)];
+    cases.splice(0,cases.length,{kind:'cadence',size});
+    for(const kind of ['native-gpu','three-gpu','three-new']){
+      for(const path of ['direct','offscreen','compose']){
+        cases.push({kind,size,aa:true,power:'high-performance',timestamp:false,offscreen:path==='offscreen',compose:path==='compose',path});
+      }
+    }
+    if(laboratoryAvailable)for(const kind of ['app-minimal','app-full'])cases.push({kind,size,aa:true,offscreen:false});
+  }
+  const required=new Set(cases.map(c=>c.kind).filter(kind=>sources[kind]));
+  if(cases.some(c=>c.kind.startsWith('app-')))required.add('three-gpu');
+  report.preflight={};
+  report.timeOrigin=performance.timeOrigin;
+  try{
+    for(const kind of required){
+      const T=await import(sources[kind]);
+      if(String(T.REVISION)!==(kind==='three-new'?'187':'180'))throw Error('Unexpected Three revision '+T.REVISION);
+      report.preflight[kind]={revision:T.REVISION,url:new URL(sources[kind],import.meta.url).href};
+    }
+  }catch(error){
+    report.preflightError=error.message;
+    $('status').textContent='Dependency check failed before timing: '+error.message;
+    $('save').disabled=false;$('run').disabled=false;return;
+  }
   const expected={};
   for(const c of cases){
     const key=groupFor(c.kind);
@@ -128,8 +184,14 @@ $('run').onclick=async()=>{
   }
   for(const c of cases) {
     const canvas=document.createElement('canvas');canvas.width=c.size[0];canvas.height=c.size[1];$('surface').replaceChildren(canvas);
+    if(group==='presentation'){
+      const ratio=Math.min(devicePixelRatio,1.5);
+      canvas.style.cssText='width:'+Math.round(c.size[0]/ratio)+'px;height:'+Math.round(c.size[1]/ratio)+'px;max-width:none';
+    }
     let backend;
-    const record={configuration:c,drawingBuffer:c.size,pixelRatio:1};
+    const record={configuration:c,drawingBuffer:c.size,pixelRatio:1,cssSize:[canvas.clientWidth,canvas.clientHeight]};
+    const traceLabel='VD '+(report.records.length+1)+' '+c.kind+' '+(c.path??(c.offscreen?'offscreen':'direct'));
+    performance.mark(traceLabel+' begin');
     $('status').textContent=(report.records.length+1)+' / '+cases.length+' · '+c.kind;
     try {
       if(c.kind.startsWith('app-')){
@@ -138,17 +200,34 @@ $('run').onclick=async()=>{
         record.measurement={interval:stats(rows.map(r=>r.interval)),cpuSubmission:stats(rows.map(r=>r.webgl)),rawIntervals:rows.map(r=>r.interval),scope:'Application report uses actual render-submission CPU wall duration. Presentation events unmeasured.'};
       }
       else if(c.kind==='cadence'){canvas.remove();record.measurement=await sample(()=>{});}
-      else {backend=c.kind==='native-gl'?await nativeGL(canvas,c):c.kind==='native-gpu'?await nativeGPU(canvas,c):await three(canvas,c);record.info=backend.info;if(backend.verify)record.validation=await backend.verify();record.measurement=await sample(backend.render);}
+      else {
+        if(c.kind==='native-gl')backend=await nativeGL(canvas,c);
+        else if(c.kind==='native-gpu')backend=await nativeGPU(canvas,c);
+        else backend=await three(canvas,c);
+        record.info=backend.info;
+        if(backend.verify)record.validation=await backend.verify();
+        if(!c.offscreen){backend.render();record.validation=await visibleTriangle(canvas,!c.kind.endsWith('-gl'));}
+        else if(backend.verifyOffscreen)record.validation=await backend.verifyOffscreen();
+        if(!c.offscreen&&!c.kind.endsWith('-gl')){
+          const {format,alphaMode,usage,colorSpace}=canvas.getContext('webgpu').getConfiguration();
+          record.canvasConfiguration={format,alphaMode,usage,colorSpace};
+        }
+        performance.mark(traceLabel+' timing start');
+        record.measurement=await sample(backend.render);
+        performance.mark(traceLabel+' timing end');
+      }
     }catch(error){record.error=error.message;}
     finally{
       try{if(backend)await backend.dispose();}catch(error){record.error??='Cleanup: '+error.message;}
       canvas.remove();
     }
+    performance.mark(traceLabel+' end');
+    record.traceLabel=traceLabel;
     record.group=groupFor(c.kind);
     record.validationStatus=record.error?'failed':record.validation?.status==='PASS'?'passed':'timed-without-pixel-check';
     report.records.push(record);
     const row=document.createElement('tr');
-    for(const text of [c.kind+(c.offscreen?' offscreen':''),record.measurement?.interval.fps.toFixed(1)??record.error,record.measurement?.interval.p99.toFixed(2)??'—',record.measurement?.cpuSubmission.mean.toFixed(3)??'—']){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}
+    for(const text of [c.kind+' '+(c.path??(c.offscreen?'offscreen':'')),record.measurement?.interval.fps.toFixed(1)??record.error,record.measurement?.interval.p99.toFixed(2)??'—',record.measurement?.cpuSubmission.mean.toFixed(3)??'—']){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}
     $('results').append(row);
     if(document.hidden)break;
   }

@@ -39,3 +39,17 @@ From a clean directory:
     python3 -m http.server 8792 --bind 127.0.0.1
 
 Open http://127.0.0.1:8792/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/gpu-isolation/ in Chrome on the RTX laptop. The independent groups need only the benchmark directory and its sibling vendor/three-r180 modules. The application group needs the full checkout.
+
+## Short presentation comparison (current default)
+
+The standalone ZIP now serves both revisions underneath its own index. Extract **all** files together, then run the following command in the directory containing index.html.
+
+    python -m http.server 8792 --bind 127.0.0.1
+
+Open http://127.0.0.1:8792/ on the target display. Use the simulator's drawing-buffer dimensions, leave the short presentation comparison selected, press Run Benchmark and export the JSON. The checkout URL above also includes the actual paused laboratory minimal and complete cases. Use the checkout for a single run covering all twelve cases.
+
+The short run measures cadence and three paths for each of native WebGPU, r180 and r187. Direct renders into the visible canvas. Offscreen uses a persistent GPU target. Native composition copies the resolved image to the canvas in the same command buffer. Three composition draws the target with a fullscreen quad. All three paths use the same triangle, dimensions, requested four-sample AA and high-performance adapter preference. Two application cases add the loaded laboratory and its own diagnostic capture, with timestamp instrumentation off. The embedded page and dashboard retain their own layout and compositor layers.
+
+Required Three modules are imported and revision-checked before timing. Each draw path must then pass an untimed pixel check. Visible WebGPU paths read the submitted canvas texture prior to compositor handoff. Readback and synchronization run outside sampling. Rebuild with `python package.py`, then run `node verify-package.mjs` to test an extracted archive, including a deliberately unavailable r180 module.
+
+For scheduling evidence, first run once without profiling. On a second run record Chrome DevTools Performance (screenshots off, browser and GPU tracks where exposed), save the trace and JSON. Find the matching “VD” user timing marks. Compare renderer-main callbacks, GPU-task spans, compositor frames, dropped/partially presented frames and presentation feedback where available. A command submission can finish before GPU execution or compositor latch. The reported FPS measures callback cadence. Neither this counter nor a successful canvas-texture read proves scanout. Compare within the same display, browser, zoom and power configuration.

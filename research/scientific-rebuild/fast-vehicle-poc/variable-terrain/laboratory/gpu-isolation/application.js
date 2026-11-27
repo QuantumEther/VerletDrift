@@ -1,3 +1,4 @@
+import {sampleCanvasTexture} from './output-check.js';
 export async function applicationCase(container, configuration) {
   const frame=document.createElement('iframe');
   frame.title='VerletDrift WebGPU comparison';
@@ -22,24 +23,31 @@ export async function applicationCase(container, configuration) {
     const scale=d.getElementById('render-scale');
     scale.value='1';scale.dispatchEvent(new Event('change'));
     const ratio=Math.min(frame.contentWindow.devicePixelRatio,1.5);
+    canvas.style.setProperty('box-sizing','content-box','important');
     canvas.style.setProperty('width',(configuration.size[0]/ratio+.01)+'px','important');
     canvas.style.setProperty('height',(configuration.size[1]/ratio+.01)+'px','important');
+    d.getElementById('diag-gpu').checked=false;
     const mode=d.getElementById('diag-mode');
     mode.value=configuration.kind==='app-minimal'?'minimal':'full';
     const duration=d.getElementById('diag-duration');
     duration.add(new Option('Benchmark 3 seconds','3'));duration.value='3';
     await new Promise(resolve=>setTimeout(resolve,1500));
-    const probe=d.createElement('canvas');probe.width=32;probe.height=32;
-    const context=probe.getContext('2d');
-    context.drawImage(canvas,0,0,32,32);
-    const pixels=configuration.offscreen?(await app.rendererReadback()).pixels:context.getImageData(0,0,32,32).data;
     const colors=new Set();
-    for(let i=0;i<pixels.length;i+=4*Math.max(1,Math.floor(pixels.length/16384)))colors.add(pixels[i]+','+pixels[i+1]+','+pixels[i+2]);
+    if(configuration.offscreen){
+      const {pixels}=await app.rendererReadback();
+      for(let i=0;i<pixels.length;i+=4*Math.max(1,Math.floor(pixels.length/16384)))colors.add(pixels.slice(i,i+3).join(','));
+    }else{
+      const points=await new Promise((resolve,reject)=>frame.contentWindow.requestAnimationFrame(()=>sampleCanvasTexture(canvas).then(resolve,reject)));
+      for(const pixel of points)colors.add(pixel.slice(0,3).join(','));
+    }
     if(colors.size<2)throw Error('Application rendered-output validation failed');
     const before=app.rendererSnapshot();
     if(canvas.width!==configuration.size[0]||canvas.height!==configuration.size[1])throw Error('Application drawing buffer mismatch: '+canvas.width+'x'+canvas.height);
+    performance.mark('VD '+configuration.kind+' timing start');
     d.getElementById('diag-start').click();
     const report=await wait(()=>app.performanceReport(),30000);
+    performance.mark('VD '+configuration.kind+' timing end');
+    if(report.hiddenDuringRun||report.settingsChanged||app.runtimeSnapshot().clock.fault)throw Error('Application capture invalid: visibility, settings or simulation fault');
     return {info:{...before,actualBuffer:[canvas.width,canvas.height],antialias:'Application default; verify context metadata in report',scene:configuration.kind},applicationReport:report,validation:{status:'PASS',scope:'Actual WebGPU backend and nonuniform canvas pixels verified before timing; screenshot review remains necessary',distinctProbeColors:colors.size}};
   }finally{frame.remove();}
 }
