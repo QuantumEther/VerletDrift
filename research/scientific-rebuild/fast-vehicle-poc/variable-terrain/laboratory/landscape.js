@@ -8,7 +8,7 @@ export function createLandscape(scene,terrain){
  }
  for(let r=0;r<radii.length-1;r++)for(let j=0;j<ring;j++){const a=r*ring+j,b=r*ring+(j+1)%ring,c=a+ring,d=b+ring;indices.push(a,c,b,b,c,d);}
  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));geometry.setIndex(indices);
- const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide}));mesh.userData.noShadow=true;mesh.visible=false;scene.add(mesh);let ox=NaN,oy=NaN,updates=0;
+ const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide}));mesh.userData.noShadow=true;mesh.userData.motionRecentered=true;mesh.visible=false;scene.add(mesh);let ox=NaN,oy=NaN,updates=0;
  const color=new THREE.Color(),palette=surfacePalette(terrain.settings?.preset);
  return {update(x,y,originX,originY,enabled){mesh.visible=enabled;if(!enabled)return;mesh.position.set(originX-x,originY-y,0);if(ox===originX&&oy===originY)return;ox=originX;oy=originY;const a=geometry.attributes.position,c=geometry.attributes.color;
   for(let i=0;i<a.count;i++){const wx=a.getX(i)+ox,wy=a.getY(i)+oy,s=terrain.sample(wx,wy);a.setZ(i,s.height);color.setHex(palette[s.surface]??palette.grass);c.setXYZ(i,color.r,color.g,color.b);}a.needsUpdate=c.needsUpdate=true;geometry.computeVertexNormals();updates++;},info:()=>({visible:mesh.visible,updates,vertices:geometry.attributes.position.count,triangles:indices.length/3,outerExtent:140})};

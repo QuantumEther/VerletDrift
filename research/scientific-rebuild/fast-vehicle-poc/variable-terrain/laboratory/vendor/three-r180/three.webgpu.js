@@ -50965,6 +50965,8 @@ class Nodes extends DataMap {
 
 			_cacheKeyValues.push( this.renderer.getOutputRenderTarget() && this.renderer.getOutputRenderTarget().multiview ? 1 : 0 );
 			_cacheKeyValues.push( this.renderer.shadowMap.enabled ? 1 : 0 );
+			// Changing MRT changes fragment output declarations.
+			_cacheKeyValues.push( this.renderer.getMRT()?.id ?? -1 );
 
 			cacheKeyData.callId = callId;
 			cacheKeyData.cacheKey = hashArray( _cacheKeyValues );
@@ -55231,11 +55233,11 @@ class Renderer {
 	 * @private
 	 * @param {RenderTarget} renderTarget - The current render target.
 	 */
-	_renderOutput( renderTarget ) {
+	_renderOutput( renderTarget, customQuad = null ) {
 
-		const quad = this._quad;
+		const quad = customQuad || this._quad;
 
-		if ( this._nodes.hasOutputChange( renderTarget.texture ) ) {
+		if ( customQuad === null && this._nodes.hasOutputChange( renderTarget.texture ) ) {
 
 			quad.material.fragmentNode = this._nodes.getOutputNode( renderTarget.texture );
 			quad.material.needsUpdate = true;
@@ -72432,7 +72434,7 @@ class WebGPUPipelineUtils {
 				targets.push( {
 					format: colorFormat,
 					blend: blending,
-					writeMask: colorWriteMask
+					writeMask: textures[ i ].name === 'motionDepth' && ( material.transparent || ! material.depthWrite ) ? 0 : colorWriteMask
 				} );
 
 			}

@@ -27,7 +27,7 @@ try {
         return begin.call(this, descriptor);
       };
     });
-    await page.goto(origin + laboratory + '?backend=' + (mode === 'webgl' ? 'webgl' : 'webgpu') + '&gpu-pipeline=' + mode);
+    await page.goto(origin + laboratory + '?backend=' + (mode === 'webgl' ? 'webgl' : 'webgpu') + '&motion=off&gpu-pipeline=' + mode);
     await page.evaluate(async path => {
       window.app = await import(path + 'main.js');
       const pause = document.getElementById('pause');

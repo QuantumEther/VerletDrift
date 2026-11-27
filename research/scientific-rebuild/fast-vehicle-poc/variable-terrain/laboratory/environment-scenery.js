@@ -10,7 +10,7 @@ export function createEnvironmentScenery(scene,terrain){
  const trunk=new THREE.InstancedMesh(new THREE.CylinderGeometry(.1,.19,1,6),bark,capacity);
  const crown=new THREE.InstancedMesh(conifers?new THREE.ConeGeometry(1,2,9):new THREE.IcosahedronGeometry(1,1),foliage,capacity*3);
  const color=new THREE.Color();
- for(const mesh of [trunk,crown]){mesh.userData.noShadow=true;mesh.frustumCulled=false;root.add(mesh);}
+ for(const mesh of [trunk,crown]){mesh.userData.noShadow=true;mesh.userData.motionRecentered=true;mesh.frustumCulled=false;root.add(mesh);}
  scene.add(root);
  let previousX=NaN,previousY=NaN;
  const random=(x,y,seed)=>{const n=Math.sin(x*.129+y*.813+seed*13.17)*43758.5453;return n-Math.floor(n);};
