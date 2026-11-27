@@ -5,10 +5,17 @@ export function createStudioTachometer(parent) {
   canvas.setAttribute('aria-label', 'Live engine tachometer');
   parent.prepend(canvas);
   const context = canvas.getContext('2d');
-  return (rpm, limit) => {
+  let displayed = 0;
+  let velocity = 0;
+  let target = 0;
+  let redline = 5000;
+  let animation = null;
+  let last = 0;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  function draw(rpm, limit) {
     const c = context;
     c.clearRect(0, 0, 360, 220);
-    const maximum = Math.ceil(Math.max(limit * 1.15, rpm, 1000) / 1000) * 1000;
+    const maximum = Math.ceil(Math.max(limit * 1.15, 1000) / 1000) * 1000;
     const angle = value => Math.PI * .8 + Math.PI * 1.4 * value / maximum;
     c.lineWidth = 12;
     c.strokeStyle = '#202c38';
@@ -27,7 +34,7 @@ export function createStudioTachometer(parent) {
         c.fillText(value / 1000, 180 + Math.cos(a) * 77, 144 + Math.sin(a) * 77);
       }
     }
-    const a = angle(Math.max(0, rpm));
+    const a = angle(Math.max(0, Math.min(maximum, displayed)));
     c.strokeStyle = '#ff7026'; c.lineWidth = 4; c.shadowColor = '#ff7026'; c.shadowBlur = 8;
     c.beginPath(); c.moveTo(180, 140); c.lineTo(180 + Math.cos(a) * 95, 140 + Math.sin(a) * 95); c.stroke();
     c.shadowBlur = 0;
@@ -35,5 +42,28 @@ export function createStudioTachometer(parent) {
     c.fillText(Math.round(rpm), 180, 194);
     c.fillStyle = '#91a0b0'; c.font = 'bold 10px system-ui'; c.fillText('ENGINE RPM', 180, 210);
     canvas.setAttribute('aria-label', 'Engine ' + Math.round(rpm) + ' RPM, limit ' + Math.round(limit) + ' RPM');
+  }
+  function frame(now) {
+    const h = Math.min(.05, Math.max(0, (now - last) / 1000));
+    last = now;
+    const displacement = displayed - target;
+    const decay = Math.exp(-24 * h);
+    const coefficient = velocity + 24 * displacement;
+    displayed = target + (displacement + coefficient * h) * decay;
+    velocity = (velocity - 24 * coefficient * h) * decay;
+    const settled = Math.abs(displayed - target) < .5 && Math.abs(velocity) < .5;
+    if (settled || reduced.matches) { displayed = target; velocity = 0; }
+    draw(target, redline);
+    animation = settled || reduced.matches || !canvas.isConnected ? null : requestAnimationFrame(frame);
+  }
+  return (rpm, limit) => {
+    target = rpm;
+    redline = limit;
+    if (reduced.matches) { displayed = rpm; velocity = 0; }
+    draw(rpm, limit);
+    if (animation === null && !reduced.matches) {
+      last = performance.now();
+      animation = requestAnimationFrame(frame);
+    }
   };
 }
