@@ -1,0 +1,828 @@
+[
+  {
+    "variant": "before",
+    "bufferWrites": 14,
+    "canvas": [
+      911,
+      487
+    ],
+    "snapshot": {
+      "adapter": null,
+      "activeBackend": "webgl",
+      "presentation": "native",
+      "gpuBillboardDrawCalls": 0,
+      "smoke": {
+        "status": "No physical emission signal",
+        "submitted": false,
+        "active": 0,
+        "spawned": 0,
+        "paused": true,
+        "particlesPerSecond": 0,
+        "budget": 600,
+        "updateMs": 0,
+        "memoryBytes": 53400,
+        "drawCalls": 0,
+        "wheels": [
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "FL",
+            "supported": true,
+            "normal": 4722.533999999994,
+            "sx": 6.365144097448293e-18,
+            "sy": 9.816519186049365e-33,
+            "power": 3.2412047505024674e-32,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "FR",
+            "supported": true,
+            "normal": 4722.533999999994,
+            "sx": 6.365144097448293e-18,
+            "sy": 9.816519186049365e-33,
+            "power": 3.2412047505024674e-32,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "RL",
+            "supported": true,
+            "normal": 3419.7660000000174,
+            "sx": 5.322002515686785e-18,
+            "sy": 1.3906018920574134e-32,
+            "power": 2.2658968621581173e-32,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "RR",
+            "supported": true,
+            "normal": 3419.7660000000174,
+            "sx": 5.322002515686785e-18,
+            "sy": 1.3906018920574134e-32,
+            "power": 2.2658968621581173e-32,
+            "potentialRate": 0
+          }
+        ]
+      },
+      "balloons": {
+        "alive": 24,
+        "impacts": 0,
+        "liquid": {
+          "droplets": 0,
+          "patches": 0,
+          "sheets": 0,
+          "terrainVertexSamples": 0,
+          "maxPatches": 4096,
+          "drawCalls": 0
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      },
+      "roadside": {
+        "visible": false,
+        "instances": 0,
+        "updates": 0,
+        "collisions": false
+      },
+      "landscape": {
+        "visible": true,
+        "updates": 6,
+        "vertices": 1536,
+        "triangles": 2560,
+        "outerExtent": 140
+      },
+      "graphics": {
+        "timing": {
+          "loadAndDecodeMs": 3146.2000000011176,
+          "pmremCpuSubmissionMs": 128.69999999925494,
+          "sourceDecodedBytes": 16777216,
+          "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+        },
+        "preset": "cinematic",
+        "status": "ready",
+        "error": "",
+        "exposure": 1,
+        "intensity": 1,
+        "sunlight": 3,
+        "background": false,
+        "shadowSize": 2048,
+        "environment": true
+      },
+      "memory": {
+        "geometries": 66,
+        "textures": 9
+      },
+      "appearance": "custom",
+      "assetStatus": "ready",
+      "assetError": "",
+      "imported": {
+        "steering": {
+          "angle": 0,
+          "ratio": 16,
+          "axis": [
+            1,
+            0,
+            0
+          ],
+          "quaternion": [
+            -0.2164396196603775,
+            -0.9762960076332092,
+            0,
+            7.370828569719379e-08
+          ],
+          "position": [
+            0.7280226945877075,
+            0.8549140095710754,
+            -0.18939992785453796
+          ],
+          "neutral": [
+            -0.2164396196603775,
+            -0.9762960076332092,
+            0,
+            7.370828569719379e-08
+          ]
+        },
+        "mapping": [
+          {
+            "corner": "FL",
+            "sourceName": "Wheel_FR",
+            "sourceCenter": [
+              1.6722126007080078,
+              0.6775903105735779,
+              0.33379405736923196
+            ],
+            "size": [
+              0.6529998779296875,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "FR",
+            "sourceName": "Wheel_FL",
+            "sourceCenter": [
+              1.6722124814987183,
+              -0.803759455680847,
+              0.33379402756691
+            ],
+            "size": [
+              0.6530001163482666,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "RL",
+            "sourceName": "Wheel_RR",
+            "sourceCenter": [
+              -1.0433437526226044,
+              0.6775903105735779,
+              0.32879060506820657
+            ],
+            "size": [
+              0.6529999375343323,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "RR",
+            "sourceName": "Wheel_RL",
+            "sourceCenter": [
+              -1.0433437526226044,
+              -0.803759455680847,
+              0.328790605068207
+            ],
+            "size": [
+              0.6529999375343323,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          }
+        ],
+        "scale": 1,
+        "conversion": "Rx(+pi/2): (x,y,z) -> (x,-z,y)",
+        "wheelAngles": [
+          2.8067446285643577e-16,
+          2.8067446285643577e-16,
+          2.8227218745546303e-16,
+          2.8227218745546303e-16
+        ],
+        "visible": true
+      },
+      "vehicleId": "mustang-1969",
+      "coachwork": {
+        "style": "mustang",
+        "coachworkBounds": [
+          4.759959936141968,
+          1.8320616483688354,
+          1.0510027229946672
+        ],
+        "wheelbase": 2.7432,
+        "length": 4.75996,
+        "features": [
+          "quad headlights",
+          "SportsRoof",
+          "blackout hood and scoop",
+          "triple segment taillights",
+          "sculpted open wheel arches"
+        ]
+      },
+      "customBatch": {
+        "removed": 495,
+        "added": 8
+      },
+      "wheelRadii": [
+        0.335,
+        0.335,
+        0.335,
+        0.335
+      ],
+      "renderScale": 0.75,
+      "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "drawCalls": 33,
+      "triangles": 98944,
+      "terrainUpdates": 6,
+      "batching": {
+        "removed": 0,
+        "added": 0
+      },
+      "mode": "normal",
+      "camera": [
+        5.900000000000001,
+        -7.799999999999971,
+        3.6999999999999886
+      ],
+      "cameraTarget": [
+        0,
+        0,
+        0.8
+      ],
+      "wheelPositions": [
+        [
+          1.1274331367292225,
+          0.74676,
+          0.3135339363636364
+        ],
+        [
+          1.1274331367292225,
+          -0.74676,
+          0.3135339363636364
+        ],
+        [
+          -1.6157668632707773,
+          0.74676,
+          0.31945560909090903
+        ],
+        [
+          -1.6157668632707773,
+          -0.74676,
+          0.31945560909090903
+        ]
+      ],
+      "wheelAngles": [
+        2.8067446285643577e-16,
+        2.8067446285643577e-16,
+        2.8227218745546303e-16,
+        2.8227218745546303e-16
+      ],
+      "wheelQuaternions": [
+        [
+          0,
+          0,
+          -2.923241988399531e-34,
+          1
+        ],
+        [
+          0,
+          0,
+          -2.923241988399531e-34,
+          1
+        ],
+        [
+          0,
+          0,
+          -2.923241988399531e-34,
+          1
+        ],
+        [
+          0,
+          0,
+          -2.923241988399531e-34,
+          1
+        ]
+      ],
+      "chassis": [
+        0.5515711256202778,
+        1.7464022475409688e-31,
+        -0.016549828998647778,
+        -5.846483976799062e-34
+      ],
+      "tracks": {
+        "updates": 1,
+        "uploadedVertices": 24576,
+        "bytes": 987136,
+        "activePrimitives": 0,
+        "maxPrimitives": 4096,
+        "maxVertices": 24576,
+        "visible": false,
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "time": 2.5039999999998352
+    },
+    "runtime": {
+      "clock": {
+        "budgetMs": 20,
+        "maxSteps": 128,
+        "maxDebt": null,
+        "frequency": 1000,
+        "timestep": 0.001,
+        "debt": 10.112099999999991,
+        "wall": 18.099299999999996,
+        "simulated": 2.5039999999998352,
+        "dilated": 0,
+        "pausedWall": 5.4832,
+        "status": "paused",
+        "fault": null,
+        "accepted": 2504,
+        "rejected": 0,
+        "frameSteps": 0,
+        "physicsMs": 0,
+        "worstStepMs": 19,
+        "candidates": 0,
+        "searches": 0,
+        "fps": 2,
+        "stepsPerSecond": 0,
+        "realtimeRatio": 0,
+        "lastStepMs": 0.09999999962747097,
+        "acceptedPhysicsMs": 422.5000000037253,
+        "rateWall": 0,
+        "rateFrames": 0,
+        "rateSteps": 0,
+        "internalSubsteps": 2504,
+        "attemptedSubsteps": 2504,
+        "frameSubsteps": 0,
+        "rateSubsteps": 0,
+        "substepsPerSecond": 0
+      },
+      "physicsMs": 394.1000000014901,
+      "lastPhysicsMs": 0.09999999962747097,
+      "renderMs": 1.599999999627471,
+      "maxIterations": 1,
+      "held": [],
+      "tracks": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pathCount": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "centerCount": 1,
+        "eventBytes": 16384,
+        "revision": 0,
+        "generation": 1,
+        "acceptedStages": 2504,
+        "acceptedTime": 2.5039999999998352,
+        "totalSlipWork": [
+          1.7839223999037575e-31,
+          1.7839223999037575e-31,
+          4.2142457461742345e-31,
+          4.2142457461742345e-31
+        ]
+      },
+      "terrain": {
+        "preset": "flat",
+        "seed": 23,
+        "amplitude": 0.15,
+        "roughness": 0.5
+      }
+    }
+  },
+  {
+    "variant": "after",
+    "bufferWrites": 0,
+    "canvas": [
+      911,
+      487
+    ],
+    "snapshot": {
+      "adapter": null,
+      "activeBackend": "webgl",
+      "presentation": "native",
+      "gpuBillboardDrawCalls": 0,
+      "smoke": {
+        "status": "No physical emission signal",
+        "submitted": false,
+        "active": 0,
+        "spawned": 0,
+        "paused": true,
+        "particlesPerSecond": 0,
+        "budget": 600,
+        "updateMs": 0,
+        "memoryBytes": 53400,
+        "drawCalls": 0,
+        "wheels": [
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "FL",
+            "supported": true,
+            "normal": 4722.533999999994,
+            "sx": -2.0144057273721587e-18,
+            "sy": -2.506299390441033e-32,
+            "power": 3.246264347575805e-33,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "FR",
+            "supported": true,
+            "normal": 4722.533999999994,
+            "sx": -2.0144057273721587e-18,
+            "sy": -2.506299390441033e-32,
+            "power": 3.246264347575805e-33,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "RL",
+            "supported": true,
+            "normal": 3419.7660000000174,
+            "sx": -1.2981187887624406e-17,
+            "sy": -6.99724970789623e-32,
+            "power": 1.3480899117904528e-31,
+            "potentialRate": 0
+          },
+          {
+            "rate": 0,
+            "active": 0,
+            "wheel": "RR",
+            "supported": true,
+            "normal": 3419.7660000000174,
+            "sx": -1.2981187887624406e-17,
+            "sy": -6.99724970789623e-32,
+            "power": 1.3480899117904528e-31,
+            "potentialRate": 0
+          }
+        ]
+      },
+      "balloons": {
+        "alive": 24,
+        "impacts": 0,
+        "liquid": {
+          "droplets": 0,
+          "patches": 0,
+          "sheets": 0,
+          "terrainVertexSamples": 0,
+          "maxPatches": 4096,
+          "drawCalls": 0
+        },
+        "stage": "analytic droplet and wet-patch prototype; swept body-envelope and wheel spheres"
+      },
+      "roadside": {
+        "visible": false,
+        "instances": 0,
+        "updates": 0,
+        "collisions": false
+      },
+      "landscape": {
+        "visible": true,
+        "updates": 7,
+        "vertices": 1536,
+        "triangles": 2560,
+        "outerExtent": 140
+      },
+      "graphics": {
+        "timing": {
+          "loadAndDecodeMs": 2596.5999999996275,
+          "pmremCpuSubmissionMs": 130.59999999962747,
+          "sourceDecodedBytes": 16777216,
+          "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+        },
+        "preset": "cinematic",
+        "status": "ready",
+        "error": "",
+        "exposure": 1,
+        "intensity": 1,
+        "sunlight": 3,
+        "background": false,
+        "shadowSize": 2048,
+        "environment": true
+      },
+      "memory": {
+        "geometries": 66,
+        "textures": 9
+      },
+      "appearance": "custom",
+      "assetStatus": "ready",
+      "assetError": "",
+      "imported": {
+        "steering": {
+          "angle": 0,
+          "ratio": 16,
+          "axis": [
+            1,
+            0,
+            0
+          ],
+          "quaternion": [
+            -0.2164396196603775,
+            -0.9762960076332092,
+            0,
+            7.370828569719379e-08
+          ],
+          "position": [
+            0.7280226945877075,
+            0.8549140095710754,
+            -0.18939992785453796
+          ],
+          "neutral": [
+            -0.2164396196603775,
+            -0.9762960076332092,
+            0,
+            7.370828569719379e-08
+          ]
+        },
+        "mapping": [
+          {
+            "corner": "FL",
+            "sourceName": "Wheel_FR",
+            "sourceCenter": [
+              1.6722126007080078,
+              0.6775903105735779,
+              0.33379405736923196
+            ],
+            "size": [
+              0.6529998779296875,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "FR",
+            "sourceName": "Wheel_FL",
+            "sourceCenter": [
+              1.6722124814987183,
+              -0.803759455680847,
+              0.33379402756691
+            ],
+            "size": [
+              0.6530001163482666,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "RL",
+            "sourceName": "Wheel_RR",
+            "sourceCenter": [
+              -1.0433437526226044,
+              0.6775903105735779,
+              0.32879060506820657
+            ],
+            "size": [
+              0.6529999375343323,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          },
+          {
+            "corner": "RR",
+            "sourceName": "Wheel_RL",
+            "sourceCenter": [
+              -1.0433437526226044,
+              -0.803759455680847,
+              0.328790605068207
+            ],
+            "size": [
+              0.6529999375343323,
+              0.22516214847564708,
+              0.652999997138977
+            ]
+          }
+        ],
+        "scale": 1,
+        "conversion": "Rx(+pi/2): (x,y,z) -> (x,-z,y)",
+        "wheelAngles": [
+          -2.4502827942266177e-16,
+          -2.4502827942266177e-16,
+          -2.439804336538876e-16,
+          -2.439804336538876e-16
+        ],
+        "visible": true
+      },
+      "vehicleId": "mustang-1969",
+      "coachwork": {
+        "style": "mustang",
+        "coachworkBounds": [
+          4.759959936141968,
+          1.8320616483688354,
+          1.0510027229946672
+        ],
+        "wheelbase": 2.7432,
+        "length": 4.75996,
+        "features": [
+          "quad headlights",
+          "SportsRoof",
+          "blackout hood and scoop",
+          "triple segment taillights",
+          "sculpted open wheel arches"
+        ]
+      },
+      "customBatch": {
+        "removed": 495,
+        "added": 8
+      },
+      "wheelRadii": [
+        0.335,
+        0.335,
+        0.335,
+        0.335
+      ],
+      "renderScale": 0.75,
+      "backend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "drawCalls": 33,
+      "triangles": 98944,
+      "terrainUpdates": 7,
+      "batching": {
+        "removed": 0,
+        "added": 0
+      },
+      "mode": "normal",
+      "camera": [
+        5.900000000000001,
+        -7.799999999999971,
+        3.6999999999999886
+      ],
+      "cameraTarget": [
+        0,
+        0,
+        0.8
+      ],
+      "wheelPositions": [
+        [
+          1.1274331367292225,
+          0.74676,
+          0.3135339363636364
+        ],
+        [
+          1.1274331367292225,
+          -0.74676,
+          0.3135339363636364
+        ],
+        [
+          -1.6157668632707773,
+          0.74676,
+          0.31945560909090903
+        ],
+        [
+          -1.6157668632707773,
+          -0.74676,
+          0.31945560909090903
+        ]
+      ],
+      "wheelAngles": [
+        -2.4502827942266177e-16,
+        -2.4502827942266177e-16,
+        -2.439804336538876e-16,
+        -2.439804336538876e-16
+      ],
+      "wheelQuaternions": [
+        [
+          0,
+          0,
+          -5.190629100514211e-35,
+          1
+        ],
+        [
+          0,
+          0,
+          -5.190629100514211e-35,
+          1
+        ],
+        [
+          0,
+          0,
+          -5.190629100514211e-35,
+          1
+        ],
+        [
+          0,
+          0,
+          -5.190629100514211e-35,
+          1
+        ]
+      ],
+      "chassis": [
+        0.5515711256202778,
+        1.7170419788848928e-31,
+        -0.01654982899864818,
+        -1.0381258201028422e-34
+      ],
+      "tracks": {
+        "updates": 1,
+        "uploadedVertices": 24576,
+        "bytes": 987136,
+        "activePrimitives": 0,
+        "maxPrimitives": 4096,
+        "maxVertices": 24576,
+        "visible": false,
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "time": 2.561999999999829
+    },
+    "runtime": {
+      "clock": {
+        "budgetMs": 20,
+        "maxSteps": 128,
+        "maxDebt": null,
+        "frequency": 1000,
+        "timestep": 0.001,
+        "debt": 6.504299999999829,
+        "wall": 13.366199999999997,
+        "simulated": 2.561999999999829,
+        "dilated": 0,
+        "pausedWall": 4.2999,
+        "status": "paused",
+        "fault": null,
+        "accepted": 2562,
+        "rejected": 0,
+        "frameSteps": 0,
+        "physicsMs": 0,
+        "worstStepMs": 15.399999998509884,
+        "candidates": 0,
+        "searches": 0,
+        "fps": 1.176470588235294,
+        "stepsPerSecond": 0,
+        "realtimeRatio": 0,
+        "lastStepMs": 0.10000000149011612,
+        "acceptedPhysicsMs": 384.89999998919666,
+        "rateWall": 0,
+        "rateFrames": 0,
+        "rateSteps": 0,
+        "internalSubsteps": 2562,
+        "attemptedSubsteps": 2562,
+        "frameSubsteps": 0,
+        "rateSubsteps": 0,
+        "substepsPerSecond": 0
+      },
+      "physicsMs": 348.5999999847263,
+      "lastPhysicsMs": 0.10000000149011612,
+      "renderMs": 2,
+      "maxIterations": 1,
+      "held": [],
+      "tracks": {
+        "capacityPerWheel": 1024,
+        "markCount": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pathCount": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "centerCount": 1,
+        "eventBytes": 16384,
+        "revision": 0,
+        "generation": 1,
+        "acceptedStages": 2562,
+        "acceptedTime": 2.561999999999829,
+        "totalSlipWork": [
+          1.8107017572272686e-31,
+          1.8107017572272697e-31,
+          4.305244211486206e-31,
+          4.305244211486206e-31
+        ]
+      },
+      "terrain": {
+        "preset": "flat",
+        "seed": 23,
+        "amplitude": 0.15,
+        "roughness": 0.5
+      }
+    }
+  }
+]
