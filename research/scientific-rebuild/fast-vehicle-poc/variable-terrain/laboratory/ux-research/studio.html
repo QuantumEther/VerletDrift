@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerletDrift Studio study</title><link rel="stylesheet" href="studio.css">
+<header><a href="./">VerletDrift</a><span id="concept"></span><label>Density <select id="density"><option>Studio</option><option>Immersive</option><option>Research</option></select></label></header>
+<nav id="workspaces" aria-label="Workspaces"></nav>
+<main class="studio"><section class="viewport" aria-label="Driving viewport mockup"><img src="captures/live-viewport.jpg" alt=""><div class="road" aria-hidden="true"></div><span class="tag">Mock viewport · Alpine proving ground</span><div class="instruments"><div><output id="speed">86.4</output><small>km/h</small></div><div><output id="rpm">4,850</output><small>rpm</small></div><div><output id="gear">3</output><small>gear</small></div></div></section>
+<aside id="inspector" aria-label="Workspace inspector"></aside>
+<section class="telemetry"><h2>Vehicle telemetry</h2><div class="trace" aria-hidden="true"></div><p>Lateral acceleration <strong>1.24 g</strong> · Sample interval <strong>50 ms</strong> · Frame interval <strong>4.17 ms</strong></p></section></main>
+<footer><span>Mock data · Simulator disconnected</span><label>Preview state <select id="state"><option>Ready</option><option>Loading</option><option>Warning</option><option>Error</option></select></label><output id="status" aria-live="polite">Ready</output></footer><script type="module" src="studio.js"></script></html>
