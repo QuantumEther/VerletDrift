@@ -402,3 +402,29 @@ Mac display performance. To measure those, run the two URLs above at the same
 viewport and render scale. Use the existing Frame Diagnostics capture after
 the custom model and HDR environment are ready, with GPU timestamps disabled
 for a normal-pacing comparison.
+
+### Mustang steering geometry
+
+The Mustang uses a 35° equivalent center limit, 16:1 handwheel ratio, 1.25 rad/s
+application, 1.5 rad/s return and a 42° per-wheel limit. These are prototype
+settings. At full left lock the actual physical FL/FR angles are 40.86°/30.46°.
+The solver evaluates these once per accepted input step and the presentation
+uses the accepted angles. The experimental reference keeps parallel steering
+and its original keyboard response.
+
+Run `STEERING_RESULTS=/tmp/steering-circles.json node --test steering.test.mjs`
+for flat-ground coasting turns and transient steering checks. The fit uses
+trajectory points from 1.8 to 4.48 s after the steering request. The plot
+overlays rear axle center (solid), COM (dashed) and the four wheel traces
+(light lines). See [plot](results/steering-turning-circles.png) and
+[measurements](results/steering-turning-circles.json). The outer-wheel turning
+diameter is twice the fitted outside front-wheel center radius and excludes
+the body overhang and tire width.
+
+At 4.32 km/h initial speed, rear axle center radius changed from 8.26 to
+3.92 m, COM radius from 8.41 to 4.24 m and outer front-wheel diameter from
+18.80 to 10.82 m. Ideal rear-axle radius at 35° is 3.918 m. No smoke was
+emitted at sampled points. The transient checks include higher-speed
+steering reversals, pre-existing lateral slip and rear brake application.
+The analytical wheel limit has yet to be verified against the full
+Foundation model suspension travel envelope.

@@ -16,7 +16,7 @@ export function adaptCustomMustang(gltf,vehicle){
   // Rim occupies local Y/Z ±.1905 m; its column extends along negative X.
   // Original object origin is the hub. Compose Qneutral * Qshaft without Euler replacement.
   const neutral=handwheel?.quaternion.clone(),shaft=new THREE.Vector3(1,0,0),turn=new THREE.Quaternion();let steeringAngle=0;
-  const steeringRatio=vehicle.visual.steeringRatio??16;if(!Number.isFinite(steeringRatio)||steeringRatio<=0)throw Error('Invalid visual steering ratio');
+  const steeringRatio=vehicle.steering?.ratio??vehicle.visual.steeringRatio??16;if(!Number.isFinite(steeringRatio)||steeringRatio<=0)throw Error('Invalid visual steering ratio');
   const candidates=[];gltf.scene.traverse(o=>{if(/^Wheel_/.test(o.name)){const box=new THREE.Box3().setFromObject(o);candidates.push({node:o,center:box.getCenter(new THREE.Vector3()),size:box.getSize(new THREE.Vector3()),matrix:o.matrixWorld.clone()});}});
   if(candidates.length!==4)throw Error('Expected four distinct GLB wheel nodes');
   // World convention: +x front, +y left. Names are deliberately not used to assign corners.

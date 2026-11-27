@@ -93,7 +93,7 @@ $('camera').addEventListener('change',()=>view?.resetCamera($('camera').value));
 for(const key of ['throttle','engagement'])$(key).addEventListener('input',()=>$(key+'-value').textContent=Math.round(100*$(key).value)+'%');for(const b of document.querySelectorAll('[data-clutch]'))b.addEventListener('click',()=>{$('engagement').value=b.dataset.clutch;$('engagement').dispatchEvent(new Event('input'));});
 document.addEventListener('visibilitychange',()=>{if(measurement&&document.hidden)measurement.hidden=true;controls.clear();const now=performance.now();clock.pausedWall+=Math.max(0,(now-last)/1000);clock.wall+=Math.max(0,(now-last)/1000);last=now;});
 function physicalStep(h){
- const input=controls.sample(h);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);acceptedInput=input;lastPhysicsMs=performance.now()-begin;framePhysics+=lastPhysicsMs;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
+ const input=controls.sample(h,lab.vehicle.steering);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);acceptedInput=input;lastPhysicsMs=performance.now()-begin;framePhysics+=lastPhysicsMs;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
  const recordStart=performance.now(),end=capture(lab,h);view.smokeAccept(end,h);if($('record-contacts')?.checked!==false)observatory.record({start:previous,end,h});previous=end;frameRecording+=performance.now()-recordStart;return {};
 }
 function panel(p){

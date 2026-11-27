@@ -8,19 +8,19 @@ import {definition,configuration} from '../../vehicles/definitions.js';
 const referenceParameters=P;
 export const defaults=Object.freeze({preset:'flat',seed:23,amplitude:.15,roughness:.5});
 export function createLaboratory(settings=defaults,options={}){
- const vehicle=definition(options.vehicleId),vehicleOptions=configuration(vehicle.id);if(vehicle.id!=='reference')options={...options,...vehicleOptions,drivetrainMode:'lifecycle',equilibrium:true};
+ const vehicle=definition(options.vehicleId),vehicleOptions=configuration(vehicle.id);if(vehicle.id!=='reference')options={...options,...vehicleOptions,steering:options.steering??vehicleOptions.steering,drivetrainMode:'lifecycle',equilibrium:true};
  const terrain=createMap(settings),engineLifecycle=options.drivetrainMode==='lifecycle',sixRotor=engineLifecycle||options.drivetrainMode==='manual',model=engineLifecycle?lifecycle:sixRotor?coupled:{create,step,energy,totalWork},state=model.create(terrain,options);
- return {terrain,state,vehicle,sixRotor,engineLifecycle,angles:Array(sixRotor?6:5).fill(0),steer:0,initialEnergy:model.energy(state,terrain),lastInput:{}};
+ return {terrain,state,vehicle,sixRotor,engineLifecycle,angles:Array(sixRotor?6:5).fill(0),steer:0,steerAngles:[0,0],initialEnergy:model.energy(state,terrain),lastInput:{}};
 }
 export function advance(lab,input,h=.001){
  (lab.engineLifecycle?lifecycle.step:lab.sixRotor?coupled.step:step)(lab.state,lab.terrain,input,h); // Transaction succeeds before any display history updates.
- lab.angles=lab.angles.map((a,i)=>a+lab.state.constraints.integral[i]);lab.steer=input.steer??0;lab.lastInput={...input};
+ lab.angles=lab.angles.map((a,i)=>a+lab.state.constraints.integral[i]);lab.steer=input.steer??0;lab.steerAngles=lab.state.steerAngles??[lab.steer,lab.steer];lab.lastInput={...input};
 }
 export function presentation(lab){
  const s=lab.state,P=s.physical??referenceParameters,y=s.y,v=s.vertical,heading=y[2],c=Math.cos(heading),sn=Math.sin(heading);
- return {vehicleId:lab.vehicle?.id??'reference',time:s.time,planar:{x:y[0],y:y[1],heading,u:c*y[3]+sn*y[4],v:-sn*y[3]+c*y[4],r:y[5]},z:y[6],pitch:y[7],roll:y[8],
+ return {vehicleId:lab.vehicle?.id??'reference',time:s.time,centerSteering:lab.steer,planar:{x:y[0],y:y[1],heading,u:c*y[3]+sn*y[4],v:-sn*y[3]+c*y[4],r:y[5]},z:y[6],pitch:y[7],roll:y[8],
   wheels:v.corners.map((corner,i)=>{
-   const p=point(y,corner,i),ground=sample(lab.terrain,p[0],p[1]),contact=s.contacts?.[i],steering=i<2?lab.steer:0,[t,l]=frame(s.bristleNormals[i],heading+steering);
+   const p=point(y,corner,i),ground=sample(lab.terrain,p[0],p[1]),contact=s.contacts?.[i],steering=lab.steerAngles?.[i]??0,[t,l]=frame(s.bristleNormals[i],heading+steering);
    return {name:['FL','FR','RL','RR'][i],x:corner[0],y:corner[1],position:p,roadHeight:ground.height,normalAxis:s.bristleNormals[i],tangent:t,lateral:l,radius:P.R,omega:y[20+i],angle:lab.angles[i],steering,
     mount:[p[0],p[1],y[6]+corner[0]*y[7]+corner[1]*y[8]],compression:v.length-y[6]-corner[0]*y[7]-corner[1]*y[8]+y[9+i],
     normal:contact?.normal.N??v.kt*Math.max(0,P.R+ground.height-p[2])*Math.hypot(...ground.gradient,1),mu:contact?.normal.mu??ground.friction,
@@ -32,7 +32,7 @@ export function presentation(lab){
 export function capture(lab,h=.001){
  const s=lab.state,y=s.y;
  return {time:s.time,center:{x:y[0],y:y[1],z:y[6]},heading:y[2],bump:null,wheels:s.vertical.corners.map((corner,i)=>{
-  const p=point(y,corner,i),ground=lab.terrain.sample(p[0],p[1]),t=s.contacts?.[i],normal=t?.normal.N??0,mu=t?.normal.mu??ground.friction,fx=t?.flow.force[0]??0,fy=t?.flow.force[1]??0,sx=t?.slip[0]??0,sy=t?.slip[1]??0,limit=normal*mu,utilization=limit>0?Math.hypot(fx,fy)/limit:null,heading=y[2]+(i<2?lab.steer:0);
+  const p=point(y,corner,i),ground=lab.terrain.sample(p[0],p[1]),t=s.contacts?.[i],normal=t?.normal.N??0,mu=t?.normal.mu??ground.friction,fx=t?.flow.force[0]??0,fy=t?.flow.force[1]??0,sx=t?.slip[0]??0,sy=t?.slip[1]??0,limit=normal*mu,utilization=limit>0?Math.hypot(fx,fy)/limit:null,heading=y[2]+(lab.steerAngles?.[i]??0);
   return {surface:ground.surface,name:['FL','FR','RL','RR'][i],position:{x:p[0],y:p[1],z:ground.height},heading,forceHeading:heading,omega:s.constraints?s.constraints.integral[i]/h:y[20+i],normal,mu,sx,sy,fx,fy,power:t?(t.flow.viscous+t.flow.plastic)/h:0,mechanicalPower:t?t.flow.work/h:0,slidingSpeed:Math.hypot(sx,sy),utilization,brakeTorque:s.constraints?s.constraints.brakeImpulse[i]/h:0,geometryContact:normal>0,supported:normal>0,saturated:utilization!==null&&utilization>=1-1e-6};
  })};
 }

@@ -113,7 +113,7 @@ export async function createView3D(canvas,terrain,quality='auto',vehicle={id:'re
   if(!sceneUpdates){const t=performance.now();if(submission)submit(d.mode==='empty'?emptyScene:scene,d.mode,frameId,gpuTiming);if(timings){timings.scene=0;timings.tracks=0;timings.webgl=performance.now()-t;}return;}
 
   last=p;balloons.draw(p);
-  if(imported)imported.setSteering((p.wheels[0].steering+p.wheels[1].steering)/2);
+  if(imported)imported.setSteering(p.centerSteering);
   body.position.set(0,0,p.z);body.rotation.set(p.roll,-p.pitch,p.planar.heading,'ZYX');if(paint.transparent!==xray){paint.transparent=xray;paint.needsUpdate=true;}paint.opacity=xray?.18:1;paint.depthWrite=!xray;if(custom){if(custom.paint.transparent!==xray)custom.paint.needsUpdate=true;custom.paint.transparent=xray;custom.paint.opacity=xray?.18:1;custom.paint.depthWrite=!xray;}
   const basis=new THREE.Matrix4(),from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),axis=new THREE.Vector3(0,1,0);
   p.wheels.forEach((w,i)=>{

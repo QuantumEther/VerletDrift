@@ -1,8 +1,10 @@
+import {legacySteering} from './steering.js';
 // Declarative SI configurations. One shared lifecycle integrator, no vehicle equations here.
 const rpm=x=>x*Math.PI/30;
-export const reference=Object.freeze({id:'reference',label:'Experimental reference',visual:{style:'reference'}});
+export const reference=Object.freeze({id:'reference',label:'Experimental reference',steering:legacySteering,visual:{style:'reference'}});
 export const mustang=Object.freeze({
  id:'mustang-1969',label:'1969 Mustang Mach 1 · 428 CJ / modified 6-speed',
+ steering:Object.freeze({maxCenter:35*Math.PI/180,ratio:16,rate:1.25,returnRate:1.5,ackermann:1,wheelLimit:42*Math.PI/180}),
  physical:{mass:1660,Iz:2900,H:.55,R:.335,Iw:1.9,Ie:.65,clutch:750},
  vertical:{mass:1492,pitchInertia:2550,rollInertia:580,wheelMass:42,ks:33000,kt:220000,damping:2600,radius:.335,length:.35,
  corners:[[1.1274331367292225,.74676],[1.1274331367292225,-.74676],[-1.6157668632707773,.74676],[-1.6157668632707773,-.74676]]},
