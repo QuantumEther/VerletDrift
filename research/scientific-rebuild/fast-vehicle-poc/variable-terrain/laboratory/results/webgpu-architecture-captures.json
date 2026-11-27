@@ -1,0 +1,5234 @@
+{
+  "platform": "Headless Chromium 154 with SwiftShader Vulkan, actual flight-map application, 267 x 213 drawing buffer.",
+  "sampling": "Two four-second windows per case. GPU batch samples and callback cadence have different scopes. Other local validation ran during parts of the capture, so differences are descriptive.",
+  "visual": {
+    "size": [
+      267,
+      213
+    ],
+    "channelMAE": 0.206807,
+    "channelP95": 1,
+    "channelMaximum": 29,
+    "pixelsAbove3": 237
+  },
+  "paused": [
+    {
+      "name": "reference-motion",
+      "architecture": "reference",
+      "motion": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "reference",
+          "active": "motion",
+          "frames": {
+            "direct": 0,
+            "cinematic": 0,
+            "motion": 41,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 831.4000000059605,
+            "pmremCpuSubmissionMs": 117.19999999552965,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 43,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": true,
+          "quality": "fast",
+          "passes": 41,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 15,
+          "meanFps": 3.829950210647261,
+          "onePercentLowFps": 2.6082420448617594,
+          "stats": {
+            "interval": {
+              "median": 266.59999999999854,
+              "mean": 261.1,
+              "p95": 383.40000000000055,
+              "p99": 383.40000000000055
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.18000000069538752,
+              "p95": 0.8000000044703484,
+              "p99": 0.8000000044703484
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.01999999980131785,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.19999999950329464,
+              "p95": 0.30000000447034836,
+              "p99": 0.30000000447034836
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.0066666667660077415,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 247.30000000447035,
+              "mean": 254.43333333383003,
+              "p95": 387.19999999552965,
+              "p99": 387.19999999552965
+            },
+            "dashboard": {
+              "median": 0.3999999985098839,
+              "mean": 0.4133333330353101,
+              "p95": 0.7999999970197678,
+              "p99": 0.7999999970197678
+            },
+            "callback": {
+              "median": 248.10000000149012,
+              "mean": 255.57333333293596,
+              "p95": 388.3999999985099,
+              "p99": 388.3999999985099
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 2,
+            "stats": {
+              "median": 271.958168,
+              "mean": 284.1622135,
+              "p95": 296.366259,
+              "p99": 296.366259
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 296.366259,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 6,
+                "ms": 271.958168,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 8.699600000000002,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 15,
+          "meanFps": 3.879377230641909,
+          "onePercentLowFps": 3.1575623618566393,
+          "stats": {
+            "interval": {
+              "median": 250,
+              "mean": 257.77333333333326,
+              "p95": 316.7000000000007,
+              "p99": 316.7000000000007
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.17333333392937977,
+              "p95": 0.8000000044703484,
+              "p99": 0.8000000044703484
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.03333333333333333,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.2333333323399226,
+              "p95": 0.8000000044703484,
+              "p99": 0.8000000044703484
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "webgl": {
+              "median": 247.70000000298023,
+              "mean": 250.13333333482345,
+              "p95": 303.20000000298023,
+              "p99": 303.20000000298023
+            },
+            "dashboard": {
+              "median": 0.30000000447034836,
+              "mean": 0.29999999950329465,
+              "p95": 0.4000000059604645,
+              "p99": 0.4000000059604645
+            },
+            "callback": {
+              "median": 248.60000000149012,
+              "mean": 251.23333333383005,
+              "p95": 304.29999999701977,
+              "p99": 304.29999999701977
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 2,
+            "stats": {
+              "median": 214.58183499999998,
+              "mean": 259.964772,
+              "p95": 305.347709,
+              "p99": 305.347709
+            },
+            "raw": [
+              {
+                "frame": 1,
+                "ms": 305.347709,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 7,
+                "ms": 214.58183499999998,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.782799999999998,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          225,
+          202,
+          185,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          165,
+          176,
+          175,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "reference-hdr",
+      "architecture": "reference",
+      "motion": false,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "reference",
+          "active": "cinematic",
+          "frames": {
+            "direct": 0,
+            "cinematic": 48,
+            "motion": 0,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 670.0999999940395,
+            "pmremCpuSubmissionMs": 134.90000000596046,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 50,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": false,
+          "quality": "fast",
+          "passes": 0,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 18,
+          "meanFps": 4.6755675619512695,
+          "onePercentLowFps": 3.7495313085864295,
+          "stats": {
+            "interval": {
+              "median": 216.60000000000036,
+              "mean": 213.8777777777778,
+              "p95": 266.6999999999998,
+              "p99": 266.6999999999998
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.09999999403953552,
+              "mean": 0.07222222205665377,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.022222222553359136,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.14999999933772618,
+              "p95": 0.29999999701976776,
+              "p99": 0.29999999701976776
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.005555555638339784,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 201.20000000298023,
+              "mean": 207.1055555558867,
+              "p95": 251.39999999850988,
+              "p99": 251.39999999850988
+            },
+            "dashboard": {
+              "median": 0.30000000447034836,
+              "mean": 0.27222222338120144,
+              "p95": 0.5,
+              "p99": 0.5
+            },
+            "callback": {
+              "median": 201.89999999850988,
+              "mean": 207.96666666741172,
+              "p95": 254.29999999701977,
+              "p99": 254.29999999701977
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 3,
+            "stats": {
+              "median": 200.280256,
+              "mean": 202.46671833333335,
+              "p95": 212.75805300000002,
+              "p99": 212.75805300000002
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 212.75805300000002,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 6,
+                "ms": 194.361846,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 12,
+                "ms": 200.280256,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 8.183,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 17,
+          "meanFps": 4.322180412895352,
+          "onePercentLowFps": 3.7495313085864166,
+          "stats": {
+            "interval": {
+              "median": 216.70000000000073,
+              "mean": 231.36470588235298,
+              "p95": 266.7000000000007,
+              "p99": 266.7000000000007
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.09999999929876889,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.029411764267612907,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.15882352914880304,
+              "p95": 0.4000000059604645,
+              "p99": 0.4000000059604645
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.00588235302883036,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 222.10000000149012,
+              "mean": 228.77647058884887,
+              "p95": 268.8999999985099,
+              "p99": 268.8999999985099
+            },
+            "dashboard": {
+              "median": 0.30000000447034836,
+              "mean": 0.3294117643552668,
+              "p95": 0.5999999940395355,
+              "p99": 0.5999999940395355
+            },
+            "callback": {
+              "median": 222.79999999701977,
+              "mean": 229.71176470553175,
+              "p95": 269.8999999985099,
+              "p99": 269.8999999985099
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 2,
+            "stats": {
+              "median": 222.598303,
+              "mean": 244.21146000000002,
+              "p95": 265.82461700000005,
+              "p99": 265.82461700000005
+            },
+            "raw": [
+              {
+                "frame": 4,
+                "ms": 265.82461700000005,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 10,
+                "ms": 222.598303,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.3162,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          225,
+          202,
+          185,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          165,
+          176,
+          175,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "stationary",
+      "architecture": "auto",
+      "motion": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "auto",
+          "active": "stationary",
+          "frames": {
+            "direct": 0,
+            "cinematic": 0,
+            "motion": 10,
+            "stationary": 27
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 668.3000000044703,
+            "pmremCpuSubmissionMs": 144.89999999850988,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 39,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": true,
+          "quality": "fast",
+          "passes": 10,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 9,
+          "meanFps": 2.3077514808072,
+          "onePercentLowFps": 0.5769674590353102,
+          "stats": {
+            "interval": {
+              "median": 266.7000000000007,
+              "mean": 433.3222222222223,
+              "p95": 1733.2000000000007,
+              "p99": 1733.2000000000007
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.09999999983443154,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.033333333830038704,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.16666666666666666,
+              "p95": 0.29999999701976776,
+              "p99": 0.29999999701976776
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "webgl": {
+              "median": 250.39999999850988,
+              "mean": 425.0444444442789,
+              "p95": 1730.6000000014901,
+              "p99": 1730.6000000014901
+            },
+            "dashboard": {
+              "median": 0.29999999701976776,
+              "mean": 0.47777777661879856,
+              "p95": 1.6999999955296516,
+              "p99": 1.6999999955296516
+            },
+            "callback": {
+              "median": 251.60000000149012,
+              "mean": 426.144444445769,
+              "p95": 1731.7000000029802,
+              "p99": 1731.7000000029802
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 1,
+            "stats": {
+              "median": 262.66428199999996,
+              "mean": 262.66428199999996,
+              "p95": 262.66428199999996,
+              "p99": 262.66428199999996
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 262.66428199999996,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 8.216400000000002,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 18,
+          "meanFps": 4.576309968728549,
+          "onePercentLowFps": 3.9984006397440965,
+          "stats": {
+            "interval": {
+              "median": 216.60000000000036,
+              "mean": 218.51666666666662,
+              "p95": 250.10000000000036,
+              "p99": 250.10000000000036
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.11111111069718997,
+              "p95": 0.3999999985098839,
+              "p99": 0.3999999985098839
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.033333333416117564,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.2555555548104975,
+              "p95": 1,
+              "p99": 1
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.011111110862758424,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 207.80000000447035,
+              "mean": 211.15000000140734,
+              "p95": 251.20000000298023,
+              "p99": 251.20000000298023
+            },
+            "dashboard": {
+              "median": 0.30000000447034836,
+              "mean": 0.3444444437821706,
+              "p95": 1,
+              "p99": 1
+            },
+            "callback": {
+              "median": 208.79999999701977,
+              "mean": 212.21666666616997,
+              "p95": 252.39999999850988,
+              "p99": 252.39999999850988
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 2,
+            "stats": {
+              "median": 190.201401,
+              "mean": 198.4075675,
+              "p95": 206.613734,
+              "p99": 206.613734
+            },
+            "raw": [
+              {
+                "frame": 1,
+                "ms": 190.201401,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 7,
+                "ms": 206.613734,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.399599999999998,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          225,
+          202,
+          185,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          165,
+          176,
+          175,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "optimized-hdr",
+      "architecture": "auto",
+      "motion": false,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "auto",
+          "active": "cinematic",
+          "frames": {
+            "direct": 0,
+            "cinematic": 25,
+            "motion": 0,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 983.7000000029802,
+            "pmremCpuSubmissionMs": 367.6000000014901,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 27,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": false,
+          "quality": "fast",
+          "passes": 0,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 7,
+          "meanFps": 1.750087504375219,
+          "onePercentLowFps": 1.363698349924998,
+          "stats": {
+            "interval": {
+              "median": 566.6000000000004,
+              "mean": 571.3999999999999,
+              "p95": 733.2999999999993,
+              "p99": 733.2999999999993
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.11428571279559817,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.04285714349576405,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.20000000298023224,
+              "mean": 0.6428571428571429,
+              "p95": 3.3000000044703484,
+              "p99": 3.3000000044703484
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.014285714498588018,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 537.7000000029802,
+              "mean": 535.2857142857143,
+              "p95": 593.7999999970198,
+              "p99": 593.7999999970198
+            },
+            "dashboard": {
+              "median": 0.30000000447034836,
+              "mean": 0.4428571420056479,
+              "p95": 1,
+              "p99": 1
+            },
+            "callback": {
+              "median": 538.6999999955297,
+              "mean": 536.9285714264427,
+              "p95": 594.7999999970198,
+              "p99": 594.7999999970198
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 1,
+            "stats": {
+              "median": 500.80089300000003,
+              "mean": 500.80089300000003,
+              "p95": 500.80089300000003,
+              "p99": 500.80089300000003
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 500.80089300000003,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.1662,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 6,
+          "meanFps": 1.6513912971678635,
+          "onePercentLowFps": 1.1319900384876618,
+          "stats": {
+            "interval": {
+              "median": 550,
+              "mean": 605.5500000000002,
+              "p95": 883.3999999999996,
+              "p99": 883.3999999999996
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.09999999403953552,
+              "mean": 0.06666666641831398,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.049999999503294625,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.1666666679084301,
+              "p95": 0.30000000447034836,
+              "p99": 0.30000000447034836
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.016666666915019352,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 530.1000000014901,
+              "mean": 538.3833333328366,
+              "p95": 600.3999999985099,
+              "p99": 600.3999999985099
+            },
+            "dashboard": {
+              "median": 0.29999999701976776,
+              "mean": 0.316666666418314,
+              "p95": 0.3999999985098839,
+              "p99": 0.3999999985098839
+            },
+            "callback": {
+              "median": 530.8999999985099,
+              "mean": 539.2833333350718,
+              "p95": 601.2999999970198,
+              "p99": 601.2999999970198
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 0,
+            "stats": null,
+            "raw": []
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 16.9327,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          225,
+          202,
+          185,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          165,
+          176,
+          175,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "opaque-hdr",
+      "architecture": "cinematic",
+      "motion": false,
+      "opaque": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "cinematic",
+          "active": "cinematic",
+          "frames": {
+            "direct": 0,
+            "cinematic": 108,
+            "motion": 0,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 724.5999999940395,
+            "pmremCpuSubmissionMs": 137.30000000447035,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 110,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": false,
+          "quality": "fast",
+          "passes": 0,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": false,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "incremental",
+            "terrain": true,
+            "lighting": true,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 44,
+          "meanFps": 11.186819892199734,
+          "onePercentLowFps": 5.998800239952016,
+          "stats": {
+            "interval": {
+              "median": 83.39999999999964,
+              "mean": 89.3909090909091,
+              "p95": 116.69999999999891,
+              "p99": 166.69999999999982
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.12272727235474369,
+              "p95": 0.30000000447034836,
+              "p99": 0.5
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.022727272388609974,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.1659090913493525,
+              "p95": 0.20000000298023224,
+              "p99": 0.4000000059604645
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "webgl": {
+              "median": 85.60000000149012,
+              "mean": 87.40681818178432,
+              "p95": 103.39999999850988,
+              "p99": 164.5
+            },
+            "dashboard": {
+              "median": 0,
+              "mean": 0.22499999962747097,
+              "p95": 0.5,
+              "p99": 5.100000001490116
+            },
+            "callback": {
+              "median": 86.30000000447035,
+              "mean": 88.24318181808022,
+              "p95": 104.40000000596046,
+              "p99": 165.10000000149012
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 7,
+            "stats": {
+              "median": 80.57390500000001,
+              "mean": 92.571045,
+              "p95": 156.54704399999997,
+              "p99": 156.54704399999997
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 89.924888,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 6,
+                "ms": 156.54704399999997,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 12,
+                "ms": 67.177125,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 18,
+                "ms": 61.258218,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 24,
+                "ms": 74.446019,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 30,
+                "ms": 118.07011599999998,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 36,
+                "ms": 80.57390500000001,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 8.116399999999995,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": false,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "incremental",
+            "terrain": true,
+            "lighting": true,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 46,
+          "meanFps": 11.548793653184704,
+          "onePercentLowFps": 8.583690987124463,
+          "stats": {
+            "interval": {
+              "median": 83.39999999999964,
+              "mean": 86.58913043478262,
+              "p95": 100.10000000000036,
+              "p99": 116.5
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.08913043400515681,
+              "p95": 0.19999999552965164,
+              "p99": 0.5
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.023913043510654697,
+              "p95": 0.10000000149011612,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.16956521748848583,
+              "p95": 0.29999999701976776,
+              "p99": 1.1999999955296516
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.0021739130758720894,
+              "p95": 0,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 83.29999999701977,
+              "mean": 84.20869565269221,
+              "p95": 102.69999999552965,
+              "p99": 103.69999999552965
+            },
+            "dashboard": {
+              "median": 0,
+              "mean": 0.08695652157716129,
+              "p95": 0.30000000447034836,
+              "p99": 0.3999999985098839
+            },
+            "callback": {
+              "median": 84,
+              "mean": 84.85434782634611,
+              "p95": 103.09999999403954,
+              "p99": 104.29999999701977
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 7,
+            "stats": {
+              "median": 92.323001,
+              "mean": 89.94205971428573,
+              "p95": 101.96728100000001,
+              "p99": 101.96728100000001
+            },
+            "raw": [
+              {
+                "frame": 1,
+                "ms": 101.96728100000001,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 7,
+                "ms": 92.972774,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 13,
+                "ms": 92.513058,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 19,
+                "ms": 80.73040400000001,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 25,
+                "ms": 92.323001,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 31,
+                "ms": 87.372461,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 37,
+                "ms": 81.715439,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.3829,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          89,
+          94,
+          98,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          173,
+          184,
+          194,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "direct",
+      "architecture": "direct",
+      "motion": false,
+      "opaque": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "direct",
+          "active": "direct",
+          "frames": {
+            "direct": 108,
+            "cinematic": 2,
+            "motion": 0,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 647.7999999970198,
+            "pmremCpuSubmissionMs": 145.39999999850988,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 112,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": false,
+          "quality": "fast",
+          "passes": 0,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 1
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": false,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "incremental",
+            "terrain": true,
+            "lighting": true,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 44,
+          "meanFps": 11.139522519557458,
+          "onePercentLowFps": 8.561643835616424,
+          "stats": {
+            "interval": {
+              "median": 83.40000000000055,
+              "mean": 89.77045454545454,
+              "p95": 100.10000000000036,
+              "p99": 116.80000000000018
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.19999999993226744,
+              "p95": 0.20000000298023224,
+              "p99": 3.7999999970197678
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.04090909084135836,
+              "p95": 0.10000000149011612,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.24318181824955074,
+              "p95": 0.8000000044703484,
+              "p99": 1.4000000059604645
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.0022727273065935483,
+              "p95": 0,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 88.60000000149012,
+              "mean": 85.52045454559001,
+              "p95": 99.60000000149012,
+              "p99": 106.10000000149012
+            },
+            "dashboard": {
+              "median": 0,
+              "mean": 0.15681818178431553,
+              "p95": 0.5,
+              "p99": 0.7000000029802322
+            },
+            "callback": {
+              "median": 90.20000000298023,
+              "mean": 86.49090909077363,
+              "p95": 100.19999999552965,
+              "p99": 106.89999999850988
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 7,
+            "stats": {
+              "median": 91.542507,
+              "mean": 92.78931514285715,
+              "p95": 105.27651599999999,
+              "p99": 105.27651599999999
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 89.07027699999999,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 5,
+                "ms": 83.062652,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 11,
+                "ms": 105.27651599999999,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 17,
+                "ms": 93.879473,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 23,
+                "ms": 84.827154,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 29,
+                "ms": 101.86662700000001,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 35,
+                "ms": 91.542507,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 8.733,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": false,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "incremental",
+            "terrain": true,
+            "lighting": true,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 51,
+          "meanFps": 12.857358947209196,
+          "onePercentLowFps": 7.496251874062989,
+          "stats": {
+            "interval": {
+              "median": 83.29999999999927,
+              "mean": 77.7764705882353,
+              "p95": 100.09999999999854,
+              "p99": 133.39999999999964
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.08823529382546742,
+              "p95": 0.20000000298023224,
+              "p99": 0.30000000447034836
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.05686274521491107,
+              "p95": 0.10000000149011612,
+              "p99": 1.0999999940395355
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.21764705885274738,
+              "p95": 0.3999999985098839,
+              "p99": 2.8000000044703484
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "webgl": {
+              "median": 74.20000000298023,
+              "mean": 73.62941176502729,
+              "p95": 91.30000000447035,
+              "p99": 94.89999999850988
+            },
+            "dashboard": {
+              "median": 0,
+              "mean": 0.11764705896961923,
+              "p95": 0.4000000059604645,
+              "p99": 0.5
+            },
+            "callback": {
+              "median": 76.5,
+              "mean": 74.49803921580315,
+              "p95": 92.30000000447035,
+              "p99": 95.39999999850988
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 8,
+            "stats": {
+              "median": 74.902753,
+              "mean": 74.35436725000001,
+              "p95": 92.62161,
+              "p99": 92.62161
+            },
+            "raw": [
+              {
+                "frame": 1,
+                "ms": 82.092637,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 7,
+                "ms": 92.62161,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 13,
+                "ms": 58.015733,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 18,
+                "ms": 72.387421,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 23,
+                "ms": 74.902753,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 28,
+                "ms": 76.14324599999999,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 34,
+                "ms": 81.00576099999999,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 40,
+                "ms": 57.665777,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 0,
+            "simulated": 0,
+            "wall": 12.916100000000009,
+            "accepted": 0,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ],
+      "pixels": [
+        [
+          90,
+          94,
+          98,
+          255
+        ],
+        [
+          169,
+          181,
+          192,
+          255
+        ],
+        [
+          173,
+          184,
+          194,
+          255
+        ],
+        [
+          88,
+          93,
+          96,
+          255
+        ],
+        [
+          90,
+          94,
+          98,
+          255
+        ]
+      ]
+    },
+    {
+      "name": "webgl",
+      "backend": "webgl",
+      "architecture": "auto",
+      "motion": false,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "auto",
+          "active": "ordinary",
+          "frames": {
+            "direct": 0,
+            "cinematic": 68,
+            "motion": 0,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgl",
+        "adapter": null,
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 2980.39999999851,
+            "pmremCpuSubmissionMs": 55,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 5,
+          "setPixelRatioCalls": 4,
+          "powerPreference": null
+        },
+        "motionBlur": {
+          "enabled": false,
+          "quality": "fast",
+          "passes": 0,
+          "exposure": 0,
+          "samples": 4
+        },
+        "drawCalls": 33,
+        "terrainUpdates": 4
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "alpha": true,
+                "antialias": true,
+                "depth": true,
+                "desynchronized": false,
+                "failIfMajorPerformanceCaveat": false,
+                "powerPreference": "default",
+                "premultipliedAlpha": true,
+                "preserveDrawingBuffer": false,
+                "stencil": false,
+                "xrCompatible": false
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 19,
+          "meanFps": 4.524024953569216,
+          "onePercentLowFps": 3.7495313085864166,
+          "stats": {
+            "interval": {
+              "median": 216.6999999999989,
+              "mean": 221.04210526315796,
+              "p95": 266.7000000000007,
+              "p99": 266.7000000000007
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.07368421044788863,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.031578947446848214,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.19999999552965164,
+              "mean": 0.1631578936388618,
+              "p95": 0.30000000447034836,
+              "p99": 0.30000000447034836
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.010526315946328012,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 1.1000000014901161,
+              "mean": 1.2210526325200732,
+              "p95": 2.4000000059604645,
+              "p99": 2.4000000059604645
+            },
+            "dashboard": {
+              "median": 1.2000000029802322,
+              "mean": 1.5842105263942166,
+              "p95": 4.0999999940395355,
+              "p99": 4.0999999940395355
+            },
+            "callback": {
+              "median": 3.2000000029802322,
+              "mean": 3.3684210534158505,
+              "p95": 5.700000002980232,
+              "p99": 5.700000002980232
+            }
+          },
+          "gpu": {
+            "scope": "WebGL elapsed render query",
+            "supported": true,
+            "webgpuPending": false,
+            "extension": "EXT_disjoint_timer_query_webgl2",
+            "pending": 1,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 19,
+            "stats": {
+              "median": 211.705799,
+              "mean": 216.15642600000004,
+              "p95": 268.770126,
+              "p99": 268.770126
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 226.945749
+              },
+              {
+                "frame": 1,
+                "ms": 206.300342
+              },
+              {
+                "frame": 2,
+                "ms": 189.608096
+              },
+              {
+                "frame": 3,
+                "ms": 243.385287
+              },
+              {
+                "frame": 4,
+                "ms": 193.414244
+              },
+              {
+                "frame": 5,
+                "ms": 200.150626
+              },
+              {
+                "frame": 6,
+                "ms": 192.985752
+              },
+              {
+                "frame": 7,
+                "ms": 199.313835
+              },
+              {
+                "frame": 8,
+                "ms": 211.705799
+              },
+              {
+                "frame": 9,
+                "ms": 227.322922
+              },
+              {
+                "frame": 10,
+                "ms": 229.118762
+              },
+              {
+                "frame": 11,
+                "ms": 221.077209
+              },
+              {
+                "frame": 12,
+                "ms": 268.770126
+              },
+              {
+                "frame": 13,
+                "ms": 211.427783
+              },
+              {
+                "frame": 14,
+                "ms": 198.814439
+              },
+              {
+                "frame": 15,
+                "ms": 212.37062
+              },
+              {
+                "frame": 16,
+                "ms": 250.779193
+              },
+              {
+                "frame": 17,
+                "ms": 215.48769
+              },
+              {
+                "frame": 18,
+                "ms": 207.99362
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 1.6189000000000753,
+            "simulated": 0.6810000000000005,
+            "wall": 12.632699999999998,
+            "accepted": 681,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": false,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": true,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "alpha": true,
+                "antialias": true,
+                "depth": true,
+                "desynchronized": false,
+                "failIfMajorPerformanceCaveat": false,
+                "powerPreference": "default",
+                "premultipliedAlpha": true,
+                "preserveDrawingBuffer": false,
+                "stencil": false,
+                "xrCompatible": false
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 19,
+          "meanFps": 4.730486742188474,
+          "onePercentLowFps": 4,
+          "stats": {
+            "interval": {
+              "median": 216.60000000000036,
+              "mean": 211.39473684210517,
+              "p95": 250,
+              "p99": 250
+            },
+            "physics": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "recording": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "conversion": {
+              "median": 0.10000000149011612,
+              "mean": 0.09473684234054465,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.0315789470547124,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.14736842089577726,
+              "p95": 0.3999999985098839,
+              "p99": 0.3999999985098839
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.010526315946328012,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 1.1999999955296516,
+              "mean": 1.1684210520041616,
+              "p95": 1.6000000014901161,
+              "p99": 1.6000000014901161
+            },
+            "dashboard": {
+              "median": 0.9000000059604645,
+              "mean": 0.8894736849163708,
+              "p95": 1.5,
+              "p99": 1.5
+            },
+            "callback": {
+              "median": 2.7000000029802322,
+              "mean": 2.6526315792610773,
+              "p95": 3.600000001490116,
+              "p99": 3.600000001490116
+            }
+          },
+          "gpu": {
+            "scope": "WebGL elapsed render query",
+            "supported": true,
+            "webgpuPending": false,
+            "extension": "EXT_disjoint_timer_query_webgl2",
+            "pending": 1,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 19,
+            "stats": {
+              "median": 208.131754,
+              "mean": 207.00754399999997,
+              "p95": 242.684608,
+              "p99": 242.684608
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 185.927695
+              },
+              {
+                "frame": 1,
+                "ms": 214.112731
+              },
+              {
+                "frame": 2,
+                "ms": 242.684608
+              },
+              {
+                "frame": 3,
+                "ms": 218.973641
+              },
+              {
+                "frame": 4,
+                "ms": 189.701516
+              },
+              {
+                "frame": 5,
+                "ms": 188.178587
+              },
+              {
+                "frame": 6,
+                "ms": 205.810509
+              },
+              {
+                "frame": 7,
+                "ms": 214.675873
+              },
+              {
+                "frame": 8,
+                "ms": 201.154638
+              },
+              {
+                "frame": 9,
+                "ms": 205.818296
+              },
+              {
+                "frame": 10,
+                "ms": 211.449781
+              },
+              {
+                "frame": 11,
+                "ms": 226.400801
+              },
+              {
+                "frame": 12,
+                "ms": 164.933141
+              },
+              {
+                "frame": 13,
+                "ms": 226.299176
+              },
+              {
+                "frame": 14,
+                "ms": 208.131754
+              },
+              {
+                "frame": 15,
+                "ms": 189.966646
+              },
+              {
+                "frame": 16,
+                "ms": 236.046081
+              },
+              {
+                "frame": 17,
+                "ms": 208.599555
+              },
+              {
+                "frame": 18,
+                "ms": 194.278307
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 1.6189000000000753,
+            "simulated": 0.6810000000000005,
+            "wall": 17.032599999999995,
+            "accepted": 681,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false
+        }
+      ]
+    }
+  ],
+  "coast": [
+    {
+      "name": "reference-driving",
+      "architecture": "reference",
+      "motion": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "reference",
+          "active": "motion",
+          "frames": {
+            "direct": 0,
+            "cinematic": 0,
+            "motion": 17,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 0.5999999940395355,
+            "pmremCpuSubmissionMs": 112.90000000596046,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 18,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": true,
+          "quality": "fast",
+          "passes": 17,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 3
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": false,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 4,
+          "meanFps": 1.016983626563612,
+          "onePercentLowFps": 0.2912734475125247,
+          "stats": {
+            "interval": {
+              "median": 66.69999999999982,
+              "mean": 983.3000000000002,
+              "p95": 3433.2000000000007,
+              "p99": 3433.2000000000007
+            },
+            "physics": {
+              "median": 16.49999999254942,
+              "mean": 17.574999993667006,
+              "p95": 21.899999991059303,
+              "p99": 21.899999991059303
+            },
+            "recording": {
+              "median": 0.6999999955296516,
+              "mean": 4.62500000372529,
+              "p95": 12.300000011920929,
+              "p99": 12.300000011920929
+            },
+            "conversion": {
+              "median": 0,
+              "mean": 0.02500000037252903,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "smoke": {
+              "median": 0.10000000149011612,
+              "mean": 0.125,
+              "p95": 0.19999999552965164,
+              "p99": 0.19999999552965164
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.20000000298023224,
+              "mean": 0.30000000074505806,
+              "p95": 0.3999999985098839,
+              "p99": 0.3999999985098839
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.02500000037252903,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 367.19999999552965,
+              "mean": 1064.0499999988824,
+              "p95": 3402.2000000029802,
+              "p99": 3402.2000000029802
+            },
+            "dashboard": {
+              "median": 0.5,
+              "mean": 1.400000000372529,
+              "p95": 4.5,
+              "p99": 4.5
+            },
+            "callback": {
+              "median": 394.19999999552965,
+              "mean": 1089.0999999959022,
+              "p95": 3422.89999999851,
+              "p99": 3422.89999999851
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 0,
+            "stats": null,
+            "raw": []
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 4.200499999999988,
+            "simulated": 0.4160000000000003,
+            "wall": 5.2331,
+            "accepted": 416,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false,
+          "passes": {
+            "total": 18,
+            "output": 6,
+            "discardedResolves": 0
+          }
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": false,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 6,
+          "meanFps": 1.6143787332508204,
+          "onePercentLowFps": 1.4285714285714286,
+          "stats": {
+            "interval": {
+              "median": 650,
+              "mean": 619.4333333333334,
+              "p95": 700,
+              "p99": 700
+            },
+            "physics": {
+              "median": 19.599999994039536,
+              "mean": 24.633333335320156,
+              "p95": 35.899999998509884,
+              "p99": 35.899999998509884
+            },
+            "recording": {
+              "median": 0.7999999895691872,
+              "mean": 0.75,
+              "p95": 0.8999999985098839,
+              "p99": 0.8999999985098839
+            },
+            "conversion": {
+              "median": 0,
+              "mean": 0.05000000074505806,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.016666666915019352,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.20000000298023224,
+              "mean": 2.9333333310981593,
+              "p95": 16.599999994039536,
+              "p99": 16.599999994039536
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 1.6500000009934108,
+              "p95": 9.900000005960464,
+              "p99": 9.900000005960464
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0.8499999990065893,
+              "p95": 5.0999999940395355,
+              "p99": 5.0999999940395355
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.01666666567325592,
+              "p95": 0.09999999403953552,
+              "p99": 0.09999999403953552
+            },
+            "webgl": {
+              "median": 630.3000000044703,
+              "mean": 580.53333333383,
+              "p95": 665.5,
+              "p99": 665.5
+            },
+            "dashboard": {
+              "median": 0.3999999985098839,
+              "mean": 0.6000000014901161,
+              "p95": 1.7000000029802322,
+              "p99": 1.7000000029802322
+            },
+            "callback": {
+              "median": 651.2999999970198,
+              "mean": 610.6666666666666,
+              "p95": 700.7999999970198,
+              "p99": 700.7999999970198
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 1,
+            "stats": {
+              "median": 699.3940329999999,
+              "mean": 699.3940329999999,
+              "p95": 699.3940329999999,
+              "p99": 699.3940329999999
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 699.3940329999999,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 7.737699999999772,
+            "simulated": 1.0619999999999938,
+            "wall": 9.416299999999998,
+            "accepted": 1062,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false,
+          "passes": {
+            "total": 21,
+            "output": 7,
+            "discardedResolves": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "optimized-driving",
+      "architecture": "auto",
+      "motion": true,
+      "buffer": [
+        267,
+        213
+      ],
+      "snapshot": {
+        "renderArchitecture": {
+          "requested": "auto",
+          "active": "motion",
+          "frames": {
+            "direct": 0,
+            "cinematic": 0,
+            "motion": 28,
+            "stationary": 0
+          }
+        },
+        "activeBackend": "webgpu",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "graphics": {
+          "timing": {
+            "loadAndDecodeMs": 0.6000000014901161,
+            "pmremCpuSubmissionMs": 86.80000000447035,
+            "sourceDecodedBytes": 16777216,
+            "note": "CPU wall time, including cache and network where applicable; PMREM time is not measured GPU execution or total VRAM."
+          },
+          "preset": "cinematic",
+          "status": "ready",
+          "error": "",
+          "exposure": 1,
+          "intensity": 1,
+          "sunlight": 3,
+          "background": false,
+          "yaw": 0,
+          "pitch": 0,
+          "roll": 0,
+          "shadowSize": 2048,
+          "environment": true
+        },
+        "camera": [
+          5.900000000000001,
+          -7.799999999999971,
+          3.6999999999999886
+        ],
+        "cameraTarget": [
+          0,
+          0,
+          0.8
+        ],
+        "resizeDiagnostics": {
+          "setSizeCalls": 2,
+          "setPixelRatioCalls": 29,
+          "powerPreference": "high-performance"
+        },
+        "motionBlur": {
+          "enabled": true,
+          "quality": "fast",
+          "passes": 28,
+          "exposure": 0
+        },
+        "drawCalls": 0,
+        "terrainUpdates": 5
+      },
+      "records": [
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": false,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 8,
+          "meanFps": 2.033967253127225,
+          "onePercentLowFps": 0.4109814236396517,
+          "stats": {
+            "interval": {
+              "median": 233.3000000000011,
+              "mean": 491.64999999999986,
+              "p95": 2433.199999999999,
+              "p99": 2433.199999999999
+            },
+            "physics": {
+              "median": 17.100000008940697,
+              "mean": 17.087499999441206,
+              "p95": 19.200000010430813,
+              "p99": 19.200000010430813
+            },
+            "recording": {
+              "median": 0.9000000059604645,
+              "mean": 1.1750000026077032,
+              "p95": 2.3000000044703484,
+              "p99": 2.3000000044703484
+            },
+            "conversion": {
+              "median": 0,
+              "mean": 0.0625,
+              "p95": 0.29999999701976776,
+              "p99": 0.29999999701976776
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.0625,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.10000000149011612,
+              "mean": 0.17499999981373549,
+              "p95": 0.29999999701976776,
+              "p99": 0.29999999701976776
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.037500000558793545,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 215.69999999552965,
+              "mean": 487.86249999981374,
+              "p95": 2422.7000000029802,
+              "p99": 2422.7000000029802
+            },
+            "dashboard": {
+              "median": 0.5,
+              "mean": 0.5625,
+              "p95": 1.1000000014901161,
+              "p99": 1.1000000014901161
+            },
+            "callback": {
+              "median": 236.79999999701977,
+              "mean": 508.13750000018626,
+              "p95": 2440.39999999851,
+              "p99": 2440.39999999851
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 1,
+            "disjointDuringRun": false,
+            "samples": 1,
+            "stats": {
+              "median": 299.052566,
+              "mean": 299.052566,
+              "p95": 299.052566,
+              "p99": 299.052566
+            },
+            "raw": [
+              {
+                "frame": 0,
+                "ms": 299.052566,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 3.292300000000059,
+            "simulated": 0.7410000000000005,
+            "wall": 4.6998999999999995,
+            "accepted": 741,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false,
+          "passes": {
+            "total": 27,
+            "output": 9,
+            "discardedResolves": 18
+          }
+        },
+        {
+          "settings": {
+            "viewport": {
+              "innerWidth": 900,
+              "innerHeight": 740,
+              "outerWidth": 900,
+              "outerHeight": 740,
+              "screenWidth": 900,
+              "screenHeight": 740,
+              "visualViewportScale": 1
+            },
+            "reportedCommit": null,
+            "reportedHardware": null,
+            "smoke": {
+              "submitted": true,
+              "enabled": true,
+              "density": 2,
+              "opacity": 1.2,
+              "size": 1.4,
+              "lifetime": 1.4,
+              "dispersion": 1
+            },
+            "environmentPath": "./german_town_street_2k.exr",
+            "environmentStatus": "ready",
+            "graphics": {
+              "motion": {
+                "enabled": true,
+                "quality": "fast",
+                "intensity": 0.82,
+                "shutter": 7,
+                "periphery": 0.18,
+                "camera": 1,
+                "body": 1,
+                "wheels": true,
+                "radius": 16,
+                "depth": true
+              },
+              "scenery": true,
+              "preset": "cinematic",
+              "exposure": 1,
+              "intensity": 1,
+              "detail": true,
+              "contact": true,
+              "sunlight": 3,
+              "background": false,
+              "yaw": 0,
+              "pitch": 0,
+              "roll": 0
+            },
+            "vehicle": false,
+            "appearance": {
+              "requested": "custom",
+              "status": "ready",
+              "active": "custom"
+            },
+            "drivetrainMode": "lifecycle",
+            "mode": "full",
+            "terrain": false,
+            "lighting": false,
+            "tracks": false,
+            "other": false,
+            "gpu": true,
+            "submission": true,
+            "scene": true,
+            "dashboard": true,
+            "paused": false,
+            "environment": {
+              "preset": "flight",
+              "seed": 23,
+              "amplitude": 0.15,
+              "roughness": 0.5
+            },
+            "canvas": {
+              "attributes": {
+                "backend": "webgpu"
+              },
+              "drawingBuffer": [
+                267,
+                213
+              ],
+              "cssSize": [
+                534,
+                427
+              ],
+              "devicePixelRatio": 1,
+              "rendererPixelRatio": 0.5,
+              "renderScale": 0.5
+            },
+            "camera": "normal",
+            "marks": true,
+            "vectors": false,
+            "xray": false,
+            "recording": true
+          },
+          "frames": 14,
+          "meanFps": 3.6364580898205134,
+          "onePercentLowFps": 2.7270248159258195,
+          "stats": {
+            "interval": {
+              "median": 250,
+              "mean": 274.99285714285725,
+              "p95": 366.7000000000007,
+              "p99": 366.7000000000007
+            },
+            "physics": {
+              "median": 18.19999997317791,
+              "mean": 17.01428571609514,
+              "p95": 23.80000000447035,
+              "p99": 23.80000000447035
+            },
+            "recording": {
+              "median": 0.699999988079071,
+              "mean": 1.457142859697342,
+              "p95": 11.300000004470348,
+              "p99": 11.300000004470348
+            },
+            "conversion": {
+              "median": 0,
+              "mean": 0.03571428571428571,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "smoke": {
+              "median": 0,
+              "mean": 0.05714285746216774,
+              "p95": 0.20000000298023224,
+              "p99": 0.20000000298023224
+            },
+            "audioSpatial": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "scene": {
+              "median": 0.20000000298023224,
+              "mean": 3.9500000003193105,
+              "p95": 22.5,
+              "p99": 22.5
+            },
+            "terrainGeometry": {
+              "median": 0,
+              "mean": 2.3857142850756645,
+              "p95": 16.100000001490116,
+              "p99": 16.100000001490116
+            },
+            "terrainNormals": {
+              "median": 0,
+              "mean": 1.1142857143921512,
+              "p95": 5.600000001490116,
+              "p99": 5.600000001490116
+            },
+            "terrainTexture": {
+              "median": 0,
+              "mean": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "terrainUploadMark": {
+              "median": 0,
+              "mean": 0.007142857249294009,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "tracks": {
+              "median": 0,
+              "mean": 0.014285714498588018,
+              "p95": 0.10000000149011612,
+              "p99": 0.10000000149011612
+            },
+            "webgl": {
+              "median": 225.39999999850988,
+              "mean": 247.5071428567171,
+              "p95": 346.29999999701977,
+              "p99": 346.29999999701977
+            },
+            "dashboard": {
+              "median": 0.5,
+              "mean": 0.5428571424313954,
+              "p95": 0.7000000029802322,
+              "p99": 0.7000000029802322
+            },
+            "callback": {
+              "median": 248.69999999552965,
+              "mean": 271.5428571424314,
+              "p95": 373.20000000298023,
+              "p99": 373.20000000298023
+            }
+          },
+          "gpu": {
+            "scope": "asynchronous render-pass batches; not presentation or per-frame latency",
+            "supported": true,
+            "webgpuPending": true,
+            "extension": "timestamp-query",
+            "pending": 0,
+            "dropped": 0,
+            "epoch": 2,
+            "disjointDuringRun": false,
+            "samples": 2,
+            "stats": {
+              "median": 248.35800799999998,
+              "mean": 300.98267599999997,
+              "p95": 353.60734399999996,
+              "p99": 353.60734399999996
+            },
+            "raw": [
+              {
+                "frame": 2,
+                "ms": 248.35800799999998,
+                "scope": "render-pass batch; not frame latency"
+              },
+              {
+                "frame": 8,
+                "ms": 353.60734399999996,
+                "scope": "render-pass batch; not frame latency"
+              }
+            ]
+          },
+          "debt": {
+            "frequency": 1000,
+            "timestep": 0.001,
+            "debt": 5.8527999999997755,
+            "simulated": 2.2469999999998636,
+            "wall": 8.766400000000003,
+            "accepted": 2247,
+            "rejected": 0,
+            "fault": null
+          },
+          "changed": false,
+          "passes": {
+            "total": 45,
+            "output": 15,
+            "discardedResolves": 30
+          }
+        }
+      ]
+    }
+  ]
+}

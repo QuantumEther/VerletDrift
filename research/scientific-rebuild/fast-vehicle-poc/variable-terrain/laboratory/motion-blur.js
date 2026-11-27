@@ -3,10 +3,11 @@
 import {createMotionHistory,motionDefaults,samplePresets} from './motion-history.js';
 export {motionDefaults,exposureScale} from './motion-history.js';
 
-export async function createMotionBlur(renderer, body, hubs, recenteredMeshes){
+export async function createMotionBlur(renderer, body, hubs, recenteredMeshes,{adaptive=true}={}){
  const T=await import('./vendor/three-r180/three.webgpu.js');
  const N=await import('./vendor/three-r180/three.tsl.js');
  const target=new T.RenderTarget(1,1,{count:2,type:T.HalfFloatType,samples:renderer.samples});
+ target.discardResolvedColor=adaptive;
  target.texture.name='output';
  const data=target.textures[1];data.name='motionDepth';data.minFilter=data.magFilter=T.NearestFilter;
  const history=createMotionHistory(T,body,hubs,recenteredMeshes);
@@ -33,12 +34,16 @@ export async function createMotionBlur(renderer, body, hubs, recenteredMeshes){
   const velocity=motion.sample(uv).toVar();
   const edge=N.clamp(N.length(uv.sub(.5)).mul(1.7),0,1);
   const displacement=velocity.xy.mul(scale).mul(edge.mul(edge).mul(periphery).add(1)).mul(resolution).toVar();
-  const length=N.length(displacement);
+  const length=N.length(displacement).toVar();
   N.If(length.greaterThan(.65).and(velocity.z.greaterThan(.001)).and(velocity.z.lessThan(150)),()=>{
    const direction=displacement.mul(N.min(1,radius.div(length))).div(resolution);
    const sum=center.toVar(),weights=N.float(1).toVar();
-   N.Loop(sampleCount,({i})=>{
-    const portion=N.float(i).add(.5).div(N.float(sampleCount)).sub(.5);
+   const span=N.min(length,radius);
+   const budget=adaptive?N.min(sampleCount,N.select(span.lessThanEqual(3),2,
+    N.select(span.lessThanEqual(6),4,N.select(span.lessThanEqual(12),8,N.select(span.lessThanEqual(24),16,24))))):sampleCount;
+   const taps=N.int(budget).toVar();
+   N.Loop(taps,({i})=>{
+    const portion=N.float(i).add(.5).div(N.float(taps)).sub(.5);
     const lookup=N.clamp(uv.add(direction.mul(portion)),N.vec2(0),N.vec2(1));
     const neighbor=motion.sample(lookup);
     const threshold=N.max(.32,velocity.z.mul(.042));
@@ -58,6 +63,7 @@ export async function createMotionBlur(renderer, body, hubs, recenteredMeshes){
  quad.material.fragmentNode=gather.renderOutput(renderer.toneMapping,renderer.outputColorSpace);
  quad.material.depthTest=quad.material.depthWrite=false;
  function reset(){history.reset();scale.value=0;}
+ function hold(now){history.hold(now);scale.value=0;}
  function configure(next){if(options.enabled!==next.enabled){reset();if(!next.enabled)target.setSize(1,1);}options=next;}
  function render(scene,camera,p,width,height,now=performance.now()){
   if(width<1||height<1)return;
@@ -74,6 +80,6 @@ export async function createMotionBlur(renderer, body, hubs, recenteredMeshes){
   }
   renderer._renderOutput(target,quad);passes++;
  }
- return {render,configure,reset,info:()=>({enabled:options.enabled,quality:options.quality,passes,exposure:scale.value}),
+ return {render,configure,reset,hold,info:()=>({enabled:options.enabled,quality:options.quality,passes,exposure:scale.value}),
   dispose(){target.dispose();quad.material.dispose();}};
 }

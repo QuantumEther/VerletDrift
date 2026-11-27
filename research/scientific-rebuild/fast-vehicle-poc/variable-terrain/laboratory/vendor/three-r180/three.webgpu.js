@@ -19569,6 +19569,12 @@ class NodeMaterial extends Material {
 
 		}
 
+		if ( builder.renderer._currentRenderContext?.directCanvasOutput === true ) {
+
+			resultNode = renderOutput( resultNode, builder.renderer.toneMapping, builder.renderer.outputColorSpace );
+
+		}
+
 		builder.stack.outputNode = resultNode;
 
 		builder.addFlow( 'fragment', builder.removeStack() );
@@ -50967,6 +50973,11 @@ class Nodes extends DataMap {
 			_cacheKeyValues.push( this.renderer.shadowMap.enabled ? 1 : 0 );
 			// Changing MRT changes fragment output declarations.
 			_cacheKeyValues.push( this.renderer.getMRT()?.id ?? -1 );
+			if ( this.renderer._currentRenderContext?.directCanvasOutput === true ) {
+
+				_cacheKeyValues.push( this.renderer.toneMapping, this.renderer.outputColorSpace === SRGBColorSpace ? 1 : 2 );
+
+			}
 
 			cacheKeyData.callId = callId;
 			cacheKeyData.cacheKey = hashArray( _cacheKeyValues );
@@ -54881,6 +54892,17 @@ class Renderer {
 
 	}
 
+	renderDirectCanvas( scene, camera ) {
+
+		if ( ! this._initialized || ! this.backend.isWebGPUBackend || this._renderTarget !== null
+			|| this.getOutputRenderTarget() !== null || this.getMRT() !== null || this.xr.isPresenting
+			|| ! this.autoClear || ! this.autoClearColor ) return false;
+
+		this._renderScene( scene, camera, false, false, true );
+		return true;
+
+	}
+
 	/**
 	 * Returns an internal render target which is used when computing the output tone mapping
 	 * and color space conversion. Unlike in `WebGLRenderer`, this is done in a separate render
@@ -54925,6 +54947,8 @@ class Renderer {
 
 		const outputRenderTarget = this.getOutputRenderTarget();
 
+		frameBufferTarget.discardResolvedColor = this.discardResolvedSceneColor === true && outputRenderTarget === null;
+
 		frameBufferTarget.depthBuffer = depth;
 		frameBufferTarget.stencilBuffer = stencil;
 		if ( outputRenderTarget !== null ) {
@@ -54959,7 +54983,7 @@ class Renderer {
 	 * @param {boolean} [useFrameBufferTarget=true] - Whether to use a framebuffer target or not.
 	 * @return {RenderContext} The current render context.
 	 */
-	_renderScene( scene, camera, useFrameBufferTarget = true, singleSampleOutput = false ) {
+	_renderScene( scene, camera, useFrameBufferTarget = true, singleSampleOutput = false, directCanvasOutput = false ) {
 
 		if ( this._isDeviceLost === true ) return;
 
@@ -55101,6 +55125,7 @@ class Renderer {
 		}
 
 		renderContext.singleSampleOutput = singleSampleOutput;
+		renderContext.directCanvasOutput = directCanvasOutput;
 
 		const renderList = this._renderLists.get( scene, camera );
 		renderList.begin();
@@ -66399,7 +66424,9 @@ const GPUCompareFunction = {
 };
 
 const GPUStoreOp = {
-	Store: 'store'};
+	Store: 'store',
+	Discard: 'discard'
+};
 
 const GPULoadOp = {
 	Load: 'load',
@@ -73971,7 +73998,10 @@ class WebGPUBackend extends Backend {
 
 				}
 
-				colorAttachment.storeOp = GPUStoreOp.Store;
+				// Resolve remains stored in the single-sample texture. This target is
+				// fully cleared on each scene pass, so no later pass loads its MSAA color.
+				colorAttachment.storeOp = renderContext.renderTarget?.discardResolvedColor === true
+					&& renderContext.clearColor && colorAttachment.resolveTarget ? GPUStoreOp.Discard : GPUStoreOp.Store;
 
 			}
 

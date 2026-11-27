@@ -47,3 +47,17 @@ test('Wheel blur bypass removes spin while leaving previous carrier travel',()=>
  const vertex=new T.Vector3(1,0,0).applyMatrix4(previous);
  assert.ok(Math.abs(vertex.z+Math.sin(1))<1e-12);
 });
+
+test('Stationary bypass retains the prior pose and uses the latest display interval',()=>{
+ const camera=new T.PerspectiveCamera(),body=new T.Group();
+ body.updateMatrixWorld();
+ const history=createMotionHistory(T,body,[],new Set());
+ const p={planar:{x:0,y:0,u:0,v:0},wheels:[]};
+ history.begin(camera,p,640,360,motionDefaults,100);
+ history.previousModel(body);
+ history.hold(2020);
+ body.position.x=1;body.updateMatrixWorld();
+ const frame=history.begin(camera,p,640,360,motionDefaults,2030);
+ assert.equal(frame.exposure,7/10*motionDefaults.intensity);
+ assert.equal(history.previousModel(body).elements[12],0);
+});

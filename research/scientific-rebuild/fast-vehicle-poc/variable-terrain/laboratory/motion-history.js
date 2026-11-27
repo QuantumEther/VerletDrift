@@ -74,5 +74,5 @@ export function createMotionHistory(T,body,hubs,recenteredMeshes){
   return {exposure:contiguous?exposureScale(elapsed,options.shutter)*options.intensity:0,
    periphery:options.periphery*Math.min(1,Math.hypot(p.planar.u,p.planar.v)/30)};
  }
- return {begin,reset,previousModel,bodyFactor,currentVP,previousVP,originShift};
+ return {begin,reset,hold(now){if(last)last.now=now;},previousModel,bodyFactor,currentVP,previousVP,originShift};
 }
