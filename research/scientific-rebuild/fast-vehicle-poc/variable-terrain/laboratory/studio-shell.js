@@ -40,20 +40,23 @@ export function mountStudio() {
     button.setAttribute('aria-controls', panel.id);
     panel.setAttribute('aria-label', name);
     panel.append(...nodes);
-    button.onclick = () => {
+    button.onclick = event => {
       for (const [tab, section] of panels) {
         section.hidden = section !== panel;
         tab.setAttribute('aria-pressed', section === panel);
       }
       window.dispatchEvent(new Event('studio-input-clear'));
       tools.scrollTop = 0;
+      if (event?.detail) find('perspective').focus();
     };
     panels.push([button, panel]);
     nav.append(button);
     tools.append(panel);
   }
   panels[0][0].click();
-  tools.addEventListener('focusin', () => window.dispatchEvent(new Event('studio-input-clear')));
+  tools.addEventListener('focusin', event => {
+    if (!event.target.closest('[data-drive]')) window.dispatchEvent(new Event('studio-input-clear'));
+  });
   const collapse = document.createElement('button');
   collapse.textContent = 'Collapse inspector';
   collapse.setAttribute('aria-expanded', 'true');
