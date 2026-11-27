@@ -1,6 +1,6 @@
 const byId = id => document.getElementById(id);
-const names = {atelier:'Automotive Atelier', engineering:'Precision Engineering', cinema:'Cinematic Immersion'};
-const requested = new URLSearchParams(location.search).get('concept');
+const names = {atelier:'Automotive Atelier', engineering:'Precision Engineering', cinema:'Cinematic Immersion', apex:'APEX Studio'};
+const requested = document.body.dataset.concept ?? new URLSearchParams(location.search).get('concept');
 const concept = Object.hasOwn(names, requested) ? requested : 'atelier';
 document.body.classList.add(concept);
 byId('concept').textContent = names[concept];

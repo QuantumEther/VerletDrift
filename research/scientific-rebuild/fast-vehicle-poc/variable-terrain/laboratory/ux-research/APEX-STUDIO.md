@@ -1,0 +1,21 @@
+# APEX Studio
+
+Reference: the in-repository **APEX DYNO Multi-RPM Experiment 05**, including its inline styles, component markup, worklet boundary and canvas render loop. Earlier engine-audio experiments use the same APEX name. [Reference source](../../engine-sim-hybrid-v5.html)
+
+| Source characteristic | APEX Studio decision |
+|---|---|
+| Near-black #06080b, blue-black #0c1016 and #111821, steel #2a3645 dividers, #edf3fa readouts | Preserve the cool, recessed surface hierarchy. Lighten secondary text from #7d8a9a to #9eacbd for inspector legibility. |
+| #ff6b1a tach and activation, #ff354b limiter, #65e0ff scope, #43f5a0 running state, #ffc45e cranking or shifting | Preserve distinct roles. Orange marks active controls, cyan marks telemetry, and labeled green, amber and red states communicate readiness, attention and failure. |
+| System sans, tightly set title, 850-weight tracked wordmark, small uppercase instrument labels and monospace technical readouts | Preserve the contrast between the wordmark, labels and measurements. Increase control label size for desktop tuning. Use monospace tabular instrument digits at stable widths. |
+| 458 px maximum column, 11 px spacing, 23 px instrument pod, thin inset highlight, recessed field and pill status | Adapt the pod to a full-width driving viewport with a 300 px inspector. Use 12 px gutters, 14 px panel corners and an inset top highlight to preserve depth without copying the acoustic cell layout. |
+| Dominant canvas tachometer, redline sector and subordinate exhaust scope | Preserve the hierarchy and color roles. The mock instrument has an RPM arc and readout, speed and gear, plus a separate cyan telemetry strip. The reference waveform is audio-derived. The prototype trace is illustrative. |
+| Start action, discrete selects, continuous range with percentage feedback, advanced details, and keyboard or pointer throttle interactions | Retain compact control rows and direct feedback. Extend them with linked range and numeric editors, a mock gear request grid and contextual workspaces. |
+| 120–250 ms control transitions, pulsing transient states, reduced-motion CSS, independent canvas frame loop | Keep immediate command feedback and short control transitions. Keep textual status independent of color and animation. Avoid rapid limiter pulses in the studio shell. |
+
+The reference reads as specialised instrumentation because the high-energy orange and red are concentrated around the tachometer and engine state, while the cyan scope is clearly a different measurement channel. The panel edge, glass highlights and recessed cavity support the instrument hierarchy. APEX Studio extends that hierarchy across a persistent driving viewport instead of retaining the original narrow vertical stack or its global scroll and touch restrictions.
+
+The three earlier layouts remain useful comparison points. Automotive Atelier shares the stable right inspector and uses a quieter champagne palette. Precision Engineering gives controls and telemetry more room at the cost of viewport height. Cinematic Immersion maximises the scene with a floating inspector. APEX Studio combines the fixed inspector with a distinct instrument treatment and exposes additional timing metrics in Research. Immersive hides the inspector and telemetry while retaining the instruments and density selector.
+
+For production, use the APEX tokens on the shell, instrument pod, inspector and status components first. Keep the command facade and read-only telemetry boundary proposed in the first study. Use native controls and retain current input bindings. Synchronisation and rejection should come from the drivetrain, and measurements should come from its authoritative snapshots. Reserve optional critically damped motion for cosmetic inspector transitions. A candidate natural frequency of 24 rad/s can be evaluated against a 250 ms settling budget, with a reduced-motion path and immediate input and numeric feedback. The prototype exercises short CSS control transitions only.
+
+The prototype uses a captured driving viewport and mock settings. No live simulator performance was measured for this design. [Open APEX Studio](apex.html) · [1440 × 900](captures/apex-1440.jpg) · [1920 × 1080](captures/apex-1920.jpg)

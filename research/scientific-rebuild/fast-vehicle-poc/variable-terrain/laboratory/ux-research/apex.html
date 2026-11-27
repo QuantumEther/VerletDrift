@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>APEX Studio · VerletDrift design study</title>
+<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="apex.css">
+</head>
+<body data-concept="apex">
+<header><a href="./" aria-label="Back to design studies">APEX <b>STUDIO</b></a><span id="concept" hidden></span><span class="model">Schweinemotorwerke</span><label>Density <select id="density"><option>Studio</option><option>Immersive</option><option>Research</option></select></label></header>
+<nav id="workspaces" aria-label="Workspaces"></nav>
+<main class="studio">
+<section class="viewport" aria-label="Driving viewport mockup">
+<img src="captures/live-viewport.jpg" alt="">
+<span class="tag">Proving ground · Viewport preview</span>
+<div class="instruments" aria-label="Vehicle instruments">
+<div class="tach"><div class="tach-scale" aria-hidden="true"></div><output id="rpm">4,850</output><small>RPM / 6,800</small></div>
+<div><output id="speed">86.4</output><small>KM/H</small></div>
+<div><output id="gear">3</output><small>GEAR</small></div>
+</div>
+</section>
+<aside id="inspector" aria-label="Workspace inspector"></aside>
+<section class="telemetry" aria-label="Vehicle telemetry">
+<div><h2>Vehicle telemetry</h2><small>Illustrative sample · 50 ms</small></div>
+<div><span class="metric">Lateral acceleration</span><div class="trace" aria-hidden="true"></div><strong>1.24 g</strong></div>
+<div><span class="metric">Frame interval</span><strong>4.17 ms</strong></div>
+</section>
+<section class="research-metrics" aria-label="Timing diagnostics"><h2>Timing diagnostics</h2><span>Mock P95 <strong>4.32 ms</strong></span><span>Mock P99 <strong>5.02 ms</strong></span><span>Mock simulation debt <strong>0 ms</strong></span></section>
+</main>
+<footer><span>Interactive mockup · Recorded viewport</span><label>Preview state <select id="state"><option value="Ready">Ready</option><option value="Loading">Loading</option><option value="Warning">Warning</option><option value="Error">Error</option></select></label><output id="status" aria-live="polite">Ready</output></footer>
+<script type="module" src="studio.js"></script>
+</body>
+</html>
