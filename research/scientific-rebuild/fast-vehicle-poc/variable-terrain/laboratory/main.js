@@ -1,3 +1,4 @@
+import {mountStudio} from './studio-shell.js';
 import {createEngineAudio} from './engine-audio.js';
 import {audioTelemetry} from './audio-telemetry.js';
 import {createLaboratory,advance,presentation,capture} from './adapter.js';
@@ -9,6 +10,8 @@ import {TireObservatory} from './tracks.js';
 import {drawFrictionCircles} from '../../../tire-road-observatory-prototype/src/observatory-panel.js';
 import {setEnvironment} from '../../../procedural-terrain/src/application-vehicle.js';
 const $=id=>document.getElementById(id),clock=new SimulationClock({budgetMs:20,maxSteps:128,maxDebt:Infinity}),observatory=new TireObservatory();
+const studio=mountStudio();
+let acceptedInput=null;
 let audioEpoch=0,audioFocused=true,lastSpatialUpdate=0;
 let lab,view,previous,last=performance.now(),paused=false,lastPanel=0,renderMs=0,lastPhysicsMs=0,totalPhysicsMs=0,stepTimes=[],maxIterations=0,attemptedInput=null;
 let measurement=null,report=null,framePhysics=0,frameRecording=0,previousFrame=null;
@@ -36,12 +39,14 @@ window.addEventListener('pagehide',()=>engineAudio.disable());
 let resetGeneration=0,viewInitialization=Promise.resolve();
 async function reset(speed=0){
  const generation=++resetGeneration;
+ acceptedInput=null;
+ studio?.status('Loading scene');
  try{
   const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed,drivetrainMode:$('drivetrain-mode').value,vehicleId:$('vehicle-select').value});
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
   if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,new URL(location.href).searchParams.get('backend')??'webgl'));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
- }catch(e){if(generation!==resetGeneration)return;clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
+ }catch(e){if(generation!==resetGeneration)return;studio?.status('Scene error');clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
 for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=['mountain','yard','rally'].includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});
 $('vehicle-select').addEventListener('change',()=>{const mustang=$('vehicle-select').value!=='reference';$('drivetrain-mode').value=mustang?'lifecycle':'fixed';$('drivetrain-mode').disabled=mustang;$('gear-request').disabled=!mustang;$('gear-request').value='N';const v=definition($('vehicle-select').value);$('vehicle-title').textContent=mustang?'Schweinemotorwerke':'The touring chassis';$('vehicle-info').textContent=mustang?'Original user-created vehicle · legacy 428-CJ-based estimates · modified six-speed · 1660 kg estimate · 2.7432 m wheelbase · reduced suspension/tire model':'Original experimental reference · retained physics and coachwork';reset();});
@@ -58,14 +63,14 @@ $('camera').addEventListener('change',()=>view?.resetCamera($('camera').value));
 for(const key of ['throttle','engagement'])$(key).addEventListener('input',()=>$(key+'-value').textContent=Math.round(100*$(key).value)+'%');for(const b of document.querySelectorAll('[data-clutch]'))b.addEventListener('click',()=>{$('engagement').value=b.dataset.clutch;$('engagement').dispatchEvent(new Event('input'));});
 document.addEventListener('visibilitychange',()=>{if(measurement&&document.hidden)measurement.hidden=true;controls.clear();const now=performance.now();clock.pausedWall+=Math.max(0,(now-last)/1000);clock.wall+=Math.max(0,(now-last)/1000);last=now;});
 function physicalStep(h){
- const input=controls.sample(h);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);lastPhysicsMs=performance.now()-begin;framePhysics+=lastPhysicsMs;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
+ const input=controls.sample(h);attemptedInput={...input};const begin=performance.now();advance(lab,input,h);acceptedInput=input;lastPhysicsMs=performance.now()-begin;framePhysics+=lastPhysicsMs;totalPhysicsMs+=lastPhysicsMs;stepTimes.push(lastPhysicsMs);if(stepTimes.length>1000)stepTimes.shift();maxIterations=Math.max(maxIterations,lab.state.consistency.iterations);
  const recordStart=performance.now(),end=capture(lab,h);view.smokeAccept(end,h);if($('record-contacts')?.checked!==false)observatory.record({start:previous,end,h});previous=end;frameRecording+=performance.now()-recordStart;return {};
 }
 function panel(p){
  $('smoke-stats').textContent=JSON.stringify(view.smokeInfo(),null,2);
  updateAudioPanel();
  $('graphics-status').textContent=view.graphicsInfo().status==='error'?'EXR failed: '+view.graphicsInfo().error:'EXR '+view.graphicsInfo().status;
- const asset=view.snapshot();$('asset-status').textContent=asset.assetStatus==='error'?'GLB failed: '+asset.assetError+' · procedural fallback active':asset.assetStatus==='loading'?'Loading Schweinemotorwerke model…':asset.assetStatus==='ready'?'Custom model ready':'';
+ const asset=view.snapshot();studio?.update(p,asset,clock,paused,acceptedInput,$('gear-request').value);$('asset-status').textContent=asset.assetStatus==='error'?'GLB failed: '+asset.assetError+' · procedural fallback active':asset.assetStatus==='loading'?'Loading Schweinemotorwerke model…':asset.assetStatus==='ready'?'Custom model ready':'';
  const sorted=stepTimes.slice().sort((a,b)=>a-b),q=f=>sorted[Math.max(0,Math.ceil(sorted.length*f)-1)]??0,mean=stepTimes.reduce((a,x)=>a+x,0)/(stepTimes.length||1),s=lab.state.consistency;
  $('live-performance').textContent=`Physics ${clock.frequency} Hz · ${clock.stepsPerSecond.toFixed(0)} accepted steps/wall s · sim speed ${clock.realtimeRatio.toFixed(2)}× · ${clock.fps.toFixed(1)} FPS\nPhysics JS elapsed (CPU proxy) ${mean.toFixed(3)} ms/step · p95 ${q(.95).toFixed(3)} · p99 ${q(.99).toFixed(3)} ms · ${(lab.state.time?totalPhysicsMs/lab.state.time:0).toFixed(1)} ms/sim s · render ${renderMs.toFixed(2)} ms\nConvergence ${s?.iterations??0}/${maxIterations} last/max of 24 · force residual ${(s?.forceResidual??0).toExponential(2)} N · debt ${clock.debt.toFixed(3)} s · rejected ${clock.rejected}`;
  $('clock-status').textContent=`${clock.status} · ${lab.state.time.toFixed(3)} sim s / ${clock.wall.toFixed(2)} wall s · no dropped debt`;

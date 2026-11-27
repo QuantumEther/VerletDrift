@@ -357,3 +357,13 @@ The Renderer selector explicitly reloads the laboratory with WebGL or experiment
 ## CPU/GPU A/B audit
 
 Open frame diagnostics and use **Run paused A/B audit (~3 minutes)**, then **Download A/B audit JSON**. It freezes the current vehicle and restores settings afterward. Keep the camera/tab unchanged and wait for asset loading/warmup before starting. See [performance-audit.md](performance-audit.md) for interpretation and the distinction between GPU batch timing, CPU submission and frame pacing.
+
+### Live studio layout
+
+The laboratory's existing index opens the viewport-first studio. Drive keeps the original driving, gear, clutch, ignition and reset controls. Vehicle, Terrain, Audio, Graphics and Telemetry expose the original configuration and experiment controls. The sidebar moves existing DOM nodes at startup and changes visibility during navigation. The simulation, camera and renderer remain mounted during navigation. Terrain and vehicle changes retain their original reset behavior.
+
+Use `?layout=legacy` to restore the previous layout, or combine it with `?backend=webgpu&layout=legacy` for existing browser scenarios that expect all controls on one page. The normal entry point retains the existing backend selection. The readouts update at the dashboard cadence from live state and the most recent accepted input.
+
+From the repository root run `python3 -m http.server 8779` and open `http://localhost:8779/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/` on the machine serving the checkout.
+
+Chromium verification exercised acceleration, paused workspace changes with exact snapshot equality, camera presets and reset, immersive mode, graphics changes, audio activation, a terrain reset, manual-engine starter and first-gear request, and a diagnostic JSON download in WebGL. A separate initialization confirmed the native WebGPU backend. Both checks used the cloud browser with software rendering. These runs provide no hardware performance comparison.

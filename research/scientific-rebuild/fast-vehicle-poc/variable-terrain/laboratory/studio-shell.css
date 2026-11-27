@@ -1,0 +1,46 @@
+.studio-shell {
+  --ink:#090c0f; --panel:#0e1319; --control:#151d26; --line:#293746;
+  --brass:#ff7026; --ivory:#e8eff7; --dim:#9eacbd; --instrument:#50cbeb;
+  color:var(--ivory); background:var(--ink); width:100%; max-width:none;
+  padding:12px clamp(12px,2vw,36px); font:14px/1.4 system-ui,sans-serif;
+}
+body:has(.studio-shell){background:#090c0f}
+.studio-shell header{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border:0}
+.studio-shell h1{margin:0;font:850 25px/1.1 system-ui;letter-spacing:.1em;text-transform:uppercase}
+.studio-shell .eyebrow,.studio-shell .smalltitle,.studio-readouts span{color:var(--dim);font:750 10px/1.4 system-ui;letter-spacing:.12em;text-transform:uppercase}
+.studio-nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.studio-shell button,.studio-shell select,.studio-shell input:not([type=range],[type=checkbox]){
+  background:var(--control);color:var(--ivory);border:1px solid var(--line);border-radius:5px;font:inherit;
+}
+.studio-shell button{padding:6px 10px}
+.studio-shell button[aria-pressed=true],.studio-shell button.held{border-color:var(--brass);color:#ffad70}
+.studio-shell [hidden]{display:none!important}
+.studio-shell :focus-visible{outline:2px solid var(--instrument);outline-offset:2px}
+.studio-shell input{accent-color:var(--brass)}
+.studio-shell .lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,320px);align-items:start;gap:12px}
+.studio-shell .exhibition,.studio-tools{min-width:0;border:1px solid var(--line);border-radius:12px;background:linear-gradient(#151d26,var(--panel))}
+.studio-shell .stagehead{padding:6px 12px}
+.studio-shell .stagehead h2,.studio-shell .section-title{font:750 16px system-ui;color:var(--ivory)}
+.studio-shell .stagehead .tag{display:none}
+.studio-shell #perspective{width:100%;height:clamp(320px,58dvh,950px);aspect-ratio:auto;min-width:0;max-height:none;display:block}
+.studio-tools{max-height:calc(100dvh - 115px);overflow:auto;padding:12px}
+.studio-workspace{min-width:0}
+.studio-shell .panel,.studio-shell .views,.studio-shell details{background:var(--panel);border-color:var(--line);color:var(--ivory)}
+.studio-shell .panel{padding:10px}
+.studio-shell .terrain-controls{grid-template-columns:1fr 1fr}
+.studio-shell .views{padding:6px;gap:6px}
+.studio-shell label,.studio-shell select,.studio-shell pre{min-width:0;max-width:100%}
+.studio-shell pre{overflow:auto}
+.studio-shell .instruments{display:block}
+.studio-shell #live-performance{margin:6px 12px;white-space:pre-wrap;color:var(--dim);font:11px/1.35 ui-monospace,monospace}
+.studio-readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.studio-readouts div{padding:6px;background:var(--panel)}
+.studio-readouts output{display:block;font:750 14px ui-monospace,monospace;color:var(--instrument);overflow-wrap:anywhere}
+.studio-readouts div:nth-child(-n+2) output{color:#ffad70}
+.studio-shell.immersive .lab{grid-template-columns:minmax(0,1fr)}
+.studio-shell.immersive .studio-tools,.studio-shell.immersive .studio-nav{display:none}
+.studio-shell.immersive #perspective{height:calc(100dvh - 155px)}
+@media(max-width:800px){
+  .studio-shell .lab{grid-template-columns:minmax(0,1fr)}
+  .studio-tools{max-height:none}
+}
