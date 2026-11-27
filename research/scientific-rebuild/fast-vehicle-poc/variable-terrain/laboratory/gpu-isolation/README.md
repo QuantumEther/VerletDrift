@@ -25,3 +25,17 @@ Run verify-three.mjs and verify-application.mjs from repository root with a serv
 The supplied owner figures establish near-240 Hz native WebGPU on NVIDIA Blackwell for the minimal workload. No complete hardware JSON was attached in this turn for independent inspection. The prior Three results were invalid because of the camera defect. No corrected RTX Three measurements exist yet, so neither a revision-specific issue nor application-level cause is established.
 
 The remaining release blocker is unresolved. Hardware FPS gains are not claimed. All 44 laboratory regression tests pass. Public branch hosting remains unavailable/unverified; the last environment lookup showed no HTTP preview portal, and GitHub Pages API access returned Forbidden. A source URL is not an executing benchmark.
+
+## Run the RTX comparison independently
+
+Select **RTX comparison · r180 versus r187** (the default), enter the simulator's drawing-buffer width and height, and press **Run Benchmark**, then **Export JSON**. The pair uses native presentation, antialiasing, high-performance preference, and timestamp tracking off for both revisions. The page reports browser cadence, adapter details, pixel validation, frame intervals and CPU submission times. Validation checks an untimed offscreen probe. Native presentation timing is inferred from animation intervals.
+
+Native WebGL/WebGPU, r180, r187, and the application can also be run separately. Complete suite includes all groups and reports their status independently. Application output-check failures remain visible and do not change the status of the Three groups. Cloud application failures previously included uniform canvas captures and explicit GPU instance loss during offscreen readback. Those observations do not establish whether the target machine has a rendering failure.
+
+From a clean directory:
+
+    git clone --single-branch --branch PERFORMANCE_2_UX https://github.com/QuantumEther/VerletDrift.git
+    cd VerletDrift
+    python3 -m http.server 8792 --bind 127.0.0.1
+
+Open http://127.0.0.1:8792/research/scientific-rebuild/fast-vehicle-poc/variable-terrain/laboratory/gpu-isolation/ in Chrome on the RTX laptop. The independent groups need only the benchmark directory and its sibling vendor/three-r180 modules. The application group needs the full checkout.

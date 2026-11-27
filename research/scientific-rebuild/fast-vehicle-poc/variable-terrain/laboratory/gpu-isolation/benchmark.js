@@ -92,6 +92,8 @@ $('run').onclick=async()=>{
   if(!$('buffer-width').checkValidity()||!$('buffer-height').checkValidity()){ $('status').textContent='Enter valid drawing-buffer dimensions';return; }
   $('run').disabled=true;$('save').disabled=true;$('results').replaceChildren();
   report={schema:1,latestThree:latest,browser:navigator.userAgent,dpr:devicePixelRatio,screen:{width:screen.width,height:screen.height},records:[],limitations:['Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results.']};
+  const group=$('group').value;
+  report.selectedGroup=group;
   const cases=[{kind:'cadence',size:[640,360]}];
   for(const kind of ['native-gl','native-gpu','three-gl','three-gpu','three-new']){
     const gpu=!kind.endsWith('-gl');
@@ -106,6 +108,24 @@ $('run').onclick=async()=>{
   const smoke = new URLSearchParams(location.search).get('smoke');
   if(smoke==='gpu')cases.splice(0,cases.length,...cases.filter(c=>c.kind==='native-gpu').slice(0,2));
   else if(smoke!==null)cases.splice(5);
+  const groupFor = kind => ({
+    cadence:'cadence','native-gl':'native','native-gpu':'native',
+    'three-gl':'r180','three-gpu':'r180','three-new':'r187',
+    'app-minimal':'application','app-full':'application',
+  })[kind];
+  const query=new URLSearchParams(location.search);
+  if(!['verify','appverify','smoke'].some(key=>query.has(key))&&group!=='all'){
+    let selected=group==='paired'
+      ? cases.filter(c=>['three-gpu','three-new'].includes(c.kind)&&c.aa&&!c.offscreen&&!c.timestamp&&c.power==='high-performance'&&c.size[0]===Number($('buffer-width').value)&&c.size[1]===Number($('buffer-height').value))
+      : cases.filter(c=>groupFor(c.kind)===group);
+    if(group==='paired')selected=[...new Map(selected.map(c=>[c.kind,c])).values()];
+    cases.splice(0,cases.length,...new Set([cases[0],...selected]));
+  }
+  const expected={};
+  for(const c of cases){
+    const key=groupFor(c.kind);
+    expected[key]=(expected[key]??0)+1;
+  }
   for(const c of cases) {
     const canvas=document.createElement('canvas');canvas.width=c.size[0];canvas.height=c.size[1];$('surface').replaceChildren(canvas);
     let backend;
@@ -120,14 +140,26 @@ $('run').onclick=async()=>{
       else if(c.kind==='cadence'){canvas.remove();record.measurement=await sample(()=>{});}
       else {backend=c.kind==='native-gl'?await nativeGL(canvas,c):c.kind==='native-gpu'?await nativeGPU(canvas,c):await three(canvas,c);record.info=backend.info;if(backend.verify)record.validation=await backend.verify();record.measurement=await sample(backend.render);}
     }catch(error){record.error=error.message;}
-    finally{if(backend)await backend.dispose();canvas.remove();}
+    finally{
+      try{if(backend)await backend.dispose();}catch(error){record.error??='Cleanup: '+error.message;}
+      canvas.remove();
+    }
+    record.group=groupFor(c.kind);
+    record.validationStatus=record.error?'failed':record.validation?.status==='PASS'?'passed':'timed-without-pixel-check';
     report.records.push(record);
     const row=document.createElement('tr');
     for(const text of [c.kind+(c.offscreen?' offscreen':''),record.measurement?.interval.fps.toFixed(1)??record.error,record.measurement?.interval.p99.toFixed(2)??'—',record.measurement?.cpuSubmission.mean.toFixed(3)??'—']){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}
     $('results').append(row);
     if(document.hidden)break;
   }
-  $('status').textContent='Complete · '+report.records.filter(r=>!r.error).length+' successful / '+report.records.length+' cases';
+  report.groups=Object.fromEntries(Object.entries(expected).map(([group,count])=>{
+    const records=report.records.filter(record=>record.group===group);
+    const failed=records.filter(record=>record.error).length;
+    const validated=records.filter(record=>record.validationStatus==='passed').length;
+    const status=records.length<count?'incomplete':failed?'failed':validated===count?'passed':'completed';
+    return [group,{status,expected:count,recorded:records.length,failed,validated}];
+  }));
+  $('status').textContent=Object.entries(report.groups).map(([group,result])=>group+': '+result.status+' ('+result.recorded+'/'+result.expected+')').join(' · ')+' — '+report.records.filter(r=>!r.error).length+' successful / '+report.records.length+' cases';
   $('save').disabled=false;$('run').disabled=false;
 };
-$('save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='gpu-isolation.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='gpu-isolation-'+report.selectedGroup+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
