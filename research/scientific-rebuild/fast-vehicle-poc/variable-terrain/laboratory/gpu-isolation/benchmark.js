@@ -1,3 +1,4 @@
+import {applicationCase} from './application.js';
 const $ = id => document.getElementById(id);
 const latest = '0.187.0';
 let report;
@@ -8,7 +9,7 @@ function stats(values) {
   const slow=a.slice(-Math.max(1,Math.ceil(n*.01)));
   return {mean,median:q(.5),p95:q(.95),p99:q(.99),p999:q(.999),max:a.at(-1),fps:1000/mean,onePercentLowFps:1000/(slow.reduce((s,v)=>s+v,0)/slow.length)};
 }
-async function sample(render,duration=2000) {
+async function sample(render,duration=new URLSearchParams(location.search).has('verify')?600:2000) {
   const intervals=[],cpu=[];let previous=null,start=null;
   await new Promise((resolve,reject)=>{
     function frame(now) {
@@ -25,9 +26,11 @@ async function sample(render,duration=2000) {
   return {interval:stats(intervals),cpuSubmission:stats(cpu),rawIntervals:intervals,rawCpu:cpu,scope:'Animation callbacks and CPU submission. Presented frames are not independently counted.'};
 }
 function triangle(T) {
-  const scene=new T.Scene(),camera=new T.Camera(),g=new T.BufferGeometry();
+  const scene=new T.Scene(),camera=new T.OrthographicCamera(-1,1,1,-1,.1,10),g=new T.BufferGeometry();
   g.setAttribute('position',new T.Float32BufferAttribute([-.7,-.7,0,.7,-.7,0,0,.7,0],3));
   const material=new T.MeshBasicMaterial({color:0xff7026});
+  camera.position.z=1;
+  camera.updateProjectionMatrix();
   scene.add(new T.Mesh(g,material));
   return {scene,camera,dispose(){g.dispose();material.dispose();}};
 }
@@ -58,26 +61,48 @@ async function nativeGPU(canvas,c) {
   return {info:{adapter:{vendor:adapter.info?.vendor,architecture:adapter.info?.architecture,device:adapter.info?.device,description:adapter.info?.description},timestampSupport:adapter.features.has('timestamp-query'),gpuTiming:'Not measured in raw path'},render(){const view=(target??context.getCurrentTexture()).createView(),encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:msaa?msaa.createView():view,resolveTarget:msaa?view:undefined,clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}]});pass.setPipeline(pipeline);pass.draw(3);pass.end();device.queue.submit([encoder.finish()]);},dispose(){target?.destroy();msaa?.destroy();context?.unconfigure();device.destroy();}};
 }
 async function three(canvas,c) {
-  const source=c.kind==='three-new'?'https://cdn.jsdelivr.net/npm/three@'+latest+'/build/three.webgpu.js':c.kind==='three-gl'?'../vendor/three-r180/three.module.js':'../vendor/three-r180/three.webgpu.js';
+  const source=c.kind==='three-new'?'./vendor-r187/three.webgpu.js':c.kind==='three-gl'?'../vendor/three-r180/three.module.js':'../vendor/three-r180/three.webgpu.js';
   const T=await import(source);
   const renderer=c.kind==='three-gl'?new T.WebGLRenderer({canvas,antialias:c.aa,alpha:false}):new T.WebGPURenderer({canvas,antialias:c.aa,forceWebGL:false,powerPreference:c.power,trackTimestamp:c.timestamp});
+  const resizeCounts={setSize:0,setPixelRatio:0};
+  for(const method of ['setSize','setPixelRatio']){
+    const original=renderer[method].bind(renderer);
+    renderer[method]=(...args)=>{resizeCounts[method]++;return original(...args);};
+  }
   try {
     if(c.kind!=='three-gl'){await renderer.init();if(!renderer.backend.isWebGPUBackend)throw Error('Unexpected WebGL fallback');}
     renderer.setPixelRatio(1);renderer.setSize(canvas.width,canvas.height,false);
     const mesh=triangle(T),target=c.offscreen?new T.RenderTarget(canvas.width,canvas.height):null;
     if(target){target.samples=c.aa?4:0;renderer.setRenderTarget(target);}
     const adapter=renderer.backend?.device?.adapterInfo;
-    return {info:{revision:T.REVISION,adapter:adapter?{vendor:adapter.vendor,architecture:adapter.architecture,device:adapter.device,description:adapter.description}:null,timestampRequested:c.timestamp,gpuTiming:'Tracking overhead only; GPU duration not resolved in this case',resizeCalls:1,pixelRatioCalls:1},render(){renderer.render(mesh.scene,mesh.camera);},dispose(){mesh.dispose();target?.dispose();renderer.dispose();}};
+    return {async verify(){
+      const probe=new T.RenderTarget(32,32);
+      try {
+        renderer.setRenderTarget(probe);
+        renderer.render(mesh.scene,mesh.camera);
+        const pixels=await renderer.readRenderTargetPixelsAsync(probe,16,16,1,1);
+        const visible=pixels[0]>100&&pixels[0]>pixels[2]*1.5&&pixels[3]>200;
+        if(!visible)throw Error('Triangle center pixel validation failed: '+Array.from(pixels));
+        return {status:'PASS',centerPixel:Array.from(pixels),scope:'One untimed offscreen readback validates triangle output; native presentation is not independently verified'};
+      }finally{renderer.setRenderTarget(target);probe.dispose();}
+    },info:{revision:T.REVISION,adapter:adapter?{vendor:adapter.vendor,architecture:adapter.architecture,device:adapter.device,description:adapter.description}:null,timestampRequested:c.timestamp,gpuTiming:'Tracking overhead only; GPU duration not resolved in this case',resizeCounts},render(){renderer.render(mesh.scene,mesh.camera);},async dispose(){if(renderer.backend?.device)await renderer.backend.device.queue.onSubmittedWorkDone().catch(()=>{});mesh.dispose();target?.dispose();renderer.dispose();}};
   }catch(error){renderer.dispose();throw error;}
 }
 $('run').onclick=async()=>{
+  if(!$('buffer-width').checkValidity()||!$('buffer-height').checkValidity()){ $('status').textContent='Enter valid drawing-buffer dimensions';return; }
   $('run').disabled=true;$('save').disabled=true;$('results').replaceChildren();
   report={schema:1,latestThree:latest,browser:navigator.userAgent,dpr:devicePixelRatio,screen:{width:screen.width,height:screen.height},records:[],limitations:['Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results.']};
   const cases=[{kind:'cadence',size:[640,360]}];
   for(const kind of ['native-gl','native-gpu','three-gl','three-gpu','three-new']){
     const gpu=!kind.endsWith('-gl');
-    for(const size of [[640,360],[1280,720]])for(const aa of [false,true])for(const offscreen of (gpu?[false,true]:[false]))for(const power of (gpu?[undefined,'high-performance']:[undefined]))for(const timestamp of (kind.startsWith('three-')&&gpu?[false,true]:[false]))cases.push({kind,size,aa,offscreen,power,timestamp});
+    for(const size of [[640,360],[1280,720],[Number($('buffer-width').value),Number($('buffer-height').value)]])for(const aa of [false,true])for(const offscreen of (gpu?[false,true]:[false]))for(const power of (gpu?[undefined,'high-performance']:[undefined]))for(const timestamp of (kind.startsWith('three-')&&gpu?[false,true]:[false]))cases.push({kind,size,aa,offscreen,power,timestamp});
   }
+  if(new URLSearchParams(location.search).has('verify'))cases.splice(0,cases.length,...cases.filter(c=>c.kind==='three-gpu'||c.kind==='three-new'));
+  if(!new URLSearchParams(location.search).has('verify')){
+    const size=[Number($('buffer-width').value),Number($('buffer-height').value)];
+    for(const offscreen of [false,true])cases.push({kind:'app-minimal',size,aa:true,offscreen},{kind:'app-full',size,aa:true,offscreen});
+  }
+  if(new URLSearchParams(location.search).has('appverify'))cases.splice(0,cases.length,...cases.filter(c=>c.kind.startsWith('app-')));
   const smoke = new URLSearchParams(location.search).get('smoke');
   if(smoke==='gpu')cases.splice(0,cases.length,...cases.filter(c=>c.kind==='native-gpu').slice(0,2));
   else if(smoke!==null)cases.splice(5);
@@ -87,17 +112,22 @@ $('run').onclick=async()=>{
     const record={configuration:c,drawingBuffer:c.size,pixelRatio:1};
     $('status').textContent=(report.records.length+1)+' / '+cases.length+' · '+c.kind;
     try {
-      if(c.kind==='cadence'){canvas.remove();record.measurement=await sample(()=>{});}
-      else {backend=c.kind==='native-gl'?await nativeGL(canvas,c):c.kind==='native-gpu'?await nativeGPU(canvas,c):await three(canvas,c);record.info=backend.info;record.measurement=await sample(backend.render);}
+      if(c.kind.startsWith('app-')){
+        Object.assign(record,await applicationCase($('surface'),c));
+        const rows=record.applicationReport.raw;
+        record.measurement={interval:stats(rows.map(r=>r.interval)),cpuSubmission:stats(rows.map(r=>r.webgl)),rawIntervals:rows.map(r=>r.interval),scope:'Application report uses actual render-submission CPU wall duration. Presentation events unmeasured.'};
+      }
+      else if(c.kind==='cadence'){canvas.remove();record.measurement=await sample(()=>{});}
+      else {backend=c.kind==='native-gl'?await nativeGL(canvas,c):c.kind==='native-gpu'?await nativeGPU(canvas,c):await three(canvas,c);record.info=backend.info;if(backend.verify)record.validation=await backend.verify();record.measurement=await sample(backend.render);}
     }catch(error){record.error=error.message;}
-    finally{backend?.dispose();canvas.remove();}
+    finally{if(backend)await backend.dispose();canvas.remove();}
     report.records.push(record);
     const row=document.createElement('tr');
     for(const text of [c.kind+(c.offscreen?' offscreen':''),record.measurement?.interval.fps.toFixed(1)??record.error,record.measurement?.interval.p99.toFixed(2)??'—',record.measurement?.cpuSubmission.mean.toFixed(3)??'—']){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}
     $('results').append(row);
     if(document.hidden)break;
   }
-  $('status').textContent='Complete · '+report.records.length+' cases';
+  $('status').textContent='Complete · '+report.records.filter(r=>!r.error).length+' successful / '+report.records.length+' cases';
   $('save').disabled=false;$('run').disabled=false;
 };
 $('save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='gpu-isolation.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};

@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "latestThree": "0.187.0",
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "dpr": 1,
+  "screen": {
+    "width": 1280,
+    "height": 720
+  },
+  "records": [
+    {
+      "configuration": {
+        "kind": "app-minimal",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "error": "Application rendered-output validation failed"
+    },
+    {
+      "configuration": {
+        "kind": "app-full",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "error": "Application rendered-output validation failed"
+    },
+    {
+      "configuration": {
+        "kind": "app-minimal",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "error": "A valid external Instance reference no longer exists."
+    },
+    {
+      "configuration": {
+        "kind": "app-full",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "error": "Failed to execute 'mapAsync' on 'GPUBuffer': A valid external Instance reference no longer exists."
+    }
+  ],
+  "limitations": [
+    "Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results."
+  ],
+  "verificationEnvironment": "Chromium 154 headless SwiftShader. Four application cases failed output/readback checks, so no timings were accepted. Native and offscreen failures remain environment blockers."
+}

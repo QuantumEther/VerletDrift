@@ -1,0 +1,6112 @@
+{
+  "schema": 1,
+  "latestThree": "0.187.0",
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "dpr": 1,
+  "screen": {
+    "width": 1280,
+    "height": 720
+  },
+  "records": [
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142876,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000045,
+          "p99": 16.700000000000045,
+          "p999": 16.700000000000045,
+          "max": 16.700000000000045,
+          "fps": 60.03430531732412,
+          "onePercentLowFps": 59.88023952095792
+        },
+        "cpuSubmission": {
+          "mean": 0.042857142963579724,
+          "median": 0,
+          "p95": 0.10000000149011612,
+          "p99": 0.10000000149011612,
+          "p999": 0.10000000149011612,
+          "max": 0.10000000149011612,
+          "fps": 23333.33327538437,
+          "onePercentLowFps": 9999.99985098839
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000045,
+          "p99": 16.700000000000045,
+          "p999": 16.700000000000045,
+          "max": 16.700000000000045,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095792
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428546,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000273,
+          "p99": 16.700000000000273,
+          "p999": 16.700000000000273,
+          "max": 16.700000000000273,
+          "fps": 59.9828620394174,
+          "onePercentLowFps": 59.880239520957105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000273,
+          "p99": 16.700000000000273,
+          "p999": 16.700000000000273,
+          "max": 16.700000000000273,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.880239520957105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142844,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000273,
+          "p99": 16.700000000000273,
+          "p999": 16.700000000000273,
+          "max": 16.700000000000273,
+          "fps": 60.03430531732423,
+          "onePercentLowFps": 59.880239520957105
+        },
+        "cpuSubmission": {
+          "mean": 0.2999999996806894,
+          "median": 0.2999999988824129,
+          "p95": 0.599999999627471,
+          "p99": 0.599999999627471,
+          "p999": 0.599999999627471,
+          "max": 0.599999999627471,
+          "fps": 3333.3333368812287,
+          "onePercentLowFps": 1666.6666677014696
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333394,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.94005994005972,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.3833333331470688,
+          "median": 0.2999999988824129,
+          "p95": 1,
+          "p99": 1,
+          "p999": 1,
+          "max": 1,
+          "fps": 2608.6956534414976,
+          "onePercentLowFps": 1000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.699999999999818,
+          "p95": 16.699999999999818,
+          "p99": 16.699999999999818,
+          "p999": 16.699999999999818,
+          "max": 16.699999999999818,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095874
+        },
+        "cpuSubmission": {
+          "mean": 0.25000000031044084,
+          "median": 0.19999999925494194,
+          "p95": 0.7000000011175871,
+          "p99": 0.7000000011175871,
+          "p999": 0.7000000011175871,
+          "max": 0.7000000011175871,
+          "fps": 3999.9999950329466,
+          "onePercentLowFps": 1428.5714262906386
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.699999999999818,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.2333333333954215,
+          "median": 0.19999999925494194,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 4285.714284573891,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.699999999999818,
+          "p95": 16.699999999999818,
+          "p99": 16.699999999999818,
+          "p999": 16.699999999999818,
+          "max": 16.699999999999818,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095874
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428546,
+          "median": 16.699999999999818,
+          "p95": 16.699999999999818,
+          "p99": 16.699999999999818,
+          "p999": 16.699999999999818,
+          "max": 16.699999999999818,
+          "fps": 59.9828620394174,
+          "onePercentLowFps": 59.88023952095874
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.699999999999818,
+          "p95": 16.699999999999818,
+          "p99": 16.699999999999818,
+          "p999": 16.699999999999818,
+          "max": 16.699999999999818,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095874
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.228571428252118,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000006111804,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.31428571444536957,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3181.818180201837,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.19999999987582365,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 5000.000003104409,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.3428571429103613,
+          "median": 0.40000000037252903,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 2916.6666662139405,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.80000000000109,
+          "p99": 16.80000000000109,
+          "p999": 16.80000000000109,
+          "max": 16.80000000000109,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.52380952380566
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333394,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.94005994005972,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857142908,
+          "median": 16.600000000000364,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 60.034305317324005,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.028571428464991704,
+          "median": 0,
+          "p95": 0.09999999962747097,
+          "p99": 0.09999999962747097,
+          "p999": 0.09999999962747097,
+          "max": 0.09999999962747097,
+          "fps": 35000.00013038516,
+          "onePercentLowFps": 10000.000037252903
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.69999999999891,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.28333333351959783,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3529.4117623856328,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999891,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.23333333370586237,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4285.714278871916,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333394,
+          "median": 16.69999999999891,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.94005994005972,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.31666666610787314,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3157.8947424145613,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.3666666665424903,
+          "median": 0.30000000074505806,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 2727.272728196353,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.600000000002183,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857143167,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.03430531732307,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.600000000002183,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.014285714232495852,
+          "median": 0,
+          "p95": 0.09999999962747097,
+          "p99": 0.09999999962747097,
+          "p999": 0.09999999962747097,
+          "max": 0.09999999962747097,
+          "fps": 70000.00026077032,
+          "onePercentLowFps": 10000.000037252903
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.24999999968955913,
+          "median": 0.2000000011175871,
+          "p95": 0.3999999985098839,
+          "p99": 0.3999999985098839,
+          "p999": 0.3999999985098839,
+          "max": 0.3999999985098839,
+          "fps": 4000.000004967054,
+          "onePercentLowFps": 2500.0000093132257
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.242857142750706,
+          "median": 0.2000000011175871,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 4117.647060628168,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.3166666667287548,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3157.8947362229437,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.216666666790843,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4615.384612739439,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333696,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.94005994005864,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333696,
+          "median": 16.700000000000728,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.94005994005864,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.1857142855546304,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 5384.615389244444,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.15000000006208816,
+          "median": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "p99": 0.2000000011175871,
+          "p999": 0.2000000011175871,
+          "max": 0.2000000011175871,
+          "fps": 6666.666663907193,
+          "onePercentLowFps": 4999.999972060323
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.18333333358168602,
+          "median": 0.2000000011175871,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 5454.545447156449,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857143167,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.03430531732307,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.228571428252118,
+          "median": 0.2000000011175871,
+          "p95": 0.3999999985098839,
+          "p99": 0.3999999985098839,
+          "p999": 0.3999999985098839,
+          "max": 0.3999999985098839,
+          "fps": 4375.000006111804,
+          "onePercentLowFps": 2500.0000093132257
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428674,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.98286203941694,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333696,
+          "median": 16.600000000002183,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.94005994005864,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333696,
+          "median": 16.69999999999709,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.94005994005864,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.657142857143167,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.03430531732307,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0,
+          "median": 0,
+          "p95": 0,
+          "p99": 0,
+          "p999": 0,
+          "max": 0,
+          "fps": null,
+          "onePercentLowFps": null
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.22857142851821013,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000001018634,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.799999999999272,
+          "p99": 16.799999999999272,
+          "p999": 16.799999999999272,
+          "max": 16.799999999999272,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523812105
+        },
+        "cpuSubmission": {
+          "mean": 0.19999999987582365,
+          "median": 0.2000000011175871,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 5000.000003104409,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.700000000000728,
+          "p95": 16.700000000000728,
+          "p99": 16.700000000000728,
+          "p999": 16.700000000000728,
+          "max": 16.700000000000728,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952095548
+        },
+        "cpuSubmission": {
+          "mean": 0.23333333308498064,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4285.714290275866,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-gpu",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "180",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.21428571401962213,
+          "median": 0.19999999925494194,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 4666.6666724615625,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 20,
+          "median": 16.69999999999709,
+          "p95": 33.30000000000291,
+          "p99": 33.30000000000291,
+          "p999": 33.30000000000291,
+          "max": 33.30000000000291,
+          "fps": 50,
+          "onePercentLowFps": 30.030030030027405
+        },
+        "cpuSubmission": {
+          "mean": 5.219999999925494,
+          "median": 1.5,
+          "p95": 17.799999998882413,
+          "p99": 17.799999998882413,
+          "p999": 17.799999998882413,
+          "max": 17.799999998882413,
+          "fps": 191.57088122878795,
+          "onePercentLowFps": 56.17977528442617
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.6428571428571429,
+          "median": 0.599999999627471,
+          "p95": 0.8999999985098839,
+          "p99": 0.8999999985098839,
+          "p999": 0.8999999985098839,
+          "max": 0.8999999985098839,
+          "fps": 1555.5555555555554,
+          "onePercentLowFps": 1111.1111129507606
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.4833333333954215,
+          "median": 0.5,
+          "p95": 0.599999999627471,
+          "p99": 0.599999999627471,
+          "p999": 0.599999999627471,
+          "max": 0.599999999627471,
+          "fps": 2068.9655169756034,
+          "onePercentLowFps": 1666.6666677014696
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.41428571433893274,
+          "median": 0.40000000037252903,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 2413.793103138204,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.24999999968955913,
+          "median": 0.2999999988824129,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4000.000004967054,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714369,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317321184,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.21428571401962213,
+          "median": 0.19999999925494194,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 4666.6666724615625,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571429196,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.98286203941506,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.20000000005321844,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4999.999998669539,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.31428571444536957,
+          "median": 0.30000000074505806,
+          "p95": 0.3999999985098839,
+          "p99": 0.3999999985098839,
+          "p999": 0.3999999985098839,
+          "max": 0.3999999985098839,
+          "fps": 3181.818180201837,
+          "onePercentLowFps": 2500.0000093132257
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.357142856876765,
+          "median": 0.30000000074505806,
+          "p95": 0.599999999627471,
+          "p99": 0.599999999627471,
+          "p999": 0.599999999627471,
+          "max": 0.599999999627471,
+          "fps": 2800.0000020861626,
+          "onePercentLowFps": 1666.6666677014696
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.46666666710128385,
+          "median": 0.40000000037252903,
+          "p95": 0.900000000372529,
+          "p99": 0.900000000372529,
+          "p999": 0.900000000372529,
+          "max": 0.900000000372529,
+          "fps": 2142.8571408614516,
+          "onePercentLowFps": 1111.1111106511987
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.799999999995634,
+          "p99": 16.799999999995634,
+          "p999": 16.799999999995634,
+          "max": 16.799999999995634,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523824994
+        },
+        "cpuSubmission": {
+          "mean": 0.3999999997516473,
+          "median": 0.3999999985098839,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 2500.0000015522046,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.371428571375353,
+          "median": 0.3999999985098839,
+          "p95": 0.599999999627471,
+          "p99": 0.599999999627471,
+          "p999": 0.599999999627471,
+          "max": 0.599999999627471,
+          "fps": 2692.3076926934473,
+          "onePercentLowFps": 1666.6666677014696
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571429196,
+          "median": 16.69999999999709,
+          "p95": 16.799999999995634,
+          "p99": 16.799999999995634,
+          "p999": 16.799999999995634,
+          "max": 16.799999999995634,
+          "fps": 59.98286203941506,
+          "onePercentLowFps": 59.523809523824994
+        },
+        "cpuSubmission": {
+          "mean": 0.17142857132213457,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 5833.333336955143,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.2333333333954215,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4285.714284573891,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.22857142851821013,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000001018634,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          640,
+          360
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        640,
+        360
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.20000000018626451,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4999.999995343387,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.28571428544819355,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3500.000003259629,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.60000000000582,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.2999999998137355,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3333.333335402939,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.283333333209157,
+          "median": 0.19999999925494194,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 3529.4117662527156,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.3499999999379118,
+          "median": 0.30000000074505806,
+          "p95": 0.6999999992549419,
+          "p99": 0.6999999992549419,
+          "p999": 0.6999999992549419,
+          "max": 0.6999999992549419,
+          "fps": 2857.1428576496996,
+          "onePercentLowFps": 1428.5714300919553
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.18571428582072258,
+          "median": 0.2000000011175871,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 5384.6153815293455,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.16666666666666666,
+          "median": 0.10000000149011612,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 6000,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.14285714285714285,
+          "median": 0.19999999925494194,
+          "p95": 0.2000000011175871,
+          "p99": 0.2000000011175871,
+          "p999": 0.2000000011175871,
+          "max": 0.2000000011175871,
+          "fps": 7000,
+          "onePercentLowFps": 4999.999972060323
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.60000000000582,
+          "p95": 16.799999999995634,
+          "p99": 16.799999999995634,
+          "p999": 16.799999999995634,
+          "max": 16.799999999995634,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523824994
+        },
+        "cpuSubmission": {
+          "mean": 0.16666666666666666,
+          "median": 0.19999999925494194,
+          "p95": 0.19999999925494194,
+          "p99": 0.19999999925494194,
+          "p999": 0.19999999925494194,
+          "max": 0.19999999925494194,
+          "fps": 6000,
+          "onePercentLowFps": 5000.0000186264515
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.69999999999709,
+          "p99": 16.69999999999709,
+          "p999": 16.69999999999709,
+          "max": 16.69999999999709,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.880239520968516
+        },
+        "cpuSubmission": {
+          "mean": 0.2857142857142857,
+          "median": 0.2999999988824129,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 3500,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571428155,
+          "median": 16.69999999999709,
+          "p95": 16.799999999995634,
+          "p99": 16.799999999995634,
+          "p999": 16.799999999995634,
+          "max": 16.799999999995634,
+          "fps": 59.982862039418805,
+          "onePercentLowFps": 59.523809523824994
+        },
+        "cpuSubmission": {
+          "mean": 0.6285714283585548,
+          "median": 0.30000000074505806,
+          "p95": 2.099999999627471,
+          "p99": 2.099999999627471,
+          "p999": 2.099999999627471,
+          "max": 2.099999999627471,
+          "fps": 1590.9090914478725,
+          "onePercentLowFps": 476.1904762749499
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571429196,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.98286203941506,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.32857142867786543,
+          "median": 0.30000000074505806,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 3043.478259883666,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.2857142857142857,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3500,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333334303,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.94005994005646,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.3166666667287548,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3157.8947362229437,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.2333333333954215,
+          "median": 0.2999999988824129,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4285.714284573891,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714369,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317321184,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.27142857148178984,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3684.2105255934343,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1280,
+          720
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1280,
+        720
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.216666666790843,
+          "median": 0.2000000011175871,
+          "p95": 0.2999999988824129,
+          "p99": 0.2999999988824129,
+          "p999": 0.2999999988824129,
+          "max": 0.2999999988824129,
+          "fps": 4615.384612739439,
+          "onePercentLowFps": 3333.3333457509675
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.3499999999379118,
+          "median": 0.30000000074505806,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 2857.1428576496996,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.685714285714702,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.93150684931357,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.31428571444536957,
+          "median": 0.30000000074505806,
+          "p95": 0.5,
+          "p99": 0.5,
+          "p999": 0.5,
+          "max": 0.5,
+          "fps": 3181.818180201837,
+          "onePercentLowFps": 2000
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.25,
+          "median": 0.2000000011175871,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 4000,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.31428571444536957,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3181.818180201837,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.23333333308498064,
+          "median": 0.19999999925494194,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 4285.714290275866,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.69999999999709,
+          "p99": 16.69999999999709,
+          "p999": 16.69999999999709,
+          "max": 16.69999999999709,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.880239520968516
+        },
+        "cpuSubmission": {
+          "mean": 0.19999999987582365,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 5000.000003104409,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.228571428252118,
+          "median": 0.2999999988824129,
+          "p95": 0.3999999985098839,
+          "p99": 0.3999999985098839,
+          "p999": 0.3999999985098839,
+          "max": 0.3999999985098839,
+          "fps": 4375.000006111804,
+          "onePercentLowFps": 2500.0000093132257
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": false,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.16666666666666666,
+          "median": 0.19999999925494194,
+          "p95": 0.2000000011175871,
+          "p99": 0.2000000011175871,
+          "p999": 0.2000000011175871,
+          "max": 0.2000000011175871,
+          "fps": 6000,
+          "onePercentLowFps": 4999.999972060323
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.3166666667287548,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3157.8947362229437,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.69999999999709,
+          "p99": 16.69999999999709,
+          "p999": 16.69999999999709,
+          "max": 16.69999999999709,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.880239520968516
+        },
+        "cpuSubmission": {
+          "mean": 0.2857142857142857,
+          "median": 0.2999999988824129,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 3500,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.22857142851821013,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000001018634,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": false,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.683333333333092,
+          "median": 16.69999999999709,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.940059940060806,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.3333333336437742,
+          "median": 0.30000000074505806,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 2999.9999972060323,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714369,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317321184,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.228571428252118,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000006111804,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.671428571429196,
+          "median": 16.599999999998545,
+          "p95": 16.80000000000291,
+          "p99": 16.80000000000291,
+          "p999": 16.80000000000291,
+          "max": 16.80000000000291,
+          "fps": 59.98286203941506,
+          "onePercentLowFps": 59.523809523799216
+        },
+        "cpuSubmission": {
+          "mean": 0.22857142851821013,
+          "median": 0.2000000011175871,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4375.000001018634,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": false
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": false,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.666666666666668,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 59.99999999999999,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.2166666661699613,
+          "median": 0.19999999925494194,
+          "p95": 0.30000000074505806,
+          "p99": 0.30000000074505806,
+          "p999": 0.30000000074505806,
+          "max": 0.30000000074505806,
+          "fps": 4615.384625965321,
+          "onePercentLowFps": 3333.3333250549103
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    },
+    {
+      "configuration": {
+        "kind": "three-new",
+        "size": [
+          1920,
+          1080
+        ],
+        "aa": true,
+        "offscreen": true,
+        "power": "high-performance",
+        "timestamp": true
+      },
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "pixelRatio": 1,
+      "info": {
+        "revision": "187",
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        },
+        "timestampRequested": true,
+        "gpuTiming": "Tracking overhead only; GPU duration not resolved in this case",
+        "resizeCalls": 1,
+        "pixelRatioCalls": 1
+      },
+      "validation": {
+        "status": "PASS",
+        "centerPixel": [
+          255,
+          41,
+          5,
+          255
+        ],
+        "scope": "One untimed offscreen readback validates triangle output; native presentation is not independently verified"
+      },
+      "measurement": {
+        "interval": {
+          "mean": 16.65714285714265,
+          "median": 16.69999999999709,
+          "p95": 16.700000000004366,
+          "p99": 16.700000000004366,
+          "p999": 16.700000000004366,
+          "max": 16.700000000004366,
+          "fps": 60.034305317324936,
+          "onePercentLowFps": 59.88023952094243
+        },
+        "cpuSubmission": {
+          "mean": 0.242857142750706,
+          "median": 0.19999999925494194,
+          "p95": 0.40000000037252903,
+          "p99": 0.40000000037252903,
+          "p999": 0.40000000037252903,
+          "max": 0.40000000037252903,
+          "fps": 4117.647060628168,
+          "onePercentLowFps": 2499.9999976716936
+        },
+        "scope": "Animation callbacks and CPU submission. Presented frames are not independently counted."
+      }
+    }
+  ],
+  "limitations": [
+    "Raw WebGPU GPU timestamps are not measured. Three timestamp variants measure tracking overhead only. Native hardware conclusions require the exported target-device results."
+  ],
+  "verificationEnvironment": "Headless Chromium SwiftShader. 96 offscreen output checks PASS. GPU-instance warnings appeared, but no recorded case errors. Historical resizeCalls fields were requested setup calls; subsequent instrumentation counts actual calls."
+}
