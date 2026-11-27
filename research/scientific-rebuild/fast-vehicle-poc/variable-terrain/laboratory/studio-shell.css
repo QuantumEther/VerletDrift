@@ -153,3 +153,14 @@ body:has(.studio-shell) {
 .studio-shell th {text-align:left;color:#ffad70}
 .studio-shell td,.studio-shell th {padding:8px;border-bottom:1px solid var(--line)}
 @media(prefers-reduced-motion:reduce){.studio-shell *{transition:none!important;animation:none!important}}
+html {color-scheme:dark}
+body {margin:0}
+* {box-sizing:border-box}
+.studio-shell label {display:block;margin-bottom:10px}
+.studio-shell select,.studio-shell input[type=text],.studio-shell input[type=number] {max-width:100%}
+.studio-shell .row {display:flex;margin-bottom:8px}
+.studio-shell .views {display:flex;flex-wrap:wrap}
+.studio-shell .scroll {overflow:auto}
+.studio-shell .stagefooter {display:flex;justify-content:space-between;font-size:11px}
+.studio-shell .note {font-size:12px}
+.studio-shell .instrument {max-width:100%}

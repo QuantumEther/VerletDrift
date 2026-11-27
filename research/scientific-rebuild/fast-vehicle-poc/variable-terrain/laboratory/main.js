@@ -9,8 +9,23 @@ import {createInstrument} from '../../../procedural-terrain/src/instruments.js';
 import {TireObservatory} from './tracks.js';
 import {drawFrictionCircles} from '../../../tire-road-observatory-prototype/src/observatory-panel.js';
 import {setEnvironment} from '../../../procedural-terrain/src/application-vehicle.js';
+const startup = new URLSearchParams(location.search);
+if (startup.get('layout')==='legacy' && document.body.dataset.studio==='native') {
+  const target=new URL('legacy.html',location.href);target.search=location.search;location.replace(target);
+  await new Promise(()=>{});
+}
+const modern = document.body.dataset.studio==='native';
+const startupBackend=startup.get('backend')??(modern?'webgpu':'webgl');
+document.getElementById('renderer-backend').value=startupBackend;
+for(const [key,id] of [['vehicle','vehicle-select'],['graphics','graphics'],['drivetrain','drivetrain-mode']]){
+  const value=startup.get(key);
+  if(value&&[...document.getElementById(id).options].some(o=>o.value===value))document.getElementById(id).value=value;
+}
 const $=id=>document.getElementById(id),clock=new SimulationClock({budgetMs:20,maxSteps:128,maxDebt:Infinity}),observatory=new TireObservatory();
 const studio=mountStudio();
+if(modern)$('renderer-backend').onchange=()=>{
+ const url=new URL(location.href);url.searchParams.set('backend',$('renderer-backend').value);location.href=url;
+};
 let acceptedInput=null;
 let audioEpoch=0,audioFocused=true,lastSpatialUpdate=0;
 let lab,view,previous,last=performance.now(),paused=false,lastPanel=0,renderMs=0,lastPhysicsMs=0,totalPhysicsMs=0,stepTimes=[],maxIterations=0,attemptedInput=null;
@@ -26,6 +41,21 @@ const gauges={engine:createInstrument($('engine-dial'),{label:'ENGINE',unit:'rpm
 const controls=bindControls(document,()=>reset());
 const engineAudio=createEngineAudio(()=>audioTelemetry(lab,{paused,hidden:document.hidden,focusLost:!audioFocused,faulted:!!clock.fault,epoch:audioEpoch}));
 $('engine-audio-panel').addEventListener('keydown',e=>e.stopPropagation());
+if(modern){
+ let audioRequested=true;
+ $('audio-status').textContent='Audio armed · activates on your first interaction';
+ const unlock=event=>{
+   if(!audioRequested||!event.isTrusted)return;
+   audioRequested=false;
+   document.removeEventListener('pointerdown',unlock,true);
+   document.removeEventListener('keydown',unlock,true);
+   if(event.target.closest?.('#audio-enable'))return;
+   engineAudio.enable({low:$('audio-low').value,take2:$('audio-take').value==='2'})
+     .then(updateAudioPanel).catch(error=>{$('audio-status').textContent=error.message;});
+ };
+ document.addEventListener('pointerdown',unlock,true);
+ document.addEventListener('keydown',unlock,true);
+}
 $('audio-enable').addEventListener('click',async()=>{if(engineAudio.isEnabled())await engineAudio.disable();else await engineAudio.enable({low:$('audio-low').value,take2:$('audio-take').value==='2'});updateAudioPanel();$('perspective').focus();});
 window.addEventListener('blur',()=>audioFocused=false);window.addEventListener('focus',()=>audioFocused=true);
 function spatialSettings(){return {mode:$('spatial-mode').value,distanceEnabled:$('spatial-distance').checked,atmosphere:$('spatial-atmosphere').checked,direction:$('spatial-direction').checked,cabin:$('spatial-cabin').checked,reference:Number($('spatial-reference').value),maxDistance:Number($('spatial-max').value),temperature:Number($('spatial-temperature').value),humidity:Number($('spatial-humidity').value)};}
@@ -45,7 +75,7 @@ async function reset(speed=0){
   const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed,drivetrainMode:$('drivetrain-mode').value,vehicleId:$('vehicle-select').value});
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
-  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,new URL(location.href).searchParams.get('backend')??'webgl'));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
+  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,startupBackend));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
  }catch(e){if(generation!==resetGeneration)return;studio?.status('Scene error');clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
 for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=['mountain','yard','rally'].includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});

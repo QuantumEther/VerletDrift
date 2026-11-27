@@ -1,89 +1,34 @@
 import {createStudioTachometer} from './studio-tachometer.js';
-// Move existing elements intact so control IDs, event handlers and state survive workspace changes.
+import {mountLegacyStudio} from './legacy-shell.js';
 export function mountStudio() {
-  if (new URLSearchParams(location.search).get('layout') === 'legacy') return null;
+  if (document.body.dataset.studio !== 'native') return mountLegacyStudio();
   const find = id => document.getElementById(id);
-  const shell = document.querySelector('.shell');
-  const lab = shell.querySelector('.lab');
-  const stage = lab.querySelector('.exhibition');
-  const header = shell.querySelector('header');
-  const terrain = shell.querySelector('.terrain-controls');
-  const drive = lab.querySelector('.operator');
-  const instruments = lab.querySelector('.instruments');
-  const audio = find('engine-audio-panel');
-  const smoke = find('smoke-enable').closest('details');
-  const graphics = find('graphics').closest('.views');
-  const overlays = find('show-marks').closest('.views');
-  const contacts = find('contacts').closest('section');
-  const diagnostics = find('diag-mode').closest('details');
-  const balloons = find('balloon-count').closest('details');
-  const vehicle = document.createElement('div');
-  const appearance = find('appearance').closest('.views');
-  vehicle.append(find('vehicle-select').closest('label'), find('vehicle-info'),
-    find('drivetrain-mode').closest('label'), appearance);
-  const tools = document.createElement('aside');
-  tools.className = 'studio-tools';
-  const nav = document.createElement('nav');
-  nav.className = 'studio-nav';
-  nav.setAttribute('aria-label', 'Laboratory workspaces');
-  const workspaces = {
-    Drive: [drive], Vehicle: [vehicle], Terrain: [terrain], Audio: [audio],
-    Graphics: [graphics, smoke, balloons], Telemetry: [overlays, instruments, contacts, diagnostics],
-  };
-  const panels = [];
-  for (const [name, nodes] of Object.entries(workspaces)) {
-    const button = document.createElement('button');
-    const panel = document.createElement('section');
-    panel.className = 'studio-workspace';
-    panel.id = 'workspace-' + name.toLowerCase();
-    button.textContent = name;
-    button.setAttribute('aria-controls', panel.id);
-    panel.setAttribute('aria-label', name);
-    panel.append(...nodes);
+  const shell = document.querySelector('.studio-shell');
+  const tools = document.querySelector('.studio-tools');
+  for (const button of document.querySelectorAll('.studio-nav button[aria-controls]')) {
     button.onclick = event => {
-      for (const [tab, section] of panels) {
-        section.hidden = section !== panel;
-        tab.setAttribute('aria-pressed', section === panel);
+      for (const tab of document.querySelectorAll('.studio-nav button[aria-controls]')) {
+        const active = tab === button;
+        find(tab.getAttribute('aria-controls')).hidden = !active;
+        tab.setAttribute('aria-pressed', String(active));
       }
       window.dispatchEvent(new Event('studio-input-clear'));
-      tools.scrollTop = 0;
-      if (event?.detail) find('perspective').focus();
+      if (event.detail) find('perspective').focus();
     };
-    panels.push([button, panel]);
-    nav.append(button);
-    tools.append(panel);
   }
-  panels[0][0].click();
-  tools.addEventListener('focusin', event => {
-    if (!event.target.closest('[data-drive]')) window.dispatchEvent(new Event('studio-input-clear'));
-  });
-  const collapse = document.createElement('button');
-  collapse.textContent = 'Collapse inspector';
-  collapse.setAttribute('aria-expanded', 'true');
-  collapse.onclick = () => {
-    const closed = shell.classList.toggle('inspector-collapsed');
-    collapse.setAttribute('aria-expanded', String(!closed));
-    collapse.textContent = closed ? 'Open inspector' : 'Collapse inspector';
-    window.dispatchEvent(new Event('studio-input-clear'));
-  };
-  nav.append(collapse);
-  const immersive = document.createElement('button');
-  immersive.textContent = 'Immersive view';
-  immersive.setAttribute('aria-pressed', 'false');
+  const immersive = [...document.querySelectorAll('header button')].find(b=>b.textContent==='Immersive view');
   immersive.onclick = () => {
-    immersive.setAttribute('aria-pressed', shell.classList.toggle('immersive'));
+    immersive.setAttribute('aria-pressed',shell.classList.toggle('immersive'));
     find('perspective').focus();
   };
-  header.querySelector('.edition').replaceWith(immersive);
-  header.querySelector('h1').textContent = 'VerletDrift';
-  header.querySelector('.eyebrow').textContent = 'Terrain laboratory';
-  header.after(nav);
-  const references = document.createElement('details');
-  references.className = 'studio-references';
-  const summary = document.createElement('summary');
-  summary.textContent = 'Experiment notes and references';
-  references.append(summary, shell.querySelector(':scope > p'), shell.querySelector(':scope > p.note'));
-  shell.querySelector('footer').before(references);
+  const collapse = document.querySelector('.studio-nav button:not([aria-controls])');
+  collapse.onclick = () => {
+    const closed=shell.classList.toggle('inspector-collapsed');
+    collapse.setAttribute('aria-expanded',String(!closed));
+  };
+  tools.addEventListener('focusin',event=>{
+    if(!event.target.closest('[data-drive]'))window.dispatchEvent(new Event('studio-input-clear'));
+  });
   const readouts = document.createElement('div');
   readouts.className = 'studio-readouts';
   const drawTachometer = createStudioTachometer(readouts);
@@ -132,8 +77,8 @@ export function mountStudio() {
     fields[label] = value;
   }
   find('perspective').after(readouts);
-  stage.prepend(find('warning'));
-  lab.append(tools);
+
+
   shell.classList.add('studio-shell');
   const write = (key, value) => {
     if (fields[key].textContent !== value) fields[key].textContent = value;
