@@ -57,6 +57,12 @@ export function createStudioTachometer(parent) {
     animation = settled || reduced.matches || !canvas.isConnected ? null : requestAnimationFrame(frame);
   }
   return (rpm, limit) => {
+    if (document.documentElement.dataset.diagnosticTachometer === 'off') {
+      if (animation !== null) cancelAnimationFrame(animation);
+      animation = null;
+      return;
+    }
+    if (rpm === target && limit === redline && animation === null) return;
     target = rpm;
     redline = limit;
     if (reduced.matches) { displayed = rpm; velocity = 0; }

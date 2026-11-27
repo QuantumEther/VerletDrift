@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerletDrift refresh audit</title>
+<style>body{background:#090c0f;color:#e8eff7;font:15px system-ui;margin:24px}button,select{font:inherit;padding:10px;background:#151d26;color:#e8eff7;border:1px solid #293746}iframe{width:100%;height:900px;border:1px solid #293746}pre{white-space:pre-wrap}a{color:#ffad70}</style>
+<h1>Refresh-rate investigation</h1><p>Keep this tab visible and the window on the target display. Capture takes approximately two minutes. GPU presentation timing requires a separate browser trace.</p>
+<label>Backend <select id="backend"><option>webgpu</option><option>webgl</option></select></label>
+<label>Layout <select id="layout"><option value="">Studio</option><option value="legacy">Legacy</option></select></label>
+<button id="run">Run hardware audit</button><button id="save" disabled>Download JSON</button><pre id="status" role="status">Ready</pre><iframe title="Live laboratory" id="lab" src="about:blank"></iframe>
+<script type="module" src="refresh-audit.js"></script></html>
