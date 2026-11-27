@@ -1,12 +1,13 @@
 # Motion blur
 
-Open **Graphics → Motion blur**. The WebGPU default uses Fast, a 7 ms
+Open **Graphics → Motion blur** on either renderer. A new WebGPU session uses Fast, a 7 ms
 virtual exposure and a 16 px maximum sample span. The graphics controls
 set shutter duration, intensity, camera and body contribution, wheel spin,
 peripheral enhancement and depth rejection. Fast, Balanced, Cinematic and
 Ultra use 4, 8, 16 and 24 directional samples respectively. The master switch
-or `?motion=off` skips the MRT and runs the ordinary renderer. WebGL and
-offscreen readback mode use the ordinary renderer.
+or `?motion=off` bypasses the render targets. A new WebGL session starts
+with motion blur off. The active controls survive a renderer switch in the
+same tab. Offscreen diagnostics use the ordinary renderer.
 
 The scene pass resolves HDR color plus a single RGBA16F attachment containing
 screen-plane motion and linear eye depth. The output shader gathers color
@@ -52,3 +53,55 @@ regression establishes a real cost but does not predict the RTX or Mac
 cost. The native 0.5 ms goal and the full driving scenario matrix remain
 unverified. The normal runtime samples GPU timestamps only when the
 existing diagnostics request them and performs no pixel readback.
+
+
+## WebGL 2 path
+
+WebGL renders full-resolution HDR color with the canvas MSAA count. A
+separate opaque geometry pass packs signed velocity and linear eye depth
+into RGBA16F. This keeps existing WebGL terrain, reflection, and overlay
+shaders intact. The velocity pass skips shadows and transparent-only leaves.
+Fast halves the velocity buffer dimensions. Other presets use full
+resolution for finer depth edges. The HDR color buffer is full resolution
+at every preset. Both targets are reused until resize and released on
+disable. The Graphics panel reports unsupported floating-point or
+framebuffer capabilities.
+
+The GLSL output uses the same sampling and depth rejection weights as the
+TSL output. Render-backend differences in rasterization, antialiasing and
+tone mapping can affect silhouettes and HDR highlights. Sky remains
+unblurred, and transparent objects can inherit the opaque motion underneath.
+The angular approximation, object and camera history, shutter conversion
+and floating-origin compensation all run through the same code on both
+backends.
+
+## Cross-backend verification
+
+Run `node motion-blur-browser.mjs --webgl` and
+`node motion-blur-browser.mjs` with the same local server. The matched test
+contains camera motion, object motion, a static foreground occluder,
+renderer toggling, and a cut that produces pixel-exact sharp output in both
+paths relative to their stationary composition. The ordinary WebGL path
+and sharp composition differ at about 1.53% of pixels above a summed
+RGB difference of eight in this fixture. The backend comparison is
+approximate. In particular the WebGL and WebGPU fixtures do not produce
+identical blur footprints.
+
+| Software render timing at 640×360 | Off | Fast | Balanced |
+|---|---:|---:|---:|
+| WebGL elapsed GPU query | 2.36 ms | 30.48 ms | 32.49 ms |
+| WebGPU render-pass batch | 29.48 ms | 63.62 ms | 66.03 ms |
+
+These are medians from six Chromium SwiftShader samples per mode. The
+query scopes differ, so compare within each backend. They exclude
+presentation and cannot establish Mac or RTX 5090 frame rates.
+[Raw timings and CPU submission measurements](results/motion-blur-backends.json)
+
+The [four-panel browser capture](results/motion-blur-cross-backend.jpg)
+compares Off and Balanced on both renderers in the Cinematic alpine
+laboratory at the same drawing-buffer size, orbit movement and virtual
+60 Hz interval. The browser also changed from the flat map to Suspension
+Laboratory with WebGL blur active and then retained Balanced and enabled
+state through the renderer switch. The combined physics and laboratory
+suite passed 77 tests. Sustained drifting, donuts, burnout and airborne
+motion were not separately recorded on both rendering backends.

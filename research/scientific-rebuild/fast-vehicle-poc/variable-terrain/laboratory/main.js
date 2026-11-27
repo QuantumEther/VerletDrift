@@ -29,7 +29,11 @@ for(const [key,id] of [['vehicle','vehicle-select'],['graphics','graphics'],['dr
 const $=id=>document.getElementById(id),clock=new SimulationClock({budgetMs:20,maxSteps:128,maxDebt:Infinity}),observatory=new TireObservatory();
 const studio=mountStudio();
 if(modern)$('renderer-backend').onchange=()=>{
- const url=new URL(location.href);url.searchParams.set('backend',$('renderer-backend').value);location.href=url;
+ const url=new URL(location.href);
+ motionSettings.persist();
+ url.searchParams.set('backend',$('renderer-backend').value);
+ if(url.searchParams.has('motion'))url.searchParams.set('motion',motionSettings().enabled?'on':'off');
+ location.href=url;
 };
 let acceptedInput=null;
 let audioEpoch=0,audioFocused=true,lastSpatialUpdate=0;
@@ -83,7 +87,7 @@ async function reset(speed=0,spawn={}){
   for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=authored.includes(settings.preset);
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
-  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,startupBackend));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;if(["flight","suspension"].includes(settings.preset))view.balloonConfigure({count:0});view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
+  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,startupBackend));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;motionSettings.availability(view.motionAvailability);if(["flight","suspension"].includes(settings.preset))view.balloonConfigure({count:0});view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
  }catch(e){if(generation!==resetGeneration)return;studio?.status('Scene error');clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
 $('flight-launch').addEventListener('click',()=>{

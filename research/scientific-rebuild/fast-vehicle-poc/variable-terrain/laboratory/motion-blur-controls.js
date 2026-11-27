@@ -1,4 +1,4 @@
-import {motionDefaults} from './motion-blur.js';
+import {motionDefaults} from './motion-history.js';
 
 export function mountMotionBlurControls(container,backend,onChange,query){
  const section=document.createElement('details');
@@ -31,15 +31,26 @@ export function mountMotionBlurControls(container,backend,onChange,query){
    if(input.type==='checkbox')input.checked=settings[key];else input.value=settings[key];
   }
  }
- apply({...motionDefaults,enabled:backend==='webgpu'&&query.get('motion')!=='off'});
+ const key='verletdrift.motionBlur';
+ let saved={};
+ try{saved=JSON.parse(sessionStorage.getItem(key))??{};}catch{}
+ const override=query.get('motion');
+ apply({...motionDefaults,enabled:backend==='webgpu',...saved,...(override===null?{}:{enabled:override!=='off'})});
  const read=()=>Object.fromEntries(Object.entries(inputs).map(([key,input])=>[key,input.type==='checkbox'?input.checked:input.type==='number'
   ?Math.max(Number(input.min),Math.min(Number(input.max),input.valueAsNumber||0)):input.value]));
- section.addEventListener('change',()=>onChange(read()));
- section.querySelector('button').onclick=()=>{apply(motionDefaults);onChange(read());};
- if(backend!=='webgpu'){
-  section.querySelector('p').textContent='Motion blur is available with the WebGPU renderer.';
-  for(const input of section.querySelectorAll('input,select,button'))input.disabled=true;
+ function persist(settings=read()){
+  try{sessionStorage.setItem(key,JSON.stringify(settings));}catch{}
  }
+ function change(){const settings=read();persist(settings);onChange(settings);}
+ read.persist=persist;
+ section.addEventListener('change',change);
+ section.querySelector('button').onclick=()=>{apply(motionDefaults);change();};
+ const description=section.querySelector('p'),instructions=description.textContent;
+ read.availability=({supported,reason})=>{
+  description.textContent=supported?instructions:reason;
+  for(const input of section.querySelectorAll('input,select,button'))input.disabled=!supported;
+ };
+ read.availability({supported:false,reason:'Checking renderer support…'});
  container.append(section);
  return read;
 }
