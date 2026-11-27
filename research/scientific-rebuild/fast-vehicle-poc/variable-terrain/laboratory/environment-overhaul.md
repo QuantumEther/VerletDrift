@@ -74,3 +74,9 @@ The current laboratory initialized every map in WebGL, and a native WebGPU
 canvas texture probe returned nonuniform output for the flight map using
 SwiftShader Vulkan. These are software-browser checks. RTX and Mac frame
 pacing remain unmeasured.
+
+The launch capture was also repeated with the simulation running until
+all four contact forces reached zero, then paused for the
+[airborne frame](results/flight-airborne-webgl.jpg). A separate WebGPU run
+passed the texture check with the EXR enabled and yaw set to 22°.
+The combined laboratory and engine-lifecycle suite passed all 73 tests.
