@@ -84,7 +84,13 @@ function internalStep(s,terrain,input={},h=.001,{maxIterations=24,acceleration='
   const rhs=op.rhs.slice();rhs[1]+=h*g[3];rhs[2]+=h*g[4];for(let i=0;i<4;i++)rhs[3+i]+=h*g[5+i];const w1=solve(op.L,rhs),wm=w1.map((x,i)=>(x+w0[i])/2);next.splice(13,7,...w1);next.splice(6,7,...q0.map((x,i)=>x+h*wm[i]));
   const Te=g[13],rotors=rotorFlow(omega0,[...g.slice(9,13).map(f=>-P.R*f),Te,0],B,C,h,params);segments+=rotors.segments;reactionCases+=rotors.cases;next.splice(20,5,...rotors.w.slice(0,5));next[30]=rotors.w[5];next[31]-=rotors.syncHeat;
   const engineFlow=torque(s.engine,rotors.integral[4]/h,input,s.engineConfig),trial=stage(s,terrain,next,wm,rotors.integral.map(x=>x/h),angles,h);trial.g.push(engineFlow.netTorque);samples+=20;const residual=trial.g.map((x,i)=>x-g[i]),norm=Math.max(...residual.map(Math.abs));lastResidual=residual;if(!Number.isFinite(norm))throw Error('Nonfinite contact closure');
-  if(norm<=TOL){
+  // At metre-scale ramp heights the normal spring amplifies subtraction
+  // roundoff in height minus hub elevation. The work check still uses the
+  // measured residual, and friction keeps its original tolerance.
+  const forceTolerance=terrain.settings?.preset==='flight'
+   ? Math.max(TOL,4*Number.EPSILON*v.kt*Math.max(1,...y.slice(9,13).map(Math.abs)))
+   : TOL;
+  if(norm<=forceTolerance){
    let damping=0,contactWork=0,viscous=0,plastic=0,frictionExcess=0,normalDefect=0;
    for(let i=0;i<4;i++){const t=trial.tires[i],[x,z]=v.corners[i],rate=wm[0]+x*wm[1]+z*wm[2]-wm[3+i];damping+=h*v.damping*rate*rate;contactWork+=t.flow.work;viscous+=t.flow.viscous;plastic+=t.flow.plastic;frictionExcess=Math.max(frictionExcess,Math.hypot(...t.flow.force)-t.normal.mu*t.normal.N);normalDefect+=t.normal.residual;}
    const work=[engineFlow.netTorque*rotors.integral[4],contactWork,-rotors.brakeHeat,-rotors.clutchHeat,-damping];for(let i=0;i<5;i++)next[25+i]+=work[i];const bristles=trial.tires.map(t=>t.next),after=energy(s,terrain,next,bristles),total=work[0]+work[2]+work[3]+work[4]-rotors.syncHeat-viscous-plastic,workResidual=after-before-total-rotors.roundingEnergy;

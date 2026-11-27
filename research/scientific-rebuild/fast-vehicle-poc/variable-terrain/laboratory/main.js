@@ -1,3 +1,5 @@
+import {flightLanes} from './proving-ground.js';
+import {authored} from './maps.js';
 import {mountStudio} from './studio-shell.js';
 import {createEngineAudio} from './engine-audio.js';
 import {audioTelemetry} from './audio-telemetry.js';
@@ -15,6 +17,8 @@ if (startup.get('layout')==='legacy' && document.body.dataset.studio==='native')
   await new Promise(()=>{});
 }
 const modern = document.body.dataset.studio==='native';
+const terrainRequest=startup.get('terrain');
+if(Array.from(document.getElementById('terrain').options).some(option=>option.value===terrainRequest))document.getElementById('terrain').value=terrainRequest;
 const startupBackend=startup.get('backend')??(modern?'webgpu':'webgl');
 document.getElementById('renderer-backend').value=startupBackend;
 for(const [key,id] of [['vehicle','vehicle-select'],['graphics','graphics'],['drivetrain','drivetrain-mode']]){
@@ -67,25 +71,32 @@ for(const id of ['audio-mode','audio-master','audio-engine','audio-sample','audi
 function updateAudioPanel(){const a=engineAudio.snapshot(),t=a.telemetry,u=a.used;$('audio-enable').textContent=engineAudio.isEnabled()?'Disable Audio':'Enable Audio';$('audio-status').textContent=`${a.status} · ${a.contextState}${a.error?' · '+a.error:''}${a.failures.length?' · '+a.failures.join('; '):''}`;const sd=a.spatial?.diagnostics;$('spatial-diagnostics').textContent=a.spatial?.error?a.spatial.error:sd?`Source ${sd.sourceWorld.map(x=>x.toFixed(1)).join(', ')} m · Listener ${sd.listenerWorld.map(x=>x.toFixed(1)).join(', ')} m\nDistance ${sd.distance.toFixed(2)} m · attenuation ${sd.attenuationDb.toFixed(1)} dB · 4 kHz absorption ${sd.hfDb.toFixed(2)} dB · bearing ${sd.bearingDegrees.toFixed(1)}°`:(a.spatial?.error??'Spatial position unavailable');$('audio-diagnostics').textContent=`Physics RPM ${t?.engineRPM?.toFixed(1)??'—'} · audio target ${u?.targetRPM?.toFixed(1)??'—'} · smoothed ${u?.rpm?.toFixed(1)??'—'}\nEngine ${t?.engineMode??'—'} · requested ${t?.requestedGear??'—'} · engaged ${t?.engagedGear??'—'} · ${t?.gearboxMode??'—'} · clutch ${t?.clutchMode??'—'}\nAnchors ${u?.anchors?.map((r,i)=>r+':'+u.weights[i].toFixed(3)).join(' / ')??'loading'}\nPeak ${u?.peak?.toFixed(4)??'—'} · safety-limit samples ${u?.clipped??0} · stale ${u?.stale??false} · handoff ${a.handoff.meanCpuMs.toFixed(3)} ms/message\nUnderruns: browser does not expose a reliable counter. No measured perceptual verdict.`;}
 window.addEventListener('pagehide',()=>engineAudio.disable());
 let resetGeneration=0,viewInitialization=Promise.resolve();
-async function reset(speed=0){
+async function reset(speed=0,spawn={}){
  const generation=++resetGeneration;
  acceptedInput=null;
  studio?.status('Loading scene');
  try{
-  const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{speed,drivetrainMode:$('drivetrain-mode').value,vehicleId:$('vehicle-select').value});
+  const settings={preset:$('terrain').value,seed:Number($('terrain-seed').value),amplitude:Number($('terrain-amplitude').value),roughness:Number($('terrain-roughness').value)},next=createLaboratory(settings,{...spawn,speed,drivetrainMode:$('drivetrain-mode').value,vehicleId:$('vehicle-select').value});
+  $('flight-controls').hidden=settings.preset!=='flight'||next.vehicle.id==='reference';
+  for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=authored.includes(settings.preset);
   // The old track mesh reads this presentation-only sampler singleton; it is
   // configured identically, but no legacy vehicle is created or stepped.
-  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,startupBackend));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
+  if(['flat','hills','rough','road'].includes(settings.preset))setEnvironment(settings);view?.dispose();view=null;const pendingView=viewInitialization.then(()=>createView3D($('perspective'),next.terrain,$('render-scale').value,next.vehicle,startupBackend));viewInitialization=pendingView.catch(()=>null);const nextView=await pendingView;if(generation!==resetGeneration){nextView.dispose();return;}view=nextView;if(["flight","suspension"].includes(settings.preset))view.balloonConfigure({count:0});view.setAppearance($('appearance').value);view.setGraphics(graphicsSettings());view.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)});$('appearance').disabled=next.vehicle.id==='reference';view.resetCamera($('camera').value);lab=next;audioEpoch++;previous=capture(lab);observatory.clear();controls.reset();view.draw(presentation(lab),observatory);clock.reset();last=performance.now();stepTimes=[];totalPhysicsMs=0;maxIterations=0;$('warning').textContent='';lastPanel=-Infinity;
  }catch(e){if(generation!==resetGeneration)return;studio?.status('Scene error');clock.fail(e,lab?.state??null);$('warning').textContent=e.message;}
 }
-for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=['mountain','yard','rally'].includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});
+$('flight-launch').addEventListener('click',()=>{
+ if($('terrain').value!=='flight'||$('vehicle-select').value==='reference')return;
+ const lane=flightLanes[Number($('flight-lane').value)];
+ if(lane)reset(lane.speed,{x:lane.start-8,y:lane.y});
+});
+for(const id of ['regenerate','rest'])$(id).addEventListener('click',()=>reset());$('coast').addEventListener('click',()=>reset(3));$('terrain').addEventListener('change',()=>{const isAuthored=authored.includes($('terrain').value);for(const id of ['terrain-seed','terrain-amplitude','terrain-roughness'])$(id).disabled=isAuthored;reset();});
 $('vehicle-select').addEventListener('change',()=>{const mustang=$('vehicle-select').value!=='reference';$('drivetrain-mode').value=mustang?'lifecycle':'fixed';$('drivetrain-mode').disabled=mustang;$('gear-request').disabled=!mustang;$('gear-request').value='N';const v=definition($('vehicle-select').value);$('vehicle-title').textContent=mustang?'Schweinemotorwerke':'The touring chassis';$('vehicle-info').textContent=mustang?'Original user-created vehicle · legacy 428-CJ-based estimates · modified six-speed · 1660 kg estimate · 2.7432 m wheelbase · reduced suspension/tire model':'Original experimental reference · retained physics and coachwork';reset();});
 $('drivetrain-mode').addEventListener('change',()=>{$('gear-request').disabled=$('drivetrain-mode').value==='fixed';$('gear-request').value='N';reset();});
 $('pause').addEventListener('click',()=>{paused=!paused;controls.clear();$('pause').textContent=paused?'Resume':'Pause';});
 $('record-contacts').addEventListener('change',()=>observatory.breakContinuity());
 $('render-scale').addEventListener('change',()=>view?.setQuality($('render-scale').value));
-function graphicsSettings(){return {scenery:$('roadside-detail').checked,preset:$('graphics').value,exposure:Number($('exposure').value),intensity:Number($('environment-intensity').value),detail:$('terrain-detail').checked,contact:$('contact-shading').checked,sunlight:Number($('sunlight').value),background:$('environment-background').checked};}
-for(const id of ['roadside-detail','graphics','exposure','environment-intensity','environment-background','sunlight','terrain-detail','contact-shading'])$(id).addEventListener('input',()=>view?.setGraphics(graphicsSettings()));
+function graphicsSettings(){return {scenery:$('roadside-detail').checked,preset:$('graphics').value,exposure:Number($('exposure').value),intensity:Number($('environment-intensity').value),detail:$('terrain-detail').checked,contact:$('contact-shading').checked,sunlight:Number($('sunlight').value),background:$('environment-background').checked,yaw:Number($('environment-yaw').value),pitch:Number($('environment-pitch').value),roll:Number($('environment-roll').value)};}
+for(const id of ['roadside-detail','graphics','exposure','environment-intensity','environment-background','environment-yaw','environment-pitch','environment-roll','sunlight','terrain-detail','contact-shading'])$(id).addEventListener('input',()=>view?.setGraphics(graphicsSettings()));
 for(const id of ['graphics','smoke-enable','smoke-density','smoke-opacity','smoke-size','smoke-lifetime','smoke-dispersion'])$(id).addEventListener('input',()=>view?.smokeConfigure({preset:$('graphics').value,enabled:$('smoke-enable').checked,density:Number($('smoke-density').value),opacity:Number($('smoke-opacity').value),size:Number($('smoke-size').value),lifetime:Number($('smoke-lifetime').value),dispersion:Number($('smoke-dispersion').value)}));
 $('load-environment').addEventListener('click',()=>view?.loadEnvironment($('environment-path').value));
 $('appearance').addEventListener('change',()=>view?.setAppearance($('appearance').value));

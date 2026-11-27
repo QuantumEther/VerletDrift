@@ -4,7 +4,7 @@ import {surfaceNames,surfacePalette} from './surface-palette.js';
 export function terrainMaterial(ground,mapPreset=''){
  let enabled=false;
  const palette=surfacePalette(mapPreset);
- const uniforms={surfaceColors:{value:surfaceNames.map(name=>new THREE.Color(palette[name]))},detailEnabled:{value:0},terrainOrigin:{value:new THREE.Vector2()},authoredKind:{value:({mountain:1,yard:2,rally:3})[mapPreset]??0}};
+ const uniforms={surfaceColors:{value:surfaceNames.map(name=>new THREE.Color(palette[name]))},detailEnabled:{value:0},terrainOrigin:{value:new THREE.Vector2()},authoredKind:{value:({mountain:1,yard:2,rally:3,flight:1,road:1})[mapPreset]??0}};
  ground.geometry.setAttribute('surfaceKind',new THREE.BufferAttribute(new Float32Array(ground.geometry.attributes.position.count),1));
  for(const name of ['surfaceA','surfaceB'])ground.geometry.setAttribute(name,new THREE.BufferAttribute(new Float32Array(ground.geometry.attributes.position.count*3),3));
  ground.geometry.setAttribute('roadDistance',new THREE.BufferAttribute(new Float32Array(ground.geometry.attributes.position.count),1));

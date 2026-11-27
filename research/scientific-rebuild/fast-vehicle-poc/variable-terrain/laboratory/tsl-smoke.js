@@ -15,7 +15,7 @@ export async function createTSLSmokeView(scene,buffers,lighting,capacity=600,com
  material.colorNode=N.attribute('particleTint','vec3').mul(ambientLight.mul(N.float(.6).add(transmission.mul(.4))).add(sun.mul(scattering).mul(N.exp(optical.mul(N.float(1).sub(N.max(0,facing))).mul(-.7)))));
  material.opacityNode=N.float(1).sub(transmission);
  const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.frustumCulled=false;mesh.renderOrder=3;mesh.userData.noShadow=true;mesh.visible=false;scene.add(mesh);
- mesh.onBeforeRender=(_r,_s,camera)=>{direction.value.copy(buffers.sunDirection).transformDirection(camera.matrixWorldInverse);cameraBasis.value.setFromMatrix4(camera.matrixWorld);sky.value=lighting.skyMap.value??fallback;skyIntensity.value=lighting.hasSky.value?lighting.skyIntensity.value:0;};
+ mesh.onBeforeRender=(_r,_s,camera)=>{direction.value.copy(buffers.sunDirection).transformDirection(camera.matrixWorldInverse);cameraBasis.value.setFromMatrix4(camera.matrixWorld);if(buffers.environmentBasis)cameraBasis.value.premultiply(buffers.environmentBasis);sky.value=lighting.skyMap.value??fallback;skyIntensity.value=lighting.hasSky.value?lighting.skyIntensity.value:0;};
  const attributes=Object.values(geometry.attributes).filter(attr=>attr.isInstancedBufferAttribute);
  return {mesh,update(visible){
   mesh.visible=visible;
