@@ -67,19 +67,20 @@ function physicalStep(h){
  const recordStart=performance.now(),end=capture(lab,h);view.smokeAccept(end,h);if($('record-contacts')?.checked!==false)observatory.record({start:previous,end,h});previous=end;frameRecording+=performance.now()-recordStart;return {};
 }
 function panel(p){
- $('smoke-stats').textContent=JSON.stringify(view.smokeInfo(),null,2);
- updateAudioPanel();
+ const visible = id => !studio || $(id).getClientRects().length > 0;
+ if(visible('smoke-stats'))$('smoke-stats').textContent=JSON.stringify(view.smokeInfo(),null,2);
+ if(visible('audio-status'))updateAudioPanel();
  $('graphics-status').textContent=view.graphicsInfo().status==='error'?'EXR failed: '+view.graphicsInfo().error:'EXR '+view.graphicsInfo().status;
- const asset=view.snapshot();studio?.update(p,asset,clock,paused,acceptedInput,$('gear-request').value);$('asset-status').textContent=asset.assetStatus==='error'?'GLB failed: '+asset.assetError+' · procedural fallback active':asset.assetStatus==='loading'?'Loading Schweinemotorwerke model…':asset.assetStatus==='ready'?'Custom model ready':'';
+ const asset=view.snapshot();studio?.update(p,asset,clock,paused,acceptedInput,$('gear-request').value,definition($('vehicle-select').value).engineConfig?.limit??500);$('asset-status').textContent=asset.assetStatus==='error'?'GLB failed: '+asset.assetError+' · procedural fallback active':asset.assetStatus==='loading'?'Loading Schweinemotorwerke model…':asset.assetStatus==='ready'?'Custom model ready':'';
  const sorted=stepTimes.slice().sort((a,b)=>a-b),q=f=>sorted[Math.max(0,Math.ceil(sorted.length*f)-1)]??0,mean=stepTimes.reduce((a,x)=>a+x,0)/(stepTimes.length||1),s=lab.state.consistency;
  $('live-performance').textContent=`Physics ${clock.frequency} Hz · ${clock.stepsPerSecond.toFixed(0)} accepted steps/wall s · sim speed ${clock.realtimeRatio.toFixed(2)}× · ${clock.fps.toFixed(1)} FPS\nPhysics JS elapsed (CPU proxy) ${mean.toFixed(3)} ms/step · p95 ${q(.95).toFixed(3)} · p99 ${q(.99).toFixed(3)} ms · ${(lab.state.time?totalPhysicsMs/lab.state.time:0).toFixed(1)} ms/sim s · render ${renderMs.toFixed(2)} ms\nConvergence ${s?.iterations??0}/${maxIterations} last/max of 24 · force residual ${(s?.forceResidual??0).toExponential(2)} N · debt ${clock.debt.toFixed(3)} s · rejected ${clock.rejected}`;
  $('clock-status').textContent=`${clock.status} · ${lab.state.time.toFixed(3)} sim s / ${clock.wall.toFixed(2)} wall s · no dropped debt`;
- gauges.engine(p.engineOmega*60/(2*Math.PI));gauges.input(p.inputOmega*60/(2*Math.PI));gauges.speed(Math.hypot(p.planar.u,p.planar.v)*3.6);
+ if(visible('engine-dial')){gauges.engine(p.engineOmega*60/(2*Math.PI));gauges.input(p.inputOmega*60/(2*Math.PI));gauges.speed(Math.hypot(p.planar.u,p.planar.v)*3.6);}
  const e=p.engineLifecycle; $('engine-live').textContent=e?`${e.mode} · starter ${(e.diagnostics?.starter??0).toFixed(2)} Nm\nCombustion ${(e.diagnostics?.combustion??0).toFixed(2)} Nm · losses ${(e.diagnostics?.loss??0).toFixed(2)} Nm\nStarter work ${e.starterWork.toFixed(2)} J · fuel work ${e.combustionWork.toFixed(2)} J\nInternal loss ${e.lossWork.toFixed(2)} J${e.diagnostics?.overspeed?' · OVERSPEED FUEL CUT':''}`:'Reference mean-engine mode';
  $('gear-status').textContent=p.gearbox?`Engine ${p.engineLifecycle?.mode??'legacy'} ${p.engineLifecycle?.diagnostics?.overspeed?'OVERSPEED / fuel cut':''} · Requested ${p.gearbox.gear} · ${p.gearbox.mode} · engaged ${p.gearbox.mode==='engaged'?p.gearbox.gear:'N'} · synchro heat ${p.synchronizerHeat.toFixed(2)} J · output ${p.outputOmega.toFixed(2)} rad/s`:'Fixed ratio 3.5 reference';
  $('clutch-reading').textContent=`Clutch ${p.clutch} · heat ${p.heat.clutch.toFixed(2)} J\nBrake heat ${p.heat.brakes.toFixed(2)} J`;
  $('energy-reading').textContent=`E ${p.energy.toFixed(3)} J\nWork residual ${p.energyResidual.toExponential(3)} J\nRoundoff ΔE ${p.roundoffEnergy.toExponential(3)} J\nYaw ${(p.planar.heading*180/Math.PI).toFixed(1)}°\nSteer ${(lab.steer*180/Math.PI).toFixed(1)}°`;
- $('contacts').replaceChildren(...p.wheels.map(w=>{const tr=document.createElement('tr');for(const value of [w.name,...[w.omega,w.normal,w.fx,w.fy,w.slipX,w.slipY,w.compression,w.mu].map(x=>x.toFixed(3)),w.mode]){const td=document.createElement('td');td.textContent=value;tr.append(td);}return tr;}));drawFrictionCircles($('friction-circles'),observatory.latest);
+ if(visible('contacts'))$('contacts').replaceChildren(...p.wheels.map(w=>{const tr=document.createElement('tr');for(const value of [w.name,...[w.omega,w.normal,w.fx,w.fy,w.slipX,w.slipY,w.compression,w.mu].map(x=>x.toFixed(3)),w.mode]){const td=document.createElement('td');td.textContent=value;tr.append(td);}return tr;}));if(visible('friction-circles'))drawFrictionCircles($('friction-circles'),observatory.latest);
  if(clock.fault)$('warning').textContent=`PAUSED: ${clock.fault.message}. Last accepted state retained; reset to retry. Snapshot available via runtimeSnapshot().clock.fault.`;
 }
 function loop(now){

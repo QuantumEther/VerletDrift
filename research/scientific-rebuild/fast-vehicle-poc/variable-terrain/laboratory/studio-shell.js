@@ -1,3 +1,4 @@
+import {createStudioTachometer} from './studio-tachometer.js';
 // Move existing elements intact so control IDs, event handlers and state survive workspace changes.
 export function mountStudio() {
   if (new URLSearchParams(location.search).get('layout') === 'legacy') return null;
@@ -44,6 +45,7 @@ export function mountStudio() {
         section.hidden = section !== panel;
         tab.setAttribute('aria-pressed', section === panel);
       }
+      window.dispatchEvent(new Event('studio-input-clear'));
       tools.scrollTop = 0;
     };
     panels.push([button, panel]);
@@ -51,6 +53,17 @@ export function mountStudio() {
     tools.append(panel);
   }
   panels[0][0].click();
+  tools.addEventListener('focusin', () => window.dispatchEvent(new Event('studio-input-clear')));
+  const collapse = document.createElement('button');
+  collapse.textContent = 'Collapse inspector';
+  collapse.setAttribute('aria-expanded', 'true');
+  collapse.onclick = () => {
+    const closed = shell.classList.toggle('inspector-collapsed');
+    collapse.setAttribute('aria-expanded', String(!closed));
+    collapse.textContent = closed ? 'Open inspector' : 'Collapse inspector';
+    window.dispatchEvent(new Event('studio-input-clear'));
+  };
+  nav.append(collapse);
   const immersive = document.createElement('button');
   immersive.textContent = 'Immersive view';
   immersive.setAttribute('aria-pressed', 'false');
@@ -70,8 +83,42 @@ export function mountStudio() {
   shell.querySelector('footer').before(references);
   const readouts = document.createElement('div');
   readouts.className = 'studio-readouts';
+  const drawTachometer = createStudioTachometer(readouts);
   const fields = {};
-  for (const label of ['Road speed', 'Engine RPM', 'Requested', 'Engaged', 'Throttle', 'Brake', 'Clutch', 'Engine', 'Simulation', 'Renderer']) {
+  for (const range of tools.querySelectorAll('input[type=range]')) {
+    const updateFill = () => {
+      const minimum = Number(range.min || 0);
+      const maximum = Number(range.max || 100);
+      const fill = (Number(range.value) - minimum) / (maximum - minimum) * 100;
+      range.style.setProperty('--range-fill', fill + '%');
+    };
+    range.addEventListener('input', updateFill);
+    updateFill();
+    const editor = document.createElement('input');
+    editor.type = 'number';
+    for (const key of ['min', 'max', 'step']) editor[key] = range[key];
+    editor.value = range.value;
+    editor.setAttribute('aria-label', (range.closest('label')?.textContent.trim() || range.id) + ' exact value');
+    const initial = range.defaultValue;
+    range.addEventListener('input', () => editor.value = range.value);
+    editor.addEventListener('change', () => {
+      if (!editor.checkValidity() || !Number.isFinite(editor.valueAsNumber)) return;
+      range.value = editor.value;
+      range.dispatchEvent(new Event('input', {bubbles:true}));
+    });
+    const reset = document.createElement('button');
+    reset.type = 'button';
+    reset.textContent = 'Default';
+    reset.onclick = () => {
+      range.value = initial;
+      range.dispatchEvent(new Event('input', {bubbles:true}));
+    };
+    const precision = document.createElement('div');
+    precision.className = 'precision-editor';
+    precision.append(editor, reset);
+    range.after(precision);
+  }
+  for (const label of ['Road speed', 'Engine RPM', 'Requested', 'Engaged', 'Throttle', 'Brake', 'Handbrake', 'Clutch', 'Engine', 'Simulation', 'Renderer']) {
     const tile = document.createElement('div');
     const caption = document.createElement('span');
     caption.textContent = label;
@@ -82,6 +129,7 @@ export function mountStudio() {
     fields[label] = value;
   }
   find('perspective').after(readouts);
+  stage.prepend(find('warning'));
   lab.append(tools);
   shell.classList.add('studio-shell');
   const write = (key, value) => {
@@ -90,13 +138,15 @@ export function mountStudio() {
   const percent = value => Number.isFinite(value) ? Math.round(value * 100) + '%' : '—';
   return {
     status(message) { write('Simulation', message); },
-    update(state, renderer, clock, paused, inputs, requested) {
+    update(state, renderer, clock, paused, inputs, requested, engineLimit) {
+      drawTachometer(state.engineOmega * 30 / Math.PI, engineLimit * 30 / Math.PI);
       write('Road speed', (Math.hypot(state.planar.u, state.planar.v) * 3.6).toFixed(1) + ' km/h');
       write('Engine RPM', Math.round(state.engineOmega * 60 / (2 * Math.PI)) + '');
       write('Requested', state.gearbox ? requested : 'Fixed');
       write('Engaged', state.gearbox ? state.gearbox.mode === 'engaged' ? String(state.gearbox.gear) : 'N' : 'Fixed');
       write('Throttle', percent(inputs?.throttle));
       write('Brake', percent(inputs?.serviceBrake));
+      write('Handbrake', percent(inputs?.handbrake));
       write('Clutch', percent(inputs?.clutch));
       write('Engine', state.engineLifecycle?.mode ?? 'Reference');
       write('Simulation', clock.fault ? 'Fault' : paused ? 'Paused' : clock.status);
